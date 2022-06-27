@@ -1,9 +1,19 @@
 import pytest
 
-from repository.user import UserRepositoryInterface, User
+from repository.admin_message import AdminMessageRepositoryInterface
+from repository.user import User, UserRepositoryInterface
+from services.ayat import AyatServiceInterface
 from services.register_user import RegisterUser
 
 pytestmark = [pytest.mark.asyncio]
+
+
+class AdminMessageRepositoryMock(AdminMessageRepositoryInterface):
+
+    async def get(self, key: str) -> str:
+        return {
+            'start': 'start message',
+        }[key]
 
 
 class UserRepositoryMock(UserRepositoryInterface):
@@ -12,38 +22,50 @@ class UserRepositoryMock(UserRepositoryInterface):
         return
 
     async def get(self, chat_id: int):
-        active = {
-            444: False
-        }.get(chat_id, True)
-        return User(is_active=active)
+        return {
+            444: User(is_active=False, day=15),
+            333: User(is_active=True, day=30),
+        }[chat_id]
 
     async def exists(self, chat_id: int):
         active_users = (333, 444)
         return chat_id in active_users
 
 
+class AyatServiceMock(AyatServiceInterface):
+
+    async def get_formatted_first_ayat(self):
+        return 'some string'
+
+
 async def test():
     got = await RegisterUser(
-        repository=UserRepositoryMock(),
+        admin_messages_repository=AdminMessageRepositoryMock(),
+        user_repository=UserRepositoryMock(),
+        ayat_service=AyatServiceMock(),
         chat_id=231,
     ).register()
 
-    assert got == 'user created'
+    assert got == ('start message', 'some string')
 
 
 async def test_already_registered_user():
     got = await RegisterUser(
-        repository=UserRepositoryMock(),
+        admin_messages_repository=AdminMessageRepositoryMock(),
+        user_repository=UserRepositoryMock(),
+        ayat_service=AyatServiceMock(),
         chat_id=333,
     ).register()
 
-    assert got == 'user already registered'
+    assert got == 'Вы уже зарегистрированы'
 
 
 async def test_inactive_user():
     got = await RegisterUser(
-        repository=UserRepositoryMock(),
+        admin_messages_repository=AdminMessageRepositoryMock(),
+        user_repository=UserRepositoryMock(),
+        ayat_service=AyatServiceMock(),
         chat_id=444,
     ).register()
 
-    assert got == 'user active again'
+    assert got == 'Рады видеть вас снова, вы продолжите с дня 15'

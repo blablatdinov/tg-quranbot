@@ -2,7 +2,10 @@ from pydantic import BaseModel
 
 
 class User(BaseModel):
+    """Модель пользователя."""
+
     is_active: bool
+    day: int
 
 
 class UserRepositoryInterface(object):
@@ -17,10 +20,17 @@ class UserRepositoryInterface(object):
         raise NotImplementedError
 
     async def get(self, chat_id: int) -> User:
+        """Метод для получения пользователя.
+
+        :param chat_id: int
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
-    async def exists(self, chat_id: int):
-        raise NotImplementedError
+    async def exists(self, chat_id: int) -> bool:
+        """Метод для проверки наличия пользователя в БД.
 
-    async def status(self, chat_id: int):
+        :param chat_id: int
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
