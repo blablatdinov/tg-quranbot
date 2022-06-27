@@ -1,5 +1,5 @@
-from services.register_user import RegisterUser
 from repository.user import UserRepositoryInterface
+from services.register_user import RegisterUser
 
 
 class UserRepositoryMock(UserRepositoryInterface):
