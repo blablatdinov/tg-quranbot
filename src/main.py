@@ -7,9 +7,9 @@ bot = Bot(token=settings.API_TOKEN)
 dp = Dispatcher(bot)
 
 
-@dp.message_handler(commands=['start', 'help'])
-async def send_welcome(message: types.Message):
-    """Ответ на команды: start, help.
+@dp.message_handler(commands=['start'])
+async def start_handler(message: types.Message):
+    """Ответ на команды: start.
 
     :param message: types.Message
     """

@@ -10,6 +10,7 @@ aiogram = "^2.21"
 pydantic = {extras = ["dotenv"], version = "^1.9.1"}
 asyncpg = "^0.25.0"
 wemake-python-styleguide = "^0.16.1"
+pytest = "^7.1.2"
 
 [tool.poetry.dev-dependencies]
 
