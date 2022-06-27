@@ -10,10 +10,17 @@ class RegisterUser(object):
     repository: UserRepositoryInterface
     chat_id: int
 
-    def __call__(self) -> str:
+    async def register(self) -> str:
         """Entrypoint.
 
         :returns: str Ответ пользователю
         """
-        self.repository.create(self.chat_id)
+        user_exists = await self.repository.exists(self.chat_id)
+        if user_exists:
+            user = await self.repository.get(self.chat_id)
+            if user.is_active:
+                return 'user already registered'
+            else:
+                return 'user active again'
+        await self.repository.create(self.chat_id)
         return 'user created'
