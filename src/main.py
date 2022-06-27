@@ -2,8 +2,13 @@ import asyncpg
 from aiogram import Bot, Dispatcher, executor, types
 
 from settings import settings
+from services.register_user import RegisterUser
+from services.ayat import AyatsService
+from repository.ayats import AyatRepository
+from repository.admin_message import AdminMessageRepository
+from repository.user import UserRepository
 
-bot = Bot(token=settings.API_TOKEN)
+bot = Bot(token=settings.API_TOKEN, parse_mode='HTML')
 dp = Dispatcher(bot)
 
 
@@ -13,7 +18,23 @@ async def start_handler(message: types.Message):
 
     :param message: types.Message
     """
-    await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
+    try:
+        connection = await asyncpg.connect(settings.DATABASE_URL)
+        answers = await RegisterUser(
+            user_repository=UserRepository(connection),
+            admin_messages_repository=AdminMessageRepository(connection),
+            ayat_service=AyatsService(
+                AyatRepository(connection),
+            ),
+            chat_id=message.chat.id,
+        ).register()
+        for answer in answers:
+            await message.answer(answer)
+    except Exception as e:
+        await message.reply(f"Exception: {e}")
+        raise e
+    finally:
+        await connection.close()
 
 
 @dp.message_handler(commands=['ping_db'])
@@ -22,10 +43,14 @@ async def ping_db(message: types.Message):
 
     :param message: types.Message
     """
-    conn = await asyncpg.connect(settings.DATABASE_URL)
-    row = await conn.fetchrow('select 1')
-    await conn.close()
-    await message.answer(row)
+    try:
+        connection = await asyncpg.connect(settings.DATABASE_URL)
+        ayat = await AyatsService(
+            AyatRepository(connection),
+        ).get_formatted_first_ayat()
+        return await message.answer(ayat)
+    finally:
+        await connection.close()
 
 
 if __name__ == '__main__':

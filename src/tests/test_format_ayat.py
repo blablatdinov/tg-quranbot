@@ -15,6 +15,7 @@ class AyatRepositoryMock(AyatRepositoryInterface):
             arab_text='some arab text',
             content='content',
             transliteration='transliteration',
+            sura_link='/some-link',
         )
 
 
@@ -23,4 +24,4 @@ async def test():
         AyatRepositoryMock(),
     ).get_formatted_first_ayat()
 
-    assert got == '<a href="#">1:1-7)</a>some arab text\n\ncontent\n\n<i>transliteration</i>'
+    assert got == '<a href="https://umma.ru/some-link">1:1-7)</a>\nsome arab text\n\ncontent\n\n<i>transliteration</i>'

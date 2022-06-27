@@ -34,3 +34,38 @@ class UserRepositoryInterface(object):
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
+
+
+class UserRepository(UserRepositoryInterface):
+
+    def __init__(self, connection):
+        self.connection = connection
+
+    async def create(self, chat_id: int) -> int:
+        """Метод для создания пользователя.
+
+        :param chat_id: int
+        """
+        await self.connection.execute("INSERT INTO bot_init_subscriber (tg_chat_id, is_active, day) VALUES ({chat_id}, 't', 2)".format(chat_id=chat_id))
+
+    async def get(self, chat_id: int) -> User:
+        """Метод для получения пользователя.
+
+        :param chat_id: int
+        """
+        record = await self.connection.fetchrow("""
+            SELECT
+                is_active,
+                day
+            FROM bot_init_subscriber
+            WHERE tg_chat_id = {chat_id}
+        """.format(chat_id=chat_id))
+        return User(**dict(record))
+
+    async def exists(self, chat_id: int) -> bool:
+        """Метод для проверки наличия пользователя в БД.
+
+        :param chat_id: int
+        """
+        record = await self.connection.fetchrow('SELECT COUNT(*) FROM bot_init_subscriber WHERE tg_chat_id = {chat_id}'.format(chat_id=chat_id))
+        return bool(record['count'])

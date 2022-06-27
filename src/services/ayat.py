@@ -28,8 +28,9 @@ class AyatsService(AyatServiceInterface):
         :returns: str
         """
         ayat = await self.ayat_repository.first()
-        template = '<a href="#">{sura}:{ayat})</a>{arab_text}\n\n{content}\n\n<i>{transliteration}</i>'
+        template = '<a href="{link}">{sura}:{ayat})</a>\n{arab_text}\n\n{content}\n\n<i>{transliteration}</i>'
         return template.format(
+            link='https://umma.ru' + ayat.sura_link,
             sura=ayat.sura_num,
             ayat=ayat.ayat_num,
             arab_text=ayat.arab_text,
