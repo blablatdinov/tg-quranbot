@@ -41,16 +41,18 @@ class AyatRepository(AyatRepositoryInterface):
         """Метод для получения аята по идентификатору.
 
         :param id_: int
-        :raises NotImplementedError: if not implemented
+        :returns: Ayat
+        :raises: NotImplementedError if not implemented
         """
         pass
 
     async def first(self) -> Ayat:
         """Метод для получения первого аята.
 
-        :raises NotImplementedError: if not implemented
+        :raises: NotImplementedError if not implemented
+        :returns: Ayat
         """
-        record = await self.connection.fetchrow("""
+        query = """
             SELECT
                 s.number as sura_num,
                 s.link as sura_link,
@@ -61,5 +63,7 @@ class AyatRepository(AyatRepositoryInterface):
             FROM content_ayat a
             INNER JOIN content_sura s on a.sura_id = s.id
             ORDER BY a.id
-        """)
+            LIMIT 1
+        """
+        record = await self.connection.fetchrow(query)
         return Ayat(**dict(record))

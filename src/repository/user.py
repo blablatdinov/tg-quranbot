@@ -37,6 +37,7 @@ class UserRepositoryInterface(object):
 
 
 class UserRepository(UserRepositoryInterface):
+    """Репозиторий для работы с пользователями."""
 
     def __init__(self, connection):
         self.connection = connection
@@ -46,26 +47,32 @@ class UserRepository(UserRepositoryInterface):
 
         :param chat_id: int
         """
-        await self.connection.execute("INSERT INTO bot_init_subscriber (tg_chat_id, is_active, day) VALUES ({chat_id}, 't', 2)".format(chat_id=chat_id))
+        await self.connection.execute(
+            "INSERT INTO bot_init_subscriber (tg_chat_id, is_active, day) VALUES ($1, 't', 2)", chat_id,
+        )
 
     async def get(self, chat_id: int) -> User:
         """Метод для получения пользователя.
 
         :param chat_id: int
+        :returns: User
         """
-        record = await self.connection.fetchrow("""
+        query = """
             SELECT
                 is_active,
                 day
             FROM bot_init_subscriber
-            WHERE tg_chat_id = {chat_id}
-        """.format(chat_id=chat_id))
+            WHERE tg_chat_id = $1
+        """
+        record = await self.connection.fetchrow(query, chat_id)
         return User(**dict(record))
 
     async def exists(self, chat_id: int) -> bool:
         """Метод для проверки наличия пользователя в БД.
 
         :param chat_id: int
+        :returns: bool
         """
-        record = await self.connection.fetchrow('SELECT COUNT(*) FROM bot_init_subscriber WHERE tg_chat_id = {chat_id}'.format(chat_id=chat_id))
+        query = 'SELECT COUNT(*) FROM bot_init_subscriber WHERE tg_chat_id = $1'
+        record = await self.connection.fetchrow(query, chat_id)
         return bool(record['count'])

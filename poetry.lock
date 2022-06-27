@@ -98,6 +98,18 @@ docs = ["Sphinx (>=4.1.2,<4.2.0)", "sphinxcontrib-asyncio (>=0.3.0,<0.4.0)", "sp
 test = ["pycodestyle (>=2.7.0,<2.8.0)", "flake8 (>=3.9.2,<3.10.0)", "uvloop (>=0.15.3)"]
 
 [[package]]
+name = "asyncpg-stubs"
+version = "0.25.4"
+description = "asyncpg stubs"
+category = "dev"
+optional = false
+python-versions = ">=3.7,<4.0"
+
+[package.dependencies]
+asyncpg = ">=0.25.0,<0.26.0"
+typing-extensions = ">=4.2.0,<5.0.0"
+
+[[package]]
 name = "atomicwrites"
 version = "1.4.0"
 description = "Atomic file writes."
@@ -954,7 +966,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "cc246622f861ba87d47602ee44c034cfd237cb11b4db75f420da858e8a6b57f4"
+content-hash = "dd36cd7c286400cf4d0144d794ee5c9f6a83a0617bb43169233b6d9946c8f73e"
 
 [metadata.files]
 aiogram = [
@@ -1082,6 +1094,10 @@ asyncpg = [
     {file = "asyncpg-0.25.0-cp39-cp39-win32.whl", hash = "sha256:f55918ded7b85723a5eaeb34e86e7b9280d4474be67df853ab5a7fa0cc7c6bf2"},
     {file = "asyncpg-0.25.0-cp39-cp39-win_amd64.whl", hash = "sha256:649e2966d98cc48d0646d9a4e29abecd8b59d38d55c256d5c857f6b27b7407ac"},
     {file = "asyncpg-0.25.0.tar.gz", hash = "sha256:63f8e6a69733b285497c2855464a34de657f2cccd25aeaeeb5071872e9382540"},
+]
+asyncpg-stubs = [
+    {file = "asyncpg-stubs-0.25.4.tar.gz", hash = "sha256:e8c70171e1e4f1665399a2e942bcb514b9f7209fe71577ca5bb0f11bc63dd016"},
+    {file = "asyncpg_stubs-0.25.4-py3-none-any.whl", hash = "sha256:5637683544900114812cbeb2198c91ac19e170bf8a6d81f8e15fa927743a7f70"},
 ]
 atomicwrites = [
     {file = "atomicwrites-1.4.0-py2.py3-none-any.whl", hash = "sha256:6d1784dea7c0c8d4a5172b6c620f40b6e4cbfdf96d783691f2e1302a7b88e197"},

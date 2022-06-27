@@ -1,8 +1,8 @@
 import pytest
 
 from repository.admin_message import AdminMessageRepositoryInterface
-from repository.user import User, UserRepositoryInterface
 from repository.ayats import AyatRepositoryInterface
+from repository.user import User, UserRepositoryInterface
 from services.ayat import AyatServiceInterface
 from services.register_user import RegisterUser
 
@@ -31,7 +31,6 @@ class UserRepositoryMock(UserRepositoryInterface):
     async def exists(self, chat_id: int):
         active_users = (333, 444)
         return chat_id in active_users
-
 
 
 class AyatRepositoryMock(AyatRepositoryInterface):
