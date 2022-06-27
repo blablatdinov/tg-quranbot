@@ -7,6 +7,7 @@ BASE_DIR = Path(__file__).parent
 class Settings(BaseSettings):
     BASE_DIR: Path = BASE_DIR
     API_TOKEN: str
+    DATABASE_URL: str
 
     class Config:
         env_file = '.env'
