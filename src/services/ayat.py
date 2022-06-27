@@ -1,15 +1,17 @@
+from dataclasses import dataclass
+
 from repository.ayats import AyatRepositoryInterface
 
 
+@dataclass
 class AyatServiceInterface(object):
     """Интерфейс для действий над аятами."""
 
     ayat_repository: AyatRepositoryInterface
 
-    async def get_formatted_first_ayat(self, id_: int) -> str:
+    async def get_formatted_first_ayat(self) -> str:
         """Получить отформатированный аят.
 
-        :param id_: str
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -20,10 +22,17 @@ class AyatsService(AyatServiceInterface):
 
     ayat_repository: AyatRepositoryInterface
 
-    async def get_formatted_first_ayat(self, id_: int) -> str:
+    async def get_formatted_first_ayat(self) -> str:
         """Получить отформатированный аят.
 
-        :param id_: str
         :returns: str
         """
-        return await self.ayat_repository.first()
+        ayat = await self.ayat_repository.first()
+        template = '<a href="#">{sura}:{ayat})</a>{arab_text}\n\n{content}\n\n<i>{transliteration}</i>'
+        return template.format(
+            sura=ayat.sura_num,
+            ayat=ayat.ayat_num,
+            arab_text=ayat.arab_text,
+            content=ayat.content,
+            transliteration=ayat.transliteration,
+        )

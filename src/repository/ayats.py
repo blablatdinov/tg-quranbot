@@ -4,7 +4,11 @@ from pydantic import BaseModel
 class Ayat(BaseModel):
     """Модель аята."""
 
-    pass
+    sura_num: int
+    ayat_num: str
+    arab_text: str
+    content: str  # noqa: WPS110 wrong variable name
+    transliteration: str
 
 
 class AyatRepositoryInterface(object):

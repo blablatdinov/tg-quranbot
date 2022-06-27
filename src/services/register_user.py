@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
 from repository.admin_message import AdminMessageRepositoryInterface
-from repository.ayats import AyatRepositoryInterface
 from repository.user import UserRepositoryInterface
+from services.ayat import AyatServiceInterface
 
 
 @dataclass
@@ -11,7 +11,7 @@ class RegisterUser(object):
 
     user_repository: UserRepositoryInterface
     admin_messages_repository: AdminMessageRepositoryInterface
-    ayat_service: AyatRepositoryInterface
+    ayat_service: AyatServiceInterface
     chat_id: int
 
     async def register(self) -> tuple[str, ...]:
@@ -23,9 +23,9 @@ class RegisterUser(object):
         if user_exists:
             user = await self.user_repository.get(self.chat_id)
             if user.is_active:
-                return 'Вы уже зарегистрированы'
+                return ('Вы уже зарегистрированы',)
 
-            return 'Рады видеть вас снова, вы продолжите с дня {user_day}'.format(user_day=user.day)
+            return ('Рады видеть вас снова, вы продолжите с дня {user_day}'.format(user_day=user.day),)
 
         await self.user_repository.create(self.chat_id)
         start_message = await self.admin_messages_repository.get('start')
