@@ -58,8 +58,19 @@ class AyatsService(AyatServiceInterface):
         )
 
     async def search_by_number(self, search_input: str) -> AnswerInterface:
-        """Найти аят по номеру.
-        """
+        """Найти аят по номеру."""
         sura_num, ayat_num = search_input.split(':')
-        ayat = await self.ayat_repository.get_ayat_by_sura_ayat_num(sura_num, ayat_num)
-        return Answer(message=self.format_ayat(ayat))
+        ayats = await self.ayat_repository.get_ayats_by_sura_num(sura_num)
+        for ayat in ayats:
+            print('!!!!', ayat)
+            print('!!!! ayat_num', ayat_num)
+            print('!!!! db ayat_num', ayat.ayat_num)
+            print('!!!! range', range(*list(map(int, ayat.ayat_num.split('-')))))
+            if '-' in ayat.ayat_num:
+                left, right = map(int, ayat.ayat_num.split('-'))
+                ayats_range = range(left, right + 1)
+                if int(ayat_num) in ayats_range:
+                    return Answer(message=self.format_ayat(ayat))
+            else:
+                ayat = await self.ayat_repository.get_ayat_by_sura_ayat_num(sura_num, ayat_num)
+                return Answer(message=self.format_ayat(ayat))

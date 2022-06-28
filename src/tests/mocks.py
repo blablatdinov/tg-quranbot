@@ -52,6 +52,13 @@ class AyatRepositoryMock(AyatRepositoryInterface):
             ),
         )[0]
 
+    async def get_ayats_by_sura_num(self, sura_num: str) -> list[Ayat]:
+        return list(
+            filter(
+                lambda ayat: str(ayat.sura_num) == str(sura_num), self.storage
+            ),
+        )
+
 
 class AyatServiceMock(AyatServiceInterface):
 

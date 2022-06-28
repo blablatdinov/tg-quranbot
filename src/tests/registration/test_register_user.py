@@ -4,7 +4,7 @@ from repository.user import User
 from services.answer import Answer
 from services.register_user import RegisterUser
 from services.start_message import StartMessageMeta
-from tests.registration.mocks import (
+from tests.mocks import (
     AdminMessageRepositoryMock,
     AyatRepositoryMock,
     AyatServiceMock,

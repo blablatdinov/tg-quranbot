@@ -39,6 +39,14 @@ class AyatRepositoryInterface(object):
         """
         raise NotImplementedError
 
+    async def get_ayats_by_sura_num(self, sura_num: str) -> list[Ayat]:
+        """Получить аят по номеру суры.
+
+        :param sura_num: int
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
 
 class AyatRepository(AyatRepositoryInterface):
     """Интерфейс репозитория для работы с административными сообщениями."""
