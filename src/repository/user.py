@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -6,15 +8,18 @@ class User(BaseModel):
 
     is_active: bool
     day: int
+    referrer: Optional[int] = None
+    chat_id: int
 
 
 class UserRepositoryInterface(object):
     """Интерфейс репозитория для работы с пользователями."""
 
-    async def create(self, chat_id: int):
+    async def create(self, chat_id: int, referrer_id: Optional[int]):
         """Метод для создания пользователя.
 
         :param chat_id: int
+        :param referrer_id: Optional[int]
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -23,6 +28,14 @@ class UserRepositoryInterface(object):
         """Метод для получения пользователя.
 
         :param chat_id: int
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
+    async def get_by_id(self, user_id: int) -> User:
+        """Метод для получения пользователя.
+
+        :param user_id: int
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -42,13 +55,16 @@ class UserRepository(UserRepositoryInterface):
     def __init__(self, connection):
         self.connection = connection
 
-    async def create(self, chat_id: int) -> int:
+    async def create(self, chat_id: int, referrer_id: Optional[int]):
         """Метод для создания пользователя.
 
         :param chat_id: int
+        :param referrer_id: Optional[int]
         """
         await self.connection.execute(
-            "INSERT INTO bot_init_subscriber (tg_chat_id, is_active, day) VALUES ($1, 't', 2)", chat_id,
+            "INSERT INTO bot_init_subscriber (tg_chat_id, is_active, day, referer_id) VALUES ($1, 't', 2, $2)",
+            chat_id,
+            referrer_id,
         )
 
     async def get(self, chat_id: int) -> User:

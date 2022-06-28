@@ -22,7 +22,7 @@ def get_start_message_query(message: str) -> StartMessageMeta:
         return StartMessageMeta(referrer=None)
 
 
-def parse_start_message(splitted_message: str) -> StartMessageMeta:
+def parse_start_message(splitted_message: list[str]) -> StartMessageMeta:
     """Распарсить стартовое сообщение.
 
     :param splitted_message: str
