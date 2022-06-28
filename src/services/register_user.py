@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 
-from repository.admin_message import AdminMessageRepositoryInterface
-from repository.user import UserRepositoryInterface
+from repository.admin_message import AdminMessageRepository, AdminMessageRepositoryInterface
+from repository.ayats import AyatRepository
+from repository.user import UserRepository, UserRepositoryInterface
 from services.answer import Answer, AnswerInterface, AnswersList
-from services.ayat import AyatServiceInterface
-from services.start_message import StartMessageMeta
+from services.ayat import AyatServiceInterface, AyatsService
+from services.start_message import StartMessageMeta, get_start_message_query
 
 
 @dataclass
@@ -82,3 +83,22 @@ class RegisterUser(object):
             Answer(chat_id=self.chat_id, message=start_message),
             Answer(chat_id=self.chat_id, message=formatted_first_ayat),
         )
+
+
+async def get_register_user_instance(connection, chat_id: int, message: str) -> RegisterUser:
+    """Возвращает объект для регистрации пользователя.
+
+    :param chat_id: int
+    :param connection: int
+    :param message: str
+    :returns: RegisterUser
+    """
+    return RegisterUser(
+        user_repository=UserRepository(connection),
+        admin_messages_repository=AdminMessageRepository(connection),
+        ayat_service=AyatsService(
+            AyatRepository(connection),
+        ),
+        chat_id=chat_id,
+        start_message_meta=get_start_message_query(message),
+    )
