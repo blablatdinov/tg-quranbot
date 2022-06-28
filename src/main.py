@@ -8,17 +8,19 @@ from repository.ayats import AyatRepository
 from repository.user import UserRepository
 from services.ayat import AyatsService
 from services.register_user import RegisterUser
+from services.start_message import get_start_message_query
 from settings import settings
 
 bot = Bot(token=settings.API_TOKEN, parse_mode='HTML')
 dp = Dispatcher(bot)
 
 
-async def get_register_user_instance(connection, chat_id: int) -> RegisterUser:
+async def get_register_user_instance(connection, chat_id: int, message: str) -> RegisterUser:
     """Возвращает объект для регистрации пользователя.
 
     :param chat_id: int
     :param connection: int
+    :param message: str
     :returns: RegisterUser
     """
     return RegisterUser(
@@ -28,6 +30,7 @@ async def get_register_user_instance(connection, chat_id: int) -> RegisterUser:
             AyatRepository(connection),
         ),
         chat_id=chat_id,
+        start_message_meta=get_start_message_query(message),
     )
 
 
@@ -51,10 +54,9 @@ async def start_handler(message: types.Message):
     :param message: types.Message
     """
     async with db_connection() as connection:
-        register_user = await get_register_user_instance(connection, message.chat.id)
+        register_user = await get_register_user_instance(connection, message.chat.id, message.text)
         answers = await register_user.register()
-        for answer in answers:
-            await message.answer(answer)
+        await answers.send()
 
 
 @dp.message_handler(commands=['ping_db'])

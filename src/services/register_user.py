@@ -31,15 +31,21 @@ class RegisterUser(object):
             message='Рады видеть вас снова, вы продолжите с дня {user_day}'.format(user_day=user.day),
         )
 
-    async def register_with_referrer(self, start_message: str, formatted_first_ayat: str) -> AnswersList:
+    async def register_with_referrer(
+        self,
+        referrer_id: int,
+        start_message: str,
+        formatted_first_ayat: str,
+    ) -> AnswersList:
         """Обработка регистрации с реферальным кодом.
 
+        :param referrer_id: int
         :param start_message: str
         :param formatted_first_ayat: str
         :return: AnswersList
         """
         message_for_referrer = 'По вашей реферральной ссылке произошла регистрация'
-        referrer_user_record = await self.user_repository.get_by_id(self.start_message_meta.referrer)
+        referrer_user_record = await self.user_repository.get_by_id(referrer_id)
         return AnswersList(
             Answer(chat_id=self.chat_id, message=start_message),
             Answer(chat_id=self.chat_id, message=formatted_first_ayat),
@@ -69,7 +75,9 @@ class RegisterUser(object):
         start_message, formatted_first_ayat = await self.get_start_messages()
 
         if self.start_message_meta.referrer:
-            await self.register_with_referrer(start_message, formatted_first_ayat)
+            return await self.register_with_referrer(
+                self.start_message_meta.referrer, start_message, formatted_first_ayat,
+            )
         return AnswersList(
             Answer(chat_id=self.chat_id, message=start_message),
             Answer(chat_id=self.chat_id, message=formatted_first_ayat),

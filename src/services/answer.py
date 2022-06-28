@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class AnswerInterface(object):
     """Интерфейс для отсылаемых объектов."""
 
-    async def send(self, chat_id: int):
+    async def send(self, chat_id: int = None):
         """Метод для отправки ответа.
 
         :param chat_id: int
@@ -19,7 +19,7 @@ class Answer(BaseModel, AnswerInterface):
     chat_id: int
     message: str
 
-    async def send(self, chat_id: int):
+    async def send(self, chat_id: int = None):
         """Метод для отправки ответа.
 
         :param chat_id: int
