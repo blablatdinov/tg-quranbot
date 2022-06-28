@@ -61,3 +61,25 @@ async def test(ayat_repository_mock, input_, expect):
     ).search_by_number(input_)
 
     assert expect in got.message
+
+
+@pytest.mark.parametrize('sura_num', ['0', '115', '-59'])
+async def test_not_found_sura(sura_num):
+    got = await AyatsService(
+        AyatRepositoryMock(),
+    ).search_by_number(f'{sura_num}:1')
+
+    assert got.message == 'Сура не найдена'
+
+
+@pytest.mark.parametrize('input_', [
+    '1:8',
+    '2:30',
+    '3:-7',
+])
+async def test_not_found_ayat(input_, ayat_repository_mock):
+    got = await AyatsService(
+        AyatRepositoryMock(),
+    ).search_by_number(input_)
+
+    assert got.message == 'Аят не найден'
