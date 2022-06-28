@@ -1,8 +1,4 @@
-import pytest
-
 from exceptions import BaseAppError, exception_to_answer_formatter
-
-pytestmark = [pytest.mark.asyncio]
 
 
 class CustomException(BaseAppError):

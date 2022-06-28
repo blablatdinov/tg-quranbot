@@ -1,9 +1,5 @@
-import pytest
-
 from repository.ayats import Ayat, AyatRepositoryInterface
 from services.ayat import AyatsService
-
-pytestmark = [pytest.mark.asyncio]
 
 
 class AyatRepositoryMock(AyatRepositoryInterface):
