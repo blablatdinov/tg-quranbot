@@ -41,6 +41,7 @@ def ayat_repository_mock(faker):
         Ayat(sura_num=2, ayat_num='10', **common_params),
         Ayat(sura_num=3, ayat_num='15', **common_params),
         Ayat(sura_num=1, ayat_num='1-7', **common_params),
+        Ayat(sura_num=2, ayat_num='6,7', **common_params),
     ]
     return mock
 
@@ -51,6 +52,8 @@ def ayat_repository_mock(faker):
     ('1:7', '1:1-7'),
     ('2:10', '2:10'),
     ('3:15', '3:15'),
+    ('2:6', '2:6,7'),
+    ('2:7', '2:6,7'),
 ])
 async def test(ayat_repository_mock, input_, expect):
     got = await AyatsService(

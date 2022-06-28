@@ -1,1 +1,1 @@
-AYAT_SEARCH_INPUT_REGEXP = r'\d:\d'
+AYAT_SEARCH_INPUT_REGEXP = r'\d( |):( |)\d'
