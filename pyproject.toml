@@ -17,6 +17,7 @@ wemake-python-styleguide = "^0.16.1"
 ipython = "^8.4.0"
 mypy = "^0.961"
 asyncpg-stubs = "^0.25.4"
+Faker = "^13.14.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
