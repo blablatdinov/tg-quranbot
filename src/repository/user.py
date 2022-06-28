@@ -6,6 +6,7 @@ from pydantic import BaseModel
 class User(BaseModel):
     """Модель пользователя."""
 
+    id: int
     is_active: bool
     day: int
     referrer: Optional[int] = None
@@ -24,7 +25,7 @@ class UserRepositoryInterface(object):
         """
         raise NotImplementedError
 
-    async def get(self, chat_id: int) -> User:
+    async def get_by_chat_id(self, chat_id: int) -> User:
         """Метод для получения пользователя.
 
         :param chat_id: int
@@ -67,7 +68,7 @@ class UserRepository(UserRepositoryInterface):
             referrer_id,
         )
 
-    async def get(self, chat_id: int) -> User:
+    async def get_by_chat_id(self, chat_id: int) -> User:
         """Метод для получения пользователя.
 
         :param chat_id: int

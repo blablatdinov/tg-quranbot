@@ -24,7 +24,7 @@ class RegisterUser(object):
         """
         user_exists = await self.user_repository.exists(self.chat_id)
         if user_exists:
-            user = await self.user_repository.get(self.chat_id)
+            user = await self.user_repository.get_by_chat_id(self.chat_id)
             if user.is_active:
                 return Answer(chat_id=self.chat_id, message='Вы уже зарегистрированы')
 
@@ -38,7 +38,7 @@ class RegisterUser(object):
         formatted_first_ayat = await self.ayat_service.get_formatted_first_ayat()
         if self.start_message_meta.referrer:
             message_for_referrer = 'По вашей реферральной ссылке произошла регистрация'
-            referrer_user_record = await self.user_repository.get(self.start_message_meta.referrer)
+            referrer_user_record = await self.user_repository.get_by_id(self.start_message_meta.referrer)
             return AnswersList(
                 Answer(chat_id=self.chat_id, message=start_message),
                 Answer(chat_id=self.chat_id, message=formatted_first_ayat),

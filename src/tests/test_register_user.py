@@ -1,3 +1,4 @@
+import random
 from typing import Optional
 
 import pytest
@@ -8,6 +9,7 @@ from repository.user import User, UserRepositoryInterface
 from services.ayat import AyatServiceInterface
 from services.register_user import RegisterUser
 from services.start_message import StartMessageMeta
+from services.answer import Answer
 
 pytestmark = [pytest.mark.asyncio]
 
@@ -21,23 +23,27 @@ class AdminMessageRepositoryMock(AdminMessageRepositoryInterface):
 
 
 class UserRepositoryMock(UserRepositoryInterface):
-    _storage = {
-        444: User(is_active=False, day=15, chat_id=444),
-        333: User(is_active=True, day=30, chat_id=333),
-    }
+    # _storage = {
+    #     444:
+    #     333:
+    # }
+    _storage = [
+        User(id=1, is_active=False, day=15, chat_id=444),
+        User(id=2, is_active=True, day=30, chat_id=333),
+        User(id=8945, is_active=True, day=30, chat_id=555),
+    ]
 
     async def create(self, chat_id: int, referrer_id: Optional[int]):
-        self._storage[chat_id] = User(is_active=True, day=2, referrer=referrer_id)
+        self._storage.append(User(id=random.randint(0, 100), is_active=True, day=2, referrer=referrer_id, chat_id=chat_id))
 
     async def get_by_id(self, user_id: int) -> User:
-        raise NotImplementedError
+        return list(filter(lambda user: user.id == user_id, self._storage))[0]
 
-    async def get(self, chat_id: int) -> User:
-        return self._storage[chat_id]
+    async def get_by_chat_id(self, chat_id: int) -> User:
+        return list(filter(lambda user: user.chat_id == chat_id, self._storage))[0]
 
     async def exists(self, chat_id: int):
-        active_users = filter(lambda dict_item: dict_item[1].is_active, self._storage.items())
-        return chat_id in active_users
+        return chat_id in map(lambda user: user.chat_id, self._storage)
 
 
 class AyatRepositoryMock(AyatRepositoryInterface):
@@ -61,8 +67,11 @@ async def test():
         start_message_meta=StartMessageMeta(referrer=None),
     ).register()
 
-    assert got == ('start message', 'some string')
-    assert user_repository.get(231)
+    assert got == [
+        Answer(chat_id=231, message='start message'),
+        Answer(chat_id=231, message='some string'),
+    ]
+    assert await user_repository.get_by_chat_id(231)
 
 
 async def test_already_registered_user():
@@ -74,7 +83,7 @@ async def test_already_registered_user():
         start_message_meta=StartMessageMeta(referrer=None),
     ).register()
 
-    assert got == ('Вы уже зарегистрированы',)
+    assert got == Answer(chat_id=333, message='Вы уже зарегистрированы')
 
 
 async def test_inactive_user():
@@ -86,7 +95,7 @@ async def test_inactive_user():
         start_message_meta=StartMessageMeta(referrer=None),
     ).register()
 
-    assert got == ('Рады видеть вас снова, вы продолжите с дня 15',)
+    assert got == Answer(chat_id=444, message='Рады видеть вас снова, вы продолжите с дня 15')
 
 
 async def test_with_referrer():
@@ -96,10 +105,14 @@ async def test_with_referrer():
         user_repository=user_repository,
         ayat_service=AyatServiceMock(AyatRepositoryMock()),
         start_message_meta=StartMessageMeta(referrer=8945),
-        chat_id=444,
+        chat_id=222,
     ).register()
 
-    created_user = await user_repository.get(444)
+    created_user = await user_repository.get_by_chat_id(222)
 
     assert created_user.referrer == 8945
-    assert ('start message', 'some string', '') == got
+    assert got == [
+        Answer(chat_id=222, message='start message'),
+        Answer(chat_id=222, message='some string'),
+        Answer(chat_id=555, message='По вашей реферральной ссылке произошла регистрация'),
+    ]
