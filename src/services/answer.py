@@ -2,6 +2,8 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from utlls import get_bot_instance
+
 
 class AnswerInterface(object):
     """Интерфейс для отсылаемых объектов."""
@@ -26,7 +28,7 @@ class Answer(BaseModel, AnswerInterface):
 
         :param chat_id: int
         """
-        pass  # noqa: WPS420
+        await get_bot_instance().send_message(chat_id=chat_id or self.chat_id, text=self.message)
 
 
 class AnswersList(list, AnswerInterface):  # noqa: WPS600

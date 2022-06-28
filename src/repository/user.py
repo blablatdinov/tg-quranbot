@@ -11,6 +11,7 @@ class User(BaseModel):
     day: int
     referrer: Optional[int] = None
     chat_id: int
+    city_id: int
 
 
 class UserRepositoryInterface(object):
@@ -76,8 +77,12 @@ class UserRepository(UserRepositoryInterface):
         """
         query = """
             SELECT
+                id,
                 is_active,
-                day
+                day,
+                referer_id as referrer,
+                tg_chat_id as chat_id,
+                city_id
             FROM bot_init_subscriber
             WHERE tg_chat_id = $1
         """
