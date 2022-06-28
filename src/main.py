@@ -50,6 +50,7 @@ async def start_handler(message: types.Message):
 
     :param message: types.Message
     """
+    print(message.text)
     async with db_connection() as connection:
         register_user = await get_register_user_instance(connection, message.chat.id)
         answers = await register_user.register()
