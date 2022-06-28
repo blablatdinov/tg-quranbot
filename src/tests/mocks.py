@@ -2,7 +2,7 @@ import random
 from typing import Optional
 
 from repository.admin_message import AdminMessageRepositoryInterface
-from repository.ayats import AyatRepositoryInterface
+from repository.ayats import AyatRepositoryInterface, Ayat
 from repository.user import User, UserRepositoryInterface
 from services.ayat import AyatServiceInterface
 
@@ -43,8 +43,14 @@ class UserRepositoryMock(UserRepositoryInterface):
 
 
 class AyatRepositoryMock(AyatRepositoryInterface):
+    storage: list[Ayat] = []
 
-    pass
+    async def get_ayat_by_sura_ayat_num(self, sura_num: str, ayat_num: str) -> Ayat:
+        return list(
+            filter(
+                lambda ayat: str(ayat.sura_num) == str(sura_num) and str(ayat.ayat_num) == str(ayat_num), self.storage,
+            ),
+        )[0]
 
 
 class AyatServiceMock(AyatServiceInterface):

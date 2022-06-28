@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -16,7 +18,7 @@ class AnswerInterface(object):
 class Answer(BaseModel, AnswerInterface):
     """Ответ пользователю."""
 
-    chat_id: int
+    chat_id: Optional[int]
     message: str
 
     async def send(self, chat_id: int = None):

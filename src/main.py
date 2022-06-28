@@ -2,7 +2,9 @@ from contextlib import asynccontextmanager
 
 import asyncpg
 from aiogram import Bot, Dispatcher, executor, types
+from aiogram.dispatcher import filters
 
+from constants import AYAT_SEARCH_INPUT_REGEXP
 from repository.admin_message import AdminMessageRepository
 from repository.ayats import AyatRepository
 from repository.user import UserRepository
@@ -49,6 +51,18 @@ async def db_connection():
 
 @dp.message_handler(commands=['start'])
 async def start_handler(message: types.Message):
+    """Ответ на команды: start.
+
+    :param message: types.Message
+    """
+    async with db_connection() as connection:
+        register_user = await get_register_user_instance(connection, message.chat.id, message.text)
+        answers = await register_user.register()
+        await answers.send()
+
+
+@dp.message_handler(filters.Regexp(AYAT_SEARCH_INPUT_REGEXP))
+async def ayat_search_handler(message: types.Message):
     """Ответ на команды: start.
 
     :param message: types.Message
