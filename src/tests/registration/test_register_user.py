@@ -6,8 +6,6 @@ from services.register_user import RegisterUser
 from services.start_message import StartMessageMeta
 from tests.mocks import AdminMessageRepositoryMock, AyatRepositoryMock, AyatServiceMock, UserRepositoryMock
 
-pytestmark = [pytest.mark.asyncio]
-
 
 @pytest.fixture()
 def user_repository_with_registered_active_user():
