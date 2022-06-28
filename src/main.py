@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 
 import asyncpg
-from aiogram import Bot, Dispatcher, executor, types
+from aiogram import Dispatcher, executor, types
 from aiogram.dispatcher import filters
 
 from constants import AYAT_SEARCH_INPUT_REGEXP, GET_PRAYER_TIMES_REGEXP
@@ -77,7 +77,7 @@ async def ayat_search_handler(message: types.Message):
 
 
 @dp.message_handler(filters.Regexp(GET_PRAYER_TIMES_REGEXP))
-async def get_prayer_times_handler(message: types.Message):
+async def prayer_times_handler(message: types.Message):
     """Ответ на команды: start.
 
     :param message: types.Message
