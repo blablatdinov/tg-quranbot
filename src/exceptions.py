@@ -1,0 +1,47 @@
+from typing import Callable
+
+from services.answer import Answer, AnswerInterface
+
+
+class BaseAppError(Exception):
+    """Базовое исключение бота."""
+
+    message = 'Произошла какая-то ошибка'
+
+    def __init__(self, answer_message: str = None):
+        if answer_message:
+            self.message = answer_message  # noqa: WPS601
+
+    def to_answer(self) -> AnswerInterface:
+        """Конвертирует объект в AnswerInterface.
+
+        :returns: AnswerInterface
+        """
+        return Answer(message=self.message)
+
+
+class SuraNotFoundError(BaseAppError):
+    """Исключение, вызываемое при отсутсвии нужной суры."""
+
+    message = 'Сура не найдена'
+
+
+class AyatNotFoundError(BaseAppError):
+    """Исключение, вызываемое при отсутсвии нужного аята."""
+
+    message = 'Аят не найден'
+
+
+def exception_to_answer_formatter(func: Callable):
+    """Декоратор обрабатывающий ошибки бота и возвращающий из них AnswerInterface.
+
+    :param func: Callable
+    :returns: Callable
+    """
+    async def wrapper(*args, **kwargs):
+        try:
+            return await func(*args, **kwargs)
+        except BaseAppError as bot_error:
+            return bot_error.to_answer()
+
+    return wrapper

@@ -4,7 +4,6 @@ import pytest
 
 from constants import AYAT_SEARCH_INPUT_REGEXP
 from repository.ayats import Ayat
-from services.answer import Answer
 from services.ayat import AyatsService
 from tests.mocks import AyatRepositoryMock
 
@@ -31,12 +30,12 @@ def test_regexp(input_, expect):
 @pytest.fixture()
 def ayat_repository_mock(faker):
     mock = AyatRepositoryMock()
-    common_params = dict(
-        arab_text=faker.text(10),
-        content=faker.text(10),
-        transliteration=faker.text(10),
-        sura_link=faker.text(10),
-    )
+    common_params = {
+        'arab_text': faker.text(10),
+        'content': faker.text(10),
+        'transliteration': faker.text(10),
+        'sura_link': faker.text(10),
+    }
     mock.storage = [
         Ayat(sura_num=2, ayat_num='10', **common_params),
         Ayat(sura_num=3, ayat_num='15', **common_params),
