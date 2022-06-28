@@ -15,10 +15,10 @@ class Ayat(BaseModel):
 class AyatRepositoryInterface(object):
     """Интерфейс репозитория для работы с административными сообщениями."""
 
-    async def get(self, id_: int) -> Ayat:
+    async def get(self, ayat_id: int) -> Ayat:
         """Метод для получения аята по идентификатору.
 
-        :param id_: int
+        :param ayat_id: int
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -37,14 +37,13 @@ class AyatRepository(AyatRepositoryInterface):
     def __init__(self, connection):
         self.connection = connection
 
-    async def get(self, id_: int) -> Ayat:
+    async def get(self, ayat_id: int) -> Ayat:
         """Метод для получения аята по идентификатору.
 
-        :param id_: int
-        :returns: Ayat
+        :param ayat_id: int
         :raises: NotImplementedError if not implemented
         """
-        pass
+        pass  # noqa: WPS420
 
     async def first(self) -> Ayat:
         """Метод для получения первого аята.
