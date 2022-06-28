@@ -10,14 +10,14 @@ from tests.mocks import AdminMessageRepositoryMock, AyatRepositoryMock, AyatServ
 @pytest.fixture()
 def user_repository_with_registered_active_user():
     user_repository = UserRepositoryMock()
-    user_repository.storage = [User(id=1, is_active=True, day=15, chat_id=444)]
+    user_repository.storage = [User(id=1, is_active=True, day=15, chat_id=444, city_id=1)]
     return user_repository
 
 
 @pytest.fixture()
 def user_repository_with_registered_inactive_user():
     user_repository = UserRepositoryMock()
-    user_repository.storage = [User(id=1, is_active=False, day=15, chat_id=444)]
+    user_repository.storage = [User(id=1, is_active=False, day=15, chat_id=444, city_id=1)]
     return user_repository
 
 

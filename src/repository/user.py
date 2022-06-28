@@ -11,6 +11,7 @@ class User(BaseModel):
     day: int
     referrer: Optional[int] = None
     chat_id: int
+    city_id: int
 
 
 class UserRepositoryInterface(object):
