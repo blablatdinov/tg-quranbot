@@ -1,6 +1,6 @@
 import pytest
 
-from services.start_message import get_start_message_query, StartMessageMeta
+from services.start_message import StartMessageMeta, get_start_message_query
 
 
 @pytest.mark.parametrize('input_,expected', [
