@@ -77,8 +77,12 @@ class UserRepository(UserRepositoryInterface):
         """
         query = """
             SELECT
+                id,
                 is_active,
-                day
+                day,
+                referer_id as referrer,
+                tg_chat_id as chat_id,
+                city_id
             FROM bot_init_subscriber
             WHERE tg_chat_id = $1
         """

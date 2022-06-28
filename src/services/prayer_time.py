@@ -40,11 +40,11 @@ class UserPrayerTimes(object):
         text = template.format(
             city_name=self.prayers[0].city,
             date=self.prayers[0].day.strftime('%d.%m.%Y'),
-            first_prayer_time=self.prayers[0].time,
-            second_prayer_time=self.prayers[1].time,
-            third_prayer_time=self.prayers[2].time,
-            fourth_prayer_time=self.prayers[3].time,
-            fifth_prayer_time=self.prayers[4].time,
-            sixth_prayer_time=self.prayers[5].time,
+            first_prayer_time=self.prayers[0].time.strftime("%H:%M"),
+            second_prayer_time=self.prayers[1].time.strftime("%H:%M"),
+            third_prayer_time=self.prayers[2].time.strftime("%H:%M"),
+            fourth_prayer_time=self.prayers[3].time.strftime("%H:%M"),
+            fifth_prayer_time=self.prayers[4].time.strftime("%H:%M"),
+            sixth_prayer_time=self.prayers[5].time.strftime("%H:%M"),
         )
         return Answer(message=text)

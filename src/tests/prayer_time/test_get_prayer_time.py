@@ -1,6 +1,8 @@
+import re
 import datetime
 import pytest
 
+from constants import GET_PRAYER_TIMES_REGEXP
 from repository.prayer_time import PrayerTimeRepositoryInterface, Prayer
 from repository.user import User
 from services.prayer_time import UserPrayerTimes
@@ -43,6 +45,16 @@ def user(user_repository_mock):
     ]
 
 
+@pytest.mark.parametrize('input_,expect', [
+    ('Время намаза', True),
+    ('время намаза', True),
+])
+def test_regex(input_, expect):
+    got = re.search(GET_PRAYER_TIMES_REGEXP, input_)
+
+    assert bool(got) is expect
+
+
 async def test(user_repository_mock):
     prayers = await UserPrayerTimes(
         prayer_times_repository=PrayerTimeRepositoryMock(),
@@ -53,8 +65,12 @@ async def test(user_repository_mock):
 
     assert isinstance(prayers, UserPrayerTimes)
     assert '03.01.2020' in answer.message
-    assert 'Иртәнге: 01:01:00' in answer.message
+    assert 'Иртәнге: 01:01\n' in answer.message
 
 
 # async def test_user_with_other_timezone():
+#     assert False
+
+
+# async def test_for_user_without_city():
 #     assert False
