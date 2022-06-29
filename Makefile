@@ -6,3 +6,6 @@ lint:
 
 test:
 	pytest
+
+cov:
+	pytest --cov=src
