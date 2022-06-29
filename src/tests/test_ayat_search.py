@@ -29,6 +29,7 @@ def test_regexp(input_, expect):
 def ayat_repository_mock(fake_text):
     mock = AyatRepositoryMock()
     common_params = {
+        'id': 1,
         'arab_text': fake_text(),
         'content': fake_text(),
         'transliteration': fake_text(),
@@ -58,6 +59,7 @@ def ayat_repository_mock(fake_text):
 async def test(ayat_repository_mock, input_, expect):
     got = await AyatsService(
         ayat_repository_mock,
+        chat_id=123,
     ).search_by_number(input_)
 
     assert expect in got[0].message
@@ -68,6 +70,7 @@ async def test(ayat_repository_mock, input_, expect):
 async def test_not_found_sura(sura_num):
     got = await AyatsService(
         AyatRepositoryMock(),
+        chat_id=123,
     ).search_by_number(f'{sura_num}:1')
 
     assert got.message == 'Сура не найдена'
@@ -82,6 +85,7 @@ async def test_not_found_sura(sura_num):
 async def test_not_found_ayat(input_, ayat_repository_mock):
     got = await AyatsService(
         AyatRepositoryMock(),
+        chat_id=123,
     ).search_by_number(input_)
 
     assert got.message == 'Аят не найден'

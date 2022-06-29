@@ -23,7 +23,7 @@ class BaseAppError(Exception):
 class InternalBotError(BaseAppError):
     """Внутренняя ошибка бота."""
 
-    message = None
+    message = ''
 
 
 class SuraNotFoundError(BaseAppError):

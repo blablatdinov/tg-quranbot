@@ -98,6 +98,7 @@ async def get_register_user_instance(connection, chat_id: int, message: str) -> 
         admin_messages_repository=AdminMessageRepository(connection),
         ayat_service=AyatsService(
             AyatRepository(connection),
+            chat_id,
         ),
         chat_id=chat_id,
         start_message_meta=get_start_message_query(message),
