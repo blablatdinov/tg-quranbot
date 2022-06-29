@@ -30,6 +30,7 @@ async def ayat_search_handler(message: types.Message):
     async with db_connection() as connection:
         answer = await AyatsService(
             AyatRepository(connection),
+            message.chat.id,
         ).search_by_number(message.text)
         await answer.send(message.chat.id)
 

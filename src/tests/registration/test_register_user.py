@@ -30,7 +30,7 @@ async def test():
     got = await RegisterUser(
         admin_messages_repository=AdminMessageRepositoryMock(),
         user_repository=user_repository,
-        ayat_service=AyatServiceMock(AyatRepositoryMock()),
+        ayat_service=AyatServiceMock(AyatRepositoryMock(), 12090),
         chat_id=231,
         start_message_meta=StartMessageMeta(referrer=None),
     ).register()
@@ -46,7 +46,7 @@ async def test_already_registered_user(user_repository_with_registered_active_us
     got = await RegisterUser(
         admin_messages_repository=AdminMessageRepositoryMock(),
         user_repository=user_repository_with_registered_active_user,
-        ayat_service=AyatServiceMock(AyatRepositoryMock()),
+        ayat_service=AyatServiceMock(AyatRepositoryMock(), 1920),
         chat_id=444,
         start_message_meta=StartMessageMeta(referrer=None),
     ).register()
@@ -58,7 +58,7 @@ async def test_inactive_user(user_repository_with_registered_inactive_user):
     got = await RegisterUser(
         admin_messages_repository=AdminMessageRepositoryMock(),
         user_repository=user_repository_with_registered_inactive_user,
-        ayat_service=AyatServiceMock(AyatRepositoryMock()),
+        ayat_service=AyatServiceMock(AyatRepositoryMock(), 123),
         chat_id=444,
         start_message_meta=StartMessageMeta(referrer=None),
     ).register()
@@ -70,7 +70,7 @@ async def test_with_referrer(user_repository_with_registered_active_user):
     got = await RegisterUser(
         admin_messages_repository=AdminMessageRepositoryMock(),
         user_repository=user_repository_with_registered_active_user,
-        ayat_service=AyatServiceMock(AyatRepositoryMock()),
+        ayat_service=AyatServiceMock(AyatRepositoryMock(), 213),
         start_message_meta=StartMessageMeta(referrer=1),
         chat_id=222,
     ).register()

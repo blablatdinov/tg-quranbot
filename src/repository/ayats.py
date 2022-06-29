@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class Ayat(BaseModel):
     """Модель аята."""
 
+    id: int
     sura_num: int
     ayat_num: str
     arab_text: str
@@ -12,6 +13,14 @@ class Ayat(BaseModel):
     sura_link: str
     audio_telegram_id: str
     link_to_audio_file: str
+
+
+class AyatShort(BaseModel):
+    """Короткая модель аята."""
+
+    id: int
+    sura_num: int
+    ayat_num: str
 
 
 class AyatRepositoryInterface(object):
@@ -49,6 +58,23 @@ class AyatRepositoryInterface(object):
         """
         raise NotImplementedError
 
+    async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
+        """Проверить входит ли аят в избранные.
+
+        :param ayat_id: int
+        :param chat_id: int
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
+    async def get_ayat_neighbors(self, ayat_id: int):
+        """Получить соседние аяты.
+
+        :param ayat_id: int
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
 
 class AyatRepository(AyatRepositoryInterface):
     """Интерфейс репозитория для работы с административными сообщениями."""
@@ -72,6 +98,7 @@ class AyatRepository(AyatRepositoryInterface):
         """
         query = """
             SELECT
+                a.id,
                 s.number as sura_num,
                 s.link as sura_link,
                 a.ayat as ayat_num,
@@ -97,6 +124,7 @@ class AyatRepository(AyatRepositoryInterface):
         """
         query = """
             SELECT
+                a.id,
                 s.number as sura_num,
                 s.link as sura_link,
                 a.ayat as ayat_num,
@@ -114,4 +142,48 @@ class AyatRepository(AyatRepositoryInterface):
         return [
             Ayat(**dict(record))
             for record in records
+        ]
+
+    async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
+        """Получить аят по номеру суры.
+
+        :param ayat_id: int
+        :param chat_id: int
+        :returns: bool
+        """
+        query = """
+            SELECT
+                count(*)
+            FROM bot_init_subscriber_favourite_ayats sub_ayat
+            INNER JOIN bot_init_subscriber sub on sub.id = sub_ayat.subscriber_id
+            where ayat_id = $1 and sub.tg_chat_id = $2
+        """
+        row = await self.connection.fetchrow(query, ayat_id, chat_id)
+        return bool(row)
+
+    async def get_ayat_neighbors(self, ayat_id: int) -> list[AyatShort]:
+        """Получить соседние аяты.
+
+        :param ayat_id: int
+        :returns: list[AyatShort]
+        """
+        query = """
+            SELECT
+                *
+            FROM (
+                SELECT
+                    a.id,
+                    a.ayat as ayat_num,
+                    cs.number as sura_num,
+                    lag(a.id) OVER (ORDER BY a.id ASC) AS prev,
+                    lead(a.id) OVER (ORDER BY a.id ASC) AS next
+                FROM content_ayat a
+                INNER JOIN content_sura cs on cs.id = a.sura_id
+            ) x
+            WHERE $1 IN (id, prev, next)
+        """
+        rows = await self.connection.fetch(query, ayat_id)
+        return [
+            AyatShort(**dict(row))
+            for row in rows
         ]

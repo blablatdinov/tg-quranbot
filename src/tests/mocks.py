@@ -52,12 +52,18 @@ class AyatRepositoryMock(AyatRepositoryInterface):
             ),
         )[0]
 
-    async def get_ayats_by_sura_num(self, sura_num: str) -> list[Ayat]:
+    async def get_ayats_by_sura_num(self, sura_num: int) -> list[Ayat]:
         return list(
             filter(
                 lambda ayat: str(ayat.sura_num) == str(sura_num), self.storage,
             ),
         )
+
+    async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
+        return True
+
+    async def get_ayat_neighbors(self, ayat_id: int):
+        return self.storage
 
     def _filter_by_sura_and_ayat_num(self, ayat: Ayat, sura_num: str, ayat_num: str) -> bool:
         coincidence_by_sura_num = str(ayat.sura_num) == str(sura_num)
