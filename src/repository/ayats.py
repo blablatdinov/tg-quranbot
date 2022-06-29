@@ -10,6 +10,8 @@ class Ayat(BaseModel):
     content: str  # noqa: WPS110 wrong variable name
     transliteration: str
     sura_link: str
+    audio_telegram_id: str
+    link_to_audio_file: str
 
 
 class AyatRepositoryInterface(object):
@@ -39,7 +41,7 @@ class AyatRepositoryInterface(object):
         """
         raise NotImplementedError
 
-    async def get_ayats_by_sura_num(self, sura_num: str) -> list[Ayat]:
+    async def get_ayats_by_sura_num(self, sura_num: int) -> list[Ayat]:
         """Получить аят по номеру суры.
 
         :param sura_num: int
@@ -75,11 +77,41 @@ class AyatRepository(AyatRepositoryInterface):
                 a.ayat as ayat_num,
                 a.arab_text,
                 a.content,
-                a.trans as transliteration
+                a.trans as transliteration,
+                cf.tg_file_id as audio_telegram_id,
+                cf.link_to_file as link_to_audio_file
             FROM content_ayat a
             INNER JOIN content_sura s on a.sura_id = s.id
+            INNER JOIN content_file cf on a.audio_id = cf.id
             ORDER BY a.id
             LIMIT 1
         """
         record = await self.connection.fetchrow(query)
         return Ayat(**dict(record))
+
+    async def get_ayats_by_sura_num(self, sura_num: int) -> list[Ayat]:
+        """Получить аят по номеру суры.
+
+        :param sura_num: int
+        :returns: list[Ayat]
+        """
+        query = """
+            SELECT
+                s.number as sura_num,
+                s.link as sura_link,
+                a.ayat as ayat_num,
+                a.arab_text,
+                a.content,
+                a.trans as transliteration,
+                cf.tg_file_id as audio_telegram_id,
+                cf.link_to_file as link_to_audio_file
+            FROM content_ayat a
+            INNER JOIN content_sura s on a.sura_id = s.id
+            INNER JOIN content_file cf on a.audio_id = cf.id
+            WHERE s.number = $1
+        """
+        records = await self.connection.fetch(query, sura_num)
+        return [
+            Ayat(**dict(record))
+            for record in records
+        ]

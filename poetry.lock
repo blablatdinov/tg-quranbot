@@ -797,6 +797,17 @@ pytest = ">=6.1.0"
 testing = ["coverage (==6.2)", "hypothesis (>=5.7.1)", "flaky (>=3.5.0)", "mypy (==0.931)", "pytest-trio (>=0.7.0)"]
 
 [[package]]
+name = "pytest-env"
+version = "0.6.2"
+description = "py.test plugin that allows you to add environment variables."
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+pytest = ">=2.6.0"
+
+[[package]]
 name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
@@ -988,7 +999,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "c28088b3128dc9a8ef4c0c597328f422135438704eb52e1b333fc1e995e8faa2"
+content-hash = "c5c0b5452205cfdabdf4debc46c7625dbc9696bc3d53d2b7f6816e36e05d57d2"
 
 [metadata.files]
 aiogram = [
@@ -1528,6 +1539,9 @@ pytest-asyncio = [
     {file = "pytest-asyncio-0.18.3.tar.gz", hash = "sha256:7659bdb0a9eb9c6e3ef992eef11a2b3e69697800ad02fb06374a210d85b29f91"},
     {file = "pytest_asyncio-0.18.3-1-py3-none-any.whl", hash = "sha256:16cf40bdf2b4fb7fc8e4b82bd05ce3fbcd454cbf7b92afc445fe299dabb88213"},
     {file = "pytest_asyncio-0.18.3-py3-none-any.whl", hash = "sha256:8fafa6c52161addfd41ee7ab35f11836c5a16ec208f93ee388f752bea3493a84"},
+]
+pytest-env = [
+    {file = "pytest-env-0.6.2.tar.gz", hash = "sha256:7e94956aef7f2764f3c147d216ce066bf6c42948bb9e293169b1b1c880a580c2"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},

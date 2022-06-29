@@ -3,7 +3,7 @@ from typing import Optional
 
 from exceptions import AyatNotFoundError, SuraNotFoundError, exception_to_answer_formatter
 from repository.ayats import Ayat, AyatRepositoryInterface
-from services.answer import Answer, AnswerInterface
+from services.answer import Answer, AnswerInterface, AnswersList
 
 
 @dataclass
@@ -66,6 +66,17 @@ class AyatsService(AyatServiceInterface):
             transliteration=ayat.transliteration,
         )
 
+    def format_ayat_to_answers(self, ayat: Ayat) -> AnswersList:
+        """Форматировать аят в ответы.
+
+        :param ayat: Ayat
+        :returns: AnswersList
+        """
+        return AnswersList(
+            Answer(message=self.format_ayat(ayat)),
+            Answer(telegram_file_id=ayat.audio_telegram_id, link_to_file=ayat.link_to_audio_file),
+        )
+
     @exception_to_answer_formatter
     async def search_by_number(self, search_input: str) -> AnswerInterface:
         """Найти аят по номеру.
@@ -74,7 +85,7 @@ class AyatsService(AyatServiceInterface):
         :returns: AnswerInterface
         """
         sura_num, ayat_num = search_input.split(':')
-        ayats = await self.ayat_repository.get_ayats_by_sura_num(sura_num)
+        ayats = await self.ayat_repository.get_ayats_by_sura_num(int(sura_num))
         self._validate_sura_ayat_numbers(int(sura_num), int(ayat_num))
         for ayat in ayats:
             answer = None
@@ -83,7 +94,7 @@ class AyatsService(AyatServiceInterface):
             elif ',' in ayat.ayat_num:
                 answer = self._service_comma_case(ayat, ayat_num)
             elif ayat.ayat_num == ayat_num:
-                answer = Answer(message=self.format_ayat(ayat))
+                answer = self.format_ayat_to_answers(ayat)
 
             if answer:
                 return answer
@@ -94,14 +105,14 @@ class AyatsService(AyatServiceInterface):
         left, right = map(int, ayat.ayat_num.split('-'))
         ayats_range = range(left, right + 1)
         if int(ayat_num) in ayats_range:
-            return Answer(message=self.format_ayat(ayat))
+            return self.format_ayat_to_answers(ayat)
         return None
 
     def _service_comma_case(self, ayat: Ayat, ayat_num: str) -> Optional[AnswerInterface]:
         left, right = map(int, ayat.ayat_num.split(','))
         ayats_range = range(left, right + 1)
         if int(ayat_num) in ayats_range:
-            return Answer(message=self.format_ayat(ayat))
+            return self.format_ayat_to_answers(ayat)
         return None
 
     def _validate_sura_ayat_numbers(self, sura_num: int, ayat_num: int) -> None:

@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     BASE_DIR: Path = BASE_DIR
     API_TOKEN: str
     DATABASE_URL: str
+    DEBUG: bool
 
     class Config(object):
         """Конфигурация настроек."""

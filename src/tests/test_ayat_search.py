@@ -26,13 +26,15 @@ def test_regexp(input_, expect):
 
 
 @pytest.fixture()
-def ayat_repository_mock(faker):
+def ayat_repository_mock(fake_text):
     mock = AyatRepositoryMock()
     common_params = {
-        'arab_text': faker.text(10),
-        'content': faker.text(10),
-        'transliteration': faker.text(10),
-        'sura_link': faker.text(10),
+        'arab_text': fake_text(),
+        'content': fake_text(),
+        'transliteration': fake_text(),
+        'sura_link': fake_text(),
+        'audio_telegram_id': fake_text(),
+        'link_to_audio_file': fake_text(),
     }
     mock.storage = [
         Ayat(sura_num=2, ayat_num='10', **common_params),
@@ -58,7 +60,7 @@ async def test(ayat_repository_mock, input_, expect):
         ayat_repository_mock,
     ).search_by_number(input_)
 
-    assert expect in got.message
+    assert expect in got[0].message
 
 
 @pytest.mark.parametrize('sura_num', ['0', '115', '-59'])
