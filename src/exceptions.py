@@ -20,6 +20,12 @@ class BaseAppError(Exception):
         return Answer(message=self.message)
 
 
+class InternalBotError(BaseAppError):
+    """Внутренняя ошибка бота."""
+
+    message = None
+
+
 class SuraNotFoundError(BaseAppError):
     """Исключение, вызываемое при отсутсвии нужной суры."""
 

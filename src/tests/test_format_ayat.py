@@ -12,6 +12,8 @@ class AyatRepositoryMock(AyatRepositoryInterface):
             content='content',
             transliteration='transliteration',
             sura_link='/some-link',
+            audio_telegram_id='some_id',
+            link_to_audio_file='some-link',
         )
 
 

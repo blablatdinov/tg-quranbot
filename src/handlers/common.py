@@ -3,8 +3,10 @@ from aiogram.dispatcher import filters
 
 from constants import AYAT_SEARCH_INPUT_REGEXP, GET_PRAYER_TIMES_REGEXP
 from db import db_connection
+from repository.ayats import AyatRepository
 from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
+from services.ayat import AyatsService
 from services.prayer_time import UserPrayerTimes
 from services.register_user import get_register_user_instance
 
@@ -26,9 +28,10 @@ async def ayat_search_handler(message: types.Message):
     :param message: types.Message
     """
     async with db_connection() as connection:
-        register_user = await get_register_user_instance(connection, message.chat.id, message.text)
-        answers = await register_user.register()
-        await answers.send()
+        answer = await AyatsService(
+            AyatRepository(connection),
+        ).search_by_number(message.text)
+        await answer.send(message.chat.id)
 
 
 async def prayer_times_handler(message: types.Message):
