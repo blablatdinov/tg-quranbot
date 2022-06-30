@@ -9,6 +9,7 @@ from services.answer import Answer, AnswerInterface, AnswersList
 
 KEYBOARD_AYAT_TEMPLATE = '{0}:{1}'
 CALLBACK_DATA_PLUG = '1'
+CALLBACT_DATA_GET_AYAT_TEMPLATE = 'get_ayat({ayat_id})'
 
 
 @dataclass
@@ -74,7 +75,7 @@ class AyatSearchKeyboard(object):
             .row(
                 types.InlineKeyboardButton(
                     text=KEYBOARD_AYAT_TEMPLATE.format(right_ayat.sura_num, right_ayat.ayat_num),
-                    callback_data=CALLBACK_DATA_PLUG,
+                    callback_data=CALLBACT_DATA_GET_AYAT_TEMPLATE.format(ayat_id=right_ayat.id),
                 ),
             )
             .row(types.InlineKeyboardButton(text=favorite_button_message, callback_data=CALLBACK_DATA_PLUG))
@@ -87,7 +88,7 @@ class AyatSearchKeyboard(object):
             .row(
                 types.InlineKeyboardButton(
                     text=KEYBOARD_AYAT_TEMPLATE.format(left_ayat.sura_num, left_ayat.ayat_num),
-                    callback_data=CALLBACK_DATA_PLUG,
+                    callback_data=CALLBACT_DATA_GET_AYAT_TEMPLATE.format(ayat_id=left_ayat.id),
                 ),
             )
             .row(types.InlineKeyboardButton(text=favorite_button_message, callback_data=CALLBACK_DATA_PLUG))
@@ -100,11 +101,11 @@ class AyatSearchKeyboard(object):
             .row(
                 types.InlineKeyboardButton(
                     text=KEYBOARD_AYAT_TEMPLATE.format(left_ayat.sura_num, left_ayat.ayat_num),
-                    callback_data=CALLBACK_DATA_PLUG,
+                    callback_data=CALLBACT_DATA_GET_AYAT_TEMPLATE.format(ayat_id=left_ayat.id),
                 ),
                 types.InlineKeyboardButton(
                     text=KEYBOARD_AYAT_TEMPLATE.format(right_ayat.sura_num, right_ayat.ayat_num),
-                    callback_data=CALLBACK_DATA_PLUG,
+                    callback_data=CALLBACT_DATA_GET_AYAT_TEMPLATE.format(ayat_id=right_ayat.id),
                 ),
             )
             .row(types.InlineKeyboardButton(text=favorite_button_message, callback_data=CALLBACK_DATA_PLUG))
