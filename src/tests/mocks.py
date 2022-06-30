@@ -63,15 +63,16 @@ class AyatRepositoryMock(AyatRepositoryInterface):
         return True
 
     async def get_ayat_neighbors(self, ayat_id: int):
-        print(f'{ayat_id=}, {self.storage=}')
         if ayat_id == self.storage[0].id:
             return self.storage[:2]
         elif ayat_id == self.storage[-1].id:
             return self.storage[-2:]
 
         # find index
-        for index, ayat in enumerate(self.storage):
+        index = 0
+        for storage_index, ayat in enumerate(self.storage):  # noqa: B007
             if ayat.id == ayat_id:
+                index = storage_index
                 break
 
         return self.storage[index - 1:index + 2]
