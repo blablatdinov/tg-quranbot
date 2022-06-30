@@ -8,7 +8,9 @@ from repository.ayats import Ayat, AyatRepositoryInterface
 from services.answer import Answer, AnswerInterface, AnswersList
 
 KEYBOARD_AYAT_TEMPLATE = '{0}:{1}'
-CALLBACK_DATA_PLUG = '1'
+CALLBACK_DATA_GET_AYAT_TEMPLATE = 'get_ayat({ayat_id})'
+CALLBACK_DATA_ADD_TO_FAVORITE_TEMPLATE = 'add_to_favorite({ayat_id})'
+CALLBACK_DATA_REMOVE_FROM_FAVORITE_TEMPLATE = 'remove_from_favorite({ayat_id})'
 
 
 @dataclass
@@ -48,6 +50,7 @@ class AyatSearchKeyboard(object):
 
     ayat_repository: AyatRepositoryInterface
     ayat: Ayat
+    ayat_is_favorite: bool
     chat_id: int
 
     async def generate(self):
@@ -57,57 +60,66 @@ class AyatSearchKeyboard(object):
         """
         first_ayat_id = 1
         last_ayat_id = 5737
-        ayat_is_favorite = await self.ayat_repository.check_ayat_is_favorite_for_user(self.ayat.id, self.chat_id)
         neighbor_ayats = await self.ayat_repository.get_ayat_neighbors(self.ayat.id)
-        favorite_button_message = 'Удалить из избранного' if ayat_is_favorite else 'Добавить в избранное'
+        if self.ayat_is_favorite:
+            favorite_button = types.InlineKeyboardButton(
+                text='Удалить из избранного',
+                callback_data=CALLBACK_DATA_REMOVE_FROM_FAVORITE_TEMPLATE.format(ayat_id=self.ayat.id),
+            )
+        else:
+            favorite_button = types.InlineKeyboardButton(
+                text='Добавить в избранное',
+                callback_data=CALLBACK_DATA_ADD_TO_FAVORITE_TEMPLATE.format(ayat_id=self.ayat.id),
+            )
+
         if self.ayat.id == first_ayat_id:
-            return self._first_ayat_case(neighbor_ayats, favorite_button_message)
+            return self._first_ayat_case(neighbor_ayats, favorite_button)
         elif self.ayat.id == last_ayat_id:
-            return self._last_ayat_case(neighbor_ayats, favorite_button_message)
+            return self._last_ayat_case(neighbor_ayats, favorite_button)
 
-        return self._middle_ayat_case(neighbor_ayats, favorite_button_message)
+        return self._middle_ayat_case(neighbor_ayats, favorite_button)
 
-    def _first_ayat_case(self, neighbor_ayats, favorite_button_message):
+    def _first_ayat_case(self, neighbor_ayats, favorite_button):
         right_ayat = neighbor_ayats[1]
         return (
             types.InlineKeyboardMarkup()
             .row(
                 types.InlineKeyboardButton(
                     text=KEYBOARD_AYAT_TEMPLATE.format(right_ayat.sura_num, right_ayat.ayat_num),
-                    callback_data=CALLBACK_DATA_PLUG,
+                    callback_data=CALLBACK_DATA_GET_AYAT_TEMPLATE.format(ayat_id=right_ayat.id),
                 ),
             )
-            .row(types.InlineKeyboardButton(text=favorite_button_message, callback_data=CALLBACK_DATA_PLUG))
+            .row(favorite_button)
         )
 
-    def _last_ayat_case(self, neighbor_ayats, favorite_button_message):
+    def _last_ayat_case(self, neighbor_ayats, favorite_button):
         left_ayat = neighbor_ayats[0]
         return (
             types.InlineKeyboardMarkup()
             .row(
                 types.InlineKeyboardButton(
                     text=KEYBOARD_AYAT_TEMPLATE.format(left_ayat.sura_num, left_ayat.ayat_num),
-                    callback_data=CALLBACK_DATA_PLUG,
+                    callback_data=CALLBACK_DATA_GET_AYAT_TEMPLATE.format(ayat_id=left_ayat.id),
                 ),
             )
-            .row(types.InlineKeyboardButton(text=favorite_button_message, callback_data=CALLBACK_DATA_PLUG))
+            .row(favorite_button)
         )
 
-    def _middle_ayat_case(self, neighbor_ayats, favorite_button_message):
+    def _middle_ayat_case(self, neighbor_ayats, favorite_button):
         left_ayat, right_ayat = neighbor_ayats[0], neighbor_ayats[2]
         return (
             types.InlineKeyboardMarkup()
             .row(
                 types.InlineKeyboardButton(
                     text=KEYBOARD_AYAT_TEMPLATE.format(left_ayat.sura_num, left_ayat.ayat_num),
-                    callback_data=CALLBACK_DATA_PLUG,
+                    callback_data=CALLBACK_DATA_GET_AYAT_TEMPLATE.format(ayat_id=left_ayat.id),
                 ),
                 types.InlineKeyboardButton(
                     text=KEYBOARD_AYAT_TEMPLATE.format(right_ayat.sura_num, right_ayat.ayat_num),
-                    callback_data=CALLBACK_DATA_PLUG,
+                    callback_data=CALLBACK_DATA_GET_AYAT_TEMPLATE.format(ayat_id=right_ayat.id),
                 ),
             )
-            .row(types.InlineKeyboardButton(text=favorite_button_message, callback_data=CALLBACK_DATA_PLUG))
+            .row(favorite_button)
         )
 
 
@@ -148,7 +160,12 @@ class AyatsService(AyatServiceInterface):
         :param ayat: Ayat
         :returns: AnswersList
         """
-        keyboard = await AyatSearchKeyboard(self.ayat_repository, ayat, self.chat_id).generate()
+        keyboard = await AyatSearchKeyboard(
+            self.ayat_repository,
+            ayat,
+            await self.ayat_repository.check_ayat_is_favorite_for_user(ayat.id, self.chat_id),
+            self.chat_id,
+        ).generate()
         return AnswersList(
             Answer(message=self.format_ayat(ayat), chat_id=self.chat_id),
             Answer(
