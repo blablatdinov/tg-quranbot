@@ -65,7 +65,7 @@ class AyatSearchKeyboard(object):
         elif self.ayat.id == last_ayat_id:
             return self._last_ayat_case(neighbor_ayats, favorite_button_message)
 
-        self._middle_ayat_case(neighbor_ayats, favorite_button_message)
+        return self._middle_ayat_case(neighbor_ayats, favorite_button_message)
 
     def _first_ayat_case(self, neighbor_ayats, favorite_button_message):
         right_ayat = neighbor_ayats[1]

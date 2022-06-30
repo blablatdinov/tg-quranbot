@@ -1,10 +1,11 @@
 import re
 
 import pytest
+from aiogram import types
 
 from constants import AYAT_SEARCH_INPUT_REGEXP
 from repository.ayats import Ayat
-from services.ayat import AyatsService
+from services.ayat import AyatsService, AyatSearchKeyboard
 from tests.mocks import AyatRepositoryMock
 
 
@@ -29,7 +30,6 @@ def test_regexp(input_, expect):
 def ayat_repository_mock(fake_text):
     mock = AyatRepositoryMock()
     common_params = {
-        'id': 1,
         'arab_text': fake_text(),
         'content': fake_text(),
         'transliteration': fake_text(),
@@ -38,10 +38,11 @@ def ayat_repository_mock(fake_text):
         'link_to_audio_file': fake_text(),
     }
     mock.storage = [
-        Ayat(sura_num=2, ayat_num='10', **common_params),
-        Ayat(sura_num=3, ayat_num='15', **common_params),
-        Ayat(sura_num=1, ayat_num='1-7', **common_params),
-        Ayat(sura_num=2, ayat_num='6,7', **common_params),
+        Ayat(id=1, sura_num=1, ayat_num='1-7', **common_params),
+        Ayat(id=2, sura_num=3, ayat_num='15', **common_params),
+        Ayat(id=3, sura_num=2, ayat_num='10', **common_params),
+        Ayat(id=4, sura_num=2, ayat_num='6,7', **common_params),
+        Ayat(id=5737, sura_num=114, ayat_num='1-4', **common_params),
     ]
     return mock
 
@@ -89,3 +90,46 @@ async def test_not_found_ayat(input_, ayat_repository_mock):
     ).search_by_number(input_)
 
     assert got.message == 'Аят не найден'
+
+
+async def test_keyboard_for_first_ayat(ayat_repository_mock):
+    got = await AyatSearchKeyboard(
+        ayat_repository_mock,
+        ayat_repository_mock.storage[0],
+        21442,
+    ).generate()
+    keyboard_as_list = dict(got)['inline_keyboard']
+    keyboard_first_row = keyboard_as_list[0]
+
+    assert isinstance(got, types.InlineKeyboardMarkup)
+    assert len(keyboard_as_list) == 2
+    assert [x['text'] for x in keyboard_first_row] == ['3:15']
+
+
+async def test_keyboard_for_last_ayat(ayat_repository_mock):
+    got = await AyatSearchKeyboard(
+        ayat_repository_mock,
+        ayat_repository_mock.storage[-1],
+        21442,
+    ).generate()
+    keyboard_as_list = dict(got)['inline_keyboard']
+    keyboard_first_row = keyboard_as_list[0]
+
+    assert isinstance(got, types.InlineKeyboardMarkup)
+    assert len(keyboard_as_list) == 2
+    assert [x['text'] for x in keyboard_first_row] == ['2:6,7']
+
+
+async def test_keyboard_for_middle_ayat(ayat_repository_mock):
+    got = await AyatSearchKeyboard(
+        ayat_repository_mock,
+        ayat_repository_mock.storage[2],
+        21442,
+    ).generate()
+
+    keyboard_as_list = dict(got)['inline_keyboard']
+    keyboard_first_row = keyboard_as_list[0]
+
+    assert isinstance(got, types.InlineKeyboardMarkup)
+    assert len(keyboard_as_list) == 2
+    assert [x['text'] for x in keyboard_first_row] == ['3:15', '2:6,7']
