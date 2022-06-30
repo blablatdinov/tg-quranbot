@@ -63,7 +63,19 @@ class AyatRepositoryMock(AyatRepositoryInterface):
         return True
 
     async def get_ayat_neighbors(self, ayat_id: int):
-        return self.storage
+        if ayat_id == self.storage[0].id:
+            return self.storage[:2]
+        elif ayat_id == self.storage[-1].id:
+            return self.storage[-2:]
+
+        # find index
+        index = 0
+        for storage_index, ayat in enumerate(self.storage):  # noqa: B007
+            if ayat.id == ayat_id:
+                index = storage_index
+                break
+
+        return self.storage[index - 1:index + 2]
 
     def _filter_by_sura_and_ayat_num(self, ayat: Ayat, sura_num: str, ayat_num: str) -> bool:
         coincidence_by_sura_num = str(ayat.sura_num) == str(sura_num)

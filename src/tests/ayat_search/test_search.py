@@ -3,7 +3,6 @@ import re
 import pytest
 
 from constants import AYAT_SEARCH_INPUT_REGEXP
-from repository.ayats import Ayat
 from services.ayat import AyatsService
 from tests.mocks import AyatRepositoryMock
 
@@ -23,27 +22,6 @@ def test_regexp(input_, expect):
     got = re.search(AYAT_SEARCH_INPUT_REGEXP, input_)
 
     assert bool(got) is expect
-
-
-@pytest.fixture()
-def ayat_repository_mock(fake_text):
-    mock = AyatRepositoryMock()
-    common_params = {
-        'id': 1,
-        'arab_text': fake_text(),
-        'content': fake_text(),
-        'transliteration': fake_text(),
-        'sura_link': fake_text(),
-        'audio_telegram_id': fake_text(),
-        'link_to_audio_file': fake_text(),
-    }
-    mock.storage = [
-        Ayat(sura_num=2, ayat_num='10', **common_params),
-        Ayat(sura_num=3, ayat_num='15', **common_params),
-        Ayat(sura_num=1, ayat_num='1-7', **common_params),
-        Ayat(sura_num=2, ayat_num='6,7', **common_params),
-    ]
-    return mock
 
 
 @pytest.mark.parametrize('input_,expect', [
