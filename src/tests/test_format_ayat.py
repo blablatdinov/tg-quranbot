@@ -1,6 +1,4 @@
 from repository.ayats.ayat import Ayat, AyatRepositoryInterface
-from services.ayat import AyatsService
-from tests.mocks import NeighborAyatsRepositoryMock
 
 
 class AyatRepositoryMock(AyatRepositoryInterface):
@@ -21,6 +19,8 @@ class AyatRepositoryMock(AyatRepositoryInterface):
 
 async def test():
     ayat = await AyatRepositoryMock().first()
-    got = ayat.format()
 
-    assert got == '<a href="https://umma.ru/some-link">1:1-7)</a>\nsome arab text\n\ncontent\n\n<i>transliteration</i>'
+    assert (
+        str(ayat)
+        == '<a href="https://umma.ru/some-link">1:1-7)</a>\nsome arab text\n\ncontent\n\n<i>transliteration</i>'
+    )

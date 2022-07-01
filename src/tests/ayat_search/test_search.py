@@ -3,10 +3,10 @@ import re
 import pytest
 
 from constants import AYAT_SEARCH_INPUT_REGEXP
-from exceptions import SuraNotFoundError, AyatNotFoundError
+from exceptions import AyatNotFoundError, SuraNotFoundError
 from services.ayat import AyatsService
 from services.ayat_search import AyatSearch
-from tests.mocks import AyatRepositoryMock, NeighborAyatsRepositoryMock
+from tests.mocks import AyatRepositoryMock
 
 
 @pytest.mark.parametrize('input_,expect', [
@@ -41,10 +41,10 @@ async def test(ayat_repository_mock, input_, expect):
             ayat_repository=ayat_repository_mock,
             chat_id=123,
         ),
-        input_
+        input_,
     ).search()
 
-    assert expect in got.format()
+    assert expect in str(got)
 
 
 @pytest.mark.parametrize('sura_num', ['0', '115', '-59'])

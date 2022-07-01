@@ -14,10 +14,9 @@ class Ayat(BaseModel):
     audio_telegram_id: str
     link_to_audio_file: str
 
-    def format(self):
+    def __str__(self) -> str:
         """Отформатировать аят для сообщения.
 
-        :param ayat: Ayat
         :returns: str
         """
         link = 'https://umma.ru{sura_link}'.format(sura_link=self.sura_link)

@@ -58,9 +58,10 @@ class RegisterUser(object):
 
         :return: tuple[str, str]
         """
+
         return (
             await self.admin_messages_repository.get('start'),
-            await self.ayat_service.get_formatted_first_ayat(),
+            str(await self.ayat_service.ayat_repository.first()),
         )
 
     async def register(self) -> AnswerInterface:

@@ -194,10 +194,9 @@ class SearchAnswer(object):
         :returns: AnswerInterface
         """
         ayat = await self.ayat_search.search()
-        ayat_as_str = self.ayat_search.ayat_service.format_ayat(ayat)
         return AnswersList(
             Answer(
-                message=ayat_as_str,
+                message=str(ayat),
                 keyboard=AyatSearchKeyboard(
                     ayat_repository=self.ayat_search.ayat_service.ayat_repository,
                     ayat_id=ayat.id,
