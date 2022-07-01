@@ -3,9 +3,11 @@ from aiogram import types
 
 from db import db_connection
 from repository.ayats.ayat import AyatRepository
+from repository.ayats.neighbor_ayats import NeighborAyatsRepository
 from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
 from services.ayat import AyatsService
+from services.ayat_search import AyatSearch, SearchAnswer
 from services.prayer_time import UserPrayerTimes
 from services.register_user import get_register_user_instance
 
@@ -27,10 +29,16 @@ async def ayat_search_handler(message: types.Message):
     :param message: types.Message
     """
     async with db_connection() as connection:
-        answer = await AyatsService(
-            AyatRepository(connection),
-            message.chat.id,
-        ).search_by_number(message.text)
+        answer = await SearchAnswer(
+            AyatSearch(
+                AyatsService(
+                    AyatRepository(connection),
+                    message.chat.id,
+                ),
+                message.text,
+            ),
+            NeighborAyatsRepository(connection),
+        ).transform()
         await answer.send(message.chat.id)
 
 

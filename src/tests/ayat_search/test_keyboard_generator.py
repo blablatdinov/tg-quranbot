@@ -1,6 +1,6 @@
 from aiogram import types
 
-from services.ayat import AyatSearchKeyboard
+from services.ayat_search import AyatSearchKeyboard
 from tests.mocks import NeighborAyatsRepositoryMock
 
 
