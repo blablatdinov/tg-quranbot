@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from repository.admin_message import AdminMessageRepository, AdminMessageRepositoryInterface
-from repository.ayats import AyatRepository
+from repository.ayats.ayat import AyatRepository
 from repository.user import UserRepository, UserRepositoryInterface
 from services.answer import Answer, AnswerInterface, AnswersList
 from services.ayat import AyatServiceInterface, AyatsService
@@ -58,9 +58,10 @@ class RegisterUser(object):
 
         :return: tuple[str, str]
         """
+
         return (
             await self.admin_messages_repository.get('start'),
-            await self.ayat_service.get_formatted_first_ayat(),
+            str(await self.ayat_service.ayat_repository.first()),
         )
 
     async def register(self) -> AnswerInterface:

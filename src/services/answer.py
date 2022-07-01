@@ -18,6 +18,15 @@ class AnswerInterface(object):
         """
         raise NotImplementedError
 
+    async def edit_markup(self, message_id: int, chat_id: int = None):
+        """Метод для редактирования сообщения.
+
+        :param chat_id: int
+        :param message_id: int
+        :raises NotImplementedError: if not implement
+        """
+        raise NotImplementedError
+
 
 def get_default_markup():
     """Получить дефолтную клавиатуру.
@@ -50,6 +59,17 @@ class Answer(BaseModel, AnswerInterface):
         :returns: Keyboard
         """
         return self.keyboard or get_default_markup()
+
+    async def edit_markup(self, message_id: int, chat_id: int = None):
+        """Редиктировать клавиатуру.
+
+        :param message_id: int
+        :param chat_id: int
+        """
+        chat_id = chat_id or self.chat_id
+        bot_instance = get_bot_instance()
+        markup = self.get_markup()
+        await bot_instance.edit_message_reply_markup(chat_id=chat_id, reply_markup=markup)
 
     async def send(self, chat_id: int = None):
         """Метод для отправки ответа.

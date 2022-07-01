@@ -1,52 +1,8 @@
-from aiogram import Dispatcher, types
+from aiogram import Dispatcher
 from aiogram.dispatcher import filters
 
 from constants import AYAT_SEARCH_INPUT_REGEXP, GET_PRAYER_TIMES_REGEXP
-from db import db_connection
-from repository.ayats import AyatRepository
-from repository.prayer_time import PrayerTimeRepository
-from repository.user import UserRepository
-from services.ayat import AyatsService
-from services.prayer_time import UserPrayerTimes
-from services.register_user import get_register_user_instance
-
-
-async def start_handler(message: types.Message):
-    """Ответ на команды: start.
-
-    :param message: types.Message
-    """
-    async with db_connection() as connection:
-        register_user = await get_register_user_instance(connection, message.chat.id, message.text)
-        answers = await register_user.register()
-        await answers.send()
-
-
-async def ayat_search_handler(message: types.Message):
-    """Ответ на команды: start.
-
-    :param message: types.Message
-    """
-    async with db_connection() as connection:
-        answer = await AyatsService(
-            AyatRepository(connection),
-            message.chat.id,
-        ).search_by_number(message.text)
-        await answer.send(message.chat.id)
-
-
-async def prayer_times_handler(message: types.Message):
-    """Ответ на команды: start.
-
-    :param message: types.Message
-    """
-    async with db_connection() as connection:
-        prayers = await UserPrayerTimes(
-            prayer_times_repository=PrayerTimeRepository(connection),
-            user_repository=UserRepository(connection),
-            chat_id=message.chat.id,
-        ).get()
-        await prayers.format_to_answer().send(message.chat.id)
+from handlers import button_handlers, message_handlers
 
 
 def register_handlers(dp: Dispatcher):
@@ -54,6 +10,18 @@ def register_handlers(dp: Dispatcher):
 
     :param dp: Dispatcher
     """
-    dp.register_message_handler(start_handler, commands=['start'])
-    dp.register_message_handler(ayat_search_handler, filters.Regexp(AYAT_SEARCH_INPUT_REGEXP))
-    dp.register_message_handler(prayer_times_handler, filters.Regexp(GET_PRAYER_TIMES_REGEXP))
+    dp.register_message_handler(message_handlers.start_handler, commands=['start'])
+    dp.register_message_handler(message_handlers.ayat_search_handler, filters.Regexp(AYAT_SEARCH_INPUT_REGEXP))
+    dp.register_message_handler(message_handlers.prayer_times_handler, filters.Regexp(GET_PRAYER_TIMES_REGEXP))
+    dp.register_callback_query_handler(
+        button_handlers.ayat_from_callback_handler,
+        lambda callback: callback.data and callback.data.startswith('get_ayat'),
+    )
+    dp.register_callback_query_handler(
+        button_handlers.add_to_favorite,
+        lambda callback: callback.data and callback.data.startswith('add_to_favorite'),
+    )
+    dp.register_callback_query_handler(
+        button_handlers.remove_from_favorite,
+        lambda callback: callback.data and callback.data.startswith('remove_from_favorite'),
+    )

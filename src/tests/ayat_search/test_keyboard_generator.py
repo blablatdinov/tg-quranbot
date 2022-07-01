@@ -1,13 +1,16 @@
 from aiogram import types
 
-from services.ayat import AyatSearchKeyboard
+from services.ayat_search import AyatSearchKeyboard
+from tests.mocks import NeighborAyatsRepositoryMock
 
 
 async def test_keyboard_for_first_ayat(ayat_repository_mock):
-    got = await AyatSearchKeyboard(
-        ayat_repository_mock,
-        ayat_repository_mock.storage[0],
+    ayat = ayat_repository_mock.storage[0]
+    got = AyatSearchKeyboard(
+        ayat_repository=ayat_repository_mock,
+        ayat_id=ayat.id,
         ayat_is_favorite=True,
+        ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
     ).generate()
     keyboard_as_list = dict(got)['inline_keyboard']
@@ -20,10 +23,12 @@ async def test_keyboard_for_first_ayat(ayat_repository_mock):
 
 
 async def test_keyboard_for_last_ayat(ayat_repository_mock):
-    got = await AyatSearchKeyboard(
-        ayat_repository_mock,
-        ayat_repository_mock.storage[-1],
+    ayat = ayat_repository_mock.storage[-1]
+    got = AyatSearchKeyboard(
+        ayat_repository=ayat_repository_mock,
+        ayat_id=ayat.id,
         ayat_is_favorite=True,
+        ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
     ).generate()
     keyboard_as_list = dict(got)['inline_keyboard']
@@ -36,10 +41,12 @@ async def test_keyboard_for_last_ayat(ayat_repository_mock):
 
 
 async def test_keyboard_for_middle_ayat(ayat_repository_mock):
-    got = await AyatSearchKeyboard(
-        ayat_repository_mock,
-        ayat_repository_mock.storage[2],
+    ayat = ayat_repository_mock.storage[2]
+    got = AyatSearchKeyboard(
+        ayat_repository=ayat_repository_mock,
+        ayat_id=ayat.id,
         ayat_is_favorite=True,
+        ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
     ).generate()
 
@@ -56,10 +63,12 @@ async def test_keyboard_for_middle_ayat(ayat_repository_mock):
 
 
 async def test_add_to_favorite(ayat_repository_mock):
-    got = await AyatSearchKeyboard(
-        ayat_repository_mock,
-        ayat_repository_mock.storage[2],
+    ayat = ayat_repository_mock.storage[2]
+    got = AyatSearchKeyboard(
+        ayat_repository=ayat_repository_mock,
+        ayat_id=ayat.id,
         ayat_is_favorite=False,
+        ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
     ).generate()
 
@@ -70,10 +79,12 @@ async def test_add_to_favorite(ayat_repository_mock):
 
 
 async def test_remove_from_favorite(ayat_repository_mock):
-    got = await AyatSearchKeyboard(
-        ayat_repository_mock,
-        ayat_repository_mock.storage[0],
+    ayat = ayat_repository_mock.storage[0]
+    got = AyatSearchKeyboard(
+        ayat_repository=ayat_repository_mock,
+        ayat_id=ayat.id,
         ayat_is_favorite=True,
+        ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
     ).generate()
 

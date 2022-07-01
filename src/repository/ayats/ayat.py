@@ -14,13 +14,21 @@ class Ayat(BaseModel):
     audio_telegram_id: str
     link_to_audio_file: str
 
+    def __str__(self) -> str:
+        """Отформатировать аят для сообщения.
 
-class AyatShort(BaseModel):
-    """Короткая модель аята."""
-
-    id: int
-    sura_num: int
-    ayat_num: str
+        :returns: str
+        """
+        link = 'https://umma.ru{sura_link}'.format(sura_link=self.sura_link)
+        template = '<a href="{link}">{sura}:{ayat})</a>\n{arab_text}\n\n{content}\n\n<i>{transliteration}</i>'
+        return template.format(
+            link=link,
+            sura=self.sura_num,
+            ayat=self.ayat_num,
+            arab_text=self.arab_text,
+            content=self.content,
+            transliteration=self.transliteration,
+        )
 
 
 class AyatRepositoryInterface(object):
@@ -67,9 +75,19 @@ class AyatRepositoryInterface(object):
         """
         raise NotImplementedError
 
-    async def get_ayat_neighbors(self, ayat_id: int):
-        """Получить соседние аяты.
+    async def add_to_favorite(self, chat_id: int, ayat_id: int):
+        """Добавить аят в избранные.
 
+        :param chat_id: int
+        :param ayat_id: int
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
+    async def remove_from_favorite(self, chat_id: int, ayat_id: int):
+        """Удалить аят из избранных.
+
+        :param chat_id: int
         :param ayat_id: int
         :raises NotImplementedError: if not implemented
         """
@@ -86,9 +104,26 @@ class AyatRepository(AyatRepositoryInterface):
         """Метод для получения аята по идентификатору.
 
         :param ayat_id: int
-        :raises: NotImplementedError if not implemented
+        :returns: Ayat
         """
-        pass  # noqa: WPS420
+        query = """
+            SELECT
+                a.id,
+                s.number as sura_num,
+                s.link as sura_link,
+                a.ayat as ayat_num,
+                a.arab_text,
+                a.content,
+                a.trans as transliteration,
+                cf.tg_file_id as audio_telegram_id,
+                cf.link_to_file as link_to_audio_file
+            FROM content_ayat a
+            INNER JOIN content_sura s on a.sura_id = s.id
+            INNER JOIN content_file cf on a.audio_id = cf.id
+            WHERE a.id = $1
+        """
+        row = await self.connection.fetchrow(query, ayat_id)
+        return Ayat(**dict(row))
 
     async def first(self) -> Ayat:
         """Метод для получения первого аята.
@@ -159,31 +194,33 @@ class AyatRepository(AyatRepositoryInterface):
             where ayat_id = $1 and sub.tg_chat_id = $2
         """
         row = await self.connection.fetchrow(query, ayat_id, chat_id)
-        return bool(row)
+        return bool(row['count'])
 
-    async def get_ayat_neighbors(self, ayat_id: int) -> list[AyatShort]:
-        """Получить соседние аяты.
+    async def add_to_favorite(self, chat_id: int, ayat_id: int):
+        """Добавить аят в избранные.
 
+        :param chat_id: int
         :param ayat_id: int
-        :returns: list[AyatShort]
         """
         query = """
-            SELECT
-                *
-            FROM (
-                SELECT
-                    a.id,
-                    a.ayat as ayat_num,
-                    cs.number as sura_num,
-                    lag(a.id) OVER (ORDER BY a.id ASC) AS prev,
-                    lead(a.id) OVER (ORDER BY a.id ASC) AS next
-                FROM content_ayat a
-                INNER JOIN content_sura cs on cs.id = a.sura_id
-            ) x
-            WHERE $1 IN (id, prev, next)
+            INSERT INTO bot_init_subscriber_favourite_ayats
+            (subscriber_id, ayat_id)
+            VALUES
+            (
+                (SELECT id FROM bot_init_subscriber WHERE tg_chat_id = $1),
+                $2
+            )
         """
-        rows = await self.connection.fetch(query, ayat_id)
-        return [
-            AyatShort(**dict(row))
-            for row in rows
-        ]
+        await self.connection.execute(query, chat_id, ayat_id)
+
+    async def remove_from_favorite(self, chat_id: int, ayat_id: int):
+        """Удалить аят из избранных.
+
+        :param chat_id: int
+        :param ayat_id: int
+        """
+        query = """
+            DELETE FROM bot_init_subscriber_favourite_ayats
+            WHERE subscriber_id = (SELECT id FROM bot_init_subscriber WHERE tg_chat_id = $1) AND ayat_id = $2
+        """
+        await self.connection.execute(query, chat_id, ayat_id)
