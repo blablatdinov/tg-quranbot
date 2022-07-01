@@ -3,7 +3,9 @@ import re
 import pytest
 
 from constants import AYAT_SEARCH_INPUT_REGEXP
+from exceptions import SuraNotFoundError, AyatNotFoundError
 from services.ayat import AyatsService
+from services.ayat_search import AyatSearch
 from tests.mocks import AyatRepositoryMock, NeighborAyatsRepositoryMock
 
 
@@ -33,27 +35,28 @@ def test_regexp(input_, expect):
     ('2:6', '2:6,7'),
     ('2:7', '2:6,7'),
 ])
-@pytest.mark.asyncio
 async def test(ayat_repository_mock, input_, expect):
-    got = await AyatsService(
-        ayat_repository=ayat_repository_mock,
-        neighbors_ayat_repository=NeighborAyatsRepositoryMock(ayat_repository_mock.storage),
-        chat_id=123,
-    ).search_by_number(input_)
+    got = await AyatSearch(
+        AyatsService(
+            ayat_repository=ayat_repository_mock,
+            chat_id=123,
+        ),
+        input_
+    ).search()
 
-    assert expect in got[0].message
+    assert expect in got.format()
 
 
 @pytest.mark.parametrize('sura_num', ['0', '115', '-59'])
-@pytest.mark.asyncio
 async def test_not_found_sura(sura_num):
-    got = await AyatsService(
-        AyatRepositoryMock(),
-        chat_id=123,
-        neighbors_ayat_repository=NeighborAyatsRepositoryMock(),
-    ).search_by_number(f'{sura_num}:1')
-
-    assert got.message == 'Сура не найдена'
+    with pytest.raises(SuraNotFoundError):
+        await AyatSearch(
+            AyatsService(
+                ayat_repository=AyatRepositoryMock(),
+                chat_id=123,
+            ),
+            f'{sura_num}:1',
+        ).search()
 
 
 @pytest.mark.parametrize('input_', [
@@ -61,12 +64,12 @@ async def test_not_found_sura(sura_num):
     '2:30',
     '3:-7',
 ])
-@pytest.mark.asyncio
 async def test_not_found_ayat(input_, ayat_repository_mock):
-    got = await AyatsService(
-        AyatRepositoryMock(),
-        chat_id=123,
-        neighbors_ayat_repository=NeighborAyatsRepositoryMock(),
-    ).search_by_number(input_)
-
-    assert got.message == 'Аят не найден'
+    with pytest.raises(AyatNotFoundError):
+        await AyatSearch(
+            AyatsService(
+                ayat_repository=AyatRepositoryMock(),
+                chat_id=123,
+            ),
+            input_,
+        ).search()

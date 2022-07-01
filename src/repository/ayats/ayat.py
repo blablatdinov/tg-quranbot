@@ -14,6 +14,23 @@ class Ayat(BaseModel):
     audio_telegram_id: str
     link_to_audio_file: str
 
+    def format(self):
+        """Отформатировать аят для сообщения.
+
+        :param ayat: Ayat
+        :returns: str
+        """
+        link = 'https://umma.ru{sura_link}'.format(sura_link=self.sura_link)
+        template = '<a href="{link}">{sura}:{ayat})</a>\n{arab_text}\n\n{content}\n\n<i>{transliteration}</i>'
+        return template.format(
+            link=link,
+            sura=self.sura_num,
+            ayat=self.ayat_num,
+            arab_text=self.arab_text,
+            content=self.content,
+            transliteration=self.transliteration,
+        )
+
 
 class AyatRepositoryInterface(object):
     """Интерфейс репозитория для работы с административными сообщениями."""

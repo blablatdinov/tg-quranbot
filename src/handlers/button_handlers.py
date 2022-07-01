@@ -50,7 +50,7 @@ async def add_to_favorite(callback_query: types.CallbackQuery):
     await bot.edit_message_reply_markup(
         chat_id=callback_query.from_user.id,
         message_id=callback_query.message.message_id,
-        reply_markup=keyboard,
+        reply_markup=keyboard.generate(),
     )
 
 
@@ -72,5 +72,5 @@ async def remove_from_favorite(callback_query: types.CallbackQuery):
     await bot.edit_message_reply_markup(
         chat_id=callback_query.from_user.id,
         message_id=callback_query.message.message_id,
-        reply_markup=keyboard,
+        reply_markup=keyboard.generate(),
     )

@@ -127,7 +127,7 @@ class AyatSearch(AyatSearchInterface):
     """Класс, обрабатывающий логику поиска аятов."""
 
     ayat_service: AyatServiceInterface
-    search_input: Optional[str]
+    search_input: str
 
     async def search(self) -> Ayat:
         """Поиск по номеру суры и аята.
@@ -146,7 +146,7 @@ class AyatSearch(AyatSearchInterface):
 
         raise AyatNotFoundError
 
-    def _search_in_sura_ayats(self, ayat: Ayat, ayat_num: str) -> Ayat:
+    def _search_in_sura_ayats(self, ayat: Ayat, ayat_num: str) -> Optional[Ayat]:
         result_ayat = None
         if '-' in ayat.ayat_num:
             result_ayat = self._service_range_case(ayat, ayat_num)

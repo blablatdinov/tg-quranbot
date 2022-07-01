@@ -20,10 +20,7 @@ class AyatRepositoryMock(AyatRepositoryInterface):
 
 
 async def test():
-    got = await AyatsService(
-        AyatRepositoryMock(),
-        NeighborAyatsRepositoryMock(),
-        394809,
-    ).get_formatted_first_ayat()
+    ayat = await AyatRepositoryMock().first()
+    got = ayat.format()
 
     assert got == '<a href="https://umma.ru/some-link">1:1-7)</a>\nsome arab text\n\ncontent\n\n<i>transliteration</i>'
