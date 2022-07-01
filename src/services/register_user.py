@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from repository.admin_message import AdminMessageRepository, AdminMessageRepositoryInterface
-from repository.ayats import AyatRepository
+from repository.ayats.ayat import AyatRepository
 from repository.user import UserRepository, UserRepositoryInterface
 from services.answer import Answer, AnswerInterface, AnswersList
 from services.ayat import AyatServiceInterface, AyatsService

@@ -1,6 +1,6 @@
 import pytest
 
-from repository.ayats import Ayat
+from repository.ayats.ayat import Ayat
 from tests.mocks import AyatRepositoryMock
 
 

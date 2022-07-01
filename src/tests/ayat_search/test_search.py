@@ -4,7 +4,7 @@ import pytest
 
 from constants import AYAT_SEARCH_INPUT_REGEXP
 from services.ayat import AyatsService
-from tests.mocks import AyatRepositoryMock
+from tests.mocks import AyatRepositoryMock, NeighborAyatsRepositoryMock
 
 
 @pytest.mark.parametrize('input_,expect', [
@@ -36,7 +36,8 @@ def test_regexp(input_, expect):
 @pytest.mark.asyncio
 async def test(ayat_repository_mock, input_, expect):
     got = await AyatsService(
-        ayat_repository_mock,
+        ayat_repository=ayat_repository_mock,
+        neighbors_ayat_repository=NeighborAyatsRepositoryMock(ayat_repository_mock.storage),
         chat_id=123,
     ).search_by_number(input_)
 
@@ -49,6 +50,7 @@ async def test_not_found_sura(sura_num):
     got = await AyatsService(
         AyatRepositoryMock(),
         chat_id=123,
+        neighbors_ayat_repository=NeighborAyatsRepositoryMock(),
     ).search_by_number(f'{sura_num}:1')
 
     assert got.message == 'Сура не найдена'
@@ -64,6 +66,7 @@ async def test_not_found_ayat(input_, ayat_repository_mock):
     got = await AyatsService(
         AyatRepositoryMock(),
         chat_id=123,
+        neighbors_ayat_repository=NeighborAyatsRepositoryMock(),
     ).search_by_number(input_)
 
     assert got.message == 'Аят не найден'

@@ -2,7 +2,8 @@ import random
 from typing import Optional
 
 from repository.admin_message import AdminMessageRepositoryInterface
-from repository.ayats import Ayat, AyatRepositoryInterface
+from repository.ayats.ayat import Ayat, AyatRepositoryInterface
+from repository.ayats.neighbor_ayats import AyatShort, NeighborAyatsRepositoryInterface
 from repository.user import User, UserRepositoryInterface
 from services.ayat import AyatServiceInterface
 
@@ -62,7 +63,31 @@ class AyatRepositoryMock(AyatRepositoryInterface):
     async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
         return True
 
-    async def get_ayat_neighbors(self, ayat_id: int):
+    def _filter_by_sura_and_ayat_num(self, ayat: Ayat, sura_num: str, ayat_num: str) -> bool:
+        coincidence_by_sura_num = str(ayat.sura_num) == str(sura_num)
+        coincidence_by_ayat_num = str(ayat.ayat_num) == str(ayat_num)
+        return coincidence_by_sura_num and coincidence_by_ayat_num
+
+
+class AyatServiceMock(AyatServiceInterface):
+
+    async def get_formatted_first_ayat(self):
+        return 'some string'
+
+
+class NeighborAyatsRepositoryMock(NeighborAyatsRepositoryInterface):
+    storage: list[AyatShort]
+
+    def __init__(self, ayats_storage: list[Ayat] = None):
+        if ayats_storage is None:
+            self.storage = []
+            return
+        self.storage = [
+            AyatShort(id=ayat.id, sura_num=ayat.sura_num, ayat_num=ayat.ayat_num)
+            for ayat in ayats_storage
+        ]
+
+    async def get_ayat_neighbors(self, ayat_id: int) -> list[AyatShort]:
         if ayat_id == self.storage[0].id:
             return self.storage[:2]
         elif ayat_id == self.storage[-1].id:
@@ -76,14 +101,3 @@ class AyatRepositoryMock(AyatRepositoryInterface):
                 break
 
         return self.storage[index - 1:index + 2]
-
-    def _filter_by_sura_and_ayat_num(self, ayat: Ayat, sura_num: str, ayat_num: str) -> bool:
-        coincidence_by_sura_num = str(ayat.sura_num) == str(sura_num)
-        coincidence_by_ayat_num = str(ayat.ayat_num) == str(ayat_num)
-        return coincidence_by_sura_num and coincidence_by_ayat_num
-
-
-class AyatServiceMock(AyatServiceInterface):
-
-    async def get_formatted_first_ayat(self):
-        return 'some string'

@@ -1,5 +1,6 @@
-from repository.ayats import Ayat, AyatRepositoryInterface
+from repository.ayats.ayat import Ayat, AyatRepositoryInterface
 from services.ayat import AyatsService
+from tests.mocks import NeighborAyatsRepositoryMock
 
 
 class AyatRepositoryMock(AyatRepositoryInterface):
@@ -21,6 +22,7 @@ class AyatRepositoryMock(AyatRepositoryInterface):
 async def test():
     got = await AyatsService(
         AyatRepositoryMock(),
+        NeighborAyatsRepositoryMock(),
         394809,
     ).get_formatted_first_ayat()
 

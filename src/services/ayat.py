@@ -4,7 +4,8 @@ from typing import Optional
 from aiogram import types
 
 from exceptions import AyatNotFoundError, SuraNotFoundError, exception_to_answer_formatter
-from repository.ayats import Ayat, AyatRepositoryInterface
+from repository.ayats.ayat import Ayat, AyatRepositoryInterface
+from repository.ayats.neighbor_ayats import AyatShort, NeighborAyatsRepositoryInterface
 from services.answer import Answer, AnswerInterface, AnswersList
 
 KEYBOARD_AYAT_TEMPLATE = '{0}:{1}'
@@ -43,41 +44,49 @@ class AyatServiceInterface(object):
         """
         raise NotImplementedError
 
+    async def get_by_id(self, ayat_id: int):
+        """Получить аят по идентификатору.
+
+        :param ayat_id: int
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
 
 @dataclass
 class AyatSearchKeyboard(object):
     """Клавиатура, выводимая пользователям вместе с найденными аятами."""
 
     ayat_repository: AyatRepositoryInterface
-    ayat: Ayat
+    ayat_id: int
     ayat_is_favorite: bool
+    ayat_neighbors: list[AyatShort]
     chat_id: int
 
-    async def generate(self):
+    def generate(self):
         """Генерация клавиатуры.
 
         :returns: InlineKeyboard
         """
         first_ayat_id = 1
         last_ayat_id = 5737
-        neighbor_ayats = await self.ayat_repository.get_ayat_neighbors(self.ayat.id)
         if self.ayat_is_favorite:
             favorite_button = types.InlineKeyboardButton(
                 text='Удалить из избранного',
-                callback_data=CALLBACK_DATA_REMOVE_FROM_FAVORITE_TEMPLATE.format(ayat_id=self.ayat.id),
+                callback_data=CALLBACK_DATA_REMOVE_FROM_FAVORITE_TEMPLATE.format(ayat_id=self.ayat_id),
             )
         else:
             favorite_button = types.InlineKeyboardButton(
                 text='Добавить в избранное',
-                callback_data=CALLBACK_DATA_ADD_TO_FAVORITE_TEMPLATE.format(ayat_id=self.ayat.id),
+                callback_data=CALLBACK_DATA_ADD_TO_FAVORITE_TEMPLATE.format(ayat_id=self.ayat_id),
             )
 
-        if self.ayat.id == first_ayat_id:
-            return self._first_ayat_case(neighbor_ayats, favorite_button)
-        elif self.ayat.id == last_ayat_id:
-            return self._last_ayat_case(neighbor_ayats, favorite_button)
+        if self.ayat_id == first_ayat_id:
+            return self._first_ayat_case(self.ayat_neighbors, favorite_button)
+        elif self.ayat_id == last_ayat_id:
+            return self._last_ayat_case(self.ayat_neighbors, favorite_button)
 
-        return self._middle_ayat_case(neighbor_ayats, favorite_button)
+        return self._middle_ayat_case(self.ayat_neighbors, favorite_button)
 
     def _first_ayat_case(self, neighbor_ayats, favorite_button):
         right_ayat = neighbor_ayats[1]
@@ -123,10 +132,12 @@ class AyatSearchKeyboard(object):
         )
 
 
+@dataclass
 class AyatsService(AyatServiceInterface):
     """Сервис для действий над аятами."""
 
     ayat_repository: AyatRepositoryInterface
+    neighbors_ayat_repository: NeighborAyatsRepositoryInterface
     chat_id: int
 
     async def get_formatted_first_ayat(self) -> str:
@@ -160,11 +171,12 @@ class AyatsService(AyatServiceInterface):
         :param ayat: Ayat
         :returns: AnswersList
         """
-        keyboard = await AyatSearchKeyboard(
-            self.ayat_repository,
-            ayat,
-            await self.ayat_repository.check_ayat_is_favorite_for_user(ayat.id, self.chat_id),
-            self.chat_id,
+        keyboard = AyatSearchKeyboard(
+            ayat_repository=self.ayat_repository,
+            ayat_id=ayat.id,
+            ayat_is_favorite=await self.ayat_repository.check_ayat_is_favorite_for_user(ayat.id, self.chat_id),
+            ayat_neighbors=await self.neighbors_ayat_repository.get_ayat_neighbors(ayat.id),
+            chat_id=self.chat_id,
         ).generate()
         return AnswersList(
             Answer(message=self.format_ayat(ayat), chat_id=self.chat_id),
@@ -199,6 +211,34 @@ class AyatsService(AyatServiceInterface):
                 return answer
 
         return Answer(message='Аят не найден')
+
+    async def get_by_id(self, ayat_id: int) -> AnswerInterface:
+        """Получить аят по идентификатору.
+
+        :param ayat_id: int
+        :returns: AnswerInterface
+        """
+        ayat = await self.ayat_repository.get(ayat_id)
+        return await self.format_ayat_to_answers(ayat)
+
+    async def change_favorite_status(self, ayat_id: int, change_to: bool) -> AyatSearchKeyboard:
+        """Поменять статус аята (в избранных или нет).
+
+        :param ayat_id: int
+        :param change_to: bool
+        :returns: AyatSearchKeyboard
+        """
+        if change_to:
+            await self.ayat_repository.add_to_favorite(self.chat_id, ayat_id)
+        else:
+            await self.ayat_repository.remove_from_favorite(self.chat_id, ayat_id)
+
+        return await AyatSearchKeyboard(
+            ayat_repository=self.ayat_repository,
+            ayat_id=ayat_id,
+            ayat_is_favorite=change_to,
+            chat_id=self.chat_id,
+        ).generate()
 
     async def _service_range_case(self, ayat: Ayat, ayat_num: str) -> Optional[AnswerInterface]:
         left, right = map(int, ayat.ayat_num.split('-'))
