@@ -60,6 +60,9 @@ class AyatRepositoryMock(AyatRepositoryInterface):
             ),
         )
 
+    async def first(self):
+        return self.storage[0]
+
     async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
         return True
 
@@ -70,9 +73,7 @@ class AyatRepositoryMock(AyatRepositoryInterface):
 
 
 class AyatServiceMock(AyatServiceInterface):
-
-    async def get_formatted_first_ayat(self):
-        return 'some string'
+    pass
 
 
 class NeighborAyatsRepositoryMock(NeighborAyatsRepositoryInterface):
