@@ -5,6 +5,7 @@ from typing import Optional
 from repository.admin_message import AdminMessageRepositoryInterface
 from repository.ayats.ayat import Ayat, AyatRepositoryInterface
 from repository.ayats.neighbor_ayats import AyatShort, NeighborAyatsRepositoryInterface
+from repository.podcast import Podcast, PodcastRepositoryInterface
 from repository.prayer_time import Prayer, PrayerTimeRepositoryInterface, UserPrayer
 from repository.user import User, UserRepositoryInterface
 from services.ayat import AyatServiceInterface
@@ -147,3 +148,9 @@ class PrayerTimeRepositoryMock(PrayerTimeRepositoryInterface):
             UserPrayer(id=user_prayer_id, is_readed=True)
             for user_prayer_id in range(1000, 1006)
         ]
+
+
+class PodcastRepositoryMock(PodcastRepositoryInterface):
+
+    async def get_random(self) -> Podcast:
+        return Podcast(audio_telegram_id='file_id', link_to_audio_file='https://link.to.file')
