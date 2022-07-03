@@ -2,6 +2,7 @@ import datetime
 from dataclasses import dataclass, field
 
 from aiogram import types
+from loguru import logger
 
 from constants import PRAYER_NOT_READED_EMOJI, PRAYER_READED_EMOJI
 from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
@@ -45,12 +46,15 @@ class UserPrayerTimes(object):
             prayer.id
             for prayer in prayers_without_sunrise
         ]
+        logger.info('Search user prayers...')
         user_prayers = await self.prayer_times.prayer_times_repository.get_user_prayer_times(
             prayers_without_sunrise_ids,
             self.prayer_times.chat_id,
-            datetime.datetime.now(),
+            datetime.datetime.now().date(),
         )
+        logger.info('Search result: {0}'.format(user_prayers))
         if not user_prayers:
+            logger.info('User prayers not found. Creating...')
             user = await self.prayer_times.user_repository.get_by_chat_id(self.prayer_times.chat_id)
             user_prayers = await self.prayer_times.prayer_times_repository.create_user_prayer_times(
                 prayer_ids=prayers_without_sunrise_ids,
@@ -74,6 +78,7 @@ class UserPrayerTimesKeyboard(object):
         keyboard = types.InlineKeyboardMarkup()
         user_prayers = await self.user_prayer_times.get_or_create_user_prayer_times()
         buttons = []
+        # assert False, user_prayers
         for user_prayer in user_prayers:
             callback_data_template = 'mark_not_readed({0})' if user_prayer.is_readed else 'mark_readed({0})'
             buttons.append(types.InlineKeyboardButton(
@@ -157,3 +162,19 @@ class UserPrayerTimesAnswer(object):
                 self.user_prayer_times,
             ).generate(),
         )
+
+
+@dataclass
+class UserPrayerStatus(object):
+
+    prayer_times_repository: PrayerTimeRepositoryInterface
+    user_prayer_times: UserPrayerTimes
+    user_prayer_id: int
+
+    async def change(self, is_readed: bool):
+        await self.prayer_times_repository.change_user_prayer_time_status(self.user_prayer_id, is_readed)
+
+    async def generate_refresh_keyboard(self) -> types.InlineKeyboardMarkup:
+        return await UserPrayerTimesKeyboard(
+            self.user_prayer_times,
+        ).generate()

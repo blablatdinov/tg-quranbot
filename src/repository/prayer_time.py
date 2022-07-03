@@ -3,6 +3,7 @@ import enum
 from dataclasses import dataclass
 
 from pydantic import BaseModel
+from loguru import logger
 
 
 class PrayerNames(str, enum.Enum):  # noqa: WPS600
@@ -58,13 +59,13 @@ class PrayerTimeRepositoryInterface(object):
         self,
         prayer_ids: list[int],
         chat_id: int,
-        date_time: datetime.datetime,
+        date: datetime.date,
     ) -> list[UserPrayer]:
         """Получить времена намазов для пользователя.
 
         :param prayer_ids: list[int]
         :param chat_id: int
-        :param date_time: datetime.datetime
+        :param date: datetime.date
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -76,6 +77,9 @@ class PrayerTimeRepositoryInterface(object):
         :param user_id: int
         :raises NotImplementedError: if not implemented
         """
+        raise NotImplementedError
+
+    async def change_user_prayer_time_status(self, user_prayer_id: int, is_readed: bool):
         raise NotImplementedError
 
 
@@ -122,15 +126,18 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
         self,
         prayer_ids: list[int],
         chat_id: int,
-        date_time: datetime.datetime,
+        date: datetime.date,
     ) -> list[UserPrayer]:
         """Получить времена намазов для пользователя.
 
         :param prayer_ids: list[int]
         :param chat_id: int
-        :param date_time: datetime.datetime
+        :param date: datetime.date
         :returns: list[UserPrayer]
         """
+        logger.info('Search user prayer times for prayer_ids={0}, chat_id={1}, date={2}'.format(
+            prayer_ids, chat_id, date,
+        ))
         query = """
             SELECT
                 up.id,
@@ -139,9 +146,9 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
             INNER JOIN prayer_prayer p on up.prayer_id = p.id
             INNER JOIN prayer_day pd on pd.id = p.day_id
             INNER JOIN bot_init_subscriber bis on up.subscriber_id = bis.id
-            where up.id IN ($3, $4, $5, $6, $7) AND bis.tg_chat_id = $1 AND pd.date = $2
+            where p.id IN ($3, $4, $5, $6, $7) AND bis.tg_chat_id = $1 AND pd.date = $2
         """
-        rows = await self.connection.fetch(query, chat_id, date_time, *prayer_ids)
+        rows = await self.connection.fetch(query, chat_id, date, *prayer_ids)
         return [
             UserPrayer(**dict(row))
             for row in rows
@@ -159,6 +166,7 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
         """
         row = await self.connection.fetchrow(query)
         user_prayer_group_id = row['id']
+        logger.info('Creating user prayers with prayer_ids={0}, user_id={1}'.format(prayer_ids, user_id))
         query = """
             WITH user_id AS (SELECT id FROM bot_init_subscriber where tg_chat_id = $1)
             INSERT INTO prayer_prayeratuser
@@ -176,3 +184,11 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
             UserPrayer(**dict(row))
             for row in rows
         ]
+
+    async def change_user_prayer_time_status(self, user_prayer_id: int, is_readed: bool):
+        query = """
+            UPDATE prayer_prayeratuser
+            SET is_read = $2
+            WHERE id = $1
+        """
+        await self.connection.execute(query, user_prayer_id, is_readed)
