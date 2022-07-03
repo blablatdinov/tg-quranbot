@@ -25,3 +25,11 @@ def register_handlers(dp: Dispatcher):
         button_handlers.remove_from_favorite,
         lambda callback: callback.data and callback.data.startswith('remove_from_favorite'),
     )
+    dp.register_callback_query_handler(
+        button_handlers.mark_prayer_as_not_readed,
+        lambda callback: callback.data and callback.data.startswith('mark_not_readed'),
+    )
+    dp.register_callback_query_handler(
+        button_handlers.mark_prayer_as_readed,
+        lambda callback: callback.data and callback.data.startswith('mark_readed'),
+    )
