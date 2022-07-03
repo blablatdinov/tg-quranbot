@@ -9,7 +9,7 @@ from repository.podcast import PodcastRepository
 from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
 from services.ayat import AyatsService
-from services.ayat_search import AyatSearch, FavoriteAyats, SearchAnswer
+from services.ayats.ayat_search import AyatSearch, FavoriteAyats, SearchAnswer
 from services.podcast import PodcastAnswer, PodcastService
 from services.prayer_time import PrayerTimes, UserPrayerTimes, UserPrayerTimesAnswer
 

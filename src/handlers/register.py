@@ -51,3 +51,11 @@ def _register_button_handlers(dp: Dispatcher):
         button_handlers.mark_prayer_as_readed,
         lambda callback: callback.data and callback.data.startswith('mark_readed'),
     )
+    dp.register_callback_query_handler(
+        button_handlers.next_favorite,
+        lambda callback: callback.data and callback.data.startswith('next_favorite'),
+    )
+    dp.register_callback_query_handler(
+        button_handlers.prev_favorite,
+        lambda callback: callback.data and callback.data.startswith('prev_favorite'),
+    )

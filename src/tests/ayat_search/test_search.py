@@ -5,7 +5,7 @@ import pytest
 from constants import AYAT_SEARCH_INPUT_REGEXP
 from exceptions import AyatNotFoundError, SuraNotFoundError
 from services.ayat import AyatsService
-from services.ayat_search import AyatSearch
+from services.ayats.ayat_search import AyatSearch
 from tests.mocks import AyatRepositoryMock
 
 
