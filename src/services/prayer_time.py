@@ -166,15 +166,24 @@ class UserPrayerTimesAnswer(object):
 
 @dataclass
 class UserPrayerStatus(object):
+    """Класс отвечающий за статус прочитанности намаза."""
 
     prayer_times_repository: PrayerTimeRepositoryInterface
     user_prayer_times: UserPrayerTimes
     user_prayer_id: int
 
     async def change(self, is_readed: bool):
+        """Метод меняет статус прочитанности намаза.
+
+        :param is_readed: bool
+        """
         await self.prayer_times_repository.change_user_prayer_time_status(self.user_prayer_id, is_readed)
 
     async def generate_refresh_keyboard(self) -> types.InlineKeyboardMarkup:
+        """Сгенерировать обновленную клавиатуру.
+
+        :returns: types.InlineKeyboardMarkup
+        """
         return await UserPrayerTimesKeyboard(
             self.user_prayer_times,
         ).generate()

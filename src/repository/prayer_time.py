@@ -2,8 +2,8 @@ import datetime
 import enum
 from dataclasses import dataclass
 
-from pydantic import BaseModel
 from loguru import logger
+from pydantic import BaseModel
 
 
 class PrayerNames(str, enum.Enum):  # noqa: WPS600
@@ -80,6 +80,12 @@ class PrayerTimeRepositoryInterface(object):
         raise NotImplementedError
 
     async def change_user_prayer_time_status(self, user_prayer_id: int, is_readed: bool):
+        """Поменять статус прочитанности у аята.
+
+        :param user_prayer_id: int
+        :param is_readed: bool
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
 
@@ -186,6 +192,11 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
         ]
 
     async def change_user_prayer_time_status(self, user_prayer_id: int, is_readed: bool):
+        """Поменять статус прочитанности у аята.
+
+        :param user_prayer_id: int
+        :param is_readed: bool
+        """
         query = """
             UPDATE prayer_prayeratuser
             SET is_read = $2
