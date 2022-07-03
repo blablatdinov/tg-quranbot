@@ -3,7 +3,6 @@ from dataclasses import dataclass, field
 
 from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
 from repository.user import UserRepositoryInterface
-from services.answer import Answer, AnswerInterface
 
 
 class PrayerTimesInterface(object):
@@ -47,7 +46,7 @@ class UserPrayerTimes(object):
             self.prayer_times.chat_id,
             datetime.datetime.now(),
         )
-        if user_prayers:
+        if not user_prayers:
             user = await self.prayer_times.user_repository.get_by_chat_id(self.prayer_times.chat_id)
             user_prayers = await self.prayer_times.prayer_times_repository.create_user_prayer_times(
                 prayer_ids=prayers_without_sunrise_ids,
@@ -84,7 +83,7 @@ class PrayerTimes(PrayerTimesInterface):
             user_repository=self.user_repository,
         )
 
-    def __str__(self) -> AnswerInterface:
+    def __str__(self) -> str:
         """Форматировать экземпляр класса в ответ.
 
         :returns: AnswerInterface
@@ -99,7 +98,7 @@ class PrayerTimes(PrayerTimesInterface):
             + 'Ахшам: {magrib_prayer_time}\n'
             + 'Ястү: {ishaa_prayer_time}'
         )
-        text = template.format(
+        return template.format(
             city_name=self.prayers[0].city,
             date=self.prayers[0].day.strftime('%d.%m.%Y'),
             fajr_prayer_time=self.prayers[0].time.strftime(time_format),
@@ -109,4 +108,3 @@ class PrayerTimes(PrayerTimesInterface):
             magrib_prayer_time=self.prayers[4].time.strftime(time_format),
             ishaa_prayer_time=self.prayers[5].time.strftime(time_format),
         )
-        return Answer(message=text)

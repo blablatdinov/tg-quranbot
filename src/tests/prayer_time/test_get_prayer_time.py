@@ -42,11 +42,11 @@ async def test(user_repository_mock):
         user_repository=user_repository_mock,
         chat_id=444,
     ).get()
-    answer = str(prayers)
+    formatted_prayers = str(prayers)
 
     assert isinstance(prayers, PrayerTimes)
-    assert '03.01.2020' in answer.message
-    assert 'Иртәнге: 01:01\n' in answer.message
+    assert '03.01.2020' in formatted_prayers
+    assert 'Иртәнге: 01:01\n' in formatted_prayers
 
 
 # async def test_user_with_other_timezone():
