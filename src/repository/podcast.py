@@ -5,24 +5,35 @@ from pydantic import BaseModel
 
 
 class Podcast(BaseModel):
+    """Модель подкаста."""
 
     audio_telegram_id: Optional[str]
     link_to_audio_file: str
 
 
 class PodcastRepositoryInterface(object):
+    """Интерфейс для работы с хранилищем подкастов."""
 
     async def get_random(self) -> Podcast:
+        """Получить случайный подкаст.
+
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
 
 @dataclass
 class PodcastRepository(PodcastRepositoryInterface):
+    """Класс для работы с хранилищем подкастов."""
 
     def __init__(self, connection):
         self.connection = connection
 
-    async def get_random(self):
+    async def get_random(self) -> Podcast:
+        """Получить случайный подкаст.
+
+        :returns: Podcast
+        """
         query = """
             SELECT
                 f.tg_file_id as audio_telegram_id,
