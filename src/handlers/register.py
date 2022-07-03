@@ -23,6 +23,7 @@ def _register_message_handlers(dp: Dispatcher):
     dp.register_message_handler(message_handlers.ayat_search_handler, filters.Regexp(AYAT_SEARCH_INPUT_REGEXP))
     dp.register_message_handler(message_handlers.prayer_times_handler, filters.Regexp(GET_PRAYER_TIMES_REGEXP))
     dp.register_message_handler(message_handlers.podcasts_handler, filters.Regexp(PODCAST_BUTTON))
+    dp.register_message_handler(message_handlers.favorite_ayats_list, filters.Regexp('Избранное'))
 
 
 def _register_button_handlers(dp: Dispatcher):

@@ -60,7 +60,7 @@ class RegisterUser(object):
         """
         return (
             await self.admin_messages_repository.get('start'),
-            str(await self.ayat_service.ayat_repository.first()),
+            str(await self.ayat_service.ayat_repository.get(1)),
         )
 
     async def register(self) -> AnswerInterface:

@@ -42,7 +42,7 @@ class AyatRepositoryInterface(object):
         """
         raise NotImplementedError
 
-    async def first(self) -> Ayat:
+    async def get_favorites(self, chat_id: int) -> list[Ayat]:
         """Метод для получения первого аята.
 
         :raises NotImplementedError: if not implemented
@@ -125,12 +125,7 @@ class AyatRepository(AyatRepositoryInterface):
         row = await self.connection.fetchrow(query, ayat_id)
         return Ayat(**dict(row))
 
-    async def first(self) -> Ayat:
-        """Метод для получения первого аята.
-
-        :raises: NotImplementedError if not implemented
-        :returns: Ayat
-        """
+    async def get_favorites(self, chat_id: int) -> list[Ayat]:
         query = """
             SELECT
                 a.id,
@@ -142,14 +137,18 @@ class AyatRepository(AyatRepositoryInterface):
                 a.trans as transliteration,
                 cf.tg_file_id as audio_telegram_id,
                 cf.link_to_file as link_to_audio_file
-            FROM content_ayat a
+            FROM bot_init_subscriber_favourite_ayats fa
+            INNER JOIN content_ayat a ON fa.ayat_id = a.id
+            INNER JOIN bot_init_subscriber sub ON fa.subscriber_id = sub.id
             INNER JOIN content_sura s on a.sura_id = s.id
             INNER JOIN content_file cf on a.audio_id = cf.id
-            ORDER BY a.id
-            LIMIT 1
+            WHERE sub.tg_chat_id = $1
         """
-        record = await self.connection.fetchrow(query)
-        return Ayat(**dict(record))
+        rows = await self.connection.fetch(query, chat_id)
+        return [
+            Ayat(**dict(row))
+            for row in rows
+        ]
 
     async def get_ayats_by_sura_num(self, sura_num: int) -> list[Ayat]:
         """Получить аят по номеру суры.

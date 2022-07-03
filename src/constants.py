@@ -4,3 +4,4 @@ PODCAST_BUTTON = '(П|п)одкасты'
 
 PRAYER_READED_EMOJI = '✅'
 PRAYER_NOT_READED_EMOJI = '❌'
+
