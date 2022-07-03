@@ -1,3 +1,4 @@
+import datetime
 
 from aiogram import types
 
@@ -8,7 +9,7 @@ from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
 from services.ayat import AyatsService
 from services.ayat_search import AyatSearch, SearchAnswer
-from services.prayer_time import UserPrayerTimes
+from services.prayer_time import PrayerTimes, UserPrayerTimes
 from services.register_user import get_register_user_instance
 
 
@@ -48,9 +49,11 @@ async def prayer_times_handler(message: types.Message):
     :param message: types.Message
     """
     async with db_connection() as connection:
-        prayers = await UserPrayerTimes(
-            prayer_times_repository=PrayerTimeRepository(connection),
-            user_repository=UserRepository(connection),
-            chat_id=message.chat.id,
-        ).get()
-        await prayers.format_to_answer().send(message.chat.id)
+        await UserPrayerTimes(
+            await PrayerTimes(
+                prayer_times_repository=PrayerTimeRepository(connection),
+                user_repository=UserRepository(connection),
+                chat_id=message.chat.id,
+            ).get(),
+            datetime.datetime.now(),
+        ).get_or_create_user_prayer_times()

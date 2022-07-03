@@ -52,7 +52,6 @@ async def test(ayat_repository_mock):
         chat_id=231,
         start_message_meta=StartMessageMeta(referrer=None),
     ).register()
-    print(got)
 
     assert got == [
         Answer(chat_id=231, message='start message'),
