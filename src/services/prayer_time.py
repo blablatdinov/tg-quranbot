@@ -1,8 +1,12 @@
 import datetime
 from dataclasses import dataclass, field
 
+from aiogram import types
+
+from constants import PRAYER_READED_EMOJI, PRAYER_NOT_READED_EMOJI
 from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
 from repository.user import UserRepositoryInterface
+from services.answer import AnswerInterface, Answer
 
 
 class PrayerTimesInterface(object):
@@ -57,6 +61,26 @@ class UserPrayerTimes(object):
 
 
 @dataclass
+class UserPrayerTimesKeyboard(object):
+    user_prayer_times: UserPrayerTimes
+
+    async def generate(self):
+        keyboard = types.InlineKeyboardMarkup()
+        user_prayers = await self.user_prayer_times.get_or_create_user_prayer_times()
+        buttons = []
+        for user_prayer in user_prayers:
+            callback_data_template = 'mark_not_readed({0})' if user_prayer.is_readed else 'mark_readed({0})'
+            buttons.append(types.InlineKeyboardButton(
+                PRAYER_READED_EMOJI if user_prayer.is_readed else PRAYER_NOT_READED_EMOJI,
+                callback_data=callback_data_template.format(user_prayer.id)
+            ))
+
+        keyboard.row(*buttons)
+
+        return keyboard
+
+
+@dataclass
 class PrayerTimes(PrayerTimesInterface):
     """Класс для работы с временами намазов."""
 
@@ -107,4 +131,17 @@ class PrayerTimes(PrayerTimesInterface):
             asr_prayer_time=self.prayers[3].time.strftime(time_format),
             magrib_prayer_time=self.prayers[4].time.strftime(time_format),
             ishaa_prayer_time=self.prayers[5].time.strftime(time_format),
+        )
+
+
+@dataclass
+class UserPrayerTimesAnswer(object):
+    user_prayer_times: UserPrayerTimes
+
+    async def to_answer(self) -> AnswerInterface:
+        return Answer(
+            message=str(self.user_prayer_times.prayer_times),
+            keyboard=await UserPrayerTimesKeyboard(
+                self.user_prayer_times,
+            ).generate()
         )
