@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from repository.admin_message import AdminMessageRepository, AdminMessageRepositoryInterface
-from repository.ayats import AyatRepository
+from repository.ayats.ayat import AyatRepository
 from repository.user import UserRepository, UserRepositoryInterface
 from services.answer import Answer, AnswerInterface, AnswersList
 from services.ayat import AyatServiceInterface, AyatsService
@@ -60,7 +60,7 @@ class RegisterUser(object):
         """
         return (
             await self.admin_messages_repository.get('start'),
-            await self.ayat_service.get_formatted_first_ayat(),
+            str(await self.ayat_service.ayat_repository.first()),
         )
 
     async def register(self) -> AnswerInterface:
@@ -98,6 +98,7 @@ async def get_register_user_instance(connection, chat_id: int, message: str) -> 
         admin_messages_repository=AdminMessageRepository(connection),
         ayat_service=AyatsService(
             AyatRepository(connection),
+            chat_id,
         ),
         chat_id=chat_id,
         start_message_meta=get_start_message_query(message),

@@ -9,8 +9,7 @@ python = "^3.9"
 aiogram = "^2.21"
 pydantic = {extras = ["dotenv"], version = "^1.9.1"}
 asyncpg = "^0.25.0"
-pytest = "^7.1.2"
-pytest-asyncio = "^0.18.3"
+loguru = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 wemake-python-styleguide = "^0.16.1"
@@ -19,6 +18,8 @@ mypy = "^0.961"
 asyncpg-stubs = "^0.25.4"
 Faker = "^13.14.0"
 pytest-cov = "^3.0.0"
+pytest = "^7.1.2"
+pytest-asyncio = "^0.18.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
