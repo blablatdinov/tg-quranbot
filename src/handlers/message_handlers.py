@@ -57,6 +57,6 @@ async def prayer_times_handler(message: types.Message):
                     chat_id=message.chat.id,
                 ).get(),
                 datetime.datetime.now(),
-            )
+            ),
         ).to_answer()
         await answer.send(message.chat.id)

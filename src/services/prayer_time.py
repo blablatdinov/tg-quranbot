@@ -3,10 +3,10 @@ from dataclasses import dataclass, field
 
 from aiogram import types
 
-from constants import PRAYER_READED_EMOJI, PRAYER_NOT_READED_EMOJI
+from constants import PRAYER_NOT_READED_EMOJI, PRAYER_READED_EMOJI
 from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
 from repository.user import UserRepositoryInterface
-from services.answer import AnswerInterface, Answer
+from services.answer import Answer, AnswerInterface
 
 
 class PrayerTimesInterface(object):
@@ -62,9 +62,15 @@ class UserPrayerTimes(object):
 
 @dataclass
 class UserPrayerTimesKeyboard(object):
+    """Клавиатура для времен намазов пользователей."""
+
     user_prayer_times: UserPrayerTimes
 
     async def generate(self):
+        """Генерация.
+
+        :returns: types.InlineKeyboardMarkup
+        """
         keyboard = types.InlineKeyboardMarkup()
         user_prayers = await self.user_prayer_times.get_or_create_user_prayer_times()
         buttons = []
@@ -72,7 +78,7 @@ class UserPrayerTimesKeyboard(object):
             callback_data_template = 'mark_not_readed({0})' if user_prayer.is_readed else 'mark_readed({0})'
             buttons.append(types.InlineKeyboardButton(
                 PRAYER_READED_EMOJI if user_prayer.is_readed else PRAYER_NOT_READED_EMOJI,
-                callback_data=callback_data_template.format(user_prayer.id)
+                callback_data=callback_data_template.format(user_prayer.id),
             ))
 
         keyboard.row(*buttons)
@@ -136,12 +142,18 @@ class PrayerTimes(PrayerTimesInterface):
 
 @dataclass
 class UserPrayerTimesAnswer(object):
+    """Ответ пользователю с временами намазов."""
+
     user_prayer_times: UserPrayerTimes
 
     async def to_answer(self) -> AnswerInterface:
+        """Форматировать в ответ.
+
+        :returns: AnswerInterface
+        """
         return Answer(
             message=str(self.user_prayer_times.prayer_times),
             keyboard=await UserPrayerTimesKeyboard(
                 self.user_prayer_times,
-            ).generate()
+            ).generate(),
         )

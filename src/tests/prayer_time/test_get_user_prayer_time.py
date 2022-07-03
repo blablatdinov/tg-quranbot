@@ -25,7 +25,7 @@ async def test_generate_for_date(user_repository_mock):
     ).get_or_create_user_prayer_times()
 
     assert isinstance(got[0], UserPrayer)
-    assert [user_prayer.id for user_prayer in got] == list(range(1000, 1006))
+    assert list(range(1000, 1006)) == [user_prayer.id for user_prayer in got]
 
 
 async def test_get_already_exists_user_prayers(user_repository_mock):
@@ -39,4 +39,4 @@ async def test_get_already_exists_user_prayers(user_repository_mock):
     ).get_or_create_user_prayer_times()
 
     assert isinstance(got[0], UserPrayer)
-    assert [user_prayer.id for user_prayer in got] == list(range(2000, 2006))
+    assert list(range(2000, 2006)) == [user_prayer.id for user_prayer in got]
