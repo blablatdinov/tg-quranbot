@@ -5,10 +5,12 @@ from aiogram import types
 from db import db_connection
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.neighbor_ayats import NeighborAyatsRepository
+from repository.podcast import PodcastRepository
 from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
 from services.ayat import AyatsService
 from services.ayat_search import AyatSearch, SearchAnswer
+from services.podcast import PodcastService, PodcastAnswer
 from services.prayer_time import PrayerTimes, UserPrayerTimes, UserPrayerTimesAnswer
 from services.register_user import get_register_user_instance
 
@@ -25,7 +27,7 @@ async def start_handler(message: types.Message):
 
 
 async def ayat_search_handler(message: types.Message):
-    """Ответ на команды: start.
+    """Поиск по аятам по номеру суры и аята.
 
     :param message: types.Message
     """
@@ -44,7 +46,7 @@ async def ayat_search_handler(message: types.Message):
 
 
 async def prayer_times_handler(message: types.Message):
-    """Ответ на команды: start.
+    """Получить времена намаза.
 
     :param message: types.Message
     """
@@ -60,3 +62,14 @@ async def prayer_times_handler(message: types.Message):
             ),
         ).to_answer()
         await answer.send(message.chat.id)
+
+
+async def podcasts_handler(message: types.Message):
+    async with db_connection() as connection:
+        answer = PodcastAnswer(
+            await PodcastService(
+                PodcastRepository(connection)
+            ).get_random()
+        ).transform()
+
+    await answer.send(message.chat.id)
