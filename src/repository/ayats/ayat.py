@@ -45,6 +45,7 @@ class AyatRepositoryInterface(object):
     async def get_favorites(self, chat_id: int) -> list[Ayat]:
         """Метод для получения первого аята.
 
+        :param chat_id: int
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -126,6 +127,11 @@ class AyatRepository(AyatRepositoryInterface):
         return Ayat(**dict(row))
 
     async def get_favorites(self, chat_id: int) -> list[Ayat]:
+        """Получить избранные аяты.
+
+        :param chat_id: int
+        :returns: list[Ayat]
+        """
         query = """
             SELECT
                 a.id,

@@ -109,10 +109,15 @@ class AyatSearchInterface(object):
 
 @dataclass
 class FavoriteAyats(AyatSearchInterface):
+    """Получить избранные аяты."""
 
     ayat_service: AyatServiceInterface
 
     async def search(self) -> Ayat:
+        """Поиск избранных аятов.
+
+        :returns: Ayat
+        """
         favorite_ayats = await self.ayat_service.ayat_repository.get_favorites(self.ayat_service.chat_id)
         return favorite_ayats[0]
 

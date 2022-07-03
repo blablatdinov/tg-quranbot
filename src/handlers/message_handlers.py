@@ -4,12 +4,12 @@ from aiogram import types
 
 from db import db_connection
 from repository.ayats.ayat import AyatRepository
-from repository.ayats.neighbor_ayats import NeighborAyatsRepository, FavoriteAyatsNeighborRepository
+from repository.ayats.neighbor_ayats import FavoriteAyatsNeighborRepository, NeighborAyatsRepository
 from repository.podcast import PodcastRepository
 from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
 from services.ayat import AyatsService
-from services.ayat_search import AyatSearch, SearchAnswer, FavoriteAyats
+from services.ayat_search import AyatSearch, FavoriteAyats, SearchAnswer
 from services.podcast import PodcastAnswer, PodcastService
 from services.prayer_time import PrayerTimes, UserPrayerTimes, UserPrayerTimesAnswer
 
