@@ -4,13 +4,16 @@ import enum
 from pydantic import BaseModel
 
 
-class UserActionEnum(str, enum.Enum):
+class UserActionEnum(str, enum.Enum):  # noqa: WPS600
+    """Типы действий пользователя."""
+
     SUBSCRIBED = 'subscribed'
     UNSUBSCRIBED = 'unsubscribed'
     REACTIVATED = 'reactivated'
 
 
 class UserAction(BaseModel):
+    """Модель действия пользователя."""
 
     date_time: datetime.datetime
     action: UserActionEnum
@@ -18,6 +21,7 @@ class UserAction(BaseModel):
 
 
 class UserActionRepositoryInterface(object):
+    """Интерфейс к хранилищу действий пользователя."""
 
     async def create_user_action(self, chat_id: int, action: UserActionEnum):
         """Создать действие пользователя.
@@ -30,6 +34,7 @@ class UserActionRepositoryInterface(object):
 
 
 class UserActionRepository(UserActionRepositoryInterface):
+    """Класс для работы с действиями пользователя в БД."""
 
     def __init__(self, connection):
         self.connection = connection

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from repository.admin_message import AdminMessageRepository, AdminMessageRepositoryInterface
 from repository.ayats.ayat import AyatRepository
 from repository.user import UserRepository, UserRepositoryInterface
-from repository.user_actions import UserActionRepositoryInterface, UserActionEnum
+from repository.user_actions import UserActionEnum, UserActionRepositoryInterface
 from services.answer import Answer, AnswerInterface, AnswersList
 from services.ayat import AyatServiceInterface, AyatsService
 from services.start_message import StartMessageMeta, get_start_message_query
@@ -29,8 +29,7 @@ class RegisterUser(object):
         if user_exists:
             return await self.service_exists_user()
 
-        await self.user_repository.create(self.chat_id, self.start_message_meta.referrer)
-        await self.user_action_repository.create_user_action(self.chat_id, UserActionEnum.SUBSCRIBED)
+        await self.creating_user()
         start_message, formatted_first_ayat = await self.get_start_messages()
 
         if self.start_message_meta.referrer:
@@ -41,6 +40,11 @@ class RegisterUser(object):
             Answer(chat_id=self.chat_id, message=start_message),
             Answer(chat_id=self.chat_id, message=formatted_first_ayat),
         )
+
+    async def creating_user(self):
+        """Создание пользователя."""
+        await self.user_repository.create(self.chat_id, self.start_message_meta.referrer)
+        await self.user_action_repository.create_user_action(self.chat_id, UserActionEnum.SUBSCRIBED)
 
     async def service_exists_user(self) -> Answer:
         """Обработка уже зарегестрированного пользователя.

@@ -5,7 +5,8 @@ import pytest
 from constants import GET_PRAYER_TIMES_REGEXP
 from repository.user import User
 from services.prayer_time import PrayerTimes
-from tests.mocks import PrayerTimeRepositoryMock, UserRepositoryMock
+from tests.mocks.prayer_time_repository import PrayerTimeRepositoryMock
+from tests.mocks.user_repository import UserRepositoryMock
 
 
 @pytest.fixture()

@@ -1,6 +1,6 @@
 from services.answer import Answer
 from services.podcast import PodcastAnswer, PodcastService
-from tests.mocks import PodcastRepositoryMock
+from tests.mocks.podcast_repository import PodcastRepositoryMock
 
 
 async def test():

@@ -6,7 +6,7 @@ from constants import AYAT_SEARCH_INPUT_REGEXP
 from exceptions import AyatNotFoundError, SuraNotFoundError
 from services.ayat import AyatsService
 from services.ayats.ayat_search import AyatSearch
-from tests.mocks import AyatRepositoryMock
+from tests.mocks.ayat_repository import AyatRepositoryMock
 
 
 @pytest.mark.parametrize('input_,expect', [
