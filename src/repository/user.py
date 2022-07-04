@@ -11,7 +11,7 @@ class User(BaseModel):
     day: int
     referrer: Optional[int] = None
     chat_id: int
-    city_id: int
+    city_id: Optional[int]
 
 
 class UserRepositoryInterface(object):
@@ -48,6 +48,9 @@ class UserRepositoryInterface(object):
         :param chat_id: int
         :raises NotImplementedError: if not implemented
         """
+        raise NotImplementedError
+
+    async def active_users(self):
         raise NotImplementedError
 
 
@@ -98,3 +101,21 @@ class UserRepository(UserRepositoryInterface):
         query = 'SELECT COUNT(*) FROM bot_init_subscriber WHERE tg_chat_id = $1'
         record = await self.connection.fetchrow(query, chat_id)
         return bool(record['count'])
+
+    async def active_users(self):
+        query = """
+            SELECT
+                id,
+                is_active,
+                day,
+                referer_id as referrer,
+                tg_chat_id as chat_id,
+                city_id
+            FROM bot_init_subscriber
+            WHERE is_active = 't'
+        """
+        rows = await self.connection.fetch(query)
+        return [
+            User(**dict(row))
+            for row in rows
+        ]
