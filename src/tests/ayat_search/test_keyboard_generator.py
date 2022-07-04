@@ -2,7 +2,7 @@ from aiogram import types
 
 from services.ayats.ayat_search import AyatPaginatorCallbackDataTemplate
 from services.ayats.keyboard import AyatSearchKeyboard
-from tests.mocks import NeighborAyatsRepositoryMock
+from tests.mocks.neighbor_ayats_repository import NeighborAyatsRepositoryMock
 
 
 async def test_keyboard_for_first_ayat(ayat_repository_mock):

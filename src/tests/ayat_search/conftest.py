@@ -1,7 +1,7 @@
 import pytest
 
 from repository.ayats.ayat import Ayat
-from tests.mocks import AyatRepositoryMock
+from tests.mocks.ayat_repository import AyatRepositoryMock
 
 
 @pytest.fixture()

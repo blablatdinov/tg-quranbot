@@ -4,7 +4,8 @@ import pytest
 
 from repository.prayer_time import UserPrayer
 from services.prayer_time import PrayerTimes, UserPrayerTimes
-from tests.mocks import PrayerTimeRepositoryMock, UserRepositoryMock
+from tests.mocks.prayer_time_repository import PrayerTimeRepositoryMock
+from tests.mocks.user_repository import UserRepositoryMock
 
 
 @pytest.fixture()
