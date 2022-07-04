@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from repository.admin_message import AdminMessageRepository, AdminMessageRepositoryInterface
 from repository.ayats.ayat import AyatRepository
 from repository.user import UserRepository, UserRepositoryInterface
+from repository.user_actions import UserActionRepositoryInterface, UserActionEnum
 from services.answer import Answer, AnswerInterface, AnswersList
 from services.ayat import AyatServiceInterface, AyatsService
 from services.start_message import StartMessageMeta, get_start_message_query
@@ -15,8 +16,31 @@ class RegisterUser(object):
     user_repository: UserRepositoryInterface
     admin_messages_repository: AdminMessageRepositoryInterface
     ayat_service: AyatServiceInterface
+    user_action_repository: UserActionRepositoryInterface
     chat_id: int
     start_message_meta: StartMessageMeta
+
+    async def register(self) -> AnswerInterface:
+        """Entrypoint.
+
+        :returns: str Ответ пользователю
+        """
+        user_exists = await self.user_repository.exists(self.chat_id)
+        if user_exists:
+            return await self.service_exists_user()
+
+        await self.user_repository.create(self.chat_id, self.start_message_meta.referrer)
+        await self.user_action_repository.create_user_action(self.chat_id, UserActionEnum.SUBSCRIBED)
+        start_message, formatted_first_ayat = await self.get_start_messages()
+
+        if self.start_message_meta.referrer:
+            return await self.register_with_referrer(
+                self.start_message_meta.referrer, start_message, formatted_first_ayat,
+            )
+        return AnswersList(
+            Answer(chat_id=self.chat_id, message=start_message),
+            Answer(chat_id=self.chat_id, message=formatted_first_ayat),
+        )
 
     async def service_exists_user(self) -> Answer:
         """Обработка уже зарегестрированного пользователя.
@@ -27,6 +51,7 @@ class RegisterUser(object):
         if user.is_active:
             return Answer(chat_id=self.chat_id, message='Вы уже зарегистрированы')
 
+        await self.user_action_repository.create_user_action(self.chat_id, UserActionEnum.REACTIVATED)
         return Answer(
             chat_id=self.chat_id,
             message='Рады видеть вас снова, вы продолжите с дня {user_day}'.format(user_day=user.day),
@@ -38,7 +63,7 @@ class RegisterUser(object):
         start_message: str,
         formatted_first_ayat: str,
     ) -> AnswersList:
-        """Обработка регистрации с реферальным кодом.
+        """Создание сообщения после регистрации, если пользователь зарегистрировался по реф. ссылке.
 
         :param referrer_id: int
         :param start_message: str
@@ -61,27 +86,6 @@ class RegisterUser(object):
         return (
             await self.admin_messages_repository.get('start'),
             str(await self.ayat_service.ayat_repository.get(1)),
-        )
-
-    async def register(self) -> AnswerInterface:
-        """Entrypoint.
-
-        :returns: str Ответ пользователю
-        """
-        user_exists = await self.user_repository.exists(self.chat_id)
-        if user_exists:
-            return await self.service_exists_user()
-
-        await self.user_repository.create(self.chat_id, self.start_message_meta.referrer)
-        start_message, formatted_first_ayat = await self.get_start_messages()
-
-        if self.start_message_meta.referrer:
-            return await self.register_with_referrer(
-                self.start_message_meta.referrer, start_message, formatted_first_ayat,
-            )
-        return AnswersList(
-            Answer(chat_id=self.chat_id, message=start_message),
-            Answer(chat_id=self.chat_id, message=formatted_first_ayat),
         )
 
 
