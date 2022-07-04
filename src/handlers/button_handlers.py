@@ -10,6 +10,7 @@ from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
 from services.ayat import AyatsService
 from services.ayats.ayat_search import AyatById, AyatFavoriteStatus, FavoriteAyats, SearchAnswer
+from services.ayats.keyboard import AyatPaginatorCallbackDataTemplate
 from services.prayer_time import PrayerTimes, UserPrayerStatus, UserPrayerTimes
 from utlls import get_bot_instance
 
@@ -140,8 +141,8 @@ async def mark_prayer_as_not_readed(callback_query: types.CallbackQuery):
     )
 
 
-async def next_favorite(callback_query: types.CallbackQuery):
-    """Получить следующий аят из избранного.
+async def favorite_ayat(callback_query: types.CallbackQuery):
+    """Получить аят из избранного по кнопке.
 
     :param callback_query: types.CallbackQuery
     """
@@ -158,11 +159,3 @@ async def next_favorite(callback_query: types.CallbackQuery):
             FavoriteAyatsNeighborRepository(connection, callback_query.from_user.id),
         ).transform()
     await answer.send(callback_query.from_user.id)
-
-
-async def prev_favorite(callback_query: types.CallbackQuery):
-    """Получить предыдущий аят из избранного.
-
-    :param callback_query: types.CallbackQuery
-    """
-    pass

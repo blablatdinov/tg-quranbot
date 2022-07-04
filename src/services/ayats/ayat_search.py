@@ -13,6 +13,7 @@ class AyatSearchInterface(object):
     """Интерфейс класса, осуществляющего поиск аятов."""
 
     ayat_service: AyatServiceInterface
+    ayat_paginator_callback_data_template: AyatPaginatorCallbackDataTemplate
 
     async def search(self) -> Ayat:
         """Метод, осуществляющий поиск.
@@ -28,6 +29,7 @@ class FavoriteAyats(AyatSearchInterface):
 
     ayat_service: AyatServiceInterface
     ayat_id: Optional[int] = None
+    ayat_paginator_callback_data_template = AyatPaginatorCallbackDataTemplate.favorite_ayat_template
 
     async def search(self) -> Ayat:
         """Поиск избранных аятов.
@@ -148,7 +150,7 @@ class SearchAnswer(object):
                     ),
                     ayat_neighbors=await self.neighbors_ayat_repository.get_ayat_neighbors(ayat.id),
                     chat_id=self.ayat_search.ayat_service.chat_id,
-                    pagination_buttons_keyboard=AyatPaginatorCallbackDataTemplate.ayat_search_template,
+                    pagination_buttons_keyboard=self.ayat_search.ayat_paginator_callback_data_template,
                 ).generate(),
             ),
             Answer(link_to_file=ayat.link_to_audio_file, telegram_file_id=ayat.audio_telegram_id),

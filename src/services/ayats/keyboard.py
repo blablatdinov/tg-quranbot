@@ -34,8 +34,6 @@ class AyatSearchKeyboard(object):
 
         :returns: InlineKeyboard
         """
-        first_ayat_id = 1
-        last_ayat_id = 5737
         if self.ayat_is_favorite:
             favorite_button = types.InlineKeyboardButton(
                 text='Удалить из избранного',
@@ -47,12 +45,30 @@ class AyatSearchKeyboard(object):
                 callback_data=CALLBACK_DATA_ADD_TO_FAVORITE_TEMPLATE.format(ayat_id=self.ayat_id),
             )
 
-        if self.ayat_id == first_ayat_id:
+        if self._is_first_ayat(self.ayat_id, self.ayat_neighbors):
             return self._first_ayat_case(self.ayat_neighbors, favorite_button)
-        elif self.ayat_id == last_ayat_id:
+        elif self._is_last_ayat(self.ayat_id, self.ayat_neighbors):
             return self._last_ayat_case(self.ayat_neighbors, favorite_button)
 
         return self._middle_ayat_case(self.ayat_neighbors, favorite_button)
+
+    def _is_first_ayat(self, ayat_id, ayat_neighbors) -> bool:
+        if len(ayat_neighbors) != 2:
+            return False
+        for index, ayat in enumerate(self.ayat_neighbors):
+            if index == 0 and ayat.id == ayat_id:
+                return True
+
+        return False
+
+    def _is_last_ayat(self, ayat_id, ayat_neighbors) -> bool:
+        if len(ayat_neighbors) != 2:
+            return False
+        for index, ayat in enumerate(self.ayat_neighbors):
+            if index == 1 and ayat.id == ayat_id:
+                return True
+
+        return False
 
     def _first_ayat_case(self, neighbor_ayats, favorite_button):
         right_ayat = neighbor_ayats[1]
