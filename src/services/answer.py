@@ -78,8 +78,6 @@ class Answer(BaseModel, AnswerInterface):
         :raises InternalBotError: if not take chat_id
         """
         from exceptions import InternalBotError  # noqa: WPS433
-        #
-        # assert False, self.keyboard
 
         bot_instance = get_bot_instance()
         markup = self.get_markup()

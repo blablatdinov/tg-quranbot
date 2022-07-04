@@ -10,7 +10,6 @@ from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
 from services.ayat import AyatsService
 from services.ayats.ayat_search import AyatById, AyatFavoriteStatus, FavoriteAyats, SearchAnswer
-from services.ayats.keyboard import AyatPaginatorCallbackDataTemplate
 from services.prayer_time import PrayerTimes, UserPrayerStatus, UserPrayerTimes
 from utlls import get_bot_instance
 
