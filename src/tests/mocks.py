@@ -63,8 +63,13 @@ class AyatRepositoryMock(AyatRepositoryInterface):
             ),
         )
 
-    async def first(self):
-        return self.storage[0]
+    async def get(self, ayat_id: int) -> Ayat:
+        return list(
+            filter(
+                lambda ayat: ayat.id == ayat_id,
+                self.storage,
+            ),
+        )[0]
 
     async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
         return True

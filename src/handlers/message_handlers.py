@@ -4,12 +4,12 @@ from aiogram import types
 
 from db import db_connection
 from repository.ayats.ayat import AyatRepository
-from repository.ayats.neighbor_ayats import NeighborAyatsRepository
+from repository.ayats.neighbor_ayats import FavoriteAyatsNeighborRepository, NeighborAyatsRepository
 from repository.podcast import PodcastRepository
 from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
 from services.ayat import AyatsService
-from services.ayat_search import AyatSearch, SearchAnswer
+from services.ayats.ayat_search import AyatSearch, FavoriteAyats, SearchAnswer
 from services.podcast import PodcastAnswer, PodcastService
 from services.prayer_time import PrayerTimes, UserPrayerTimes, UserPrayerTimesAnswer
 
@@ -64,4 +64,22 @@ async def podcasts_handler(message: types.Message):
             ).get_random(),
         ).transform()
 
+    await answer.send(message.chat.id)
+
+
+async def favorite_ayats_list(message: types.Message):
+    """Получить избранные аяты.
+
+    :param message: types.Message
+    """
+    async with db_connection() as connection:
+        answer = await SearchAnswer(
+            FavoriteAyats(
+                AyatsService(
+                    AyatRepository(connection),
+                    message.chat.id,
+                ),
+            ),
+            FavoriteAyatsNeighborRepository(connection, message.chat.id),
+        ).transform()
     await answer.send(message.chat.id)

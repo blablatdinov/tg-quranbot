@@ -5,11 +5,11 @@ from aiogram import types
 
 from db import db_connection
 from repository.ayats.ayat import AyatRepository
-from repository.ayats.neighbor_ayats import NeighborAyatsRepository
+from repository.ayats.neighbor_ayats import FavoriteAyatsNeighborRepository, NeighborAyatsRepository
 from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
 from services.ayat import AyatsService
-from services.ayat_search import AyatById, AyatFavoriteStatus, SearchAnswer
+from services.ayats.ayat_search import AyatById, AyatFavoriteStatus, FavoriteAyats, SearchAnswer
 from services.prayer_time import PrayerTimes, UserPrayerStatus, UserPrayerTimes
 from utlls import get_bot_instance
 
@@ -138,3 +138,23 @@ async def mark_prayer_as_not_readed(callback_query: types.CallbackQuery):
         message_id=callback_query.message.message_id,
         reply_markup=keyboard,
     )
+
+
+async def favorite_ayat(callback_query: types.CallbackQuery):
+    """Получить аят из избранного по кнопке.
+
+    :param callback_query: types.CallbackQuery
+    """
+    ayat_id = int(re.search(r'\d+', callback_query.data).group(0))
+    async with db_connection() as connection:
+        answer = await SearchAnswer(
+            FavoriteAyats(
+                AyatsService(
+                    AyatRepository(connection),
+                    callback_query.from_user.id,
+                ),
+                ayat_id,
+            ),
+            FavoriteAyatsNeighborRepository(connection, callback_query.from_user.id),
+        ).transform()
+    await answer.send(callback_query.from_user.id)

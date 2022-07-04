@@ -1,6 +1,7 @@
 from aiogram import types
 
-from services.ayat_search import AyatSearchKeyboard
+from services.ayats.ayat_search import AyatPaginatorCallbackDataTemplate
+from services.ayats.keyboard import AyatSearchKeyboard
 from tests.mocks import NeighborAyatsRepositoryMock
 
 
@@ -12,6 +13,7 @@ async def test_keyboard_for_first_ayat(ayat_repository_mock):
         ayat_is_favorite=True,
         ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
+        pagination_buttons_keyboard=AyatPaginatorCallbackDataTemplate.ayat_search_template,
     ).generate()
     keyboard_as_list = dict(got)['inline_keyboard']
     keyboard_first_row = keyboard_as_list[0]
@@ -30,6 +32,7 @@ async def test_keyboard_for_last_ayat(ayat_repository_mock):
         ayat_is_favorite=True,
         ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
+        pagination_buttons_keyboard=AyatPaginatorCallbackDataTemplate.ayat_search_template,
     ).generate()
     keyboard_as_list = dict(got)['inline_keyboard']
     keyboard_first_row = keyboard_as_list[0]
@@ -48,6 +51,7 @@ async def test_keyboard_for_middle_ayat(ayat_repository_mock):
         ayat_is_favorite=True,
         ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
+        pagination_buttons_keyboard=AyatPaginatorCallbackDataTemplate.ayat_search_template,
     ).generate()
 
     keyboard_as_list = dict(got)['inline_keyboard']
@@ -70,6 +74,7 @@ async def test_add_to_favorite(ayat_repository_mock):
         ayat_is_favorite=False,
         ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
+        pagination_buttons_keyboard=AyatPaginatorCallbackDataTemplate.ayat_search_template,
     ).generate()
 
     add_to_favorite_button = dict(got)['inline_keyboard'][-1][0]
@@ -86,6 +91,7 @@ async def test_remove_from_favorite(ayat_repository_mock):
         ayat_is_favorite=True,
         ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
+        pagination_buttons_keyboard=AyatPaginatorCallbackDataTemplate.ayat_search_template,
     ).generate()
 
     add_to_favorite_button = dict(got)['inline_keyboard'][-1][0]

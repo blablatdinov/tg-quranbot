@@ -1,103 +1,19 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from aiogram import types
-
 from exceptions import AyatNotFoundError, SuraNotFoundError, exception_to_answer_formatter
-from repository.ayats.ayat import Ayat, AyatRepositoryInterface
-from repository.ayats.neighbor_ayats import AyatShort, NeighborAyatsRepositoryInterface
+from repository.ayats.ayat import Ayat
+from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
 from services.answer import Answer, AnswerInterface, AnswersList
 from services.ayat import AyatServiceInterface
-
-KEYBOARD_AYAT_TEMPLATE = '{0}:{1}'
-CALLBACK_DATA_GET_AYAT_TEMPLATE = 'get_ayat({ayat_id})'
-CALLBACK_DATA_ADD_TO_FAVORITE_TEMPLATE = 'add_to_favorite({ayat_id})'
-CALLBACK_DATA_REMOVE_FROM_FAVORITE_TEMPLATE = 'remove_from_favorite({ayat_id})'
-
-
-@dataclass
-class AyatSearchKeyboard(object):
-    """Клавиатура, выводимая пользователям вместе с найденными аятами."""
-
-    ayat_repository: AyatRepositoryInterface
-    ayat_id: int
-    ayat_is_favorite: bool
-    ayat_neighbors: list[AyatShort]
-    chat_id: int
-
-    def generate(self):
-        """Генерация клавиатуры.
-
-        :returns: InlineKeyboard
-        """
-        first_ayat_id = 1
-        last_ayat_id = 5737
-        if self.ayat_is_favorite:
-            favorite_button = types.InlineKeyboardButton(
-                text='Удалить из избранного',
-                callback_data=CALLBACK_DATA_REMOVE_FROM_FAVORITE_TEMPLATE.format(ayat_id=self.ayat_id),
-            )
-        else:
-            favorite_button = types.InlineKeyboardButton(
-                text='Добавить в избранное',
-                callback_data=CALLBACK_DATA_ADD_TO_FAVORITE_TEMPLATE.format(ayat_id=self.ayat_id),
-            )
-
-        if self.ayat_id == first_ayat_id:
-            return self._first_ayat_case(self.ayat_neighbors, favorite_button)
-        elif self.ayat_id == last_ayat_id:
-            return self._last_ayat_case(self.ayat_neighbors, favorite_button)
-
-        return self._middle_ayat_case(self.ayat_neighbors, favorite_button)
-
-    def _first_ayat_case(self, neighbor_ayats, favorite_button):
-        right_ayat = neighbor_ayats[1]
-        return (
-            types.InlineKeyboardMarkup()
-            .row(
-                types.InlineKeyboardButton(
-                    text=KEYBOARD_AYAT_TEMPLATE.format(right_ayat.sura_num, right_ayat.ayat_num),
-                    callback_data=CALLBACK_DATA_GET_AYAT_TEMPLATE.format(ayat_id=right_ayat.id),
-                ),
-            )
-            .row(favorite_button)
-        )
-
-    def _last_ayat_case(self, neighbor_ayats, favorite_button):
-        left_ayat = neighbor_ayats[0]
-        return (
-            types.InlineKeyboardMarkup()
-            .row(
-                types.InlineKeyboardButton(
-                    text=KEYBOARD_AYAT_TEMPLATE.format(left_ayat.sura_num, left_ayat.ayat_num),
-                    callback_data=CALLBACK_DATA_GET_AYAT_TEMPLATE.format(ayat_id=left_ayat.id),
-                ),
-            )
-            .row(favorite_button)
-        )
-
-    def _middle_ayat_case(self, neighbor_ayats, favorite_button):
-        left_ayat, right_ayat = neighbor_ayats[0], neighbor_ayats[2]
-        return (
-            types.InlineKeyboardMarkup()
-            .row(
-                types.InlineKeyboardButton(
-                    text=KEYBOARD_AYAT_TEMPLATE.format(left_ayat.sura_num, left_ayat.ayat_num),
-                    callback_data=CALLBACK_DATA_GET_AYAT_TEMPLATE.format(ayat_id=left_ayat.id),
-                ),
-                types.InlineKeyboardButton(
-                    text=KEYBOARD_AYAT_TEMPLATE.format(right_ayat.sura_num, right_ayat.ayat_num),
-                    callback_data=CALLBACK_DATA_GET_AYAT_TEMPLATE.format(ayat_id=right_ayat.id),
-                ),
-            )
-            .row(favorite_button)
-        )
+from services.ayats.keyboard import AyatPaginatorCallbackDataTemplate, AyatSearchKeyboard
 
 
 class AyatSearchInterface(object):
     """Интерфейс класса, осуществляющего поиск аятов."""
 
     ayat_service: AyatServiceInterface
+    ayat_paginator_callback_data_template: AyatPaginatorCallbackDataTemplate
 
     async def search(self) -> Ayat:
         """Метод, осуществляющий поиск.
@@ -105,6 +21,31 @@ class AyatSearchInterface(object):
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
+
+
+@dataclass
+class FavoriteAyats(AyatSearchInterface):
+    """Получить избранные аяты."""
+
+    ayat_service: AyatServiceInterface
+    ayat_id: Optional[int] = None
+    ayat_paginator_callback_data_template = AyatPaginatorCallbackDataTemplate.favorite_ayat_template
+
+    async def search(self) -> Ayat:
+        """Поиск избранных аятов.
+
+        :returns: Ayat
+        """
+        favorite_ayats = await self.ayat_service.ayat_repository.get_favorites(self.ayat_service.chat_id)
+        if not self.ayat_id:
+            return favorite_ayats[0]
+
+        return list(
+            filter(
+                lambda ayat: ayat.id == self.ayat_id,
+                favorite_ayats,
+            ),
+        )[0]
 
 
 @dataclass
@@ -209,6 +150,7 @@ class SearchAnswer(object):
                     ),
                     ayat_neighbors=await self.neighbors_ayat_repository.get_ayat_neighbors(ayat.id),
                     chat_id=self.ayat_search.ayat_service.chat_id,
+                    pagination_buttons_keyboard=self.ayat_search.ayat_paginator_callback_data_template,
                 ).generate(),
             ),
             Answer(link_to_file=ayat.link_to_audio_file, telegram_file_id=ayat.audio_telegram_id),
@@ -238,6 +180,7 @@ class AyatFavoriteStatus(object):
             ),
             ayat_neighbors=await self.neighbors_ayat_repository.get_ayat_neighbors(self.ayat_id),
             chat_id=self.ayat_service.chat_id,
+            pagination_buttons_keyboard=AyatPaginatorCallbackDataTemplate.ayat_search_template,
         ).generate()
 
     async def change(self, is_favorite: bool):
