@@ -51,6 +51,10 @@ class UserRepositoryInterface(object):
         raise NotImplementedError
 
     async def active_users(self):
+        """Получить активных пользователей.
+
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
 
@@ -102,7 +106,11 @@ class UserRepository(UserRepositoryInterface):
         record = await self.connection.fetchrow(query, chat_id)
         return bool(record['count'])
 
-    async def active_users(self):
+    async def active_users(self) -> list[User]:
+        """Получить активных пользователей.
+
+        :returns: list[User]
+        """
         query = """
             SELECT
                 id,

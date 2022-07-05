@@ -1,8 +1,8 @@
-from dataclasses import dataclass
 import asyncio
-import datetime
+from dataclasses import dataclass
+
+from aiogram.utils.exceptions import BotBlocked, ChatNotFound, UserDeactivated
 from loguru import logger
-from aiogram.utils.exceptions import ChatNotFound, BotBlocked, UserDeactivated
 
 from repository.user import UserRepositoryInterface
 from utlls import get_bot_instance
@@ -12,28 +12,26 @@ bot = get_bot_instance()
 
 @dataclass
 class UsersStatus(object):
+    """Статус пользователя."""
 
     user_repository: UserRepositoryInterface
 
     async def check(self):
+        """Проверить статус."""
         users = await self.user_repository.active_users()
-        t = datetime.datetime.now()
-        n = 0
-        for i in range(0, len(users), 100):
+        user_number = 0
+        for index in range(0, len(users), 100):
             tasks = []
-            for user in users[i:i + 100]:
+            for user in users[index:index + 100]:
                 tasks += [
-                    self.some_task(n, user.chat_id)
+                    self._try_send_typing_action(user_number, user.chat_id),
                 ]
-                n += 1
+                user_number += 1
             await asyncio.gather(*tasks)
 
-        logger.info('Time: {0}'.format(datetime.datetime.now() - t))
-
-    async def some_task(self, n, chat_id):
-        logger.info('{0}, try check id={1}'.format(n, chat_id))
+    async def _try_send_typing_action(self, user_number, chat_id):
+        logger.info('{0}, try check id={1}'.format(user_number, chat_id))
         try:
             await bot.send_chat_action(chat_id, 'typing')
         except (ChatNotFound, BotBlocked, UserDeactivated):
-            logger.info('id={1} unsubscribed'.format(n, chat_id))
-            pass
+            logger.info('id={0} unsubscribed'.format(chat_id))

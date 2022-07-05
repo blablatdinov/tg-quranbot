@@ -6,15 +6,17 @@ from services.user import UsersStatus
 
 
 async def run():
+    """Запуск проверки статуса пользователей."""
     async with db_connection() as connection:
         await UsersStatus(
-            UserRepository(connection)
+            UserRepository(connection),
         ).check()
 
 
 def main():
+    """Entrypoint."""
     asyncio.run(run())
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
