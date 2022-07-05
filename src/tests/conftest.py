@@ -15,10 +15,10 @@ def fake_text(faker):
 
 @pytest.fixture
 def user_factory(faker):
-    def _user_factory(chat_id: int = None):  # noqa: WPS430
+    def _user_factory(chat_id: int = None, is_active: bool = True):  # noqa: WPS430
         return User(
             id=random.randint(1, 9999),
-            is_active=True,
+            is_active=is_active,
             day=random.randint(1, 50),
             referrer=None,
             chat_id=chat_id or random.randint(1, 9999),
