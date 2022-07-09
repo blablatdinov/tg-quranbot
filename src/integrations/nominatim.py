@@ -14,7 +14,7 @@ class GeoServiceIntegrationInterface(object):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def search(self, latitude: str, longitude: str) -> list[str]:
+    async def search(self, latitude: str, longitude: str) -> str:
         """Поиск по координатам.
 
         :param latitude: str

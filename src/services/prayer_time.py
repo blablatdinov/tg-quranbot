@@ -151,7 +151,7 @@ class PrayerTimes(PrayerTimesInterface):
         )
 
 
-class UserHasNotExistsSafeAnswer(Answerable):
+class UserHasNotCityExistsSafeAnswer(Answerable):
     """Декоратор, для случаев если город, который ищет пользователь не найден."""
 
     def __init__(self, answerable_object: Answerable):
