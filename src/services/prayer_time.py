@@ -5,6 +5,7 @@ from aiogram import types
 from loguru import logger
 
 from constants import PRAYER_NOT_READED_EMOJI, PRAYER_READED_EMOJI
+from exceptions import UserHasNotCityId
 from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
 from repository.user import UserRepositoryInterface
 from services.answer import Answer, AnswerInterface
@@ -38,9 +39,10 @@ class UserPrayerTimes(object):
 
         :returns: list[UserPrayer]
         """
+        prayer_times = await self.prayer_times.get()
         prayers_without_sunrise = filter(
             lambda prayer: prayer.name != PrayerNames.SUNRISE,
-            self.prayer_times.prayers,
+            prayer_times.prayers,
         )
         prayers_without_sunrise_ids = [
             prayer.id
@@ -106,6 +108,8 @@ class PrayerTimes(PrayerTimesInterface):
         :returns: PrayerTimes
         """
         user = await self.user_repository.get_by_chat_id(self.chat_id)
+        if not user.city_id:
+            raise UserHasNotCityId
         prayers = await self.prayer_times_repository.get_prayer_times_for_date(
             chat_id=self.chat_id,
             target_datetime=datetime.datetime.now(),
@@ -145,8 +149,26 @@ class PrayerTimes(PrayerTimesInterface):
         )
 
 
+class Answerable(object):
+
+    async def to_answer(self) -> AnswerInterface:
+        raise NotImplementedError
+
+
+class UserHasNotExistsSafeAnswer(Answerable):
+
+    def __init__(self, answerable_object: Answerable):
+        self._origin = answerable_object
+
+    async def to_answer(self) -> AnswerInterface:
+        try:
+            return await self._origin.to_answer()
+        except UserHasNotCityId as e:
+            return Answer(message=e.message)
+
+
 @dataclass
-class UserPrayerTimesAnswer(object):
+class UserPrayerTimesAnswer(Answerable):
     """Ответ пользователю с временами намазов."""
 
     user_prayer_times: UserPrayerTimes
@@ -156,11 +178,13 @@ class UserPrayerTimesAnswer(object):
 
         :returns: AnswerInterface
         """
+        keyboard = await UserPrayerTimesKeyboard(
+            self.user_prayer_times,
+        ).generate()
+        prayers = await self.user_prayer_times.prayer_times.get()
         return Answer(
-            message=str(self.user_prayer_times.prayer_times),
-            keyboard=await UserPrayerTimesKeyboard(
-                self.user_prayer_times,
-            ).generate(),
+            keyboard=keyboard,
+            message=str(prayers),
         )
 
 

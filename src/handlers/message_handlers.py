@@ -11,7 +11,7 @@ from repository.user import UserRepository
 from services.ayat import AyatsService
 from services.ayats.ayat_search import AyatSearch, FavoriteAyats, SearchAnswer
 from services.podcast import PodcastAnswer, PodcastService
-from services.prayer_time import PrayerTimes, UserPrayerTimes, UserPrayerTimesAnswer
+from services.prayer_time import PrayerTimes, UserPrayerTimes, UserPrayerTimesAnswer, UserHasNotExistsSafeAnswer
 
 
 async def ayat_search_handler(message: types.Message):
@@ -39,15 +39,17 @@ async def prayer_times_handler(message: types.Message):
     :param message: types.Message
     """
     async with db_connection() as connection:
-        answer = await UserPrayerTimesAnswer(
-            UserPrayerTimes(
-                await PrayerTimes(
-                    prayer_times_repository=PrayerTimeRepository(connection),
-                    user_repository=UserRepository(connection),
-                    chat_id=message.chat.id,
-                ).get(),
-                datetime.datetime.now(),
-            ),
+        answer = await UserHasNotExistsSafeAnswer(
+            UserPrayerTimesAnswer(
+                UserPrayerTimes(
+                    PrayerTimes(
+                        prayer_times_repository=PrayerTimeRepository(connection),
+                        user_repository=UserRepository(connection),
+                        chat_id=message.chat.id,
+                    ),
+                    datetime.datetime.now(),
+                ),
+            )
         ).to_answer()
         await answer.send(message.chat.id)
 

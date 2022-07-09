@@ -38,6 +38,11 @@ class AyatNotFoundError(BaseAppError):
     message = 'Аят не найден'
 
 
+class UserHasNotCityId(BaseAppError):
+
+    message = 'Вы не указали город, отправьте местоположение или воспользуйтесь поиском'
+
+
 def exception_to_answer_formatter(func: Callable):
     """Декоратор обрабатывающий ошибки бота и возвращающий из них AnswerInterface.
 
