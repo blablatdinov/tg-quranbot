@@ -29,3 +29,6 @@ class UserRepositoryMock(UserRepositoryInterface):
 
     async def exists(self, chat_id: int):
         return chat_id in {user.chat_id for user in self.storage}
+
+    async def active_users(self):
+        return list(filter(lambda user: user.is_active, self.storage))
