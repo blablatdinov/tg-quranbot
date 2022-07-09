@@ -164,7 +164,10 @@ class UserHasNotExistsSafeAnswer(Answerable):
         try:
             return await self._origin.to_answer()
         except UserHasNotCityId as e:
-            return Answer(message=e.message)
+            keyboard = types.InlineKeyboardMarkup().row(
+                types.InlineKeyboardButton('Поиск города', switch_inline_query_current_chat='')
+            )
+            return Answer(message=e.message, keyboard=keyboard)
 
 
 @dataclass

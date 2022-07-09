@@ -11,7 +11,7 @@ from repository.user import UserRepository
 from services.ayat import AyatsService
 from services.ayats.ayat_search import AyatSearch, FavoriteAyats, SearchAnswer
 from services.podcast import PodcastAnswer, PodcastService
-from services.prayer_time import PrayerTimes, UserPrayerTimes, UserPrayerTimesAnswer, UserHasNotExistsSafeAnswer
+from services.prayer_time import PrayerTimes, UserHasNotExistsSafeAnswer, UserPrayerTimes, UserPrayerTimesAnswer
 
 
 async def ayat_search_handler(message: types.Message):

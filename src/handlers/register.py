@@ -2,7 +2,7 @@ from aiogram import Dispatcher
 from aiogram.dispatcher import filters
 
 from constants import AYAT_SEARCH_INPUT_REGEXP, GET_PRAYER_TIMES_REGEXP, PODCAST_BUTTON
-from handlers import button_handlers, command_handlers, message_handlers
+from handlers import button_handlers, command_handlers, message_handlers, search_handler
 
 
 def register_handlers(dp: Dispatcher):
@@ -12,6 +12,9 @@ def register_handlers(dp: Dispatcher):
     """
     _register_message_handlers(dp)
     _register_button_handlers(dp)
+    dp.register_inline_handler(
+        search_handler.inline_search_handler
+    )
 
 
 def _register_message_handlers(dp: Dispatcher):
