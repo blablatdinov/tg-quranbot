@@ -38,6 +38,11 @@ class AyatNotFoundError(BaseAppError):
     message = 'Аят не найден'
 
 
+class CityNotSupportedError(BaseAppError):
+
+    message = 'Такой город не обслуживается'
+
+
 class UserHasNotCityId(BaseAppError):
 
     message = 'Вы не указали город, отправьте местоположение или воспользуйтесь поиском'
