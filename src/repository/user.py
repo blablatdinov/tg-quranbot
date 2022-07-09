@@ -57,6 +57,15 @@ class UserRepositoryInterface(object):
         """
         raise NotImplementedError
 
+    async def update_city(self, chat_id: int, city_id: int):
+        """Обновить город пользователя.
+
+        :param chat_id: int
+        :param city_id: int
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
 
 class UserRepository(UserRepositoryInterface):
     """Репозиторий для работы с пользователями."""
@@ -127,3 +136,16 @@ class UserRepository(UserRepositoryInterface):
             User(**dict(row))
             for row in rows
         ]
+
+    async def update_city(self, chat_id: int, city_id: int):
+        """Обновить город пользователя.
+
+        :param chat_id: int
+        :param city_id: int
+        """
+        query = """
+            UPDATE bot_init_subscriber
+            SET city_id = $1
+            WHERE tg_chat_id = $2
+        """
+        await self.connection.execute(query, city_id, chat_id)

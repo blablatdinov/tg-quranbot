@@ -4,7 +4,9 @@ from dataclasses import dataclass, field
 from aiogram import types
 from loguru import logger
 
+from answerable import Answerable
 from constants import PRAYER_NOT_READED_EMOJI, PRAYER_READED_EMOJI
+from exceptions import UserHasNotCityIdError
 from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
 from repository.user import UserRepositoryInterface
 from services.answer import Answer, AnswerInterface
@@ -38,9 +40,10 @@ class UserPrayerTimes(object):
 
         :returns: list[UserPrayer]
         """
+        prayer_times = await self.prayer_times.get()
         prayers_without_sunrise = filter(
             lambda prayer: prayer.name != PrayerNames.SUNRISE,
-            self.prayer_times.prayers,
+            prayer_times.prayers,
         )
         prayers_without_sunrise_ids = [
             prayer.id
@@ -104,8 +107,11 @@ class PrayerTimes(PrayerTimesInterface):
         """Получить экземпляр класса.
 
         :returns: PrayerTimes
+        :raises UserHasNotCityIdError: если город не найден в БД
         """
         user = await self.user_repository.get_by_chat_id(self.chat_id)
+        if not user.city_id:
+            raise UserHasNotCityIdError
         prayers = await self.prayer_times_repository.get_prayer_times_for_date(
             chat_id=self.chat_id,
             target_datetime=datetime.datetime.now(),
@@ -145,8 +151,28 @@ class PrayerTimes(PrayerTimesInterface):
         )
 
 
+class UserHasNotCityExistsSafeAnswer(Answerable):
+    """Декоратор, для случаев если город, который ищет пользователь не найден."""
+
+    def __init__(self, answerable_object: Answerable):
+        self._origin = answerable_object
+
+    async def to_answer(self) -> AnswerInterface:
+        """Форматирует в ответ.
+
+        :returns: AnswerInterface
+        """
+        try:
+            return await self._origin.to_answer()
+        except UserHasNotCityIdError as exception:
+            keyboard = types.InlineKeyboardMarkup().row(
+                types.InlineKeyboardButton('Поиск города', switch_inline_query_current_chat=''),
+            )
+            return Answer(message=exception.message, keyboard=keyboard)
+
+
 @dataclass
-class UserPrayerTimesAnswer(object):
+class UserPrayerTimesAnswer(Answerable):
     """Ответ пользователю с временами намазов."""
 
     user_prayer_times: UserPrayerTimes
@@ -156,11 +182,13 @@ class UserPrayerTimesAnswer(object):
 
         :returns: AnswerInterface
         """
+        keyboard = await UserPrayerTimesKeyboard(
+            self.user_prayer_times,
+        ).generate()
+        prayers = await self.user_prayer_times.prayer_times.get()
         return Answer(
-            message=str(self.user_prayer_times.prayer_times),
-            keyboard=await UserPrayerTimesKeyboard(
-                self.user_prayer_times,
-            ).generate(),
+            keyboard=keyboard,
+            message=str(prayers),
         )
 
 

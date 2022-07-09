@@ -37,6 +37,7 @@ class PrayerTimeRepositoryMock(PrayerTimeRepositoryInterface):
     ) -> list[UserPrayer]:
         return {
             1234: [],
+            111: [],
             4321: [UserPrayer(id=prayer_id, is_readed=True) for prayer_id in range(2000, 2006)],
         }.get(chat_id)
 

@@ -38,6 +38,18 @@ class AyatNotFoundError(BaseAppError):
     message = 'Аят не найден'
 
 
+class CityNotSupportedError(BaseAppError):
+    """Исключение, вызываемое если при поиске города, он не нашелся в БД."""
+
+    message = 'Такой город не обслуживается'
+
+
+class UserHasNotCityIdError(BaseAppError):
+    """Исключение, вызываемое если пользователь без установленного города запросил времена намазов."""
+
+    message = 'Вы не указали город, отправьте местоположение или воспользуйтесь поиском'
+
+
 def exception_to_answer_formatter(func: Callable):
     """Декоратор обрабатывающий ошибки бота и возвращающий из них AnswerInterface.
 
