@@ -32,7 +32,7 @@ class NominatimIntegration(GeoServiceIntegrationInterface):
     def __init__(self, request_client: IntegrationClientInterface):
         self._request_client = request_client
 
-    async def search(self, latitude: str, longitude: str) -> list[str]:
+    async def search(self, latitude: str, longitude: str) -> str:
         """Поиск по координатам.
 
         :param latitude: str
@@ -42,4 +42,4 @@ class NominatimIntegration(GeoServiceIntegrationInterface):
         url_template = 'https://nominatim.openstreetmap.org/reverse.php?lat={latitude}&lon={longitude}&format=jsonv2'
         url = url_template.format(latitude=latitude, longitude=longitude)
         response: NominatimSearchResponse = await self._request_client.act(url, NominatimSearchResponse)
-        return response.display_name.replace(',', '').split(' ')
+        return response.address.city
