@@ -4,9 +4,10 @@ from aiogram import types
 from exceptions import CityNotSupportedError
 from integrations.nominatim import NominatimIntegration
 from repository.city import City, CityRepositoryInterface
-from services.city import CitySearchInlineAnswer, CityService, SearchCityByCoordinates, SearchCityByName
-from tests.mocks.integration_client import IntegrationClientMock
+from services.city.search import CitySearchInlineAnswer, SearchCityByCoordinates, SearchCityByName
+from services.city.service import CityService
 from settings import settings
+from tests.mocks.integration_client import IntegrationClientMock
 
 
 @pytest.fixture()
@@ -27,8 +28,8 @@ class CityRepositoryMock(CityRepositoryInterface):
         return list(
             filter(
                 lambda city: city.name == query,
-                self._storage
-            )
+                self._storage,
+            ),
         )
 
 
@@ -38,7 +39,7 @@ async def test_by_name():
             CityService(
                 CityRepositoryMock(),
             ),
-            'Казань'
+            'Казань',
         ),
     ).to_inline_search_result()
 
@@ -53,12 +54,12 @@ async def test_by_name_not_found():
             CityService(
                 CityRepositoryMock(),
             ),
-            'Неизвестный город'
+            'Неизвестный город',
         ),
     ).to_inline_search_result()
 
     assert isinstance(cities_query_answer, list)
-    assert len(cities_query_answer) == 0
+    assert len(cities_query_answer) == 0  # noqa: WPS507 Found useless `len()` compare
 
 
 async def test_by_coordinates(path_to_nominatim_response_kazan_fixture):

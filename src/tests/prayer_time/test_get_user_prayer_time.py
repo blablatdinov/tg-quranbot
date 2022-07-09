@@ -11,7 +11,11 @@ from tests.mocks.user_repository import UserRepositoryMock
 @pytest.fixture()
 def user_repository_mock(user_factory):
     mock = UserRepositoryMock()
-    mock.storage = [user_factory(1234), user_factory(4321), user_factory(111, city_id=0)]
+    mock.storage = [
+        user_factory(1234),
+        user_factory(4321),
+        user_factory(111, city_id=0),
+    ]
     return mock
 
 
@@ -53,8 +57,8 @@ async def test_get_prayer_time_without_city(user_repository_mock):
                     chat_id=111,
                 ),
                 datetime.datetime.now(),
-            )
-        )
+            ),
+        ),
     ).to_answer()
 
     assert got.message == 'Вы не указали город, отправьте местоположение или воспользуйтесь поиском'

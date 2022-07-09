@@ -2,7 +2,8 @@ from aiogram import types
 
 from db import db_connection
 from repository.city import CityRepository
-from services.city import CitySearchInlineAnswer, CityService, SearchCityByName
+from services.city.search import CitySearchInlineAnswer, SearchCityByName
+from services.city.service import CityService
 
 
 async def inline_search_handler(query: types.InlineQuery):
@@ -16,7 +17,7 @@ async def inline_search_handler(query: types.InlineQuery):
                 CityService(
                     CityRepository(connection),
                 ),
-                query.query
+                query.query,
             ),
         ).to_inline_search_result()
 

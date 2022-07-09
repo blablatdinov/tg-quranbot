@@ -1,39 +1,26 @@
 from aiogram import types
 
-from answerable import Answerable
 from exceptions import CityNotSupportedError
 from integrations.nominatim import GeoServiceIntegrationInterface
-from repository.city import City, CityRepositoryInterface
-from repository.user import UserRepositoryInterface
-from services.answer import Answer, AnswerInterface
-
-
-class CityService(object):
-    """Класс для работы с городами."""
-
-    _city_repository: CityRepositoryInterface
-
-    def __init__(self, city_repository: CityRepositoryInterface):
-        self._city_repository = city_repository
-
-    async def search_by_name(self, query: str) -> list[City]:
-        """Конструктор для поиска по имени.
-
-        :param query: str
-        :returns: CityService
-        """
-        return await self._city_repository.search_by_name(query)
+from repository.city import City
+from services.city.service import CityService
 
 
 class CitySearchInterface(object):
+    """Интерфейс для поиска городов."""
 
     _city_service: CityService
 
     async def search(self) -> list[City]:
+        """Осуществить поиск.
+
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
 
 class SearchCityByName(CitySearchInterface):
+    """Поиск города по названию."""
 
     _city_service: CityService
 
@@ -42,39 +29,15 @@ class SearchCityByName(CitySearchInterface):
         self._query = query
 
     async def search(self) -> list[City]:
+        """Осуществить поиск.
+
+        :returns: list[City]
+        """
         return await self._city_service.search_by_name(self._query)
 
 
-class UserCity(object):
-
-    _city_search: CitySearchInterface
-    _user_repository: UserRepositoryInterface
-    _chat_id: int
-
-    def __init__(self, city_search: CitySearchInterface, user_repository: UserRepositoryInterface, chat_id: int):
-        self._city_search = city_search
-        self._user_repository = user_repository
-        self._chat_id = chat_id
-
-    async def update_city(self) -> City:
-        city = (await self._city_search.search())[0]
-        await self._user_repository.update_city(self._chat_id, city.id)
-        return city
-
-
-class UserCityAnswer(Answerable):
-
-    _user_city: UserCity
-
-    def __init__(self, user_city: UserCity):
-        self._user_city = user_city
-
-    async def to_answer(self) -> AnswerInterface:
-        city = await self._user_city.update_city()
-        return Answer(message='Вам будет приходить время намаза для г. {}'.format(city.name))
-
-
 class SearchCityByCoordinates(CitySearchInterface):
+    """Поиск города по координатам."""
 
     _city_service: CityService
     _geo_service_integration: GeoServiceIntegrationInterface
@@ -94,27 +57,21 @@ class SearchCityByCoordinates(CitySearchInterface):
         self._longitude = longitude
 
     async def search(self) -> list[City]:
+        """Осуществить поиск.
+
+        :returns: list[City]
+        :raises CityNotSupportedError: если город не найден в БД
+        """
         city_name = await self._geo_service_integration.search(self._latitude, self._longitude)
         cities = await self._city_service.search_by_name(city_name)
-        if len(cities) == 0:
+        if not cities:
             template = 'Для города {0} я не знаю времен намазов, пожалуйста напишите моему разработчику'
             raise CityNotSupportedError(template.format(city_name))
         return cities
 
 
-class CityNotSupportedSafetyAnswer(Answerable):
-
-    def __init__(self, answer: Answerable):
-        self._origin = answer
-
-    async def to_answer(self) -> AnswerInterface:
-        try:
-            return await self._origin.to_answer()
-        except CityNotSupportedError as error:
-            return Answer(message=error.message)
-
-
 class CitySearchInlineAnswer(object):
+    """Ответ на поиск."""
 
     _city_search: CitySearchInterface
 

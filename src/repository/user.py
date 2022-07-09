@@ -60,10 +60,11 @@ class UserRepositoryInterface(object):
     async def update_city(self, chat_id: int, city_id: int):
         """Обновить город пользователя.
 
+        :param chat_id: int
+        :param city_id: int
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
-
 
 
 class UserRepository(UserRepositoryInterface):
@@ -139,11 +140,12 @@ class UserRepository(UserRepositoryInterface):
     async def update_city(self, chat_id: int, city_id: int):
         """Обновить город пользователя.
 
+        :param chat_id: int
+        :param city_id: int
         """
         query = """
             UPDATE bot_init_subscriber
             SET city_id = $1
             WHERE tg_chat_id = $2
         """
-        print(f'{chat_id=}', f'{city_id=}')
         await self.connection.execute(query, city_id, chat_id)
