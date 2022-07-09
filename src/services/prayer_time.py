@@ -4,8 +4,9 @@ from dataclasses import dataclass, field
 from aiogram import types
 from loguru import logger
 
+from answerable import Answerable
 from constants import PRAYER_NOT_READED_EMOJI, PRAYER_READED_EMOJI
-from exceptions import UserHasNotCityId
+from exceptions import UserHasNotCityIdError
 from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
 from repository.user import UserRepositoryInterface
 from services.answer import Answer, AnswerInterface
@@ -106,10 +107,11 @@ class PrayerTimes(PrayerTimesInterface):
         """Получить экземпляр класса.
 
         :returns: PrayerTimes
+        :raises UserHasNotCityIdError: если город не найден в БД
         """
         user = await self.user_repository.get_by_chat_id(self.chat_id)
         if not user.city_id:
-            raise UserHasNotCityId
+            raise UserHasNotCityIdError
         prayers = await self.prayer_times_repository.get_prayer_times_for_date(
             chat_id=self.chat_id,
             target_datetime=datetime.datetime.now(),
@@ -149,25 +151,24 @@ class PrayerTimes(PrayerTimesInterface):
         )
 
 
-class Answerable(object):
-
-    async def to_answer(self) -> AnswerInterface:
-        raise NotImplementedError
-
-
 class UserHasNotExistsSafeAnswer(Answerable):
+    """Декоратор, для случаев если город, который ищет пользователь не найден."""
 
     def __init__(self, answerable_object: Answerable):
         self._origin = answerable_object
 
     async def to_answer(self) -> AnswerInterface:
+        """Форматирует в ответ.
+
+        :returns: AnswerInterface
+        """
         try:
             return await self._origin.to_answer()
-        except UserHasNotCityId as e:
+        except UserHasNotCityIdError as exception:
             keyboard = types.InlineKeyboardMarkup().row(
-                types.InlineKeyboardButton('Поиск города', switch_inline_query_current_chat='')
+                types.InlineKeyboardButton('Поиск города', switch_inline_query_current_chat=''),
             )
-            return Answer(message=e.message, keyboard=keyboard)
+            return Answer(message=exception.message, keyboard=keyboard)
 
 
 @dataclass

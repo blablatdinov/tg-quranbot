@@ -39,11 +39,13 @@ class AyatNotFoundError(BaseAppError):
 
 
 class CityNotSupportedError(BaseAppError):
+    """Исключение, вызываемое если при поиске города, он не нашелся в БД."""
 
     message = 'Такой город не обслуживается'
 
 
-class UserHasNotCityId(BaseAppError):
+class UserHasNotCityIdError(BaseAppError):
+    """Исключение, вызываемое если пользователь без установленного города запросил времена намазов."""
 
     message = 'Вы не указали город, отправьте местоположение или воспользуйтесь поиском'
 

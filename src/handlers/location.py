@@ -8,6 +8,10 @@ from services.city import Cities, CitiesCoordinatesSearch, CitiesCoordinatesSear
 
 
 async def location_handler(message: types.Message):
+    """Обработчик, присланных боту геопозиций.
+
+    :param message: types.Message
+    """
     async with db_connection() as connection:
         answer = await CitiesCoordinatesSearchNotFoundSafety(
             CitiesCoordinatesSearch(
@@ -17,7 +21,7 @@ async def location_handler(message: types.Message):
                 ),
                 message.location.latitude,
                 message.location.longitude,
-            )
+            ),
         ).to_answer()
 
     await answer.send(message.chat.id)

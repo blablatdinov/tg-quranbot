@@ -49,7 +49,7 @@ async def prayer_times_handler(message: types.Message):
                     ),
                     datetime.datetime.now(),
                 ),
-            )
+            ),
         ).to_answer()
         await answer.send(message.chat.id)
 

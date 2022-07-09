@@ -6,6 +6,10 @@ from services.city import Cities
 
 
 async def inline_search_handler(query: types.InlineQuery):
+    """Обработчик запросов поиска городов.
+
+    :param query: types.InlineQuery
+    """
     async with db_connection() as connection:
         cities_query_answer = (
             await Cities.search(
