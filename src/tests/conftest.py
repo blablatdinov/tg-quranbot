@@ -32,4 +32,4 @@ def user_factory(faker):
 
 @pytest.fixture()
 def path_to_nominatim_response_fixture():
-    return settings.BASE_DIR / 'tests' / 'fixtures' / 'nominatim_response.json'
+    return settings.BASE_DIR / 'tests' / 'fixtures' / 'nominatim_response_kazan.json'

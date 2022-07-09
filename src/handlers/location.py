@@ -4,7 +4,8 @@ from db import db_connection
 from integrations.client import IntegrationClient
 from integrations.nominatim import NominatimIntegration
 from repository.city import CityRepository
-from services.city import Cities, CitiesCoordinatesSearch, CitiesCoordinatesSearchNotFoundSafety
+from repository.user import UserRepository
+from services.city import CityService, SearchCityByCoordinates, UserCity, UserCityAnswer, CityNotSupportedSafetyAnswer
 
 
 async def location_handler(message: types.Message):
@@ -13,15 +14,23 @@ async def location_handler(message: types.Message):
     :param message: types.Message
     """
     async with db_connection() as connection:
-        answer = await CitiesCoordinatesSearchNotFoundSafety(
-            CitiesCoordinatesSearch(
-                Cities([], CityRepository(connection)),
-                NominatimIntegration(
-                    IntegrationClient(),
-                ),
-                message.location.latitude,
-                message.location.longitude,
-            ),
+        answer = await CityNotSupportedSafetyAnswer(
+            UserCityAnswer(
+                UserCity(
+                    SearchCityByCoordinates(
+                        CityService(
+                            CityRepository(connection),
+                        ),
+                        NominatimIntegration(
+                            IntegrationClient(),
+                        ),
+                        latitude=message.location.latitude,
+                        longitude=message.location.longitude,
+                    ),
+                    UserRepository(connection),
+                    message.chat.id,
+                )
+            )
         ).to_answer()
 
     await answer.send(message.chat.id)
