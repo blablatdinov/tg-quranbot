@@ -1,4 +1,4 @@
 class Intable(object):
 
-    def to_int(self) -> int:
+    def __int__(self) -> int:
         raise NotImplementedError

@@ -96,9 +96,9 @@ class AyatFavoriteStatus(object):
         """
         if is_favorite:
             await self._ayat_repository.add_to_favorite(
-                self._chat_id, self._ayat_id.to_int(),
+                self._chat_id, int(self._ayat_id),
             )
         else:
             await self._ayat_repository.remove_from_favorite(
-                self._chat_id, self._ayat_id.to_int(),
+                self._chat_id, int(self._ayat_id),
             )
