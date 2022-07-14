@@ -10,7 +10,7 @@ class AyatSearchMock(AyatSearchInterface):
         self.ayat_id = ayat_id
 
     async def search(self):
-        return self.ayat_id in {ayat.id for ayat in self.ayat_repository_mock.storage}
+        return [ayat for ayat in self.ayat_repository_mock.storage if ayat.id == self.ayat_id][0]
 
 
 async def test_search_with_neighbors(ayat_repository_mock):

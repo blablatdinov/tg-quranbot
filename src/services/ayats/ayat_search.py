@@ -1,7 +1,6 @@
 from typing import Optional
 
 from app_types.intable import Intable
-from exceptions import exception_to_answer_formatter
 from repository.ayats.ayat import Ayat, AyatRepositoryInterface
 from services.answer import Answer, AnswerInterface, AnswersList
 from services.ayats.ayat_search_interface import AyatSearchInterface
@@ -56,7 +55,6 @@ class SearchAnswer(object):
         self._ayat_search = ayat_search
         self._keyboard = keyboard
 
-    @exception_to_answer_formatter
     async def transform(self) -> AnswerInterface:
         """Трансформировать переданные данные в ответ.
 

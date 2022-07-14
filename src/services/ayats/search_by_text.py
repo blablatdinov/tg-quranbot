@@ -23,7 +23,7 @@ class AyatSearchByText(AyatSearchInterface):
         :raises AyatNotFoundError: if ayat not found
         :returns: Ayat
         """
-        ayats = await self.ayat_service.search_by_text(self.query)
+        ayats = await self.ayat_repository.search_by_text(self.query)
         if not ayats:
             raise AyatNotFoundError
         await self.state.update_data(search_query=self.query)
