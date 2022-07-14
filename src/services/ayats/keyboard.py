@@ -31,6 +31,8 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
         """
         ayat = await self._ayat_search.search()
         ayat_neighbors = ayat.find_neighbors()
+        if not ayat_neighbors.left and not ayat_neighbors.right:
+            raise Exception
         ayat_is_favorite = await self._ayat_repository.check_ayat_is_favorite_for_user(ayat.id, self._chat_id)
         if ayat_is_favorite:
             favorite_button = types.InlineKeyboardButton(
@@ -51,36 +53,30 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
         return self._middle_ayat_case(ayat_neighbors, favorite_button)
 
     def _is_first_ayat(self, ayat_neighbors) -> bool:
-        if len(ayat_neighbors) != 2:
-            return False
         return not ayat_neighbors.left
 
     def _is_last_ayat(self, ayat_neighbors) -> bool:
-        if len(ayat_neighbors) != 2:
-            return False
         return not ayat_neighbors.right
 
     def _first_ayat_case(self, neighbor_ayats, favorite_button):
-        right_ayat = neighbor_ayats[1]
         return (
             types.InlineKeyboardMarkup()
             .row(
                 types.InlineKeyboardButton(
-                    text=right_ayat.title(),
-                    callback_data=self._pagination_buttons_keyboard.format(ayat_id=right_ayat.id),
+                    text=neighbor_ayats.right.title(),
+                    callback_data=self._pagination_buttons_keyboard.format(ayat_id=neighbor_ayats.right.id),
                 ),
             )
             .row(favorite_button)
         )
 
     def _last_ayat_case(self, neighbor_ayats, favorite_button):
-        left_ayat = neighbor_ayats[0]
         return (
             types.InlineKeyboardMarkup()
             .row(
                 types.InlineKeyboardButton(
-                    text=left_ayat.title(),
-                    callback_data=self._pagination_buttons_keyboard.format(ayat_id=left_ayat.id),
+                    text=neighbor_ayats.left.title(),
+                    callback_data=self._pagination_buttons_keyboard.format(ayat_id=neighbor_ayats.left.id),
                 ),
             )
             .row(favorite_button)

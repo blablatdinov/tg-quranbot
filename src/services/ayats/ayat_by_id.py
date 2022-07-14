@@ -1,6 +1,6 @@
+from app_types.intable import Intable
 from repository.ayats.ayat import Ayat, AyatRepositoryInterface
 from services.ayats.ayat_search import AyatSearchInterface
-from app_types.intable import Intable
 
 
 class AyatById(AyatSearchInterface):

@@ -35,7 +35,7 @@ async def ayat_from_callback_handler(callback_query: types.CallbackQuery):
         ayat_search = AyatSearchWithNeighbors(
             AyatById(
                 AyatRepository(connection),
-                RegularExpression(callback_query.data, r'\d+'),
+                RegularExpression(r'\d+', callback_query.data),
             ),
             NeighborAyatsRepository(connection),
         )
@@ -56,20 +56,31 @@ async def add_to_favorite(callback_query: types.CallbackQuery):
 
     :param callback_query: app_types.CallbackQuery
     """
-    ayat_id = int(re.search(r'\d+', callback_query.data).group(0))
     async with db_connection() as connection:
-        ayat_favorite_status = AyatFavoriteStatus(
-            ayat_service=AyatsService(AyatRepository(connection), callback_query.from_user.id),
-            ayat_id=ayat_id,
-            neighbors_ayat_repository=NeighborAyatsRepository(connection),
-        )
-        await ayat_favorite_status.change(is_favorite=True)
-        keyboard = await ayat_favorite_status.generate_refreshed_keyboard()
+        ayat_repository = AyatRepository(connection)
+        intable_ayat_id = RegularExpression(r'\d+', callback_query.data)
+        await AyatFavoriteStatus(
+            ayat_repository,
+            intable_ayat_id,
+            callback_query.from_user.id,
+        ).change(is_favorite=True)
+        keyboard = await AyatSearchKeyboard(
+            AyatSearchWithNeighbors(
+                AyatById(
+                    ayat_repository,
+                    intable_ayat_id,
+                ),
+                NeighborAyatsRepository(connection),
+            ),
+            ayat_repository,
+            callback_query.from_user.id,
+            AyatPaginatorCallbackDataTemplate.ayat_search_template,
+        ).generate()
 
     await bot.edit_message_reply_markup(
         chat_id=callback_query.from_user.id,
         message_id=callback_query.message.message_id,
-        reply_markup=keyboard.generate(),
+        reply_markup=keyboard,
     )
 
 
@@ -78,20 +89,31 @@ async def remove_from_favorite(callback_query: types.CallbackQuery):
 
     :param callback_query: app_types.CallbackQuery
     """
-    ayat_id = int(re.search(r'\d+', callback_query.data).group(0))
     async with db_connection() as connection:
-        ayat_favorite_status = AyatFavoriteStatus(
-            ayat_service=AyatsService(AyatRepository(connection), callback_query.from_user.id),
-            ayat_id=ayat_id,
-            neighbors_ayat_repository=NeighborAyatsRepository(connection),
-        )
-        await ayat_favorite_status.change(is_favorite=False)
-        keyboard = await ayat_favorite_status.generate_refreshed_keyboard()
+        ayat_repository = AyatRepository(connection)
+        intable_ayat_id = RegularExpression(r'\d+', callback_query.data)
+        await AyatFavoriteStatus(
+            ayat_repository,
+            intable_ayat_id,
+            callback_query.from_user.id,
+        ).change(is_favorite=False)
+        keyboard = await AyatSearchKeyboard(
+            AyatSearchWithNeighbors(
+                AyatById(
+                    ayat_repository,
+                    intable_ayat_id,
+                ),
+                NeighborAyatsRepository(connection),
+            ),
+            ayat_repository,
+            callback_query.from_user.id,
+            AyatPaginatorCallbackDataTemplate.ayat_search_template,
+        ).generate()
 
     await bot.edit_message_reply_markup(
         chat_id=callback_query.from_user.id,
         message_id=callback_query.message.message_id,
-        reply_markup=keyboard.generate(),
+        reply_markup=keyboard,
     )
 
 

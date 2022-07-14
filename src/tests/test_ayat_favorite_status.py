@@ -2,7 +2,8 @@ from dataclasses import dataclass
 
 import pytest
 
-from repository.ayats.ayat import AyatRepositoryInterface, Ayat
+from app_types.intable import Intable
+from repository.ayats.ayat import Ayat, AyatRepositoryInterface
 from services.ayats.ayat_search import AyatFavoriteStatus
 
 
@@ -49,6 +50,15 @@ class AyatRepositoryMock(AyatRepositoryInterface):
         return ayat_id in user.favorite_ayat_ids
 
 
+class IntableMock(Intable):
+
+    def __init__(self, number: int):
+        self.number = number
+
+    def to_int(self) -> int:
+        return self.number
+
+
 @pytest.fixture()
 def ayat_repository_mock(ayat_factory):
     return AyatRepositoryMock(
@@ -60,7 +70,7 @@ def ayat_repository_mock(ayat_factory):
 async def test_change_to_favorite(ayat_repository_mock):
     await AyatFavoriteStatus(
         ayat_repository_mock,
-        2,
+        IntableMock(2),
         123
     ).change(True)
 
@@ -70,7 +80,7 @@ async def test_change_to_favorite(ayat_repository_mock):
 async def test_change_to_not_favorite(ayat_repository_mock):
     await AyatFavoriteStatus(
         ayat_repository_mock,
-        1,
+        IntableMock(1),
         123
     ).change(False)
 

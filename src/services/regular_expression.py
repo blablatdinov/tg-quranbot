@@ -1,17 +1,17 @@
 import re
 
-from exceptions import BaseAppError
 from app_types.intable import Intable
+from exceptions import BaseAppError
 
 
 class RegularExpression(Intable):
 
-    _text_for_searching: str
     _pattern: str
+    _text_for_searching: str
 
-    def __init__(self, text_for_searching: str, pattern: str):
-        self._text_for_searching = text_for_searching
+    def __init__(self, pattern: str, text_for_searching: str):
         self._pattern = pattern
+        self._text_for_searching = text_for_searching
 
     def to_int(self) -> int:
         regex_result = re.search(self._pattern, self._text_for_searching)

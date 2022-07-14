@@ -1,5 +1,6 @@
 from typing import Optional
 
+from app_types.intable import Intable
 from exceptions import exception_to_answer_formatter
 from repository.ayats.ayat import Ayat, AyatRepositoryInterface
 from services.answer import Answer, AnswerInterface, AnswersList
@@ -75,13 +76,13 @@ class AyatFavoriteStatus(object):
     """Статус избранности аята."""
 
     _ayat_repository: AyatRepositoryInterface
-    _ayat_id: int
+    _ayat_id: Intable
     _chat_id: int
 
     def __init__(
         self,
         ayat_repository: AyatRepositoryInterface,
-        ayat_id: int,
+        ayat_id: Intable,
         chat_id: int,
     ):
         self._ayat_repository = ayat_repository
@@ -95,9 +96,9 @@ class AyatFavoriteStatus(object):
         """
         if is_favorite:
             await self._ayat_repository.add_to_favorite(
-                self._chat_id, self._ayat_id,
+                self._chat_id, self._ayat_id.to_int(),
             )
         else:
             await self._ayat_repository.remove_from_favorite(
-                self._chat_id, self._ayat_id,
+                self._chat_id, self._ayat_id.to_int(),
             )
