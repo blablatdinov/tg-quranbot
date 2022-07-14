@@ -40,7 +40,7 @@ def path_to_nominatim_response_fixture():
 @pytest.fixture()
 def ayat_factory(fake_text):
 
-    def _ayat_factory(ayat_id: int, ayat_title: str):
+    def _ayat_factory(ayat_id: int, ayat_title: str):  # noqa: D102, WPS430
         common_params = {
             'arab_text': fake_text(),
             'content': fake_text(),

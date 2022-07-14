@@ -19,8 +19,8 @@ class AyatSearchFake(AyatSearchInterface):
         ayat = list(
             filter(
                 lambda ayat: ayat.title() == self.search_input,
-                self.ayat_repository.storage
-            )
+                self.ayat_repository.storage,
+            ),
         )[0]
         if self._is_last_ayat(ayat.id):
             ayat.left_neighbor = await self.ayat_repository.get(ayat.id - 1)

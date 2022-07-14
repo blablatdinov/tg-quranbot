@@ -199,7 +199,7 @@ async def favorite_ayat(callback_query: types.CallbackQuery):
                 ayat_repository,
                 callback_query.from_user.id,
                 AyatPaginatorCallbackDataTemplate.favorite_ayat_template,
-            )
+            ),
         ).transform()
 
     await answer.send(callback_query.from_user.id)

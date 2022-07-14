@@ -5,6 +5,7 @@ from exceptions import BaseAppError
 
 
 class IntableRegularExpression(Intable):
+    """Регулярное выражение, которое можно привести к числу."""
 
     _pattern: str
     _text_for_searching: str
@@ -14,6 +15,11 @@ class IntableRegularExpression(Intable):
         self._text_for_searching = text_for_searching
 
     def __int__(self) -> int:
+        """Приведение к числу.
+
+        :returns: int
+        :raises BaseAppError: если не удалось получить результат по регулярному выражению
+        """
         regex_result = re.search(self._pattern, self._text_for_searching)
         if not regex_result:
             raise BaseAppError

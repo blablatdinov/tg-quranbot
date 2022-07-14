@@ -104,12 +104,18 @@ class NeighborAyatsRepository(NeighborAyatsRepositoryInterface):
 
 
 class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
+    """Класс для работы с сосденими аятами, при текстовом поиске."""
 
     def __init__(self, connection, query: str):
         self.connection = connection
         self._query = query
 
     async def get_ayat_neighbors(self, ayat_id: int) -> list[AyatShort]:
+        """Получить соседние аяты.
+
+        :param ayat_id: int
+        :returns: list[AyatShort]
+        """
         logger.debug(str(self._query))
         query = """
             SELECT

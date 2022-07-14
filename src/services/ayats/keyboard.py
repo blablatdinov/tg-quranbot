@@ -1,6 +1,7 @@
 from aiogram import types
 from loguru import logger
 
+from exceptions import AyatHaveNotNeighborsError
 from repository.ayats.ayat import AyatRepositoryInterface
 from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate
@@ -28,11 +29,12 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
         """Генерация клавиатуры.
 
         :returns: InlineKeyboard
+        :raises AyatHaveNotNeighborsError: если переданы аяты с пустыми соседями
         """
         ayat = await self._ayat_search.search()
         ayat_neighbors = ayat.find_neighbors()
         if not ayat_neighbors.left and not ayat_neighbors.right:
-            raise AyatHaveNotNeighbors
+            raise AyatHaveNotNeighborsError
         ayat_is_favorite = await self._ayat_repository.check_ayat_is_favorite_for_user(ayat.id, self._chat_id)
         if ayat_is_favorite:
             favorite_button = types.InlineKeyboardButton(

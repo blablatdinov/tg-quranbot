@@ -10,10 +10,7 @@ class AyatSearchMock(AyatSearchInterface):
         self.ayat_id = ayat_id
 
     async def search(self):
-        return [
-            ayat for ayat in self.ayat_repository_mock.storage
-            if ayat.id == self.ayat_id
-        ][0]
+        return self.ayat_id in {ayat.id for ayat in self.ayat_repository_mock.storage}
 
 
 async def test_search_with_neighbors(ayat_repository_mock):
@@ -27,7 +24,7 @@ async def test_search_with_neighbors(ayat_repository_mock):
 
     assert got.left_neighbor
     assert got.right_neighbor
-    assert target_ayat.id not in [got.left_neighbor.id, got.right_neighbor.id]
+    assert target_ayat.id not in {got.left_neighbor.id, got.right_neighbor.id}
 
 
 async def test_search_with_neighbors_for_first_ayat(ayat_repository_mock):
@@ -44,7 +41,6 @@ async def test_search_with_neighbors_for_first_ayat(ayat_repository_mock):
 
 async def test_search_with_neighbors_for_last_ayat(ayat_repository_mock):
     ayat_search_mock = AyatSearchMock(ayat_repository_mock, 5737)
-    target_ayat = await ayat_search_mock.search()
 
     got = await AyatSearchWithNeighbors(
         ayat_search_mock,
