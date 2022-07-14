@@ -19,7 +19,7 @@ from services.ayats.enums import AyatPaginatorCallbackDataTemplate
 from services.ayats.keyboard import AyatSearchKeyboard
 from services.ayats.search_by_sura_ayat_num import AyatSearchWithNeighbors
 from services.prayer_time import PrayerTimes, UserPrayerStatus, UserPrayerTimes
-from services.regular_expression import RegularExpression
+from services.regular_expression import IntableRegularExpression
 from utlls import get_bot_instance
 
 bot = get_bot_instance()
@@ -35,7 +35,7 @@ async def ayat_from_callback_handler(callback_query: types.CallbackQuery):
         ayat_search = AyatSearchWithNeighbors(
             AyatById(
                 AyatRepository(connection),
-                RegularExpression(r'\d+', callback_query.data),
+                IntableRegularExpression(r'\d+', callback_query.data),
             ),
             NeighborAyatsRepository(connection),
         )
@@ -58,7 +58,7 @@ async def add_to_favorite(callback_query: types.CallbackQuery):
     """
     async with db_connection() as connection:
         ayat_repository = AyatRepository(connection)
-        intable_ayat_id = RegularExpression(r'\d+', callback_query.data)
+        intable_ayat_id = IntableRegularExpression(r'\d+', callback_query.data)
         await AyatFavoriteStatus(
             ayat_repository,
             intable_ayat_id,
@@ -91,7 +91,7 @@ async def remove_from_favorite(callback_query: types.CallbackQuery):
     """
     async with db_connection() as connection:
         ayat_repository = AyatRepository(connection)
-        intable_ayat_id = RegularExpression(r'\d+', callback_query.data)
+        intable_ayat_id = IntableRegularExpression(r'\d+', callback_query.data)
         await AyatFavoriteStatus(
             ayat_repository,
             intable_ayat_id,
