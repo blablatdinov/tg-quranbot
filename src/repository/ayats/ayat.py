@@ -1,4 +1,13 @@
+from typing import Optional, NamedTuple
+
 from pydantic import BaseModel
+
+from repository.ayats.neighbor_ayats import AyatShort
+
+
+class AyatNeighbors(NamedTuple):
+    left: Optional[AyatShort]
+    right: Optional[AyatShort]
 
 
 class Ayat(BaseModel):
@@ -13,6 +22,8 @@ class Ayat(BaseModel):
     sura_link: str
     audio_telegram_id: str
     link_to_audio_file: str
+    left_neighbor: Optional[AyatShort]
+    right_neighbor: Optional[AyatShort]
 
     def __str__(self) -> str:
         """Отформатировать аят для сообщения.
@@ -29,6 +40,12 @@ class Ayat(BaseModel):
             content=self.content,
             transliteration=self.transliteration,
         )
+
+    def find_neighbors(self) -> AyatNeighbors:
+        return AyatNeighbors(left=self.left_neighbor, right=self.right_neighbor)
+
+    def title(self):
+        return f'{self.sura_num}:{self.ayat_num}'
 
 
 class AyatRepositoryInterface(object):
@@ -93,6 +110,9 @@ class AyatRepositoryInterface(object):
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
+
+    async def search_by_text(self, query):
+        pass
 
 
 class AyatRepository(AyatRepositoryInterface):
@@ -229,3 +249,27 @@ class AyatRepository(AyatRepositoryInterface):
             WHERE subscriber_id = (SELECT id FROM bot_init_subscriber WHERE tg_chat_id = $1) AND ayat_id = $2
         """
         await self.connection.execute(query, chat_id, ayat_id)
+
+    async def search_by_text(self, query: str) -> list[Ayat]:
+        search_query = '%{0}%'.format(query)
+        query = """
+            SELECT
+                a.id,
+                s.number as sura_num,
+                s.link as sura_link,
+                a.ayat as ayat_num,
+                a.arab_text,
+                a.content,
+                a.trans as transliteration,
+                cf.tg_file_id as audio_telegram_id,
+                cf.link_to_file as link_to_audio_file
+            FROM content_ayat a
+            INNER JOIN content_sura s on a.sura_id = s.id
+            INNER JOIN content_file cf on a.audio_id = cf.id
+            WHERE a.content ILIKE $1
+        """
+        rows = await self.connection.fetch(query, search_query)
+        return [
+            Ayat(**dict(row))
+            for row in rows
+        ]

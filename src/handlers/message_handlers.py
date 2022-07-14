@@ -1,15 +1,23 @@
 import datetime
 
 from aiogram import types
+from aiogram.dispatcher import FSMContext
 
 from db import db_connection
 from repository.ayats.ayat import AyatRepository
-from repository.ayats.neighbor_ayats import FavoriteAyatsNeighborRepository, NeighborAyatsRepository
+from repository.ayats.neighbor_ayats import (
+    FavoriteAyatsNeighborRepository,
+    NeighborAyatsRepository,
+    TextSearchNeighborAyatsRepository,
+)
 from repository.podcast import PodcastRepository
 from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
 from services.ayat import AyatsService
-from services.ayats.ayat_search import AyatSearch, FavoriteAyats, SearchAnswer
+from services.ayats.ayat_search import AyatSearchByText, FavoriteAyats, SearchAnswer
+from services.ayats.enums import AyatPaginatorCallbackDataTemplate
+from services.ayats.keyboard import AyatSearchKeyboard
+from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum, AyatBySuraAyatNumWithNeighbors
 from services.podcast import PodcastAnswer, PodcastService
 from services.prayer_time import PrayerTimes, UserHasNotCityExistsSafeAnswer, UserPrayerTimes, UserPrayerTimesAnswer
 
@@ -20,15 +28,22 @@ async def ayat_search_handler(message: types.Message):
     :param message: types.Message
     """
     async with db_connection() as connection:
-        answer = await SearchAnswer(
-            AyatSearch(
-                AyatsService(
-                    AyatRepository(connection),
-                    message.chat.id,
-                ),
+        ayat_repository = AyatRepository(connection)
+        ayat_search = AyatBySuraAyatNumWithNeighbors(
+            AyatBySuraAyatNum(
+                ayat_repository,
                 message.text,
             ),
             NeighborAyatsRepository(connection),
+        )
+        answer = await SearchAnswer(
+            ayat_search,
+            AyatSearchKeyboard(
+                ayat_search,
+                ayat_repository,
+                message.chat.id,
+                AyatPaginatorCallbackDataTemplate.ayat_search_template,
+            )
         ).transform()
         await answer.send(message.chat.id)
 
@@ -85,3 +100,27 @@ async def favorite_ayats_list(message: types.Message):
             FavoriteAyatsNeighborRepository(connection, message.chat.id),
         ).transform()
     await answer.send(message.chat.id)
+
+
+async def ayats_text_search(message: types.Message, state: FSMContext):
+    """Поиск аятов по тексту.
+
+    :param message: types.Message
+    """
+    async with db_connection() as connection:
+        # query = message.text
+        query = 'Аллах'
+        await state.update_data(search_query=query)
+        answer = await SearchAnswer(
+            AyatSearchByText(
+                AyatsService(
+                    AyatRepository(connection),
+                    message.chat.id,
+                ),
+                query,
+                state,
+            ),
+            TextSearchNeighborAyatsRepository(connection, query),
+        ).transform()
+
+        await answer.send(message.chat.id)

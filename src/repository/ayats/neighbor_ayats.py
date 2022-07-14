@@ -1,3 +1,4 @@
+from loguru import logger
 from pydantic import BaseModel
 
 
@@ -7,6 +8,9 @@ class AyatShort(BaseModel):
     id: int
     sura_num: int
     ayat_num: str
+
+    def title(self):
+        return f'{self.sura_num}:{self.ayat_num}'
 
 
 class NeighborAyatsRepositoryInterface(object):
@@ -89,6 +93,39 @@ class NeighborAyatsRepository(NeighborAyatsRepositoryInterface):
             WHERE $1 IN (id, prev, next)
         """
         rows = await self.connection.fetch(query, ayat_id)
+        return [
+            AyatShort(**dict(row))
+            for row in rows
+        ]
+
+
+class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
+
+    def __init__(self, connection, query: str):
+        self.connection = connection
+        self._query = query
+
+    async def get_ayat_neighbors(self, ayat_id: int) -> list[AyatShort]:
+        logger.debug(str(self._query))
+        query = """
+            SELECT
+                *
+            FROM (
+                SELECT
+                     a.id,
+                     a.ayat as ayat_num,
+                     cs.number as sura_num,
+                     lag(a.id) OVER (ORDER BY a.id ASC) AS prev,
+                     lead(a.id) OVER (ORDER BY a.id ASC) AS next
+                FROM (
+                    SELECT content_ayat.* FROM content_ayat
+                    WHERE content_ayat.content ILIKE $2
+                ) a
+                INNER JOIN content_sura cs on cs.id = a.sura_id
+                ) x
+            WHERE $1 IN (id, prev, next)
+        """
+        rows = await self.connection.fetch(query, ayat_id, '%{0}%'.format(self._query))
         return [
             AyatShort(**dict(row))
             for row in rows

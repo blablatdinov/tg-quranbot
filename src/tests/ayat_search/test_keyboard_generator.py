@@ -1,17 +1,48 @@
+from dataclasses import dataclass
+
 from aiogram import types
 
+from repository.ayats.ayat import Ayat
 from services.ayats.ayat_search import AyatPaginatorCallbackDataTemplate
+from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.keyboard import AyatSearchKeyboard
-from tests.mocks.neighbor_ayats_repository import NeighborAyatsRepositoryMock
+from tests.mocks.ayat_repository import AyatRepositoryMock
+
+
+@dataclass
+class AyatSearchFake(AyatSearchInterface):
+
+    ayat_repository: AyatRepositoryMock
+    search_input: str
+
+    async def search(self) -> Ayat:
+        ayat = list(
+            filter(
+                lambda ayat: ayat.title() == self.search_input,
+                self.ayat_repository.storage
+            )
+        )[0]
+        if self._is_last_ayat(ayat.id):
+            ayat.left_neighbor = await self.ayat_repository.get(ayat.id - 1)
+        elif self._is_first_ayat(ayat.id):
+            ayat.right_neighbor = await self.ayat_repository.get(ayat.id + 1)
+        else:
+            ayat.left_neighbor = await self.ayat_repository.get(ayat.id - 1)
+            ayat.right_neighbor = await self.ayat_repository.get(ayat.id + 1)
+        return ayat
+
+    def _is_last_ayat(self, ayat_id):
+        return self.ayat_repository.storage[-1].id == ayat_id
+
+    def _is_first_ayat(self, ayat_id):
+        return self.ayat_repository.storage[0].id == ayat_id
 
 
 async def test_keyboard_for_first_ayat(ayat_repository_mock):
-    ayat = ayat_repository_mock.storage[0]
-    got = AyatSearchKeyboard(
+    search_input = ayat_repository_mock.storage[0].title()
+    got = await AyatSearchKeyboard(
+        ayat_search=AyatSearchFake(ayat_repository_mock, search_input),
         ayat_repository=ayat_repository_mock,
-        ayat_id=ayat.id,
-        ayat_is_favorite=True,
-        ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
         pagination_buttons_keyboard=AyatPaginatorCallbackDataTemplate.ayat_search_template,
     ).generate()
@@ -25,12 +56,10 @@ async def test_keyboard_for_first_ayat(ayat_repository_mock):
 
 
 async def test_keyboard_for_last_ayat(ayat_repository_mock):
-    ayat = ayat_repository_mock.storage[-1]
-    got = AyatSearchKeyboard(
+    search_ayat = ayat_repository_mock.storage[-1].title()
+    got = await AyatSearchKeyboard(
+        ayat_search=AyatSearchFake(ayat_repository_mock, search_ayat),
         ayat_repository=ayat_repository_mock,
-        ayat_id=ayat.id,
-        ayat_is_favorite=True,
-        ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
         pagination_buttons_keyboard=AyatPaginatorCallbackDataTemplate.ayat_search_template,
     ).generate()
@@ -39,17 +68,15 @@ async def test_keyboard_for_last_ayat(ayat_repository_mock):
 
     assert isinstance(got, types.InlineKeyboardMarkup)
     assert len(keyboard_as_list) == 2
-    assert [keyboard_button['text'] for keyboard_button in keyboard_first_row] == ['2:6,7']
-    assert [keyboard_button['callback_data'] for keyboard_button in keyboard_first_row] == ['get_ayat(4)']
+    assert [keyboard_button['text'] for keyboard_button in keyboard_first_row] == ['113:1-6']
+    assert [keyboard_button['callback_data'] for keyboard_button in keyboard_first_row] == ['get_ayat(5736)']
 
 
 async def test_keyboard_for_middle_ayat(ayat_repository_mock):
-    ayat = ayat_repository_mock.storage[2]
-    got = AyatSearchKeyboard(
+    search_input = ayat_repository_mock.storage[2].title()
+    got = await AyatSearchKeyboard(
+        ayat_search=AyatSearchFake(ayat_repository_mock, search_input),
         ayat_repository=ayat_repository_mock,
-        ayat_id=ayat.id,
-        ayat_is_favorite=True,
-        ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
         pagination_buttons_keyboard=AyatPaginatorCallbackDataTemplate.ayat_search_template,
     ).generate()
@@ -67,12 +94,10 @@ async def test_keyboard_for_middle_ayat(ayat_repository_mock):
 
 
 async def test_add_to_favorite(ayat_repository_mock):
-    ayat = ayat_repository_mock.storage[2]
-    got = AyatSearchKeyboard(
+    search_input = ayat_repository_mock.storage[2].title()
+    got = await AyatSearchKeyboard(
+        ayat_search=AyatSearchFake(ayat_repository_mock, search_input),
         ayat_repository=ayat_repository_mock,
-        ayat_id=ayat.id,
-        ayat_is_favorite=False,
-        ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
         pagination_buttons_keyboard=AyatPaginatorCallbackDataTemplate.ayat_search_template,
     ).generate()
@@ -84,12 +109,10 @@ async def test_add_to_favorite(ayat_repository_mock):
 
 
 async def test_remove_from_favorite(ayat_repository_mock):
-    ayat = ayat_repository_mock.storage[0]
-    got = AyatSearchKeyboard(
+    search_input = ayat_repository_mock.storage[0].title()
+    got = await AyatSearchKeyboard(
+        ayat_search=AyatSearchFake(ayat_repository_mock, search_input),
         ayat_repository=ayat_repository_mock,
-        ayat_id=ayat.id,
-        ayat_is_favorite=True,
-        ayat_neighbors=await NeighborAyatsRepositoryMock(ayat_repository_mock.storage).get_ayat_neighbors(ayat.id),
         chat_id=21442,
         pagination_buttons_keyboard=AyatPaginatorCallbackDataTemplate.ayat_search_template,
     ).generate()

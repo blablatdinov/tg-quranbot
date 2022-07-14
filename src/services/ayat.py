@@ -10,6 +10,9 @@ class AyatServiceInterface(object):
     ayat_repository: AyatRepositoryInterface
     chat_id: int
 
+    async def search_by_text(self, query: str):
+        raise NotImplementedError
+
 
 @dataclass
 class AyatsService(AyatServiceInterface):
@@ -17,3 +20,6 @@ class AyatsService(AyatServiceInterface):
 
     ayat_repository: AyatRepositoryInterface
     chat_id: int
+
+    async def search_by_text(self, query: str):
+        return await self.ayat_repository.search_by_text(query)
