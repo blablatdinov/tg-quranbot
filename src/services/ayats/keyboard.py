@@ -1,5 +1,3 @@
-import enum
-
 from aiogram import types
 from loguru import logger
 
@@ -17,9 +15,6 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
 
     _ayat_search: AyatSearchInterface
     _ayat_repository: AyatRepositoryInterface
-    # ayat_id: int
-    # ayat_is_favorite: bool
-    # ayat_neighbors: AyatNeighbors
     _chat_id: int
     _pagination_buttons_keyboard: AyatPaginatorCallbackDataTemplate
 

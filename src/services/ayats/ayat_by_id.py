@@ -1,5 +1,4 @@
-from repository.ayats.ayat import Ayat
-from repository.ayats.ayat import AyatRepositoryInterface
+from repository.ayats.ayat import Ayat, AyatRepositoryInterface
 from services.ayats.ayat_search import AyatSearchInterface
 
 

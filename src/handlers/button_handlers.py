@@ -13,9 +13,8 @@ from repository.ayats.neighbor_ayats import (
 )
 from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
-from services.ayat import AyatsService
 from services.ayats.ayat_by_id import AyatById
-from services.ayats.ayat_search import AyatFavoriteStatus, AyatSearchByText, FavoriteAyats, SearchAnswer
+from services.ayats.ayat_search import AyatFavoriteStatus, FavoriteAyats, SearchAnswer
 from services.prayer_time import PrayerTimes, UserPrayerStatus, UserPrayerTimes
 from utlls import get_bot_instance
 
@@ -168,6 +167,11 @@ async def favorite_ayat(callback_query: types.CallbackQuery):
 
 
 async def ayats_search_buttons(callback_query: types.CallbackQuery, state: FSMContext):
+    """Обработчик кнопок для пролистывания по резултатам поиска.
+
+    :param callback_query: types.CallbackQuery
+    :param state: FSMContext
+    """
     ayat_id = int(re.search(r'\d+', callback_query.data).group(0))
     async with db_connection() as connection:
         state_data = await state.get_data()

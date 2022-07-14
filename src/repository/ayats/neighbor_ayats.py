@@ -10,7 +10,11 @@ class AyatShort(BaseModel):
     ayat_num: str
 
     def title(self):
-        return f'{self.sura_num}:{self.ayat_num}'
+        """Заголовок.
+
+        :returns: str
+        """
+        return '{0}:{1}'.format(self.sura_num, self.ayat_num)
 
 
 class NeighborAyatsRepositoryInterface(object):

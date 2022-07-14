@@ -68,20 +68,26 @@ class AyatBySuraAyatNum(AyatSearchInterface):
 
 
 class AyatBySuraAyatNumWithNeighbors(AyatSearchInterface):
+    """Поиск аятов по номеру суры и аята с соседними аятами."""
 
     _ayat_by_sura_num: AyatSearchInterface
     _neighbor_ayats_repository: NeighborAyatsRepositoryInterface
 
-    def __init__(self, ayat_by_sura_num: AyatSearchInterface, neighbor_ayats_repository: NeighborAyatsRepositoryInterface):
+    def __init__(
+        self,
+        ayat_by_sura_num: AyatSearchInterface,
+        neighbor_ayats_repository: NeighborAyatsRepositoryInterface,
+    ):
         self._ayat_by_sura_num = ayat_by_sura_num
         self._neighbor_ayats_repository = neighbor_ayats_repository
 
     async def search(self) -> Ayat:
+        """Поиск.
+
+        :returns: Ayat
+        """
         ayat = await self._ayat_by_sura_num.search()
         neighbors = await self._neighbor_ayats_repository.get_ayat_neighbors(ayat.id)
-        new_ayat = Ayat(**ayat.dict())
-        return Ayat(
-            **(ayat.dict()),
-            left_neighbot=neighbors[0],
-            right_neighbot=neighbors[1],
-        )
+        ayat.left_neighbor = neighbors[0]
+        ayat.right_neighbor = neighbors[1]
+        return ayat

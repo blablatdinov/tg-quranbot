@@ -13,8 +13,7 @@ from repository.ayats.neighbor_ayats import (
 from repository.podcast import PodcastRepository
 from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
-from services.ayat import AyatsService
-from services.ayats.ayat_search import AyatSearchByText, FavoriteAyats, SearchAnswer
+from services.ayats.ayat_search import FavoriteAyats, SearchAnswer
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate
 from services.ayats.keyboard import AyatSearchKeyboard
 from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum, AyatBySuraAyatNumWithNeighbors
@@ -43,7 +42,7 @@ async def ayat_search_handler(message: types.Message):
                 ayat_repository,
                 message.chat.id,
                 AyatPaginatorCallbackDataTemplate.ayat_search_template,
-            )
+            ),
         ).transform()
         await answer.send(message.chat.id)
 
@@ -108,7 +107,6 @@ async def ayats_text_search(message: types.Message, state: FSMContext):
     :param message: types.Message
     """
     async with db_connection() as connection:
-        # query = message.text
         query = 'Аллах'
         await state.update_data(search_query=query)
         answer = await SearchAnswer(

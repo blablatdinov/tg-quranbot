@@ -1,4 +1,4 @@
-from typing import Optional, NamedTuple
+from typing import NamedTuple, Optional
 
 from pydantic import BaseModel
 
@@ -6,6 +6,8 @@ from repository.ayats.neighbor_ayats import AyatShort
 
 
 class AyatNeighbors(NamedTuple):
+    """DTO для передачи соседних аятов."""
+
     left: Optional[AyatShort]
     right: Optional[AyatShort]
 
@@ -42,10 +44,18 @@ class Ayat(BaseModel):
         )
 
     def find_neighbors(self) -> AyatNeighbors:
+        """Возвращает соседние аяты.
+
+        :returns: AyatNeighbors
+        """
         return AyatNeighbors(left=self.left_neighbor, right=self.right_neighbor)
 
     def title(self):
-        return f'{self.sura_num}:{self.ayat_num}'
+        """Заголовок.
+
+        :returns: str
+        """
+        return '{0}:{1}'.format(self.sura_num, self.ayat_num)
 
 
 class AyatRepositoryInterface(object):
@@ -111,8 +121,13 @@ class AyatRepositoryInterface(object):
         """
         raise NotImplementedError
 
-    async def search_by_text(self, query):
-        pass
+    async def search_by_text(self, query: str):
+        """Поиск по тексту.
+
+        :param query: str
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
 
 
 class AyatRepository(AyatRepositoryInterface):
@@ -251,6 +266,11 @@ class AyatRepository(AyatRepositoryInterface):
         await self.connection.execute(query, chat_id, ayat_id)
 
     async def search_by_text(self, query: str) -> list[Ayat]:
+        """Поиск по тексту.
+
+        :param query: str
+        :returns: list[Ayat]
+        """
         search_query = '%{0}%'.format(query)
         query = """
             SELECT

@@ -1,8 +1,15 @@
-from repository.ayats.ayat import AyatRepositoryInterface
+from typing import Optional
+
+from aiogram.dispatcher import FSMContext
+
+from exceptions import AyatNotFoundError
+from repository.ayats.ayat import Ayat, AyatRepositoryInterface
 from services.ayats.ayat_search import AyatSearchInterface
+from services.ayats.enums import AyatPaginatorCallbackDataTemplate
 
 
 class AyatSearchByText(AyatSearchInterface):
+    """Поиск аята по тексту."""
 
     ayat_repository: AyatRepositoryInterface
     query: str
@@ -13,6 +20,8 @@ class AyatSearchByText(AyatSearchInterface):
     async def search(self) -> Ayat:
         """Метод, осуществляющий поиск.
 
+        :raises AyatNotFoundError: if ayat not found
+        :returns: Ayat
         """
         ayats = await self.ayat_service.search_by_text(self.query)
         if not ayats:

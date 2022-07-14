@@ -1,35 +1,13 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from aiogram.dispatcher import FSMContext
-
-from exceptions import AyatNotFoundError, exception_to_answer_formatter
+from exceptions import exception_to_answer_formatter
 from repository.ayats.ayat import Ayat
 from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
 from services.answer import Answer, AnswerInterface, AnswersList
 from services.ayat import AyatServiceInterface
 from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.keyboard import AyatPaginatorCallbackDataTemplate, AyatSearchKeyboard
-
-
-@dataclass
-class AyatSearchByText(AyatSearchInterface):
-
-    ayat_service: AyatServiceInterface
-    query: str
-    ayat_paginator_callback_data_template = AyatPaginatorCallbackDataTemplate.ayat_text_search_template
-    state: FSMContext
-    ayat_id: Optional[int] = None
-
-    async def search(self) -> Ayat:
-        """Метод, осуществляющий поиск.
-
-        """
-        ayats = await self.ayat_service.search_by_text(self.query)
-        if not ayats:
-            raise AyatNotFoundError
-        await self.state.update_data(search_query=self.query)
-        return ayats[0]
 
 
 @dataclass
@@ -77,20 +55,6 @@ class SearchAnswer(object):
             Answer(
                 message=str(ayat),
                 keyboard=await self._keyboard.generate(),
-                # keyboard=AyatSearchKeyboard(
-                #     ayat_repository=self.ayat_search.ayat_service.ayat_repository,
-                #     ayat_id=ayat.id,
-                #     ayat_is_favorite=(
-                #         await self.ayat_search.ayat_service
-                #         .ayat_repository
-                #         .check_ayat_is_favorite_for_user(
-                #             ayat.id, self.ayat_search.ayat_service.chat_id,
-                #         )
-                #     ),
-                #     ayat_neighbors=ayat.find_neighbors(),
-                #     chat_id=self.ayat_search.ayat_service.chat_id,
-                #     pagination_buttons_keyboard=self.ayat_search.ayat_paginator_callback_data_template,
-                # ).generate(),
             ),
             Answer(link_to_file=ayat.link_to_audio_file, telegram_file_id=ayat.audio_telegram_id),
         )
@@ -135,4 +99,3 @@ class AyatFavoriteStatus(object):
             await self.ayat_service.ayat_repository.remove_from_favorite(
                 self.ayat_service.chat_id, self.ayat_id,
             )
-
