@@ -13,14 +13,14 @@ class FavoriteAyats(AyatSearchInterface):
 
     _ayat_repository: AyatRepositoryInterface
     _chat_id: int
-    _ayat_id: Optional[int]
+    _ayat_id: Optional[Intable]
     _ayat_paginator_callback_data_template: AyatPaginatorCallbackDataTemplate
 
     def __init__(
         self,
         ayat_repository: AyatRepositoryInterface,
         chat_id: int,
-        ayat_id: Optional[int] = None,
+        ayat_id: Optional[Intable] = None,  # TODO: maybe separate class for None cases
         ayat_paginator_callback_data_template: AyatPaginatorCallbackDataTemplate = None,
     ):
         self._ayat_repository = ayat_repository
@@ -36,12 +36,12 @@ class FavoriteAyats(AyatSearchInterface):
         :returns: Ayat
         """
         favorite_ayats = await self._ayat_repository.get_favorites(self._chat_id)
-        if not self._ayat_id:
+        if not int(self._ayat_id):
             return favorite_ayats[0]
 
         return list(
             filter(
-                lambda ayat: ayat.id == self._ayat_id,
+                lambda ayat: ayat.id == int(self._ayat_id),
                 favorite_ayats,
             ),
         )[0]

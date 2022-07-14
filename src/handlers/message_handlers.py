@@ -95,7 +95,7 @@ async def favorite_ayats_list(message: types.Message):
                 ayat_repository,
                 message.chat.id,
             ),
-            NeighborAyatsRepository(connection),
+            FavoriteAyatsNeighborRepository(connection, message.chat.id),
         )
         answer = await SearchAnswer(
             ayat_search,
@@ -103,7 +103,7 @@ async def favorite_ayats_list(message: types.Message):
                 ayat_search,
                 ayat_repository,
                 message.chat.id,
-                AyatPaginatorCallbackDataTemplate.ayat_search_template,
+                AyatPaginatorCallbackDataTemplate.favorite_ayat_template,
             ),
         ).transform()
     await answer.send(message.chat.id)

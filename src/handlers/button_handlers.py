@@ -182,17 +182,24 @@ async def favorite_ayat(callback_query: types.CallbackQuery):
 
     :param callback_query: app_types.CallbackQuery
     """
-    ayat_id = int(re.search(r'\d+', callback_query.data).group(0))
     async with db_connection() as connection:
-        answer = await SearchAnswer(
+        ayat_repository = AyatRepository(connection)
+        ayat_search = AyatSearchWithNeighbors(
             FavoriteAyats(
-                AyatsService(
-                    AyatRepository(connection),
-                    callback_query.from_user.id,
-                ),
-                ayat_id,
+                ayat_repository,
+                callback_query.from_user.id,
+                IntableRegularExpression(r'\d+', callback_query.data),
             ),
             FavoriteAyatsNeighborRepository(connection, callback_query.from_user.id),
+        )
+        answer = await SearchAnswer(
+            ayat_search,
+            AyatSearchKeyboard(
+                ayat_search,
+                ayat_repository,
+                callback_query.from_user.id,
+                AyatPaginatorCallbackDataTemplate.favorite_ayat_template,
+            )
         ).transform()
 
     await answer.send(callback_query.from_user.id)

@@ -3,6 +3,7 @@ from repository.ayats.ayat import Ayat, AyatRepositoryInterface
 from services.ayats.ayat_search import AyatSearchInterface
 
 
+# TODO: test
 class AyatById(AyatSearchInterface):
     """Аят по идентификатору."""
 
@@ -18,4 +19,4 @@ class AyatById(AyatSearchInterface):
 
         :returns: Ayat
         """
-        return await self._ayat_repository.get(self._ayat_id.to_int())
+        return await self._ayat_repository.get(int(self._ayat_id))
