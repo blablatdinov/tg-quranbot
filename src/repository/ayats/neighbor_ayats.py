@@ -97,6 +97,7 @@ class NeighborAyatsRepository(NeighborAyatsRepositoryInterface):
             WHERE $1 IN (id, prev, next)
         """
         rows = await self.connection.fetch(query, ayat_id)
+        assert False, rows
         return [
             AyatShort(**dict(row))
             for row in rows

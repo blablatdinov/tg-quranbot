@@ -13,7 +13,7 @@ from services.city.service import CityService
 async def location_handler(message: types.Message):
     """Обработчик, присланных боту геопозиций.
 
-    :param message: types.Message
+    :param message: app_types.Message
     """
     async with db_connection() as connection:
         answer = await CityNotSupportedSafetyAnswer(

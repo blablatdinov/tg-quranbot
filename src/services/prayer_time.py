@@ -76,7 +76,7 @@ class UserPrayerTimesKeyboard(object):
     async def generate(self):
         """Генерация.
 
-        :returns: types.InlineKeyboardMarkup
+        :returns: app_types.InlineKeyboardMarkup
         """
         keyboard = types.InlineKeyboardMarkup()
         user_prayers = await self.user_prayer_times.get_or_create_user_prayer_times()
@@ -210,7 +210,7 @@ class UserPrayerStatus(object):
     async def generate_refresh_keyboard(self) -> types.InlineKeyboardMarkup:
         """Сгенерировать обновленную клавиатуру.
 
-        :returns: types.InlineKeyboardMarkup
+        :returns: app_types.InlineKeyboardMarkup
         """
         return await UserPrayerTimesKeyboard(
             self.user_prayer_times,

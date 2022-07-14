@@ -16,19 +16,19 @@ from repository.user import UserRepository
 from services.ayats.ayat_search import FavoriteAyats, SearchAnswer
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate
 from services.ayats.keyboard import AyatSearchKeyboard
-from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum, AyatBySuraAyatNumWithNeighbors
+from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum, AyatSearchWithNeighbors
 from services.podcast import PodcastAnswer, PodcastService
 from services.prayer_time import PrayerTimes, UserHasNotCityExistsSafeAnswer, UserPrayerTimes, UserPrayerTimesAnswer
 
 
-async def ayat_search_handler(message: types.Message):
+async def ayat_search_by_sura_ayat_num_handler(message: types.Message):
     """Поиск по аятам по номеру суры и аята.
 
-    :param message: types.Message
+    :param message: app_types.Message
     """
     async with db_connection() as connection:
         ayat_repository = AyatRepository(connection)
-        ayat_search = AyatBySuraAyatNumWithNeighbors(
+        ayat_search = AyatSearchWithNeighbors(
             AyatBySuraAyatNum(
                 ayat_repository,
                 message.text,
@@ -50,7 +50,7 @@ async def ayat_search_handler(message: types.Message):
 async def prayer_times_handler(message: types.Message):
     """Получить времена намаза.
 
-    :param message: types.Message
+    :param message: app_types.Message
     """
     async with db_connection() as connection:
         answer = await UserHasNotCityExistsSafeAnswer(
@@ -71,7 +71,7 @@ async def prayer_times_handler(message: types.Message):
 async def podcasts_handler(message: types.Message):
     """Получить случайный подкаст.
 
-    :param message: types.Message
+    :param message: app_types.Message
     """
     async with db_connection() as connection:
         answer = PodcastAnswer(
@@ -86,7 +86,7 @@ async def podcasts_handler(message: types.Message):
 async def favorite_ayats_list(message: types.Message):
     """Получить избранные аяты.
 
-    :param message: types.Message
+    :param message: app_types.Message
     """
     async with db_connection() as connection:
         answer = await SearchAnswer(
@@ -104,7 +104,7 @@ async def favorite_ayats_list(message: types.Message):
 async def ayats_text_search(message: types.Message, state: FSMContext):
     """Поиск аятов по тексту.
 
-    :param message: types.Message
+    :param message: app_types.Message
     """
     async with db_connection() as connection:
         query = 'Аллах'

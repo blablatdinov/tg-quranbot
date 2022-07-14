@@ -1,14 +1,15 @@
 from repository.ayats.ayat import Ayat, AyatRepositoryInterface
 from services.ayats.ayat_search import AyatSearchInterface
+from app_types.intable import Intable
 
 
 class AyatById(AyatSearchInterface):
     """Аят по идентификатору."""
 
     _ayat_repository: AyatRepositoryInterface
-    _ayat_id: int
+    _ayat_id: Intable
 
-    def __init__(self, ayat_repository: AyatRepositoryInterface, ayat_id: int):
+    def __init__(self, ayat_repository: AyatRepositoryInterface, ayat_id: Intable):
         self._ayat_repository = ayat_repository
         self._ayat_id = ayat_id
 
@@ -17,4 +18,4 @@ class AyatById(AyatSearchInterface):
 
         :returns: Ayat
         """
-        return await self._ayat_repository.get(self._ayat_id)
+        return await self._ayat_repository.get(self._ayat_id.to_int())
