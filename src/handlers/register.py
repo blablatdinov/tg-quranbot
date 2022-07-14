@@ -20,12 +20,12 @@ def _register_message_handlers(dp: Dispatcher):
 
     :param dp: Dispatcher
     """
-    # dp.register_message_handler(location.location_handler, content_types=['location'])
+    dp.register_message_handler(location.location_handler, content_types=['location'])
     dp.register_message_handler(command_handlers.start_handler, commands=['start'])
     dp.register_message_handler(message_handlers.ayat_search_by_sura_ayat_num_handler, filters.Regexp(AYAT_SEARCH_INPUT_REGEXP))
-    # dp.register_message_handler(message_handlers.prayer_times_handler, filters.Regexp(GET_PRAYER_TIMES_REGEXP))
-    # dp.register_message_handler(message_handlers.podcasts_handler, filters.Regexp(PODCAST_BUTTON))
-    # dp.register_message_handler(message_handlers.favorite_ayats_list, filters.Regexp('Избранное'))
+    dp.register_message_handler(message_handlers.prayer_times_handler, filters.Regexp(GET_PRAYER_TIMES_REGEXP))
+    dp.register_message_handler(message_handlers.podcasts_handler, filters.Regexp(PODCAST_BUTTON))
+    dp.register_message_handler(message_handlers.favorite_ayats_list, filters.Regexp('Избранное'))
     dp.register_message_handler(message_handlers.ayats_text_search, filters.Regexp('Найти аят'))
 
 

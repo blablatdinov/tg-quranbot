@@ -50,6 +50,11 @@ class UserHasNotCityIdError(BaseAppError):
     message = 'Вы не указали город, отправьте местоположение или воспользуйтесь поиском'
 
 
+class AyatHaveNotNeighbors(BaseAppError):
+
+    pass
+
+
 def exception_to_answer_formatter(func: Callable):
     """Декоратор обрабатывающий ошибки бота и возвращающий из них AnswerInterface.
 

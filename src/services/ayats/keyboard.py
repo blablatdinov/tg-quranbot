@@ -32,7 +32,7 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
         ayat = await self._ayat_search.search()
         ayat_neighbors = ayat.find_neighbors()
         if not ayat_neighbors.left and not ayat_neighbors.right:
-            raise Exception
+            raise AyatHaveNotNeighbors
         ayat_is_favorite = await self._ayat_repository.check_ayat_is_favorite_for_user(ayat.id, self._chat_id)
         if ayat_is_favorite:
             favorite_button = types.InlineKeyboardButton(

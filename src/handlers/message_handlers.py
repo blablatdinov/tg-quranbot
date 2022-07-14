@@ -89,14 +89,22 @@ async def favorite_ayats_list(message: types.Message):
     :param message: app_types.Message
     """
     async with db_connection() as connection:
-        answer = await SearchAnswer(
+        ayat_repository = AyatRepository(connection)
+        ayat_search = AyatSearchWithNeighbors(
             FavoriteAyats(
-                AyatsService(
-                    AyatRepository(connection),
-                    message.chat.id,
-                ),
+                ayat_repository,
+                message.chat.id,
             ),
-            FavoriteAyatsNeighborRepository(connection, message.chat.id),
+            NeighborAyatsRepository(connection),
+        )
+        answer = await SearchAnswer(
+            ayat_search,
+            AyatSearchKeyboard(
+                ayat_search,
+                ayat_repository,
+                message.chat.id,
+                AyatPaginatorCallbackDataTemplate.ayat_search_template,
+            ),
         ).transform()
     await answer.send(message.chat.id)
 
