@@ -90,7 +90,7 @@ class AyatNotFoundSafeAnswer(Answerable):
         try:
             return await self._origin.to_answer()
         except AyatNotFoundError as error:
-            return Answer(message=error.message)
+            return await error.to_answer()
 
 
 class AyatFavoriteStatus(object):

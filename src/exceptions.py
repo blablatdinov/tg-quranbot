@@ -1,7 +1,8 @@
+from answerable import Answerable
 from services.answer import Answer, AnswerInterface
 
 
-class BaseAppError(Exception):
+class BaseAppError(Exception, Answerable):
     """Базовое исключение бота."""
 
     user_message = 'Произошла какая-то ошибка'
@@ -13,7 +14,7 @@ class BaseAppError(Exception):
         # TODO: get traceback
         self.admin_message = message_for_admin_text or ''
 
-    def to_answer(self) -> AnswerInterface:
+    async def to_answer(self) -> AnswerInterface:
         """Конвертирует объект в AnswerInterface.
 
         :returns: AnswerInterface
