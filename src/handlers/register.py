@@ -15,12 +15,12 @@ def register_handlers(dp: Dispatcher):
 
     :param dp: Dispatcher
     """
-    register_ayat_message_handlers(dp)
     register_prayer_times_message_handlers(dp)
     register_podcasts_message_handlers(dp)
     _register_message_handlers(dp)
     _register_button_handlers(dp)
     dp.register_inline_handler(search_handler.inline_search_handler)
+    register_ayat_message_handlers(dp)
 
 
 def _register_message_handlers(dp: Dispatcher):
