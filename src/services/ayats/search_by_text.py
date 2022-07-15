@@ -1,7 +1,6 @@
 from typing import Optional
 
 from aiogram.dispatcher import FSMContext
-from loguru import logger
 
 from app_types.intable import Intable
 from exceptions import AyatNotFoundError
@@ -39,7 +38,6 @@ class AyatSearchByText(AyatSearchInterface):
         if not ayats:
             raise AyatNotFoundError
         await self._state.update_data(search_query=self._query)
-        logger.debug(f'{ayats}')
         return ayats[0]
 
 
@@ -70,10 +68,7 @@ class AyatSearchByTextAndId(AyatSearchInterface):
         :raises AyatNotFoundError: if ayat not found
         :returns: Ayat
         """
-        logger.debug(f'{self._query=}')
-        logger.debug(f'{int(self._ayat_id)=}')
         ayats = await self._ayat_repository.search_by_text(self._query)
-        logger.debug(f'ayat_ids = {[a.id for a in ayats]}')
         if not ayats:
             raise AyatNotFoundError
         for ayat in ayats:

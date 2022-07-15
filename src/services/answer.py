@@ -99,6 +99,10 @@ class Answer(BaseModel, AnswerInterface):
         await bot_instance.send_message(chat_id=chat_id, text=self.message, reply_markup=markup)
 
     def to_list(self) -> list['Answer']:
+        """Форматировать в строку из элементов.
+
+        :returns: list[Answer]
+        """
         return [self]
 
 
@@ -117,4 +121,8 @@ class AnswersList(list, AnswerInterface):  # noqa: WPS600
             await elem.send(chat_id)
 
     def to_list(self) -> list['Answer']:
+        """Форматировать в строку из элементов.
+
+        :returns: list[Answer]
+        """
         return self

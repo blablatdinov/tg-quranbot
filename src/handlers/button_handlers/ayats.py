@@ -148,10 +148,9 @@ async def ayats_search_buttons(callback_query: types.CallbackQuery, state: FSMCo
     async with db_connection() as connection:
         state_data = await state.get_data()
         search_query = state_data['search_query']
-        ayat_repository = AyatRepository(connection)
         ayat_search = AyatSearchByTextWithNeighbors(
             AyatSearchByTextAndId(
-                ayat_repository,
+                AyatRepository(connection),
                 search_query,
                 IntableRegularExpression(r'\d+', callback_query.data),
             ),
