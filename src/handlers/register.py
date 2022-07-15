@@ -9,9 +9,9 @@ from handlers.button_handlers.ayats import (
     remove_from_favorite,
 )
 from handlers.button_handlers.prayers import mark_prayer_as_not_readed, mark_prayer_as_readed
-from handlers.message_handlers.ayats import register_ayat_message_handlers
 from handlers.message_handlers.podcasts_handler import register_podcasts_message_handlers
 from handlers.message_handlers.prayer_times import register_prayer_times_message_handlers
+from handlers.message_handlers.register import register_ayat_message_handlers
 
 
 def register_handlers(dp: Dispatcher):
