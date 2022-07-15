@@ -1,5 +1,6 @@
+from asyncpg import Connection
 from loguru import logger
-from pydantic import BaseModel
+from pydantic import BaseModel, parse_obj_as
 
 
 class AyatShort(BaseModel):
@@ -9,7 +10,7 @@ class AyatShort(BaseModel):
     sura_num: int
     ayat_num: str
 
-    def title(self):
+    def title(self) -> str:
         """Заголовок.
 
         :returns: str
@@ -32,7 +33,7 @@ class NeighborAyatsRepositoryInterface(object):
 class FavoriteAyatsNeighborRepository(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
-    def __init__(self, connection, chat_id: int):
+    def __init__(self, connection: Connection, chat_id: int) -> None:
         self.connection = connection
         self.chat_id = chat_id
 
@@ -63,16 +64,13 @@ class FavoriteAyatsNeighborRepository(NeighborAyatsRepositoryInterface):
             WHERE $1 IN (id, prev, next)
         """
         rows = await self.connection.fetch(query, ayat_id, self.chat_id)
-        return [
-            AyatShort(**dict(row))
-            for row in rows
-        ]
+        return parse_obj_as(list[AyatShort], rows)
 
 
 class NeighborAyatsRepository(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
-    def __init__(self, connection):
+    def __init__(self, connection: Connection):
         self.connection = connection
 
     async def get_ayat_neighbors(self, ayat_id: int) -> list[AyatShort]:
@@ -97,10 +95,7 @@ class NeighborAyatsRepository(NeighborAyatsRepositoryInterface):
             WHERE $1 IN (id, prev, next)
         """
         rows = await self.connection.fetch(query, ayat_id)
-        return [
-            AyatShort(**dict(row))
-            for row in rows
-        ]
+        return parse_obj_as(list[AyatShort], rows)
 
 
 class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
@@ -136,7 +131,4 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
             WHERE $1 IN (id, prev, next)
         """
         rows = await self.connection.fetch(query, ayat_id, '%{0}%'.format(self._query))
-        return [
-            AyatShort(**dict(row))
-            for row in rows
-        ]
+        return parse_obj_as(list[AyatShort], rows)

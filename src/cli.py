@@ -1,19 +1,19 @@
 import asyncio
 
-from db import db_connection
+from db import DBConnection
 from repository.user import UserRepository
 from services.user import UsersStatus
 
 
-async def run():
+async def run() -> None:
     """Запуск проверки статуса пользователей."""
-    async with db_connection() as connection:
+    async with DBConnection() as connection:
         await UsersStatus(
             UserRepository(connection),
         ).check()
 
 
-def main():
+def main() -> None:
     """Entrypoint."""
     asyncio.run(run())
 

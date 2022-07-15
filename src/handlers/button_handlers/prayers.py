@@ -2,7 +2,7 @@ import datetime
 
 from aiogram import types
 
-from db import db_connection
+from db import DBConnection
 from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
 from services.prayer_time import PrayerTimes, UserPrayerStatus, UserPrayerTimes
@@ -17,7 +17,7 @@ async def mark_prayer_as_readed(callback_query: types.CallbackQuery):
 
     :param callback_query: app_types.CallbackQuery
     """
-    async with db_connection() as connection:
+    async with DBConnection() as connection:
         user_prayer_status = UserPrayerStatus(
             prayer_times_repository=PrayerTimeRepository(connection),
             user_prayer_times=UserPrayerTimes(
@@ -46,7 +46,7 @@ async def mark_prayer_as_not_readed(callback_query: types.CallbackQuery):
 
     :param callback_query: app_types.CallbackQuery
     """
-    async with db_connection() as connection:
+    async with DBConnection() as connection:
         user_prayer_status = UserPrayerStatus(
             prayer_times_repository=PrayerTimeRepository(connection),
             user_prayer_times=UserPrayerTimes(

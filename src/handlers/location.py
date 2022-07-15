@@ -1,6 +1,6 @@
 from aiogram import types
 
-from db import db_connection
+from db import DBConnection
 from integrations.client import IntegrationClient
 from integrations.nominatim import NominatimIntegration
 from repository.city import CityRepository
@@ -15,7 +15,7 @@ async def location_handler(message: types.Message):
 
     :param message: app_types.Message
     """
-    async with db_connection() as connection:
+    async with DBConnection() as connection:
         answer = await CityNotSupportedSafetyAnswer(
             UserCityAnswer(
                 UserCity(

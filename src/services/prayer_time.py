@@ -74,7 +74,7 @@ class UserPrayerTimesKeyboard(object):
 
     user_prayer_times: UserPrayerTimes
 
-    async def generate(self):
+    async def generate(self) -> types.InlineKeyboardMarkup:
         """Генерация.
 
         :returns: app_types.InlineKeyboardMarkup

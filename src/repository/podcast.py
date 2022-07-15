@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
+from asyncpg import Connection
 from pydantic import BaseModel
 
 
@@ -26,7 +27,7 @@ class PodcastRepositoryInterface(object):
 class PodcastRepository(PodcastRepositoryInterface):
     """Класс для работы с хранилищем подкастов."""
 
-    def __init__(self, connection):
+    def __init__(self, connection: Connection):
         self.connection = connection
 
     async def get_random(self) -> Podcast:
@@ -44,4 +45,4 @@ class PodcastRepository(PodcastRepositoryInterface):
             LIMIT 1
         """
         row = await self.connection.fetchrow(query)
-        return Podcast(**dict(row))
+        return Podcast.parse_obj(row)

@@ -10,7 +10,7 @@ from handlers.message_handlers.prayer_times import register_prayer_times_message
 from handlers.message_handlers.register import register_ayat_message_handlers
 
 
-def register_handlers(dp: Dispatcher):
+def register_handlers(dp: Dispatcher) -> None:
     """Регистрация обработчиков.
 
     :param dp: Dispatcher
@@ -23,7 +23,7 @@ def register_handlers(dp: Dispatcher):
     register_ayat_message_handlers(dp)
 
 
-def _register_message_handlers(dp: Dispatcher):
+def _register_message_handlers(dp: Dispatcher) -> None:
     """Регистрация обработчиков.
 
     :param dp: Dispatcher
@@ -32,7 +32,7 @@ def _register_message_handlers(dp: Dispatcher):
     dp.register_message_handler(command_handlers.start_handler, commands=['start'])
 
 
-def _register_button_handlers(dp: Dispatcher):
+def _register_button_handlers(dp: Dispatcher) -> None:
     """Регистрация обработчиков.
 
     :param dp: Dispatcher

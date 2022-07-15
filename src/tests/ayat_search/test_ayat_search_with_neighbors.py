@@ -1,3 +1,4 @@
+from repository.ayats.ayat import Ayat
 from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.search_by_sura_ayat_num import AyatSearchWithNeighbors
 from tests.mocks.neighbor_ayats_repository import NeighborAyatsRepositoryMock
@@ -9,7 +10,7 @@ class AyatSearchMock(AyatSearchInterface):
         self.ayat_repository_mock = ayat_repository_mock
         self.ayat_id = ayat_id
 
-    async def search(self):
+    async def search(self) -> Ayat:
         return [ayat for ayat in self.ayat_repository_mock.storage if ayat.id == self.ayat_id][0]
 
 

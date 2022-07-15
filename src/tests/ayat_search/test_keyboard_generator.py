@@ -32,10 +32,10 @@ class AyatSearchFake(AyatSearchInterface):
             ayat.right_neighbor = (await self.ayat_repository.get(ayat.id + 1)).get_short()
         return ayat
 
-    def _is_last_ayat(self, ayat_id):
+    def _is_last_ayat(self, ayat_id) -> bool:
         return self.ayat_repository.storage[-1].id == ayat_id
 
-    def _is_first_ayat(self, ayat_id):
+    def _is_first_ayat(self, ayat_id) -> bool:
         return self.ayat_repository.storage[0].id == ayat_id
 
 

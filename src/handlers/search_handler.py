@@ -1,6 +1,6 @@
 from aiogram import types
 
-from db import db_connection
+from db import DBConnection
 from repository.city import CityRepository
 from services.city.search import CitySearchInlineAnswer, SearchCityByName
 from services.city.service import CityService
@@ -11,7 +11,7 @@ async def inline_search_handler(query: types.InlineQuery):
 
     :param query: app_types.InlineQuery
     """
-    async with db_connection() as connection:
+    async with DBConnection() as connection:
         cities_query_answer = await CitySearchInlineAnswer(
             SearchCityByName(
                 CityService(

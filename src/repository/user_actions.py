@@ -1,6 +1,7 @@
 import datetime
 import enum
 
+from asyncpg import Connection
 from pydantic import BaseModel
 
 
@@ -36,7 +37,7 @@ class UserActionRepositoryInterface(object):
 class UserActionRepository(UserActionRepositoryInterface):
     """Класс для работы с действиями пользователя в БД."""
 
-    def __init__(self, connection):
+    def __init__(self, connection: Connection):
         self.connection = connection
 
     async def create_user_action(self, chat_id: int, action: UserActionEnum):
@@ -52,4 +53,4 @@ class UserActionRepository(UserActionRepositoryInterface):
             VALUES
             ($1, $2, (SELECT id FROM bot_init_subscriber WHERE tg_chat_id = $3))
         """
-        await self.connection(query, datetime.datetime.now(), action, chat_id)
+        await self.connection.execute(query, datetime.datetime.now(), action, chat_id)

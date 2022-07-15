@@ -2,8 +2,9 @@ import datetime
 import enum
 from dataclasses import dataclass
 
+from asyncpg import Connection
 from loguru import logger
-from pydantic import BaseModel
+from pydantic import BaseModel, parse_obj_as
 
 
 class PrayerNames(str, enum.Enum):  # noqa: WPS600
@@ -35,6 +36,12 @@ class UserPrayer(BaseModel):
 
     id: int
     is_readed: bool
+
+
+class CreatePrayerAtUserGroupQueryResult(BaseModel):
+    """Результат запроса на создание группы времен намаза для пользователя."""
+
+    id: int
 
 
 class PrayerTimeRepositoryInterface(object):
@@ -93,7 +100,7 @@ class PrayerTimeRepositoryInterface(object):
 class PrayerTimeRepository(PrayerTimeRepositoryInterface):
     """Класс для работы с временами намаза в БД."""
 
-    def __init__(self, connection):
+    def __init__(self, connection: Connection):
         self.connection = connection
 
     async def get_prayer_times_for_date(
@@ -123,10 +130,7 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
             where s.tg_chat_id = $1 and d.date = $2
         """
         rows = await self.connection.fetch(query, chat_id, target_datetime)
-        return [
-            Prayer(**dict(row))
-            for row in rows
-        ]
+        return parse_obj_as(list[Prayer], rows)
 
     async def get_user_prayer_times(
         self,
@@ -155,10 +159,7 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
             where p.id IN ($3, $4, $5, $6, $7) AND bis.tg_chat_id = $1 AND pd.date = $2
         """
         rows = await self.connection.fetch(query, chat_id, date, *prayer_ids)
-        return [
-            UserPrayer(**dict(row))
-            for row in rows
-        ]
+        return parse_obj_as(list[UserPrayer], rows)
 
     async def create_user_prayer_times(self, prayer_ids: list[int], user_id: int) -> list[UserPrayer]:
         """Создать времена намазов для пользователя.
@@ -171,7 +172,7 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
             INSERT INTO prayer_prayeratusergroup (id) VALUES (default) RETURNING id
         """
         row = await self.connection.fetchrow(query)
-        user_prayer_group_id = row['id']
+        user_prayer_group_id = CreatePrayerAtUserGroupQueryResult.parse_obj(row).id
         logger.info('Creating user prayers with prayer_ids={0}, user_id={1}'.format(prayer_ids, user_id))
         query = """
             WITH user_id AS (SELECT id FROM bot_init_subscriber where tg_chat_id = $1)
@@ -186,10 +187,7 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
             RETURNING id, is_read as is_readed
         """
         rows = await self.connection.fetch(query, user_id, user_prayer_group_id, *prayer_ids)
-        return [
-            UserPrayer(**dict(row))
-            for row in rows
-        ]
+        return parse_obj_as(list[UserPrayer], rows)
 
     async def change_user_prayer_time_status(self, user_prayer_id: int, is_readed: bool):
         """Поменять статус прочитанности у аята.

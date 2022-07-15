@@ -61,4 +61,4 @@ async def test_get_prayer_time_without_city(user_repository_mock):
         ),
     ).to_answer()
 
-    assert got.message == 'Вы не указали город, отправьте местоположение или воспользуйтесь поиском'
+    assert got.to_list()[0].message == 'Вы не указали город, отправьте местоположение или воспользуйтесь поиском'

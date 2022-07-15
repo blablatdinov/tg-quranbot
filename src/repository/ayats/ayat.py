@@ -1,5 +1,6 @@
 from typing import NamedTuple, Optional
 
+from asyncpg import Connection
 from pydantic import BaseModel
 
 from repository.ayats.neighbor_ayats import AyatShort
@@ -105,7 +106,7 @@ class AyatRepositoryInterface(object):
 class AyatRepository(AyatRepositoryInterface):
     """Интерфейс репозитория для работы с административными сообщениями."""
 
-    def __init__(self, connection):
+    def __init__(self, connection: Connection):
         self.connection = connection
 
     async def get(self, ayat_id: int) -> Ayat:
@@ -131,7 +132,7 @@ class AyatRepository(AyatRepositoryInterface):
             WHERE a.id = $1
         """
         row = await self.connection.fetchrow(query, ayat_id)
-        return Ayat(**dict(row))
+        return Ayat.parse_obj(row)
 
     async def get_ayats_by_sura_num(self, sura_num: int) -> list[Ayat]:
         """Получить аят по номеру суры.

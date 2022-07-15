@@ -1,18 +1,14 @@
-from contextlib import asynccontextmanager
-
 import asyncpg
 
 from settings import settings
 
 
-@asynccontextmanager
-async def db_connection():
-    """Контекстный менеджер для коннектов к БД.
+class DBConnection(object):
+    """Контексный менеджер для подключения к БД."""
 
-    :yields: connection
-    """
-    connection = await asyncpg.connect(settings.DATABASE_URL)
-    try:
-        yield connection
-    finally:
-        await connection.close()
+    async def __aenter__(self) -> asyncpg.Connection:
+        self._connection = await asyncpg.connect(settings.DATABASE_URL)
+        return self._connection
+
+    async def __aexit__(self, *args) -> None:
+        await self._connection.close()
