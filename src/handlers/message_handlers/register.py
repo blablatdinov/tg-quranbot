@@ -2,12 +2,9 @@ from aiogram import Dispatcher
 from aiogram.dispatcher import filters
 
 from constants import AYAT_SEARCH_INPUT_REGEXP
-from handlers.message_handlers.ayats import (
-    ayat_search_by_sura_ayat_num_handler,
-    ayats_text_search,
-    ayats_text_search_button_handler,
-    favorite_ayats_list,
-)
+from handlers.message_handlers.ayat_search_by_sura_ayat_num import ayat_search_by_sura_ayat_num_handler
+from handlers.message_handlers.ayat_text_search import ayats_text_search, ayats_text_search_button_handler
+from handlers.message_handlers.favorite_ayats import favorite_ayats_list
 from states import AyatSearchSteps
 
 
