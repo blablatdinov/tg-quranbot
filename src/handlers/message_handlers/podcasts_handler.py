@@ -1,5 +1,5 @@
 from aiogram import Dispatcher, types
-from aiogram.dispatcher import filters
+from aiogram.dispatcher import FSMContext, filters
 
 from constants import PODCAST_BUTTON
 from db import db_connection
@@ -7,10 +7,11 @@ from repository.podcast import PodcastRepository
 from services.podcast import PodcastAnswer, PodcastService
 
 
-async def podcasts_handler(message: types.Message):
+async def podcasts_handler(message: types.Message, state: FSMContext):
     """Получить случайный подкаст.
 
-    :param message: app_types.Message
+    :param message: types.Message
+    :param state: FSMContext
     """
     async with db_connection() as connection:
         answer = PodcastAnswer(
@@ -19,6 +20,7 @@ async def podcasts_handler(message: types.Message):
             ).get_random(),
         ).transform()
 
+    await state.finish()
     await answer.send(message.chat.id)
 
 
@@ -27,4 +29,4 @@ def register_podcasts_message_handlers(dp: Dispatcher):
 
     :param dp: Dispatcher
     """
-    dp.register_message_handler(podcasts_handler, filters.Regexp(PODCAST_BUTTON))
+    dp.register_message_handler(podcasts_handler, filters.Regexp(PODCAST_BUTTON), state='*')

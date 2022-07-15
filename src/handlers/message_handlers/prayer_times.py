@@ -1,7 +1,7 @@
 import datetime
 
 from aiogram import Dispatcher, types
-from aiogram.dispatcher import filters
+from aiogram.dispatcher import FSMContext, filters
 
 from constants import GET_PRAYER_TIMES_REGEXP
 from db import db_connection
@@ -10,10 +10,11 @@ from repository.user import UserRepository
 from services.prayer_time import PrayerTimes, UserHasNotCityExistsSafeAnswer, UserPrayerTimes, UserPrayerTimesAnswer
 
 
-async def prayer_times_handler(message: types.Message):
+async def prayer_times_handler(message: types.Message, state: FSMContext):
     """Получить времена намаза.
 
-    :param message: app_types.Message
+    :param message: types.Message
+    :param state: FSMContext
     """
     async with db_connection() as connection:
         answer = await UserHasNotCityExistsSafeAnswer(
@@ -28,7 +29,9 @@ async def prayer_times_handler(message: types.Message):
                 ),
             ),
         ).to_answer()
-        await answer.send(message.chat.id)
+
+    await state.finish()
+    await answer.send(message.chat.id)
 
 
 def register_prayer_times_message_handlers(dp: Dispatcher):
@@ -36,4 +39,4 @@ def register_prayer_times_message_handlers(dp: Dispatcher):
 
     :param dp: Dispatcher
     """
-    dp.register_message_handler(prayer_times_handler, filters.Regexp(GET_PRAYER_TIMES_REGEXP))
+    dp.register_message_handler(prayer_times_handler, filters.Regexp(GET_PRAYER_TIMES_REGEXP), state='*')

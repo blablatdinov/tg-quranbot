@@ -1,4 +1,5 @@
 from aiogram import types
+from aiogram.dispatcher import FSMContext
 
 from db import db_connection
 from repository.ayats.ayat import AyatRepository
@@ -10,10 +11,11 @@ from services.ayats.keyboard import AyatSearchKeyboard
 from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum, AyatSearchWithNeighbors
 
 
-async def ayat_search_by_sura_ayat_num_handler(message: types.Message):
+async def ayat_search_by_sura_ayat_num_handler(message: types.Message, state: FSMContext):
     """Поиск по аятам по номеру суры и аята.
 
     :param message: app_types.Message
+    :param state: FSMContext
     """
     async with db_connection() as connection:
         ayat_repository = AyatRepository(connection)
@@ -33,4 +35,6 @@ async def ayat_search_by_sura_ayat_num_handler(message: types.Message):
                 AyatPaginatorCallbackDataTemplate.ayat_search_template,
             ),
         ).to_answer()
-        await answer.send(message.chat.id)
+
+    await state.finish()
+    await answer.send(message.chat.id)
