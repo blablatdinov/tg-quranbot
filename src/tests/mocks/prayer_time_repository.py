@@ -35,11 +35,12 @@ class PrayerTimeRepositoryMock(PrayerTimeRepositoryInterface):
         chat_id: int,
         date_time: datetime.datetime,
     ) -> list[UserPrayer]:
-        return {
+        storage: dict[int, list[UserPrayer]] = {
             1234: [],
             111: [],
             4321: [UserPrayer(id=prayer_id, is_readed=True) for prayer_id in range(2000, 2006)],
-        }.get(chat_id)
+        }
+        return storage[chat_id]
 
     async def create_user_prayer_times(self, prayer_ids: list[int], user_id: int) -> list[UserPrayer]:
         return [
