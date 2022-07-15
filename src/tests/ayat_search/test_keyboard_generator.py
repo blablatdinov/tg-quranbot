@@ -24,12 +24,12 @@ class AyatSearchFake(AyatSearchInterface):
             ),
         )[0]
         if self._is_last_ayat(ayat.id):
-            ayat.left_neighbor = await self.ayat_repository.get(ayat.id - 1)
+            ayat.left_neighbor = (await self.ayat_repository.get(ayat.id - 1)).get_short()
         elif self._is_first_ayat(ayat.id):
-            ayat.right_neighbor = await self.ayat_repository.get(ayat.id + 1)
+            ayat.right_neighbor = (await self.ayat_repository.get(ayat.id + 1)).get_short()
         else:
-            ayat.left_neighbor = await self.ayat_repository.get(ayat.id - 1)
-            ayat.right_neighbor = await self.ayat_repository.get(ayat.id + 1)
+            ayat.left_neighbor = (await self.ayat_repository.get(ayat.id - 1)).get_short()
+            ayat.right_neighbor = (await self.ayat_repository.get(ayat.id + 1)).get_short()
         return ayat
 
     def _is_last_ayat(self, ayat_id):

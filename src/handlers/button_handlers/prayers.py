@@ -1,5 +1,4 @@
 import datetime
-import re
 
 from aiogram import types
 
@@ -7,6 +6,7 @@ from db import db_connection
 from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
 from services.prayer_time import PrayerTimes, UserPrayerStatus, UserPrayerTimes
+from services.regular_expression import IntableRegularExpression
 from utlls import get_bot_instance
 
 bot = get_bot_instance()
@@ -17,7 +17,6 @@ async def mark_prayer_as_readed(callback_query: types.CallbackQuery):
 
     :param callback_query: app_types.CallbackQuery
     """
-    user_prayer_id = int(re.search(r'\d+', callback_query.data).group(0))
     async with db_connection() as connection:
         user_prayer_status = UserPrayerStatus(
             prayer_times_repository=PrayerTimeRepository(connection),
@@ -29,7 +28,7 @@ async def mark_prayer_as_readed(callback_query: types.CallbackQuery):
                 ).get(),
                 datetime.datetime.now(),
             ),
-            user_prayer_id=user_prayer_id,
+            user_prayer_id=IntableRegularExpression(r'\d+', callback_query.data),
         )
 
         await user_prayer_status.change(True)
@@ -47,7 +46,6 @@ async def mark_prayer_as_not_readed(callback_query: types.CallbackQuery):
 
     :param callback_query: app_types.CallbackQuery
     """
-    user_prayer_id = int(re.search(r'\d+', callback_query.data).group(0))
     async with db_connection() as connection:
         user_prayer_status = UserPrayerStatus(
             prayer_times_repository=PrayerTimeRepository(connection),
@@ -59,7 +57,7 @@ async def mark_prayer_as_not_readed(callback_query: types.CallbackQuery):
                 ).get(),
                 datetime.datetime.now(),
             ),
-            user_prayer_id=user_prayer_id,
+            user_prayer_id=IntableRegularExpression(r'\d+', callback_query.data),
         )
 
         await user_prayer_status.change(False)

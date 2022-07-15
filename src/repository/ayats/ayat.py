@@ -50,12 +50,19 @@ class Ayat(BaseModel):
         """
         return AyatNeighbors(left=self.left_neighbor, right=self.right_neighbor)
 
-    def title(self):
+    def title(self) -> str:
         """Заголовок.
 
         :returns: str
         """
         return '{0}:{1}'.format(self.sura_num, self.ayat_num)
+
+    def get_short(self) -> AyatShort:
+        """Трансформировать в короткую версию.
+
+        :returns: AyatShort
+        """
+        return AyatShort(id=self.id, ayat_num=self.ayat_num, sura_num=self.sura_num)
 
 
 class AyatRepositoryInterface(object):

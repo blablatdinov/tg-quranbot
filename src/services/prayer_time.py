@@ -5,6 +5,7 @@ from aiogram import types
 from loguru import logger
 
 from answerable import Answerable
+from app_types.intable import Intable
 from constants import PRAYER_NOT_READED_EMOJI, PRAYER_READED_EMOJI
 from exceptions import UserHasNotCityIdError
 from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
@@ -53,7 +54,7 @@ class UserPrayerTimes(object):
         user_prayers = await self.prayer_times.prayer_times_repository.get_user_prayer_times(
             prayers_without_sunrise_ids,
             self.prayer_times.chat_id,
-            datetime.datetime.now().date(),
+            datetime.datetime.now(),
         )
         logger.info('Search result: {0}'.format(user_prayers))
         if not user_prayers:
@@ -198,14 +199,14 @@ class UserPrayerStatus(object):
 
     prayer_times_repository: PrayerTimeRepositoryInterface
     user_prayer_times: UserPrayerTimes
-    user_prayer_id: int
+    user_prayer_id: Intable
 
     async def change(self, is_readed: bool):
         """Метод меняет статус прочитанности намаза.
 
         :param is_readed: bool
         """
-        await self.prayer_times_repository.change_user_prayer_time_status(self.user_prayer_id, is_readed)
+        await self.prayer_times_repository.change_user_prayer_time_status(int(self.user_prayer_id), is_readed)
 
     async def generate_refresh_keyboard(self) -> types.InlineKeyboardMarkup:
         """Сгенерировать обновленную клавиатуру.

@@ -39,15 +39,10 @@ class FavoriteAyats(AyatSearchInterface):
         :returns: Ayat
         """
         favorite_ayats = await self._ayat_repository.get_favorites(self._chat_id)
-        if not int(self._ayat_id):
+        if not self._ayat_id:
             return favorite_ayats[0]
 
-        return list(
-            filter(
-                lambda ayat: ayat.id == int(self._ayat_id),
-                favorite_ayats,
-            ),
-        )[0]
+        return [ayat for ayat in favorite_ayats if ayat.id == int(self._ayat_id)][0]
 
 
 class SearchAnswer(Answerable):

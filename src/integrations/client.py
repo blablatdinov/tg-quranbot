@@ -1,14 +1,17 @@
 import abc
+from typing import TypeVar
 
 import aiohttp
 from pydantic import BaseModel
+
+ParseModel = TypeVar('ParseModel', bound=BaseModel)
 
 
 class IntegrationClientInterface(object):
     """Интерфейс HTTP клиента."""
 
     @abc.abstractmethod
-    async def act(self, url: str, model_for_parse: type[BaseModel]) -> type[BaseModel]:
+    async def act(self, url: str, model_for_parse: type[ParseModel]) -> ParseModel:
         """Выполнить запрос.
 
         :param url: str
@@ -21,7 +24,7 @@ class IntegrationClientInterface(object):
 class IntegrationClient(IntegrationClientInterface):
     """Aiohttp клиент."""
 
-    async def act(self, url: str, model_for_parse: type(BaseModel)) -> type(BaseModel):
+    async def act(self, url: str, model_for_parse: type[ParseModel]) -> ParseModel:
         """Выполнить запрос.
 
         :param url: str

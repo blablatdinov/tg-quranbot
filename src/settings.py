@@ -13,8 +13,8 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     DEBUG: bool
     REDIS_HOST: str = 'localhost'
-    REDIS_PORT: str = 6379
-    REDIS_DB: str = 5
+    REDIS_PORT: int = 6379
+    REDIS_DB: int = 5
 
     class Config(object):
         """Конфигурация настроек."""

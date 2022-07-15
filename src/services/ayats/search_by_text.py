@@ -1,5 +1,3 @@
-from typing import Optional
-
 from aiogram.dispatcher import FSMContext
 
 from app_types.intable import Intable
@@ -49,13 +47,13 @@ class AyatSearchByTextAndId(AyatSearchInterface):
 
     _ayat_repository: AyatRepositoryInterface
     _state: FSMContext
-    _ayat_id: Optional[Intable]
+    _ayat_id: Intable
 
     def __init__(
         self,
         ayat_repository: AyatRepositoryInterface,
         query: str,
-        ayat_id: Optional[Intable],
+        ayat_id: Intable,
     ):
         self._ayat_repository = ayat_repository
         self._query = query
