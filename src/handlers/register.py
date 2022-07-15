@@ -44,28 +44,35 @@ def _register_button_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(
         ayat_from_callback_handler,
         lambda callback: callback.data and callback.data.startswith('get_ayat'),
+        state='*',
     )
     dp.register_callback_query_handler(
         add_to_favorite,
         lambda callback: callback.data and callback.data.startswith('add_to_favorite'),
+        state='*',
     )
     dp.register_callback_query_handler(
         remove_from_favorite,
         lambda callback: callback.data and callback.data.startswith('remove_from_favorite'),
+        state='*',
     )
     dp.register_callback_query_handler(
         mark_prayer_as_not_readed,
         lambda callback: callback.data and callback.data.startswith('mark_not_readed'),
+        state='*',
     )
     dp.register_callback_query_handler(
         mark_prayer_as_readed,
         lambda callback: callback.data and callback.data.startswith('mark_readed'),
+        state='*',
     )
     dp.register_callback_query_handler(
         favorite_ayat,
         lambda callback: callback.data and callback.data.startswith('get_favorite_ayat'),
+        state='*',
     )
     dp.register_callback_query_handler(
         ayats_search_buttons,
         lambda callback: callback.data and callback.data.startswith('search_text_ayat'),
+        state='*',
     )

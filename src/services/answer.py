@@ -27,6 +27,13 @@ class AnswerInterface(object):
         """
         raise NotImplementedError
 
+    def to_list(self) -> list['Answer']:
+        """Метод для конвертации в список.
+
+        :raises NotImplementedError: if not implement
+        """
+        raise NotImplementedError
+
 
 def get_default_markup():
     """Получить дефолтную клавиатуру.
@@ -91,6 +98,9 @@ class Answer(BaseModel, AnswerInterface):
             await bot_instance.send_message(chat_id=chat_id, text=self.link_to_file, reply_markup=markup)
         await bot_instance.send_message(chat_id=chat_id, text=self.message, reply_markup=markup)
 
+    def to_list(self) -> list['Answer']:
+        return [self]
+
 
 class AnswersList(list, AnswerInterface):  # noqa: WPS600
     """Список ответов."""
@@ -105,3 +115,6 @@ class AnswersList(list, AnswerInterface):  # noqa: WPS600
         """
         for elem in self:
             await elem.send(chat_id)
+
+    def to_list(self) -> list['Answer']:
+        return self

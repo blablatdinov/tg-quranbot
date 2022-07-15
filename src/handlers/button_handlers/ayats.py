@@ -27,7 +27,6 @@ async def ayat_from_callback_handler(callback_query: types.CallbackQuery):
     :param callback_query: app_types.CallbackQuery
     """
     async with db_connection() as connection:
-        ayat_repository = AyatRepository(connection)
         ayat_search = AyatSearchWithNeighbors(
             AyatById(
                 AyatRepository(connection),
@@ -39,7 +38,6 @@ async def ayat_from_callback_handler(callback_query: types.CallbackQuery):
             ayat_search,
             AyatSearchKeyboard(
                 ayat_search,
-                ayat_repository,
                 FavoriteAyatsRepository(connection),
                 callback_query.from_user.id,
                 AyatPaginatorCallbackDataTemplate.ayat_search_template,
@@ -57,7 +55,7 @@ async def add_to_favorite(callback_query: types.CallbackQuery):
         ayat_repository = AyatRepository(connection)
         intable_ayat_id = IntableRegularExpression(r'\d+', callback_query.data)
         await AyatFavoriteStatus(
-            ayat_repository,
+            FavoriteAyatsRepository(connection),
             intable_ayat_id,
             callback_query.from_user.id,
         ).change(is_favorite=True)
@@ -69,7 +67,6 @@ async def add_to_favorite(callback_query: types.CallbackQuery):
                 ),
                 NeighborAyatsRepository(connection),
             ),
-            ayat_repository,
             FavoriteAyatsRepository(connection),
             callback_query.from_user.id,
             AyatPaginatorCallbackDataTemplate.ayat_search_template,
@@ -91,7 +88,7 @@ async def remove_from_favorite(callback_query: types.CallbackQuery):
         ayat_repository = AyatRepository(connection)
         intable_ayat_id = IntableRegularExpression(r'\d+', callback_query.data)
         await AyatFavoriteStatus(
-            ayat_repository,
+            FavoriteAyatsRepository(connection),
             intable_ayat_id,
             callback_query.from_user.id,
         ).change(is_favorite=False)
@@ -103,7 +100,6 @@ async def remove_from_favorite(callback_query: types.CallbackQuery):
                 ),
                 NeighborAyatsRepository(connection),
             ),
-            ayat_repository,
             FavoriteAyatsRepository(connection),
             callback_query.from_user.id,
             AyatPaginatorCallbackDataTemplate.ayat_search_template,
@@ -122,7 +118,6 @@ async def favorite_ayat(callback_query: types.CallbackQuery):
     :param callback_query: app_types.CallbackQuery
     """
     async with db_connection() as connection:
-        ayat_repository = AyatRepository(connection)
         ayat_search = AyatSearchWithNeighbors(
             FavoriteAyats(
                 FavoriteAyatsRepository(connection),
@@ -135,7 +130,6 @@ async def favorite_ayat(callback_query: types.CallbackQuery):
             ayat_search,
             AyatSearchKeyboard(
                 ayat_search,
-                ayat_repository,
                 FavoriteAyatsRepository(connection),
                 callback_query.from_user.id,
                 AyatPaginatorCallbackDataTemplate.favorite_ayat_template,
@@ -152,22 +146,21 @@ async def ayats_search_buttons(callback_query: types.CallbackQuery, state: FSMCo
     :param state: FSMContext
     """
     async with db_connection() as connection:
-        # state_data = await state.get_data()
+        state_data = await state.get_data()
+        search_query = state_data['search_query']
         ayat_repository = AyatRepository(connection)
         ayat_search = AyatSearchByTextWithNeighbors(
             AyatSearchByTextAndId(
                 ayat_repository,
-                callback_query.data,
-                state,
+                search_query,
                 IntableRegularExpression(r'\d+', callback_query.data),
             ),
-            TextSearchNeighborAyatsRepository(connection, callback_query.data),
+            TextSearchNeighborAyatsRepository(connection, search_query),
         )
         answer = await SearchAnswer(
             ayat_search,
             AyatSearchKeyboard(
                 ayat_search,
-                ayat_repository,
                 FavoriteAyatsRepository(connection),
                 callback_query.from_user.id,
                 AyatPaginatorCallbackDataTemplate.ayat_text_search_template,

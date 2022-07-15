@@ -176,6 +176,7 @@ class AyatRepository(AyatRepositoryInterface):
             INNER JOIN content_sura s on a.sura_id = s.id
             INNER JOIN content_file cf on a.audio_id = cf.id
             WHERE a.content ILIKE $1
+            ORDER BY a.id
         """
         rows = await self.connection.fetch(query, search_query)
         return [

@@ -1,6 +1,7 @@
 from typing import Optional
 
 from aiogram.dispatcher import FSMContext
+from loguru import logger
 
 from app_types.intable import Intable
 from exceptions import AyatNotFoundError
@@ -38,6 +39,7 @@ class AyatSearchByText(AyatSearchInterface):
         if not ayats:
             raise AyatNotFoundError
         await self._state.update_data(search_query=self._query)
+        logger.debug(f'{ayats}')
         return ayats[0]
 
 
@@ -55,12 +57,10 @@ class AyatSearchByTextAndId(AyatSearchInterface):
         self,
         ayat_repository: AyatRepositoryInterface,
         query: str,
-        state: FSMContext,
         ayat_id: Optional[Intable],
     ):
         self._ayat_repository = ayat_repository
         self._query = query
-        self._state = state
         self._ayat_id = ayat_id
         self._ayat_paginator_callback_data_template = AyatPaginatorCallbackDataTemplate.ayat_text_search_template
 
@@ -70,11 +70,14 @@ class AyatSearchByTextAndId(AyatSearchInterface):
         :raises AyatNotFoundError: if ayat not found
         :returns: Ayat
         """
+        logger.debug(f'{self._query=}')
+        logger.debug(f'{int(self._ayat_id)=}')
         ayats = await self._ayat_repository.search_by_text(self._query)
+        logger.debug(f'ayat_ids = {[a.id for a in ayats]}')
         if not ayats:
             raise AyatNotFoundError
         for ayat in ayats:
-            if ayat.id == self._ayat_id:
+            if ayat.id == int(self._ayat_id):
                 return ayat
 
         raise AyatNotFoundError
@@ -101,10 +104,10 @@ class AyatSearchByTextWithNeighbors(AyatSearchInterface):
         """
         ayat = await self._ayat_search.search()
         neighbors = await self._neighbor_ayats_repository.get_ayat_neighbors(ayat.id)
-        if len(neighbors) == 2 and neighbors[0].id == 1:
+        if len(neighbors) == 2 and neighbors[0].id == ayat.id:
             ayat.right_neighbor = neighbors[1]
             return ayat
-        elif len(neighbors) == 2 and neighbors[0].id != 1:
+        elif len(neighbors) == 2 and neighbors[0].id != ayat.id:
             ayat.left_neighbor = neighbors[0]
             return ayat
         ayat.left_neighbor = neighbors[0]

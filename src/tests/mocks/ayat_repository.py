@@ -26,6 +26,9 @@ class AyatRepositoryMock(AyatRepositoryInterface):
             ),
         )[0]
 
+    async def search_by_text(self, query: str) -> list[Ayat]:
+        return [ayat for ayat in self.storage if query in ayat.content]
+
     def _filter_by_sura_and_ayat_num(self, ayat: Ayat, sura_num: str, ayat_num: str) -> bool:
         coincidence_by_sura_num = str(ayat.sura_num) == str(sura_num)
         coincidence_by_ayat_num = str(ayat.ayat_num) == str(ayat_num)

@@ -111,6 +111,8 @@ async def ayats_text_search(message: types.Message, state: FSMContext):
             ),
         ).to_answer()
 
+    print(answer.to_list()[0].keyboard)
+
     await AyatSearchSteps.insert_into_search_mode.set()
     await answer.send(message.chat.id)
 
