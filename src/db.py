@@ -1,12 +1,12 @@
 import asyncpg
-from asyncpg import Connection
 
 from settings import settings
 
 
 class DBConnection(object):
+    """Контексный менеджер для подключения к БД."""
 
-    async def __aenter__(self) -> Connection:
+    async def __aenter__(self) -> asyncpg.Connection:
         self._connection = await asyncpg.connect(settings.DATABASE_URL)
         return self._connection
 

@@ -1,4 +1,8 @@
+from asyncpg import Connection
+from pydantic import parse_obj_as
+
 from repository.ayats.ayat import Ayat
+from repository.schemas import CountResult
 
 
 class FavoriteAyatRepositoryInterface(object):
@@ -43,7 +47,7 @@ class FavoriteAyatRepositoryInterface(object):
 class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
     """Класс для работы с хранилищем избранных аятов."""
 
-    def __init__(self, connection):
+    def __init__(self, connection: Connection):
         self._connection = connection
 
     async def get_favorites(self, chat_id: int) -> list[Ayat]:
@@ -71,10 +75,7 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
             WHERE sub.tg_chat_id = $1
         """
         rows = await self._connection.fetch(query, chat_id)
-        return [
-            Ayat(**dict(row))
-            for row in rows
-        ]
+        return parse_obj_as(list[Ayat], rows)
 
     async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
         """Получить аят по номеру суры.
@@ -91,7 +92,7 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
             where ayat_id = $1 and sub.tg_chat_id = $2
         """
         row = await self._connection.fetchrow(query, ayat_id, chat_id)
-        return bool(row['count'])
+        return bool(CountResult.parse_obj(row).count)
 
     async def add_to_favorite(self, chat_id: int, ayat_id: int):
         """Добавить аят в избранные.

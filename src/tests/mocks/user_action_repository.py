@@ -7,7 +7,7 @@ class UserActionRepositoryMock(UserActionRepositoryInterface):
 
     storage: list[UserAction]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.storage = []
 
     async def create_user_action(self, chat_id: int, action: UserActionEnum):

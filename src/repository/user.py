@@ -1,6 +1,9 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from asyncpg import Connection
+from pydantic import BaseModel, parse_obj_as
+
+from repository.schemas import CountResult
 
 
 class User(BaseModel):
@@ -70,7 +73,7 @@ class UserRepositoryInterface(object):
 class UserRepository(UserRepositoryInterface):
     """Репозиторий для работы с пользователями."""
 
-    def __init__(self, connection):
+    def __init__(self, connection: Connection):
         self.connection = connection
 
     async def create(self, chat_id: int, referrer_id: Optional[int]):
@@ -103,7 +106,7 @@ class UserRepository(UserRepositoryInterface):
             WHERE tg_chat_id = $1
         """
         record = await self.connection.fetchrow(query, chat_id)
-        return User(**dict(record))
+        return User.parse_obj(record)
 
     async def exists(self, chat_id: int) -> bool:
         """Метод для проверки наличия пользователя в БД.
@@ -113,7 +116,7 @@ class UserRepository(UserRepositoryInterface):
         """
         query = 'SELECT COUNT(*) FROM bot_init_subscriber WHERE tg_chat_id = $1'
         record = await self.connection.fetchrow(query, chat_id)
-        return bool(record['count'])
+        return bool(CountResult.parse_obj(record))
 
     async def active_users(self) -> list[User]:
         """Получить активных пользователей.
@@ -132,10 +135,7 @@ class UserRepository(UserRepositoryInterface):
             WHERE is_active = 't'
         """
         rows = await self.connection.fetch(query)
-        return [
-            User(**dict(row))
-            for row in rows
-        ]
+        return parse_obj_as(list[User], rows)
 
     async def update_city(self, chat_id: int, city_id: int):
         """Обновить город пользователя.

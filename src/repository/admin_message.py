@@ -1,3 +1,13 @@
+from asyncpg import Connection
+from pydantic import BaseModel
+
+
+class QueryResult(BaseModel):
+    """Резултат запроса на получение административного сообщения."""
+
+    text: str
+
+
 class AdminMessageRepositoryInterface(object):
     """Интерфейс репозитория для работы с административными сообщениями."""
 
@@ -13,7 +23,7 @@ class AdminMessageRepositoryInterface(object):
 class AdminMessageRepository(AdminMessageRepositoryInterface):
     """Класс для работы с БД."""
 
-    def __init__(self, connection):
+    def __init__(self, connection: Connection):
         self.connection = connection
 
     async def get(self, key: str) -> str:
@@ -25,4 +35,4 @@ class AdminMessageRepository(AdminMessageRepositoryInterface):
         record = await self.connection.fetchrow(
             "SELECT text FROM bot_init_adminmessage m WHERE m.key = '$1'", key,
         )
-        return record['text']
+        return QueryResult.parse_obj(record).text

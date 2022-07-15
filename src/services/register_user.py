@@ -48,7 +48,7 @@ class RegisterUser(object):
             Answer(chat_id=self._chat_id, message=formatted_first_ayat),
         )
 
-    async def creating_user(self):
+    async def creating_user(self) -> None:
         """Создание пользователя."""
         await self._user_registration_repository.create_user(self._chat_id, self._start_message_meta.referrer)
         await self._user_registration_repository.create_user_action(self._chat_id, UserActionEnum.SUBSCRIBED)

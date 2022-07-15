@@ -16,7 +16,7 @@ class UsersStatus(object):
 
     user_repository: UserRepositoryInterface
 
-    async def check(self):
+    async def check(self) -> None:
         """Проверить статус."""
         users = await self.user_repository.active_users()
         user_number = 0

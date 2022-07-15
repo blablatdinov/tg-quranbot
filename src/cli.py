@@ -5,7 +5,7 @@ from repository.user import UserRepository
 from services.user import UsersStatus
 
 
-async def run():
+async def run() -> None:
     """Запуск проверки статуса пользователей."""
     async with DBConnection() as connection:
         await UsersStatus(
@@ -13,7 +13,7 @@ async def run():
         ).check()
 
 
-def main():
+def main() -> None:
     """Entrypoint."""
     asyncio.run(run())
 
