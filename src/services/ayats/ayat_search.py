@@ -1,23 +1,27 @@
 from typing import Optional
 
+from answerable import Answerable
 from app_types.intable import Intable
-from repository.ayats.ayat import Ayat, AyatRepositoryInterface
+from exceptions import AyatNotFoundError
+from repository.ayats.ayat import Ayat
+from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from services.answer import Answer, AnswerInterface, AnswersList
 from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.keyboard import AyatPaginatorCallbackDataTemplate, AyatSearchKeyboard
 
 
+# TODO: тесты
 class FavoriteAyats(AyatSearchInterface):
     """Получить избранные аяты."""
 
-    _ayat_repository: AyatRepositoryInterface
+    _ayat_repository: FavoriteAyatRepositoryInterface
     _chat_id: int
     _ayat_id: Optional[Intable]
     _ayat_paginator_callback_data_template: AyatPaginatorCallbackDataTemplate
 
     def __init__(
         self,
-        ayat_repository: AyatRepositoryInterface,
+        ayat_repository: FavoriteAyatRepositoryInterface,
         chat_id: int,
         ayat_id: Optional[Intable] = None,  # TODO: maybe separate class for None cases
         ayat_paginator_callback_data_template: AyatPaginatorCallbackDataTemplate = None,
@@ -46,7 +50,7 @@ class FavoriteAyats(AyatSearchInterface):
         )[0]
 
 
-class SearchAnswer(object):
+class SearchAnswer(Answerable):
     """Класс, собирающий ответ на запрос о поиске."""
 
     _ayat_search: AyatSearchInterface
@@ -55,7 +59,7 @@ class SearchAnswer(object):
         self._ayat_search = ayat_search
         self._keyboard = keyboard
 
-    async def transform(self) -> AnswerInterface:
+    async def to_answer(self) -> AnswerInterface:
         """Трансформировать переданные данные в ответ.
 
         :returns: AnswerInterface
@@ -70,20 +74,39 @@ class SearchAnswer(object):
         )
 
 
+class AyatNotFoundSafeAnswer(Answerable):
+    """Декортаор, для обработки ошибки."""
+
+    _origin: Answerable
+
+    def __init__(self, answerable: Answerable):
+        self._origin = answerable
+
+    async def to_answer(self) -> AnswerInterface:
+        """Конвертация в ответ.
+
+        :returns: AnswerInterface
+        """
+        try:
+            return await self._origin.to_answer()
+        except AyatNotFoundError as error:
+            return Answer(message=error.message)
+
+
 class AyatFavoriteStatus(object):
     """Статус избранности аята."""
 
-    _ayat_repository: AyatRepositoryInterface
+    _favorite_ayat_repository: FavoriteAyatRepositoryInterface
     _ayat_id: Intable
     _chat_id: int
 
     def __init__(
         self,
-        ayat_repository: AyatRepositoryInterface,
+        favorite_ayat_repository: FavoriteAyatRepositoryInterface,
         ayat_id: Intable,
         chat_id: int,
     ):
-        self._ayat_repository = ayat_repository
+        self._favorite_ayat_repository = favorite_ayat_repository
         self._ayat_id = ayat_id
         self._chat_id = chat_id
 
@@ -93,10 +116,10 @@ class AyatFavoriteStatus(object):
         :param is_favorite: bool
         """
         if is_favorite:
-            await self._ayat_repository.add_to_favorite(
+            await self._favorite_ayat_repository.add_to_favorite(
                 self._chat_id, int(self._ayat_id),
             )
         else:
-            await self._ayat_repository.remove_from_favorite(
+            await self._favorite_ayat_repository.remove_from_favorite(
                 self._chat_id, int(self._ayat_id),
             )

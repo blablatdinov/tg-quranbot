@@ -2,7 +2,7 @@ from aiogram import types
 from loguru import logger
 
 from exceptions import AyatHaveNotNeighborsError
-from repository.ayats.ayat import AyatRepositoryInterface
+from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate
 from services.ayats.keyboard_interface import AyatSearchKeyboardInterface
@@ -15,13 +15,19 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
     """Клавиатура, выводимая пользователям вместе с найденными аятами."""
 
     _ayat_search: AyatSearchInterface
-    _ayat_repository: AyatRepositoryInterface
+    _favorite_ayats_repository: FavoriteAyatRepositoryInterface
     _chat_id: int
     _pagination_buttons_keyboard: AyatPaginatorCallbackDataTemplate
 
-    def __init__(self, ayat_search: AyatSearchInterface, ayat_repository, chat_id, pagination_buttons_keyboard):
+    def __init__(
+        self,
+        ayat_search: AyatSearchInterface,
+        favorite_ayats_repository: FavoriteAyatRepositoryInterface,
+        chat_id,
+        pagination_buttons_keyboard,
+    ):
         self._ayat_search = ayat_search
-        self._ayat_repository = ayat_repository
+        self._favorite_ayats_repository = favorite_ayats_repository
         self._chat_id = chat_id
         self._pagination_buttons_keyboard = pagination_buttons_keyboard
 
@@ -35,7 +41,7 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
         ayat_neighbors = ayat.find_neighbors()
         if not ayat_neighbors.left and not ayat_neighbors.right:
             raise AyatHaveNotNeighborsError
-        ayat_is_favorite = await self._ayat_repository.check_ayat_is_favorite_for_user(ayat.id, self._chat_id)
+        ayat_is_favorite = await self._favorite_ayats_repository.check_ayat_is_favorite_for_user(ayat.id, self._chat_id)
         if ayat_is_favorite:
             favorite_button = types.InlineKeyboardButton(
                 text='Удалить из избранного',

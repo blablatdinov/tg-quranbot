@@ -26,9 +26,6 @@ class AyatRepositoryMock(AyatRepositoryInterface):
             ),
         )[0]
 
-    async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
-        return ayat_id == 1 and chat_id == 21442
-
     def _filter_by_sura_and_ayat_num(self, ayat: Ayat, sura_num: str, ayat_num: str) -> bool:
         coincidence_by_sura_num = str(ayat.sura_num) == str(sura_num)
         coincidence_by_ayat_num = str(ayat.ayat_num) == str(ayat_num)

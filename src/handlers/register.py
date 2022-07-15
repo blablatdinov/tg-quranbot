@@ -4,6 +4,7 @@ from handlers import command_handlers, location, search_handler
 from handlers.button_handlers.ayats import (
     add_to_favorite,
     ayat_from_callback_handler,
+    ayats_search_buttons,
     favorite_ayat,
     remove_from_favorite,
 )
@@ -63,4 +64,8 @@ def _register_button_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(
         favorite_ayat,
         lambda callback: callback.data and callback.data.startswith('get_favorite_ayat'),
+    )
+    dp.register_callback_query_handler(
+        ayats_search_buttons,
+        lambda callback: callback.data and callback.data.startswith('search_text_ayat'),
     )
