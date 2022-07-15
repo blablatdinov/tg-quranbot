@@ -59,4 +59,4 @@ class CityNotSupportedSafetyAnswer(Answerable):
         try:
             return await self._origin.to_answer()
         except CityNotSupportedError as error:
-            return Answer(message=error.message)
+            return Answer(message=error.user_message)

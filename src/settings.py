@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     REDIS_HOST: str = 'localhost'
     REDIS_PORT: int = 6379
     REDIS_DB: int = 5
+    ADMIN_CHAT_IDS: list[int] = [358610865]
 
     class Config(object):
         """Конфигурация настроек."""

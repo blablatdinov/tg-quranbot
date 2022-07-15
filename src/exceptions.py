@@ -1,5 +1,6 @@
 from answerable import Answerable
-from services.answer import Answer, AnswerInterface
+from services.answer import Answer, AnswerInterface, AnswersList
+from settings import settings
 
 
 class BaseAppError(Exception, Answerable):
@@ -10,7 +11,7 @@ class BaseAppError(Exception, Answerable):
 
     def __init__(self, answer_message: str = None, message_for_admin_text: str = None):
         if answer_message:
-            self.message = answer_message  # noqa: WPS601
+            self.user_message = answer_message
         # TODO: get traceback
         self.admin_message = message_for_admin_text or ''
 
@@ -19,37 +20,40 @@ class BaseAppError(Exception, Answerable):
 
         :returns: AnswerInterface
         """
-        return Answer(message=self.message)
+        return AnswersList(
+            Answer(message=self.user_message),
+            Answer(message=self.admin_message, chat_id=settings.ADMIN_CHAT_IDS[0]),
+        )
 
 
 class InternalBotError(BaseAppError):
     """Внутренняя ошибка бота."""
 
-    message = ''
+    user_message = ''
 
 
 class SuraNotFoundError(BaseAppError):
     """Исключение, вызываемое при отсутсвии нужной суры."""
 
-    message = 'Сура не найдена'
+    user_message = 'Сура не найдена'
 
 
 class AyatNotFoundError(BaseAppError):
     """Исключение, вызываемое при отсутсвии нужного аята."""
 
-    message = 'Аят не найден'
+    user_message = 'Аят не найден'
 
 
 class CityNotSupportedError(BaseAppError):
     """Исключение, вызываемое если при поиске города, он не нашелся в БД."""
 
-    message = 'Такой город не обслуживается'
+    user_message = 'Такой город не обслуживается'
 
 
 class UserHasNotCityIdError(BaseAppError):
     """Исключение, вызываемое если пользователь без установленного города запросил времена намазов."""
 
-    message = 'Вы не указали город, отправьте местоположение или воспользуйтесь поиском'
+    user_message = 'Вы не указали город, отправьте местоположение или воспользуйтесь поиском'
 
 
 class AyatHaveNotNeighborsError(BaseAppError):

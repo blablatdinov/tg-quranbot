@@ -169,7 +169,7 @@ class UserHasNotCityExistsSafeAnswer(Answerable):
             keyboard = types.InlineKeyboardMarkup().row(
                 types.InlineKeyboardButton('Поиск города', switch_inline_query_current_chat=''),
             )
-            return Answer(message=exception.message, keyboard=keyboard)
+            return Answer(message=exception.user_message, keyboard=keyboard)
 
 
 @dataclass
