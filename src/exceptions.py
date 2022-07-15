@@ -1,18 +1,20 @@
-from typing import Callable
-
+from answerable import Answerable
 from services.answer import Answer, AnswerInterface
 
 
-class BaseAppError(Exception):
+class BaseAppError(Exception, Answerable):
     """Базовое исключение бота."""
 
-    message = 'Произошла какая-то ошибка'
+    user_message = 'Произошла какая-то ошибка'
+    admin_message: str
 
-    def __init__(self, answer_message: str = None):
+    def __init__(self, answer_message: str = None, message_for_admin_text: str = None):
         if answer_message:
             self.message = answer_message  # noqa: WPS601
+        # TODO: get traceback
+        self.admin_message = message_for_admin_text or ''
 
-    def to_answer(self) -> AnswerInterface:
+    async def to_answer(self) -> AnswerInterface:
         """Конвертирует объект в AnswerInterface.
 
         :returns: AnswerInterface
@@ -50,16 +52,7 @@ class UserHasNotCityIdError(BaseAppError):
     message = 'Вы не указали город, отправьте местоположение или воспользуйтесь поиском'
 
 
-def exception_to_answer_formatter(func: Callable):
-    """Декоратор обрабатывающий ошибки бота и возвращающий из них AnswerInterface.
+class AyatHaveNotNeighborsError(BaseAppError):
+    """Исключение, вызываемое при попытке сгенерить клавиатуру для аята без соседей."""
 
-    :param func: Callable
-    :returns: Callable
-    """
-    async def wrapper(*args, **kwargs):
-        try:
-            return await func(*args, **kwargs)
-        except BaseAppError as bot_error:
-            return bot_error.to_answer()
-
-    return wrapper
+    admin_message = 'У аята нет соседей'

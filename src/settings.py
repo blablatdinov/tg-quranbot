@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     API_TOKEN: str
     DATABASE_URL: str
     DEBUG: bool
+    REDIS_HOST: str = 'localhost'
+    REDIS_PORT: str = 6379
+    REDIS_DB: str = 5
 
     class Config(object):
         """Конфигурация настроек."""

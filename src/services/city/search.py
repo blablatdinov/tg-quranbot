@@ -81,7 +81,7 @@ class CitySearchInlineAnswer(object):
     async def to_inline_search_result(self) -> list[types.InlineQueryResultArticle]:
         """Форматировать в ответ поиска.
 
-        :returns: list[types.InlineQueryResultArticle]
+        :returns: list[app_types.InlineQueryResultArticle]
         """
         cities = await self._city_search.search()
         return [

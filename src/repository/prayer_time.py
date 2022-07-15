@@ -59,13 +59,13 @@ class PrayerTimeRepositoryInterface(object):
         self,
         prayer_ids: list[int],
         chat_id: int,
-        date: datetime.date,
+        date_time: datetime.datetime,
     ) -> list[UserPrayer]:
         """Получить времена намазов для пользователя.
 
         :param prayer_ids: list[int]
         :param chat_id: int
-        :param date: datetime.date
+        :param date_time: datetime.date
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError

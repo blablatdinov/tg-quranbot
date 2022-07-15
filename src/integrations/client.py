@@ -8,7 +8,7 @@ class IntegrationClientInterface(object):
     """Интерфейс HTTP клиента."""
 
     @abc.abstractmethod
-    async def act(self, url: str, model_for_parse: type(BaseModel)) -> type(BaseModel):
+    async def act(self, url: str, model_for_parse: type[BaseModel]) -> type[BaseModel]:
         """Выполнить запрос.
 
         :param url: str
