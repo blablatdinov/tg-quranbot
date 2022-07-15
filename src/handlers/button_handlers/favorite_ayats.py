@@ -1,6 +1,6 @@
 from aiogram import types
 
-from db import db_connection
+from db import DBConnection
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import FavoriteAyatsNeighborRepository, NeighborAyatsRepository
@@ -20,7 +20,7 @@ async def add_to_favorite(callback_query: types.CallbackQuery):
 
     :param callback_query: app_types.CallbackQuery
     """
-    async with db_connection() as connection:
+    async with DBConnection() as connection:
         ayat_repository = AyatRepository(connection)
         intable_ayat_id = IntableRegularExpression(r'\d+', callback_query.data)
         await AyatFavoriteStatus(
@@ -53,7 +53,7 @@ async def remove_from_favorite(callback_query: types.CallbackQuery):
 
     :param callback_query: app_types.CallbackQuery
     """
-    async with db_connection() as connection:
+    async with DBConnection() as connection:
         ayat_repository = AyatRepository(connection)
         intable_ayat_id = IntableRegularExpression(r'\d+', callback_query.data)
         await AyatFavoriteStatus(
@@ -86,7 +86,7 @@ async def favorite_ayat(callback_query: types.CallbackQuery):
 
     :param callback_query: app_types.CallbackQuery
     """
-    async with db_connection() as connection:
+    async with DBConnection() as connection:
         ayat_search = AyatSearchWithNeighbors(
             FavoriteAyats(
                 FavoriteAyatsRepository(connection),

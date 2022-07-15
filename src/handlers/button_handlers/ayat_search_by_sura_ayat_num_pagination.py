@@ -1,7 +1,7 @@
 
 from aiogram import types
 
-from db import db_connection
+from db import DBConnection
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyatsRepository
@@ -18,7 +18,7 @@ async def ayat_from_callback_handler(callback_query: types.CallbackQuery):
 
     :param callback_query: app_types.CallbackQuery
     """
-    async with db_connection() as connection:
+    async with DBConnection() as connection:
         ayat_search = AyatSearchWithNeighbors(
             AyatById(
                 AyatRepository(connection),

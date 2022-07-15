@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from db import db_connection
+from db import DBConnection
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyatsRepository
@@ -17,7 +17,7 @@ async def ayat_search_by_sura_ayat_num_handler(message: types.Message, state: FS
     :param message: app_types.Message
     :param state: FSMContext
     """
-    async with db_connection() as connection:
+    async with DBConnection() as connection:
         ayat_repository = AyatRepository(connection)
         ayat_search = AyatSearchWithNeighbors(
             AyatBySuraAyatNum(

@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from db import db_connection
+from db import DBConnection
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
@@ -21,7 +21,7 @@ async def ayats_search_buttons(callback_query: types.CallbackQuery, state: FSMCo
     :param callback_query: app_types.CallbackQuery
     :param state: FSMContext
     """
-    async with db_connection() as connection:
+    async with DBConnection() as connection:
         state_data = await state.get_data()
         search_query = state_data['search_query']
         ayat_search = AyatSearchByTextWithNeighbors(

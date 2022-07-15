@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from db import db_connection
+from db import DBConnection
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
@@ -28,7 +28,7 @@ async def ayats_text_search(message: types.Message, state: FSMContext):
     :param message: app_types.Message
     :param state: FSMContext
     """
-    async with db_connection() as connection:
+    async with DBConnection() as connection:
         query = message.text
         ayat_repository = AyatRepository(connection)
         ayat_search = AyatSearchByTextWithNeighbors(

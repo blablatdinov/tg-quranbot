@@ -50,7 +50,7 @@ class UserRepositoryInterface(object):
         """
         raise NotImplementedError
 
-    async def active_users(self):
+    async def active_users(self) -> list[User]:
         """Получить активных пользователей.
 
         :raises NotImplementedError: if not implemented

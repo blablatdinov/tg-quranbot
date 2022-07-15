@@ -29,7 +29,7 @@ class UsersStatus(object):
                 user_number += 1
             await asyncio.gather(*tasks)
 
-    async def _try_send_typing_action(self, user_number, chat_id):
+    async def _try_send_typing_action(self, user_number: int, chat_id: int) -> None:
         logger.info('{0}, try check id={1}'.format(user_number, chat_id))
         try:
             await bot.send_chat_action(chat_id, 'typing')

@@ -35,7 +35,7 @@ class AnswerInterface(object):
         raise NotImplementedError
 
 
-def get_default_markup():
+def get_default_markup() -> types.ReplyKeyboardMarkup:
     """Получить дефолтную клавиатуру.
 
     :returns: Keyboard
@@ -60,14 +60,14 @@ class Answer(BaseModel, AnswerInterface):
     class Config:
         arbitrary_types_allowed = True
 
-    def get_markup(self):
+    def get_markup(self) -> Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup]:
         """Получить клавиатуру.
 
         :returns: Keyboard
         """
         return self.keyboard or get_default_markup()
 
-    async def edit_markup(self, message_id: int, chat_id: int = None):
+    async def edit_markup(self, message_id: int, chat_id: int = None) -> None:
         """Редиктировать клавиатуру.
 
         :param message_id: int
@@ -78,7 +78,7 @@ class Answer(BaseModel, AnswerInterface):
         markup = self.get_markup()
         await bot_instance.edit_message_reply_markup(chat_id=chat_id, reply_markup=markup)
 
-    async def send(self, chat_id: int = None):
+    async def send(self, chat_id: int = None) -> None:
         """Метод для отправки ответа.
 
         :param chat_id: int

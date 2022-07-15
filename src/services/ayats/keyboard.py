@@ -2,6 +2,7 @@ from aiogram import types
 from loguru import logger
 
 from exceptions import AyatHaveNotNeighborsError
+from repository.ayats.ayat import AyatNeighbors
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate
@@ -23,15 +24,15 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
         self,
         ayat_search: AyatSearchInterface,
         favorite_ayats_repository: FavoriteAyatRepositoryInterface,
-        chat_id,
-        pagination_buttons_keyboard,
+        chat_id: int,
+        pagination_buttons_keyboard: AyatPaginatorCallbackDataTemplate,
     ):
         self._ayat_search = ayat_search
         self._favorite_ayats_repository = favorite_ayats_repository
         self._chat_id = chat_id
         self._pagination_buttons_keyboard = pagination_buttons_keyboard
 
-    async def generate(self):
+    async def generate(self) -> types.InlineKeyboardMarkup:
         """Генерация клавиатуры.
 
         :returns: InlineKeyboard
@@ -60,13 +61,13 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
 
         return self._middle_ayat_case(ayat_neighbors, favorite_button)
 
-    def _is_first_ayat(self, ayat_neighbors) -> bool:
+    def _is_first_ayat(self, ayat_neighbors: AyatNeighbors) -> bool:
         return not ayat_neighbors.left
 
-    def _is_last_ayat(self, ayat_neighbors) -> bool:
+    def _is_last_ayat(self, ayat_neighbors: AyatNeighbors) -> bool:
         return not ayat_neighbors.right
 
-    def _first_ayat_case(self, neighbor_ayats, favorite_button):
+    def _first_ayat_case(self, neighbor_ayats: AyatNeighbors, favorite_button: types.InlineKeyboardButton) -> types.InlineKeyboardMarkup:
         return (
             types.InlineKeyboardMarkup()
             .row(
@@ -78,7 +79,8 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
             .row(favorite_button)
         )
 
-    def _last_ayat_case(self, neighbor_ayats, favorite_button):
+    def _last_ayat_case(
+        self, neighbor_ayats: AyatNeighbors, favorite_button: types.InlineKeyboardButton) -> types.InlineKeyboardMarkup:
         return (
             types.InlineKeyboardMarkup()
             .row(
@@ -90,7 +92,12 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
             .row(favorite_button)
         )
 
-    def _middle_ayat_case(self, neighbor_ayats, favorite_button):
+    def _middle_ayat_case(
+        self,
+        neighbor_ayats:
+        AyatNeighbors,
+        favorite_button: types.InlineKeyboardButton,
+    ) -> types.InlineKeyboardMarkup:
         logger.debug(str(neighbor_ayats))
         return (
             types.InlineKeyboardMarkup()

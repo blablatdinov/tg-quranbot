@@ -8,7 +8,7 @@ from handlers.message_handlers.favorite_ayats import favorite_ayats_list
 from states import AyatSearchSteps
 
 
-def register_ayat_message_handlers(dp: Dispatcher):
+def register_ayat_message_handlers(dp: Dispatcher) -> None:
     """Регистрация обработчиков.
 
     :param dp: Dispatcher

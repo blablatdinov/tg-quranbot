@@ -4,7 +4,7 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext, filters
 
 from constants import GET_PRAYER_TIMES_REGEXP
-from db import db_connection
+from db import DBConnection
 from repository.prayer_time import PrayerTimeRepository
 from repository.user import UserRepository
 from services.prayer_time import PrayerTimes, UserHasNotCityExistsSafeAnswer, UserPrayerTimes, UserPrayerTimesAnswer
@@ -16,7 +16,7 @@ async def prayer_times_handler(message: types.Message, state: FSMContext):
     :param message: types.Message
     :param state: FSMContext
     """
-    async with db_connection() as connection:
+    async with DBConnection() as connection:
         answer = await UserHasNotCityExistsSafeAnswer(
             UserPrayerTimesAnswer(
                 UserPrayerTimes(

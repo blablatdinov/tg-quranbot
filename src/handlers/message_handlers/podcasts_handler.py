@@ -2,7 +2,7 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext, filters
 
 from constants import PODCAST_BUTTON
-from db import db_connection
+from db import DBConnection
 from repository.podcast import PodcastRepository
 from services.podcast import PodcastAnswer, PodcastService
 
@@ -13,7 +13,7 @@ async def podcasts_handler(message: types.Message, state: FSMContext):
     :param message: types.Message
     :param state: FSMContext
     """
-    async with db_connection() as connection:
+    async with DBConnection() as connection:
         answer = PodcastAnswer(
             await PodcastService(
                 PodcastRepository(connection),
