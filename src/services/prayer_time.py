@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from aiogram import types
 from loguru import logger
 
-from answerable import Answerable
+from app_types.answerable import Answerable
 from app_types.intable import Intable
 from constants import PRAYER_NOT_READED_EMOJI, PRAYER_READED_EMOJI
 from exceptions import UserHasNotCityIdError

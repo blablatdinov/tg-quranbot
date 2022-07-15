@@ -1,6 +1,6 @@
 from typing import Optional
 
-from answerable import Answerable
+from app_types.answerable import Answerable
 from app_types.intable import Intable
 from exceptions import AyatNotFoundError
 from repository.ayats.ayat import Ayat
