@@ -4,7 +4,7 @@ from aiogram import types
 
 from db import DBConnection
 from repository.prayer_time import PrayerTimeRepository
-from repository.user import UserRepository
+from repository.users.user import UserRepository
 from services.prayer_time import PrayerTimes, UserPrayerStatus, UserPrayerTimes
 from services.regular_expression import IntableRegularExpression
 from utlls import get_bot_instance

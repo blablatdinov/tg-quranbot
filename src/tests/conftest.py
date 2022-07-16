@@ -3,7 +3,7 @@ import random
 import pytest
 
 from repository.ayats.ayat import Ayat
-from repository.user import User
+from repository.users.user import User
 from settings import settings
 from tests.mocks.ayat_repository import AyatRepositoryMock
 

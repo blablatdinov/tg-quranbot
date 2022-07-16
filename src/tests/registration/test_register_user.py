@@ -1,5 +1,5 @@
-from repository.user_actions import UserActionEnum
-from repository.user_registration_repository import UserRegistrationRepository
+from repository.users.user_actions import UserActionEnum
+from repository.users.user_registration_repository import UserRegistrationRepository
 from services.answer import Answer
 from services.register_user import RegisterUser
 from services.start_message import StartMessageMeta

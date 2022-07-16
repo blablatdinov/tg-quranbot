@@ -1,7 +1,7 @@
 from typing import Optional
 
 from asyncpg import Connection
-from pydantic import BaseModel, parse_obj_as
+from pydantic import BaseModel
 
 from repository.schemas import CountResult
 
@@ -49,13 +49,6 @@ class UserRepositoryInterface(object):
         """Метод для проверки наличия пользователя в БД.
 
         :param chat_id: int
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
-
-    async def active_users(self) -> list[User]:
-        """Получить активных пользователей.
-
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -117,25 +110,6 @@ class UserRepository(UserRepositoryInterface):
         query = 'SELECT COUNT(*) FROM bot_init_subscriber WHERE tg_chat_id = $1'
         record = await self.connection.fetchrow(query, chat_id)
         return bool(CountResult.parse_obj(record))
-
-    async def active_users(self) -> list[User]:
-        """Получить активных пользователей.
-
-        :returns: list[User]
-        """
-        query = """
-            SELECT
-                id,
-                is_active,
-                day,
-                referer_id as referrer,
-                tg_chat_id as chat_id,
-                city_id
-            FROM bot_init_subscriber
-            WHERE is_active = 't'
-        """
-        rows = await self.connection.fetch(query)
-        return parse_obj_as(list[User], rows)
 
     async def update_city(self, chat_id: int, city_id: int):
         """Обновить город пользователя.

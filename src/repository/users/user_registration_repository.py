@@ -1,8 +1,8 @@
 from typing import Optional
 
 from repository.admin_message import AdminMessageRepositoryInterface
-from repository.user import User, UserRepositoryInterface
-from repository.user_actions import UserActionEnum, UserActionRepositoryInterface
+from repository.users.user import User, UserRepositoryInterface
+from repository.users.user_actions import UserActionEnum, UserActionRepositoryInterface
 
 
 class UserRegistrationRepositoryInterface(object):

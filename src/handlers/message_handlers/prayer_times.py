@@ -6,7 +6,7 @@ from aiogram.dispatcher import FSMContext, filters
 from constants import GET_PRAYER_TIMES_REGEXP
 from db import DBConnection
 from repository.prayer_time import PrayerTimeRepository
-from repository.user import UserRepository
+from repository.users.user import UserRepository
 from services.prayer_time import PrayerTimes, UserHasNotCityExistsSafeAnswer, UserPrayerTimes, UserPrayerTimesAnswer
 
 
