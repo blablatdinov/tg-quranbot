@@ -1,8 +1,11 @@
 from repository.admin_message import AdminMessageRepository
 from repository.ayats.ayat import AyatRepository, AyatRepositoryInterface
-from repository.user import UserRepository
-from repository.user_actions import UserActionEnum, UserActionRepository
-from repository.user_registration_repository import UserRegistrationRepository, UserRegistrationRepositoryInterface
+from repository.users.user import UserRepository
+from repository.users.user_actions import UserActionEnum, UserActionRepository
+from repository.users.user_registration_repository import (
+    UserRegistrationRepository,
+    UserRegistrationRepositoryInterface,
+)
 from services.answer import Answer, AnswerInterface, AnswersList
 from services.start_message import StartMessageMeta, get_start_message_query
 

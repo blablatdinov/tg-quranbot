@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from aiogram.utils.exceptions import BotBlocked, ChatNotFound, UserDeactivated
 from loguru import logger
 
-from repository.user import UserRepositoryInterface
+from repository.users.user import UserRepositoryInterface
 from utlls import get_bot_instance
 
 bot = get_bot_instance()

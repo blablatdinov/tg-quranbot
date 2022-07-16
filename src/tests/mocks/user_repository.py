@@ -1,7 +1,7 @@
 import random
 from typing import Optional
 
-from repository.user import User, UserRepositoryInterface
+from repository.users.user import User, UserRepositoryInterface
 
 
 class UserRepositoryMock(UserRepositoryInterface):

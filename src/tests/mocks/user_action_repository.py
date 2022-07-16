@@ -1,6 +1,6 @@
 import datetime
 
-from repository.user_actions import UserAction, UserActionEnum, UserActionRepositoryInterface
+from repository.users.user_actions import UserAction, UserActionEnum, UserActionRepositoryInterface
 
 
 class UserActionRepositoryMock(UserActionRepositoryInterface):

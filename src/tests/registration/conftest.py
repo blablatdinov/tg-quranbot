@@ -1,7 +1,7 @@
 import pytest
 
 from repository.ayats.ayat import Ayat
-from repository.user import User
+from repository.users.user import User
 from tests.mocks.ayat_repository import AyatRepositoryMock
 from tests.mocks.user_action_repository import UserActionRepositoryMock
 from tests.mocks.user_repository import UserRepositoryMock

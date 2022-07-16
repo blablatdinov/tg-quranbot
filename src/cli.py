@@ -1,7 +1,7 @@
 import asyncio
 
 from db import DBConnection
-from repository.user import UserRepository
+from repository.users.user import UserRepository
 from services.user import UsersStatus
 
 
