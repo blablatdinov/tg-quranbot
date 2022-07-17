@@ -6,6 +6,7 @@ from repository.users.user_registration_repository import (
     UserRegistrationRepository,
     UserRegistrationRepositoryInterface,
 )
+from repository.users.users import UsersRepository
 from services.answer import Answer, AnswerInterface, AnswersList
 from services.start_message import StartMessageMeta, get_start_message_query
 
@@ -66,6 +67,7 @@ class RegisterUser(object):
             return Answer(chat_id=self._chat_id, message='Вы уже зарегистрированы')
 
         await self._user_registration_repository.create_user_action(self._chat_id, UserActionEnum.REACTIVATED)
+        await self._user_registration_repository.update_user_status(self._chat_id, to=True)
         return Answer(
             chat_id=self._chat_id,
             message='Рады видеть вас снова, вы продолжите с дня {user_day}'.format(user_day=user.day),
@@ -116,6 +118,7 @@ async def get_register_user_instance(connection, chat_id: int, message: str) -> 
             UserRepository(connection),
             UserActionRepository(connection),
             AdminMessageRepository(connection),
+            UsersRepository(connection),
         ),
         ayat_repository=AyatRepository(connection),
         chat_id=chat_id,

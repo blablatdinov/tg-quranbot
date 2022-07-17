@@ -3,6 +3,7 @@ from typing import Optional
 from repository.admin_message import AdminMessageRepositoryInterface
 from repository.users.user import User, UserRepositoryInterface
 from repository.users.user_actions import UserActionEnum, UserActionRepositoryInterface
+from repository.users.users import UsersRepositoryInterface
 
 
 class UserRegistrationRepositoryInterface(object):
@@ -58,6 +59,9 @@ class UserRegistrationRepositoryInterface(object):
         """
         raise NotImplementedError
 
+    async def update_user_status(self, chat_id: int, to: bool):
+        raise NotImplementedError
+
 
 class UserRegistrationRepository(UserRegistrationRepositoryInterface):
     """Класс, объеденящий методы для регистрации пользователя."""
@@ -65,16 +69,19 @@ class UserRegistrationRepository(UserRegistrationRepositoryInterface):
     _user_repository: UserRepositoryInterface
     _user_action_repository: UserActionRepositoryInterface
     _admin_messages_repository: AdminMessageRepositoryInterface
+    _users_repository: UsersRepositoryInterface
 
     def __init__(
         self,
         user_repository: UserRepositoryInterface,
         user_action_repository: UserActionRepositoryInterface,
         admin_messages_repository: AdminMessageRepositoryInterface,
+        users_repository: UsersRepositoryInterface,
     ):
         self._user_repository = user_repository
         self._user_action_repository = user_action_repository
         self._admin_messages_repository = admin_messages_repository
+        self._users_repository = users_repository
 
     async def check_user_exists(self, chat_id: int):
         """Метод для проверки наличия пользователя в БД.
@@ -123,3 +130,6 @@ class UserRegistrationRepository(UserRegistrationRepositoryInterface):
         :returns: str
         """
         return await self._admin_messages_repository.get(key)
+
+    async def update_user_status(self, chat_id: int, to: bool):
+        await self._users_repository.update_status([chat_id], to)

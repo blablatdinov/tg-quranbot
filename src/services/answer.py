@@ -1,14 +1,19 @@
+import asyncio
 from typing import Optional, Union
 
 from aiogram import types
+from aiogram.utils.exceptions import ChatNotFound, BotBlocked, UserDeactivated
 from pydantic import BaseModel
 
+from repository.users.users import UsersRepositoryInterface
 from settings import settings
 from utlls import get_bot_instance
 
 
 class AnswerInterface(object):
     """Интерфейс для отсылаемых объектов."""
+
+    chat_id: Optional[int]
 
     async def send(self, chat_id: int = None):
         """Метод для отправки ответа.
@@ -106,6 +111,54 @@ class Answer(BaseModel, AnswerInterface):
         return [self]
 
 
+class SpamAnswerList(list, AnswerInterface):
+
+    _users_repository: UsersRepositoryInterface
+    _unsubscriber_user_chat_ids: list[int] = []
+
+    def __init__(self, users_repository: UsersRepositoryInterface, *args: AnswerInterface) -> None:
+        self._users_repository = users_repository
+        super().__init__(args)
+
+    async def send(self, chat_id: int = None) -> None:
+        """Метод для отправки ответа.
+
+        :param chat_id: int
+        """
+        for index in range(0, len(self), 100):
+            tasks = []
+            for answer in self[index:index + 100]:
+                tasks.append(self._send_one_answer(answer))
+
+            await asyncio.gather(*tasks)
+
+        if self._unsubscriber_user_chat_ids:
+            await self._users_repository.update_status(self._unsubscriber_user_chat_ids, to=False)
+
+    async def _send_one_answer(self, answer: Answer):
+        try:
+            await answer.send()
+        except (ChatNotFound, BotBlocked, UserDeactivated):
+            self._unsubscriber_user_chat_ids.append(answer.chat_id)
+
+    async def edit_markup(self, message_id: int, chat_id: int = None):
+        """Метод для редактирования сообщения.
+
+        :param chat_id: int
+        :param message_id: int
+        :raises NotImplementedError: if not implement
+        """
+        for elem in self:
+            await elem.edit_markup(chat_id)
+
+    def to_list(self) -> list['Answer']:
+        """Форматировать в строку из элементов.
+
+        :returns: list[Answer]
+        """
+        return self
+
+
 class AnswersList(list, AnswerInterface):  # noqa: WPS600
     """Список ответов."""
 
@@ -119,6 +172,16 @@ class AnswersList(list, AnswerInterface):  # noqa: WPS600
         """
         for elem in self:
             await elem.send(chat_id)
+
+    async def edit_markup(self, message_id: int, chat_id: int = None):
+        """Метод для редактирования сообщения.
+
+        :param chat_id: int
+        :param message_id: int
+        :raises NotImplementedError: if not implement
+        """
+        for elem in self:
+            await elem.edit_markup(chat_id)
 
     def to_list(self) -> list['Answer']:
         """Форматировать в строку из элементов.

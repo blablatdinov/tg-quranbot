@@ -6,6 +6,7 @@ from services.start_message import StartMessageMeta
 from tests.mocks.admin_messages_repository import AdminMessageRepositoryMock
 from tests.mocks.ayat_repository import AyatRepositoryMock
 from tests.mocks.user_repository import UserRepositoryMock
+from tests.mocks.users_repository import UsersRepositoryMock
 
 
 async def test(ayat_repository_mock, user_action_repository):
@@ -15,6 +16,7 @@ async def test(ayat_repository_mock, user_action_repository):
             user_repository,
             user_action_repository,
             AdminMessageRepositoryMock(),
+            UsersRepositoryMock(),
         ),
         ayat_repository=ayat_repository_mock,
         chat_id=231,
@@ -37,6 +39,7 @@ async def test_already_registered_user(user_repository_with_registered_active_us
             user_repository_with_registered_active_user,
             user_action_repository,
             AdminMessageRepositoryMock(),
+            UsersRepositoryMock(),
         ),
         ayat_repository=AyatRepositoryMock(),
         chat_id=444,
@@ -54,6 +57,7 @@ async def test_inactive_user(user_repository_with_registered_inactive_user, user
             user_repository_with_registered_inactive_user,
             user_action_repository,
             AdminMessageRepositoryMock(),
+            UsersRepositoryMock(),
         ),
         ayat_repository=AyatRepositoryMock(),
         chat_id=444,
@@ -71,6 +75,7 @@ async def test_with_referrer(user_repository_with_registered_active_user, ayat_r
             user_repository_with_registered_active_user,
             user_action_repository,
             AdminMessageRepositoryMock(),
+            UsersRepositoryMock(),
         ),
         ayat_repository=ayat_repository_mock,
         start_message_meta=StartMessageMeta(referrer=1),
