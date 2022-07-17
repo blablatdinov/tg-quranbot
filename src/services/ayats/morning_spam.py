@@ -13,7 +13,7 @@ class MorningSpam(object):
         self._ayat_spam_repository = ayat_spam_repository
         self._users_repository = users_repository
 
-    async def send(self):
+    async def send(self) -> None:
         """Отправка."""
         spam_contents = await self._ayat_spam_repository.get_content_for_spam()
         answers = []
