@@ -5,7 +5,6 @@ from aiogram import types
 from aiogram.utils.exceptions import BotBlocked, ChatNotFound, UserDeactivated
 from pydantic import BaseModel
 
-from exceptions import InternalBotError
 from repository.users.users import UsersRepositoryInterface
 from settings import settings
 from utlls import get_bot_instance
@@ -165,6 +164,7 @@ class SpamAnswerList(list, AnswerInterface):  # noqa: WPS600
             self._unsubscriber_user_chat_ids.append(answer.chat_id)  # type: ignore
 
     def _validate(self) -> None:
+        from exceptions import InternalBotError
         if None in set(map(lambda answer: answer.chat_id, self)):
             raise InternalBotError
 
