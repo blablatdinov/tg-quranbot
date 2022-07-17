@@ -60,6 +60,12 @@ class UserRegistrationRepositoryInterface(object):
         raise NotImplementedError
 
     async def update_user_status(self, chat_id: int, to: bool):
+        """Обновить статус пользователя.
+
+        :param chat_id: int
+        :param to: bool
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
 
@@ -132,4 +138,9 @@ class UserRegistrationRepository(UserRegistrationRepositoryInterface):
         return await self._admin_messages_repository.get(key)
 
     async def update_user_status(self, chat_id: int, to: bool):
+        """Обновить статус пользователя.
+
+        :param chat_id: int
+        :param to: bool
+        """
         await self._users_repository.update_status([chat_id], to)

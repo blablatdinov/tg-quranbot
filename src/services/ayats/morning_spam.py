@@ -4,6 +4,7 @@ from services.answer import Answer, SpamAnswerList
 
 
 class MorningSpam(object):
+    """Утренняя рассылка."""
 
     _ayat_spam_repository: AyatSpamRepositoryInterface
     _users_repository: UsersRepositoryInterface
@@ -13,6 +14,7 @@ class MorningSpam(object):
         self._users_repository = users_repository
 
     async def send(self):
+        """Отправка."""
         spam_contents = await self._ayat_spam_repository.get_content_for_spam()
         answers = []
         for spam_content in spam_contents:

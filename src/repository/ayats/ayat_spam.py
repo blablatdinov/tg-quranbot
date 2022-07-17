@@ -3,24 +3,35 @@ from pydantic import BaseModel, parse_obj_as
 
 
 class ContentSpam(BaseModel):
+    """Модель для рассылки утреннего контента."""
 
     chat_id: int
-    content: str
+    content: str  # noqa: WPS110
     link: str
 
 
 class AyatSpamRepositoryInterface(object):
+    """Интерфейс для работы с хранилищем данных для рассылок."""
 
     async def get_content_for_spam(self) -> list[ContentSpam]:
+        """Получить контент для рассылки.
+
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
 
 class AyatSpamRepository(AyatSpamRepositoryInterface):
+    """Класс для работы с хранилищем данных для рассылок."""
 
     def __init__(self, connection: Connection):
         self._connection = connection
 
     async def get_content_for_spam(self) -> list[ContentSpam]:
+        """Получить контент для рассылки.
+
+        :returns: list[ContentSpam]
+        """
         query = """
             SELECT
                 s.tg_chat_id as chat_id,

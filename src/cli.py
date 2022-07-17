@@ -2,6 +2,7 @@ import asyncio
 import sys
 
 from db import DBConnection
+from exceptions import BaseAppError
 from repository.ayats.ayat_spam import AyatSpamRepository
 from repository.users.users import UsersRepository
 from services.ayats.morning_spam import MorningSpam
@@ -17,6 +18,7 @@ async def check_users_status() -> None:
 
 
 async def send_morning_content() -> None:
+    """Рассылка утреннего контента."""
     async with DBConnection() as connection:
         await MorningSpam(
             AyatSpamRepository(connection),
@@ -25,11 +27,12 @@ async def send_morning_content() -> None:
 
 
 def main() -> None:
-    """Entrypoint."""
-    if len(sys.argv) < 2:
-        raise Exception
+    """Entrypoint.
 
-    print(sys.argv)
+    :raises BaseAppError: cli errors
+    """
+    if len(sys.argv) < 2:
+        raise BaseAppError
 
     func = {
         'check': check_users_status,
@@ -37,7 +40,7 @@ def main() -> None:
     }.get(sys.argv[1])
 
     if not func:
-        raise Exception
+        raise BaseAppError
 
     asyncio.run(func())
 

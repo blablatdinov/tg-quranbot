@@ -2,7 +2,7 @@ import asyncio
 from typing import Optional, Union
 
 from aiogram import types
-from aiogram.utils.exceptions import ChatNotFound, BotBlocked, UserDeactivated
+from aiogram.utils.exceptions import BotBlocked, ChatNotFound, UserDeactivated
 from pydantic import BaseModel
 
 from repository.users.users import UsersRepositoryInterface
@@ -111,7 +111,11 @@ class Answer(BaseModel, AnswerInterface):
         return [self]
 
 
-class SpamAnswerList(list, AnswerInterface):
+class SpamAnswerList(list, AnswerInterface):  # noqa: WPS600
+    """Список ответов для рассылки.
+
+    Отправляет сообщения пачками
+    """
 
     _users_repository: UsersRepositoryInterface
     _unsubscriber_user_chat_ids: list[int] = []
@@ -135,18 +139,11 @@ class SpamAnswerList(list, AnswerInterface):
         if self._unsubscriber_user_chat_ids:
             await self._users_repository.update_status(self._unsubscriber_user_chat_ids, to=False)
 
-    async def _send_one_answer(self, answer: Answer):
-        try:
-            await answer.send()
-        except (ChatNotFound, BotBlocked, UserDeactivated):
-            self._unsubscriber_user_chat_ids.append(answer.chat_id)
-
     async def edit_markup(self, message_id: int, chat_id: int = None):
         """Метод для редактирования сообщения.
 
         :param chat_id: int
         :param message_id: int
-        :raises NotImplementedError: if not implement
         """
         for elem in self:
             await elem.edit_markup(chat_id)
@@ -157,6 +154,12 @@ class SpamAnswerList(list, AnswerInterface):
         :returns: list[Answer]
         """
         return self
+
+    async def _send_one_answer(self, answer: Answer):
+        try:
+            await answer.send()
+        except (ChatNotFound, BotBlocked, UserDeactivated):
+            self._unsubscriber_user_chat_ids.append(answer.chat_id)
 
 
 class AnswersList(list, AnswerInterface):  # noqa: WPS600
@@ -178,7 +181,6 @@ class AnswersList(list, AnswerInterface):  # noqa: WPS600
 
         :param chat_id: int
         :param message_id: int
-        :raises NotImplementedError: if not implement
         """
         for elem in self:
             await elem.edit_markup(chat_id)
