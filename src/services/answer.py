@@ -62,7 +62,7 @@ class Answer(BaseModel, AnswerInterface):
     link_to_file: Optional[str]
     keyboard: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, None]
 
-    class Config:
+    class Config(object):
         arbitrary_types_allowed = True
 
     def get_markup(self) -> Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup]:
