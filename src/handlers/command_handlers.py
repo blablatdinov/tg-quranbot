@@ -1,7 +1,13 @@
 from aiogram import types
 
 from db import DBConnection
-from services.register_user import get_register_user_instance
+from repository.admin_message import AdminMessageRepository
+from repository.ayats.ayat import AyatRepository
+from repository.users.user import UserRepository
+from repository.users.user_actions import UserActionRepository
+from repository.users.users import UsersRepository
+from services.register_user import RegisterAlreadyExistsUser, RegisterNewUser, RegisterUser, RegisterUserWithReferrer
+from services.start_message import get_start_message_query
 
 
 async def start_handler(message: types.Message):
@@ -10,6 +16,26 @@ async def start_handler(message: types.Message):
     :param message: app_types.Message
     """
     async with DBConnection() as connection:
-        register_user = await get_register_user_instance(connection, message.chat.id, message.text)
-        answers = await register_user.register()
-        await answers.send()
+        user_action_repository = UserActionRepository(connection)
+        user_repository = UserRepository(connection)
+        register_new_user = RegisterNewUser(
+            user_repository,
+            user_action_repository,
+            AdminMessageRepository(connection),
+            AyatRepository(connection),
+        )
+        answer = await RegisterUser(
+            register_new_user,
+            RegisterUserWithReferrer(
+                register_new_user,
+                user_repository,
+                get_start_message_query(message.text),
+            ),
+            RegisterAlreadyExistsUser(
+                user_repository,
+                user_action_repository,
+                UsersRepository(connection),
+            ),
+            message.chat.id,
+        ).register()
+        await answer.send()
