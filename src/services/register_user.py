@@ -1,6 +1,7 @@
+from exceptions import InternalBotError
 from repository.admin_message import AdminMessageRepositoryInterface
 from repository.ayats.ayat import AyatRepositoryInterface
-from repository.users.user import UserRepositoryInterface, User
+from repository.users.user import User, UserRepositoryInterface
 from repository.users.user_actions import UserActionEnum, UserActionRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
 from services.answer import Answer, AnswerInterface, AnswersList
@@ -8,6 +9,7 @@ from services.start_message import StartMessageMeta
 
 
 class RegisterNewUser(object):
+    """Регистрация нового пользователя."""
 
     _user_repository: UserRepositoryInterface
     _user_action_repository: UserActionRepositoryInterface
@@ -27,15 +29,29 @@ class RegisterNewUser(object):
         self._ayats_repository = ayats_repository
 
     async def can(self, chat_id) -> bool:
+        """Проверка возможности регистрации.
+
+        :param chat_id: int
+        :returns: bool
+        """
         return not await self._user_repository.exists(chat_id)
 
     async def register(self, chat_id: int) -> User:
-        """Создание пользователя."""
+        """Создание пользователя.
+
+        :param chat_id: int
+        :returns: User
+        """
         user = await self._user_repository.create(chat_id)
         await self._user_action_repository.create_user_action(chat_id, UserActionEnum.SUBSCRIBED)
         return user
 
     async def to_answer(self, chat_id: int) -> AnswerInterface:
+        """Конвертация в ответ.
+
+        :param chat_id: int
+        :return: AnswerInterface
+        """
         start_message = await self._admin_messages_repository.get('start')
         first_ayat = await self._ayats_repository.get(1)
         return AnswersList(
@@ -45,6 +61,7 @@ class RegisterNewUser(object):
 
 
 class RegisterUserWithReferrer(object):
+    """Регистрация пользователя с реферером."""
 
     _register_new_user: RegisterNewUser
     _user_repository: UserRepositoryInterface
@@ -61,14 +78,25 @@ class RegisterUserWithReferrer(object):
         self._start_message_meta = start_message_meta
 
     def can(self) -> bool:
+        """Проверка возможности зарегестрировать пользователя с реферрером.
+
+        :return: bool
+        """
         return bool(self._start_message_meta.referrer)
 
     async def register(self, chat_id: int) -> AnswerInterface:
-        """Создание пользователя."""
+        """Создание пользователя.
+
+        :param chat_id: int
+        :return: AnswerInterface
+        :raises InternalBotError: if referrer info is empty
+        """
         await self._register_new_user.register(chat_id)
-        await self._user_repository.update_referrer(chat_id, self._start_message_meta.referrer.referrer_id)
+        if not self._start_message_meta.referrer:
+            raise InternalBotError
+        await self._user_repository.update_referrer(chat_id, self._start_message_meta.referrer)
         message_for_referrer = 'По вашей реферральной ссылке произошла регистрация'
-        referrer_user_record = await self._user_repository.get_by_id(self._start_message_meta.referrer.referrer_id)
+        referrer_user_record = await self._user_repository.get_by_id(self._start_message_meta.referrer)
         new_user_answers = await self._register_new_user.to_answer(chat_id)
         new_user_answers_list = new_user_answers.to_list()
         return AnswersList(
@@ -79,6 +107,7 @@ class RegisterUserWithReferrer(object):
 
 
 class RegisterAlreadyExistsUser(object):
+    """Обработка регистрации, уже имеющегося пользователя."""
 
     _user_repository: UserRepositoryInterface
     _users_repository: UsersRepositoryInterface
@@ -88,7 +117,7 @@ class RegisterAlreadyExistsUser(object):
         self,
         user_repository: UserRepositoryInterface,
         user_action_repository: UserActionRepositoryInterface,
-        users_repository: UsersRepositoryInterface
+        users_repository: UsersRepositoryInterface,
     ):
         self._user_repository = user_repository
         self._users_repository = users_repository
@@ -97,6 +126,7 @@ class RegisterAlreadyExistsUser(object):
     async def register(self, chat_id: int) -> Answer:
         """Обработка уже зарегестрированного пользователя.
 
+        :param chat_id: int
         :return: Answer
         """
         user = await self._user_repository.get_by_chat_id(chat_id)
@@ -117,7 +147,6 @@ class RegisterUser(object):
     _register_new_user: RegisterNewUser
     _register_user_with_referrer: RegisterUserWithReferrer
     _register_already_exists_user: RegisterAlreadyExistsUser
-    _user_repository: UserRepositoryInterface
     _chat_id: int
 
     def __init__(
@@ -125,13 +154,11 @@ class RegisterUser(object):
         register_new_user: RegisterNewUser,
         register_user_with_referrer: RegisterUserWithReferrer,
         register_already_exists_user: RegisterAlreadyExistsUser,
-        user_repository: UserRepositoryInterface,
         chat_id: int,
     ):
         self._register_new_user = register_new_user
         self._register_user_with_referrer = register_user_with_referrer
         self._register_already_exists_user = register_already_exists_user
-        self._user_repository = user_repository
         self._chat_id = chat_id
 
     async def register(self) -> AnswerInterface:
@@ -146,4 +173,4 @@ class RegisterUser(object):
             return await self._register_user_with_referrer.register(self._chat_id)
 
         await self._register_new_user.register(self._chat_id)
-        await self._register_new_user.register(self._chat_id)
+        return await self._register_new_user.to_answer(self._chat_id)

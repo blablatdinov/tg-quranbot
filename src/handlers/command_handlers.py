@@ -1,5 +1,3 @@
-import random
-
 from aiogram import types
 
 from db import DBConnection
@@ -8,7 +6,7 @@ from repository.ayats.ayat import AyatRepository
 from repository.users.user import UserRepository
 from repository.users.user_actions import UserActionRepository
 from repository.users.users import UsersRepository
-from services.register_user import RegisterNewUser, RegisterUserWithReferrer, RegisterAlreadyExistsUser, RegisterUser
+from services.register_user import RegisterAlreadyExistsUser, RegisterNewUser, RegisterUser, RegisterUserWithReferrer
 from services.start_message import get_start_message_query
 
 
@@ -18,15 +16,15 @@ async def start_handler(message: types.Message):
     :param message: app_types.Message
     """
     async with DBConnection() as connection:
+        user_action_repository = UserActionRepository(connection)
+        user_repository = UserRepository(connection)
         register_new_user = RegisterNewUser(
-            UserRepository(connection),
-            UserActionRepository(connection),
+            user_repository,
+            user_action_repository,
             AdminMessageRepository(connection),
             AyatRepository(connection),
         )
-
-        user_repository = UserRepository(connection)
-        register_user = RegisterUser(
+        answer = await RegisterUser(
             register_new_user,
             RegisterUserWithReferrer(
                 register_new_user,
@@ -35,11 +33,9 @@ async def start_handler(message: types.Message):
             ),
             RegisterAlreadyExistsUser(
                 user_repository,
-                UserActionRepository(connection),
+                user_action_repository,
                 UsersRepository(connection),
             ),
-            user_repository,
-            message.chat.id
-        )
-        answer = await register_user.register()
+            message.chat.id,
+        ).register()
         await answer.send()

@@ -3,6 +3,7 @@ from typing import Optional
 from asyncpg import Connection
 from pydantic import BaseModel
 
+from exceptions import InternalBotError
 from repository.schemas import CountResult
 
 
@@ -20,10 +21,11 @@ class User(BaseModel):
 class UserRepositoryInterface(object):
     """Интерфейс репозитория для работы с пользователями."""
 
-    async def create(self, chat_id: int):
+    async def create(self, chat_id: int, referrer_id: Optional[int] = None):
         """Метод для создания пользователя.
 
         :param chat_id: int
+        :param referrer_id: Optional[int]
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -77,11 +79,13 @@ class UserRepository(UserRepositoryInterface):
     def __init__(self, connection: Connection):
         self.connection = connection
 
-    async def create(self, chat_id: int, referrer_id: Optional[int] = None):
+    async def create(self, chat_id: int, referrer_id: Optional[int] = None) -> User:
         """Метод для создания пользователя.
 
         :param chat_id: int
         :param referrer_id: Optional[int]
+        :returns: User
+        :raises InternalBotError: if connection not return created user values
         """
         query = """
             INSERT INTO
@@ -90,6 +94,8 @@ class UserRepository(UserRepositoryInterface):
             RETURNING (id, is_active, day, referer_id, tg_chat_id, city_id)
         """
         row = await self.connection.fetchrow(query, chat_id, referrer_id)
+        if not row:
+            raise InternalBotError
         row = row[0]
         return User(
             id=row[0],
