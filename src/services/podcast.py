@@ -1,35 +1,23 @@
-from dataclasses import dataclass
-
-from repository.podcast import Podcast, PodcastRepositoryInterface
-from services.answer import Answer
-
-
-@dataclass
-class PodcastService(object):
-    """Класс для работы с подкастами."""
-
-    podcast_repository: PodcastRepositoryInterface
-
-    async def get_random(self) -> Podcast:
-        """Получить случайный подкаст.
-
-        :returns: Podcast
-        """
-        return await self.podcast_repository.get_random()
+from app_types.answerable import Answerable
+from repository.podcast import PodcastRepositoryInterface
+from services.answer import Answer, AnswerInterface
 
 
-@dataclass
-class PodcastAnswer(object):
+class PodcastAnswer(Answerable):
     """Ответ с подкастом."""
 
-    podcast: Podcast
+    _podcast_repository: PodcastRepositoryInterface
 
-    def transform(self) -> Answer:
-        """Трансформировать подкаст в ответ.
+    def __init__(self, podcast_repository: PodcastRepositoryInterface):
+        self._podcast_repository = podcast_repository
 
-        :returns: Answer
+    async def to_answer(self) -> AnswerInterface:
+        """Трансформация в ответ.
+
+        :return: AnswerInterface
         """
+        podcast = await self._podcast_repository.get_random()
         return Answer(
-            telegram_file_id=self.podcast.audio_telegram_id,
-            link_to_file=self.podcast.link_to_audio_file,
+            telegram_file_id=podcast.audio_telegram_id,
+            link_to_file=podcast.link_to_audio_file,
         )
