@@ -1,6 +1,7 @@
 from app_types.answerable import Answerable
 from repository.podcast import PodcastRepositoryInterface
-from services.answer import Answer, AnswerInterface
+from services.answers.answer import Answer
+from services.answers.interface import AnswerInterface
 
 
 class PodcastAnswer(Answerable):

@@ -5,7 +5,7 @@ from db import DBConnection
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
-from services.answer import Answer
+from services.answers.answer import Answer
 from services.ayats.ayat_search import AyatNotFoundSafeAnswer, SearchAnswer
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate
 from services.ayats.keyboard import AyatSearchKeyboard

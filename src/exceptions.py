@@ -1,5 +1,7 @@
 from app_types.answerable import Answerable
-from services.answer import Answer, AnswerInterface, AnswersList
+from services.answers.answer_list import AnswersList
+from services.answers.answer import Answer
+from services.answers.interface import AnswerInterface
 from settings import settings
 
 

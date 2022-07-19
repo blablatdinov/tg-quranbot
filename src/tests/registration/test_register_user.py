@@ -1,5 +1,5 @@
 from repository.users.user_actions import UserActionEnum
-from services.answer import Answer
+from services.answers.answer import Answer
 
 
 async def test(register_service, ayat_repository_mock, user_action_repository, user_repository_mock):

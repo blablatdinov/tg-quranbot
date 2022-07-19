@@ -2,7 +2,8 @@ from app_types.answerable import Answerable
 from exceptions import CityNotSupportedError
 from repository.city import City
 from repository.users.user import UserRepositoryInterface
-from services.answer import Answer, AnswerInterface
+from services.answers.answer import Answer
+from services.answers.interface import AnswerInterface
 from services.city.search import CitySearchInterface
 
 

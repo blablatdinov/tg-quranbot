@@ -1,6 +1,7 @@
 from repository.ayats.ayat_spam import AyatSpamRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
-from services.answer import Answer, SpamAnswerList
+from services.answers.spam_answer_list import SpamAnswerList
+from services.answers.answer import Answer
 
 
 class MorningSpam(object):
