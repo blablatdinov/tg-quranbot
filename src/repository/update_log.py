@@ -1,7 +1,10 @@
 import datetime
+from typing import Union
 
 from aiogram import types
 from asyncpg import Connection
+
+from services.sql_placeholders import generate_sql_placeholders
 
 
 class UpdatesLogRepositoryInterface(object):
@@ -19,6 +22,14 @@ class UpdatesLogRepositoryInterface(object):
         """Сохранить информацию о нажатии на кнопку.
 
         :param callback_query: types.CallbackQuery
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
+    async def bulk_save_messages(self, messages: list[types.Message]):
+        """Массовое сохранение сообщений.
+
+        :param messages: list[types.Message]
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -54,6 +65,32 @@ class UpdatesLogRepository(UpdatesLogRepositoryInterface):
             message.as_json(),
             is_unknown,
         )
+
+    async def bulk_save_messages(self, messages: list[types.Message]):
+        """Сохранить сообщения.
+
+        :param messages: list[types.Message]
+        """
+        query_template = """
+            INSERT INTO bot_init_message
+            (date, from_user_id, message_id, chat_id, text, json, is_unknown)
+            VALUES
+            {0}
+        """
+        query = query_template.format(generate_sql_placeholders(messages, 7))
+        arguments_list: list[Union[str, datetime.datetime, int, bool]] = []
+        for message in messages:
+            fields = [
+                message.date,
+                message.from_user.id,
+                message.message_id,
+                message.chat.id,
+                message.text,
+                message.as_json(),
+                False,
+            ]
+            sum([arguments_list, fields], start=[])
+        await self._connection.execute(query, *arguments_list)
 
     async def save_callback_query(self, callback_query: types.CallbackQuery):
         """Сохранить информацию о нажатии на кнопку.
