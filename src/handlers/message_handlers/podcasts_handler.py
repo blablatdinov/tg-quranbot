@@ -4,6 +4,8 @@ from aiogram.dispatcher import FSMContext, filters
 from constants import PODCAST_BUTTON
 from db import DBConnection
 from repository.podcast import PodcastRepository
+from repository.update_log import UpdatesLogRepository
+from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswer
 from services.podcast import PodcastAnswer
 
 
@@ -14,12 +16,20 @@ async def podcasts_handler(message: types.Message, state: FSMContext):
     :param state: FSMContext
     """
     async with DBConnection() as connection:
-        answer = await PodcastAnswer(
-            PodcastRepository(connection),
-        ).to_answer()
+        updates_log_repository = UpdatesLogRepository(connection)
+        answer = LoggedSourceMessageAnswer(
+            updates_log_repository,
+            message,
+            LoggedAnswer(
+                await PodcastAnswer(
+                    PodcastRepository(connection),
+                ).to_answer(),
+                updates_log_repository,
+            ),
+        )
+        await answer.send(message.chat.id)
 
     await state.finish()
-    await answer.send(message.chat.id)
 
 
 def register_podcasts_message_handlers(dp: Dispatcher):
