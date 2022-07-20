@@ -10,6 +10,8 @@ from services.ayats.keyboard_interface import AyatSearchKeyboardInterface
 
 CALLBACK_DATA_ADD_TO_FAVORITE_TEMPLATE = 'add_to_favorite({ayat_id})'
 CALLBACK_DATA_REMOVE_FROM_FAVORITE_TEMPLATE = 'remove_from_favorite({ayat_id})'
+LEFT_BUTTON_TEXT_TEMPLATE = '⬅️ {0}'
+RIGHT_BUTTON_TEXT_TEMPLATE = '{0} ➡️'
 
 
 class AyatSearchKeyboard(AyatSearchKeyboardInterface):
@@ -79,7 +81,7 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
             types.InlineKeyboardMarkup()
             .row(
                 types.InlineKeyboardButton(
-                    text=right_ayat.title(),
+                    text=RIGHT_BUTTON_TEXT_TEMPLATE.format(right_ayat.title()),
                     callback_data=self._pagination_buttons_keyboard.format(ayat_id=right_ayat.id),
                 ),
             )
@@ -95,7 +97,7 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
             types.InlineKeyboardMarkup()
             .row(
                 types.InlineKeyboardButton(
-                    text=left_ayat.title(),
+                    text=LEFT_BUTTON_TEXT_TEMPLATE.format(left_ayat.title()),
                     callback_data=self._pagination_buttons_keyboard.format(ayat_id=left_ayat.id),
                 ),
             )
@@ -112,11 +114,11 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
             types.InlineKeyboardMarkup()
             .row(
                 types.InlineKeyboardButton(
-                    text=left_ayat.title(),
+                    text=LEFT_BUTTON_TEXT_TEMPLATE.format(left_ayat.title()),
                     callback_data=self._pagination_buttons_keyboard.format(ayat_id=left_ayat.id),
                 ),
                 types.InlineKeyboardButton(
-                    text=right_ayat.title(),
+                    text=RIGHT_BUTTON_TEXT_TEMPLATE.format(right_ayat.title()),
                     callback_data=self._pagination_buttons_keyboard.format(ayat_id=right_ayat.id),
                 ),
             )
