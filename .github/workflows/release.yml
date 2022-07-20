@@ -1,12 +1,7 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
-name: Python application
+name: Test and release
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
     branches: [ "master" ]
 
 permissions:
@@ -45,4 +40,12 @@ jobs:
       run: .venv/bin/mypy src
     - name: Run tests with pytest
       run: .venv/bin/pytest
-
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_KEY }}
+        known_hosts: unnecessary
+    - name: Adding Known Hosts
+      run: touch ~/.ssh/known_hosts && ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+    - name: Deploy
+      run: ssh www@${{ secrets.SSH_HOST }} '/home/www/code/quranbot-aiogram/deploy/restart.sh'
