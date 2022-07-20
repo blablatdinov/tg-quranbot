@@ -4,7 +4,9 @@ from aiogram import types
 
 from db import DBConnection
 from repository.prayer_time import PrayerTimeRepository
+from repository.update_log import UpdatesLogRepository
 from repository.users.user import UserRepository
+from services.answers.log_answer import LoggedSourceCallbackUserPrayerStatus
 from services.prayer_time import PrayerTimes, UserPrayerStatus, UserPrayerTimes
 from services.regular_expression import IntableRegularExpression
 from utlls import get_bot_instance
@@ -18,17 +20,21 @@ async def mark_prayer_as_readed(callback_query: types.CallbackQuery):
     :param callback_query: app_types.CallbackQuery
     """
     async with DBConnection() as connection:
-        user_prayer_status = UserPrayerStatus(
-            prayer_times_repository=PrayerTimeRepository(connection),
-            user_prayer_times=UserPrayerTimes(
-                await PrayerTimes(
-                    prayer_times_repository=PrayerTimeRepository(connection),
-                    user_repository=UserRepository(connection),
-                    chat_id=callback_query.from_user.id,
-                ).get(),
-                datetime.datetime.now(),
+        user_prayer_status = LoggedSourceCallbackUserPrayerStatus(
+            UserPrayerStatus(
+                prayer_times_repository=PrayerTimeRepository(connection),
+                user_prayer_times=UserPrayerTimes(
+                    await PrayerTimes(
+                        prayer_times_repository=PrayerTimeRepository(connection),
+                        user_repository=UserRepository(connection),
+                        chat_id=callback_query.from_user.id,
+                    ).get(),
+                    datetime.datetime.now(),
+                ),
+                user_prayer_id=IntableRegularExpression(r'\d+', callback_query.data),
             ),
-            user_prayer_id=IntableRegularExpression(r'\d+', callback_query.data),
+            UpdatesLogRepository(connection),
+            callback_query,
         )
 
         await user_prayer_status.change(True)
@@ -47,17 +53,21 @@ async def mark_prayer_as_not_readed(callback_query: types.CallbackQuery):
     :param callback_query: app_types.CallbackQuery
     """
     async with DBConnection() as connection:
-        user_prayer_status = UserPrayerStatus(
-            prayer_times_repository=PrayerTimeRepository(connection),
-            user_prayer_times=UserPrayerTimes(
-                await PrayerTimes(
-                    prayer_times_repository=PrayerTimeRepository(connection),
-                    user_repository=UserRepository(connection),
-                    chat_id=callback_query.from_user.id,
-                ).get(),
-                datetime.datetime.now(),
+        user_prayer_status = LoggedSourceCallbackUserPrayerStatus(
+            UserPrayerStatus(
+                prayer_times_repository=PrayerTimeRepository(connection),
+                user_prayer_times=UserPrayerTimes(
+                    await PrayerTimes(
+                        prayer_times_repository=PrayerTimeRepository(connection),
+                        user_repository=UserRepository(connection),
+                        chat_id=callback_query.from_user.id,
+                    ).get(),
+                    datetime.datetime.now(),
+                ),
+                user_prayer_id=IntableRegularExpression(r'\d+', callback_query.data),
             ),
-            user_prayer_id=IntableRegularExpression(r'\d+', callback_query.data),
+            UpdatesLogRepository(connection),
+            callback_query,
         )
 
         await user_prayer_status.change(False)

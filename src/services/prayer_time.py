@@ -194,8 +194,25 @@ class UserPrayerTimesAnswer(Answerable):
         )
 
 
+class UserPrayerStatusInterface(object):
+
+    async def change(self, is_readed: bool):
+        """Метод меняет статус прочитанности намаза.
+
+        :param is_readed: bool
+        """
+        raise NotImplementedError
+
+    async def generate_refresh_keyboard(self) -> types.InlineKeyboardMarkup:
+        """Сгенерировать обновленную клавиатуру.
+
+        :returns: app_types.InlineKeyboardMarkup
+        """
+        raise NotImplementedError
+
+
 @dataclass
-class UserPrayerStatus(object):
+class UserPrayerStatus(UserPrayerStatusInterface):
     """Класс отвечающий за статус прочитанности намаза."""
 
     prayer_times_repository: PrayerTimeRepositoryInterface
