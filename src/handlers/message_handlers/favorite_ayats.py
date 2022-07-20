@@ -4,6 +4,8 @@ from aiogram.dispatcher import FSMContext
 from db import DBConnection
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import FavoriteAyatsNeighborRepository
+from repository.update_log import UpdatesLogRepository
+from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswerProcess
 from services.ayats.ayat_search import FavoriteAyats, SearchAnswer
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate
 from services.ayats.keyboard import AyatSearchKeyboard
@@ -34,6 +36,12 @@ async def favorite_ayats_list(message: types.Message, state: FSMContext):
                 AyatPaginatorCallbackDataTemplate.favorite_ayat_template,
             ),
         ).to_answer()
+        updates_log_repository = UpdatesLogRepository(connection)
+        answer = LoggedSourceMessageAnswerProcess(
+            updates_log_repository,
+            message,
+            LoggedAnswer(answer, updates_log_repository),
+        )
 
     await state.finish()
     await answer.send(message.chat.id)

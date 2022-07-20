@@ -6,7 +6,9 @@ from aiogram.dispatcher import FSMContext, filters
 from constants import GET_PRAYER_TIMES_REGEXP
 from db import DBConnection
 from repository.prayer_time import PrayerTimeRepository
+from repository.update_log import UpdatesLogRepository
 from repository.users.user import UserRepository
+from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswerProcess
 from services.prayer_time import PrayerTimes, UserHasNotCityExistsSafeAnswer, UserPrayerTimes, UserPrayerTimesAnswer
 
 
@@ -29,6 +31,12 @@ async def prayer_times_handler(message: types.Message, state: FSMContext):
                 ),
             ),
         ).to_answer()
+        updates_log_repository = UpdatesLogRepository(connection)
+        answer = LoggedSourceMessageAnswerProcess(
+            updates_log_repository,
+            message,
+            LoggedAnswer(answer, updates_log_repository),
+        )
 
     await state.finish()
     await answer.send(message.chat.id)

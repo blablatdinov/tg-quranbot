@@ -56,7 +56,7 @@ class SpamAnswerList(list, AnswerInterface):  # noqa: WPS600
         try:
             await answer.send()
         except (ChatNotFound, BotBlocked, UserDeactivated):
-            # answer.chat_id is not None already checked in self._validate method
+            # answer._chat_id is not None already checked in self._validate method
             self._unsubscriber_user_chat_ids.append(answer.chat_id)  # type: ignore
 
     def _validate(self) -> None:

@@ -5,7 +5,9 @@ from db import DBConnection
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
+from repository.update_log import UpdatesLogRepository
 from services.answers.answer import Answer
+from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswerProcess
 from services.ayats.ayat_search import AyatNotFoundSafeAnswer, SearchAnswer
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate
 from services.ayats.keyboard import AyatSearchKeyboard
@@ -46,6 +48,13 @@ async def ayats_text_search(message: types.Message, state: FSMContext):
                 ),
             ),
         ).to_answer()
+        answer = LoggedSourceMessageAnswerProcess(
+            UpdatesLogRepository(connection),
+            message,
+            LoggedAnswer(
+                answer,
+                UpdatesLogRepository(connection),
+            ),
+        )
 
-    await AyatSearchSteps.insert_into_search_mode.set()
     await answer.send(message.chat.id)

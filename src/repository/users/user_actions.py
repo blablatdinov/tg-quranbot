@@ -49,7 +49,7 @@ class UserActionRepository(UserActionRepositoryInterface):
         query = """
             INSERT INTO
             bot_init_subscriberaction
-            (date_time, action, subscriber_id)
+            (_date_time, action, subscriber_id)
             VALUES
             ($1, $2, (SELECT id FROM bot_init_subscriber WHERE tg_chat_id = $3))
         """

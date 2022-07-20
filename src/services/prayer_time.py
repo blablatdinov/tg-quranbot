@@ -1,5 +1,4 @@
 import datetime
-from dataclasses import dataclass, field
 
 from aiogram import types
 from loguru import logger
@@ -12,15 +11,16 @@ from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInte
 from repository.users.user import UserRepositoryInterface
 from services.answers.answer import Answer
 from services.answers.interface import AnswerInterface
+from services.user_prayer_status_interface import UserPrayerStatusInterface
 
 
 class PrayerTimesInterface(object):
     """Интерфейс для работы с временами намазов пользователя."""
 
-    prayer_times_repository: PrayerTimeRepositoryInterface
-    chat_id: int
-    user_repository: UserRepositoryInterface
-    prayers: list[Prayer]
+    _prayer_times_repository: PrayerTimeRepositoryInterface
+    _chat_id: int
+    _user_repository: UserRepositoryInterface
+    _prayers: list[Prayer]
 
     async def get(self) -> 'PrayerTimes':
         """Получить времена намазов пользователя.
@@ -30,38 +30,41 @@ class PrayerTimesInterface(object):
         raise NotImplementedError
 
 
-@dataclass
 class UserPrayerTimes(object):
     """Класс для работы с временами намазов пользователя."""
 
-    prayer_times: PrayerTimesInterface
-    date_time: datetime.datetime
+    _prayer_times: PrayerTimesInterface
+    _date_time: datetime.datetime
+
+    def __init__(self, prayer_times: PrayerTimesInterface, date_time: datetime.datetime):
+        self._prayer_times = prayer_times
+        self._date_time = date_time
 
     async def get_or_create_user_prayer_times(self) -> list[UserPrayer]:
         """Получить или создать времена намазов пользователя.
 
         :returns: list[UserPrayer]
         """
-        prayer_times = await self.prayer_times.get()
+        prayer_times = await self._prayer_times.get()
         prayers_without_sunrise = filter(
             lambda prayer: prayer.name != PrayerNames.SUNRISE,
-            prayer_times.prayers,
+            prayer_times._prayers,
         )
         prayers_without_sunrise_ids = [
             prayer.id
             for prayer in prayers_without_sunrise
         ]
         logger.info('Search user prayers...')
-        user_prayers = await self.prayer_times.prayer_times_repository.get_user_prayer_times(
+        user_prayers = await self._prayer_times._prayer_times_repository.get_user_prayer_times(
             prayers_without_sunrise_ids,
-            self.prayer_times.chat_id,
+            self._prayer_times._chat_id,
             datetime.datetime.now(),
         )
         logger.info('Search result: {0}'.format(user_prayers))
         if not user_prayers:
             logger.info('User prayers not found. Creating...')
-            user = await self.prayer_times.user_repository.get_by_chat_id(self.prayer_times.chat_id)
-            user_prayers = await self.prayer_times.prayer_times_repository.create_user_prayer_times(
+            user = await self._prayer_times._user_repository.get_by_chat_id(self._prayer_times._chat_id)
+            user_prayers = await self._prayer_times._prayer_times_repository.create_user_prayer_times(
                 prayer_ids=prayers_without_sunrise_ids,
                 user_id=user.id,
             )
@@ -69,11 +72,13 @@ class UserPrayerTimes(object):
         return user_prayers
 
 
-@dataclass
 class UserPrayerTimesKeyboard(object):
     """Клавиатура для времен намазов пользователей."""
 
-    user_prayer_times: UserPrayerTimes
+    _user_prayer_times: UserPrayerTimes
+
+    def __init__(self, user_prayer_times: UserPrayerTimes):
+        self._user_prayer_times = user_prayer_times
 
     async def generate(self) -> types.InlineKeyboardMarkup:
         """Генерация.
@@ -81,9 +86,8 @@ class UserPrayerTimesKeyboard(object):
         :returns: app_types.InlineKeyboardMarkup
         """
         keyboard = types.InlineKeyboardMarkup()
-        user_prayers = await self.user_prayer_times.get_or_create_user_prayer_times()
+        user_prayers = await self._user_prayer_times.get_or_create_user_prayer_times()
         buttons = []
-        # assert False, user_prayers
         for user_prayer in user_prayers:
             callback_data_template = 'mark_not_readed({0})' if user_prayer.is_readed else 'mark_readed({0})'
             buttons.append(types.InlineKeyboardButton(
@@ -96,14 +100,28 @@ class UserPrayerTimesKeyboard(object):
         return keyboard
 
 
-@dataclass
 class PrayerTimes(PrayerTimesInterface):
     """Класс для работы с временами намазов."""
 
-    prayer_times_repository: PrayerTimeRepositoryInterface
-    chat_id: int
-    user_repository: UserRepositoryInterface
-    prayers: list[Prayer] = field(default_factory=list)
+    _prayer_times_repository: PrayerTimeRepositoryInterface
+    _chat_id: int
+    _user_repository: UserRepositoryInterface
+    _prayers: list[Prayer]
+
+    def __init__(
+        self,
+        prayer_times_repository: PrayerTimeRepositoryInterface,
+        chat_id: int,
+        user_repository: UserRepositoryInterface,
+        prayers: list[Prayer] = None,
+    ):
+        self._prayer_times_repository = prayer_times_repository
+        self._chat_id = chat_id
+        self._user_repository = user_repository
+        if prayers is None:
+            self._prayers = []
+        else:
+            self._prayers = prayers
 
     async def get(self) -> 'PrayerTimes':
         """Получить экземпляр класса.
@@ -111,19 +129,19 @@ class PrayerTimes(PrayerTimesInterface):
         :returns: PrayerTimes
         :raises UserHasNotCityIdError: если город не найден в БД
         """
-        user = await self.user_repository.get_by_chat_id(self.chat_id)
+        user = await self._user_repository.get_by_chat_id(self._chat_id)
         if not user.city_id:
             raise UserHasNotCityIdError
-        prayers = await self.prayer_times_repository.get_prayer_times_for_date(
-            chat_id=self.chat_id,
+        prayers = await self._prayer_times_repository.get_prayer_times_for_date(
+            chat_id=self._chat_id,
             target_datetime=datetime.datetime.now(),
             city_id=user.city_id,
         )
         return PrayerTimes(
             prayers=prayers,
-            prayer_times_repository=self.prayer_times_repository,
-            chat_id=self.chat_id,
-            user_repository=self.user_repository,
+            prayer_times_repository=self._prayer_times_repository,
+            chat_id=self._chat_id,
+            user_repository=self._user_repository,
         )
 
     def __str__(self) -> str:
@@ -142,14 +160,14 @@ class PrayerTimes(PrayerTimesInterface):
             + 'Ястү: {ishaa_prayer_time}'
         )
         return template.format(
-            city_name=self.prayers[0].city,
-            date=self.prayers[0].day.strftime('%d.%m.%Y'),
-            fajr_prayer_time=self.prayers[0].time.strftime(time_format),
-            sunrise_prayer_time=self.prayers[1].time.strftime(time_format),
-            dhuhr_prayer_time=self.prayers[2].time.strftime(time_format),
-            asr_prayer_time=self.prayers[3].time.strftime(time_format),
-            magrib_prayer_time=self.prayers[4].time.strftime(time_format),
-            ishaa_prayer_time=self.prayers[5].time.strftime(time_format),
+            city_name=self._prayers[0].city,
+            date=self._prayers[0].day.strftime('%d.%m.%Y'),
+            fajr_prayer_time=self._prayers[0].time.strftime(time_format),
+            sunrise_prayer_time=self._prayers[1].time.strftime(time_format),
+            dhuhr_prayer_time=self._prayers[2].time.strftime(time_format),
+            asr_prayer_time=self._prayers[3].time.strftime(time_format),
+            magrib_prayer_time=self._prayers[4].time.strftime(time_format),
+            ishaa_prayer_time=self._prayers[5].time.strftime(time_format),
         )
 
 
@@ -173,11 +191,13 @@ class UserHasNotCityExistsSafeAnswer(Answerable):
             return Answer(message=exception.user_message, keyboard=keyboard)
 
 
-@dataclass
 class UserPrayerTimesAnswer(Answerable):
     """Ответ пользователю с временами намазов."""
 
-    user_prayer_times: UserPrayerTimes
+    _user_prayer_times: UserPrayerTimes
+
+    def __init__(self, user_prayer_times: UserPrayerTimes):
+        self._user_prayer_times = user_prayer_times
 
     async def to_answer(self) -> AnswerInterface:
         """Форматировать в ответ.
@@ -185,29 +205,38 @@ class UserPrayerTimesAnswer(Answerable):
         :returns: AnswerInterface
         """
         keyboard = await UserPrayerTimesKeyboard(
-            self.user_prayer_times,
+            self._user_prayer_times,
         ).generate()
-        prayers = await self.user_prayer_times.prayer_times.get()
+        prayers = await self._user_prayer_times._prayer_times.get()
         return Answer(
             keyboard=keyboard,
             message=str(prayers),
         )
 
 
-@dataclass
-class UserPrayerStatus(object):
+class UserPrayerStatus(UserPrayerStatusInterface):
     """Класс отвечающий за статус прочитанности намаза."""
 
-    prayer_times_repository: PrayerTimeRepositoryInterface
-    user_prayer_times: UserPrayerTimes
-    user_prayer_id: Intable
+    _prayer_times_repository: PrayerTimeRepositoryInterface
+    _user_prayer_times: UserPrayerTimes
+    _user_prayer_id: Intable
+
+    def __init__(
+        self,
+        prayer_times_repository: PrayerTimeRepositoryInterface,
+        user_prayer_times: UserPrayerTimes,
+        user_prayer_id: Intable,
+    ):
+        self._prayer_times_repository = prayer_times_repository
+        self._user_prayer_times = user_prayer_times
+        self._user_prayer_id = user_prayer_id
 
     async def change(self, is_readed: bool):
         """Метод меняет статус прочитанности намаза.
 
         :param is_readed: bool
         """
-        await self.prayer_times_repository.change_user_prayer_time_status(int(self.user_prayer_id), is_readed)
+        await self._prayer_times_repository.change_user_prayer_time_status(int(self._user_prayer_id), is_readed)
 
     async def generate_refresh_keyboard(self) -> types.InlineKeyboardMarkup:
         """Сгенерировать обновленную клавиатуру.
@@ -215,5 +244,5 @@ class UserPrayerStatus(object):
         :returns: app_types.InlineKeyboardMarkup
         """
         return await UserPrayerTimesKeyboard(
-            self.user_prayer_times,
+            self._user_prayer_times,
         ).generate()
