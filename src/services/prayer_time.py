@@ -10,7 +10,8 @@ from constants import PRAYER_NOT_READED_EMOJI, PRAYER_READED_EMOJI
 from exceptions import UserHasNotCityIdError
 from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
 from repository.users.user import UserRepositoryInterface
-from services.answer import Answer, AnswerInterface
+from services.answers.answer import Answer
+from services.answers.interface import AnswerInterface
 
 
 class PrayerTimesInterface(object):

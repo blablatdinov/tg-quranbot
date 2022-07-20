@@ -1,4 +1,4 @@
-from services.answer import AnswerInterface
+from services.answers.interface import AnswerInterface
 
 
 class Answerable(object):

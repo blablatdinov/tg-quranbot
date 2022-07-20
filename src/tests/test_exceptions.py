@@ -1,7 +1,7 @@
 import pytest
 
 from exceptions import BaseAppError
-from services.answer import AnswersList
+from services.answers.answer_list import AnswersList
 from settings import settings
 
 
