@@ -39,7 +39,7 @@ class Answer(BaseModel, AnswerInterface, SingleAnswerInterface):
         markup = self.get_markup()
         await bot_instance.edit_message_reply_markup(chat_id=chat_id, reply_markup=markup)
 
-    async def send(self, chat_id: int = None) -> types.Message:
+    async def send(self, chat_id: int = None) -> list[types.Message]:
         """Метод для отправки ответа.
 
         :param chat_id: int
@@ -60,7 +60,7 @@ class Answer(BaseModel, AnswerInterface, SingleAnswerInterface):
             message = await bot_instance.send_message(chat_id=chat_id, text=self.link_to_file, reply_markup=markup)
         else:
             message = await bot_instance.send_message(chat_id=chat_id, text=self.message, reply_markup=markup)
-        return message
+        return [message]
 
     def to_list(self) -> list[SingleAnswerInterface]:
         """Форматировать в строку из элементов.

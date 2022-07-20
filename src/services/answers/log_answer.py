@@ -16,15 +16,15 @@ class LoggedAnswer(AnswerInterface):
         self._origin = answer
         self._updates_log_repository = updates_log_repository
 
-    async def send(self, chat_id: int = None) -> types.Message:
+    async def send(self, chat_id: int = None) -> list[types.Message]:
         """Метод для отправки ответа.
 
         :param chat_id: int
         :return: types.Message
         """
-        message = await self._origin.send(chat_id)
-        await self._updates_log_repository.save_message(message)
-        return message
+        messages = await self._origin.send(chat_id)
+        await self._updates_log_repository.bulk_save_messages(messages)
+        return messages
 
     async def edit_markup(self, message_id: int, chat_id: int = None):
         """Метод для редактирования сообщения.
@@ -59,7 +59,7 @@ class LoggedSourceMessageAnswerProcess(AnswerInterface):
         self._source_message = message
         self._updates_log_repository = updates_log_repository
 
-    async def send(self, chat_id: int = None) -> types.Message:
+    async def send(self, chat_id: int = None) -> list[types.Message]:
         """Метод для отправки ответа.
 
         :param chat_id: int

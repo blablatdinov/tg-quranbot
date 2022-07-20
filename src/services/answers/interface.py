@@ -18,7 +18,7 @@ class AnswerInterface(object):
 
     chat_id: Optional[int]
 
-    async def send(self, chat_id: int = None):
+    async def send(self, chat_id: int = None) -> list[types.Message]:
         """Метод для отправки ответа.
 
         :param chat_id: int

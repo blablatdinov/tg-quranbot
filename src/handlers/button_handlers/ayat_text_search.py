@@ -49,4 +49,4 @@ async def ayats_search_buttons(callback_query: types.CallbackQuery, state: FSMCo
             LoggedAnswer(answer, UpdatesLogRepository(connection)),
         )
 
-    await answer.send(callback_query.from_user.id)
+        await answer.send(callback_query.from_user.id)

@@ -37,9 +37,9 @@ async def prayer_times_handler(message: types.Message, state: FSMContext):
             message,
             LoggedAnswer(answer, updates_log_repository),
         )
+        await answer.send(message.chat.id)
 
     await state.finish()
-    await answer.send(message.chat.id)
 
 
 def register_prayer_times_message_handlers(dp: Dispatcher):

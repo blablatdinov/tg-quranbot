@@ -28,8 +28,8 @@ def _register_message_handlers(dp: Dispatcher) -> None:
 
     :param dp: Dispatcher
     """
-    dp.register_message_handler(location.location_handler, content_types=['location'])
-    dp.register_message_handler(command_handlers.start_handler, commands=['start'])
+    dp.register_message_handler(location.location_handler, content_types=['location'], state='*')
+    dp.register_message_handler(command_handlers.start_handler, commands=['start'], state='*')
 
 
 def _register_button_handlers(dp: Dispatcher) -> None:

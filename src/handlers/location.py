@@ -1,4 +1,5 @@
 from aiogram import types
+from aiogram.dispatcher import FSMContext
 
 from db import DBConnection
 from integrations.client import IntegrationClient
@@ -12,10 +13,11 @@ from services.city.search import SearchCityByCoordinates
 from services.city.service import CityService
 
 
-async def location_handler(message: types.Message):
+async def location_handler(message: types.Message, state: FSMContext):
     """Обработчик, присланных боту геопозиций.
 
-    :param message: app_types.Message
+    :param message: types.Message
+    :param state: FSMContext
     """
     async with DBConnection() as connection:
         answer = await CityNotSupportedSafetyAnswer(
@@ -43,4 +45,6 @@ async def location_handler(message: types.Message):
             LoggedAnswer(answer, updates_log_repository),
         )
 
-    await answer.send(message.chat.id)
+        await answer.send(message.chat.id)
+
+    await state.finish()

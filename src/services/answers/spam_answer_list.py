@@ -1,5 +1,6 @@
 import asyncio
 
+from aiogram import types
 from aiogram.utils.exceptions import BotBlocked, ChatNotFound, UserDeactivated
 
 from repository.users.users import UsersRepositoryInterface
@@ -20,21 +21,25 @@ class SpamAnswerList(list, AnswerInterface):  # noqa: WPS600
         self._users_repository = users_repository
         super().__init__(args)
 
-    async def send(self, chat_id: int = None) -> None:
+    async def send(self, chat_id: int = None) -> list[types.Message]:
         """Метод для отправки ответа.
 
         :param chat_id: int
+        :return: list[types.Message]
         """
         self._validate()
+        messages = []
         for index in range(0, len(self), 100):
             tasks = []
             for answer in self[index:index + 100]:
                 tasks.append(self._send_one_answer(answer))
 
-            await asyncio.gather(*tasks)
+            messages += self._get_messages_from_gather_results(await asyncio.gather(*tasks))
 
         if self._unsubscriber_user_chat_ids:
             await self._users_repository.update_status(self._unsubscriber_user_chat_ids, to=False)
+
+        return messages
 
     async def edit_markup(self, message_id: int, chat_id: int = None):
         """Метод для редактирования сообщения.
@@ -65,3 +70,10 @@ class SpamAnswerList(list, AnswerInterface):  # noqa: WPS600
         answers_chat_ids = {answer.chat_id for answer in self}
         if None in answers_chat_ids:
             raise InternalBotError
+
+    def _get_messages_from_gather_results(self, gather_results) -> list[types.Message]:
+        messages: list[types.Message] = []
+        for gather_result in gather_results:
+            messages = sum([messages, gather_result], start=[])
+
+        return messages

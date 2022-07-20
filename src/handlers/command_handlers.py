@@ -1,4 +1,5 @@
 from aiogram import types
+from aiogram.dispatcher import FSMContext
 
 from db import DBConnection
 from repository.admin_message import AdminMessageRepository
@@ -12,10 +13,11 @@ from services.register_user import RegisterAlreadyExistsUser, RegisterNewUser, R
 from services.start_message import get_start_message_query
 
 
-async def start_handler(message: types.Message):
+async def start_handler(message: types.Message, state: FSMContext):
     """Ответ на команды: start.
 
     :param message: app_types.Message
+    :param state: FSMContext
     """
     async with DBConnection() as connection:
         user_action_repository = UserActionRepository(connection)
@@ -49,3 +51,5 @@ async def start_handler(message: types.Message):
             ),
         )
         await answer.send()
+
+    await state.finish()
