@@ -44,7 +44,7 @@ class Answer(BaseModel, AnswerInterface, SingleAnswerInterface):
 
         :param chat_id: int
         :return: types.Message
-        :raises InternalBotError: if not take chat_id
+        :raises InternalBotError: if not take _chat_id
         """
         from exceptions import InternalBotError  # noqa: WPS433
 

@@ -118,7 +118,7 @@ class UserRepository(UserRepositoryInterface):
                 is_active,
                 day,
                 referer_id as referrer,
-                tg_chat_id as chat_id,
+                tg_chat_id as _chat_id,
                 city_id
             FROM bot_init_subscriber
             WHERE tg_chat_id = $1

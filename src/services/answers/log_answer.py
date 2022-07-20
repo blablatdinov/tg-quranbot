@@ -3,7 +3,7 @@ from aiogram import types
 from repository.update_log import UpdatesLogRepositoryInterface
 from services.answers.interface import AnswerInterface, SingleAnswerInterface
 from services.ayats.keyboard_interface import AyatSearchKeyboardInterface
-from services.prayer_time import UserPrayerStatusInterface
+from services.user_prayer_status_interface import UserPrayerStatusInterface
 
 
 class LoggedAnswer(AnswerInterface):
@@ -85,6 +85,7 @@ class LoggedSourceMessageAnswerProcess(AnswerInterface):
 
 
 class LoggedSourceCallbackAyatSearchKeyboard(AyatSearchKeyboardInterface):
+    """Класс для логгирования данных с клавиатуры."""
 
     _origin: AyatSearchKeyboardInterface
     _updates_log_repository: UpdatesLogRepositoryInterface
@@ -101,11 +102,16 @@ class LoggedSourceCallbackAyatSearchKeyboard(AyatSearchKeyboardInterface):
         self._updates_log_repository = updates_log_repository
 
     async def generate(self) -> types.InlineKeyboardMarkup:
+        """Сгенерировать клавиатуру.
+
+        :return: types.InlineKeyboardMarkup
+        """
         await self._updates_log_repository.save_callback_query(self._source_callback_query)
         return await self._origin.generate()
 
 
 class LoggedSourceCallbackUserPrayerStatus(UserPrayerStatusInterface):
+    """Класс для логгирования данных с клавиатуры."""
 
     _origin: UserPrayerStatusInterface
     _updates_log_repository: UpdatesLogRepositoryInterface

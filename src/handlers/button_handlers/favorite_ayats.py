@@ -1,10 +1,15 @@
 from aiogram import types
+
 from db import DBConnection
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import FavoriteAyatsNeighborRepository, NeighborAyatsRepository
 from repository.update_log import UpdatesLogRepository
-from services.answers.log_answer import LoggedSourceCallbackAyatSearchKeyboard, LoggedSourceCallbackAnswerProcess, LoggedAnswer
+from services.answers.log_answer import (
+    LoggedAnswer,
+    LoggedSourceCallbackAnswerProcess,
+    LoggedSourceCallbackAyatSearchKeyboard,
+)
 from services.ayats.ayat_by_id import AyatById
 from services.ayats.ayat_search import AyatFavoriteStatus, FavoriteAyats, SearchAnswer
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate

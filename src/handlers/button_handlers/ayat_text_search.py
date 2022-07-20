@@ -6,7 +6,7 @@ from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
 from repository.update_log import UpdatesLogRepository
-from services.answers.log_answer import LoggedSourceMessageAnswerProcess, LoggedSourceCallbackAnswerProcess, LoggedAnswer
+from services.answers.log_answer import LoggedAnswer, LoggedSourceCallbackAnswerProcess
 from services.ayats.ayat_search import SearchAnswer
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate
 from services.ayats.keyboard import AyatSearchKeyboard
@@ -43,11 +43,10 @@ async def ayats_search_buttons(callback_query: types.CallbackQuery, state: FSMCo
                 AyatPaginatorCallbackDataTemplate.ayat_text_search_template,
             ),
         ).to_answer()
-        updates_log_repository = UpdatesLogRepository(connection)
         answer = LoggedSourceCallbackAnswerProcess(
-            updates_log_repository,
+            UpdatesLogRepository(connection),
             callback_query,
-            LoggedAnswer(answer, updates_log_repository),
+            LoggedAnswer(answer, UpdatesLogRepository(connection)),
         )
 
     await answer.send(callback_query.from_user.id)
