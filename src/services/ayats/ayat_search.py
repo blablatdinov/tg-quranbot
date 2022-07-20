@@ -5,8 +5,8 @@ from app_types.intable import Intable
 from exceptions import AyatNotFoundError
 from repository.ayats.ayat import Ayat
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
-from services.answers.answer_list import AnswersList
 from services.answers.answer import Answer
+from services.answers.answer_list import AnswersList
 from services.answers.interface import AnswerInterface
 from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.keyboard import AyatPaginatorCallbackDataTemplate, AyatSearchKeyboard

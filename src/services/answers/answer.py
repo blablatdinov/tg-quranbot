@@ -4,12 +4,12 @@ from aiogram import types
 from pydantic import BaseModel
 
 from services.answer import get_default_markup
-from services.answers.interface import AnswerInterface
+from services.answers.interface import AnswerInterface, SingleAnswerInterface
 from settings import settings
 from utlls import get_bot_instance
 
 
-class Answer(BaseModel, AnswerInterface):
+class Answer(BaseModel, AnswerInterface, SingleAnswerInterface):
     """Ответ пользователю."""
 
     chat_id: Optional[int]
@@ -59,7 +59,7 @@ class Answer(BaseModel, AnswerInterface):
             await bot_instance.send_message(chat_id=chat_id, text=self.link_to_file, reply_markup=markup)
         await bot_instance.send_message(chat_id=chat_id, text=self.message, reply_markup=markup)
 
-    def to_list(self) -> list['Answer']:
+    def to_list(self) -> list[SingleAnswerInterface]:
         """Форматировать в строку из элементов.
 
         :returns: list[Answer]

@@ -1,6 +1,16 @@
-from typing import Optional
+from typing import Optional, Union
 
-from services.answers.answer import Answer
+from aiogram import types
+
+
+class SingleAnswerInterface(object):
+    """Интерфейс единственного ответа."""
+
+    chat_id: Optional[int]
+    message: Optional[str]
+    telegram_file_id: Optional[str]
+    link_to_file: Optional[str]
+    keyboard: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, None]
 
 
 class AnswerInterface(object):
@@ -25,7 +35,7 @@ class AnswerInterface(object):
         """
         raise NotImplementedError
 
-    def to_list(self) -> list['Answer']:
+    def to_list(self) -> list[SingleAnswerInterface]:
         """Метод для конвертации в список.
 
         :raises NotImplementedError: if not implement

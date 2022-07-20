@@ -1,10 +1,10 @@
 import asyncio
 
-from aiogram.utils.exceptions import ChatNotFound, BotBlocked, UserDeactivated
+from aiogram.utils.exceptions import BotBlocked, ChatNotFound, UserDeactivated
 
 from repository.users.users import UsersRepositoryInterface
 from services.answers.answer import Answer
-from services.answers.interface import AnswerInterface
+from services.answers.interface import AnswerInterface, SingleAnswerInterface
 
 
 class SpamAnswerList(list, AnswerInterface):  # noqa: WPS600
@@ -45,7 +45,7 @@ class SpamAnswerList(list, AnswerInterface):  # noqa: WPS600
         for elem in self:
             await elem.edit_markup(chat_id)
 
-    def to_list(self) -> list['Answer']:
+    def to_list(self) -> list[SingleAnswerInterface]:
         """Форматировать в строку из элементов.
 
         :returns: list[Answer]
