@@ -5,7 +5,7 @@ from constants import PODCAST_BUTTON
 from db import DBConnection
 from repository.podcast import PodcastRepository
 from repository.update_log import UpdatesLogRepository
-from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswer
+from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswerProcess
 from services.podcast import PodcastAnswer
 
 
@@ -17,7 +17,7 @@ async def podcasts_handler(message: types.Message, state: FSMContext):
     """
     async with DBConnection() as connection:
         updates_log_repository = UpdatesLogRepository(connection)
-        answer = LoggedSourceMessageAnswer(
+        answer = LoggedSourceMessageAnswerProcess(
             updates_log_repository,
             message,
             LoggedAnswer(

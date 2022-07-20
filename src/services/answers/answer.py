@@ -43,6 +43,7 @@ class Answer(BaseModel, AnswerInterface, SingleAnswerInterface):
         """Метод для отправки ответа.
 
         :param chat_id: int
+        :return: types.Message
         :raises InternalBotError: if not take chat_id
         """
         from exceptions import InternalBotError  # noqa: WPS433

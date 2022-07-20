@@ -3,9 +3,11 @@ from aiogram import types
 from db import DBConnection
 from repository.admin_message import AdminMessageRepository
 from repository.ayats.ayat import AyatRepository
+from repository.update_log import UpdatesLogRepository
 from repository.users.user import UserRepository
 from repository.users.user_actions import UserActionRepository
 from repository.users.users import UsersRepository
+from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswerProcess
 from services.register_user import RegisterAlreadyExistsUser, RegisterNewUser, RegisterUser, RegisterUserWithReferrer
 from services.start_message import get_start_message_query
 
@@ -38,4 +40,12 @@ async def start_handler(message: types.Message):
             ),
             message.chat.id,
         ).register()
+        answer = LoggedSourceMessageAnswerProcess(
+            UpdatesLogRepository(connection),
+            message,
+            LoggedAnswer(
+                answer,
+                UpdatesLogRepository(connection),
+            ),
+        )
         await answer.send()
