@@ -1,0 +1,56 @@
+name: Test and release
+
+#on:
+#  push:
+#    branches: [ deploy ]
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+#    - uses: actions/checkout@v3
+#    - name: Set up Python 3.10
+#      uses: actions/setup-python@v3
+#      with:
+#        python-version: "3.10"
+#    - name: Install Poetry
+#      uses: snok/install-poetry@v1.3.0
+#      with:
+#        virtualenvs-create: true
+#        virtualenvs-in-project: true
+#        installer-parallel: true
+#    - name: Load cached venv
+#      id: cached-poetry-dependencies
+#      uses: actions/cache@v3
+#      with:
+#        path: .venv
+#        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+#    - name: Install dependencies
+#      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+#      run: poetry install --no-interaction --no-root
+#    - name: create .env file
+#      run: cp .env.example .env
+#    - name: Lint with flake8
+#      run: .venv/bin/flake8 src
+#    - name: Check types with mypy
+#      run: .venv/bin/mypy src
+#    - name: Run tests with pytest
+#      run: .venv/bin/pytest
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_KEY }}
+        known_hosts: unnecessary
+    - name: Adding Known Hosts
+      run: touch ~/.ssh/known_hosts && ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+    - name: Deploy
+      run: ssh www@${{ secrets.SSH_HOST }} '/home/www/code/quranbot-aiogram/deploy/restart.sh'
