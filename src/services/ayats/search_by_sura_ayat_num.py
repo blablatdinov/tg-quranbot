@@ -94,6 +94,8 @@ class AyatSearchWithNeighbors(AyatSearchInterface):
         elif len(neighbors) == 2 and neighbors[0].id != 1:
             ayat.left_neighbor = neighbors[0]
             return ayat
+        elif len(neighbors) == 1:
+            return ayat
         ayat.left_neighbor = neighbors[0]
         ayat.right_neighbor = neighbors[2]
         return ayat

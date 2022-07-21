@@ -1,7 +1,5 @@
 from aiogram import types
 
-from exceptions.content_exceptions import AyatHaveNotNeighborsError
-from repository.ayats.ayat import AyatNeighbors
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import AyatShort
 from services.ayats.ayat_search_interface import AyatSearchInterface
@@ -38,12 +36,9 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
         """Генерация клавиатуры.
 
         :returns: InlineKeyboard
-        :raises AyatHaveNotNeighborsError: если переданы аяты с пустыми соседями
         """
         ayat = await self._ayat_search.search()
         ayat_neighbors = ayat.find_neighbors()
-        if not ayat_neighbors.left and not ayat_neighbors.right:
-            raise AyatHaveNotNeighborsError
         ayat_is_favorite = await self._favorite_ayats_repository.check_ayat_is_favorite_for_user(ayat.id, self._chat_id)
         if ayat_is_favorite:
             favorite_button = types.InlineKeyboardButton(
@@ -55,22 +50,19 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
                 text='Добавить в избранное',
                 callback_data=CALLBACK_DATA_ADD_TO_FAVORITE_TEMPLATE.format(ayat_id=ayat.id),
             )
+        if not ayat_neighbors.left and not ayat_neighbors.right:
+            # raise AyatHaveNotNeighborsError
+            return self._only_one_ayat_case(favorite_button)
 
-        if self._is_first_ayat(ayat_neighbors):
+        if not ayat_neighbors.left:
             # ayat_neighbors.right already checked for None value
             return self._first_ayat_case(ayat_neighbors.right, favorite_button)  # type: ignore
-        elif self._is_last_ayat(ayat_neighbors):
+        elif not ayat_neighbors.right:
             # ayat_neighbors.left already checked for None value
             return self._last_ayat_case(ayat_neighbors.left, favorite_button)  # type: ignore
 
         # ayat_neighbors already checked for None value
         return self._middle_ayat_case(ayat_neighbors.left, ayat_neighbors.right, favorite_button)  # type: ignore
-
-    def _is_first_ayat(self, ayat_neighbors: AyatNeighbors) -> bool:
-        return not ayat_neighbors.left
-
-    def _is_last_ayat(self, ayat_neighbors: AyatNeighbors) -> bool:
-        return not ayat_neighbors.right
 
     def _first_ayat_case(
         self,
@@ -123,4 +115,12 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
                 ),
             )
             .row(favorite_button)
+        )
+
+    def _only_one_ayat_case(self, favorite_button: types.InlineKeyboardButton):
+        return (
+            types.InlineKeyboardMarkup()
+            .row(
+                favorite_button,
+            )
         )
