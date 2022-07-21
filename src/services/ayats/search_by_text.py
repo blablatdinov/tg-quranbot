@@ -1,7 +1,7 @@
 from aiogram.dispatcher import FSMContext
 
 from app_types.intable import Intable
-from exceptions import AyatNotFoundError
+from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.ayat import Ayat, AyatRepositoryInterface
 from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
 from services.ayats.ayat_search import AyatSearchInterface

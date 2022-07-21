@@ -1,6 +1,6 @@
 from aiogram import types
 
-from exceptions import AyatHaveNotNeighborsError
+from exceptions.content_exceptions import AyatHaveNotNeighborsError
 from repository.ayats.ayat import AyatNeighbors
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import AyatShort

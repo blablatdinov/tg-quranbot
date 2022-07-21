@@ -1,7 +1,7 @@
 import re
 
 from app_types.intable import Intable
-from exceptions import BaseAppError
+from exceptions.base_exception import BaseAppError
 
 
 class IntableRegularExpression(Intable):

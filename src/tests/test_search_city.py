@@ -1,7 +1,7 @@
 import pytest
 from aiogram import types
 
-from exceptions import CityNotSupportedError
+from exceptions.content_exceptions import CityNotSupportedError
 from integrations.nominatim import NominatimIntegration
 from repository.city import City, CityRepositoryInterface
 from services.city.search import CitySearchInlineAnswer, SearchCityByCoordinates, SearchCityByName

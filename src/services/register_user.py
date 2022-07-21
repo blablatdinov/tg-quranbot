@@ -1,4 +1,4 @@
-from exceptions import InternalBotError
+from exceptions.base_exception import InternalBotError
 from repository.admin_message import AdminMessageRepositoryInterface
 from repository.ayats.ayat import AyatRepositoryInterface
 from repository.users.user import User, UserRepositoryInterface

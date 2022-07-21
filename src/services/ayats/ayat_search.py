@@ -2,7 +2,7 @@ from typing import Optional
 
 from app_types.answerable import Answerable
 from app_types.intable import Intable
-from exceptions import AyatNotFoundError
+from exceptions.content_exceptions import AyatNotFoundError, UserHasNotFavoriteAyatsError
 from repository.ayats.ayat import Ayat
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from services.answers.answer import Answer
@@ -39,8 +39,11 @@ class FavoriteAyats(AyatSearchInterface):
         """Поиск избранных аятов.
 
         :returns: Ayat
+        :raises UserHasNotFavoriteAyatsError: если избранные аяты для этого пользователя не найдены
         """
         favorite_ayats = await self._ayat_repository.get_favorites(self._chat_id)
+        if not favorite_ayats:
+            raise UserHasNotFavoriteAyatsError
         if not self._ayat_id:
             return favorite_ayats[0]
 

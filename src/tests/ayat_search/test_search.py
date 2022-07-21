@@ -3,7 +3,7 @@ import re
 import pytest
 
 from constants import AYAT_SEARCH_INPUT_REGEXP
-from exceptions import AyatNotFoundError, SuraNotFoundError
+from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
 from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum
 from tests.mocks.ayat_repository import AyatRepositoryMock
 

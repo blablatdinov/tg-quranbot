@@ -2,7 +2,7 @@ import asyncio
 import sys
 
 from db import DBConnection
-from exceptions import BaseAppError
+from exceptions.base_exception import BaseAppError
 from repository.ayats.ayat_spam import AyatSpamRepository
 from repository.users.users import UsersRepository
 from services.ayats.morning_spam import MorningSpam
