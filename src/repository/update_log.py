@@ -89,7 +89,7 @@ class UpdatesLogRepository(UpdatesLogRepositoryInterface):
                 message.as_json(),
                 False,
             ]
-            sum([arguments_list, fields], start=[])
+            arguments_list = sum([arguments_list, fields], start=[])
         await self._connection.execute(query, *arguments_list)
 
     async def save_callback_query(self, callback_query: types.CallbackQuery):

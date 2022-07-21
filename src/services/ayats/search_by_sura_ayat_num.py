@@ -88,10 +88,10 @@ class AyatSearchWithNeighbors(AyatSearchInterface):
         """
         ayat = await self._ayat_search.search()
         neighbors = await self._neighbor_ayats_repository.get_ayat_neighbors(ayat.id)
-        if len(neighbors) == 2 and neighbors[0].id == 1:
+        if len(neighbors) == 2 and neighbors[0].id == ayat.id:
             ayat.right_neighbor = neighbors[1]
             return ayat
-        elif len(neighbors) == 2 and neighbors[0].id != 1:
+        elif len(neighbors) == 2 and neighbors[0].id != ayat.id:
             ayat.left_neighbor = neighbors[0]
             return ayat
         elif len(neighbors) == 1:
