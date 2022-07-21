@@ -5,6 +5,7 @@ from db import DBConnection
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import FavoriteAyatsNeighborRepository
 from repository.update_log import UpdatesLogRepository
+from services.answers.exceptions_safe_answer import ExceptionSafeAnswer
 from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswerProcess
 from services.ayats.ayat_search import FavoriteAyats, SearchAnswer
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate
@@ -27,13 +28,15 @@ async def favorite_ayats_list(message: types.Message, state: FSMContext):
             ),
             FavoriteAyatsNeighborRepository(connection, message.chat.id),
         )
-        answer = await SearchAnswer(
-            ayat_search,
-            AyatSearchKeyboard(
+        answer = await ExceptionSafeAnswer(
+            SearchAnswer(
                 ayat_search,
-                favorite_ayats_repository,
-                message.chat.id,
-                AyatPaginatorCallbackDataTemplate.favorite_ayat_template,
+                AyatSearchKeyboard(
+                    ayat_search,
+                    favorite_ayats_repository,
+                    message.chat.id,
+                    AyatPaginatorCallbackDataTemplate.favorite_ayat_template,
+                ),
             ),
         ).to_answer()
         updates_log_repository = UpdatesLogRepository(connection)

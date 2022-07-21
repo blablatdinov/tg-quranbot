@@ -3,7 +3,7 @@ from typing import Optional
 from asyncpg import Connection
 from pydantic import BaseModel
 
-from exceptions import InternalBotError
+from exceptions.base_exception import InternalBotError
 from repository.schemas import CountResult
 
 

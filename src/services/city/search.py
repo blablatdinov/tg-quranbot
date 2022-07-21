@@ -1,6 +1,6 @@
 from aiogram import types
 
-from exceptions import CityNotSupportedError
+from exceptions.content_exceptions import CityNotSupportedError
 from integrations.nominatim import GeoServiceIntegrationInterface
 from repository.city import City
 from services.city.service import CityService

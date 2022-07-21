@@ -6,7 +6,7 @@ from loguru import logger
 from app_types.answerable import Answerable
 from app_types.intable import Intable
 from constants import PRAYER_NOT_READED_EMOJI, PRAYER_READED_EMOJI
-from exceptions import UserHasNotCityIdError
+from exceptions.content_exceptions import UserHasNotCityIdError
 from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
 from repository.users.user import UserRepositoryInterface
 from services.answers.answer import Answer

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from exceptions import AyatNotFoundError, SuraNotFoundError
+from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
 from repository.ayats.ayat import Ayat, AyatRepositoryInterface
 from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
 from services.ayats.ayat_search import AyatSearchInterface

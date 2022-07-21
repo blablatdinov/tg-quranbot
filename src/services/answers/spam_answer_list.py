@@ -66,7 +66,7 @@ class SpamAnswerList(list, AnswerInterface):  # noqa: WPS600
 
     def _validate(self) -> None:
         # cycle import protect
-        from exceptions import InternalBotError  # noqa: WPS433
+        from exceptions.base_exception import InternalBotError  # noqa: WPS433
         answers_chat_ids = {answer.chat_id for answer in self}
         if None in answers_chat_ids:
             raise InternalBotError
