@@ -42,8 +42,6 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
         """
         ayat = await self._ayat_search.search()
         ayat_neighbors = ayat.find_neighbors()
-        if not ayat_neighbors.left and not ayat_neighbors.right:
-            raise AyatHaveNotNeighborsError
         ayat_is_favorite = await self._favorite_ayats_repository.check_ayat_is_favorite_for_user(ayat.id, self._chat_id)
         if ayat_is_favorite:
             favorite_button = types.InlineKeyboardButton(
@@ -55,6 +53,9 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
                 text='Добавить в избранное',
                 callback_data=CALLBACK_DATA_ADD_TO_FAVORITE_TEMPLATE.format(ayat_id=ayat.id),
             )
+        if not ayat_neighbors.left and not ayat_neighbors.right:
+            # raise AyatHaveNotNeighborsError
+            return self._only_one_ayat_case(favorite_button)
 
         if self._is_first_ayat(ayat_neighbors):
             # ayat_neighbors.right already checked for None value
@@ -123,4 +124,12 @@ class AyatSearchKeyboard(AyatSearchKeyboardInterface):
                 ),
             )
             .row(favorite_button)
+        )
+
+    def _only_one_ayat_case(self, favorite_button: types.InlineKeyboardButton):
+        return (
+            types.InlineKeyboardMarkup()
+            .row(
+                favorite_button
+            )
         )

@@ -5,9 +5,6 @@ from services.ayats.enums import AyatPaginatorCallbackDataTemplate
 class AyatSearchInterface(object):
     """Интерфейс класса, осуществляющего поиск аятов."""
 
-    ayat_repository: AyatRepositoryInterface
-    ayat_paginator_callback_data_template: AyatPaginatorCallbackDataTemplate
-
     async def search(self) -> Ayat:
         """Метод, осуществляющий поиск.
 
