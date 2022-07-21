@@ -1,5 +1,5 @@
 from app_types.answerable import Answerable
-from exceptions import CityNotSupportedError
+from exceptions.content_exceptions import CityNotSupportedError
 from repository.city import City
 from repository.users.user import UserRepositoryInterface
 from services.answers.answer import Answer
