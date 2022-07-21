@@ -106,10 +106,9 @@ async def test_one_favorite(ayat_repository_mock_with_one_favorite, ayat_reposit
     ).generate()
 
     assert got.to_python() == {
-        "inline_keyboard": [
+        'inline_keyboard': [
             [
-                {"text": "Добавить в избранное", "callback_data": "add_to_favorite(2)"},
+                {'text': 'Добавить в избранное', 'callback_data': 'add_to_favorite(2)'},
             ],
         ],
     }
-

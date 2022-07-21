@@ -1,5 +1,4 @@
-from repository.ayats.ayat import Ayat, AyatRepositoryInterface
-from services.ayats.enums import AyatPaginatorCallbackDataTemplate
+from repository.ayats.ayat import Ayat
 
 
 class AyatSearchInterface(object):
