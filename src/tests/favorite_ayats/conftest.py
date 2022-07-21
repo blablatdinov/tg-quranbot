@@ -2,15 +2,8 @@ from dataclasses import dataclass
 
 import pytest
 
-from exceptions.content_exceptions import UserHasNotFavoriteAyatsError
 from repository.ayats.ayat import Ayat
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
-from services.ayats.ayat_search import FavoriteAyats
-from services.ayats.ayat_search_interface import AyatSearchInterface
-from services.ayats.enums import AyatPaginatorCallbackDataTemplate
-from services.ayats.keyboard import AyatSearchKeyboard
-from tests.ayat_search.test_keyboard_generator import FavoriteAyatsRepositoryMock
-from tests.mocks.ayat_repository import AyatRepositoryMock
 
 
 @dataclass
@@ -80,35 +73,9 @@ def ayat_repository_mock_with_one_favorite(ayat_factory):
     )
 
 
-async def test_none_favorites(ayat_repository_mock_with_none_favorites):
-    with pytest.raises(UserHasNotFavoriteAyatsError):
-        await FavoriteAyats(
-            ayat_repository_mock_with_none_favorites,
-            123,
-        ).search()
-
-
-class AyatSearchMock(AyatSearchInterface):
-
-    def __init__(self, ayat_repository: AyatRepositoryMock):
-        self.ayat_repository = ayat_repository
-
-    async def search(self) -> Ayat:
-        return self.ayat_repository.storage[1]
-
-
-async def test_one_favorite(ayat_repository_mock_with_one_favorite, ayat_repository_mock):
-    got = await AyatSearchKeyboard(
-        AyatSearchMock(ayat_repository_mock),
-        FavoriteAyatsRepositoryMock(),
-        21442,
-        AyatPaginatorCallbackDataTemplate.favorite_ayat_template,
-    ).generate()
-
-    assert got.to_python() == {
-        'inline_keyboard': [
-            [
-                {'text': 'Добавить в избранное', 'callback_data': 'add_to_favorite(2)'},
-            ],
-        ],
-    }
+@pytest.fixture()
+def ayat_repository_mock_with_two_favorite(ayat_factory):
+    return LocalAyatRepositoryMock(
+        [ayat_factory(1, '1:1-7'), ayat_factory(2, '2:1-5')],
+        [UserMock(chat_id=123, favorite_ayat_ids=[1, 2])],
+    )
