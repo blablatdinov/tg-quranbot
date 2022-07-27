@@ -11,6 +11,9 @@ pydantic = {extras = ["dotenv"], version = "^1.9.1"}
 asyncpg = "^0.25.0"
 loguru = "^0.6.0"
 aioredis = "^2.0.1"
+nats-py = "^2.1.4"
+#quranbot-schema-registry = "0.0.1"
+quranbot-schema-registry = "0.0.2"
 
 [tool.poetry.dev-dependencies]
 wemake-python-styleguide = "^0.16.1"

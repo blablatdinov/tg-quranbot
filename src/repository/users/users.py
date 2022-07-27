@@ -41,7 +41,7 @@ class UsersRepository(UsersRepositoryInterface):
         """
         query = """
             SELECT
-                tg_chat_id as _chat_id
+                tg_chat_id as chat_id
             FROM bot_init_subscriber
             WHERE is_active = 't'
         """

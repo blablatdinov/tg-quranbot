@@ -66,18 +66,18 @@ class UpdatesLogRepository(UpdatesLogRepositoryInterface):
             is_unknown,
         )
 
-    async def bulk_save_messages(self, messages: list[types.Message]):
+    async def bulk_save_messages(self, messages: list[types.Message], mailing_id: int = None):
         """Сохранить сообщения.
 
         :param messages: list[types.Message]
         """
         query_template = """
             INSERT INTO bot_init_message
-            (date, from_user_id, message_id, chat_id, text, json, is_unknown)
+            (date, from_user_id, message_id, chat_id, text, json, is_unknown, mailing_id)
             VALUES
             {0}
         """
-        query = query_template.format(generate_sql_placeholders(messages, 7))
+        query = query_template.format(generate_sql_placeholders(messages, 8))
         arguments_list: list[Union[str, datetime.datetime, int, bool]] = []
         for message in messages:
             fields = [
@@ -88,6 +88,7 @@ class UpdatesLogRepository(UpdatesLogRepositoryInterface):
                 message.text,
                 message.as_json(),
                 False,
+                mailing_id,
             ]
             arguments_list = sum([arguments_list, fields], start=[])
         await self._connection.execute(query, *arguments_list)
