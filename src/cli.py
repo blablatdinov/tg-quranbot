@@ -3,7 +3,10 @@ import sys
 
 from db import DBConnection
 from exceptions.base_exception import BaseAppError
+from integrations.nats_integration import MailingCreatedEvent, NatsIntegration
 from repository.ayats.ayat_spam import AyatSpamRepository
+from repository.mailing import MailingRepository
+from repository.update_log import UpdatesLogRepository
 from repository.users.users import UsersRepository
 from services.ayats.morning_spam import MorningSpam
 from services.user import UsersStatus
@@ -26,6 +29,20 @@ async def send_morning_content() -> None:
         ).send()
 
 
+async def start_events_receiver() -> None:
+    """Запуск обработки событий из очереди."""
+    async with DBConnection() as connection:
+        nats_integration = NatsIntegration(
+            [
+                MailingCreatedEvent(
+                    UsersRepository(connection),
+                    MailingRepository(connection, UpdatesLogRepository(connection)),
+                ),
+            ],
+        )
+        await nats_integration.receive()
+
+
 def main() -> None:
     """Entrypoint.
 
@@ -37,6 +54,7 @@ def main() -> None:
     func = {
         'check': check_users_status,
         'morning-content': send_morning_content,
+        'queue': start_events_receiver,
     }.get(sys.argv[1])
 
     if not func:

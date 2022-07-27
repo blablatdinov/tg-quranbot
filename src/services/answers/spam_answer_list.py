@@ -3,6 +3,7 @@ import asyncio
 from aiogram import types
 from aiogram.utils.exceptions import BotBlocked, ChatNotFound, UserDeactivated
 
+from repository.mailing import MailingRepository
 from repository.users.users import UsersRepositoryInterface
 from services.answers.answer import Answer
 from services.answers.interface import AnswerInterface, SingleAnswerInterface
@@ -57,12 +58,13 @@ class SpamAnswerList(list, AnswerInterface):  # noqa: WPS600
         """
         return self
 
-    async def _send_one_answer(self, answer: Answer):
+    async def _send_one_answer(self, answer: Answer) -> list[types.Message]:
         try:
-            await answer.send()
+            return await answer.send()
         except (ChatNotFound, BotBlocked, UserDeactivated):
             # answer._chat_id is not None already checked in self._validate method
             self._unsubscriber_user_chat_ids.append(answer.chat_id)  # type: ignore
+            return []
 
     def _validate(self) -> None:
         # cycle import protect
@@ -76,4 +78,23 @@ class SpamAnswerList(list, AnswerInterface):  # noqa: WPS600
         for gather_result in gather_results:
             messages = sum([messages, gather_result], start=[])
 
+        return messages
+
+
+class SavedSpamAnswerList(object):
+    """Сохраненная рассылка."""
+
+    _spam_answer_list: SpamAnswerList
+
+    def __init__(self, spam_answer_list: SpamAnswerList, mailing_repository: MailingRepository):
+        self._spam_answer_list = spam_answer_list
+        self._mailing_repository = mailing_repository
+
+    async def send(self) -> list[types.Message]:
+        """Отправить.
+
+        :return: list[types.Message]
+        """
+        messages = await self._spam_answer_list.send()
+        await self._mailing_repository.create_mailing(messages)
         return messages
