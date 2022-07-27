@@ -82,6 +82,7 @@ class SpamAnswerList(list, AnswerInterface):  # noqa: WPS600
 
 
 class SavedSpamAnswerList(object):
+    """Сохраненная рассылка."""
 
     _spam_answer_list: SpamAnswerList
 
@@ -89,6 +90,11 @@ class SavedSpamAnswerList(object):
         self._spam_answer_list = spam_answer_list
         self._mailing_repository = mailing_repository
 
-    async def send(self):
+    async def send(self) -> list[types.Message]:
+        """Отправить.
+
+        :return: list[types.Message]
+        """
         messages = await self._spam_answer_list.send()
         await self._mailing_repository.create_mailing(messages)
+        return messages

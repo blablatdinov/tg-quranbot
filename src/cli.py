@@ -3,14 +3,13 @@ import sys
 
 from db import DBConnection
 from exceptions.base_exception import BaseAppError
-from integrations.nats_integration import NatsIntegration, MailingCreatedEvent
+from integrations.nats_integration import MailingCreatedEvent, NatsIntegration
 from repository.ayats.ayat_spam import AyatSpamRepository
 from repository.mailing import MailingRepository
-from repository.update_log import UpdatesLogRepositoryInterface, UpdatesLogRepository
+from repository.update_log import UpdatesLogRepository
 from repository.users.users import UsersRepository
 from services.ayats.morning_spam import MorningSpam
 from services.user import UsersStatus
-import nats
 
 
 async def check_users_status() -> None:
@@ -30,24 +29,18 @@ async def send_morning_content() -> None:
         ).send()
 
 
-async def message_handler(msg):
-    subject = msg.subject
-    reply = msg.reply
-    data = msg.data.decode()
-    print("Received a message on '{subject} {reply}': {data}".format(
-        subject=subject, reply=reply, data=data))
-
-
 async def start_events_receiver() -> None:
+    """Запуск обработки событий из очереди."""
     async with DBConnection() as connection:
-        await NatsIntegration(
+        nats_integration = NatsIntegration(
             [
                 MailingCreatedEvent(
                     UsersRepository(connection),
                     MailingRepository(connection, UpdatesLogRepository(connection)),
                 ),
             ],
-        ).receive()
+        )
+        await nats_integration.receive()
 
 
 def main() -> None:

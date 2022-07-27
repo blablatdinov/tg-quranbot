@@ -26,10 +26,11 @@ class UpdatesLogRepositoryInterface(object):
         """
         raise NotImplementedError
 
-    async def bulk_save_messages(self, messages: list[types.Message]):
+    async def bulk_save_messages(self, messages: list[types.Message], mailing_id: int = None):
         """Массовое сохранение сообщений.
 
         :param messages: list[types.Message]
+        :param mailing_id: int
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -70,6 +71,7 @@ class UpdatesLogRepository(UpdatesLogRepositoryInterface):
         """Сохранить сообщения.
 
         :param messages: list[types.Message]
+        :param mailing_id: int
         """
         query_template = """
             INSERT INTO bot_init_message
