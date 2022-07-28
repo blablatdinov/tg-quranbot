@@ -3,8 +3,15 @@ from typing import Union
 
 from aiogram import types
 from asyncpg import Connection
+from pydantic import BaseModel, parse_obj_as
 
 from services.sql_placeholders import generate_sql_placeholders
+
+
+class MessagesByIdsQueryResult(BaseModel):
+
+    message_id: int
+    chat_id: int
 
 
 class UpdatesLogRepositoryInterface(object):
@@ -33,6 +40,9 @@ class UpdatesLogRepositoryInterface(object):
         :param mailing_id: int
         :raises NotImplementedError: if not implemented
         """
+        raise NotImplementedError
+
+    async def get_messages(self, message_ids: list[int]) -> list[MessagesByIdsQueryResult]:
         raise NotImplementedError
 
 
@@ -94,6 +104,17 @@ class UpdatesLogRepository(UpdatesLogRepositoryInterface):
             ]
             arguments_list = sum([arguments_list, fields], start=[])
         await self._connection.execute(query, *arguments_list)
+
+    async def get_messages(self, message_ids: list[int]):
+        query_template = """
+            SELECT message_id, chat_id
+            FROM bot_init_message
+            WHERE message_id IN {0}
+        """
+        query = query_template.format(generate_sql_placeholders([1], len(message_ids)))
+        print(query)
+        rows = await self._connection.fetch(query, *message_ids)
+        return parse_obj_as(list[MessagesByIdsQueryResult], rows)
 
     async def save_callback_query(self, callback_query: types.CallbackQuery):
         """Сохранить информацию о нажатии на кнопку.

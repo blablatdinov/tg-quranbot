@@ -4,6 +4,9 @@ from typing import Sequence
 def generate_sql_placeholders(sequence: Sequence, elem_fields_count: int) -> str:
     """Сгенерировать плейсхолдеры для SQL запроса по элементам последовательности и кол-ву полей.
 
+    >>> generate_sql_placeholders(['a', 'b', 'c'], 4)
+    ... '($1, $2, $3, $4), ($5, $6, $7, $8), ($9, $10, $11, $12)'
+
     :param sequence: Sequence
     :param elem_fields_count: int
     :return: str
