@@ -1,5 +1,6 @@
 # Quranbot
 [![wemake-python-styleguide](https://img.shields.io/badge/style-wemake-000000.svg)](https://github.com/wemake-services/wemake-python-styleguide)
+[![Hits-of-Code](https://hitsofcode.com/github/blablatdinov/quranbot-aiogram)](https://hitsofcode.com/github/blablatdinov/quranbot-aiogram/view)
 
 (Пока находится в тестовом режиме)
 
