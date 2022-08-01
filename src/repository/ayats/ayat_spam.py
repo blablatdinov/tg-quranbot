@@ -34,7 +34,7 @@ class AyatSpamRepository(AyatSpamRepositoryInterface):
         """
         query = """
             SELECT
-                s.tg_chat_id as _chat_id,
+                s.tg_chat_id as chat_id,
                 STRING_AGG(
                     '<b>' || sura.number::CHARACTER VARYING || ': ' || a.ayat || ')</b> ' || a .content || '\n',
                     ''
