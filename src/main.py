@@ -3,7 +3,9 @@ import logging
 from aiogram import Dispatcher, executor
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
 from aiogram.utils.executor import start_webhook
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
+from cli import check_users_status, send_morning_content
 from handlers.register import register_handlers
 from settings import settings
 from utlls import get_bot_instance
@@ -16,6 +18,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',  # noqa: WPS323 logger formatting
 )
+scheduler = AsyncIOScheduler()
 
 
 async def on_startup(dispatcher: Dispatcher):
@@ -38,8 +41,13 @@ async def on_shutdown(dispatcher: Dispatcher):
     logging.warning('Bye!')
 
 
+scheduler.add_job(send_morning_content, trigger='cron', hour='7')
+scheduler.add_job(check_users_status, trigger='cron', hour='6')
+
+
 if __name__ == '__main__':
     register_handlers(dp)
+    scheduler.start()
     if settings.DEBUG:
         executor.start_polling(dp, skip_updates=True)
     else:
