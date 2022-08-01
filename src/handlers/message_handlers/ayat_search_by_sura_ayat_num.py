@@ -44,5 +44,5 @@ async def ayat_search_by_sura_ayat_num_handler(message: types.Message, state: FS
             LoggedAnswer(answer, updates_log_repository),
         )
 
-    await state.finish()
-    await answer.send(message.chat.id)
+        await state.finish()
+        await answer.send(message.chat.id)
