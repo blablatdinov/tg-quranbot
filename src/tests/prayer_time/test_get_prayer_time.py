@@ -1,3 +1,4 @@
+import datetime
 import re
 
 import pytest
@@ -42,7 +43,7 @@ async def test(user_repository_mock):
         prayer_times_repository=PrayerTimeRepositoryMock(),
         user_repository=user_repository_mock,
         chat_id=444,
-    ).get()
+    ).get(datetime.datetime.now())
     formatted_prayers = str(prayers)
 
     assert isinstance(prayers, PrayerTimes)

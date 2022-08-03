@@ -25,6 +25,7 @@ class PrayerTimesInterface(object):
     async def get(self, date: datetime.date) -> 'PrayerTimes':
         """Получить времена намазов пользователя.
 
+        :param date: datetime.date
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -126,6 +127,7 @@ class PrayerTimes(PrayerTimesInterface):
     async def get(self, date: datetime.date) -> 'PrayerTimes':
         """Получить экземпляр класса.
 
+        :param date: datetime.date
         :returns: PrayerTimes
         :raises UserHasNotCityIdError: если город не найден в БД
         """

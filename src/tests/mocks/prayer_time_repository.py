@@ -9,7 +9,7 @@ class PrayerTimeRepositoryMock(PrayerTimeRepositoryInterface):
     async def get_prayer_times_for_date(
         self,
         chat_id: int,
-        target_datetime: datetime.datetime,
+        target_datetime: datetime.date,
         city_id: int,
     ) -> list[Prayer]:
         date = datetime.datetime(2020, 1, 3)
