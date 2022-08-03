@@ -50,7 +50,7 @@ class PrayerTimeRepositoryInterface(object):
     async def get_prayer_times_for_date(
         self,
         chat_id: int,
-        target_datetime: datetime.datetime,
+        target_datetime: datetime.date,
         city_id: int,
     ) -> list[Prayer]:
         """Получить времена намазов.
@@ -106,7 +106,7 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
     async def get_prayer_times_for_date(
         self,
         chat_id: int,
-        target_datetime: datetime.datetime,
+        target_datetime: datetime.date,
         city_id: int,
     ) -> list[Prayer]:
         """Получить времена намаза.

@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import sys
 
 from db import DBConnection
@@ -6,9 +7,13 @@ from exceptions.base_exception import BaseAppError
 from integrations.nats_integration import MailingCreatedEvent, MessagesDeletedEvent, NatsIntegration
 from repository.ayats.ayat_spam import AyatSpamRepository
 from repository.mailing import MailingRepository
+from repository.prayer_time import PrayerTimeRepository
 from repository.update_log import UpdatesLogRepository
+from repository.users.user import UserRepository
 from repository.users.users import UsersRepository
+from services.answers.log_answer import LoggedAnswer
 from services.ayats.morning_spam import MorningSpam
+from services.prayer_time import PrayerTimes, UserPrayerTimes, UserPrayerTimesAnswer
 from services.user import UsersStatus
 from services.users_day import MailingWithUpdateUserDays
 
@@ -31,6 +36,27 @@ async def send_morning_content() -> None:
             ),
             UsersRepository(connection),
         ).send()
+
+
+async def send_prayer_time() -> None:
+    """Отправить времена намазов для след. дня."""
+    async with DBConnection() as connection:
+        chat_ids = await UsersRepository(connection).get_active_user_chat_ids()
+        for chat_id in chat_ids:
+            await LoggedAnswer(
+                await UserPrayerTimesAnswer(
+                    UserPrayerTimes(
+                        PrayerTimes(
+                            prayer_times_repository=PrayerTimeRepository(connection),
+                            user_repository=UserRepository(connection),
+                            chat_id=chat_id,
+                        ),
+                        datetime.datetime.now() + datetime.timedelta(days=1),
+                    ),
+                    datetime.datetime.now() + datetime.timedelta(days=1),
+                ).to_answer(),
+                UpdatesLogRepository(connection),
+            ).send(chat_id)
 
 
 async def start_events_receiver() -> None:
@@ -62,6 +88,7 @@ def main() -> None:
         'check': check_users_status,
         'morning-content': send_morning_content,
         'queue': start_events_receiver,
+        'prayers': send_prayer_time,
     }.get(sys.argv[1])
 
     if not func:

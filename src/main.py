@@ -5,7 +5,7 @@ from aiogram.contrib.fsm_storage.redis import RedisStorage2
 from aiogram.utils.executor import start_webhook
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from cli import check_users_status, send_morning_content
+from cli import check_users_status, send_morning_content, send_prayer_time
 from handlers.register import register_handlers
 from settings import settings
 from utlls import get_bot_instance
@@ -43,6 +43,7 @@ async def on_shutdown(dispatcher: Dispatcher):
 
 scheduler.add_job(send_morning_content, trigger='cron', hour='7')
 scheduler.add_job(check_users_status, trigger='cron', hour='6')
+scheduler.add_job(send_prayer_time, trigger='cron', hour='20')
 
 
 if __name__ == '__main__':

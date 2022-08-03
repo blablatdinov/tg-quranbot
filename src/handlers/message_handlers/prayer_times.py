@@ -29,6 +29,7 @@ async def prayer_times_handler(message: types.Message, state: FSMContext):
                     ),
                     datetime.datetime.now(),
                 ),
+                datetime.datetime.now(),
             ),
         ).to_answer()
         updates_log_repository = UpdatesLogRepository(connection)
