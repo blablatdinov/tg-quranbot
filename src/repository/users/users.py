@@ -27,6 +27,14 @@ class UsersRepositoryInterface(object):
         """
         raise NotImplementedError
 
+    async def increment_user_days(self, chat_ids: list[int]):
+        """Обнвоить статус пользователей.
+
+        :param chat_ids: list[int]
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
 
 class UsersRepository(UsersRepositoryInterface):
     """Класс для работы с хранилищем множества пользователей."""
@@ -70,3 +78,17 @@ class UsersRepository(UsersRepositoryInterface):
         """
         query = query_template.format(placeholders_list)
         await self._connection.execute(query, to, *chat_ids)
+
+    async def increment_user_days(self, chat_ids: list[int]):
+        """Обнвоить статус пользователей.
+
+        :param chat_ids: list[int]
+        :raises NotImplementedError: if not implemented
+        """
+        query_template = """
+            UPDATE bot_init_subscriber
+            SET day = day + 1
+            WHERE tg_chat_id in ({0})
+        """
+        query = query_template.format(','.join(map(str, chat_ids)))
+        await self._connection.execute(query)

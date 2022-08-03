@@ -27,4 +27,4 @@ class MorningSpam(object):
                 ),
             ))
 
-        await SpamAnswerList(self._users_repository, *answers).send()
+        return await SpamAnswerList(self._users_repository, *answers).send()

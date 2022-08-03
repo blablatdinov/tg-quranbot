@@ -10,6 +10,7 @@ from repository.update_log import UpdatesLogRepository
 from repository.users.users import UsersRepository
 from services.ayats.morning_spam import MorningSpam
 from services.user import UsersStatus
+from services.users_day import MailingWithUpdateUserDays
 
 
 async def check_users_status() -> None:
@@ -23,8 +24,11 @@ async def check_users_status() -> None:
 async def send_morning_content() -> None:
     """Рассылка утреннего контента."""
     async with DBConnection() as connection:
-        await MorningSpam(
-            AyatSpamRepository(connection),
+        await MailingWithUpdateUserDays(
+            MorningSpam(
+                AyatSpamRepository(connection),
+                UsersRepository(connection),
+            ),
             UsersRepository(connection),
         ).send()
 
