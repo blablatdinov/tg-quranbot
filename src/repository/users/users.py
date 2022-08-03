@@ -83,7 +83,6 @@ class UsersRepository(UsersRepositoryInterface):
         """Обнвоить статус пользователей.
 
         :param chat_ids: list[int]
-        :raises NotImplementedError: if not implemented
         """
         query_template = """
             UPDATE bot_init_subscriber

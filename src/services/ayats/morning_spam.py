@@ -1,3 +1,5 @@
+from aiogram import types
+
 from repository.ayats.ayat_spam import AyatSpamRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
 from services.answers.answer import Answer
@@ -14,8 +16,11 @@ class MorningSpam(object):
         self._ayat_spam_repository = ayat_spam_repository
         self._users_repository = users_repository
 
-    async def send(self) -> None:
-        """Отправка."""
+    async def send(self) -> list[types.Message]:
+        """Отправка.
+
+        :return: list[types.Message]
+        """
         spam_contents = await self._ayat_spam_repository.get_content_for_spam()
         answers = []
         for spam_content in spam_contents:
