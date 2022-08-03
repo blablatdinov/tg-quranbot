@@ -22,7 +22,7 @@ class PrayerTimesInterface(object):
     _user_repository: UserRepositoryInterface
     _prayers: list[Prayer]
 
-    async def get(self) -> 'PrayerTimes':
+    async def get(self, date: datetime.date) -> 'PrayerTimes':
         """Получить времена намазов пользователя.
 
         :raises NotImplementedError: if not implemented
@@ -45,7 +45,7 @@ class UserPrayerTimes(object):
 
         :returns: list[UserPrayer]
         """
-        prayer_times = await self._prayer_times.get()
+        prayer_times = await self._prayer_times.get(self._date_time)
         prayers_without_sunrise = filter(
             lambda prayer: prayer.name != PrayerNames.SUNRISE,
             prayer_times._prayers,
@@ -123,7 +123,7 @@ class PrayerTimes(PrayerTimesInterface):
         else:
             self._prayers = prayers
 
-    async def get(self) -> 'PrayerTimes':
+    async def get(self, date: datetime.date) -> 'PrayerTimes':
         """Получить экземпляр класса.
 
         :returns: PrayerTimes
@@ -134,7 +134,7 @@ class PrayerTimes(PrayerTimesInterface):
             raise UserHasNotCityIdError
         prayers = await self._prayer_times_repository.get_prayer_times_for_date(
             chat_id=self._chat_id,
-            target_datetime=datetime.datetime.now(),
+            target_datetime=date,
             city_id=user.city_id,
         )
         return PrayerTimes(
@@ -195,9 +195,11 @@ class UserPrayerTimesAnswer(Answerable):
     """Ответ пользователю с временами намазов."""
 
     _user_prayer_times: UserPrayerTimes
+    _date: datetime.date
 
-    def __init__(self, user_prayer_times: UserPrayerTimes):
+    def __init__(self, user_prayer_times: UserPrayerTimes, date: datetime.date):
         self._user_prayer_times = user_prayer_times
+        self._date = date
 
     async def to_answer(self) -> AnswerInterface:
         """Форматировать в ответ.
@@ -207,7 +209,7 @@ class UserPrayerTimesAnswer(Answerable):
         keyboard = await UserPrayerTimesKeyboard(
             self._user_prayer_times,
         ).generate()
-        prayers = await self._user_prayer_times._prayer_times.get()
+        prayers = await self._user_prayer_times._prayer_times.get(self._date)
         return Answer(
             keyboard=keyboard,
             message=str(prayers),
