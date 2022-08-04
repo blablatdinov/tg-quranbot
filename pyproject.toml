@@ -19,7 +19,7 @@ APScheduler = "^3.9.1"
 [tool.poetry.dev-dependencies]
 wemake-python-styleguide = "^0.16.1"
 ipython = "^8.4.0"
-mypy = "^0.961"
+mypy = "^0.971"
 asyncpg-stubs = "^0.26.0"
 Faker = "^13.14.0"
 pytest-cov = "^3.0.0"
