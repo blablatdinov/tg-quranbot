@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     BASE_DIR: Path = BASE_DIR
     API_TOKEN: str
     DATABASE_URL: str
+    TEST_DATABASE_URL: str = ''
     DEBUG: bool
     REDIS_HOST: str = 'localhost'
     REDIS_PORT: int = 6379
