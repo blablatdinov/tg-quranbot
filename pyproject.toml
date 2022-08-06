@@ -15,6 +15,7 @@ nats-py = "^2.1.4"
 #quranbot-schema-registry = "0.0.1"
 quranbot-schema-registry = "0.0.3"
 APScheduler = "^3.9.1"
+databases = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 wemake-python-styleguide = "^0.16.1"

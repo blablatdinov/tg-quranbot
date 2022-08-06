@@ -7,6 +7,10 @@ from repository.users.user import User
 from settings import settings
 from tests.mocks.ayat_repository import AyatRepositoryMock
 
+pytest_plugins = [
+    'tests.plugins.db',
+]
+
 
 @pytest.fixture
 def fake_text(faker):
