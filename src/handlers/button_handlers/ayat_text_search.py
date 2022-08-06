@@ -1,5 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from utlls import get_bot_instance
 
 from db import DBConnection
 from repository.ayats.ayat import AyatRepository
@@ -12,7 +13,6 @@ from services.ayats.enums import AyatPaginatorCallbackDataTemplate
 from services.ayats.keyboard import AyatSearchKeyboard
 from services.ayats.search_by_text import AyatSearchByTextAndId, AyatSearchByTextWithNeighbors
 from services.regular_expression import IntableRegularExpression
-from utlls import get_bot_instance
 
 bot = get_bot_instance()
 

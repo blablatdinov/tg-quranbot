@@ -93,6 +93,7 @@ class UpdatesLogRepository(UpdatesLogRepositoryInterface):
         :param messages: list[types.Message]
         :param mailing_id: int
         """
+        print(f'{messages[0]=}')
         logger.info('Try save messages with ids={0}'.format([message.message_id for message in messages]))
         query = """
             INSERT INTO bot_init_message

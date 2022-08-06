@@ -5,13 +5,13 @@ import nats
 from aiogram.utils.exceptions import MessageToDeleteNotFound
 from loguru import logger
 from quranbot_schema_registry.validate_schema import validate_schema
+from utlls import get_bot_instance
 
 from repository.mailing import MailingRepository
 from repository.update_log import UpdatesLogRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
 from services.answers.answer import Answer
 from services.answers.spam_answer_list import SavedSpamAnswerList, SpamAnswerList
-from utlls import get_bot_instance
 
 bot = get_bot_instance()
 

@@ -1,6 +1,7 @@
 import datetime
 
 from aiogram import types
+from utlls import get_bot_instance
 
 from db import DBConnection
 from repository.prayer_time import PrayerTimeRepository
@@ -9,7 +10,6 @@ from repository.users.user import UserRepository
 from services.answers.log_answer import LoggedSourceCallbackUserPrayerStatus
 from services.prayer_time import PrayerTimes, UserPrayerStatus, UserPrayerTimes
 from services.regular_expression import IntableRegularExpression
-from utlls import get_bot_instance
 
 bot = get_bot_instance()
 

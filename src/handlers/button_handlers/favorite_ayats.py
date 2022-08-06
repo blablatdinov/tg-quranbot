@@ -1,4 +1,5 @@
 from aiogram import types
+from utlls import get_bot_instance
 
 from db import DBConnection
 from repository.ayats.ayat import AyatRepository
@@ -16,7 +17,6 @@ from services.ayats.enums import AyatPaginatorCallbackDataTemplate
 from services.ayats.keyboard import AyatSearchKeyboard
 from services.ayats.search_by_sura_ayat_num import AyatSearchWithNeighbors
 from services.regular_expression import IntableRegularExpression
-from utlls import get_bot_instance
 
 bot = get_bot_instance()
 

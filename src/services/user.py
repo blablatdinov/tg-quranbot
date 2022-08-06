@@ -2,9 +2,9 @@ import asyncio
 
 from aiogram.utils.exceptions import BotBlocked, ChatNotFound, UserDeactivated
 from loguru import logger
+from utlls import get_bot_instance
 
 from repository.users.users import UsersRepositoryInterface
-from utlls import get_bot_instance
 
 bot = get_bot_instance()
 
