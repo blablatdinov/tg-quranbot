@@ -2,7 +2,7 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext, filters
 
 from constants import PODCAST_BUTTON
-from db import DBConnection
+from db import DBConnection, database
 from repository.podcast import PodcastRepository
 from repository.update_log import UpdatesLogRepository
 from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswerProcess
@@ -16,7 +16,7 @@ async def podcasts_handler(message: types.Message, state: FSMContext):
     :param state: FSMContext
     """
     async with DBConnection() as connection:
-        updates_log_repository = UpdatesLogRepository(connection)
+        updates_log_repository = UpdatesLogRepository(database)
         answer = LoggedSourceMessageAnswerProcess(
             updates_log_repository,
             message,

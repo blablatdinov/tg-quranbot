@@ -1,8 +1,9 @@
 import datetime
-from typing import Union
 
 from aiogram import types
 from asyncpg import Connection
+from databases import Database
+from loguru import logger
 from pydantic import BaseModel, parse_obj_as
 
 from services.sql_placeholders import generate_sql_placeholders
@@ -55,9 +56,9 @@ class UpdatesLogRepositoryInterface(object):
 class UpdatesLogRepository(UpdatesLogRepositoryInterface):
     """Класс для работы с хранилищем пакетов от телеграма."""
 
-    _connection: Connection
+    _connection: Database
 
-    def __init__(self, connection: Connection):
+    def __init__(self, connection: Database):
         self._connection = connection
 
     async def save_message(self, message: types.Message):
@@ -69,19 +70,23 @@ class UpdatesLogRepository(UpdatesLogRepositoryInterface):
             INSERT INTO bot_init_message
             (date, from_user_id, message_id, chat_id, text, json, is_unknown)
             VALUES
-            ($1, $2, $3, $4, $5, $6, $7)
+            (:date, :from_user_id, :message_id, :chat_id, :text, :json, :is_unknown)
         """
         is_unknown = False
+        logger.info('Try save message with message_id={0}'.format(message.message_id))
         await self._connection.execute(
             query,
-            message.date,
-            message.from_user.id,
-            message.message_id,
-            message.chat.id,
-            message.text,
-            message.as_json(),
-            is_unknown,
+            {
+                'date': message.date,
+                'from_user_id': message.from_user.id,
+                'message_id': message.message_id,
+                'chat_id': message.chat.id,
+                'text': message.text,
+                'json': message.as_json(),
+                'is_unknown': is_unknown,
+            },
         )
+        logger.info('Message with message_id={0} saved'.format(message.message_id))
 
     async def bulk_save_messages(self, messages: list[types.Message], mailing_id: int = None):
         """Сохранить сообщения.
@@ -89,27 +94,30 @@ class UpdatesLogRepository(UpdatesLogRepositoryInterface):
         :param messages: list[types.Message]
         :param mailing_id: int
         """
-        query_template = """
+        logger.info('Try save messages with ids={0}'.format([message.message_id for message in messages]))
+        query = """
             INSERT INTO bot_init_message
             (date, from_user_id, message_id, chat_id, text, json, is_unknown, mailing_id)
             VALUES
-            {0}
+            (:date, :from_user_id, :message_id, :chat_id, :text, :json, :is_unknown, :mailing_id)
         """
-        query = query_template.format(generate_sql_placeholders(messages, 8))
-        arguments_list: list[Union[str, datetime.datetime, int, bool]] = []
-        for message in messages:
-            fields = [
-                message.date,
-                message.from_user.id,
-                message.message_id,
-                message.chat.id,
-                message.text,
-                message.as_json(),
-                False,
-                mailing_id,
-            ]
-            arguments_list = sum([arguments_list, fields], start=[])
-        await self._connection.execute(query, *arguments_list)
+        await self._connection.execute_many(
+            query,
+            values=[
+                {
+                    'date': message.date,
+                    'from_user_id': message.from_user.id,
+                    'message_id': message.message_id,
+                    'chat_id': message.chat.id,
+                    'text': message.text,
+                    'json': message.as_json(),
+                    'is_unknown': False,
+                    'mailing_id': mailing_id,
+                }
+                for message in messages
+            ],
+        )
+        logger.info('Messages with ids={0} saved'.format([message.message_id for message in messages]))
 
     async def get_messages(self, message_ids: list[int]) -> list[MessagesByIdsQueryResult]:
         """Достать сообдения для последующего удаления из чата.
