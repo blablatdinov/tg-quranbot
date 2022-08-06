@@ -35,7 +35,7 @@ def message():
 
 class AnswerMock(AnswerInterface):
 
-    def __init__(self, return_message):
+    def __init__(self, return_message: types.Message):
         self._return_message = return_message
 
     async def send(self, chat_id):

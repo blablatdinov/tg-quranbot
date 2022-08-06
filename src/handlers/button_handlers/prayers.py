@@ -3,7 +3,7 @@ import datetime
 from aiogram import types
 from utlls import get_bot_instance
 
-from db import DBConnection
+from db import DBConnection, database
 from repository.prayer_time import PrayerTimeRepository
 from repository.update_log import UpdatesLogRepository
 from repository.users.user import UserRepository
@@ -33,7 +33,7 @@ async def mark_prayer_as_readed(callback_query: types.CallbackQuery):
                 ),
                 user_prayer_id=IntableRegularExpression(r'\d+', callback_query.data),
             ),
-            UpdatesLogRepository(connection),
+            UpdatesLogRepository(database),
             callback_query,
         )
 
@@ -66,7 +66,7 @@ async def mark_prayer_as_not_readed(callback_query: types.CallbackQuery):
                 ),
                 user_prayer_id=IntableRegularExpression(r'\d+', callback_query.data),
             ),
-            UpdatesLogRepository(connection),
+            UpdatesLogRepository(database),
             callback_query,
         )
 

@@ -5,8 +5,6 @@ from databases import Database
 from loguru import logger
 from pydantic import BaseModel, parse_obj_as
 
-from services.sql_placeholders import generate_sql_placeholders
-
 
 class MessagesByIdsQueryResult(BaseModel):
     """Результат запроса с сообщениями."""
@@ -129,8 +127,8 @@ class UpdatesLogRepository(UpdatesLogRepositoryInterface):
             FROM bot_init_message
             WHERE message_id IN {0}
         """
-        query = query_template.format(generate_sql_placeholders([1], len(message_ids)))
-        rows = await self._connection.fetch(query, *message_ids)
+        query = query_template.format(','.join(map(str, message_ids)))
+        rows = await self._connection.fetch_all(query)
         return parse_obj_as(list[MessagesByIdsQueryResult], rows)
 
     async def save_callback_query(self, callback_query: types.CallbackQuery):
@@ -142,13 +140,15 @@ class UpdatesLogRepository(UpdatesLogRepositoryInterface):
             INSERT INTO bot_init_callbackdata
             (date, call_id, chat_id, text, json)
             VALUES
-            ($1, $2, $3, $4, $5)
+            (:date, :call_id, :chat_id, :text, :json)
         """
         await self._connection.execute(
             query,
-            datetime.datetime.now(),
-            callback_query.id,
-            callback_query.from_user.id,
-            callback_query.data,
-            callback_query.as_json(),
+            {
+                'date': datetime.datetime.now(),
+                'call_id': callback_query.id,
+                'chat_id': callback_query.from_user.id,
+                'text': callback_query.data,
+                'json': callback_query.as_json(),
+            },
         )

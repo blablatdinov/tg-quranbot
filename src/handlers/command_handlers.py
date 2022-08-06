@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from db import DBConnection
+from db import DBConnection, database
 from repository.admin_message import AdminMessageRepository
 from repository.ayats.ayat import AyatRepository
 from repository.update_log import UpdatesLogRepository
@@ -43,11 +43,11 @@ async def start_handler(message: types.Message, state: FSMContext):
             message.chat.id,
         ).register()
         answer = LoggedSourceMessageAnswerProcess(
-            UpdatesLogRepository(connection),
+            UpdatesLogRepository(database),
             message,
             LoggedAnswer(
                 answer,
-                UpdatesLogRepository(connection),
+                UpdatesLogRepository(database),
             ),
         )
         await answer.send()

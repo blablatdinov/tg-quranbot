@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from db import DBConnection
+from db import DBConnection, database
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import FavoriteAyatsNeighborRepository
 from repository.update_log import UpdatesLogRepository
@@ -39,7 +39,7 @@ async def favorite_ayats_list(message: types.Message, state: FSMContext):
                 ),
             ),
         ).to_answer()
-        updates_log_repository = UpdatesLogRepository(connection)
+        updates_log_repository = UpdatesLogRepository(database)
         answer = LoggedSourceMessageAnswerProcess(
             updates_log_repository,
             message,

@@ -1,6 +1,6 @@
 from aiogram import types
 
-from db import DBConnection
+from db import DBConnection, database
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyatsRepository
@@ -36,7 +36,7 @@ async def ayat_from_callback_handler(callback_query: types.CallbackQuery):
                 AyatPaginatorCallbackDataTemplate.ayat_search_template,
             ),
         ).to_answer()
-        updates_log_repository = UpdatesLogRepository(connection)
+        updates_log_repository = UpdatesLogRepository(database)
         answer = LoggedSourceCallbackAnswerProcess(
             updates_log_repository,
             callback_query,

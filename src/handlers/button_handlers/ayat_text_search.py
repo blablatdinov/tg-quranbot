@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from utlls import get_bot_instance
 
-from db import DBConnection
+from db import DBConnection, database
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
@@ -44,9 +44,9 @@ async def ayats_search_buttons(callback_query: types.CallbackQuery, state: FSMCo
             ),
         ).to_answer()
         answer = LoggedSourceCallbackAnswerProcess(
-            UpdatesLogRepository(connection),
+            UpdatesLogRepository(database),
             callback_query,
-            LoggedAnswer(answer, UpdatesLogRepository(connection)),
+            LoggedAnswer(answer, UpdatesLogRepository(database)),
         )
 
         await answer.send(callback_query.from_user.id)

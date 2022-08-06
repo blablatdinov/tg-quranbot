@@ -1,7 +1,7 @@
 from aiogram import types
 from utlls import get_bot_instance
 
-from db import DBConnection
+from db import DBConnection, database
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import FavoriteAyatsNeighborRepository, NeighborAyatsRepository
@@ -47,7 +47,7 @@ async def add_to_favorite(callback_query: types.CallbackQuery):
                 callback_query.from_user.id,
                 AyatPaginatorCallbackDataTemplate.ayat_search_template,
             ),
-            UpdatesLogRepository(connection),
+            UpdatesLogRepository(database),
             callback_query,
         ).generate()
 
@@ -84,7 +84,7 @@ async def remove_from_favorite(callback_query: types.CallbackQuery):
                 callback_query.from_user.id,
                 AyatPaginatorCallbackDataTemplate.ayat_search_template,
             ),
-            UpdatesLogRepository(connection),
+            UpdatesLogRepository(database),
             callback_query,
         ).generate()
 
@@ -118,7 +118,7 @@ async def favorite_ayat(callback_query: types.CallbackQuery):
                 AyatPaginatorCallbackDataTemplate.favorite_ayat_template,
             ),
         ).to_answer()
-        updates_log_repository = UpdatesLogRepository(connection)
+        updates_log_repository = UpdatesLogRepository(database)
         answer = LoggedSourceCallbackAnswerProcess(
             updates_log_repository,
             callback_query,

@@ -2,7 +2,7 @@ import asyncio
 import datetime
 import sys
 
-from db import DBConnection
+from db import DBConnection, database
 from exceptions.base_exception import BaseAppError
 from integrations.nats_integration import MailingCreatedEvent, MessagesDeletedEvent, NatsIntegration
 from repository.ayats.ayat_spam import AyatSpamRepository
@@ -55,7 +55,7 @@ async def send_prayer_time() -> None:
                     ),
                     datetime.datetime.now() + datetime.timedelta(days=1),
                 ).to_answer(),
-                UpdatesLogRepository(connection),
+                UpdatesLogRepository(database),
             ).send(chat_id)
 
 
@@ -66,10 +66,10 @@ async def start_events_receiver() -> None:
             [
                 MailingCreatedEvent(
                     UsersRepository(connection),
-                    MailingRepository(connection, UpdatesLogRepository(connection)),
+                    MailingRepository(connection, UpdatesLogRepository(database)),
                 ),
                 MessagesDeletedEvent(
-                    UpdatesLogRepository(connection),
+                    UpdatesLogRepository(database),
                 ),
             ],
         )

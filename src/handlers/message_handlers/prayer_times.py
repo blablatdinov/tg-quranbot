@@ -4,7 +4,7 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext, filters
 
 from constants import GET_PRAYER_TIMES_REGEXP
-from db import DBConnection
+from db import DBConnection, database
 from repository.prayer_time import PrayerTimeRepository
 from repository.update_log import UpdatesLogRepository
 from repository.users.user import UserRepository
@@ -32,7 +32,7 @@ async def prayer_times_handler(message: types.Message, state: FSMContext):
                 datetime.datetime.now(),
             ),
         ).to_answer()
-        updates_log_repository = UpdatesLogRepository(connection)
+        updates_log_repository = UpdatesLogRepository(database)
         answer = LoggedSourceMessageAnswerProcess(
             updates_log_repository,
             message,

@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from db import DBConnection
+from db import DBConnection, database
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
@@ -20,17 +20,16 @@ async def ayats_text_search_button_handler(message: types.Message):
 
     :param message: app_types.Message
     """
-    async with DBConnection() as connection:
-        await AyatSearchSteps.insert_into_search_mode.set()
-        answer = LoggedSourceMessageAnswerProcess(
-            UpdatesLogRepository(connection),
-            message,
-            LoggedAnswer(
-                Answer(message='Введите слово для поиска:'),
-                UpdatesLogRepository(connection),
-            ),
-        )
-        await answer.send(message.chat.id)
+    await AyatSearchSteps.insert_into_search_mode.set()
+    answer = LoggedSourceMessageAnswerProcess(
+        UpdatesLogRepository(database),
+        message,
+        LoggedAnswer(
+            Answer(message='Введите слово для поиска:'),
+            UpdatesLogRepository(database),
+        ),
+    )
+    await answer.send(message.chat.id)
 
 
 async def ayats_text_search(message: types.Message, state: FSMContext):
@@ -58,11 +57,11 @@ async def ayats_text_search(message: types.Message, state: FSMContext):
             ),
         ).to_answer()
         answer = LoggedSourceMessageAnswerProcess(
-            UpdatesLogRepository(connection),
+            UpdatesLogRepository(database),
             message,
             LoggedAnswer(
                 answer,
-                UpdatesLogRepository(connection),
+                UpdatesLogRepository(database),
             ),
         )
 

@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from db import DBConnection
+from db import DBConnection, database
 from integrations.client import IntegrationClient
 from integrations.nominatim import NominatimIntegration
 from repository.city import CityRepository
@@ -38,7 +38,7 @@ async def location_handler(message: types.Message, state: FSMContext):
                 ),
             ),
         ).to_answer()
-        updates_log_repository = UpdatesLogRepository(connection)
+        updates_log_repository = UpdatesLogRepository(database)
         answer = LoggedSourceMessageAnswerProcess(
             updates_log_repository,
             message,
