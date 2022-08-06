@@ -1,7 +1,6 @@
 import datetime
 
 from aiogram import types
-from asyncpg import Connection
 from databases import Database
 from loguru import logger
 from pydantic import BaseModel, parse_obj_as
