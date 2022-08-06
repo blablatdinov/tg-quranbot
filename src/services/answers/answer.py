@@ -2,8 +2,8 @@ from typing import Optional, Union
 
 from aiogram import types
 from pydantic import BaseModel
-from utils import get_bot_instance
 
+from bot_utils import get_bot_instance
 from services.answer import get_default_markup
 from services.answers.interface import AnswerInterface, SingleAnswerInterface
 from settings import settings

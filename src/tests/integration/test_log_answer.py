@@ -1,20 +1,15 @@
-from unittest.mock import AsyncMock, patch
-
 import pytest
-from aiogram import Bot, types
+from aiogram import types
 
-import utils
 from repository.update_log import UpdatesLogRepository
-from services.answers.answer import Answer
-from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswerProcess
-from settings import settings
 from services.answers.interface import AnswerInterface
+from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswerProcess
 
 
 @pytest.fixture()
 def message():
-    def _message(message_id, text):
-        return types.Message(**{
+    def _message(message_id, text):  # noqa: WPS430
+        return types.Message(**{  # noqa: WPS517
             'message_id': message_id,
             'from': {
                 'id': 12345678,
@@ -49,8 +44,9 @@ class AnswerMock(AnswerInterface):
     async def edit_markup(self, message_id: int, chat_id: int = None):
         pass
 
-    def to_list():
+    def to_list(self):
         pass
+
 
 async def test_log_answer(db_session, message):
     await LoggedSourceMessageAnswerProcess(
@@ -65,7 +61,7 @@ async def test_log_answer(db_session, message):
     ).send()
 
     rows = await db_session.fetch_all('SELECT message_id, text FROM bot_init_message ORDER BY id DESC LIMIT 2')
-    rows_as_dict_list = [dict(row._mapping) for row in rows]
+    rows_as_dict_list = [dict(row._mapping) for row in rows]  # noqa: WPS437
 
     assert [row['text'] for row in rows_as_dict_list] == ['Podcast answer text', 'Подкасты']
     assert [row['message_id'] for row in rows_as_dict_list] == [123, 321]
