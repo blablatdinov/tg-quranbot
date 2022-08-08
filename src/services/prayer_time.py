@@ -35,10 +35,23 @@ class UserPrayerTimes(object):
 
     _prayer_times: PrayerTimesInterface
     _date_time: datetime.datetime
+    _chat_id: int
+    _prayer_times_repository: PrayerTimeRepositoryInterface
+    _user_repository: UserRepositoryInterface
 
-    def __init__(self, prayer_times: PrayerTimesInterface, date_time: datetime.datetime):
+    def __init__(
+        self,
+        prayer_times: PrayerTimesInterface,
+        date_time: datetime.datetime,
+        chat_id: int,
+        prayer_times_repository: PrayerTimeRepositoryInterface,
+        user_repository: UserRepositoryInterface,
+    ):
         self._prayer_times = prayer_times
         self._date_time = date_time
+        self._chat_id = chat_id
+        self._prayer_times_repository = prayer_times_repository
+        self._user_repository = user_repository
 
     async def get_or_create_user_prayer_times(self) -> list[UserPrayer]:
         """Получить или создать времена намазов пользователя.
@@ -48,23 +61,23 @@ class UserPrayerTimes(object):
         prayer_times = await self._prayer_times.get()
         prayers_without_sunrise = filter(
             lambda prayer: prayer.name != PrayerNames.SUNRISE,
-            prayer_times._prayers,
+            prayer_times,
         )
         prayers_without_sunrise_ids = [
             prayer.id
             for prayer in prayers_without_sunrise
         ]
         logger.info('Search user prayers...')
-        user_prayers = await self._prayer_times._prayer_times_repository.get_user_prayer_times(
+        user_prayers = await self._prayer_times_repository.get_user_prayer_times(
             prayers_without_sunrise_ids,
-            self._prayer_times._chat_id,
+            self._chat_id,
             datetime.datetime.now(),
         )
         logger.info('Search result: {0}'.format(user_prayers))
         if not user_prayers:
             logger.info('User prayers not found. Creating...')
-            user = await self._prayer_times._user_repository.get_by_chat_id(self._prayer_times._chat_id)
-            user_prayers = await self._prayer_times._prayer_times_repository.create_user_prayer_times(
+            user = await self._user_repository.get_by_chat_id(self._chat_id)
+            user_prayers = await self._prayer_times_repository.create_user_prayer_times(
                 prayer_ids=prayers_without_sunrise_ids,
                 user_id=user.id,
             )
@@ -101,22 +114,19 @@ class UserPrayerTimesKeyboard(object):
 
 
 class PrayerTimes(PrayerTimesInterface):
-    """Класс для работы с временами намазов."""
+    """Класс для работы с временами намазов для города."""
 
     _prayer_times_repository: PrayerTimeRepositoryInterface
-    _chat_id: int
     _user_repository: UserRepositoryInterface
     _prayers: list[Prayer]
 
     def __init__(
         self,
         prayer_times_repository: PrayerTimeRepositoryInterface,
-        chat_id: int,
         user_repository: UserRepositoryInterface,
         prayers: list[Prayer] = None,
     ):
         self._prayer_times_repository = prayer_times_repository
-        self._chat_id = chat_id
         self._user_repository = user_repository
         if prayers is None:
             self._prayers = []
@@ -133,14 +143,12 @@ class PrayerTimes(PrayerTimesInterface):
         if not user.city_id:
             raise UserHasNotCityIdError
         prayers = await self._prayer_times_repository.get_prayer_times_for_date(
-            chat_id=self._chat_id,
             target_datetime=datetime.datetime.now(),
             city_id=user.city_id,
         )
         return PrayerTimes(
             prayers=prayers,
             prayer_times_repository=self._prayer_times_repository,
-            chat_id=self._chat_id,
             user_repository=self._user_repository,
         )
 
@@ -169,6 +177,16 @@ class PrayerTimes(PrayerTimesInterface):
             magrib_prayer_time=self._prayers[4].time.strftime(time_format),
             ishaa_prayer_time=self._prayers[5].time.strftime(time_format),
         )
+
+    def __iter__(self):
+        self._iterator_index = 0
+        return self
+
+    def __next__(self):
+        self._iterator_index += 1
+        if self._iterator_index == 7:
+            raise StopIteration
+        return self._prayers[self._iterator_index - 1]
 
 
 class UserHasNotCityExistsSafeAnswer(Answerable):

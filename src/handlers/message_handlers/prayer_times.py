@@ -19,17 +19,27 @@ async def prayer_times_handler(message: types.Message, state: FSMContext):
     :param state: FSMContext
     """
     async with DBConnection() as connection:
+        prayer_times_repository = PrayerTimeRepository(connection)
+        user_repository = UserRepository(connection)
         answer = await UserHasNotCityExistsSafeAnswer(
-            UserPrayerTimesAnswer(
-                UserPrayerTimes(
                     PrayerTimes(
-                        prayer_times_repository=PrayerTimeRepository(connection),
-                        user_repository=UserRepository(connection),
-                        chat_id=message.chat.id,
+                        prayer_times_repository,
+                        message.chat.id,
+                        user_repository,
                     ),
-                    datetime.datetime.now(),
-                ),
-            ),
+            # UserPrayerTimesAnswer(
+            #     UserPrayerTimes(
+            #         PrayerTimes(
+            #             prayer_times_repository,
+            #             message.chat.id,
+            #             user_repository,
+            #         ),
+            #         datetime.datetime.now(),
+            #         message.chat.id,
+            #         prayer_times_repository,
+            #         user_repository,
+            #     ),
+            # ),
         ).to_answer()
         updates_log_repository = UpdatesLogRepository(connection)
         answer = LoggedSourceMessageAnswerProcess(

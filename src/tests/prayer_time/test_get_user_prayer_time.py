@@ -27,6 +27,9 @@ async def test_generate_for_date(user_repository_mock):
             chat_id=1234,
         ).get(),
         datetime.datetime.now(),
+        1234,
+        PrayerTimeRepositoryMock(),
+        user_repository_mock,
     ).get_or_create_user_prayer_times()
 
     assert isinstance(got[0], UserPrayer)
@@ -41,6 +44,9 @@ async def test_get_already_exists_user_prayers(user_repository_mock):
             chat_id=4321,
         ).get(),
         datetime.datetime.now(),
+        4321,
+        PrayerTimeRepositoryMock(),
+        user_repository_mock,
     ).get_or_create_user_prayer_times()
 
     assert isinstance(got[0], UserPrayer)
@@ -57,6 +63,9 @@ async def test_get_prayer_time_without_city(user_repository_mock):
                     chat_id=111,
                 ),
                 datetime.datetime.now(),
+                111,
+                PrayerTimeRepositoryMock(),
+                user_repository_mock,
             ),
         ),
     ).to_answer()
