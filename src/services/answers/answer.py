@@ -60,6 +60,9 @@ class Answer(BaseModel, AnswerInterface, SingleAnswerInterface):
             message = await bot_instance.send_message(chat_id=chat_id, text=self.link_to_file, reply_markup=markup)
         else:
             message = await bot_instance.send_message(chat_id=chat_id, text=self.message, reply_markup=markup)
+
+        session = await bot_instance.get_session()
+        await session.close()
         return [message]
 
     def to_list(self) -> list[SingleAnswerInterface]:
