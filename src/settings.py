@@ -1,7 +1,9 @@
 from pathlib import Path
+from typing import Optional
 from urllib.parse import urljoin
 
-from pydantic import BaseSettings
+import sentry_sdk
+from pydantic import BaseSettings, HttpUrl
 
 BASE_DIR = Path(__file__).parent
 
@@ -13,6 +15,7 @@ class Settings(BaseSettings):
     API_TOKEN: str
     DATABASE_URL: str
     TEST_DATABASE_URL: str = ''
+    SENTRY_DSN: Optional[HttpUrl] = None
     DEBUG: bool
     REDIS_HOST: str = 'localhost'
     REDIS_PORT: int = 6379
@@ -38,3 +41,9 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+if settings.SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=settings.SENTRY_DSN,
+        traces_sample_rate=1.0,
+    )
