@@ -10,8 +10,10 @@ from repository.mailing import MailingRepository
 from repository.update_log import UpdatesLogRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
 from services.answers.answer import Answer
+from services.answers.log_answer import LoggedAnswer
 from services.answers.spam_answer_list import SavedSpamAnswerList, SpamAnswerList
 from utlls import get_bot_instance
+from settings import settings
 
 bot = get_bot_instance()
 
@@ -26,6 +28,7 @@ class NatsIntegration(object):
         """Прием сообщений."""
         nats_client = await nats.connect('localhost')
         logger.info('Start handling events...')
+        logger.info('Receive evenst list: {0}'.format([event_handler.event_name for event_handler in self._handlers]))
         await nats_client.subscribe('default', cb=self._message_handler)
         while True:  # noqa: WPS457
             await asyncio.sleep(1)
@@ -100,3 +103,23 @@ class MessagesDeletedEvent(object):
                 logger.warning('Message with id={0} chat_id={1} not found for deleting'.format(
                     message.message_id, message.chat_id,
                 ))
+
+
+class NotificationCreatedEvent(object):
+    """Событие удаления сообщений."""
+
+    event_name = 'Notification.Created'
+
+    def __init__(self, updates_log_repository: UpdatesLogRepositoryInterface):
+        self._udpate_log_repository = updates_log_repository
+
+    async def handle_event(self, event):
+        """Обработка события.
+
+        :param event: dict
+        """
+        notification_text = 'Уведомление: {0}'.format(event['text'])
+        await LoggedAnswer(
+            Answer(message=notification_text),
+            self._udpate_log_repository,
+        ).send(settings.ADMIN_CHAT_IDS[0])

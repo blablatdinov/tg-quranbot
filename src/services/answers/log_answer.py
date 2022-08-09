@@ -7,7 +7,15 @@ from services.user_prayer_status_interface import UserPrayerStatusInterface
 
 
 class LoggedAnswer(AnswerInterface):
-    """Декоратор для сохранения ответа пользователю."""
+    """Декоратор для сохранения ответа пользователю.
+
+    Пример использования:
+
+    >>> await LoggedAnswer(
+    ...     Answer(message='text')
+    ...     UpdatesLogRepository(database),
+    ... ).send(182390)
+    """
 
     _origin: AnswerInterface
     _updates_log_repository: UpdatesLogRepositoryInterface

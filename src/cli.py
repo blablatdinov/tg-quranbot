@@ -4,7 +4,7 @@ import sys
 
 from db import DBConnection
 from exceptions.base_exception import BaseAppError
-from integrations.nats_integration import MailingCreatedEvent, MessagesDeletedEvent, NatsIntegration
+from integrations.nats_integration import MailingCreatedEvent, MessagesDeletedEvent, NatsIntegration, NotificationCreatedEvent
 from repository.ayats.ayat_spam import AyatSpamRepository
 from repository.mailing import MailingRepository
 from repository.prayer_time import PrayerTimeRepository
@@ -69,6 +69,9 @@ async def start_events_receiver() -> None:
                     MailingRepository(connection, UpdatesLogRepository(connection)),
                 ),
                 MessagesDeletedEvent(
+                    UpdatesLogRepository(connection),
+                ),
+                NotificationCreatedEvent(
                     UpdatesLogRepository(connection),
                 ),
             ],
