@@ -98,7 +98,6 @@ class SavedSpamAnswerList(MailingInterface):
         """
         messages = await self._spam_answer_list.send()
         self._mailing_num = await self._mailing_repository.create_mailing(messages)
-        print(self._mailing_num)
         return messages
 
     def mailing_num(self) -> int:

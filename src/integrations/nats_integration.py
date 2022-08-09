@@ -1,26 +1,21 @@
-import datetime
-import uuid
 import asyncio
+import datetime
 import json
+import uuid
 
 import nats
-from aiogram.utils.exceptions import MessageToDeleteNotFound
 from loguru import logger
 from quranbot_schema_registry.validate_schema import validate_schema
 
-from repository.mailing import MailingRepository
-from repository.update_log import UpdatesLogRepositoryInterface
-from repository.users.users import UsersRepositoryInterface
-from services.answers.answer import Answer
-from services.answers.spam_answer_list import SavedSpamAnswerList, SpamAnswerList
-from utlls import get_bot_instance
-
-bot = get_bot_instance()
-
 
 class MessageBrokerInterface(object):
+    """Интерфейс брокера сообщений."""
 
     async def receive(self):
+        """Обработка сообщений из очереди.
+
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
     async def send(self, event_data, event_name, version):
@@ -96,55 +91,3 @@ class NatsIntegration(MessageBrokerInterface):
                 return
 
         logger.info('Event {0} skipped'.format(event_log_data))
-
-
-class MailingCreatedEvent(object):
-    """Класс обработывающий события о создании рассылки."""
-
-    event_name = 'Mailing.Created'
-    _users_repository: UsersRepositoryInterface
-
-    def __init__(self, users_repository: UsersRepositoryInterface, mailing_repository: MailingRepository):
-        self._users_repository = users_repository
-        self._mailing_repository = mailing_repository
-
-    async def handle_event(self, event):
-        """Обработка события.
-
-        :param event: dict
-        """
-        active_user_chat_ids = await self._users_repository.get_active_user_chat_ids()
-        await SavedSpamAnswerList(
-            SpamAnswerList(
-                self._users_repository,
-                *[
-                    Answer(message=event['text'], chat_id=active_user_chat_id)
-                    for active_user_chat_id in active_user_chat_ids
-                ],
-            ),
-            self._mailing_repository,
-        ).send()
-
-
-class MessagesDeletedEvent(object):
-    """Событие удаления сообщений."""
-
-    event_name = 'Messages.Deleted'
-    _messages_repository: UpdatesLogRepositoryInterface
-
-    def __init__(self, messages_repository: UpdatesLogRepositoryInterface):
-        self._messages_repository = messages_repository
-
-    async def handle_event(self, event):
-        """Обработка события.
-
-        :param event: dict
-        """
-        messages = await self._messages_repository.get_messages(event['message_ids'])
-        for message in messages:
-            try:
-                await bot.delete_message(message.chat_id, message.message_id)
-            except MessageToDeleteNotFound:
-                logger.warning('Message with id={0} chat_id={1} not found for deleting'.format(
-                    message.message_id, message.chat_id,
-                ))
