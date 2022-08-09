@@ -26,6 +26,7 @@ class NatsIntegration(object):
         """Прием сообщений."""
         nats_client = await nats.connect('localhost')
         logger.info('Start handling events...')
+        logger.info('Receive evenst list: {0}'.format([event_handler.event_name for event_handler in self._handlers]))
         await nats_client.subscribe('default', cb=self._message_handler)
         while True:  # noqa: WPS457
             await asyncio.sleep(1)
