@@ -1,10 +1,11 @@
 from aiogram import types
 
+from app_types.mailing_interface import MailingInterface
 from repository.users.users import UsersRepositoryInterface
 from services.ayats.morning_spam import MorningSpam
 
 
-class MailingWithUpdateUserDays(object):
+class MailingWithUpdateUserDays(MailingInterface):
     """Рассылка с обновлением дня у пользователя."""
 
     def __init__(self, mailing: MorningSpam, users_repository: UsersRepositoryInterface):

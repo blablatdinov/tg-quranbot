@@ -4,8 +4,10 @@ import sys
 
 from db import DBConnection
 from exceptions.base_exception import BaseAppError
+from integrations.event_handlers.mailing_created import MailingCreatedEvent
+from integrations.event_handlers.messages_deleted import MessagesDeletedEvent
 from integrations.event_handlers.notification_created import NotificationCreatedEvent
-from integrations.nats_integration import MailingCreatedEvent, MessagesDeletedEvent, NatsIntegration
+from integrations.nats_integration import NatsIntegration
 from repository.ayats.ayat_spam import AyatSpamRepository
 from repository.mailing import MailingRepository
 from repository.prayer_time import PrayerTimeRepository
@@ -13,7 +15,9 @@ from repository.update_log import UpdatesLogRepository
 from repository.users.user import UserRepository
 from repository.users.users import UsersRepository
 from services.answers.log_answer import LoggedAnswer
+from services.answers.spam_answer_list import SavedSpamAnswerList
 from services.ayats.morning_spam import MorningSpam
+from services.mailing_with_notification import MailingWithNotification
 from services.prayer_time import PrayerTimes, UserPrayerTimes, UserPrayerTimesAnswer
 from services.user import UsersStatus
 from services.users_day import MailingWithUpdateUserDays
@@ -30,12 +34,21 @@ async def check_users_status() -> None:
 async def send_morning_content() -> None:
     """Рассылка утреннего контента."""
     async with DBConnection() as connection:
-        await MailingWithUpdateUserDays(
-            MorningSpam(
-                AyatSpamRepository(connection),
-                UsersRepository(connection),
+        await MailingWithNotification(
+            SavedSpamAnswerList(
+                MailingWithUpdateUserDays(
+                    MorningSpam(
+                        AyatSpamRepository(connection),
+                        UsersRepository(connection),
+                    ),
+                    UsersRepository(connection),
+                ),
+                MailingRepository(
+                    connection,
+                    UpdatesLogRepository(connection),
+                ),
             ),
-            UsersRepository(connection),
+            NatsIntegration([]),
         ).send()
 
 
