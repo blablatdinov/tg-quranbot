@@ -85,9 +85,9 @@ class SpamAnswerList(list, MailingInterface):  # noqa: WPS600
 class SavedSpamAnswerList(MailingInterface):
     """Сохраненная рассылка."""
 
-    _spam_answer_list: SpamAnswerList
+    _spam_answer_list: MailingInterface
 
-    def __init__(self, spam_answer_list: SpamAnswerList, mailing_repository: MailingRepository):
+    def __init__(self, spam_answer_list: MailingInterface, mailing_repository: MailingRepository):
         self._spam_answer_list = spam_answer_list
         self._mailing_repository = mailing_repository
 

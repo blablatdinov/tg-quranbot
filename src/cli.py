@@ -4,8 +4,10 @@ import sys
 
 from db import DBConnection
 from exceptions.base_exception import BaseAppError
+from integrations.event_handlers.mailing_created import MailingCreatedEvent
+from integrations.event_handlers.messages_deleted import MessagesDeletedEvent
 from integrations.event_handlers.notification_created import NotificationCreatedEvent
-from integrations.nats_integration import MailingCreatedEvent, MessagesDeletedEvent, NatsIntegration
+from integrations.nats_integration import NatsIntegration
 from repository.ayats.ayat_spam import AyatSpamRepository
 from repository.mailing import MailingRepository
 from repository.prayer_time import PrayerTimeRepository

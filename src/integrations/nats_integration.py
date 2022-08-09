@@ -18,7 +18,7 @@ class MessageBrokerInterface(object):
         """
         raise NotImplementedError
 
-    async def send(self, event_data, event_name, version):
+    async def send(self, event_data: dict, event_name: str, version: int) -> None:
         """Отправить событие.
 
         :param event_data: dict

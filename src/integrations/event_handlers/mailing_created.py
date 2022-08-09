@@ -1,5 +1,5 @@
 from repository.mailing import MailingRepository
-from repository.users import UsersRepositoryInterface
+from repository.users.users import UsersRepositoryInterface
 from services.answers.answer import Answer
 from services.answers.spam_answer_list import SavedSpamAnswerList, SpamAnswerList
 

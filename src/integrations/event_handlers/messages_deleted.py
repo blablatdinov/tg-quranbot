@@ -1,6 +1,6 @@
+from aiogram.utils.exceptions import MessageToDeleteNotFound
 from loguru import logger
 
-from exceptions import MessageToDeleteNotFound
 from repository.update_log import UpdatesLogRepositoryInterface
 from utlls import get_bot_instance
 
