@@ -45,7 +45,7 @@ class AyatSpamRepository(AyatSpamRepositoryInterface):
             LEFT JOIN content_morningcontent AS mc ON s.day=mc.day
             LEFT JOIN content_ayat AS a ON a.one_day_content_id=mc.id
             LEFT JOIN content_sura AS sura ON a.sura_id=sura.id
-            WHERE s.is_active = 'true'
+            WHERE s.is_active = 't'
             GROUP BY s.tg_chat_id
         """
         rows = await self._connection.fetch(query)

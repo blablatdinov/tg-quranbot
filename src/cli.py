@@ -13,10 +13,12 @@ from repository.update_log import UpdatesLogRepository
 from repository.users.user import UserRepository
 from repository.users.users import UsersRepository
 from services.answers.log_answer import LoggedAnswer
+from services.answers.spam_answer_list import SavedSpamAnswerList
 from services.ayats.morning_spam import MorningSpam
 from services.prayer_time import PrayerTimes, UserPrayerTimes, UserPrayerTimesAnswer
 from services.user import UsersStatus
 from services.users_day import MailingWithUpdateUserDays
+from services.mailing_with_notification import MailingWithNotification
 
 
 async def check_users_status() -> None:
@@ -30,12 +32,21 @@ async def check_users_status() -> None:
 async def send_morning_content() -> None:
     """Рассылка утреннего контента."""
     async with DBConnection() as connection:
-        await MailingWithUpdateUserDays(
-            MorningSpam(
-                AyatSpamRepository(connection),
-                UsersRepository(connection),
+        await MailingWithNotification(
+                SavedSpamAnswerList(
+                MailingWithUpdateUserDays(
+                    MorningSpam(
+                        AyatSpamRepository(connection),
+                        UsersRepository(connection),
+                    ),
+                    UsersRepository(connection),
+                ),
+                MailingRepository(
+                    connection,
+                    UpdatesLogRepository(connection),
+                ),
             ),
-            UsersRepository(connection),
+            NatsIntegration([]),
         ).send()
 
 

@@ -1,12 +1,13 @@
 from aiogram import types
 
+from app_types.mailing_interface import MailingInterface
 from repository.ayats.ayat_spam import AyatSpamRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
 from services.answers.answer import Answer
 from services.answers.spam_answer_list import SpamAnswerList
 
 
-class MorningSpam(object):
+class MorningSpam(MailingInterface):
     """Утренняя рассылка."""
 
     _ayat_spam_repository: AyatSpamRepositoryInterface
