@@ -55,7 +55,7 @@ async def send_morning_content() -> None:
 async def send_prayer_time() -> None:
     """Отправить времена намазов для след. дня."""
     async with DBConnection() as connection:
-        chat_ids = await UsersRepository(connection).get_active_user_chat_ids()
+        chat_ids = await UsersRepository(connection).active_users_with_city()
         for chat_id in chat_ids:
             await LoggedAnswer(
                 await UserPrayerTimesAnswer(

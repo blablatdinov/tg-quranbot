@@ -35,6 +35,13 @@ class UsersRepositoryInterface(object):
         """
         raise NotImplementedError
 
+    async def active_users_with_city(self):
+        """Вернуть активных пользователей, у которых есть город.
+
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
 
 class UsersRepository(UsersRepositoryInterface):
     """Класс для работы с хранилищем множества пользователей."""
@@ -91,3 +98,20 @@ class UsersRepository(UsersRepositoryInterface):
         """
         query = query_template.format(','.join(map(str, chat_ids)))
         await self._connection.execute(query)
+
+    async def active_users_with_city(self) -> list[int]:
+        """Вернуть активных пользователей, у которых есть город.
+
+        :return: list[int]
+        """
+        query = """
+            SELECT tg_chat_id as chat_id
+            FROM bot_init_subscriber s
+            INNER JOIN prayer_city c on s.city_id = c.id
+            WHERE s.is_active = 't'
+        """
+        rows = await self._connection.fetch(query)
+        return [
+            parsed_row.chat_id
+            for parsed_row in parse_obj_as(list[QueryResultItem], rows)
+        ]
