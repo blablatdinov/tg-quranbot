@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from db import DBConnection
+from db.connection import DBConnection
 from repository.admin_message import AdminMessageRepository
 from repository.ayats.ayat import AyatRepository
 from repository.update_log import UpdatesLogRepository

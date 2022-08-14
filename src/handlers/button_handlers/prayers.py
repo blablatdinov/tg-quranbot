@@ -2,7 +2,7 @@ import datetime
 
 from aiogram import types
 
-from db import DBConnection
+from db.connection import DBConnection
 from repository.prayer_time import PrayerTimeRepository
 from repository.update_log import UpdatesLogRepository
 from repository.users.user import UserRepository

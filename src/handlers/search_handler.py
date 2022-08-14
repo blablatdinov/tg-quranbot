@@ -1,6 +1,6 @@
 from aiogram import types
 
-from db import DBConnection
+from db.connection import DBConnection
 from repository.city import CityRepository
 from services.city.search import CitySearchInlineAnswer, SearchCityByName
 from services.city.service import CityService

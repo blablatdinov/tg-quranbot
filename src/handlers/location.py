@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from db import DBConnection
+from db.connection import DBConnection
 from integrations.client import IntegrationClient
 from integrations.nominatim import NominatimIntegration
 from repository.city import CityRepository
