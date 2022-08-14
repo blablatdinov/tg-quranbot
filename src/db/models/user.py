@@ -13,4 +13,4 @@ class User(Base):
     comment = Column(String())
     day = Column(Integer(), default=2)
     city_id = Column(String(), ForeignKey('cities.city_id'))
-    referer_id = Column(Integer(), ForeignKey('users.chat_id'))
+    referrer_id = Column(Integer(), ForeignKey('users.chat_id'))

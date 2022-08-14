@@ -34,7 +34,7 @@ classDiagram
         varchar comment
         int day
         uuid city_id
-        bigint referer_id
+        bigint referrer_id
     }
     class cities{
         uuid city_id

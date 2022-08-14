@@ -12,7 +12,7 @@ def event_loop():
 
 
 @pytest.fixture()
-async def db_session(test_db, event_loop):
+async def db_session(event_loop):
     session = Database(settings.TEST_DATABASE_URL, force_rollback=True)
     await session.connect()
     yield session
