@@ -82,3 +82,9 @@ def ayat_repository_mock(fake_text):
         Ayat(id=5737, sura_num=114, ayat_num='1-4', content='content', **common_params),
     ]
     return mock
+
+
+@pytest.fixture()
+def mixer():
+    from mixer.backend.sqlalchemy import mixer
+    return mixer
