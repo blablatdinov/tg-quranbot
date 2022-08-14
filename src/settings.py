@@ -34,6 +34,17 @@ class Settings(BaseSettings):
         """
         return urljoin(self.WEBHOOK_HOST, self.WEBHOOK_PATH)
 
+    @property
+    def alembic_db_url(self) -> str:
+        """Формирование адреса подключения к БД для алембика.
+
+        :return: str
+        """
+        uri = self.DATABASE_URL
+        if self.DATABASE_URL and self.DATABASE_URL.startswith('postgres://'):
+            uri = self.DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+        return uri.replace('postgresql', 'postgresql+asyncpg')
+
     class Config(object):
         """Конфигурация настроек."""
 

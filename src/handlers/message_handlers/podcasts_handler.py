@@ -2,7 +2,7 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext, filters
 
 from constants import PODCAST_BUTTON
-from db import DBConnection
+from db.connection import DBConnection
 from repository.podcast import PodcastRepository
 from repository.update_log import UpdatesLogRepository
 from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswerProcess

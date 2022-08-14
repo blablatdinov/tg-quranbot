@@ -30,7 +30,7 @@ async def run_migrations_offline() -> None:
     script output.
     """
     context.configure(
-        url=str(settings.db_url),
+        url=str(settings.alembic_db_url),
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={'paramstyle': 'named'},
@@ -57,11 +57,7 @@ async def run_migrations_online() -> None:
     In this scenario we need to create an Engine
     and associate a connection with the context.
     """
-    uri = settings.DATABASE_URL
-    if uri and uri.startswith('postgres://'):
-        uri = uri.replace('postgres://', 'postgresql://', 1)
-    uri = uri.replace('postgresql', 'postgresql+asyncpg')
-    connectable = create_async_engine(uri)
+    connectable = create_async_engine(settings.alembic_db_url)
 
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)
