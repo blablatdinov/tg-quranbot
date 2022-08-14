@@ -2,7 +2,6 @@ from exceptions.base_exception import InternalBotError
 from repository.admin_message import AdminMessageRepositoryInterface
 from repository.ayats.ayat import AyatRepositoryInterface
 from repository.users.user import User, UserRepositoryInterface
-from repository.users.user_actions import UserActionEnum, UserActionRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
 from services.answers.answer import Answer
 from services.answers.answer_list import AnswersList
@@ -14,19 +13,16 @@ class RegisterNewUser(object):
     """Регистрация нового пользователя."""
 
     _user_repository: UserRepositoryInterface
-    _user_action_repository: UserActionRepositoryInterface
     _admin_messages_repository: AdminMessageRepositoryInterface
     _ayats_repository: AyatRepositoryInterface
 
     def __init__(
         self,
         user_repository: UserRepositoryInterface,
-        user_action_repository: UserActionRepositoryInterface,
         admin_messages_repository: AdminMessageRepositoryInterface,
         ayats_repository: AyatRepositoryInterface,
     ):
         self._user_repository = user_repository
-        self._user_action_repository = user_action_repository
         self._admin_messages_repository = admin_messages_repository
         self._ayats_repository = ayats_repository
 
@@ -45,7 +41,6 @@ class RegisterNewUser(object):
         :returns: User
         """
         user = await self._user_repository.create(chat_id)
-        await self._user_action_repository.create_user_action(chat_id, UserActionEnum.SUBSCRIBED)
         return user
 
     async def to_answer(self, chat_id: int) -> AnswerInterface:
@@ -98,7 +93,10 @@ class RegisterUserWithReferrer(object):
             raise InternalBotError
         await self._user_repository.update_referrer(chat_id, self._start_message_meta.referrer)
         message_for_referrer = 'По вашей реферральной ссылке произошла регистрация'
-        referrer_user_record = await self._user_repository.get_by_id(self._start_message_meta.referrer)
+        if self._start_message_meta.referrer <= 3000:
+            referrer_user_record = await self._user_repository.get_by_id(self._start_message_meta.referrer)
+        else:
+            referrer_user_record = (await self._user_repository.get_by_id(self._start_message_meta.referrer)).chat_id
         new_user_answers = await self._register_new_user.to_answer(chat_id)
         new_user_answers_list = new_user_answers.to_list()
         return AnswersList(
@@ -113,17 +111,12 @@ class RegisterAlreadyExistsUser(object):
 
     _user_repository: UserRepositoryInterface
     _users_repository: UsersRepositoryInterface
-    _user_action_repository: UserActionRepositoryInterface
 
     def __init__(
         self,
         user_repository: UserRepositoryInterface,
-        user_action_repository: UserActionRepositoryInterface,
-        users_repository: UsersRepositoryInterface,
     ):
         self._user_repository = user_repository
-        self._users_repository = users_repository
-        self._user_action_repository = user_action_repository
 
     async def register(self, chat_id: int) -> Answer:
         """Обработка уже зарегестрированного пользователя.
@@ -135,7 +128,6 @@ class RegisterAlreadyExistsUser(object):
         if user.is_active:
             return Answer(chat_id=chat_id, message='Вы уже зарегистрированы')
 
-        await self._user_action_repository.create_user_action(chat_id, UserActionEnum.REACTIVATED)
         await self._users_repository.update_status([chat_id], to=True)
         return Answer(
             chat_id=chat_id,

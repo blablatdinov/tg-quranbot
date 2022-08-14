@@ -14,3 +14,4 @@ class User(Base):
     day = Column(Integer(), default=2)
     city_id = Column(String(), ForeignKey('cities.city_id'))
     referrer_id = Column(Integer(), ForeignKey('users.chat_id'))
+    legacy_id = Column(Integer(), nullable=True)

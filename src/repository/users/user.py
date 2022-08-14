@@ -16,6 +16,7 @@ class User(BaseModel):
     day: int
     referrer: Optional[int] = None
     chat_id: int
+    legacy_id: Optional[int] = None
     city_id: Optional[uuid.UUID]
 
 
@@ -152,11 +153,13 @@ class UserRepository(UserRepositoryInterface):
         """Обновить город пользователя.
 
         :param chat_id: int
-        :param referrer_id: [int]
+        :param referrer_id: int
         """
         query = """
             UPDATE users
             SET referrer_id = :referrer_id
             WHERE chat_id = :chat_id
         """
+        if referrer_id <= 3000:
+            referrer_id = (await self.get_by_id(referrer_id)).chat_id
         await self.connection.execute(query, {'referrer_id': referrer_id, 'chat_id': chat_id})

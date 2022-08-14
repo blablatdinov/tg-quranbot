@@ -1,4 +1,3 @@
-from repository.users.user_actions import UserActionEnum
 from services.answers.answer import Answer
 
 
@@ -11,7 +10,6 @@ async def test(register_service, ayat_repository_mock, user_action_repository, u
     ]
     assert await user_repository_mock.get_by_chat_id(231)
     assert len(user_action_repository.storage) == 1
-    assert user_action_repository.storage[0].action == UserActionEnum.SUBSCRIBED
     assert user_action_repository.storage[0].chat_id == 231
 
 
@@ -33,14 +31,12 @@ async def test_inactive_user(register_service, user_repository_with_registered_i
 
     assert got == Answer(chat_id=444, message='Рады видеть вас снова, вы продолжите с дня 15')
     assert len(user_action_repository.storage) == 1
-    assert user_action_repository.storage[0].action == UserActionEnum.REACTIVATED
 
 
 async def test_with_referrer(
     register_service,
     user_repository_with_registered_inactive_user,
     ayat_repository_mock,
-    user_action_repository,
 ):
     got = await register_service(user_repository_with_registered_inactive_user, 222, '/start 1')
 
@@ -53,5 +49,5 @@ async def test_with_referrer(
         Answer(chat_id=222, message=str(ayat_repository_mock.storage[0])),
         Answer(chat_id=444, message='По вашей реферральной ссылке произошла регистрация'),
     ]
-    assert len(user_action_repository.storage) == 1
-    assert user_action_repository.storage[0].action == UserActionEnum.SUBSCRIBED
+    # TODO: check that event sended into queue
+    # assert len(user_action_repository.storage) == 1
