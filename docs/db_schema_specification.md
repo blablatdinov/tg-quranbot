@@ -5,17 +5,23 @@ classDiagram
     files <|-- ayats
     files <|-- podcasts
     users <|-- users
+    ayats <|-- suras
     cities <|-- users
     class ayats{
-        uuid ayat_id
-        int sura_num
+        int ayat_id
+        uuid public_id
         int day
-        varchar ayat_num
+        int sura_id
+        varchar ayat_number
         varchar content
         varchar arab_text
         varchar transliteration
         uuid audio_id
-        uuid one_day_contrent_id
+        uuid one_day_content_id
+    }
+    class suras{
+        int sura_id
+        varchar link
     }
     class files{
         uuid file_id

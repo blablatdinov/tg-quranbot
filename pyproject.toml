@@ -16,6 +16,8 @@ quranbot-schema-registry = "0.0.11"
 APScheduler = "^3.9.1"
 databases = "^0.6.0"
 sentry-sdk = "^1.9.2"
+SQLAlchemy = "^1.4.40"
+alembic = "^1.8.1"
 
 [tool.poetry.dev-dependencies]
 wemake-python-styleguide = "^0.16.1"

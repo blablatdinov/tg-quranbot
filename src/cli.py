@@ -2,7 +2,7 @@ import asyncio
 import datetime
 import sys
 
-from db import DBConnection
+from db.connection import DBConnection
 from exceptions.base_exception import BaseAppError
 from integrations.event_handlers.mailing_created import MailingCreatedEvent
 from integrations.event_handlers.messages_deleted import MessagesDeletedEvent
