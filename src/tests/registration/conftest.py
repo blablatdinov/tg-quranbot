@@ -27,7 +27,7 @@ def user_repository_with_registered_active_user(user_repository_mock):
 @pytest.fixture
 def user_repository_with_registered_inactive_user(user_repository_mock):
     user_repository_mock.storage = [
-        User(id=1, is_active=False, day=15, chat_id=444, city_id=uuid.uuid4()),
+        User(legacy_id=1, is_active=False, day=15, chat_id=444, city_id=uuid.uuid4()),
     ]
     return user_repository_mock
 

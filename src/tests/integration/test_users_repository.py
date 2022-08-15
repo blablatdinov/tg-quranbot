@@ -2,8 +2,8 @@ import uuid
 
 import pytest
 
-from repository.users.users import UsersRepository
 from db.models.user import User
+from repository.users.users import UsersRepository
 
 
 @pytest.fixture()
