@@ -49,21 +49,21 @@ classDiagram
         uuid file_id
     }
     class prayers{
-        uuid id
+        uuid prayer_id
         time time
         varchar name
         int city_id
         int day_id
     }
     class prayers_at_user{
-        uuid id
+        uuid prayer_at_user_id
         int user_id
         int prayer_id
         uuid prayer_group_id
         bool is_read
     }
     class prayers_at_user_groups{
-        uuid id
+        uuid prayers_at_user_group_id
     }
     class prayer_days{
         date date

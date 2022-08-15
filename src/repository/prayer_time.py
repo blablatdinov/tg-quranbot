@@ -1,5 +1,6 @@
 import datetime
 import enum
+import uuid
 from dataclasses import dataclass
 
 from asyncpg import Connection
@@ -51,13 +52,13 @@ class PrayerTimeRepositoryInterface(object):
         self,
         chat_id: int,
         target_datetime: datetime.date,
-        city_id: int,
+        city_id: uuid.UUID,
     ) -> list[Prayer]:
         """Получить времена намазов.
 
         :param chat_id: int
         :param target_datetime: datetime.datetime
-        :param city_id: int
+        :param city_id: uuid.UUID
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError

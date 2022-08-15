@@ -115,8 +115,10 @@ class RegisterAlreadyExistsUser(object):
     def __init__(
         self,
         user_repository: UserRepositoryInterface,
+        users_repository: UsersRepositoryInterface,
     ):
         self._user_repository = user_repository
+        self._users_repository = users_repository
 
     async def register(self, chat_id: int) -> Answer:
         """Обработка уже зарегестрированного пользователя.
