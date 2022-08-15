@@ -5,6 +5,8 @@ from db.base import Base
 
 
 class Podcast(Base):
+    """Модель подкаста."""
+
     __tablename__ = 'podcasts'
 
     podcast_id = Column(String(), primary_key=True)

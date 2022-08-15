@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from repository.users.user import UserRepository, User
+from repository.users.user import User, UserRepository
 
 
 @pytest.fixture()

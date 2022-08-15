@@ -5,7 +5,6 @@ from databases import Database
 
 from settings import settings
 
-
 # @pytest.fixture(scope='session')
 # def event_loop():
 #     return asyncio.get_event_loop()

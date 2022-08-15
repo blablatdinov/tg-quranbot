@@ -40,8 +40,7 @@ class RegisterNewUser(object):
         :param chat_id: int
         :returns: User
         """
-        user = await self._user_repository.create(chat_id)
-        return user
+        return await self._user_repository.create(chat_id)
 
     async def to_answer(self, chat_id: int) -> AnswerInterface:
         """Конвертация в ответ.
@@ -93,7 +92,8 @@ class RegisterUserWithReferrer(object):
             raise InternalBotError
         await self._user_repository.update_referrer(chat_id, self._start_message_meta.referrer)
         message_for_referrer = 'По вашей реферральной ссылке произошла регистрация'
-        if self._start_message_meta.referrer <= 3000:
+        max_legacy_referrer_id = 3000
+        if self._start_message_meta.referrer <= max_legacy_referrer_id:
             referrer_user_record = await self._user_repository.get_by_id(self._start_message_meta.referrer)
         else:
             referrer_user_record = (await self._user_repository.get_by_id(self._start_message_meta.referrer)).chat_id

@@ -5,6 +5,8 @@ from db.base import Base
 
 
 class Sura(Base):
+    """Модель суры."""
+
     __tablename__ = 'suras'
 
     sura_id = Column(Integer(), primary_key=True)

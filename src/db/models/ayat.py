@@ -5,6 +5,8 @@ from db.base import Base
 
 
 class Ayat(Base):
+    """Модель аята."""
+
     __tablename__ = 'ayats'
 
     ayat_id = Column(Integer(), primary_key=True)

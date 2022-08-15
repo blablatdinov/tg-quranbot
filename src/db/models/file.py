@@ -5,6 +5,8 @@ from db.base import Base
 
 
 class File(Base):
+    """Модель файла."""
+
     __tablename__ = 'files'
 
     file_id = Column(String(), primary_key=True)
