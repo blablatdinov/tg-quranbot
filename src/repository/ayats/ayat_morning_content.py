@@ -10,10 +10,10 @@ class ContentSpam(BaseModel):
     link: str
 
 
-class AyatSpamRepositoryInterface(object):
+class AyatMorningContentRepositoryInterface(object):
     """Интерфейс для работы с хранилищем данных для рассылок."""
 
-    async def get_content_for_spam(self) -> list[ContentSpam]:
+    async def get_morning_content(self) -> list[ContentSpam]:
         """Получить контент для рассылки.
 
         :raises NotImplementedError: if not implemented
@@ -21,13 +21,13 @@ class AyatSpamRepositoryInterface(object):
         raise NotImplementedError
 
 
-class AyatSpamRepository(AyatSpamRepositoryInterface):
+class AyatMorningContentRepository(AyatMorningContentRepositoryInterface):
     """Класс для работы с хранилищем данных для рассылок."""
 
     def __init__(self, connection: Connection):
         self._connection = connection
 
-    async def get_content_for_spam(self) -> list[ContentSpam]:
+    async def get_morning_content(self) -> list[ContentSpam]:
         """Получить контент для рассылки.
 
         :returns: list[ContentSpam]

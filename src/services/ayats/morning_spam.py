@@ -1,7 +1,7 @@
 from aiogram import types
 
 from app_types.mailing_interface import MailingInterface
-from repository.ayats.ayat_spam import AyatSpamRepositoryInterface
+from repository.ayats.ayat_morning_content import AyatMorningContentRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
 from services.answers.answer import Answer
 from services.answers.spam_answer_list import SpamAnswerList
@@ -10,10 +10,10 @@ from services.answers.spam_answer_list import SpamAnswerList
 class MorningSpam(MailingInterface):
     """Утренняя рассылка."""
 
-    _ayat_spam_repository: AyatSpamRepositoryInterface
+    _ayat_spam_repository: AyatMorningContentRepositoryInterface
     _users_repository: UsersRepositoryInterface
 
-    def __init__(self, ayat_spam_repository: AyatSpamRepositoryInterface, users_repository: UsersRepositoryInterface):
+    def __init__(self, ayat_spam_repository: AyatMorningContentRepositoryInterface, users_repository: UsersRepositoryInterface):
         self._ayat_spam_repository = ayat_spam_repository
         self._users_repository = users_repository
 
@@ -22,7 +22,7 @@ class MorningSpam(MailingInterface):
 
         :return: list[types.Message]
         """
-        spam_contents = await self._ayat_spam_repository.get_content_for_spam()
+        spam_contents = await self._ayat_spam_repository.get_morning_content()
         answers = []
         for spam_content in spam_contents:
             answers.append(Answer(
