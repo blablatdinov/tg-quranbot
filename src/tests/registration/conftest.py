@@ -9,6 +9,7 @@ from services.start_message import get_start_message_query
 from tests.mocks.admin_messages_repository import AdminMessageRepositoryMock
 from tests.mocks.ayat_repository import AyatRepositoryMock
 from tests.mocks.user_repository import UserRepositoryMock
+from tests.mocks.users_repository import UsersRepositoryMock
 
 
 @pytest.fixture
@@ -19,7 +20,7 @@ def user_repository_mock():
 @pytest.fixture
 def user_repository_with_registered_active_user(user_repository_mock):
     user_repository_mock.storage = [
-        User(id=1, is_active=True, day=15, chat_id=444, city_id=1),
+        User(legacy_id=1, is_active=True, day=15, chat_id=444, city_id=uuid.uuid4()),
     ]
     return user_repository_mock
 
@@ -51,7 +52,10 @@ def register_service(ayat_repository_mock):
                 user_repository_mock,
                 get_start_message_query(message_text),
             ),
-            RegisterAlreadyExistsUser(user_repository_mock),
+            RegisterAlreadyExistsUser(
+                user_repository_mock,
+                UsersRepositoryMock(),
+            ),
             chat_id,
         ).register()
 
