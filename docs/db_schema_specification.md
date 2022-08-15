@@ -7,6 +7,10 @@ classDiagram
     users <|-- users
     ayats <|-- suras
     cities <|-- users
+    users <|-- prayers_at_user
+    prayers_at_user_groups <|-- prayers_at_user
+    cities <|-- prayers
+    prayer_days <|-- prayers
     class ayats{
         int ayat_id
         uuid public_id
@@ -43,5 +47,25 @@ classDiagram
     class podcasts{
         uuid podcast_id
         uuid file_id
+    }
+    class prayers{
+        uuid id
+        time time
+        varchar name
+        int city_id
+        int day_id
+    }
+    class prayers_at_user{
+        uuid id
+        int user_id
+        int prayer_id
+        uuid prayer_group_id
+        bool is_read
+    }
+    class prayers_at_user_groups{
+        uuid id
+    }
+    class prayer_days{
+        date date
     }
 ```
