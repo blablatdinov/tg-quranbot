@@ -1,24 +1,26 @@
 import pytest
 
-from repository.ayats.ayat import AyatRepository, Ayat
+from repository.ayats.ayat import Ayat, AyatRepository
 
 
 @pytest.fixture()
 async def ayat(db_session, mixer):
     await db_session.execute("INSERT INTO suras (sura_id, link) VALUES (1, '/hello')")
-    await db_session.execute("""
-        INSERT INTO files 
+    insert_file_query = """
+        INSERT INTO files
         (file_id, telegram_file_id, created_at, link)
         VALUES
         ('8f6e2fa5-1a26-4e7a-bd58-7597385121fa', 'file_id', '2030-01-03', 'file/link')
-        """)
-    await db_session.execute_many(
-        """
+    """
+    await db_session.execute(insert_file_query)
+    ayats_insert_query = """
         INSERT INTO ayats
-        (ayat_id, public_id, sura_id, day, ayat_number, content, arab_text, transliteration, audio_id) 
+        (ayat_id, public_id, sura_id, day, ayat_number, content, arab_text, transliteration, audio_id)
         VALUES
         (:ayat_id, :public_id, :sura_id, :day, :ayat_number, :content, :arab_text, :transliteration, :audio_id)
-        """,
+        """
+    await db_session.execute_many(
+        ayats_insert_query,
         [
             {
                 'ayat_id': 1,

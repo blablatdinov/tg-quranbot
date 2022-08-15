@@ -132,7 +132,7 @@ class AyatRepository(AyatRepositoryInterface):
             WHERE a.ayat_id = :ayat_id
         """
         row = await self.connection.fetch_one(query, {'ayat_id': ayat_id})
-        return Ayat.parse_obj(row._mapping)
+        return Ayat.parse_obj(row._mapping)  # noqa: WPS437
 
     async def get_ayats_by_sura_num(self, sura_num: int) -> list[Ayat]:
         """Получить аят по номеру суры.
@@ -157,7 +157,7 @@ class AyatRepository(AyatRepositoryInterface):
             WHERE s.sura_id = :sura_num
         """
         records = await self.connection.fetch_all(query, {'sura_num': sura_num})
-        return parse_obj_as(list[Ayat], [record._mapping for record in records])
+        return parse_obj_as(list[Ayat], [record._mapping for record in records])  # noqa: WPS437
 
     async def search_by_text(self, query: str) -> list[Ayat]:
         """Поиск по тексту.
@@ -184,4 +184,4 @@ class AyatRepository(AyatRepositoryInterface):
             ORDER BY a.ayat_id
         """
         rows = await self.connection.fetch_all(query, {'search_query': search_query})
-        return parse_obj_as(list[Ayat], [record._mapping for record in rows])
+        return parse_obj_as(list[Ayat], [record._mapping for record in rows])  # noqa: WPS437
