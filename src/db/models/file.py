@@ -4,7 +4,9 @@ from sqlalchemy.sql.sqltypes import DateTime, String
 from db.base import Base
 
 
-class File(Base):
+class File(Base):  # noqa: WPS110
+    """Модель файла."""
+
     __tablename__ = 'files'
 
     file_id = Column(String(), primary_key=True)

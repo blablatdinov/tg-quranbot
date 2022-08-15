@@ -6,6 +6,8 @@ from db.base import Base
 
 
 class User(Base):
+    """Модель пользователя."""
+
     __tablename__ = 'users'
 
     chat_id = Column(Integer(), primary_key=True)

@@ -61,7 +61,7 @@ class UsersRepository(UsersRepositoryInterface):
             WHERE is_active = 't'
         """
         rows = await self._connection.fetch_all(query)
-        rows = [dict(row._mapping) for row in rows]
+        rows = [dict(row._mapping) for row in rows]  # noqa: WPS437
         return [
             parsed_row.chat_id
             for parsed_row in parse_obj_as(list[QueryResultItem], rows)
@@ -108,7 +108,7 @@ class UsersRepository(UsersRepositoryInterface):
             ORDER BY chat_id
         """
         rows = await self._connection.fetch_all(query)
-        rows = [dict(row._mapping) for row in rows]
+        rows = [dict(row._mapping) for row in rows]  # noqa: WPS437
         return [
             parsed_row.chat_id
             for parsed_row in parse_obj_as(list[QueryResultItem], rows)

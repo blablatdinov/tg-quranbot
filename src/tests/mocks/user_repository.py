@@ -11,11 +11,17 @@ class UserRepositoryMock(UserRepositoryInterface):
     async def create(self, chat_id: int, referrer_id: Optional[int] = None):
         user_id = random.randint(0, 100)
         self.storage.append(
-            User(id=user_id, is_active=True, day=2, referrer=referrer_id, chat_id=chat_id, city_id=uuid.uuid4()),
+            User(
+                id=user_id,
+                is_active=True,
+                day=2,
+                referrer=referrer_id,
+                chat_id=chat_id,
+                city_id=uuid.uuid4(),
+            ),
         )
 
     async def get_by_id(self, user_id: int) -> User:
-        print(self.storage)
         return list(
             filter(
                 lambda user: user.legacy_id == user_id, self.storage,

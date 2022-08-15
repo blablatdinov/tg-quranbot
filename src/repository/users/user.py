@@ -1,12 +1,10 @@
 import uuid
 from typing import Optional
 
-from asyncpg import Connection
 from databases import Database
 from pydantic import BaseModel
 
 from exceptions.base_exception import InternalBotError
-from repository.schemas import CountResult
 
 
 class User(BaseModel):
@@ -95,10 +93,10 @@ class UserRepository(UserRepositoryInterface):
             VALUES (:chat_id, :referrer_id, 2)
             RETURNING (chat_id, referrer_id)
         """
-        value = await self.connection.fetch_one(query, {'chat_id': chat_id, 'referrer_id': referrer_id})
-        if not value:
+        query_return_value = await self.connection.fetch_one(query, {'chat_id': chat_id, 'referrer_id': referrer_id})
+        if not query_return_value:
             raise InternalBotError
-        row = dict(value._mapping)['row']
+        row = dict(query_return_value._mapping)['row']  # noqa: WPS437
         return User(
             is_active=True,
             day=2,
@@ -124,7 +122,7 @@ class UserRepository(UserRepositoryInterface):
             WHERE chat_id = :chat_id
         """
         record = await self.connection.fetch_one(query, {'chat_id': chat_id})
-        return User.parse_obj(dict(record._mapping))
+        return User.parse_obj(dict(record._mapping))  # noqa: WPS437
 
     async def exists(self, chat_id: int) -> bool:
         """Метод для проверки наличия пользователя в БД.
@@ -160,6 +158,7 @@ class UserRepository(UserRepositoryInterface):
             SET referrer_id = :referrer_id
             WHERE chat_id = :chat_id
         """
-        if referrer_id <= 3000:
+        max_legacy_referrer_id = 3000
+        if referrer_id <= max_legacy_referrer_id:
             referrer_id = (await self.get_by_id(referrer_id)).chat_id
         await self.connection.execute(query, {'referrer_id': referrer_id, 'chat_id': chat_id})
