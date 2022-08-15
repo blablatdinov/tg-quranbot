@@ -1,10 +1,11 @@
-from db.base import Base
-
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.sql.sqltypes import String, Date, Integer
+from sqlalchemy.sql.sqltypes import Date, Integer, String
+
+from db.base import Base
 
 
 class PrayerAtUserGroup(Base):
+    """Модель для группировки времени намаза у пользователя."""
 
     __tablename__ = 'prayers_at_user_groups'
 

@@ -132,7 +132,6 @@ class PrayerTimes(PrayerTimesInterface):
         :raises UserHasNotCityIdError: если город не найден в БД
         """
         user = await self._user_repository.get_by_chat_id(self._chat_id)
-        print(user)
         if not user.city_id:
             raise UserHasNotCityIdError
         prayers = await self._prayer_times_repository.get_prayer_times_for_date(
