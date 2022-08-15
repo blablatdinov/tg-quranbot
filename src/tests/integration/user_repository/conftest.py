@@ -26,7 +26,7 @@ async def city_id(db_session):
     city_uuid = uuid.uuid4()
     await db_session.execute(
         "INSERT INTO cities (city_id, name) VALUES (:city_id, 'Казань') RETURNING city_id",
-        {'city_id': city_uuid},
+        {'city_id': str(city_uuid)},
     )
     return city_uuid
 
