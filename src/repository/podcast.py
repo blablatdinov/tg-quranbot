@@ -35,11 +35,11 @@ class PodcastRepository(PodcastRepositoryInterface):
         """
         query = """
             SELECT
-                f.telegram_file_id as audio_telegram_id,
-                f.link as link_to_audio_file
-            FROM qbot_aiogram.public.podcasts p
-            INNER JOIN files f on p.file_id = f.file_id
-            ORDER BY random()
+                f.telegram_file_id AS audio_telegram_id,
+                f.link AS link_to_audio_file
+            FROM podcasts p
+            INNER JOIN files f ON p.file_id = f.file_id
+            ORDER BY RANDOM()
             LIMIT 1
         """
         row = await self.connection.fetch_one(query)
