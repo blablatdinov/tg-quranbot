@@ -1,4 +1,3 @@
-from asyncpg import Connection
 from databases import Database
 from loguru import logger
 from pydantic import BaseModel, parse_obj_as
@@ -49,19 +48,18 @@ class FavoriteAyatsNeighborRepository(NeighborAyatsRepositoryInterface):
                 *
             FROM (
                 SELECT
-                     a.ayat_id as id,
-                     a.ayat_number as ayat_num,
-                     s.sura_id as sura_num,
-                     lag(a.ayat_id) OVER (ORDER BY a.ayat_id ASC) AS prev,
-                     lead(a.ayat_id) OVER (ORDER BY a.ayat_id ASC) AS next
+                     ayats.ayat_id as id,
+                     ayats.ayat_number as ayat_num,
+                     ayats.sura_id as sura_num,
+                     lag(ayats.ayat_id) OVER (ORDER BY ayats.ayat_id ASC) AS prev,
+                     lead(ayats.ayat_id) OVER (ORDER BY ayats.ayat_id ASC) AS next
                 FROM (
                     SELECT ayats.* FROM ayats
                     INNER JOIN favorite_ayats fa on ayats.ayat_id = fa.ayat_id
                     INNER JOIN users u on fa.user_id = u.chat_id
                     WHERE u.chat_id = :chat_id
-                ) a
-                INNER JOIN suras s on s.sura_id = a.sura_id
-                ) x
+                ) ayats
+            ) x
             WHERE :ayat_id IN (id, prev, next)
         """
         rows = await self.connection.fetch_all(query, {'ayat_id': ayat_id, 'chat_id': self.chat_id})
@@ -95,7 +93,7 @@ class NeighborAyatsRepository(NeighborAyatsRepositoryInterface):
             WHERE :ayat_id IN (id, prev, next)
         """
         rows = await self._connection.fetch_all(query, {'ayat_id': ayat_id})
-        return parse_obj_as(list[AyatShort], [row._mapping for row in rows])
+        return parse_obj_as(list[AyatShort], [row._mapping for row in rows])  # noqa: WPS437
 
 
 class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
