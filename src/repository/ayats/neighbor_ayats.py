@@ -1,5 +1,4 @@
 from databases import Database
-from loguru import logger
 from pydantic import BaseModel, parse_obj_as
 
 
@@ -99,7 +98,7 @@ class NeighborAyatsRepository(NeighborAyatsRepositoryInterface):
 class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
     """Класс для работы с сосденими аятами, при текстовом поиске."""
 
-    def __init__(self, connection, query: str):
+    def __init__(self, connection: Database, query: str):
         self.connection = connection
         self._query = query
 
@@ -109,24 +108,23 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
         :param ayat_id: int
         :returns: list[AyatShort]
         """
-        logger.debug(str(self._query))
         query = """
             SELECT
                 *
             FROM (
                 SELECT
-                     a.id,
-                     a.ayat as ayat_num,
-                     cs.number as sura_num,
-                     lag(a.id) OVER (ORDER BY a.id ASC) AS prev,
-                     lead(a.id) OVER (ORDER BY a.id ASC) AS next
+                     a.ayat_id AS id,
+                     a.ayat_number AS ayat_num,
+                     cs.sura_id AS sura_num,
+                     lag(a.ayat_id) OVER (ORDER BY a.ayat_id ASC) AS prev,
+                     lead(a.ayat_id) OVER (ORDER BY a.ayat_id ASC) AS next
                 FROM (
-                    SELECT content_ayat.* FROM content_ayat
-                    WHERE content_ayat.content ILIKE $2
+                    SELECT ayats.* FROM ayats
+                    WHERE ayats.content ILIKE :query
                 ) a
-                INNER JOIN content_sura cs on cs.id = a.sura_id
+                INNER JOIN suras cs ON cs.sura_id = a.sura_id
                 ) x
-            WHERE $1 IN (id, prev, next)
+            WHERE :ayat_id IN (id, prev, next)
         """
-        rows = await self.connection.fetch(query, ayat_id, '%{0}%'.format(self._query))
-        return parse_obj_as(list[AyatShort], rows)
+        rows = await self.connection.fetch_all(query, {'ayat_id': ayat_id, 'query': '%{0}%'.format(self._query)})
+        return parse_obj_as(list[AyatShort], [row._mapping for row in rows])
