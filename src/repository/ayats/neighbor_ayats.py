@@ -71,8 +71,8 @@ class FavoriteAyatsNeighborRepository(NeighborAyatsRepositoryInterface):
 class NeighborAyatsRepository(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
-    def __init__(self, connection: Connection):
-        self.connection = connection
+    def __init__(self, connection: Database):
+        self._connection = connection
 
     async def get_ayat_neighbors(self, ayat_id: int) -> list[AyatShort]:
         """Получить соседние аяты.
@@ -85,18 +85,17 @@ class NeighborAyatsRepository(NeighborAyatsRepositoryInterface):
                 *
             FROM (
                 SELECT
-                    a.id,
-                    a.ayat as ayat_num,
-                    cs.number as sura_num,
-                    lag(a.id) OVER (ORDER BY a.id ASC) AS prev,
-                    lead(a.id) OVER (ORDER BY a.id ASC) AS next
-                FROM content_ayat a
-                INNER JOIN content_sura cs on cs.id = a.sura_id
+                    a.ayat_id AS id,
+                    a.ayat_number AS ayat_num,
+                    a.sura_id AS sura_num,
+                    lag(a.ayat_id) OVER (ORDER BY a.ayat_id ASC) AS prev,
+                    lead(a.ayat_id) OVER (ORDER BY a.ayat_id ASC) AS next
+                FROM ayats a
             ) x
-            WHERE $1 IN (id, prev, next)
+            WHERE :ayat_id IN (id, prev, next)
         """
-        rows = await self.connection.fetch(query, ayat_id)
-        return parse_obj_as(list[AyatShort], rows)
+        rows = await self._connection.fetch_all(query, {'ayat_id': ayat_id})
+        return parse_obj_as(list[AyatShort], [row._mapping for row in rows])
 
 
 class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
