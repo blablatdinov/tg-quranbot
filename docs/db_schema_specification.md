@@ -74,4 +74,9 @@ classDiagram
     class prayer_days{
         date date
     }
+    class admin_messages{
+        date date
+        varchar key
+        varchar text
+    }
 ```
