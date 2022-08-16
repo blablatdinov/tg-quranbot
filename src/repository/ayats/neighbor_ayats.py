@@ -123,8 +123,11 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
                     WHERE ayats.content ILIKE :query
                 ) a
                 INNER JOIN suras cs ON cs.sura_id = a.sura_id
-                ) x
+            ) x
             WHERE :ayat_id IN (id, prev, next)
         """
-        rows = await self.connection.fetch_all(query, {'ayat_id': ayat_id, 'query': '%{0}%'.format(self._query)})
-        return parse_obj_as(list[AyatShort], [row._mapping for row in rows])
+        rows = await self.connection.fetch_all(
+            query,
+            {'ayat_id': ayat_id, 'query': '%{0}%'.format(self._query)},
+        )
+        return parse_obj_as(list[AyatShort], [row._mapping for row in rows])  # noqa: WPS437

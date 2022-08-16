@@ -1,6 +1,6 @@
 import pytest
 
-from repository.city import CityRepository, City
+from repository.city import City, CityRepository
 
 
 @pytest.fixture()

@@ -1,6 +1,6 @@
 import pytest
 
-from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository, AyatShort
+from repository.ayats.neighbor_ayats import AyatShort, TextSearchNeighborAyatsRepository
 
 
 @pytest.fixture()

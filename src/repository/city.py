@@ -40,4 +40,4 @@ class CityRepository(CityRepositoryInterface):
         search_query = '%{0}%'.format(search_query)
         query = 'SELECT city_id AS id, name FROM cities WHERE name ILIKE :search_query'
         rows = await self._connection.fetch_all(query, {'search_query': search_query})
-        return parse_obj_as(list[City], [row._mapping for row in rows])
+        return parse_obj_as(list[City], [row._mapping for row in rows])  # noqa: WPS437
