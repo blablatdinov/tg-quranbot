@@ -33,6 +33,6 @@ class AdminMessageRepository(AdminMessageRepositoryInterface):
         :returns: str
         """
         record = await self.connection.fetch_one(
-            "SELECT text FROM admin_messages m WHERE m.key = :key", {'key': key},
+            'SELECT text FROM admin_messages m WHERE m.key = :key', {'key': key},
         )
-        return QueryResult.parse_obj(record._mapping).text
+        return QueryResult.parse_obj(record._mapping).text  # noqa: WPS437

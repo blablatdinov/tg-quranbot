@@ -1,6 +1,6 @@
-from databases import Database
 from typing import Optional
 
+from databases import Database
 from pydantic import BaseModel
 
 
@@ -43,4 +43,4 @@ class PodcastRepository(PodcastRepositoryInterface):
             LIMIT 1
         """
         row = await self.connection.fetch_one(query)
-        return Podcast.parse_obj(row._mapping)
+        return Podcast.parse_obj(row._mapping)  # noqa: WPS437
