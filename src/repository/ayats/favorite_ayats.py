@@ -75,7 +75,7 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
             WHERE u.chat_id = :chat_id
         """
         rows = await self._connection.fetch_all(query, {'chat_id': chat_id})
-        return parse_obj_as(list[Ayat], [row._mapping for row in rows])
+        return parse_obj_as(list[Ayat], [row._mapping for row in rows])  # noqa: WPS437
 
     async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
         """Получить аят по номеру суры.
@@ -92,7 +92,7 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
             WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id
         """
         row = await self._connection.fetch_one(query, {'ayat_id': ayat_id, 'chat_id': chat_id})
-        return bool(CountResult.parse_obj(row._mapping).count)
+        return bool(CountResult.parse_obj(row._mapping).count)  # noqa: WPS437
 
     async def add_to_favorite(self, chat_id: int, ayat_id: int):
         """Добавить аят в избранные.

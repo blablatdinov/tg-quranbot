@@ -1,7 +1,7 @@
 """Initial migration.
 
 Revision ID: 8dce815ede2c
-Revises: 
+Revises:
 Create Date: 2022-08-14 20:14:01.314961
 
 """
@@ -66,7 +66,7 @@ def upgrade() -> None:
         'users',
         sa.Column('chat_id', sa.Integer(), nullable=False),
         sa.Column(
-            'is_active', sa.Boolean(), server_default=sa.text('true'), nullable=False
+            'is_active', sa.Boolean(), server_default=sa.text('true'), nullable=False,
         ),
         sa.Column('comment', sa.String(), nullable=True),
         sa.Column('day', sa.Integer(), nullable=True),

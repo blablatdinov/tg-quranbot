@@ -52,7 +52,7 @@ async def ayats(db_session):
 async def users(db_session):
     insert_users_query = """
         INSERT INTO users
-        (chat_id, is_active, day) 
+        (chat_id, is_active, day)
         VALUES
         (:chat_id, 't', :day)
     """
@@ -74,6 +74,4 @@ async def test(db_session, ayats, users):
     assert isinstance(got, list)
     assert len(got) == 2
     assert isinstance(got[0], ContentSpam)
-    assert got[0].content == '<b>1: 2)</b> content\n'
-    assert got[0].link == '/hello'
-    assert got[0].chat_id == 832749
+    assert got[0] == ContentSpam(content='<b>1: 2)</b> content\n', link='/hello', chat_id=832749)

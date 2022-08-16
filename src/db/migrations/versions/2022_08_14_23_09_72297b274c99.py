@@ -1,4 +1,4 @@
-"""Add User.legacy_id
+"""Add User.legacy_id.
 
 Revision ID: 72297b274c99
 Revises: 8dce815ede2c

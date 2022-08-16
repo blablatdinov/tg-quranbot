@@ -48,4 +48,4 @@ class AyatMorningContentRepository(AyatMorningContentRepositoryInterface):
             GROUP BY s.chat_id
         """
         rows = await self._connection.fetch_all(query)
-        return parse_obj_as(list[ContentSpam], [row._mapping for row in rows])
+        return parse_obj_as(list[ContentSpam], [row._mapping for row in rows])  # noqa: WPS437

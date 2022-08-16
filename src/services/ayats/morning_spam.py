@@ -13,7 +13,11 @@ class MorningSpam(MailingInterface):
     _ayat_spam_repository: AyatMorningContentRepositoryInterface
     _users_repository: UsersRepositoryInterface
 
-    def __init__(self, ayat_spam_repository: AyatMorningContentRepositoryInterface, users_repository: UsersRepositoryInterface):
+    def __init__(
+        self,
+        ayat_spam_repository: AyatMorningContentRepositoryInterface,
+        users_repository: UsersRepositoryInterface,
+    ):
         self._ayat_spam_repository = ayat_spam_repository
         self._users_repository = users_repository
 
