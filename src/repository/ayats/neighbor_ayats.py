@@ -65,7 +65,7 @@ class FavoriteAyatsNeighborRepository(NeighborAyatsRepositoryInterface):
             WHERE :ayat_id IN (id, prev, next)
         """
         rows = await self.connection.fetch_all(query, {'ayat_id': ayat_id, 'chat_id': self.chat_id})
-        return parse_obj_as(list[AyatShort], [row._mapping for row in rows])
+        return parse_obj_as(list[AyatShort], [row._mapping for row in rows])  # noqa: WPS437
 
 
 class NeighborAyatsRepository(NeighborAyatsRepositoryInterface):
