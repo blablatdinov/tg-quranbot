@@ -1,5 +1,7 @@
 # Схема базы данных
 
+Схема приложения с ботом:
+
 ```mermaid
 classDiagram
     files <|-- ayats
@@ -78,5 +80,19 @@ classDiagram
         date date
         varchar key
         varchar text
+    }
+```
+
+
+Схема приложения с API:
+
+```mermaid
+classDiagram
+    mailings <|-- messages
+    class messages{
+        message_id
+    }
+    class mailings{
+        id
     }
 ```
