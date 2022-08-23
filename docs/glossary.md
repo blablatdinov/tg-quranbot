@@ -150,6 +150,37 @@
 }
 ```
 
+Пример сообщения с файлом:
+
+```
+{
+    "message_id": 12120,
+    "from": {
+        "id": 705810219,
+        "is_bot_init": true,
+        "first_name": "Quran",
+        "username": "Quran_365_bot_init"
+    },
+    "chat": {
+        "id": 358610865,
+        "first_name": "Алмаз",
+        "last_name": "Илалетдинов",
+        "username": "ilaletdinov",
+        "type": "private"
+    },
+    "date": 1582624476,
+    "audio": {
+        "duration": 0,
+        "mime_type": "audio/mpeg",
+        "title": "Остерегайтесь сект!",
+        "performer": "Шамиль Аялутдинов",
+        "file_id": "CQACAgIAAxkDAAIvWF5U7tyc4kGu7CuJjG0s1w4eSrXeAAL4BwACwtR4SjHMgbJ9LMmFGAQ",
+        "file_unique_id": "AgAD-AcAAsLUeEo",
+        "file_size": 29956029
+    }
+}
+```
+
 ### Сохраненное нажатие на кнопку
 
 Нажатие на кнопку пользователям

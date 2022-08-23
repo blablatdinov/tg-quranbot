@@ -5,7 +5,7 @@ from app_types.intable import Intable
 from exceptions.content_exceptions import AyatNotFoundError, UserHasNotFavoriteAyatsError
 from repository.ayats.ayat import Ayat
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
-from services.answers.answer import Answer
+from services.answers.answer import TextAnswer
 from services.answers.answer_list import AnswersList
 from services.answers.interface import AnswerInterface
 from services.ayats.ayat_search_interface import AyatSearchInterface
@@ -66,11 +66,11 @@ class SearchAnswer(Answerable):
         """
         ayat = await self._ayat_search.search()
         return AnswersList(
-            Answer(
+            TextAnswer(
                 message=str(ayat),
                 keyboard=await self._keyboard.generate(),
             ),
-            Answer(link_to_file=ayat.link_to_audio_file, telegram_file_id=ayat.audio_telegram_id),
+            TextAnswer(link_to_file=ayat.link_to_audio_file, telegram_file_id=ayat.audio_telegram_id),
         )
 
 

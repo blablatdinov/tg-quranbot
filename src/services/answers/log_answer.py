@@ -1,7 +1,7 @@
 from aiogram import types
 
 from repository.update_log import UpdatesLogRepositoryInterface
-from services.answers.interface import AnswerInterface, SingleAnswerInterface
+from services.answers.interface import AnswerInterface
 from services.ayats.keyboard_interface import AyatSearchKeyboardInterface
 from services.user_prayer_status_interface import UserPrayerStatusInterface
 

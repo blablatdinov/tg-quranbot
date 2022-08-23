@@ -6,7 +6,7 @@ from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
 from repository.update_log import UpdatesLogRepository
-from services.answers.answer import Answer
+from services.answers.answer import TextAnswer
 from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswerProcess
 from services.ayats.ayat_search import AyatNotFoundSafeAnswer, SearchAnswer
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate
@@ -26,7 +26,7 @@ async def ayats_text_search_button_handler(message: types.Message):
             UpdatesLogRepository(connection),
             message,
             LoggedAnswer(
-                Answer(message='Введите слово для поиска:'),
+                TextAnswer(message='Введите слово для поиска:'),
                 UpdatesLogRepository(connection),
             ),
         )

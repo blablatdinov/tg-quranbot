@@ -2,7 +2,7 @@ from app_types.answerable import Answerable
 from exceptions.content_exceptions import CityNotSupportedError
 from repository.city import City
 from repository.users.user import UserRepositoryInterface
-from services.answers.answer import Answer
+from services.answers.answer import TextAnswer
 from services.answers.interface import AnswerInterface
 from services.city.search import CitySearchInterface
 
@@ -43,7 +43,7 @@ class UserCityAnswer(Answerable):
         :returns: AnswerInterface
         """
         city = await self._user_city.update_city()
-        return Answer(message='Вам будет приходить время намаза для г. {0}'.format(city.name))
+        return TextAnswer(message='Вам будет приходить время намаза для г. {0}'.format(city.name))
 
 
 class CityNotSupportedSafetyAnswer(Answerable):
@@ -60,4 +60,4 @@ class CityNotSupportedSafetyAnswer(Answerable):
         try:
             return await self._origin.to_answer()
         except CityNotSupportedError as error:
-            return Answer(message=error.user_message)
+            return TextAnswer(message=error.user_message)

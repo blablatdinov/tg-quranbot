@@ -1,6 +1,6 @@
 from repository.mailing import MailingRepository
 from repository.users.users import UsersRepositoryInterface
-from services.answers.answer import Answer
+from services.answers.answer import TextAnswer
 from services.answers.spam_answer_list import SavedSpamAnswerList, SpamAnswerList
 
 
@@ -24,7 +24,7 @@ class MailingCreatedEvent(object):
             SpamAnswerList(
                 self._users_repository,
                 *[
-                    Answer(message=event['text'], chat_id=active_user_chat_id)
+                    TextAnswer(message=event['text'], chat_id=active_user_chat_id)
                     for active_user_chat_id in active_user_chat_ids
                 ],
             ),

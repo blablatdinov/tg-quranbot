@@ -3,7 +3,7 @@ from repository.admin_message import AdminMessageRepositoryInterface
 from repository.ayats.ayat import AyatRepositoryInterface
 from repository.users.user import User, UserRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
-from services.answers.answer import Answer
+from services.answers.answer import TextAnswer
 from services.answers.answer_list import AnswersList
 from services.answers.interface import AnswerInterface
 from services.start_message import StartMessageMeta
@@ -51,8 +51,8 @@ class RegisterNewUser(object):
         start_message = await self._admin_messages_repository.get('start')
         first_ayat = await self._ayats_repository.get(1)
         return AnswersList(
-            Answer(message=start_message, chat_id=chat_id),
-            Answer(message=str(first_ayat), chat_id=chat_id),
+            TextAnswer(message=start_message, chat_id=chat_id),
+            TextAnswer(message=str(first_ayat), chat_id=chat_id),
         )
 
 
@@ -98,11 +98,11 @@ class RegisterUserWithReferrer(object):
         else:
             referrer_user_record = (await self._user_repository.get_by_id(self._start_message_meta.referrer)).chat_id
         new_user_answers = await self._register_new_user.to_answer(chat_id)
-        new_user_answers_list = new_user_answers.to_list()
+        new_user_answers_list = new_user_answers
         return AnswersList(
             new_user_answers_list[0],
             new_user_answers_list[1],
-            Answer(message=message_for_referrer, chat_id=referrer_user_record.chat_id),
+            TextAnswer(message=message_for_referrer, chat_id=referrer_user_record.chat_id),
         )
 
 
@@ -120,7 +120,7 @@ class RegisterAlreadyExistsUser(object):
         self._user_repository = user_repository
         self._users_repository = users_repository
 
-    async def register(self, chat_id: int) -> Answer:
+    async def register(self, chat_id: int) -> TextAnswer:
         """Обработка уже зарегестрированного пользователя.
 
         :param chat_id: int
@@ -128,10 +128,10 @@ class RegisterAlreadyExistsUser(object):
         """
         user = await self._user_repository.get_by_chat_id(chat_id)
         if user.is_active:
-            return Answer(chat_id=chat_id, message='Вы уже зарегистрированы')
+            return TextAnswer(chat_id=chat_id, message='Вы уже зарегистрированы')
 
         await self._users_repository.update_status([chat_id], to=True)
-        return Answer(
+        return TextAnswer(
             chat_id=chat_id,
             message='Рады видеть вас снова, вы продолжите с дня {user_day}'.format(user_day=user.day),
         )

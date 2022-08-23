@@ -9,7 +9,7 @@ from constants import PRAYER_NOT_READED_EMOJI, PRAYER_READED_EMOJI
 from exceptions.content_exceptions import UserHasNotCityIdError
 from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
 from repository.users.user import UserRepositoryInterface
-from services.answers.answer import Answer
+from services.answers.answer import TextAnswer
 from services.answers.interface import AnswerInterface
 from services.user_prayer_status_interface import UserPrayerStatusInterface
 
@@ -190,7 +190,7 @@ class UserHasNotCityExistsSafeAnswer(Answerable):
             keyboard = types.InlineKeyboardMarkup().row(
                 types.InlineKeyboardButton('Поиск города', switch_inline_query_current_chat=''),
             )
-            return Answer(message=exception.user_message, keyboard=keyboard)
+            return TextAnswer(message=exception.user_message, keyboard=keyboard)
 
 
 class UserPrayerTimesAnswer(Answerable):
@@ -212,7 +212,7 @@ class UserPrayerTimesAnswer(Answerable):
             self._user_prayer_times,
         ).generate()
         prayers = await self._user_prayer_times._prayer_times.get(self._date)
-        return Answer(
+        return TextAnswer(
             keyboard=keyboard,
             message=str(prayers),
         )
