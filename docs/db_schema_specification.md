@@ -96,3 +96,25 @@ classDiagram
         id
     }
 ```
+
+Схема приложения с API:
+
+```mermaid
+classDiagram
+    mailings <|-- messages
+    messages <|-- messages
+    class messages{
+        int message_id
+        json json
+        bool is_unknown
+        int trigger_message_id
+    }
+    class mailings{
+        int id
+    }
+    class buttons_log{
+        int id
+        json json
+        timestamp datetime
+    }
+```
