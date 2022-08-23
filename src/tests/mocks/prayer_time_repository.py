@@ -1,5 +1,5 @@
 import datetime
-import random
+import uuid
 
 from repository.prayer_time import Prayer, PrayerTimeRepositoryInterface, UserPrayer
 
@@ -24,7 +24,7 @@ class PrayerTimeRepositoryMock(PrayerTimeRepositoryInterface):
         names = ['fajr', 'sunrise', 'dhuhr', 'asr', 'magrib', "isha'a"]
         return [
             Prayer(
-                id=random.randint(1, 100), city='Казань', day=date, time=time, name=name,
+                id=uuid.uuid4(), city='Казань', day=date, time=time, name=name,
             )
             for time, name in zip(times, names)
         ]
