@@ -129,7 +129,7 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
             WHERE u.chat_id = :chat_id AND d.date = :date
         """
         rows = await self.connection.fetch_all(query, {'chat_id': chat_id, 'date': target_datetime})
-        return parse_obj_as(list[Prayer], [row._mapping for row in rows])
+        return parse_obj_as(list[Prayer], [row._mapping for row in rows])  # noqa: WPS437
 
     async def get_user_prayer_times(
         self,
@@ -157,9 +157,13 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
             INNER JOIN users u ON up.user_id = u.chat_id
             WHERE p.prayer_id IN {0} AND u.chat_id = :chat_id AND pd.date = :date
         """
-        query = query_template.format('({0})'.format(','.join(["'{0}'".format(str(x)) for x in prayer_ids])))
+        query = query_template.format(
+            '({0})'.format(
+                ','.join(["'{0}'".format(str(prayer_id)) for prayer_id in prayer_ids]),
+            ),
+        )
         rows = await self.connection.fetch_all(query, {'chat_id': chat_id, 'date': date})
-        return parse_obj_as(list[UserPrayer], [row._mapping for row in rows])
+        return parse_obj_as(list[UserPrayer], [row._mapping for row in rows])  # noqa: WPS437
 
     async def create_user_prayer_times(self, prayer_ids: list[uuid.UUID], user_id: int) -> list[UserPrayer]:
         """Создать времена намазов для пользователя.
@@ -170,7 +174,7 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
         """
         user_prayer_group_id = uuid.uuid4()
         await self.connection.execute(
-            "INSERT INTO prayers_at_user_groups (prayers_at_user_group_id) VALUES (:prayers_at_user_group_id)",
+            'INSERT INTO prayers_at_user_groups (prayers_at_user_group_id) VALUES (:prayers_at_user_group_id)',
             {'prayers_at_user_group_id': str(user_prayer_group_id)},
         )
         logger.info('Creating user prayers with prayer_ids={0}, user_id={1}'.format(prayer_ids, user_id))
@@ -183,15 +187,27 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
         await self.connection.execute_many(
             query,
             [
-                {'is_read': False, 'prayer_id': str(prayer_id), 'prayer_group_id': str(user_prayer_group_id), 'user_id': user_id}
+                {
+                    'is_read': False,
+                    'prayer_id': str(prayer_id),
+                    'prayer_group_id': str(user_prayer_group_id),
+                    'user_id': user_id,
+                }
                 for prayer_id in prayer_ids
             ],
         )
+        query = """
+            SELECT
+                prayer_at_user_id AS id,
+                is_read AS is_readed
+            FROM prayers_at_user
+            WHERE prayer_group_id = :prayer_group_id
+        """
         rows = await self.connection.fetch_all(
-            "SELECT prayer_at_user_id AS id, is_read as is_readed FROM prayers_at_user WHERE prayer_group_id = :prayer_group_id",
-            {'prayer_group_id': str(user_prayer_group_id)}
+            query,
+            {'prayer_group_id': str(user_prayer_group_id)},
         )
-        return parse_obj_as(list[UserPrayer], [row._mapping for row in rows])
+        return parse_obj_as(list[UserPrayer], [row._mapping for row in rows])  # noqa: WPS437
 
     async def change_user_prayer_time_status(self, user_prayer_id: int, is_readed: bool):
         """Поменять статус прочитанности у аята.
