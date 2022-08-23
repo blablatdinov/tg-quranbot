@@ -61,4 +61,9 @@ classDiagram
     class mailings{
         int id
     }
+    class buttons_log{
+        int id
+        json json
+        timestamp datetime
+    }
 ```
