@@ -141,10 +141,3 @@ async def test_change_user_prayer_time_status(db_session, prayers_at_user: list[
     )
 
     assert row._mapping['is_read'] is True  # noqa: WPS437
-
-
-# async def test_not_found_prayers_for_date(db_session):
-#     await PrayerTimeRepository(db_session).get_prayer_times_for_date
-
-
-# async def test_get_user_prayer_times_without_generated_rows(db_session, city, prayers: list[uuid.UUID], user):
