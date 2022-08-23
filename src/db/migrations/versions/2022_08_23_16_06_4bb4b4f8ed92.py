@@ -1,15 +1,16 @@
 """Init.
 
-Revision ID: e55581f985c9
-Revises:
-Create Date: 2022-08-23 13:09:19.181141
+Revision ID: 4bb4b4f8ed92
+Revises: 
+Create Date: 2022-08-23 16:06:46.993475
 
 """
-import sqlalchemy as sa
 from alembic import op
+import sqlalchemy as sa
+
 
 # revision identifiers, used by Alembic.
-revision = 'e55581f985c9'
+revision = '4bb4b4f8ed92'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -32,8 +33,7 @@ def upgrade() -> None:
     op.create_table(
         'files',
         sa.Column('file_id', sa.String(), nullable=False),
-        sa.Column('telegram_file_id', sa.String(), nullable=False),
-        sa.Column('link', sa.String(), nullable=False),
+        sa.Column('telegram_file_id', sa.String(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint('file_id'),
     )
@@ -59,7 +59,6 @@ def upgrade() -> None:
         sa.Column('public_id', sa.String(), nullable=False),
         sa.Column('sura_id', sa.Integer(), nullable=False),
         sa.Column('audio_id', sa.String(), nullable=False),
-        sa.Column('day', sa.Integer(), nullable=True),
         sa.Column('ayat_number', sa.String(length=10), nullable=False),
         sa.Column('content', sa.String(), nullable=False),
         sa.Column('arab_text', sa.String(), nullable=False),
@@ -105,7 +104,7 @@ def upgrade() -> None:
         'users',
         sa.Column('chat_id', sa.Integer(), nullable=False),
         sa.Column(
-            'is_active', sa.Boolean(), server_default=sa.text('true'), nullable=False,
+            'is_active', sa.Boolean(), server_default=sa.text('true'), nullable=False
         ),
         sa.Column('comment', sa.String(), nullable=True),
         sa.Column('day', sa.Integer(), nullable=True),
