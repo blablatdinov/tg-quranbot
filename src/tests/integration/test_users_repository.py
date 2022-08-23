@@ -28,7 +28,10 @@ async def test_increment_user_days(db_session, active_users: list[int]):
 
     chat_ids = await db_session.fetch_all('SELECT chat_id FROM users WHERE day=3')
 
-    assert sorted(active_users) == sorted([dict(chat_id._mapping)['chat_id'] for chat_id in chat_ids])  # noqa: WPS437
+    assert (
+        sorted(active_users)
+        == sorted([dict(chat_id._mapping)['chat_id'] for chat_id in chat_ids])  # noqa: WPS437
+    )
 
 
 async def test_get_active_users_with_city(db_session, active_users):
