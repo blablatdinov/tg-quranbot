@@ -1,15 +1,16 @@
 """Init.
 
-Revision ID: 58f6084e460c
-Revises:
-Create Date: 2022-08-16 17:12:21.039627
+Revision ID: e55581f985c9
+Revises: 
+Create Date: 2022-08-23 13:09:19.181141
 
 """
-import sqlalchemy as sa
 from alembic import op
+import sqlalchemy as sa
+
 
 # revision identifiers, used by Alembic.
-revision = '58f6084e460c'
+revision = 'e55581f985c9'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -87,6 +88,7 @@ def upgrade() -> None:
     op.create_table(
         'prayers',
         sa.Column('prayer_id', sa.String(), nullable=False),
+        sa.Column('name', sa.String(), nullable=True),
         sa.Column('time', sa.Time(), nullable=False),
         sa.Column('city_id', sa.String(), nullable=True),
         sa.Column('day_id', sa.Date(), nullable=True),
@@ -104,7 +106,7 @@ def upgrade() -> None:
         'users',
         sa.Column('chat_id', sa.Integer(), nullable=False),
         sa.Column(
-            'is_active', sa.Boolean(), server_default=sa.text('true'), nullable=False,
+            'is_active', sa.Boolean(), server_default=sa.text('true'), nullable=False
         ),
         sa.Column('comment', sa.String(), nullable=True),
         sa.Column('day', sa.Integer(), nullable=True),
@@ -137,15 +139,12 @@ def upgrade() -> None:
     )
     op.create_table(
         'prayers_at_user',
-        sa.Column('prayer_at_user_id', sa.String(), nullable=False),
+        sa.Column('prayer_at_user_id', sa.Integer(), nullable=False),
+        sa.Column('public_id', sa.String(), nullable=True),
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('prayer_id', sa.String(), nullable=True),
-        sa.Column('day_id', sa.Date(), nullable=True),
+        sa.Column('is_read', sa.Boolean(), nullable=True),
         sa.Column('prayer_group_id', sa.String(), nullable=True),
-        sa.ForeignKeyConstraint(
-            ['day_id'],
-            ['prayer_days.date'],
-        ),
         sa.ForeignKeyConstraint(
             ['prayer_group_id'],
             ['prayers_at_user_groups.prayers_at_user_group_id'],

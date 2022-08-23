@@ -1,5 +1,5 @@
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.sql.sqltypes import Date, Integer, String
+from sqlalchemy.sql.sqltypes import Integer, String, Boolean
 
 from db.base import Base
 
@@ -17,8 +17,9 @@ class PrayerAtUser(Base):
 
     __tablename__ = 'prayers_at_user'
 
-    prayer_at_user_id = Column(String(), primary_key=True)
+    prayer_at_user_id = Column(Integer(), primary_key=True)
+    public_id = Column(String())
     user_id = Column(Integer(), ForeignKey('users.chat_id'), nullable=False)
     prayer_id = Column(String(), ForeignKey('prayers.prayer_id'))
-    day_id = Column(Date(), ForeignKey('prayer_days.date'))
+    is_read = Column(Boolean())
     prayer_group_id = Column(String(), ForeignKey('prayers_at_user_groups.prayers_at_user_group_id'))

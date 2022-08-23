@@ -10,6 +10,7 @@ class Prayer(Base):
     __tablename__ = 'prayers'
 
     prayer_id = Column(String(), primary_key=True)
+    name = Column(String())
     time = Column(Time(), nullable=False)
     city_id = Column(String(), ForeignKey('cities.city_id'))
     day_id = Column(Date(), ForeignKey('prayer_days.date'))
