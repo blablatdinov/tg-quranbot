@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 
 from repository.ayats.ayat import Ayat
@@ -6,7 +8,6 @@ from services.register_user import RegisterAlreadyExistsUser, RegisterNewUser, R
 from services.start_message import get_start_message_query
 from tests.mocks.admin_messages_repository import AdminMessageRepositoryMock
 from tests.mocks.ayat_repository import AyatRepositoryMock
-from tests.mocks.user_action_repository import UserActionRepositoryMock
 from tests.mocks.user_repository import UserRepositoryMock
 from tests.mocks.users_repository import UsersRepositoryMock
 
@@ -19,7 +20,7 @@ def user_repository_mock():
 @pytest.fixture
 def user_repository_with_registered_active_user(user_repository_mock):
     user_repository_mock.storage = [
-        User(id=1, is_active=True, day=15, chat_id=444, city_id=1),
+        User(legacy_id=1, is_active=True, day=15, chat_id=444, city_id=uuid.uuid4()),
     ]
     return user_repository_mock
 
@@ -27,13 +28,13 @@ def user_repository_with_registered_active_user(user_repository_mock):
 @pytest.fixture
 def user_repository_with_registered_inactive_user(user_repository_mock):
     user_repository_mock.storage = [
-        User(id=1, is_active=False, day=15, chat_id=444, city_id=1),
+        User(legacy_id=1, is_active=False, day=15, chat_id=444, city_id=uuid.uuid4()),
     ]
     return user_repository_mock
 
 
 @pytest.fixture
-def register_service(ayat_repository_mock, user_action_repository):
+def register_service(ayat_repository_mock):
     async def _register_service(  # noqa: WPS430
         user_repository_mock: UserRepositoryMock,
         chat_id: int,
@@ -41,7 +42,6 @@ def register_service(ayat_repository_mock, user_action_repository):
     ):
         register_new_user = RegisterNewUser(
             user_repository_mock,
-            user_action_repository,
             AdminMessageRepositoryMock(),
             ayat_repository_mock,
         )
@@ -54,18 +54,12 @@ def register_service(ayat_repository_mock, user_action_repository):
             ),
             RegisterAlreadyExistsUser(
                 user_repository_mock,
-                user_action_repository,
                 UsersRepositoryMock(),
             ),
             chat_id,
         ).register()
 
     return _register_service
-
-
-@pytest.fixture()
-def user_action_repository():
-    return UserActionRepositoryMock()
 
 
 @pytest.fixture()

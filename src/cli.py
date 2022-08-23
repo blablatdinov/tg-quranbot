@@ -8,7 +8,7 @@ from integrations.event_handlers.mailing_created import MailingCreatedEvent
 from integrations.event_handlers.messages_deleted import MessagesDeletedEvent
 from integrations.event_handlers.notification_created import NotificationCreatedEvent
 from integrations.nats_integration import NatsIntegration
-from repository.ayats.ayat_spam import AyatSpamRepository
+from repository.ayats.ayat_morning_content import AyatMorningContentRepository
 from repository.mailing import MailingRepository
 from repository.prayer_time import PrayerTimeRepository
 from repository.update_log import UpdatesLogRepository
@@ -38,7 +38,7 @@ async def send_morning_content() -> None:
             SavedSpamAnswerList(
                 MailingWithUpdateUserDays(
                     MorningSpam(
-                        AyatSpamRepository(connection),
+                        AyatMorningContentRepository(connection),
                         UsersRepository(connection),
                     ),
                     UsersRepository(connection),

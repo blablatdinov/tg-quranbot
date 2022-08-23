@@ -1,4 +1,4 @@
-from asyncpg import Connection
+from databases import Database
 from pydantic import BaseModel, parse_obj_as
 
 
@@ -10,10 +10,10 @@ class ContentSpam(BaseModel):
     link: str
 
 
-class AyatSpamRepositoryInterface(object):
+class AyatMorningContentRepositoryInterface(object):
     """Интерфейс для работы с хранилищем данных для рассылок."""
 
-    async def get_content_for_spam(self) -> list[ContentSpam]:
+    async def get_morning_content(self) -> list[ContentSpam]:
         """Получить контент для рассылки.
 
         :raises NotImplementedError: if not implemented
@@ -21,32 +21,31 @@ class AyatSpamRepositoryInterface(object):
         raise NotImplementedError
 
 
-class AyatSpamRepository(AyatSpamRepositoryInterface):
+class AyatMorningContentRepository(AyatMorningContentRepositoryInterface):
     """Класс для работы с хранилищем данных для рассылок."""
 
-    def __init__(self, connection: Connection):
+    def __init__(self, connection: Database):
         self._connection = connection
 
-    async def get_content_for_spam(self) -> list[ContentSpam]:
+    async def get_morning_content(self) -> list[ContentSpam]:
         """Получить контент для рассылки.
 
         :returns: list[ContentSpam]
         """
         query = """
             SELECT
-                s.tg_chat_id as chat_id,
+                s.chat_id,
                 STRING_AGG(
-                    '<b>' || sura.number::CHARACTER VARYING || ': ' || a.ayat || ')</b> ' || a .content || '\n',
+                    '<b>' || sura.sura_id::CHARACTER VARYING || ': ' || a.ayat_number || ')</b> ' || a .content || '\n',
                     ''
-                    ORDER BY a.id
+                    ORDER BY a.ayat_id
                 ) AS content,
-                STRING_AGG(sura.link, '|' ORDER BY a.id) AS link
-            FROM bot_init_subscriber AS s
-            LEFT JOIN content_morningcontent AS mc ON s.day=mc.day
-            LEFT JOIN content_ayat AS a ON a.one_day_content_id=mc.id
-            LEFT JOIN content_sura AS sura ON a.sura_id=sura.id
+                STRING_AGG(sura.link, '|' ORDER BY a.ayat_id) AS link
+            FROM users AS s
+            LEFT JOIN ayats AS a ON a.day=s.day
+            LEFT JOIN suras AS sura ON a.sura_id=sura.sura_id
             WHERE s.is_active = 't'
-            GROUP BY s.tg_chat_id
+            GROUP BY s.chat_id
         """
-        rows = await self._connection.fetch(query)
-        return parse_obj_as(list[ContentSpam], rows)
+        rows = await self._connection.fetch_all(query)
+        return parse_obj_as(list[ContentSpam], [row._mapping for row in rows])  # noqa: WPS437

@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 import pytest
 
@@ -12,9 +13,9 @@ from tests.mocks.user_repository import UserRepositoryMock
 def user_repository_mock(user_factory):
     mock = UserRepositoryMock()
     mock.storage = [
-        user_factory(1234),
-        user_factory(4321),
-        user_factory(111, city_id=0),
+        user_factory(1234, city_id=uuid.uuid4()),
+        user_factory(4321, city_id=uuid.uuid4()),
+        user_factory(111),
     ]
     return mock
 

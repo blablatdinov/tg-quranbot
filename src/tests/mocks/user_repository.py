@@ -1,4 +1,5 @@
 import random
+import uuid
 from typing import Optional
 
 from repository.users.user import User, UserRepositoryInterface
@@ -10,13 +11,20 @@ class UserRepositoryMock(UserRepositoryInterface):
     async def create(self, chat_id: int, referrer_id: Optional[int] = None):
         user_id = random.randint(0, 100)
         self.storage.append(
-            User(id=user_id, is_active=True, day=2, referrer=referrer_id, chat_id=chat_id, city_id=1),
+            User(
+                id=user_id,
+                is_active=True,
+                day=2,
+                referrer=referrer_id,
+                chat_id=chat_id,
+                city_id=uuid.uuid4(),
+            ),
         )
 
     async def get_by_id(self, user_id: int) -> User:
         return list(
             filter(
-                lambda user: user.id == user_id, self.storage,
+                lambda user: user.legacy_id == user_id, self.storage,
             ),
         )[0]
 

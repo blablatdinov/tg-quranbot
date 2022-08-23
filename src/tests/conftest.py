@@ -1,4 +1,5 @@
 import random
+import uuid
 
 import pytest
 
@@ -23,7 +24,7 @@ def fake_text(faker):
 @pytest.fixture
 def user_factory(faker):
     def _user_factory(chat_id: int = None, is_active: bool = True, city_id: int = None):  # noqa: WPS430
-        city_id = None if city_id == 0 else random.randint(1, 99)
+        city_id = None if city_id is None else uuid.uuid4()
         return User(
             id=random.randint(1, 9999),
             is_active=is_active,
@@ -82,3 +83,9 @@ def ayat_repository_mock(fake_text):
         Ayat(id=5737, sura_num=114, ayat_num='1-4', content='content', **common_params),
     ]
     return mock
+
+
+@pytest.fixture()
+def mixer():
+    from mixer.backend.sqlalchemy import mixer
+    return mixer

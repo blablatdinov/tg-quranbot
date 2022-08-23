@@ -1,5 +1,6 @@
 import datetime
 import re
+import uuid
 
 import pytest
 
@@ -23,7 +24,7 @@ def user(user_repository_mock):
             is_active=True,
             day=2,
             chat_id=444,
-            city_id=1,
+            city_id=uuid.uuid4(),
         ),
     ]
 

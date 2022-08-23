@@ -67,7 +67,7 @@ class UserPrayerTimes(object):
             user = await self._prayer_times._user_repository.get_by_chat_id(self._prayer_times._chat_id)
             user_prayers = await self._prayer_times._prayer_times_repository.create_user_prayer_times(
                 prayer_ids=prayers_without_sunrise_ids,
-                user_id=user.id,
+                user_id=user.chat_id,
             )
 
         return user_prayers

@@ -1,8 +1,8 @@
 import datetime
 import enum
-from dataclasses import dataclass
+import uuid
 
-from asyncpg import Connection
+from databases import Database
 from loguru import logger
 from pydantic import BaseModel, parse_obj_as
 
@@ -21,7 +21,7 @@ class PrayerNames(str, enum.Enum):  # noqa: WPS600
 class Prayer(BaseModel):
     """Модель времени намаза."""
 
-    id: int
+    id: uuid.UUID
     city: str
     day: datetime.date
     time: datetime.time
@@ -51,13 +51,13 @@ class PrayerTimeRepositoryInterface(object):
         self,
         chat_id: int,
         target_datetime: datetime.date,
-        city_id: int,
+        city_id: uuid.UUID,
     ) -> list[Prayer]:
         """Получить времена намазов.
 
         :param chat_id: int
         :param target_datetime: datetime.datetime
-        :param city_id: int
+        :param city_id: uuid.UUID
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -96,18 +96,17 @@ class PrayerTimeRepositoryInterface(object):
         raise NotImplementedError
 
 
-@dataclass
 class PrayerTimeRepository(PrayerTimeRepositoryInterface):
     """Класс для работы с временами намаза в БД."""
 
-    def __init__(self, connection: Connection):
+    def __init__(self, connection: Database):
         self.connection = connection
 
     async def get_prayer_times_for_date(
         self,
         chat_id: int,
         target_datetime: datetime.date,
-        city_id: int,
+        city_id: uuid.UUID,
     ) -> list[Prayer]:
         """Получить времена намаза.
 
@@ -118,29 +117,29 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
         """
         query = """
             SELECT
-                p.id,
-                c.name as city,
-                d.date as day,
-                p.time as time,
-                p.name as name
-            FROM prayer_prayer p
-            INNER JOIN bot_init_subscriber s on p.city_id = s.city_id
-            INNER JOIN prayer_city c on p.city_id = c.id
-            INNER JOIN prayer_day d on p.day_id = d.id
-            where s.tg_chat_id = $1 and d.date = $2
+                p.prayer_id AS id,
+                c.name AS city,
+                d.date AS day,
+                p.time AS time,
+                p.name AS name
+            FROM prayers p
+            INNER JOIN users u ON p.city_id = u.city_id
+            INNER JOIN cities c ON p.city_id = c.city_id
+            INNER JOIN prayer_days d ON p.day_id = d.date
+            WHERE u.chat_id = :chat_id AND d.date = :date
         """
-        rows = await self.connection.fetch(query, chat_id, target_datetime)
-        return parse_obj_as(list[Prayer], rows)
+        rows = await self.connection.fetch_all(query, {'chat_id': chat_id, 'date': target_datetime})
+        return parse_obj_as(list[Prayer], [row._mapping for row in rows])  # noqa: WPS437
 
     async def get_user_prayer_times(
         self,
-        prayer_ids: list[int],
+        prayer_ids: list[uuid.UUID],
         chat_id: int,
         date: datetime.date,
     ) -> list[UserPrayer]:
         """Получить времена намазов для пользователя.
 
-        :param prayer_ids: list[int]
+        :param prayer_ids: list[uuid.UUID]
         :param chat_id: int
         :param date: datetime.date
         :returns: list[UserPrayer]
@@ -148,46 +147,67 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
         logger.info('Search user prayer times for prayer_ids={0}, chat_id={1}, date={2}'.format(
             prayer_ids, chat_id, date,
         ))
-        query = """
+        query_template = """
             SELECT
-                up.id,
-                up.is_read as is_readed
-            FROM prayer_prayeratuser up
-            INNER JOIN prayer_prayer p on up.prayer_id = p.id
-            INNER JOIN prayer_day pd on pd.id = p.day_id
-            INNER JOIN bot_init_subscriber bis on up.subscriber_id = bis.id
-            where p.id IN ($3, $4, $5, $6, $7) AND bis.tg_chat_id = $1 AND pd.date = $2
+                up.prayer_at_user_id AS id,
+                up.is_read AS is_readed
+            FROM prayers_at_user up
+            INNER JOIN prayers p ON up.prayer_id = p.prayer_id
+            INNER JOIN prayer_days pd ON pd.date = p.day_id
+            INNER JOIN users u ON up.user_id = u.chat_id
+            WHERE p.prayer_id IN {0} AND u.chat_id = :chat_id AND pd.date = :date
         """
-        rows = await self.connection.fetch(query, chat_id, date, *prayer_ids)
-        return parse_obj_as(list[UserPrayer], rows)
+        query = query_template.format(
+            '({0})'.format(
+                ','.join(["'{0}'".format(str(prayer_id)) for prayer_id in prayer_ids]),
+            ),
+        )
+        rows = await self.connection.fetch_all(query, {'chat_id': chat_id, 'date': date})
+        return parse_obj_as(list[UserPrayer], [row._mapping for row in rows])  # noqa: WPS437
 
-    async def create_user_prayer_times(self, prayer_ids: list[int], user_id: int) -> list[UserPrayer]:
+    async def create_user_prayer_times(self, prayer_ids: list[uuid.UUID], user_id: int) -> list[UserPrayer]:
         """Создать времена намазов для пользователя.
 
-        :param prayer_ids: list[int]
+        :param prayer_ids: list[uuid.UUID]
         :param user_id: int
         :returns: list[UserPrayer]
         """
-        query = """
-            INSERT INTO prayer_prayeratusergroup (id) VALUES (default) RETURNING id
-        """
-        row = await self.connection.fetchrow(query)
-        user_prayer_group_id = CreatePrayerAtUserGroupQueryResult.parse_obj(row).id
+        user_prayer_group_id = uuid.uuid4()
+        await self.connection.execute(
+            'INSERT INTO prayers_at_user_groups (prayers_at_user_group_id) VALUES (:prayers_at_user_group_id)',
+            {'prayers_at_user_group_id': str(user_prayer_group_id)},
+        )
         logger.info('Creating user prayers with prayer_ids={0}, user_id={1}'.format(prayer_ids, user_id))
         query = """
-            WITH user_id AS (SELECT id FROM bot_init_subscriber where tg_chat_id = $1)
-            INSERT INTO prayer_prayeratuser
-            (is_read, prayer_id, prayer_group_id, subscriber_id)
+            INSERT INTO prayers_at_user
+            (is_read, prayer_id, prayer_group_id, user_id)
             VALUES
-            ('f', $3, $2, $1),
-            ('f', $4, $2, $1),
-            ('f', $5, $2, $1),
-            ('f', $6, $2, $1),
-            ('f', $7, $2, $1)
-            RETURNING id, is_read as is_readed
+            (:is_read, :prayer_id, :prayer_group_id, :user_id)
         """
-        rows = await self.connection.fetch(query, user_id, user_prayer_group_id, *prayer_ids)
-        return parse_obj_as(list[UserPrayer], rows)
+        await self.connection.execute_many(
+            query,
+            [
+                {
+                    'is_read': False,
+                    'prayer_id': str(prayer_id),
+                    'prayer_group_id': str(user_prayer_group_id),
+                    'user_id': user_id,
+                }
+                for prayer_id in prayer_ids
+            ],
+        )
+        query = """
+            SELECT
+                prayer_at_user_id AS id,
+                is_read AS is_readed
+            FROM prayers_at_user
+            WHERE prayer_group_id = :prayer_group_id
+        """
+        rows = await self.connection.fetch_all(
+            query,
+            {'prayer_group_id': str(user_prayer_group_id)},
+        )
+        return parse_obj_as(list[UserPrayer], [row._mapping for row in rows])  # noqa: WPS437
 
     async def change_user_prayer_time_status(self, user_prayer_id: int, is_readed: bool):
         """Поменять статус прочитанности у аята.
@@ -196,8 +216,8 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
         :param is_readed: bool
         """
         query = """
-            UPDATE prayer_prayeratuser
-            SET is_read = $2
-            WHERE id = $1
+            UPDATE prayers_at_user
+            SET is_read = :is_read
+            WHERE prayer_at_user_id = :prayer_at_user_id
         """
-        await self.connection.execute(query, user_prayer_id, is_readed)
+        await self.connection.execute(query, {'is_read': is_readed, 'prayer_at_user_id': user_prayer_id})

@@ -1,7 +1,6 @@
-from dataclasses import dataclass
 from typing import Optional
 
-from asyncpg import Connection
+from databases import Database
 from pydantic import BaseModel
 
 
@@ -23,11 +22,10 @@ class PodcastRepositoryInterface(object):
         raise NotImplementedError
 
 
-@dataclass
 class PodcastRepository(PodcastRepositoryInterface):
     """Класс для работы с хранилищем подкастов."""
 
-    def __init__(self, connection: Connection):
+    def __init__(self, connection: Database):
         self.connection = connection
 
     async def get_random(self) -> Podcast:
@@ -37,12 +35,12 @@ class PodcastRepository(PodcastRepositoryInterface):
         """
         query = """
             SELECT
-                f.tg_file_id as audio_telegram_id,
-                f.link_to_file as link_to_audio_file
-            FROM content_podcast p
-            inner join content_file f on p.audio_id = f.id
-            ORDER BY random()
+                f.telegram_file_id AS audio_telegram_id,
+                f.link AS link_to_audio_file
+            FROM podcasts p
+            INNER JOIN files f ON p.file_id = f.file_id
+            ORDER BY RANDOM()
             LIMIT 1
         """
-        row = await self.connection.fetchrow(query)
-        return Podcast.parse_obj(row)
+        row = await self.connection.fetch_one(query)
+        return Podcast.parse_obj(row._mapping)  # noqa: WPS437

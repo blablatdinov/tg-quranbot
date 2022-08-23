@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 from aiogram import types
 
@@ -22,7 +24,7 @@ def path_to_nominatim_response_new_york_fixture():
 
 class CityRepositoryMock(CityRepositoryInterface):
 
-    _storage: list[City] = [City(id=1, name='Казань')]
+    _storage: list[City] = [City(id=uuid.uuid4(), name='Казань')]
 
     async def search_by_name(self, query: str) -> list[City]:
         return list(
