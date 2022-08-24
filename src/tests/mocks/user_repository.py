@@ -10,6 +10,8 @@ class UserRepositoryMock(UserRepositoryInterface):
 
     async def create(self, chat_id: int, referrer_id: Optional[int] = None):
         user_id = random.randint(0, 100)
+        if chat_id in [x.chat_id for x in self.storage]:
+            raise Exception("User")
         self.storage.append(
             User(
                 id=user_id,

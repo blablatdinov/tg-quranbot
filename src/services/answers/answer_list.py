@@ -9,13 +9,12 @@ class AnswersList(list, AnswerInterface):  # noqa: WPS600
     def __init__(self, *args: AnswerInterface) -> None:
         super().__init__(args)
 
-    async def send(self, chat_id: int = None) -> list[types.Message]:
+    async def send(self) -> list[types.Message]:
         """Метод для отправки ответа.
 
-        :param chat_id: int
         :return: list[types.Message]
         """
         messages: list[types.Message] = []
         for elem in self:
-            messages = sum([messages, await elem.send(chat_id)], start=[])
+            messages = sum([messages, await elem.send()], start=[])
         return messages

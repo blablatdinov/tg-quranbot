@@ -9,7 +9,7 @@ from constants import PRAYER_NOT_READED_EMOJI, PRAYER_READED_EMOJI
 from exceptions.content_exceptions import UserHasNotCityIdError
 from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
 from repository.users.user import UserRepositoryInterface
-from services.answers.answer import TextAnswer
+from services.answers.answer import TextAnswer, KeyboardInterface
 from services.answers.interface import AnswerInterface
 from services.user_prayer_status_interface import UserPrayerStatusInterface
 
@@ -173,27 +173,33 @@ class PrayerTimes(PrayerTimesInterface):
         )
 
 
-class UserHasNotCityExistsSafeAnswer(Answerable):
+class CitySearchKeyboard(KeyboardInterface):
+
+    async def generate(self):
+        return types.InlineKeyboardMarkup().row(
+            types.InlineKeyboardButton('Поиск города', switch_inline_query_current_chat=''),
+        )
+
+
+class UserHasNotCityExistsSafeAnswer(AnswerInterface):
     """Декоратор, для случаев если город, который ищет пользователь не найден."""
 
-    def __init__(self, answerable_object: Answerable):
-        self._origin = answerable_object
+    def __init__(self, origin_answer: AnswerInterface, error_answer: AnswerInterface):
+        self._origin = origin_answer
+        self._error_answer = error_answer
 
-    async def to_answer(self) -> AnswerInterface:
+    async def send(self) -> list[types.Message]:
         """Форматирует в ответ.
 
         :returns: AnswerInterface
         """
         try:
-            return await self._origin.to_answer()
-        except UserHasNotCityIdError as exception:
-            keyboard = types.InlineKeyboardMarkup().row(
-                types.InlineKeyboardButton('Поиск города', switch_inline_query_current_chat=''),
-            )
-            return TextAnswer(message=exception.user_message, keyboard=keyboard)
+            return await self._origin.send()
+        except UserHasNotCityIdError:
+            return await self._error_answer.send()
 
 
-class UserPrayerTimesAnswer(Answerable):
+class UserPrayerTimesAnswer(AnswerInterface):
     """Ответ пользователю с временами намазов."""
 
     _user_prayer_times: UserPrayerTimes

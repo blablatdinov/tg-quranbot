@@ -8,6 +8,7 @@ from services.register_user import RegisterAlreadyExistsUser, RegisterNewUser, R
 from services.start_message import get_start_message_query
 from tests.mocks.admin_messages_repository import AdminMessageRepositoryMock
 from tests.mocks.ayat_repository import AyatRepositoryMock
+from tests.mocks.bot import BotMock
 from tests.mocks.user_repository import UserRepositoryMock
 from tests.mocks.users_repository import UsersRepositoryMock
 
@@ -40,24 +41,35 @@ def register_service(ayat_repository_mock):
         chat_id: int,
         message_text: str,
     ):
-        register_new_user = RegisterNewUser(
-            user_repository_mock,
-            AdminMessageRepositoryMock(),
-            ayat_repository_mock,
-        )
         return await RegisterUser(
-            register_new_user,
+            RegisterNewUser(
+                BotMock(),
+                chat_id,
+                user_repository_mock,
+                AdminMessageRepositoryMock(),
+                ayat_repository_mock,
+            ),
             RegisterUserWithReferrer(
-                register_new_user,
+                BotMock(),
+                chat_id,
+                RegisterNewUser(
+                    BotMock(),
+                    chat_id,
+                    user_repository_mock,
+                    AdminMessageRepositoryMock(),
+                    ayat_repository_mock,
+                ),
                 user_repository_mock,
                 get_start_message_query(message_text),
             ),
             RegisterAlreadyExistsUser(
+                BotMock(),
+                chat_id,
                 user_repository_mock,
                 UsersRepositoryMock(),
             ),
             chat_id,
-        ).register()
+        ).send()
 
     return _register_service
 
