@@ -1,11 +1,13 @@
 from typing import Optional
 
+from aiogram import Bot, types
+
 from app_types.answerable import Answerable
 from app_types.intable import Intable
 from exceptions.content_exceptions import AyatNotFoundError, UserHasNotFavoriteAyatsError
 from repository.ayats.ayat import Ayat
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
-from services.answers.answer import TextAnswer
+from services.answers.answer import DefaultKeyboard, FileAnswer, FileLinkAnswer, TelegramFileIdAnswer, TextAnswer
 from services.answers.answer_list import AnswersList
 from services.answers.interface import AnswerInterface
 from services.ayats.ayat_search_interface import AyatSearchInterface
@@ -50,28 +52,49 @@ class FavoriteAyats(AyatSearchInterface):
         return [ayat for ayat in favorite_ayats if ayat.id == int(self._ayat_id)][0]
 
 
-class SearchAnswer(Answerable):
+class SearchAnswer(AnswerInterface):
     """Класс, собирающий ответ на запрос о поиске."""
 
     _ayat_search: AyatSearchInterface
 
-    def __init__(self, ayat_search: AyatSearchInterface, keyboard: AyatSearchKeyboard):
+    def __init__(
+        self,
+        debug_mode: bool,
+        bot: Bot,
+        chat_id: int,
+        ayat_search: AyatSearchInterface,
+        keyboard: AyatSearchKeyboard,
+    ):
+        self._debug_mode = debug_mode
+        self._bot = bot
+        self._chat_id = chat_id
         self._ayat_search = ayat_search
         self._keyboard = keyboard
 
-    async def to_answer(self) -> AnswerInterface:
-        """Трансформировать переданные данные в ответ.
+    async def send(self) -> list[types.Message]:
+        """Отправить.
 
         :returns: AnswerInterface
         """
         ayat = await self._ayat_search.search()
-        return AnswersList(
-            TextAnswer(
-                message=str(ayat),
-                keyboard=await self._keyboard.generate(),
+        return await AnswersList(
+            TextAnswer(self._bot, self._chat_id, str(ayat), self._keyboard),
+            FileAnswer(
+                self._debug_mode,
+                TelegramFileIdAnswer(
+                    self._bot,
+                    self._chat_id,
+                    ayat.audio_telegram_id,
+                    DefaultKeyboard(),
+                ),
+                FileLinkAnswer(
+                    self._bot,
+                    self._chat_id,
+                    ayat.link_to_audio_file,
+                    DefaultKeyboard(),
+                ),
             ),
-            TextAnswer(link_to_file=ayat.link_to_audio_file, telegram_file_id=ayat.audio_telegram_id),
-        )
+        ).send()
 
 
 class AyatNotFoundSafeAnswer(Answerable):
