@@ -12,3 +12,4 @@ class File(Base):  # noqa: WPS110
     file_id = Column(String(), primary_key=True)
     telegram_file_id = Column(String(), nullable=True)
     created_at = Column(DateTime(), nullable=False)
+    link = Column(String(), nullable=True)

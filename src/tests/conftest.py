@@ -89,3 +89,23 @@ def ayat_repository_mock(fake_text):
 def mixer():
     from mixer.backend.sqlalchemy import mixer
     return mixer
+
+
+
+
+
+"""
+src/tests/integration/test_ayat_morning_content_repository.py::test
+src/tests/integration/test_ayat_repository.py::test_get - asyn...
+src/tests/integration/test_ayat_repository.py::test_get_ayats_by_sura_num
+src/tests/integration/test_ayat_repository.py::test_search_ayats_by_content
+src/tests/integration/test_neighbor_ayats_repository.py::test
+src/tests/integration/test_search_neighbot_ayats_repository.py::test
+src/tests/integration/favorite_ayats/test_favorite_ayats_neighbors_repository.py::test
+src/tests/integration/favorite_ayats/test_favorite_ayats_repository.py::test_get_favorites
+src/tests/integration/favorite_ayats/test_favorite_ayats_repository.py::test_check_ayat_is_favorite
+src/tests/integration/favorite_ayats/test_favorite_ayats_repository.py::test_check_ayat_not_is_favorite
+src/tests/integration/favorite_ayats/test_favorite_ayats_repository.py::test_add_to_favorite
+src/tests/integration/favorite_ayats/test_favorite_ayats_repository.py::test_remove_from_favorite
+
+"""
