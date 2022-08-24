@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional
 
 from aiogram import types
 
@@ -11,7 +11,6 @@ class AnswerInterface(object):
     async def send(self) -> list[types.Message]:
         """Метод для отправки ответа.
 
-        :param chat_id: int
         :raises NotImplementedError: if not implement
         """
         raise NotImplementedError

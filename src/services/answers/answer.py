@@ -1,17 +1,27 @@
-from aiogram import types, Bot
+from aiogram import Bot, types
 
 from services.answers.interface import AnswerInterface
 
 
 class KeyboardInterface(object):
+    """Интерфейс клавиатуры."""
 
     async def generate(self):
+        """Генерация.
+
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
 
 class DefaultKeyboard(KeyboardInterface):
+    """Класс клавиатуры по умолчанию."""
 
     async def generate(self):
+        """Генерация.
+
+        :return: types.ReplyKeyboardMarkup
+        """
         return (
             types.ReplyKeyboardMarkup()
             .row(types.KeyboardButton('🎧 Подкасты'))
@@ -21,6 +31,7 @@ class DefaultKeyboard(KeyboardInterface):
 
 
 class FileAnswer(AnswerInterface):
+    """Класс ответа с файлом."""
 
     def __init__(self, debug_mode: bool, telegram_file_id_answer: AnswerInterface, file_link_answer: AnswerInterface):
         self._debug_mode = debug_mode
@@ -28,6 +39,10 @@ class FileAnswer(AnswerInterface):
         self._file_link_answer = file_link_answer
 
     async def send(self) -> list[types.Message]:
+        """Отправка.
+
+        :return: list[types.Message]
+        """
         if self._debug_mode:
             return await self._file_link_answer.send()
 
@@ -35,6 +50,7 @@ class FileAnswer(AnswerInterface):
 
 
 class TelegramFileIdAnswer(AnswerInterface):
+    """Класс ответа с файлом."""
 
     def __init__(self, bot: Bot, chat_id: int, telegram_file_id: str, keyboard: KeyboardInterface):
         self._chat_id = chat_id
@@ -43,6 +59,10 @@ class TelegramFileIdAnswer(AnswerInterface):
         self._keyboard = keyboard
 
     async def send(self):
+        """Отправка.
+
+        :return: list[types.Message]
+        """
         message = await self._bot.send_audio(
             chat_id=self._chat_id,
             audio=self._telegram_file_id,
@@ -52,6 +72,7 @@ class TelegramFileIdAnswer(AnswerInterface):
 
 
 class FileLinkAnswer(AnswerInterface):
+    """Класс ответа со ссылкой на файл."""
 
     def __init__(self, bot: Bot, chat_id: int, link_to_file: str, keyboard: KeyboardInterface):
         self._chat_id = chat_id
@@ -59,7 +80,11 @@ class FileLinkAnswer(AnswerInterface):
         self._link_to_file = link_to_file
         self._keyboard = keyboard
 
-    async def send(self):
+    async def send(self) -> list[types.Message]:
+        """Отправка.
+
+        :return: list[types.Message]
+        """
         message = await self._bot.send_message(
             chat_id=self._chat_id,
             text=self._link_to_file,
@@ -91,7 +116,10 @@ class TextAnswer(AnswerInterface):
         """Метод для отправки ответа.
 
         :return: types.Message
-        :raises InternalBotError: if not take _chat_id
         """
-        message = await self._bot.send_message(chat_id=self._chat_id, text=self._message, reply_markup=await self._keyboard.generate())
+        message = await self._bot.send_message(
+            chat_id=self._chat_id,
+            text=self._message,
+            reply_markup=await self._keyboard.generate(),
+        )
         return [message]

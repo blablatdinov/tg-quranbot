@@ -5,10 +5,10 @@ from tests.mocks.podcast_repository import PodcastRepositoryMock
 
 async def test():
     got = await PodcastAnswer(
-        False,
-        38294723,
-        BotMock(),
-        PodcastRepositoryMock(),
+        debug_mode=False,
+        chat_id=38294723,
+        bot=BotMock(),
+        podcast_repository=PodcastRepositoryMock(),
     ).send()
 
     assert isinstance(got, list)
@@ -17,10 +17,10 @@ async def test():
 
 async def test_debug():
     got = await PodcastAnswer(
-        True,
-        38294723,
-        BotMock(),
-        PodcastRepositoryMock(),
+        debug_mode=True,
+        chat_id=38294723,
+        bot=BotMock(),
+        podcast_repository=PodcastRepositoryMock(),
     ).send()
 
     assert got[0].text == 'https://link.to.file'

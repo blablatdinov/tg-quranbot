@@ -3,13 +3,12 @@ import datetime
 from aiogram import types
 from loguru import logger
 
-from app_types.answerable import Answerable
 from app_types.intable import Intable
 from constants import PRAYER_NOT_READED_EMOJI, PRAYER_READED_EMOJI
 from exceptions.content_exceptions import UserHasNotCityIdError
 from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
 from repository.users.user import UserRepositoryInterface
-from services.answers.answer import TextAnswer, KeyboardInterface
+from services.answers.answer import KeyboardInterface, TextAnswer
 from services.answers.interface import AnswerInterface
 from services.user_prayer_status_interface import UserPrayerStatusInterface
 
@@ -174,8 +173,13 @@ class PrayerTimes(PrayerTimesInterface):
 
 
 class CitySearchKeyboard(KeyboardInterface):
+    """Клавиатура с поиском города."""
 
     async def generate(self):
+        """Генерация.
+
+        :return: types.InlineKeyboardMarkup()
+        """
         return types.InlineKeyboardMarkup().row(
             types.InlineKeyboardButton('Поиск города', switch_inline_query_current_chat=''),
         )

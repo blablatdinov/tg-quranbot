@@ -1,7 +1,5 @@
 from aiogram import types
 
-from services.answers.answer import TextAnswer
-
 
 async def test_register_new_user(register_service, ayat_repository_mock, user_repository_mock):
     got = await register_service(user_repository_mock, 231, '/start')

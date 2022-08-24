@@ -3,9 +3,9 @@ from aiogram import Bot, types
 from exceptions.base_exception import InternalBotError
 from repository.admin_message import AdminMessageRepositoryInterface
 from repository.ayats.ayat import AyatRepositoryInterface
-from repository.users.user import User, UserRepositoryInterface
+from repository.users.user import UserRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
-from services.answers.answer import TextAnswer, DefaultKeyboard
+from services.answers.answer import DefaultKeyboard, TextAnswer
 from services.answers.answer_list import AnswersList
 from services.answers.interface import AnswerInterface
 from services.start_message import StartMessageMeta
@@ -50,7 +50,9 @@ class RegisterNewUser(object):
         await self._user_repository.create(self._chat_id)
         return await AnswersList(
             TextAnswer(bot=self._bot, message=start_message, chat_id=self._chat_id, keyboard=DefaultKeyboard()),
-            TextAnswer(bot=self._bot, message=str(first_ayat), chat_id=self._chat_id, keyboard=DefaultKeyboard()),
+            TextAnswer(
+                bot=self._bot, message=str(first_ayat), chat_id=self._chat_id, keyboard=DefaultKeyboard(),
+            ),
         ).send()
 
 
@@ -97,7 +99,7 @@ class RegisterUserWithReferrer(AnswerInterface):
             bot=self._bot,
             message='По вашей реферральной ссылке произошла регистрация',
             chat_id=referer_chat_id,
-            keyboard=DefaultKeyboard()
+            keyboard=DefaultKeyboard(),
         ).send()
         return new_user_messages + referer_message
 
@@ -140,7 +142,7 @@ class RegisterAlreadyExistsUser(AnswerInterface):
                 bot=self._bot,
                 chat_id=self._chat_id,
                 message='Вы уже зарегистрированы',
-                keyboard=DefaultKeyboard()
+                keyboard=DefaultKeyboard(),
             ).send()
 
         await self._users_repository.update_status([self._chat_id], to=True)
