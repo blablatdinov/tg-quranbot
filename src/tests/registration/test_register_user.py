@@ -1,12 +1,7 @@
-from aiogram import types
-
-
 async def test_register_new_user(register_service, ayat_repository_mock, user_repository_mock):
     got = await register_service(user_repository_mock, 231, '/start')
 
-    assert isinstance(got, list)
     assert len(got) == 2
-    assert {type(elem) for elem in got} == {types.Message}
     assert got[0].text == 'start message_handlers'
     assert got[0].chat.id == got[1].chat.id == 231
     assert got[1].text == str(ayat_repository_mock.storage[0])
@@ -38,13 +33,22 @@ async def test_with_referrer(
     user_repository_with_registered_inactive_user,
     ayat_repository_mock,
 ):
-    got = await register_service(user_repository_with_registered_inactive_user, 222, '/start 1')
+    await register_service(user_repository_with_registered_inactive_user, 222, '/start 1')
 
     created_user = await user_repository_with_registered_inactive_user.get_by_chat_id(222)
 
     assert len(user_repository_with_registered_inactive_user.storage) == 2
     assert created_user.referrer == 444
-    assert len(got) == 3
+    # TODO: check, that event about user action sended in queue
+
+
+async def test_with_referrer_content(
+    register_service,
+    user_repository_with_registered_inactive_user,
+    ayat_repository_mock,
+):
+    got = await register_service(user_repository_with_registered_inactive_user, 222, '/start 1')
+
     assert got[0].text == 'start message_handlers'
     assert 'a href' in got[1].text
     assert got[2].text == 'По вашей реферральной ссылке произошла регистрация'
