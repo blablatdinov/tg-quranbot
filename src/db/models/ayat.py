@@ -11,6 +11,7 @@ class Ayat(Base):
 
     ayat_id = Column(Integer(), primary_key=True)
     public_id = Column(String(), nullable=False)
+    day = Column(Integer(), nullable=True)
     sura_id = Column(Integer(), ForeignKey('suras.sura_id'), nullable=False)
     audio_id = Column(String(), ForeignKey('files.file_id'), nullable=False)
     ayat_number = Column(String(length=10), nullable=False)

@@ -1,73 +1,125 @@
-from typing import Optional, Union
+from aiogram import Bot, types
 
-from aiogram import types
-from pydantic import BaseModel
-
-from services.answer import get_default_markup
-from services.answers.interface import AnswerInterface, SingleAnswerInterface
-from settings import settings
-from utlls import get_bot_instance
+from services.answers.interface import AnswerInterface
 
 
-class Answer(BaseModel, AnswerInterface, SingleAnswerInterface):
-    """Ответ пользователю."""
+class KeyboardInterface(object):
+    """Интерфейс клавиатуры."""
 
-    chat_id: Optional[int]
-    message: Optional[str]
-    telegram_file_id: Optional[str]
-    link_to_file: Optional[str]
-    keyboard: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, None]
+    async def generate(self):
+        """Генерация.
 
-    class Config(object):
-        arbitrary_types_allowed = True
-
-    def get_markup(self) -> Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup]:
-        """Получить клавиатуру.
-
-        :returns: Keyboard
+        :raises NotImplementedError: if not implemented
         """
-        return self.keyboard or get_default_markup()
+        raise NotImplementedError
 
-    async def edit_markup(self, message_id: int, chat_id: int = None) -> None:
-        """Редиктировать клавиатуру.
 
-        :param message_id: int
-        :param chat_id: int
+class DefaultKeyboard(KeyboardInterface):
+    """Класс клавиатуры по умолчанию."""
+
+    async def generate(self):
+        """Генерация.
+
+        :return: types.ReplyKeyboardMarkup
         """
-        chat_id = chat_id or self.chat_id
-        bot_instance = get_bot_instance()
-        markup = self.get_markup()
-        await bot_instance.edit_message_reply_markup(chat_id=chat_id, reply_markup=markup)
+        return (
+            types.ReplyKeyboardMarkup()
+            .row(types.KeyboardButton('🎧 Подкасты'))
+            .row(types.KeyboardButton('🕋 Время намаза'))
+            .row(types.KeyboardButton('🌟 Избранное'), types.KeyboardButton('🔍 Найти аят'))
+        )
 
-    async def send(self, chat_id: int = None) -> list[types.Message]:
-        """Метод для отправки ответа.
 
-        :param chat_id: int
-        :return: types.Message
-        :raises InternalBotError: if not take _chat_id
+class FileAnswer(AnswerInterface):
+    """Класс ответа с файлом."""
+
+    def __init__(self, debug_mode: bool, telegram_file_id_answer: AnswerInterface, file_link_answer: AnswerInterface):
+        self._debug_mode = debug_mode
+        self._telegram_file_id_answer = telegram_file_id_answer
+        self._file_link_answer = file_link_answer
+
+    async def send(self) -> list[types.Message]:
+        """Отправка.
+
+        :return: list[types.Message]
         """
-        from exceptions.base_exception import InternalBotError  # noqa: WPS433
+        if self._debug_mode:
+            return await self._file_link_answer.send()
 
-        bot_instance = get_bot_instance()
-        markup = self.get_markup()
-        chat_id = chat_id or self.chat_id
-        if not chat_id:
-            raise InternalBotError
+        return await self._telegram_file_id_answer.send()
 
-        if self.telegram_file_id and not settings.DEBUG:
-            message = await bot_instance.send_audio(chat_id=chat_id, audio=self.telegram_file_id, reply_markup=markup)
-        elif self.link_to_file:
-            message = await bot_instance.send_message(chat_id=chat_id, text=self.link_to_file, reply_markup=markup)
-        else:
-            message = await bot_instance.send_message(chat_id=chat_id, text=self.message, reply_markup=markup)
 
-        session = await bot_instance.get_session()
-        await session.close()
+class TelegramFileIdAnswer(AnswerInterface):
+    """Класс ответа с файлом."""
+
+    def __init__(self, bot: Bot, chat_id: int, telegram_file_id: str, keyboard: KeyboardInterface):
+        self._chat_id = chat_id
+        self._bot = bot
+        self._telegram_file_id = telegram_file_id
+        self._keyboard = keyboard
+
+    async def send(self):
+        """Отправка.
+
+        :return: list[types.Message]
+        """
+        message = await self._bot.send_audio(
+            chat_id=self._chat_id,
+            audio=self._telegram_file_id,
+            reply_markup=await self._keyboard.generate(),
+        )
         return [message]
 
-    def to_list(self) -> list[SingleAnswerInterface]:
-        """Форматировать в строку из элементов.
 
-        :returns: list[Answer]
+class FileLinkAnswer(AnswerInterface):
+    """Класс ответа со ссылкой на файл."""
+
+    def __init__(self, bot: Bot, chat_id: int, link_to_file: str, keyboard: KeyboardInterface):
+        self._chat_id = chat_id
+        self._bot = bot
+        self._link_to_file = link_to_file
+        self._keyboard = keyboard
+
+    async def send(self) -> list[types.Message]:
+        """Отправка.
+
+        :return: list[types.Message]
         """
-        return [self]
+        message = await self._bot.send_message(
+            chat_id=self._chat_id,
+            text=self._link_to_file,
+            reply_markup=await self._keyboard.generate(),
+        )
+        return [message]
+
+
+class TextAnswer(AnswerInterface):
+    """Ответ пользователю."""
+
+    chat_id: int
+    message: str
+    keyboard: KeyboardInterface
+
+    def __init__(
+        self,
+        bot: Bot,
+        chat_id: int,
+        message: str,
+        keyboard: KeyboardInterface,
+    ):
+        self._bot = bot
+        self._chat_id = chat_id
+        self._message = message
+        self._keyboard = keyboard
+
+    async def send(self) -> list[types.Message]:
+        """Метод для отправки ответа.
+
+        :return: types.Message
+        """
+        message = await self._bot.send_message(
+            chat_id=self._chat_id,
+            text=self._message,
+            reply_markup=await self._keyboard.generate(),
+        )
+        return [message]

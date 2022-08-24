@@ -1,15 +1,15 @@
 """Init.
 
-Revision ID: 4bb4b4f8ed92
+Revision ID: b37656b99038
 Revises:
-Create Date: 2022-08-23 16:06:46.993475
+Create Date: 2022-08-24 15:07:24.783841
 
 """
 import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = '4bb4b4f8ed92'
+revision = 'b37656b99038'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -34,6 +34,7 @@ def upgrade() -> None:
         sa.Column('file_id', sa.String(), nullable=False),
         sa.Column('telegram_file_id', sa.String(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=False),
+        sa.Column('link', sa.String(), nullable=True),
         sa.PrimaryKeyConstraint('file_id'),
     )
     op.create_table(
@@ -56,6 +57,7 @@ def upgrade() -> None:
         'ayats',
         sa.Column('ayat_id', sa.Integer(), nullable=False),
         sa.Column('public_id', sa.String(), nullable=False),
+        sa.Column('day', sa.Integer(), nullable=True),
         sa.Column('sura_id', sa.Integer(), nullable=False),
         sa.Column('audio_id', sa.String(), nullable=False),
         sa.Column('ayat_number', sa.String(length=10), nullable=False),

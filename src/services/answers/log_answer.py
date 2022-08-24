@@ -1,7 +1,7 @@
 from aiogram import types
 
 from repository.update_log import UpdatesLogRepositoryInterface
-from services.answers.interface import AnswerInterface, SingleAnswerInterface
+from services.answers.interface import AnswerInterface
 from services.ayats.keyboard_interface import AyatSearchKeyboardInterface
 from services.user_prayer_status_interface import UserPrayerStatusInterface
 
@@ -42,13 +42,6 @@ class LoggedAnswer(AnswerInterface):
         """
         await self._origin.edit_markup(message_id, chat_id)
 
-    def to_list(self) -> list[SingleAnswerInterface]:
-        """Метод для конвертации в список.
-
-        :return: list[SingleAnswerInterface]
-        """
-        return self._origin.to_list()
-
 
 class LoggedSourceMessageAnswerProcess(AnswerInterface):
     """Декоратор для оборачивания бизнес логики с логированием исходного сообщения."""
@@ -83,13 +76,6 @@ class LoggedSourceMessageAnswerProcess(AnswerInterface):
         :param message_id: int
         """
         await self._origin.edit_markup(message_id, chat_id)
-
-    def to_list(self) -> list[SingleAnswerInterface]:
-        """Метод для конвертации в список.
-
-        :return: list[SingleAnswerInterface]
-        """
-        return self._origin.to_list()
 
 
 class LoggedSourceCallbackAyatSearchKeyboard(AyatSearchKeyboardInterface):
@@ -184,10 +170,3 @@ class LoggedSourceCallbackAnswerProcess(AnswerInterface):
         :param message_id: int
         """
         await self._origin.edit_markup(message_id, chat_id)
-
-    def to_list(self) -> list[SingleAnswerInterface]:
-        """Метод для конвертации в список.
-
-        :return: list[SingleAnswerInterface]
-        """
-        return self._origin.to_list()

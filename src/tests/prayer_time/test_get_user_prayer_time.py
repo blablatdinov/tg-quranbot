@@ -3,8 +3,13 @@ import uuid
 
 import pytest
 
+from exceptions.content_exceptions import UserHasNotCityIdError
 from repository.prayer_time import UserPrayer
-from services.prayer_time import PrayerTimes, UserHasNotCityExistsSafeAnswer, UserPrayerTimes, UserPrayerTimesAnswer
+from services.answers.answer import TextAnswer
+from services.answers.interface import AnswerInterface
+from services.prayer_time import PrayerTimes, UserHasNotCityExistsSafeAnswer, UserPrayerTimes
+from services.prayer_times_keyboards import CitySearchKeyboard
+from tests.mocks.bot import BotMock
 from tests.mocks.prayer_time_repository import PrayerTimeRepositoryMock
 from tests.mocks.user_repository import UserRepositoryMock
 
@@ -48,19 +53,21 @@ async def test_get_already_exists_user_prayers(user_repository_mock):
     assert list(range(2000, 2006)) == [user_prayer.id for user_prayer in got]
 
 
+class AnswerMock(AnswerInterface):
+
+    async def send(self):
+        raise UserHasNotCityIdError
+
+
 async def test_get_prayer_time_without_city(user_repository_mock):
     got = await UserHasNotCityExistsSafeAnswer(
-        UserPrayerTimesAnswer(
-            UserPrayerTimes(
-                PrayerTimes(
-                    prayer_times_repository=PrayerTimeRepositoryMock(),
-                    user_repository=user_repository_mock,
-                    chat_id=111,
-                ),
-                datetime.datetime.now(),
-            ),
-            datetime.datetime.now(),
+        AnswerMock(),
+        TextAnswer(
+            BotMock(),
+            3284797,
+            'Вы не указали город, отправьте местоположение или воспользуйтесь поиском',
+            CitySearchKeyboard(),
         ),
-    ).to_answer()
+    ).send()
 
-    assert got.to_list()[0].message == 'Вы не указали город, отправьте местоположение или воспользуйтесь поиском'
+    assert got[0].text == 'Вы не указали город, отправьте местоположение или воспользуйтесь поиском'

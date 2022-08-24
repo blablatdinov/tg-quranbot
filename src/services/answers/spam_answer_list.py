@@ -6,8 +6,8 @@ from aiogram.utils.exceptions import BotBlocked, ChatNotFound, UserDeactivated
 from app_types.mailing_interface import MailingInterface
 from repository.mailing import MailingRepository
 from repository.users.users import UsersRepositoryInterface
-from services.answers.answer import Answer
-from services.answers.interface import AnswerInterface, SingleAnswerInterface
+from services.answers.answer import TextAnswer
+from services.answers.interface import AnswerInterface
 
 
 class SpamAnswerList(list, MailingInterface):  # noqa: WPS600
@@ -52,14 +52,14 @@ class SpamAnswerList(list, MailingInterface):  # noqa: WPS600
         for elem in self:
             await elem.edit_markup(chat_id)
 
-    def to_list(self) -> list[SingleAnswerInterface]:
+    def to_list(self) -> list:
         """Форматировать в строку из элементов.
 
         :returns: list[Answer]
         """
         return self
 
-    async def _send_one_answer(self, answer: Answer) -> list[types.Message]:
+    async def _send_one_answer(self, answer: TextAnswer) -> list[types.Message]:
         try:
             return await answer.send()
         except (ChatNotFound, BotBlocked, UserDeactivated):

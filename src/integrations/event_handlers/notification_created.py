@@ -1,5 +1,5 @@
 from repository.update_log import UpdatesLogRepositoryInterface
-from services.answers.answer import Answer
+from services.answers.answer import TextAnswer
 from services.answers.log_answer import LoggedAnswer
 from settings import settings
 
@@ -19,6 +19,6 @@ class NotificationCreatedEvent(object):
         """
         notification_text = 'Уведомление: {0}'.format(event['text'])
         await LoggedAnswer(
-            Answer(message=notification_text),
+            TextAnswer(message=notification_text),
             self._udpate_log_repository,
         ).send(settings.ADMIN_CHAT_IDS[0])
