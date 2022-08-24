@@ -1,8 +1,7 @@
 from aiogram import Bot, types
 
 from exceptions.base_exception import InternalBotError
-from repository.admin_message import AdminMessageRepositoryInterface
-from repository.ayats.ayat import AyatRepositoryInterface
+from repository.users.registration import RegistrationRepositoryInterface
 from repository.users.user import UserRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
 from services.answers.answer import DefaultKeyboard, TextAnswer
@@ -14,23 +13,15 @@ from services.start_message import StartMessageMeta
 class RegisterNewUser(object):
     """Регистрация нового пользователя."""
 
-    _user_repository: UserRepositoryInterface
-    _admin_messages_repository: AdminMessageRepositoryInterface
-    _ayats_repository: AyatRepositoryInterface
-
     def __init__(
         self,
         bot: Bot,
         chat_id: int,
-        user_repository: UserRepositoryInterface,
-        admin_messages_repository: AdminMessageRepositoryInterface,
-        ayats_repository: AyatRepositoryInterface,
+        registration_repository: RegistrationRepositoryInterface,
     ):
         self._bot = bot
         self._chat_id = chat_id
-        self._user_repository = user_repository
-        self._admin_messages_repository = admin_messages_repository
-        self._ayats_repository = ayats_repository
+        self._registration_repository = registration_repository
 
     async def can(self, chat_id) -> bool:
         """Проверка возможности регистрации.
@@ -38,16 +29,16 @@ class RegisterNewUser(object):
         :param chat_id: int
         :returns: bool
         """
-        return not await self._user_repository.exists(chat_id)
+        return not await self._registration_repository.user_exists(chat_id)
 
     async def send(self) -> list[types.Message]:
         """Конвертация в ответ.
 
         :return: AnswerInterface
         """
-        start_message = await self._admin_messages_repository.get('start')
-        first_ayat = await self._ayats_repository.get(1)
-        await self._user_repository.create(self._chat_id)
+        start_message = await self._registration_repository.admin_message()
+        first_ayat = await self._registration_repository.first_ayat()
+        await self._registration_repository.create(self._chat_id)
         return await AnswersList(
             TextAnswer(bot=self._bot, message=start_message, chat_id=self._chat_id, keyboard=DefaultKeyboard()),
             TextAnswer(
@@ -63,7 +54,7 @@ class RegisterUserWithReferrer(AnswerInterface):
     _user_repository: UserRepositoryInterface
     _start_message_meta: StartMessageMeta
 
-    def __init__(
+    def __init__(  # noqa: WPS211 TODO: подумать как сократить
         self,
         bot: Bot,
         chat_id: int,

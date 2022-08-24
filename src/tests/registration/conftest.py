@@ -3,6 +3,7 @@ import uuid
 import pytest
 
 from repository.ayats.ayat import Ayat
+from repository.users.registration import RegistrationRepository
 from repository.users.user import User
 from services.register_user import RegisterAlreadyExistsUser, RegisterNewUser, RegisterUser, RegisterUserWithReferrer
 from services.start_message import get_start_message_query
@@ -45,9 +46,11 @@ def register_service(ayat_repository_mock):
             RegisterNewUser(
                 BotMock(),
                 chat_id,
-                user_repository_mock,
-                AdminMessageRepositoryMock(),
-                ayat_repository_mock,
+                RegistrationRepository(
+                    user_repository_mock,
+                    AdminMessageRepositoryMock(),
+                    ayat_repository_mock,
+                ),
             ),
             RegisterUserWithReferrer(
                 BotMock(),
@@ -55,9 +58,11 @@ def register_service(ayat_repository_mock):
                 RegisterNewUser(
                     BotMock(),
                     chat_id,
-                    user_repository_mock,
-                    AdminMessageRepositoryMock(),
-                    ayat_repository_mock,
+                    RegistrationRepository(
+                        user_repository_mock,
+                        AdminMessageRepositoryMock(),
+                        ayat_repository_mock,
+                    ),
                 ),
                 user_repository_mock,
                 get_start_message_query(message_text),

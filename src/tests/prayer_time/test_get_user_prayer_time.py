@@ -7,7 +7,8 @@ from exceptions.content_exceptions import UserHasNotCityIdError
 from repository.prayer_time import UserPrayer
 from services.answers.answer import TextAnswer
 from services.answers.interface import AnswerInterface
-from services.prayer_time import CitySearchKeyboard, PrayerTimes, UserHasNotCityExistsSafeAnswer, UserPrayerTimes
+from services.prayer_time import PrayerTimes, UserHasNotCityExistsSafeAnswer, UserPrayerTimes
+from services.prayer_times_keyboards import CitySearchKeyboard
 from tests.mocks.bot import BotMock
 from tests.mocks.prayer_time_repository import PrayerTimeRepositoryMock
 from tests.mocks.user_repository import UserRepositoryMock
