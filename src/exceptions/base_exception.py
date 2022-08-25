@@ -1,7 +1,7 @@
-from app_types.answerable import Answerable
+from services.answers.interface import AnswerInterface
 
 
-class BaseAppError(Exception, Answerable):
+class BaseAppError(Exception, AnswerInterface):
     """Базовое исключение бота."""
 
     user_message: str = 'Произошла какая-то ошибка'

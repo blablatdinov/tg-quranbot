@@ -1,22 +1,29 @@
-from app_types.answerable import Answerable
+from aiogram import types, Bot
+
 from exceptions.base_exception import BaseAppError
+from services.answers.answer import TextAnswer, DefaultKeyboard
 from services.answers.interface import AnswerInterface
 
 
-class ExceptionSafeAnswer(Answerable):
+class ExceptionSafeAnswer(AnswerInterface):
     """Обработка ошибок для ответов."""
 
-    _origin: Answerable
+    _origin: AnswerInterface
 
-    def __init__(self, answerable: Answerable):
+    def __init__(self, answerable: AnswerInterface, bot: Bot, chat_id: int):
         self._origin = answerable
+        self._bot = bot
+        self._chat_id = chat_id
 
-    async def to_answer(self) -> AnswerInterface:
+    async def send(self) -> list[types.Message]:
         """Трансформация в ответ.
 
         :return: AnswerInterface
         """
         try:
-            return await self._origin.to_answer()
+            return await self._origin.send()
         except BaseAppError as error:
-            return await error.to_answer()
+            if error.user_message:
+                return await TextAnswer(
+                    self._bot, self._chat_id, error.user_message, DefaultKeyboard(),
+                ).send()
