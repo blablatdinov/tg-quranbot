@@ -5,8 +5,8 @@ from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import FavoriteAyatsNeighborRepository, NeighborAyatsRepository
 from services.ayats.ayat_by_id import AyatById
-from services.ayats.ayat_search import AyatFavoriteStatus, FavoriteAyats, SearchAnswer
-from services.ayats.edit_markup import Markup
+from services.ayats.ayat_search import FavoriteAyats, SearchAnswer
+from services.ayats.edit_markup import AyatFavoriteStatus, Markup
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate
 from services.ayats.keyboard import AyatSearchKeyboard
 from services.ayats.search_by_sura_ayat_num import AyatSearchWithNeighbors

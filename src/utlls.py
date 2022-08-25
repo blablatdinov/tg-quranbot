@@ -9,7 +9,7 @@ class BotInstance(object):
     _bot: Bot = None
 
     @classmethod
-    def get(cls):
+    def get(cls) -> Bot:
         """Получить экземпляр.
 
         :return: Bot

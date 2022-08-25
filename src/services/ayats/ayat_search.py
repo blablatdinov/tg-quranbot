@@ -2,7 +2,6 @@ from typing import Optional
 
 from aiogram import Bot, types
 
-from app_types.answerable import Answerable
 from app_types.intable import Intable
 from exceptions.content_exceptions import AyatNotFoundError, UserHasNotFavoriteAyatsError
 from repository.ayats.ayat import Ayat
@@ -96,20 +95,25 @@ class SearchAnswer(AnswerInterface):
         ).send()
 
 
-class AyatNotFoundSafeAnswer(Answerable):
+class AyatNotFoundSafeAnswer(AnswerInterface):
     """Декортаор, для обработки ошибки."""
 
-    _origin: Answerable
-
-    def __init__(self, answerable: Answerable):
+    def __init__(self, bot: Bot, chat_id: int, answerable: AnswerInterface):
+        self._bot = bot
+        self._chat_id = chat_id
         self._origin = answerable
 
-    async def to_answer(self) -> AnswerInterface:
+    async def send(self) -> list[types.Message]:
         """Конвертация в ответ.
 
         :returns: AnswerInterface
         """
         try:
-            return await self._origin.to_answer()
+            return await self._origin.send()
         except AyatNotFoundError as error:
-            return await error.to_answer()
+            return await TextAnswer(
+                self._bot,
+                self._chat_id,
+                error.user_message,
+                DefaultKeyboard(),
+            ).send()
