@@ -4,11 +4,16 @@ from settings import settings
 
 
 class BotInstance(object):
+    """Класс для хранения и раздачи экземпляра Bot."""
 
     _bot: Bot = None
 
     @classmethod
     def get(cls):
+        """Получить экземпляр.
+
+        :return: Bot
+        """
         if cls._bot:
             return cls._bot
         return Bot(token=settings.API_TOKEN, parse_mode='HTML')

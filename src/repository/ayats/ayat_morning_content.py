@@ -15,6 +15,7 @@ class AyatMorningContentRepositoryInterface(object):
 
     async def get_morning_content(self) -> list[ContentSpam]:
         """Получить контент для рассылки.
+
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -28,6 +29,7 @@ class AyatMorningContentRepository(AyatMorningContentRepositoryInterface):
 
     async def get_morning_content(self) -> list[ContentSpam]:
         """Получить контент для рассылки.
+
         :returns: list[ContentSpam]
         """
         query = """

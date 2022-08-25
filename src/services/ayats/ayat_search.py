@@ -14,10 +14,6 @@ from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.keyboard import AyatPaginatorCallbackDataTemplate, AyatSearchKeyboard
 
 
-# TODO: тесты
-from services.markup_edit.interface import MarkupEditInterface
-
-
 class FavoriteAyats(AyatSearchInterface):
     """Получить избранные аяты."""
 
@@ -117,38 +113,3 @@ class AyatNotFoundSafeAnswer(Answerable):
             return await self._origin.to_answer()
         except AyatNotFoundError as error:
             return await error.to_answer()
-
-
-class AyatFavoriteStatus(MarkupEditInterface):
-    """Статус избранности аята."""
-
-    _favorite_ayat_repository: FavoriteAyatRepositoryInterface
-    _ayat_id: Intable
-    _chat_id: int
-
-    def __init__(
-        self,
-        is_favorite: bool,
-        favorite_ayat_repository: FavoriteAyatRepositoryInterface,
-        ayat_id: Intable,
-        chat_id: int,
-        markup: MarkupEditInterface,
-    ):
-        self._is_favorite = is_favorite
-        self._favorite_ayat_repository = favorite_ayat_repository
-        self._ayat_id = ayat_id
-        self._chat_id = chat_id
-        self._origin = markup
-
-    async def edit(self):
-        """Поменять статус."""
-        if self._is_favorite:
-            await self._favorite_ayat_repository.add_to_favorite(
-                self._chat_id, int(self._ayat_id),
-            )
-        else:
-            await self._favorite_ayat_repository.remove_from_favorite(
-                self._chat_id, int(self._ayat_id),
-            )
-
-        await self._origin.edit()

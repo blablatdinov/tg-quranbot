@@ -12,7 +12,7 @@ from services.ayats.keyboard import AyatSearchKeyboard
 from services.ayats.search_by_sura_ayat_num import AyatSearchWithNeighbors
 from services.regular_expression import IntableRegularExpression
 from settings import settings
-from utlls import get_bot_instance, BotInstance
+from utlls import BotInstance, get_bot_instance
 
 bot = get_bot_instance()
 
@@ -23,8 +23,9 @@ async def add_to_favorite(callback_query: types.CallbackQuery):
     :param callback_query: app_types.CallbackQuery
     """
     intable_ayat_id = IntableRegularExpression(r'\d+', callback_query.data)
+    chang_to = True
     await AyatFavoriteStatus(
-        True,
+        chang_to,
         FavoriteAyatsRepository(database),
         intable_ayat_id,
         callback_query.from_user.id,
@@ -44,7 +45,7 @@ async def add_to_favorite(callback_query: types.CallbackQuery):
                 callback_query.from_user.id,
                 AyatPaginatorCallbackDataTemplate.ayat_search_template,
             ),
-        )
+        ),
     ).edit()
 
 
@@ -55,8 +56,9 @@ async def remove_from_favorite(callback_query: types.CallbackQuery):
     """
     ayat_repository = AyatRepository(database)
     intable_ayat_id = IntableRegularExpression(r'\d+', callback_query.data)
+    chang_to = False
     await AyatFavoriteStatus(
-        False,
+        chang_to,
         FavoriteAyatsRepository(database),
         intable_ayat_id,
         callback_query.from_user.id,
@@ -76,7 +78,7 @@ async def remove_from_favorite(callback_query: types.CallbackQuery):
                 callback_query.from_user.id,
                 AyatPaginatorCallbackDataTemplate.ayat_search_template,
             ),
-        )
+        ),
     ).edit()
 
 

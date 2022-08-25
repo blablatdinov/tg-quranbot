@@ -26,6 +26,7 @@ class UserActionRepositoryInterface(object):
 
     async def create_user_action(self, chat_id: int, action: UserActionEnum):
         """Создать действие пользователя.
+
         :param chat_id: int
         :param action: UserActionEnum
         :raises NotImplementedError: if not implemented
@@ -41,6 +42,7 @@ class UserActionRepository(UserActionRepositoryInterface):
 
     async def create_user_action(self, chat_id: int, action: UserActionEnum):
         """Создать действие пользователя.
+
         :param chat_id: int
         :param action: UserActionEnum
         """

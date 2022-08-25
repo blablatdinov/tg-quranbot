@@ -6,7 +6,6 @@ from repository.admin_message import AdminMessageRepository
 from repository.ayats.ayat import AyatRepository
 from repository.users.registration import RegistrationRepository
 from repository.users.user import UserRepository
-from repository.users.user_actions import UserActionRepository
 from repository.users.users import UsersRepository
 from services.register_user import RegisterAlreadyExistsUser, RegisterNewUser, RegisterUser, RegisterUserWithReferrer
 from services.start_message import get_start_message_query

@@ -1,7 +1,7 @@
-from aiogram import types, Bot
+from aiogram import Bot, types
 
 from exceptions.base_exception import BaseAppError
-from services.answers.answer import TextAnswer, DefaultKeyboard
+from services.answers.answer import DefaultKeyboard, TextAnswer
 from services.answers.interface import AnswerInterface
 
 
