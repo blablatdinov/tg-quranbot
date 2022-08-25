@@ -3,7 +3,8 @@ from dataclasses import dataclass
 import pytest
 
 from repository.ayats.ayat import Ayat, AyatRepositoryInterface
-from services.ayats.ayat_search import AyatFavoriteStatus
+from services.ayats.edit_markup import AyatFavoriteStatus
+from services.markup_edit.interface import MarkupEditInterface
 from tests.mocks.intable import IntableMock
 
 
@@ -50,6 +51,12 @@ class AyatRepositoryMock(AyatRepositoryInterface):
         return ayat_id in user.favorite_ayat_ids
 
 
+class MarkupMock(MarkupEditInterface):
+
+    async def edit(self):
+        pass
+
+
 @pytest.fixture()
 def ayat_repository_mock(ayat_factory):
     return AyatRepositoryMock(
@@ -59,20 +66,26 @@ def ayat_repository_mock(ayat_factory):
 
 
 async def test_change_to_favorite(ayat_repository_mock):
+    change_to = True
     await AyatFavoriteStatus(
+        change_to,
         ayat_repository_mock,
         IntableMock(2),
         123,
-    ).change(True)
+        MarkupMock(),
+    ).edit()
 
     assert await ayat_repository_mock.check_ayat_is_favorite_for_user(2, 123)
 
 
 async def test_change_to_not_favorite(ayat_repository_mock):
+    change_to = False
     await AyatFavoriteStatus(
+        change_to,
         ayat_repository_mock,
         IntableMock(1),
         123,
-    ).change(False)
+        MarkupMock(),
+    ).edit()
 
     assert not await ayat_repository_mock.check_ayat_is_favorite_for_user(2, 123)

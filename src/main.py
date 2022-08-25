@@ -6,6 +6,7 @@ from aiogram.utils.executor import start_webhook
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from cli import check_users_status, send_morning_content, send_prayer_time
+from db.connection import database
 from handlers.register import register_handlers
 from settings import settings
 from utlls import get_bot_instance
@@ -26,7 +27,7 @@ async def on_startup(dispatcher: Dispatcher):
 
     :param dispatcher: Dispatcher
     """
-    await bot.set_webhook(settings.webhook_url)
+    await database.connect()
 
 
 async def on_shutdown(dispatcher: Dispatcher):
@@ -35,7 +36,7 @@ async def on_shutdown(dispatcher: Dispatcher):
     :param dispatcher: Dispatcher
     """
     logging.warning('Shutting down..')
-    await bot.delete_webhook()
+    await database.disconnect()
     await dp.storage.close()
     await dp.storage.wait_closed()
     logging.warning('Bye!')
@@ -50,7 +51,7 @@ if __name__ == '__main__':
     register_handlers(dp)
     scheduler.start()
     if settings.DEBUG:
-        executor.start_polling(dp, skip_updates=True)
+        executor.start_polling(dp, skip_updates=True, on_startup=on_startup, on_shutdown=on_shutdown)
     else:
         start_webhook(
             dispatcher=dp,

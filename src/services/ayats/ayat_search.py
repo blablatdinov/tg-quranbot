@@ -1,18 +1,18 @@
 from typing import Optional
 
-from app_types.answerable import Answerable
+from aiogram import Bot, types
+
 from app_types.intable import Intable
 from exceptions.content_exceptions import AyatNotFoundError, UserHasNotFavoriteAyatsError
 from repository.ayats.ayat import Ayat
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
-from services.answers.answer import TextAnswer
+from services.answers.answer import DefaultKeyboard, FileAnswer, FileLinkAnswer, TelegramFileIdAnswer, TextAnswer
 from services.answers.answer_list import AnswersList
 from services.answers.interface import AnswerInterface
 from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.keyboard import AyatPaginatorCallbackDataTemplate, AyatSearchKeyboard
 
 
-# TODO: тесты
 class FavoriteAyats(AyatSearchInterface):
     """Получить избранные аяты."""
 
@@ -50,76 +50,70 @@ class FavoriteAyats(AyatSearchInterface):
         return [ayat for ayat in favorite_ayats if ayat.id == int(self._ayat_id)][0]
 
 
-class SearchAnswer(Answerable):
+class SearchAnswer(AnswerInterface):
     """Класс, собирающий ответ на запрос о поиске."""
 
     _ayat_search: AyatSearchInterface
 
-    def __init__(self, ayat_search: AyatSearchInterface, keyboard: AyatSearchKeyboard):
+    def __init__(
+        self,
+        debug_mode: bool,
+        bot: Bot,
+        chat_id: int,
+        ayat_search: AyatSearchInterface,
+        keyboard: AyatSearchKeyboard,
+    ):
+        self._debug_mode = debug_mode
+        self._bot = bot
+        self._chat_id = chat_id
         self._ayat_search = ayat_search
         self._keyboard = keyboard
 
-    async def to_answer(self) -> AnswerInterface:
-        """Трансформировать переданные данные в ответ.
+    async def send(self) -> list[types.Message]:
+        """Отправить.
 
         :returns: AnswerInterface
         """
         ayat = await self._ayat_search.search()
-        return AnswersList(
-            TextAnswer(
-                message=str(ayat),
-                keyboard=await self._keyboard.generate(),
+        return await AnswersList(
+            TextAnswer(self._bot, self._chat_id, str(ayat), self._keyboard),
+            FileAnswer(
+                self._debug_mode,
+                TelegramFileIdAnswer(
+                    self._bot,
+                    self._chat_id,
+                    ayat.audio_telegram_id,
+                    DefaultKeyboard(),
+                ),
+                FileLinkAnswer(
+                    self._bot,
+                    self._chat_id,
+                    ayat.link_to_audio_file,
+                    DefaultKeyboard(),
+                ),
             ),
-            TextAnswer(link_to_file=ayat.link_to_audio_file, telegram_file_id=ayat.audio_telegram_id),
-        )
+        ).send()
 
 
-class AyatNotFoundSafeAnswer(Answerable):
+class AyatNotFoundSafeAnswer(AnswerInterface):
     """Декортаор, для обработки ошибки."""
 
-    _origin: Answerable
-
-    def __init__(self, answerable: Answerable):
+    def __init__(self, bot: Bot, chat_id: int, answerable: AnswerInterface):
+        self._bot = bot
+        self._chat_id = chat_id
         self._origin = answerable
 
-    async def to_answer(self) -> AnswerInterface:
+    async def send(self) -> list[types.Message]:
         """Конвертация в ответ.
 
         :returns: AnswerInterface
         """
         try:
-            return await self._origin.to_answer()
+            return await self._origin.send()
         except AyatNotFoundError as error:
-            return await error.to_answer()
-
-
-class AyatFavoriteStatus(object):
-    """Статус избранности аята."""
-
-    _favorite_ayat_repository: FavoriteAyatRepositoryInterface
-    _ayat_id: Intable
-    _chat_id: int
-
-    def __init__(
-        self,
-        favorite_ayat_repository: FavoriteAyatRepositoryInterface,
-        ayat_id: Intable,
-        chat_id: int,
-    ):
-        self._favorite_ayat_repository = favorite_ayat_repository
-        self._ayat_id = ayat_id
-        self._chat_id = chat_id
-
-    async def change(self, is_favorite: bool):
-        """Поменять статус.
-
-        :param is_favorite: bool
-        """
-        if is_favorite:
-            await self._favorite_ayat_repository.add_to_favorite(
-                self._chat_id, int(self._ayat_id),
-            )
-        else:
-            await self._favorite_ayat_repository.remove_from_favorite(
-                self._chat_id, int(self._ayat_id),
-            )
+            return await TextAnswer(
+                self._bot,
+                self._chat_id,
+                error.user_message,
+                DefaultKeyboard(),
+            ).send()

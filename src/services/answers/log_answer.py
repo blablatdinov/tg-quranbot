@@ -1,8 +1,8 @@
 from aiogram import types
 
 from repository.update_log import UpdatesLogRepositoryInterface
+from services.answers.answer import KeyboardInterface
 from services.answers.interface import AnswerInterface
-from services.ayats.keyboard_interface import AyatSearchKeyboardInterface
 from services.user_prayer_status_interface import UserPrayerStatusInterface
 
 
@@ -78,16 +78,16 @@ class LoggedSourceMessageAnswerProcess(AnswerInterface):
         await self._origin.edit_markup(message_id, chat_id)
 
 
-class LoggedSourceCallbackAyatSearchKeyboard(AyatSearchKeyboardInterface):
+class LoggedSourceCallbackAyatSearchKeyboard(KeyboardInterface):
     """Класс для логгирования данных с клавиатуры."""
 
-    _origin: AyatSearchKeyboardInterface
+    _origin: KeyboardInterface
     _updates_log_repository: UpdatesLogRepositoryInterface
     _source_callback_query: types.CallbackQuery
 
     def __init__(
         self,
-        ayat_search_keyboard: AyatSearchKeyboardInterface,
+        ayat_search_keyboard: KeyboardInterface,
         updates_log_repository: UpdatesLogRepositoryInterface,
         callback_query: types.CallbackQuery,
     ):
