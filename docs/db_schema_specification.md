@@ -54,6 +54,7 @@ classDiagram
     }
     class podcasts{
         uuid podcast_id
+        varchar article_link
         uuid file_id
     }
     class prayers{

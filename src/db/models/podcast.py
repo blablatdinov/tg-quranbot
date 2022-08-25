@@ -11,3 +11,4 @@ class Podcast(Base):
 
     podcast_id = Column(String(), primary_key=True)
     file_id = Column(String(), ForeignKey('files.file_id'))
+    article_link = Column(String(), nullable=True)
