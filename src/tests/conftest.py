@@ -23,7 +23,7 @@ def fake_text(faker):
 
 @pytest.fixture
 def user_factory(faker):
-    def _user_factory(chat_id: int = None, is_active: bool = True, city_id: int = None):  # noqa: WPS430
+    def _user_factory(chat_id: int = None, is_active: bool = True, city_id: uuid.UUID = None):  # noqa: WPS430
         city_id = None if city_id is None else uuid.uuid4()
         return User(
             id=random.randint(1, 9999),

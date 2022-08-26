@@ -51,7 +51,7 @@ class AyatFavoriteStatus(MarkupEditInterface):
         self._chat_id = chat_id
         self._origin = markup
 
-    async def edit(self):
+    async def edit(self) -> None:
         """Поменять статус."""
         if self._is_favorite:
             await self._favorite_ayat_repository.add_to_favorite(

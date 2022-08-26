@@ -14,7 +14,7 @@ from services.prayers.prayer_status import PrayerStatus
 class PrayerTimesInterface(object):
     """Интерфейс для времен намаза."""
 
-    async def as_list(self):
+    async def as_list(self) -> list[Prayer]:
         """Представить объект как список.
 
         :raises NotImplementedError: if not implemented
@@ -25,7 +25,7 @@ class PrayerTimesInterface(object):
 class UserPrayerTimesInterface(object):
     """Интерфейс для времен намазов пользователя."""
 
-    async def as_list(self):
+    async def as_list(self) -> list[UserPrayer]:
         """Представить объект как список.
 
         :raises NotImplementedError: if not implemented
@@ -84,9 +84,9 @@ class UserPrayerTimes(UserPrayerTimesInterface):
 
         :return: list[UserPrayer]
         """
-        prayers = await self._prayer_times.as_list()
+        prayer_ids = [prayer.id for prayer in await self._prayer_times.as_list()]
         user_prayers = await self._prayer_times_repository.get_user_prayer_times(
-            [prayer.id for prayer in prayers],
+            prayer_ids,
             self._chat_id,
             datetime.datetime.now(),
         )
@@ -95,7 +95,7 @@ class UserPrayerTimes(UserPrayerTimesInterface):
             logger.info('User prayers not found. Creating...')
             user = await self._user_repository.get_by_chat_id(self._chat_id)
             user_prayers = await self._prayer_times_repository.create_user_prayer_times(
-                prayer_ids=prayers,
+                prayer_ids=prayer_ids,
                 user_id=user.chat_id,
             )
 
@@ -132,10 +132,10 @@ class PrayersWithoutSunrise(PrayerTimesInterface):
     def __init__(self, prayer_times: PrayerTimesInterface):
         self._origin = prayer_times
 
-    async def as_list(self) -> list[UserPrayer]:
+    async def as_list(self) -> list[Prayer]:
         """Представить объект как список.
 
-        :return: list[UserPrayer]
+        :return: list[Prayer]
         """
         return list(filter(
             lambda prayer: prayer.name != PrayerNames.SUNRISE,

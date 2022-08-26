@@ -3,6 +3,7 @@ from typing import NamedTuple, Optional
 from databases import Database
 from pydantic import BaseModel, parse_obj_as
 
+from exceptions.base_exception import InternalBotError
 from repository.ayats.neighbor_ayats import AyatShort
 
 
@@ -114,6 +115,7 @@ class AyatRepository(AyatRepositoryInterface):
 
         :param ayat_id: int
         :returns: Ayat
+        :raises InternalBotError: возбуждается если аят с переданным идентификатором не найден
         """
         query = """
             SELECT
@@ -132,6 +134,8 @@ class AyatRepository(AyatRepositoryInterface):
             WHERE a.ayat_id = :ayat_id
         """
         row = await self.connection.fetch_one(query, {'ayat_id': ayat_id})
+        if not row:
+            raise InternalBotError('Аят с id={0} не найден'.format(ayat_id))
         return Ayat.parse_obj(row._mapping)  # noqa: WPS437
 
     async def get_ayats_by_sura_num(self, sura_num: int) -> list[Ayat]:

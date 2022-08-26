@@ -91,7 +91,7 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
             INNER JOIN users u ON u.chat_id = fa.user_id
             WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id
         """
-        row = await self._connection.fetch_one(query, {'ayat_id': ayat_id, 'chat_id': chat_id})
+        row = await self._connection.fetch_val(query, {'ayat_id': ayat_id, 'chat_id': chat_id})
         return bool(CountResult.parse_obj(row._mapping).count)  # noqa: WPS437
 
     async def add_to_favorite(self, chat_id: int, ayat_id: int):

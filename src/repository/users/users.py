@@ -60,8 +60,8 @@ class UsersRepository(UsersRepositoryInterface):
             FROM users
             WHERE is_active = 't'
         """
-        rows = await self._connection.fetch_all(query)
-        rows = [dict(row._mapping) for row in rows]  # noqa: WPS437
+        db_rows = await self._connection.fetch_all(query)
+        rows = [dict(row._mapping) for row in db_rows]  # noqa: WPS437
         return [
             parsed_row.chat_id
             for parsed_row in parse_obj_as(list[QueryResultItem], rows)
@@ -73,13 +73,13 @@ class UsersRepository(UsersRepositoryInterface):
         :param chat_ids: list[int]
         :param to: bool
         """
-        chat_ids = '({0})'.format(','.join(list(map(str, chat_ids))))
+        chat_ids_for_query = '({0})'.format(','.join(list(map(str, chat_ids))))
         query_template = """
             UPDATE users
             SET is_active = :to
             WHERE chat_id in {0}
         """
-        query = query_template.format(chat_ids)
+        query = query_template.format(chat_ids_for_query)
         await self._connection.execute(query, {'to': to})
 
     async def increment_user_days(self, chat_ids: list[int]):
@@ -107,8 +107,8 @@ class UsersRepository(UsersRepositoryInterface):
             WHERE s.is_active = 't'
             ORDER BY chat_id
         """
-        rows = await self._connection.fetch_all(query)
-        rows = [dict(row._mapping) for row in rows]  # noqa: WPS437
+        db_rows = await self._connection.fetch_all(query)
+        rows = [dict(row._mapping) for row in db_rows]  # noqa: WPS437
         return [
             parsed_row.chat_id
             for parsed_row in parse_obj_as(list[QueryResultItem], rows)

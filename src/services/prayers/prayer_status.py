@@ -7,14 +7,14 @@ class PrayerStatus(object):
     def __init__(self, source: str):
         self._source = source
 
-    def user_prayer_id(self):
+    def user_prayer_id(self) -> int:
         """Рассчитать идентификатор времени намаза пользователя.
 
         :return: int
         """
         return int(IntableRegularExpression(self._source))
 
-    def change_to(self):
+    def change_to(self) -> bool:
         """Рассчитать статус времени намаза пользователя.
 
         :return: bool

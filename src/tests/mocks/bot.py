@@ -3,9 +3,9 @@ from aiogram import Bot, types
 
 class BotMock(Bot):
 
-    sended_messages = []
+    sended_messages: list[types.Message] = []
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     async def send_audio(self, chat_id, audio, reply_markup):

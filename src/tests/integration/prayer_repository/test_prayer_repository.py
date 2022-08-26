@@ -16,7 +16,7 @@ async def test_get_prayer_times_for_date(db_session, city_id, prayers, user):
     assert isinstance(got[0], Prayer)
 
 
-async def test_get_user_prayer_times(db_session, city_id, prayers: list[uuid.UUID], user, prayers_at_user):
+async def test_get_user_prayer_times(db_session, city_id, prayers: list[int], user, prayers_at_user):
     got = await PrayerTimeRepository(db_session).get_user_prayer_times(
         prayers,
         348795,
@@ -28,7 +28,7 @@ async def test_get_user_prayer_times(db_session, city_id, prayers: list[uuid.UUI
     assert isinstance(got[0], UserPrayer)
 
 
-async def test_create_user_prayer_times(db_session, city_id, prayers: list[uuid.UUID], user):
+async def test_create_user_prayer_times(db_session, city_id, prayers: list[int], user):
     got = await PrayerTimeRepository(db_session).create_user_prayer_times(
         prayers,
         348795,

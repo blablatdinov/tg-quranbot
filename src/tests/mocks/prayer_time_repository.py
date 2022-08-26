@@ -10,7 +10,7 @@ class PrayerTimeRepositoryMock(PrayerTimeRepositoryInterface):
         self,
         chat_id: int,
         target_datetime: datetime.date,
-        city_id: int,
+        city_id: uuid.UUID,
     ) -> list[Prayer]:
         date = datetime.datetime(2020, 1, 3)
         times = [
