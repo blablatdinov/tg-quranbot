@@ -4,7 +4,7 @@ from handlers import command_handlers, location, search_handler
 from handlers.button_handlers.ayat_search_by_sura_ayat_num_pagination import ayat_from_callback_handler
 from handlers.button_handlers.ayat_text_search import ayats_search_buttons
 from handlers.button_handlers.favorite_ayats import add_to_favorite, favorite_ayat, remove_from_favorite
-from handlers.button_handlers.prayers import mark_prayer_as_not_readed, mark_prayer_as_readed
+from handlers.button_handlers.prayers import change_prayer_status
 from handlers.message_handlers.podcasts_handler import register_podcasts_message_handlers
 from handlers.message_handlers.prayer_times import register_prayer_times_message_handlers
 from handlers.message_handlers.register import register_ayat_message_handlers
@@ -53,13 +53,8 @@ def _register_button_handlers(dp: Dispatcher) -> None:
         state='*',
     )
     dp.register_callback_query_handler(
-        mark_prayer_as_not_readed,
-        lambda callback: callback.data and callback.data.startswith('mark_not_readed'),
-        state='*',
-    )
-    dp.register_callback_query_handler(
-        mark_prayer_as_readed,
-        lambda callback: callback.data and callback.data.startswith('mark_readed'),
+        change_prayer_status,
+        lambda callback: callback.data and callback.data.startswith('mark_'),
         state='*',
     )
     dp.register_callback_query_handler(

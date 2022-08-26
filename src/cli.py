@@ -18,7 +18,6 @@ from services.answers.log_answer import LoggedAnswer
 from services.answers.spam_answer_list import SavedSpamAnswerList
 from services.ayats.morning_spam import MorningSpam
 from services.mailing_with_notification import MailingWithNotification
-from services.prayer_time import PrayerTimes, UserPrayerTimes, UserPrayerTimesAnswer
 from services.user import UsersStatus
 from services.users_day import MailingWithUpdateUserDays
 
@@ -54,23 +53,24 @@ async def send_morning_content() -> None:
 
 async def send_prayer_time() -> None:
     """Отправить времена намазов для след. дня."""
-    async with DBConnection() as connection:
-        chat_ids = await UsersRepository(connection).active_users_with_city()
-        for chat_id in chat_ids:
-            await LoggedAnswer(
-                await UserPrayerTimesAnswer(
-                    UserPrayerTimes(
-                        PrayerTimes(
-                            prayer_times_repository=PrayerTimeRepository(connection),
-                            user_repository=UserRepository(connection),
-                            chat_id=chat_id,
-                        ),
-                        datetime.datetime.now() + datetime.timedelta(days=1),
-                    ),
-                    datetime.datetime.now() + datetime.timedelta(days=1),
-                ).to_answer(),
-                UpdatesLogRepository(connection),
-            ).send(chat_id)
+    pass
+    # async with DBConnection() as connection:
+    #     chat_ids = await UsersRepository(connection).active_users_with_city()
+    #     for chat_id in chat_ids:
+    #         await LoggedAnswer(
+    #             await UserPrayerTimesAnswer(
+    #                 UserPrayerTimes(
+    #                     PrayerTimes(
+    #                         prayer_times_repository=PrayerTimeRepository(connection),
+    #                         user_repository=UserRepository(connection),
+    #                         chat_id=chat_id,
+    #                     ),
+    #                     datetime.datetime.now() + datetime.timedelta(days=1),
+    #                 ),
+    #                 datetime.datetime.now() + datetime.timedelta(days=1),
+    #             ).to_answer(),
+    #             UpdatesLogRepository(connection),
+    #         ).send(chat_id)
 
 
 async def start_events_receiver() -> None:

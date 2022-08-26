@@ -9,9 +9,9 @@ from cli import check_users_status, send_morning_content, send_prayer_time
 from db.connection import database
 from handlers.register import register_handlers
 from settings import settings
-from utlls import get_bot_instance
+from utlls import BotInstance
 
-bot = get_bot_instance()
+bot = BotInstance.get()
 state_storage = RedisStorage2(settings.REDIS_HOST, settings.REDIS_PORT, db=settings.REDIS_DB)
 dp = Dispatcher(bot, storage=state_storage)
 

@@ -4,14 +4,11 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext, filters
 
 from constants import GET_PRAYER_TIMES_REGEXP
-from db.connection import DBConnection, database
+from db.connection import database
 from repository.prayer_time import PrayerTimeRepository
-from repository.update_log import UpdatesLogRepository
 from repository.users.user import UserRepository
-from services.answers.answer import TextAnswer, DefaultKeyboard
-from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswerProcess
-from services.prayer_time import PrayerTimes, UserHasNotCityExistsSafeAnswer, UserPrayerTimes, UserPrayerTimesAnswer, \
-    UserPrayerTimesKeyboard
+from services.prayers.prayer_status_markup import PrayerTimeKeyboard
+from services.prayers.prayer_times import PrayerTimes, PrayerForUserAnswer, UserPrayerTimes
 from utlls import BotInstance
 
 
@@ -21,28 +18,28 @@ async def prayer_times_handler(message: types.Message, state: FSMContext):
     :param message: types.Message
     :param state: FSMContext
     """
-    user_prayer_times = UserPrayerTimes(
+    await PrayerForUserAnswer(
+        BotInstance.get(),
+        message.chat.id,
         PrayerTimes(
-            PrayerTimeRepository(database),
             message.chat.id,
             UserRepository(database),
+            PrayerTimeRepository(database),
+            datetime.datetime.today(),
         ),
-        datetime.datetime.now(),
-    )
-    await UserHasNotCityExistsSafeAnswer(
-        UserPrayerTimesAnswer(
-            BotInstance.get(),
-            message.chat.id,
-            user_prayer_times,
-            datetime.datetime.now(),
-            UserPrayerTimesKeyboard(user_prayer_times),
+        PrayerTimeKeyboard(
+            UserPrayerTimes(
+                message.chat.id,
+                PrayerTimes(
+                    message.chat.id,
+                    UserRepository(database),
+                    PrayerTimeRepository(database),
+                    datetime.datetime.today(),
+                ),
+                UserRepository(database),
+                PrayerTimeRepository(database),
+            ),
         ),
-        TextAnswer(
-            BotInstance.get(),
-            message.chat.id,
-            'asdf',
-            DefaultKeyboard(),
-        )
     ).send()
     await state.finish()
 
