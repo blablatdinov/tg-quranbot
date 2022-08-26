@@ -11,7 +11,7 @@ from services.answers.log_answer import LoggedSourceCallback
 from services.ayats.edit_markup import Markup
 from services.prayers.prayer_status import PrayerStatus
 from services.prayers.prayer_status_markup import PrayerTimeKeyboard
-from services.prayers.prayer_times import EditedUserPrayerTimes, PrayerTimes, UserPrayerTimes, PrayersWithoutSunrise
+from services.prayers.prayer_times import EditedUserPrayerTimes, PrayersWithoutSunrise, PrayerTimes, UserPrayerTimes
 from utlls import BotInstance, get_bot_instance
 
 bot = get_bot_instance()

@@ -34,6 +34,7 @@ class PodcastRepository(PodcastRepositoryInterface):
         """Получить случайный подкаст.
 
         :returns: Podcast
+        :raises InternalBotError: если таблилца с подкастами не заполнена
         """
         query = """
             SELECT

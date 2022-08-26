@@ -60,6 +60,7 @@ class LoggedSourceMessageAnswer(AnswerInterface):
 
 
 class LoggedAnswerByCallback(AnswerInterface):
+    """Декоратор для логгирования сообщений, спровоцированных нажатием на кнопку."""
 
     def __init__(
         self,

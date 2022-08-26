@@ -1,6 +1,6 @@
 from repository.mailing import MailingRepository
 from repository.users.users import UsersRepositoryInterface
-from services.answers.answer import TextAnswer, DefaultKeyboard
+from services.answers.answer import DefaultKeyboard, TextAnswer
 from services.answers.spam_answer_list import SavedSpamAnswerList, SpamAnswerList
 from utlls import BotInstance
 

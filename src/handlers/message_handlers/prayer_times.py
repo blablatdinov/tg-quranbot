@@ -8,7 +8,7 @@ from db.connection import database
 from repository.prayer_time import PrayerTimeRepository
 from repository.users.user import UserRepository
 from services.prayers.prayer_status_markup import PrayerTimeKeyboard
-from services.prayers.prayer_times import PrayerForUserAnswer, PrayerTimes, UserPrayerTimes, PrayersWithoutSunrise
+from services.prayers.prayer_times import PrayerForUserAnswer, PrayersWithoutSunrise, PrayerTimes, UserPrayerTimes
 from utlls import BotInstance
 
 

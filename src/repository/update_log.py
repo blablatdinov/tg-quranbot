@@ -35,6 +35,7 @@ class UpdatesLogRepositoryInterface(object):
 
 
 class UpdatesLogRepository(UpdatesLogRepositoryInterface):
+    """Класс для работы с хранилищем сообщений и нажатий на кнопки."""
 
     def __init__(self, message_broker: MessageBrokerInterface):
         self._message_broker = message_broker
@@ -78,7 +79,6 @@ class UpdatesLogRepository(UpdatesLogRepositoryInterface):
 
         :param messages: list[types.Message]
         :param trigger_message_id: int
-        :raises NotImplementedError: if not implemented
         """
         await self._message_broker.send(
             {
@@ -86,7 +86,7 @@ class UpdatesLogRepository(UpdatesLogRepositoryInterface):
                     {
                         'message_json': message.to_python(),
                         'is_unknown': False,
-                        'trigger_message_id': trigger_message_id if trigger_message_id != message.message_id else None,
+                        'trigger_message_id': None if trigger_message_id == message.message_id else trigger_message_id,
                     }
                     for message in messages
                 ],

@@ -33,6 +33,7 @@ class AdminMessageRepository(AdminMessageRepositoryInterface):
 
         :param key: str
         :returns: str
+        :raises InternalBotError: возбуждается если административное сообщение с переданным ключом не найдено
         """
         record = await self.connection.fetch_one(
             'SELECT text FROM admin_messages m WHERE m.key = :key', {'key': key},

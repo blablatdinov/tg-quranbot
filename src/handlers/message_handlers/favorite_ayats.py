@@ -54,7 +54,7 @@ async def favorite_ayats_list(message: types.Message, state: FSMContext):
             ),
             BotInstance.get(),
             message.chat.id,
-        )
+        ),
     ).send()
 
     await state.finish()

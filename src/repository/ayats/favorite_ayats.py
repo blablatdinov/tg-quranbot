@@ -1,7 +1,6 @@
 from databases import Database
 from pydantic import parse_obj_as
 
-from exceptions.base_exception import InternalBotError
 from repository.ayats.ayat import Ayat
 from repository.schemas import CountResult
 

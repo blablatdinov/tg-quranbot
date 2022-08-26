@@ -115,6 +115,7 @@ class AyatRepository(AyatRepositoryInterface):
 
         :param ayat_id: int
         :returns: Ayat
+        :raises InternalBotError: возбуждается если аят с переданным идентификатором не найден
         """
         query = """
             SELECT

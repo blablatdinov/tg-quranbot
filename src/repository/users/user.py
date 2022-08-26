@@ -110,6 +110,7 @@ class UserRepository(UserRepositoryInterface):
 
         :param chat_id: int
         :returns: User
+        :raises InternalBotError: возбуждается если пользователь с переданным идентификатором не найден
         """
         query = """
             SELECT

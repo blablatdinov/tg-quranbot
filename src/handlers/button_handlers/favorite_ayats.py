@@ -6,7 +6,7 @@ from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import FavoriteAyatsNeighborRepository, NeighborAyatsRepository
 from repository.update_log import UpdatesLogRepository
-from services.answers.log_answer import LoggedSourceCallback, LoggedAnswerByCallback
+from services.answers.log_answer import LoggedAnswerByCallback, LoggedSourceCallback
 from services.ayats.ayat_by_id import AyatById
 from services.ayats.ayat_search import FavoriteAyats, SearchAnswer
 from services.ayats.edit_markup import AyatFavoriteStatus, Markup

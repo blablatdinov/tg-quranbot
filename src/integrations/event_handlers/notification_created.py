@@ -1,5 +1,5 @@
 from repository.update_log import UpdatesLogRepositoryInterface
-from services.answers.answer import TextAnswer, DefaultKeyboard
+from services.answers.answer import DefaultKeyboard, TextAnswer
 from services.answers.log_answer import LoggedAnswer
 from settings import settings
 from utlls import BotInstance

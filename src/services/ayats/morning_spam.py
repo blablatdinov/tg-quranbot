@@ -3,7 +3,7 @@ from aiogram import types
 from app_types.mailing_interface import MailingInterface
 from repository.ayats.ayat_morning_content import AyatMorningContentRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
-from services.answers.answer import TextAnswer, DefaultKeyboard
+from services.answers.answer import DefaultKeyboard, TextAnswer
 from services.answers.spam_answer_list import SpamAnswerList
 from utlls import BotInstance
 

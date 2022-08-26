@@ -1,7 +1,7 @@
 from typing import Optional
 
 from repository.admin_message import AdminMessageRepositoryInterface
-from repository.ayats.ayat import AyatRepositoryInterface, Ayat
+from repository.ayats.ayat import Ayat, AyatRepositoryInterface
 from repository.users.user import UserRepositoryInterface
 
 
