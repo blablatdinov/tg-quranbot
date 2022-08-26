@@ -1,7 +1,7 @@
 from typing import Optional
 
 from repository.admin_message import AdminMessageRepositoryInterface
-from repository.ayats.ayat import AyatRepositoryInterface
+from repository.ayats.ayat import AyatRepositoryInterface, Ayat
 from repository.users.user import UserRepositoryInterface
 
 
@@ -16,14 +16,14 @@ class RegistrationRepositoryInterface(object):
         """
         raise NotImplementedError
 
-    async def admin_message(self):
+    async def admin_message(self) -> str:
         """Получить административное сообщение.
 
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
 
-    async def first_ayat(self):
+    async def first_ayat(self) -> Ayat:
         """Получить первый аят.
 
         :raises NotImplementedError: if not implemented

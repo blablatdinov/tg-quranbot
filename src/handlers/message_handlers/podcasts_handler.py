@@ -3,7 +3,10 @@ from aiogram.dispatcher import FSMContext, filters
 
 from constants import PODCAST_BUTTON
 from db.connection import database
+from integrations.nats_integration import NatsIntegration
 from repository.podcast import PodcastRepository
+from repository.update_log import UpdatesLogRepository
+from services.answers.log_answer import LoggedSourceMessageAnswer
 from services.podcast import PodcastAnswer
 from settings import settings
 from utlls import BotInstance
@@ -15,11 +18,15 @@ async def podcasts_handler(message: types.Message, state: FSMContext):
     :param message: types.Message
     :param state: FSMContext
     """
-    await PodcastAnswer(
-        settings.DEBUG,
-        message.chat.id,
-        BotInstance.get(),
-        PodcastRepository(database),
+    await LoggedSourceMessageAnswer(
+        UpdatesLogRepository(NatsIntegration([])),
+        message,
+        PodcastAnswer(
+            settings.DEBUG,
+            message.chat.id,
+            BotInstance.get(),
+            PodcastRepository(database),
+        ),
     ).send()
     await state.finish()
 

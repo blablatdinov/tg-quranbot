@@ -3,6 +3,8 @@ from typing import Optional
 from databases import Database
 from pydantic import BaseModel
 
+from exceptions.base_exception import InternalBotError
+
 
 class Podcast(BaseModel):
     """Модель подкаста."""
@@ -43,4 +45,6 @@ class PodcastRepository(PodcastRepositoryInterface):
             LIMIT 1
         """
         row = await self.connection.fetch_one(query)
+        if not row:
+            raise InternalBotError('Подкасты не найдены')
         return Podcast.parse_obj(row._mapping)  # noqa: WPS437

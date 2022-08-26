@@ -27,3 +27,4 @@ class ExceptionSafeAnswer(AnswerInterface):
                 return await TextAnswer(
                     self._bot, self._chat_id, error.user_message, DefaultKeyboard(),
                 ).send()
+        return []

@@ -1,3 +1,5 @@
+from typing import Union, Optional
+
 from aiogram import Bot, types
 
 from services.answers.interface import AnswerInterface
@@ -6,7 +8,7 @@ from services.answers.interface import AnswerInterface
 class KeyboardInterface(object):
     """Интерфейс клавиатуры."""
 
-    async def generate(self):
+    async def generate(self) -> Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup]:
         """Генерация.
 
         :raises NotImplementedError: if not implemented
@@ -52,7 +54,7 @@ class FileAnswer(AnswerInterface):
 class TelegramFileIdAnswer(AnswerInterface):
     """Класс ответа с файлом."""
 
-    def __init__(self, bot: Bot, chat_id: int, telegram_file_id: str, keyboard: KeyboardInterface):
+    def __init__(self, bot: Bot, chat_id: int, telegram_file_id: Optional[str], keyboard: KeyboardInterface):
         self._chat_id = chat_id
         self._bot = bot
         self._telegram_file_id = telegram_file_id

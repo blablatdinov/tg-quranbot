@@ -133,7 +133,7 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
 
     async def get_user_prayer_times(
         self,
-        prayer_ids: list[uuid.UUID],
+        prayer_ids: list[int],
         chat_id: int,
         date: datetime.date,
     ) -> list[UserPrayer]:
@@ -165,7 +165,7 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
         rows = await self.connection.fetch_all(query, {'chat_id': chat_id, 'date': date})
         return parse_obj_as(list[UserPrayer], [row._mapping for row in rows])  # noqa: WPS437
 
-    async def create_user_prayer_times(self, prayer_ids: list[uuid.UUID], user_id: int) -> list[UserPrayer]:
+    async def create_user_prayer_times(self, prayer_ids: list[int], user_id: int) -> list[UserPrayer]:
         """Создать времена намазов для пользователя.
 
         :param prayer_ids: list[uuid.UUID]

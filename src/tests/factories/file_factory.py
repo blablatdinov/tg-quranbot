@@ -1,7 +1,7 @@
 import uuid
 
 
-async def factory(db_session):
+async def factory(db_session) -> uuid.UUID:
     file_id = uuid.uuid4()
     insert_file_query = """
         INSERT INTO files

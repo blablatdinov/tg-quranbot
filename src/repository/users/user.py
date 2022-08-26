@@ -54,7 +54,7 @@ class UserRepositoryInterface(object):
         """
         raise NotImplementedError
 
-    async def update_city(self, chat_id: int, city_id: int):
+    async def update_city(self, chat_id: int, city_id: uuid.UUID):
         """Обновить город пользователя.
 
         :param chat_id: int
@@ -122,6 +122,8 @@ class UserRepository(UserRepositoryInterface):
             WHERE chat_id = :chat_id
         """
         record = await self.connection.fetch_one(query, {'chat_id': chat_id})
+        if not record:
+            raise InternalBotError('Пользователь с chat_id: {0} не найден'.format(chat_id))
         return User.parse_obj(dict(record._mapping))  # noqa: WPS437
 
     async def exists(self, chat_id: int) -> bool:

@@ -1,6 +1,8 @@
 from databases import Database
 from pydantic import BaseModel
 
+from exceptions.base_exception import InternalBotError
+
 
 class QueryResult(BaseModel):
     """Резултат запроса на получение административного сообщения."""
@@ -35,4 +37,6 @@ class AdminMessageRepository(AdminMessageRepositoryInterface):
         record = await self.connection.fetch_one(
             'SELECT text FROM admin_messages m WHERE m.key = :key', {'key': key},
         )
+        if not record:
+            raise InternalBotError('Не найдено административное сообщение с ключом {0}'.format(key))
         return QueryResult.parse_obj(record._mapping).text  # noqa: WPS437
