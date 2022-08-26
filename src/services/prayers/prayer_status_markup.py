@@ -1,11 +1,12 @@
 from aiogram import types
 
-from constants import PRAYER_READED_EMOJI, PRAYER_NOT_READED_EMOJI
+from constants import PRAYER_NOT_READED_EMOJI, PRAYER_READED_EMOJI
 from services.answers.answer import KeyboardInterface
 from services.prayers.prayer_times import UserPrayerTimesInterface
 
 
 class PrayerTimeKeyboard(KeyboardInterface):
+    """Клавиатура с временем намаза."""
 
     def __init__(self, user_prayer_times: UserPrayerTimesInterface):
         self._user_prayer_times = user_prayer_times

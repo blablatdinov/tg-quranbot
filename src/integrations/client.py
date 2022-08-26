@@ -3,8 +3,8 @@ import time
 from typing import TypeVar
 
 import aiohttp
-from pydantic import BaseModel
 from loguru import logger
+from pydantic import BaseModel
 
 ParseModel = TypeVar('ParseModel', bound=BaseModel)
 
@@ -41,6 +41,7 @@ class IntegrationClient(IntegrationClientInterface):
 
 
 class LoggedIntegrationClient(IntegrationClientInterface):
+    """Декоратор логирующий http запрос."""
 
     def __init__(self, integration_client: IntegrationClientInterface):
         self._origin = integration_client

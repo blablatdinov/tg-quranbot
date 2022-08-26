@@ -2,7 +2,7 @@ import asyncio
 import datetime
 import sys
 
-from db.connection import DBConnection
+from db.connection import DBConnection, database
 from exceptions.base_exception import BaseAppError
 from integrations.event_handlers.mailing_created import MailingCreatedEvent
 from integrations.event_handlers.messages_deleted import MessagesDeletedEvent
@@ -14,12 +14,14 @@ from repository.prayer_time import PrayerTimeRepository
 from repository.update_log import UpdatesLogRepository
 from repository.users.user import UserRepository
 from repository.users.users import UsersRepository
-from services.answers.log_answer import LoggedAnswer
 from services.answers.spam_answer_list import SavedSpamAnswerList
 from services.ayats.morning_spam import MorningSpam
 from services.mailing_with_notification import MailingWithNotification
+from services.prayers.prayer_status_markup import PrayerTimeKeyboard
+from services.prayers.prayer_times import PrayerForUserAnswer, PrayerTimes, UserPrayerTimes
 from services.user import UsersStatus
 from services.users_day import MailingWithUpdateUserDays
+from utlls import BotInstance
 
 
 async def check_users_status() -> None:
@@ -53,24 +55,31 @@ async def send_morning_content() -> None:
 
 async def send_prayer_time() -> None:
     """Отправить времена намазов для след. дня."""
-    pass
-    # async with DBConnection() as connection:
-    #     chat_ids = await UsersRepository(connection).active_users_with_city()
-    #     for chat_id in chat_ids:
-    #         await LoggedAnswer(
-    #             await UserPrayerTimesAnswer(
-    #                 UserPrayerTimes(
-    #                     PrayerTimes(
-    #                         prayer_times_repository=PrayerTimeRepository(connection),
-    #                         user_repository=UserRepository(connection),
-    #                         chat_id=chat_id,
-    #                     ),
-    #                     datetime.datetime.now() + datetime.timedelta(days=1),
-    #                 ),
-    #                 datetime.datetime.now() + datetime.timedelta(days=1),
-    #             ).to_answer(),
-    #             UpdatesLogRepository(connection),
-    #         ).send(chat_id)
+    chat_ids = await UsersRepository(database).active_users_with_city()
+    for chat_id in chat_ids:
+        await PrayerForUserAnswer(
+            BotInstance.get(),
+            chat_id,
+            PrayerTimes(
+                chat_id,
+                UserRepository(database),
+                PrayerTimeRepository(database),
+                datetime.datetime.today(),
+            ),
+            PrayerTimeKeyboard(
+                UserPrayerTimes(
+                    chat_id,
+                    PrayerTimes(
+                        chat_id,
+                        UserRepository(database),
+                        PrayerTimeRepository(database),
+                        datetime.datetime.today(),
+                    ),
+                    UserRepository(database),
+                    PrayerTimeRepository(database),
+                ),
+            ),
+        ).send()
 
 
 async def start_events_receiver() -> None:

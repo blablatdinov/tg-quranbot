@@ -6,9 +6,10 @@ from db.connection import database
 from repository.prayer_time import PrayerTimeRepository
 from repository.users.user import UserRepository
 from services.ayats.edit_markup import Markup
+from services.prayers.prayer_status import PrayerStatus
 from services.prayers.prayer_status_markup import PrayerTimeKeyboard
-from services.prayers.prayer_times import UserPrayerTimes, PrayerTimes, EditedUserPrayerTimes, PrayerStatus
-from utlls import get_bot_instance, BotInstance
+from services.prayers.prayer_times import EditedUserPrayerTimes, PrayerTimes, UserPrayerTimes
+from utlls import BotInstance, get_bot_instance
 
 bot = get_bot_instance()
 

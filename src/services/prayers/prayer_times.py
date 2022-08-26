@@ -1,70 +1,89 @@
 import datetime
 
-from aiogram import types, Bot
+from aiogram import Bot, types
 from loguru import logger
 
-from app_types.intable import Intable
 from exceptions.content_exceptions import UserHasNotCityIdError
-from repository.prayer_time import PrayerTimeRepositoryInterface, PrayerNames
+from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
 from repository.users.user import UserRepositoryInterface
-from services.answers.answer import TextAnswer, KeyboardInterface
+from services.answers.answer import KeyboardInterface, TextAnswer
 from services.answers.interface import AnswerInterface
-from services.regular_expression import IntableRegularExpression
+from services.prayers.prayer_status import PrayerStatus
 
 
 class PrayerTimesInterface(object):
+    """Интерфейс для времен намаза."""
 
     async def as_list(self):
+        """Представить объект как список.
+
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
 
 class UserPrayerTimesInterface(object):
+    """Интерфейс для времен намазов пользователя."""
 
     async def as_list(self):
+        """Представить объект как список.
+
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
 
 class PrayerTimes(PrayerTimesInterface):
+    """Класс для работы с временами намаза."""
 
     def __init__(
         self,
         chat_id: int,
         user_repository: UserRepositoryInterface,
         prayer_times_repository: PrayerTimeRepositoryInterface,
-        date: datetime.date
+        date: datetime.date,
     ):
         self._chat_id = chat_id
         self._user_repository = user_repository
         self._prayer_times_repository = prayer_times_repository
         self._date = date
 
-    async def as_list(self):
+    async def as_list(self) -> list[Prayer]:
+        """Представить объект как список.
+
+        :return: list[Prayer]
+        :raises UserHasNotCityIdError: если у пользователя не установлен город
+        """
         user = await self._user_repository.get_by_chat_id(self._chat_id)
         if not user.city_id:
             raise UserHasNotCityIdError
-        prayers = await self._prayer_times_repository.get_prayer_times_for_date(
+        return await self._prayer_times_repository.get_prayer_times_for_date(
             chat_id=self._chat_id,
             target_datetime=self._date,
             city_id=user.city_id,
         )
-        return prayers
 
 
 class UserPrayerTimes(UserPrayerTimesInterface):
+    """Класс для работы с временами намаза пользователей."""
 
     def __init__(
         self,
         chat_id: int,
         prayer_times: PrayerTimesInterface,
         user_repository: UserRepositoryInterface,
-        prayer_times_repo: PrayerTimeRepositoryInterface
+        prayer_times_repo: PrayerTimeRepositoryInterface,
     ):
         self._chat_id = chat_id
         self._prayer_times = prayer_times
         self._user_repository = user_repository
         self._prayer_times_repository = prayer_times_repo
 
-    async def as_list(self):
+    async def as_list(self) -> list[UserPrayer]:
+        """Представить объект как список.
+
+        :return: list[UserPrayer]
+        """
         prayers = await self._prayer_times.as_list()
         user_prayers = await self._prayer_times_repository.get_user_prayer_times(
             [prayer.id for prayer in prayers],
@@ -83,19 +102,8 @@ class UserPrayerTimes(UserPrayerTimesInterface):
         return user_prayers
 
 
-class PrayerStatus(object):
-
-    def __init__(self, source: str):
-        self._source = source
-
-    def user_prayer_id(self):
-        return int(IntableRegularExpression(self._source))
-
-    def change_to(self):
-        return 'not' not in self._source.split('(')[0]
-
-
 class EditedUserPrayerTimes(UserPrayerTimesInterface):
+    """Измененный статус времени намаза пользвоателя."""
 
     def __init__(
         self,
@@ -107,7 +115,11 @@ class EditedUserPrayerTimes(UserPrayerTimesInterface):
         self._prayer_times_repo = prayer_times_repo
         self._user_prayer_status = prayer_status
 
-    async def as_list(self):
+    async def as_list(self) -> list[UserPrayer]:
+        """Представить объект как список.
+
+        :return: list[UserPrayer]
+        """
         await self._prayer_times_repo.change_user_prayer_time_status(
             self._user_prayer_status.user_prayer_id(), self._user_prayer_status.change_to(),
         )
@@ -115,18 +127,24 @@ class EditedUserPrayerTimes(UserPrayerTimesInterface):
 
 
 class PrayersWithoutSunrise(PrayerTimesInterface):
+    """Времена намаза без времени восхода."""
 
     def __init__(self, prayer_times: PrayerTimesInterface):
         self._origin = prayer_times
 
-    async def as_list(self):
-        filter(
+    async def as_list(self) -> list[UserPrayer]:
+        """Представить объект как список.
+
+        :return: list[UserPrayer]
+        """
+        return list(filter(
             lambda prayer: prayer.name != PrayerNames.SUNRISE,
             await self._origin.as_list(),
-        )
+        ))
 
 
 class PrayerForUserAnswer(AnswerInterface):
+    """Ответ пользователю с временами намаза."""
 
     def __init__(self, bot: Bot, chat_id: int, user_prayer_times: PrayerTimesInterface, keyboard: KeyboardInterface):
         self._bot = bot
@@ -135,6 +153,10 @@ class PrayerForUserAnswer(AnswerInterface):
         self._keyboard = keyboard
 
     async def send(self) -> list[types.Message]:
+        """Отправить.
+
+        :return: list[types.Message]
+        """
         prayers = await self._user_prayer_times.as_list()
         time_format = '%H:%M'
         template = '\n'.join([

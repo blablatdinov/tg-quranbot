@@ -1,10 +1,10 @@
-from aiogram import types, Bot
+from aiogram import Bot, types
 from loguru import logger
 
 from exceptions.content_exceptions import CityNotSupportedError
 from repository.city import City
 from repository.users.user import UserRepositoryInterface
-from services.answers.answer import TextAnswer, DefaultKeyboard
+from services.answers.answer import DefaultKeyboard, TextAnswer
 from services.answers.interface import AnswerInterface
 from services.city.search import CitySearchInterface
 

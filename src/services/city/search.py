@@ -1,9 +1,9 @@
 from aiogram import types
+from loguru import logger
 
 from exceptions.content_exceptions import CityNotSupportedError
 from integrations.nominatim import GeoServiceIntegrationInterface
 from repository.city import City, CityRepositoryInterface
-from loguru import logger
 
 
 class CitySearchInterface(object):

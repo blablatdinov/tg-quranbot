@@ -37,7 +37,7 @@ class CityRepositoryMock(CityRepositoryInterface):
 async def test_by_name():
     cities_query_answer = await CitySearchInlineAnswer(
         SearchCityByName(
-        CityRepositoryMock(),
+            CityRepositoryMock(),
             'Казань',
         ),
     ).to_inline_search_result()

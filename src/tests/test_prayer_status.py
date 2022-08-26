@@ -1,6 +1,6 @@
 import pytest
 
-from services.prayers.prayer_times import PrayerStatus
+from services.prayers.prayer_status import PrayerStatus
 
 
 @pytest.mark.parametrize('source,user_prayer_id,change_to', [
