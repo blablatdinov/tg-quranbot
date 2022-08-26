@@ -1,6 +1,6 @@
 import datetime
 
-from aiogram import types
+from aiogram import types, Bot
 from loguru import logger
 
 from app_types.intable import Intable
@@ -8,7 +8,7 @@ from constants import PRAYER_NOT_READED_EMOJI, PRAYER_READED_EMOJI
 from exceptions.content_exceptions import UserHasNotCityIdError
 from repository.prayer_time import Prayer, PrayerNames, PrayerTimeRepositoryInterface, UserPrayer
 from repository.users.user import UserRepositoryInterface
-from services.answers.answer import TextAnswer
+from services.answers.answer import TextAnswer, KeyboardInterface
 from services.answers.interface import AnswerInterface
 from services.user_prayer_status_interface import UserPrayerStatusInterface
 
@@ -72,7 +72,7 @@ class UserPrayerTimes(object):
         return user_prayers
 
 
-class UserPrayerTimesKeyboard(object):
+class UserPrayerTimesKeyboard(KeyboardInterface):
     """Клавиатура для времен намазов пользователей."""
 
     _user_prayer_times: UserPrayerTimes
@@ -131,13 +131,16 @@ class PrayerTimes(PrayerTimesInterface):
         :raises UserHasNotCityIdError: если город не найден в БД
         """
         user = await self._user_repository.get_by_chat_id(self._chat_id)
+        logger.info('Try getting prayer times for user <{0}> ...'.format(user.chat_id))
         if not user.city_id:
+            logger.info('User <{0}> has not city'.format(user.chat_id))
             raise UserHasNotCityIdError
         prayers = await self._prayer_times_repository.get_prayer_times_for_date(
             chat_id=self._chat_id,
             target_datetime=date,
             city_id=user.city_id,
         )
+        logger.info('Prayers for user <{0}> finded: {1}'.format(user.chat_id, prayers))
         return PrayerTimes(
             prayers=prayers,
             prayer_times_repository=self._prayer_times_repository,
@@ -196,23 +199,31 @@ class UserPrayerTimesAnswer(AnswerInterface):
     _user_prayer_times: UserPrayerTimes
     _date: datetime.date
 
-    def __init__(self, user_prayer_times: UserPrayerTimes, date: datetime.date):
+    def __init__(
+        self, bot: Bot,
+        chat_id: int,
+        user_prayer_times: UserPrayerTimes,
+        date: datetime.date,
+        keyboard: KeyboardInterface,
+    ):
+        self._bot = bot
+        self._chat_id = chat_id
         self._user_prayer_times = user_prayer_times
         self._date = date
+        self._keyboard = keyboard
 
-    async def to_answer(self) -> AnswerInterface:
+    async def send(self) -> list[types.Message]:
         """Форматировать в ответ.
 
         :returns: AnswerInterface
         """
-        keyboard = await UserPrayerTimesKeyboard(
-            self._user_prayer_times,
-        ).generate()
         prayers = await self._user_prayer_times._prayer_times.get(self._date)
-        return TextAnswer(
-            keyboard=keyboard,
-            message=str(prayers),
-        )
+        return await TextAnswer(
+            self._bot,
+            self._chat_id,
+            str(prayers),
+            self._keyboard,
+        ).send()
 
 
 class UserPrayerStatus(UserPrayerStatusInterface):

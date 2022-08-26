@@ -20,6 +20,6 @@ class PrayerAtUser(Base):
     prayer_at_user_id = Column(Integer(), primary_key=True)
     public_id = Column(String())
     user_id = Column(Integer(), ForeignKey('users.chat_id'), nullable=False)
-    prayer_id = Column(String(), ForeignKey('prayers.prayer_id'))
+    prayer_id = Column(Integer(), ForeignKey('prayers.prayer_id'))
     is_read = Column(Boolean())
     prayer_group_id = Column(String(), ForeignKey('prayers_at_user_groups.prayers_at_user_group_id'))

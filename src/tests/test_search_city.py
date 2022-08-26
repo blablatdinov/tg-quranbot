@@ -7,7 +7,6 @@ from exceptions.content_exceptions import CityNotSupportedError
 from integrations.nominatim import NominatimIntegration
 from repository.city import City, CityRepositoryInterface
 from services.city.search import CitySearchInlineAnswer, SearchCityByCoordinates, SearchCityByName
-from services.city.service import CityService
 from settings import settings
 from tests.mocks.integration_client import IntegrationClientMock
 
@@ -38,9 +37,7 @@ class CityRepositoryMock(CityRepositoryInterface):
 async def test_by_name():
     cities_query_answer = await CitySearchInlineAnswer(
         SearchCityByName(
-            CityService(
-                CityRepositoryMock(),
-            ),
+        CityRepositoryMock(),
             'Казань',
         ),
     ).to_inline_search_result()
@@ -53,9 +50,7 @@ async def test_by_name():
 async def test_by_name_not_found():
     cities_query_answer = await CitySearchInlineAnswer(
         SearchCityByName(
-            CityService(
-                CityRepositoryMock(),
-            ),
+            CityRepositoryMock(),
             'Неизвестный город',
         ),
     ).to_inline_search_result()
@@ -66,9 +61,7 @@ async def test_by_name_not_found():
 
 async def test_by_coordinates(path_to_nominatim_response_kazan_fixture):
     got = await SearchCityByCoordinates(
-        CityService(
-            CityRepositoryMock(),
-        ),
+        CityRepositoryMock(),
         NominatimIntegration(
             IntegrationClientMock(path_to_nominatim_response_kazan_fixture),
         ),
@@ -83,9 +76,7 @@ async def test_by_coordinates(path_to_nominatim_response_kazan_fixture):
 async def test_by_coordinates_not_found(path_to_nominatim_response_new_york_fixture):
     with pytest.raises(CityNotSupportedError):
         await SearchCityByCoordinates(
-            CityService(
-                CityRepositoryMock(),
-            ),
+            CityRepositoryMock(),
             NominatimIntegration(
                 IntegrationClientMock(path_to_nominatim_response_new_york_fixture),
             ),

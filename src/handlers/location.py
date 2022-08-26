@@ -1,16 +1,14 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from db.connection import DBConnection
-from integrations.client import IntegrationClient
+from db.connection import database
+from integrations.client import IntegrationClient, LoggedIntegrationClient
 from integrations.nominatim import NominatimIntegration
 from repository.city import CityRepository
-from repository.update_log import UpdatesLogRepository
 from repository.users.user import UserRepository
-from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswerProcess
 from services.city.answers import CityNotSupportedSafetyAnswer, UserCity, UserCityAnswer
 from services.city.search import SearchCityByCoordinates
-from services.city.service import CityService
+from utlls import BotInstance
 
 
 async def location_handler(message: types.Message, state: FSMContext):
@@ -19,32 +17,27 @@ async def location_handler(message: types.Message, state: FSMContext):
     :param message: types.Message
     :param state: FSMContext
     """
-    async with DBConnection() as connection:
-        answer = await CityNotSupportedSafetyAnswer(
-            UserCityAnswer(
-                UserCity(
-                    SearchCityByCoordinates(
-                        CityService(
-                            CityRepository(connection),
-                        ),
-                        NominatimIntegration(
+    await CityNotSupportedSafetyAnswer(
+        BotInstance.get(),
+        message.chat.id,
+        UserCityAnswer(
+            BotInstance.get(),
+            message.chat.id,
+            UserCity(
+                SearchCityByCoordinates(
+                    CityRepository(database),
+                    NominatimIntegration(
+                        LoggedIntegrationClient(
                             IntegrationClient(),
                         ),
-                        latitude=message.location.latitude,
-                        longitude=message.location.longitude,
                     ),
-                    UserRepository(connection),
-                    message.chat.id,
+                    latitude=message.location.latitude,
+                    longitude=message.location.longitude,
                 ),
+                UserRepository(database),
+                message.chat.id,
             ),
-        ).to_answer()
-        updates_log_repository = UpdatesLogRepository(connection)
-        answer = LoggedSourceMessageAnswerProcess(
-            updates_log_repository,
-            message,
-            LoggedAnswer(answer, updates_log_repository),
-        )
-
-        await answer.send(message.chat.id)
+        ),
+    ).send()
 
     await state.finish()
