@@ -9,11 +9,11 @@ from services.regular_expression import IntableRegularExpression
     ('some56text', 56),
 ])
 def test(input_, expected):
-    got = int(IntableRegularExpression(r'\d+', input_))
+    got = int(IntableRegularExpression(input_))
 
     assert got == expected
 
 
 def test_invalid():
     with pytest.raises(BaseAppError):
-        int(IntableRegularExpression(r'\d+', 'without numbers'))
+        int(IntableRegularExpression('without numbers'))

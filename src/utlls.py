@@ -14,9 +14,9 @@ class BotInstance(object):
 
         :return: Bot
         """
-        if cls._bot:
-            return cls._bot
-        return Bot(token=settings.API_TOKEN, parse_mode='HTML')
+        if not cls._bot:
+            cls._bot = Bot(token=settings.API_TOKEN, parse_mode='HTML')
+        return cls._bot
 
 
 def get_bot_instance() -> Bot:

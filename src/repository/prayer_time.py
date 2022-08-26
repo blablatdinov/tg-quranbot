@@ -21,7 +21,7 @@ class PrayerNames(str, enum.Enum):  # noqa: WPS600
 class Prayer(BaseModel):
     """Модель времени намаза."""
 
-    id: uuid.UUID
+    id: int
     city: str
     day: datetime.date
     time: datetime.time
@@ -189,7 +189,7 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
             [
                 {
                     'is_read': False,
-                    'prayer_id': str(prayer_id),
+                    'prayer_id': prayer_id,
                     'prayer_group_id': str(user_prayer_group_id),
                     'user_id': user_id,
                 }

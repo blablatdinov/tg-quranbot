@@ -1,8 +1,10 @@
-from app_types.answerable import Answerable
+from aiogram import Bot, types
+from loguru import logger
+
 from exceptions.content_exceptions import CityNotSupportedError
 from repository.city import City
 from repository.users.user import UserRepositoryInterface
-from services.answers.answer import TextAnswer
+from services.answers.answer import DefaultKeyboard, TextAnswer
 from services.answers.interface import AnswerInterface
 from services.city.search import CitySearchInterface
 
@@ -25,39 +27,55 @@ class UserCity(object):
         :returns: City
         """
         city = (await self._city_search.search())[0]
+        logger.info('Try update user <{0}> city to {1}'.format(self._chat_id, city))
         await self._user_repository.update_city(self._chat_id, city.id)
+        logger.info('User <{0}> city updated to {1}'.format(self._chat_id, city))
         return city
 
 
-class UserCityAnswer(Answerable):
+class UserCityAnswer(AnswerInterface):
     """Ответ пользователю о смене города."""
 
     _user_city: UserCity
 
-    def __init__(self, user_city: UserCity):
+    def __init__(self, bot: Bot, chat_id: int, user_city: UserCity):
+        self._bot = bot
+        self._chat_id = chat_id
         self._user_city = user_city
 
-    async def to_answer(self) -> AnswerInterface:
+    async def send(self) -> list[types.Message]:
         """Форматировать в ответ.
 
         :returns: AnswerInterface
         """
         city = await self._user_city.update_city()
-        return TextAnswer(message='Вам будет приходить время намаза для г. {0}'.format(city.name))
+        return await TextAnswer(
+            self._bot,
+            self._chat_id,
+            'Вам будет приходить время намаза для г. {0}'.format(city.name),
+            DefaultKeyboard(),
+        ).send()
 
 
-class CityNotSupportedSafetyAnswer(Answerable):
+class CityNotSupportedSafetyAnswer(AnswerInterface):
     """Ответ на поиск с обраоткой ошибки о необслуживаемом городе."""
 
-    def __init__(self, answer: Answerable):
+    def __init__(self, bot: Bot, chat_id: int, answer: AnswerInterface):
+        self._bot = bot
+        self._chat_id = chat_id
         self._origin = answer
 
-    async def to_answer(self) -> AnswerInterface:
+    async def send(self) -> list[types.Message]:
         """Форматировать в ответ.
 
         :returns: AnswerInterface
         """
         try:
-            return await self._origin.to_answer()
+            return await self._origin.send()
         except CityNotSupportedError as error:
-            return TextAnswer(message=error.user_message)
+            return await TextAnswer(
+                self._bot,
+                self._chat_id,
+                error.user_message,
+                DefaultKeyboard(),
+            ).send()

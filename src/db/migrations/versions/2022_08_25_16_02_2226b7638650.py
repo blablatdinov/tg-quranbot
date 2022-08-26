@@ -1,15 +1,15 @@
 """Init.
 
-Revision ID: b37656b99038
+Revision ID: 2226b7638650
 Revises:
-Create Date: 2022-08-24 15:07:24.783841
+Create Date: 2022-08-25 16:02:05.913518
 
 """
 import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = 'b37656b99038'
+revision = '2226b7638650'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -33,8 +33,8 @@ def upgrade() -> None:
         'files',
         sa.Column('file_id', sa.String(), nullable=False),
         sa.Column('telegram_file_id', sa.String(), nullable=True),
-        sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('link', sa.String(), nullable=True),
+        sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint('file_id'),
     )
     op.create_table(
@@ -78,6 +78,7 @@ def upgrade() -> None:
         'podcasts',
         sa.Column('podcast_id', sa.String(), nullable=False),
         sa.Column('file_id', sa.String(), nullable=True),
+        sa.Column('article_link', sa.String(), nullable=True),
         sa.ForeignKeyConstraint(
             ['file_id'],
             ['files.file_id'],
@@ -86,7 +87,7 @@ def upgrade() -> None:
     )
     op.create_table(
         'prayers',
-        sa.Column('prayer_id', sa.String(), nullable=False),
+        sa.Column('prayer_id', sa.Integer(), nullable=False),
         sa.Column('name', sa.String(), nullable=True),
         sa.Column('time', sa.Time(), nullable=False),
         sa.Column('city_id', sa.String(), nullable=True),
@@ -141,7 +142,7 @@ def upgrade() -> None:
         sa.Column('prayer_at_user_id', sa.Integer(), nullable=False),
         sa.Column('public_id', sa.String(), nullable=True),
         sa.Column('user_id', sa.Integer(), nullable=False),
-        sa.Column('prayer_id', sa.String(), nullable=True),
+        sa.Column('prayer_id', sa.Integer(), nullable=True),
         sa.Column('is_read', sa.Boolean(), nullable=True),
         sa.Column('prayer_group_id', sa.String(), nullable=True),
         sa.ForeignKeyConstraint(

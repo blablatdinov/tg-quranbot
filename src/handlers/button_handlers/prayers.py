@@ -2,79 +2,42 @@ import datetime
 
 from aiogram import types
 
-from db.connection import DBConnection
+from db.connection import database
 from repository.prayer_time import PrayerTimeRepository
-from repository.update_log import UpdatesLogRepository
 from repository.users.user import UserRepository
-from services.answers.log_answer import LoggedSourceCallbackUserPrayerStatus
-from services.prayer_time import PrayerTimes, UserPrayerStatus, UserPrayerTimes
-from services.regular_expression import IntableRegularExpression
-from utlls import get_bot_instance
+from services.ayats.edit_markup import Markup
+from services.prayers.prayer_status import PrayerStatus
+from services.prayers.prayer_status_markup import PrayerTimeKeyboard
+from services.prayers.prayer_times import EditedUserPrayerTimes, PrayerTimes, UserPrayerTimes
+from utlls import BotInstance, get_bot_instance
 
 bot = get_bot_instance()
 
 
-async def mark_prayer_as_readed(callback_query: types.CallbackQuery):
+async def change_prayer_status(callback_query: types.CallbackQuery):
     """Обработчик кнопки прочитанности аята.
 
     :param callback_query: app_types.CallbackQuery
     """
-    async with DBConnection() as connection:
-        user_prayer_status = LoggedSourceCallbackUserPrayerStatus(
-            UserPrayerStatus(
-                prayer_times_repository=PrayerTimeRepository(connection),
-                user_prayer_times=UserPrayerTimes(
-                    await PrayerTimes(
-                        prayer_times_repository=PrayerTimeRepository(connection),
-                        user_repository=UserRepository(connection),
-                        chat_id=callback_query.from_user.id,
-                    ).get(datetime.datetime.now()),
-                    datetime.datetime.now(),
+    await Markup(
+        BotInstance.get(),
+        callback_query.from_user.id,
+        callback_query.message.message_id,
+        PrayerTimeKeyboard(
+            EditedUserPrayerTimes(
+                UserPrayerTimes(
+                    callback_query.from_user.id,
+                    PrayerTimes(
+                        callback_query.from_user.id,
+                        UserRepository(database),
+                        PrayerTimeRepository(database),
+                        datetime.datetime.today(),
+                    ),
+                    UserRepository(database),
+                    PrayerTimeRepository(database),
                 ),
-                user_prayer_id=IntableRegularExpression(r'\d+', callback_query.data),
+                PrayerTimeRepository(database),
+                PrayerStatus(callback_query.data),
             ),
-            UpdatesLogRepository(connection),
-            callback_query,
-        )
-
-        await user_prayer_status.change(True)
-        keyboard = await user_prayer_status.generate_refresh_keyboard()
-
-    await bot.edit_message_reply_markup(
-        chat_id=callback_query.from_user.id,
-        message_id=callback_query.message.message_id,
-        reply_markup=keyboard,
-    )
-
-
-async def mark_prayer_as_not_readed(callback_query: types.CallbackQuery):
-    """Обработчик кнопки прочитанности аята.
-
-    :param callback_query: app_types.CallbackQuery
-    """
-    async with DBConnection() as connection:
-        user_prayer_status = LoggedSourceCallbackUserPrayerStatus(
-            UserPrayerStatus(
-                prayer_times_repository=PrayerTimeRepository(connection),
-                user_prayer_times=UserPrayerTimes(
-                    await PrayerTimes(
-                        prayer_times_repository=PrayerTimeRepository(connection),
-                        user_repository=UserRepository(connection),
-                        chat_id=callback_query.from_user.id,
-                    ).get(datetime.datetime.now()),
-                    datetime.datetime.now(),
-                ),
-                user_prayer_id=IntableRegularExpression(r'\d+', callback_query.data),
-            ),
-            UpdatesLogRepository(connection),
-            callback_query,
-        )
-
-        await user_prayer_status.change(False)
-        keyboard = await user_prayer_status.generate_refresh_keyboard()
-
-    await bot.edit_message_reply_markup(
-        chat_id=callback_query.from_user.id,
-        message_id=callback_query.message.message_id,
-        reply_markup=keyboard,
-    )
+        ),
+    ).edit()
