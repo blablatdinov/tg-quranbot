@@ -10,6 +10,8 @@
 
 [Требования к "Рассылкам"](mailings.md)
 
-[Схема базы данных](db_schema_specification.md)
+[Спецификация API](api.md)
 
 [Спецификация по логгированию сообщений и нажатий кнопок](updates_log.md)
+
+[Схема базы данных](db_schema_specification.md)
