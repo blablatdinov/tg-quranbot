@@ -127,6 +127,7 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
             INNER JOIN cities c ON p.city_id = c.city_id
             INNER JOIN prayer_days d ON p.day_id = d.date
             WHERE u.chat_id = :chat_id AND d.date = :date
+            ORDER BY p.prayer_id
         """
         rows = await self.connection.fetch_all(query, {'chat_id': chat_id, 'date': target_datetime})
         return parse_obj_as(list[Prayer], [row._mapping for row in rows])  # noqa: WPS437
@@ -156,6 +157,7 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
             INNER JOIN prayer_days pd ON pd.date = p.day_id
             INNER JOIN users u ON up.user_id = u.chat_id
             WHERE p.prayer_id IN {0} AND u.chat_id = :chat_id AND pd.date = :date
+            ORDER BY up.prayer_at_user_id
         """
         query = query_template.format(
             '({0})'.format(
@@ -202,6 +204,7 @@ class PrayerTimeRepository(PrayerTimeRepositoryInterface):
                 is_read AS is_readed
             FROM prayers_at_user
             WHERE prayer_group_id = :prayer_group_id
+            ORDER BY prayer_at_user_id
         """
         rows = await self.connection.fetch_all(
             query,
