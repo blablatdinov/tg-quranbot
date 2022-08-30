@@ -84,26 +84,14 @@ classDiagram
     }
 ```
 
-
-Схема приложения с API:
-
-```mermaid
-classDiagram
-    mailings <|-- messages
-    class messages{
-        message_id
-    }
-    class mailings{
-        id
-    }
-```
-
 Схема приложения с API:
 
 ```mermaid
 classDiagram
     mailings <|-- messages
     messages <|-- messages
+    user_actions <|-- users
+    suras <|-- ayats
     class messages{
         int message_id
         json json
@@ -117,5 +105,36 @@ classDiagram
         int id
         json json
         timestamp datetime
+    }
+    class user_actions{
+        uuid user_action_id
+        bigint user_id
+        varchar action
+        datetime datetime
+    }
+    class users{
+        bigint chat_id
+        varchar username
+        varchar password_hatsh
+        bool is_active
+        varchar comment
+        int day
+        uuid city_id
+        bigint referrer_id
+    }
+    class suras{
+        int sura_id
+        varchar link
+    }
+    class ayats{
+        int ayat_id
+        int day
+        int sura_id
+        varchar ayat_number
+        varchar content
+        varchar arab_text
+        varchar transliteration
+        uuid audio_id
+        uuid one_day_content_id
     }
 ```
