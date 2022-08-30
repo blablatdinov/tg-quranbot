@@ -1,15 +1,15 @@
 from aiogram import types
+from loguru import logger
 
 from exceptions.content_exceptions import CityNotSupportedError
 from integrations.nominatim import GeoServiceIntegrationInterface
-from repository.city import City
-from services.city.service import CityService
+from repository.city import City, CityRepositoryInterface
 
 
 class CitySearchInterface(object):
     """Интерфейс для поиска городов."""
 
-    _city_service: CityService
+    _city_service: CityRepositoryInterface
 
     async def search(self) -> list[City]:
         """Осуществить поиск.
@@ -22,9 +22,9 @@ class CitySearchInterface(object):
 class SearchCityByName(CitySearchInterface):
     """Поиск города по названию."""
 
-    _city_service: CityService
+    _city_service: CityRepositoryInterface
 
-    def __init__(self, city_service: CityService, query: str):
+    def __init__(self, city_service: CityRepositoryInterface, query: str):
         self._city_service = city_service
         self._query = query
 
@@ -39,14 +39,14 @@ class SearchCityByName(CitySearchInterface):
 class SearchCityByCoordinates(CitySearchInterface):
     """Поиск города по координатам."""
 
-    _city_service: CityService
+    _city_service: CityRepositoryInterface
     _geo_service_integration: GeoServiceIntegrationInterface
     _latitude: str
     _longitude: str
 
     def __init__(
         self,
-        city_service: CityService,
+        city_service: CityRepositoryInterface,
         geo_service_integration: GeoServiceIntegrationInterface,
         latitude: str,
         longitude: str,
@@ -63,7 +63,9 @@ class SearchCityByCoordinates(CitySearchInterface):
         :raises CityNotSupportedError: если город не найден в БД
         """
         city_name = await self._geo_service_integration.search(self._latitude, self._longitude)
+        logger.info('Search city {0} in DB'.format(city_name))
         cities = await self._city_service.search_by_name(city_name)
+        logger.info('Finded cities: {0}'.format(cities))
         if not cities:
             template = 'Для города {0} я не знаю времен намазов, пожалуйста напишите моему разработчику'
             raise CityNotSupportedError(template.format(city_name))

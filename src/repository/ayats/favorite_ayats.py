@@ -1,4 +1,4 @@
-from asyncpg import Connection
+from databases import Database
 from pydantic import parse_obj_as
 
 from repository.ayats.ayat import Ayat
@@ -47,7 +47,7 @@ class FavoriteAyatRepositoryInterface(object):
 class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
     """Класс для работы с хранилищем избранных аятов."""
 
-    def __init__(self, connection: Connection):
+    def __init__(self, connection: Database):
         self._connection = connection
 
     async def get_favorites(self, chat_id: int) -> list[Ayat]:
@@ -58,24 +58,24 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
         """
         query = """
             SELECT
-                a.id,
-                s.number as sura_num,
-                s.link as sura_link,
-                a.ayat as ayat_num,
+                a.ayat_id AS id,
+                s.sura_id AS sura_num,
+                s.link AS sura_link,
+                a.ayat_number AS ayat_num,
                 a.arab_text,
                 a.content,
-                a.trans as transliteration,
-                cf.tg_file_id as audio_telegram_id,
-                cf.link_to_file as link_to_audio_file
-            FROM bot_init_subscriber_favourite_ayats fa
-            INNER JOIN content_ayat a ON fa.ayat_id = a.id
-            INNER JOIN bot_init_subscriber sub ON fa.subscriber_id = sub.id
-            INNER JOIN content_sura s on a.sura_id = s.id
-            INNER JOIN content_file cf on a.audio_id = cf.id
-            WHERE sub.tg_chat_id = $1
+                a.transliteration,
+                f.file_id AS audio_telegram_id,
+                f.link AS link_to_audio_file
+            FROM favorite_ayats fa
+            INNER JOIN ayats a ON fa.ayat_id = a.ayat_id
+            INNER JOIN users u ON fa.user_id = u.chat_id
+            INNER JOIN suras s ON a.sura_id = s.sura_id
+            INNER JOIN files f ON a.audio_id = f.file_id
+            WHERE u.chat_id = :chat_id
         """
-        rows = await self._connection.fetch(query, chat_id)
-        return parse_obj_as(list[Ayat], rows)
+        rows = await self._connection.fetch_all(query, {'chat_id': chat_id})
+        return parse_obj_as(list[Ayat], [row._mapping for row in rows])  # noqa: WPS437
 
     async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
         """Получить аят по номеру суры.
@@ -86,13 +86,13 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
         """
         query = """
             SELECT
-                count(*)
-            FROM bot_init_subscriber_favourite_ayats sub_ayat
-            INNER JOIN bot_init_subscriber sub on sub.id = sub_ayat.subscriber_id
-            where ayat_id = $1 and sub.tg_chat_id = $2
+                COUNT(*)
+            FROM favorite_ayats fa
+            INNER JOIN users u ON u.chat_id = fa.user_id
+            WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id
         """
-        row = await self._connection.fetchrow(query, ayat_id, chat_id)
-        return bool(CountResult.parse_obj(row).count)
+        row = await self._connection.fetch_val(query, {'ayat_id': ayat_id, 'chat_id': chat_id})
+        return bool(CountResult.parse_obj(row._mapping).count)  # noqa: WPS437
 
     async def add_to_favorite(self, chat_id: int, ayat_id: int):
         """Добавить аят в избранные.
@@ -101,15 +101,12 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
         :param ayat_id: int
         """
         query = """
-            INSERT INTO bot_init_subscriber_favourite_ayats
-            (subscriber_id, ayat_id)
+            INSERT INTO favorite_ayats
+            (user_id, ayat_id)
             VALUES
-            (
-                (SELECT id FROM bot_init_subscriber WHERE tg_chat_id = $1),
-                $2
-            )
+            (:chat_id, :ayat_id)
         """
-        await self._connection.execute(query, chat_id, ayat_id)
+        await self._connection.execute(query, {'chat_id': chat_id, 'ayat_id': ayat_id})
 
     async def remove_from_favorite(self, chat_id: int, ayat_id: int):
         """Удалить аят из избранных.
@@ -118,7 +115,7 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
         :param ayat_id: int
         """
         query = """
-            DELETE FROM bot_init_subscriber_favourite_ayats
-            WHERE subscriber_id = (SELECT id FROM bot_init_subscriber WHERE tg_chat_id = $1) AND ayat_id = $2
+            DELETE FROM favorite_ayats
+            WHERE user_id = :chat_id AND ayat_id = :ayat_id
         """
-        await self._connection.execute(query, chat_id, ayat_id)
+        await self._connection.execute(query, {'chat_id': chat_id, 'ayat_id': ayat_id})

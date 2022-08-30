@@ -12,21 +12,27 @@ asyncpg = "^0.26.0"
 loguru = "^0.6.0"
 aioredis = "^2.0.1"
 nats-py = "^2.1.4"
-#quranbot-schema-registry = "0.0.1"
-quranbot-schema-registry = "0.0.3"
+quranbot-schema-registry = "0.0.12"
 APScheduler = "^3.9.1"
 databases = "^0.6.0"
+sentry-sdk = "^1.9.2"
+SQLAlchemy = "^1.4.40"
+alembic = "^1.8.1"
 
 [tool.poetry.dev-dependencies]
 wemake-python-styleguide = "^0.16.1"
 ipython = "^8.4.0"
 mypy = "^0.971"
 asyncpg-stubs = "^0.26.0"
-Faker = "^13.14.0"
 pytest-cov = "^3.0.0"
 pytest = "^7.1.2"
 pytest-asyncio = "^0.19.0"
+mixer = "^7.2.2"
+black = "^22.6.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+skip-string-normalization = true

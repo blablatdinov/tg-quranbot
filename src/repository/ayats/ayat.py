@@ -1,8 +1,9 @@
 from typing import NamedTuple, Optional
 
-from asyncpg import Connection
-from pydantic import BaseModel
+from databases import Database
+from pydantic import BaseModel, parse_obj_as
 
+from exceptions.base_exception import InternalBotError
 from repository.ayats.neighbor_ayats import AyatShort
 
 
@@ -106,7 +107,7 @@ class AyatRepositoryInterface(object):
 class AyatRepository(AyatRepositoryInterface):
     """Интерфейс репозитория для работы с административными сообщениями."""
 
-    def __init__(self, connection: Connection):
+    def __init__(self, connection: Database):
         self.connection = connection
 
     async def get(self, ayat_id: int) -> Ayat:
@@ -114,25 +115,28 @@ class AyatRepository(AyatRepositoryInterface):
 
         :param ayat_id: int
         :returns: Ayat
+        :raises InternalBotError: возбуждается если аят с переданным идентификатором не найден
         """
         query = """
             SELECT
-                a.id,
-                s.number as sura_num,
+                a.ayat_id as id,
+                s.sura_id as sura_num,
                 s.link as sura_link,
-                a.ayat as ayat_num,
+                a.ayat_number as ayat_num,
                 a.arab_text,
                 a.content,
-                a.trans as transliteration,
-                cf.tg_file_id as audio_telegram_id,
-                cf.link_to_file as link_to_audio_file
-            FROM content_ayat a
-            INNER JOIN content_sura s on a.sura_id = s.id
-            INNER JOIN content_file cf on a.audio_id = cf.id
-            WHERE a.id = $1
+                a.transliteration,
+                cf.telegram_file_id as audio_telegram_id,
+                cf.link as link_to_audio_file
+            FROM ayats a
+            INNER JOIN suras s on a.sura_id = s.sura_id
+            INNER JOIN files cf on a.audio_id = cf.file_id
+            WHERE a.ayat_id = :ayat_id
         """
-        row = await self.connection.fetchrow(query, ayat_id)
-        return Ayat.parse_obj(row)
+        row = await self.connection.fetch_one(query, {'ayat_id': ayat_id})
+        if not row:
+            raise InternalBotError('Аят с id={0} не найден'.format(ayat_id))
+        return Ayat.parse_obj(row._mapping)  # noqa: WPS437
 
     async def get_ayats_by_sura_num(self, sura_num: int) -> list[Ayat]:
         """Получить аят по номеру суры.
@@ -142,25 +146,22 @@ class AyatRepository(AyatRepositoryInterface):
         """
         query = """
             SELECT
-                a.id,
-                s.number as sura_num,
+                a.ayat_id as id,
+                s.sura_id as sura_num,
                 s.link as sura_link,
-                a.ayat as ayat_num,
+                a.ayat_number as ayat_num,
                 a.arab_text,
                 a.content,
-                a.trans as transliteration,
-                cf.tg_file_id as audio_telegram_id,
-                cf.link_to_file as link_to_audio_file
-            FROM content_ayat a
-            INNER JOIN content_sura s on a.sura_id = s.id
-            INNER JOIN content_file cf on a.audio_id = cf.id
-            WHERE s.number = $1
+                a.transliteration,
+                cf.telegram_file_id as audio_telegram_id,
+                cf.link as link_to_audio_file
+            FROM ayats a
+            INNER JOIN suras s on a.sura_id = s.sura_id
+            INNER JOIN files cf on a.audio_id = cf.file_id
+            WHERE s.sura_id = :sura_num
         """
-        records = await self.connection.fetch(query, sura_num)
-        return [
-            Ayat(**dict(record))
-            for record in records
-        ]
+        records = await self.connection.fetch_all(query, {'sura_num': sura_num})
+        return parse_obj_as(list[Ayat], [record._mapping for record in records])  # noqa: WPS437
 
     async def search_by_text(self, query: str) -> list[Ayat]:
         """Поиск по тексту.
@@ -171,23 +172,20 @@ class AyatRepository(AyatRepositoryInterface):
         search_query = '%{0}%'.format(query)
         query = """
             SELECT
-                a.id,
-                s.number as sura_num,
+                a.ayat_id as id,
+                s.sura_id as sura_num,
                 s.link as sura_link,
-                a.ayat as ayat_num,
+                a.ayat_number as ayat_num,
                 a.arab_text,
                 a.content,
-                a.trans as transliteration,
-                cf.tg_file_id as audio_telegram_id,
-                cf.link_to_file as link_to_audio_file
-            FROM content_ayat a
-            INNER JOIN content_sura s on a.sura_id = s.id
-            INNER JOIN content_file cf on a.audio_id = cf.id
-            WHERE a.content ILIKE $1
-            ORDER BY a.id
+                a.transliteration,
+                cf.telegram_file_id as audio_telegram_id,
+                cf.link as link_to_audio_file
+            FROM ayats a
+            INNER JOIN suras s on a.sura_id = s.sura_id
+            INNER JOIN files cf on a.audio_id = cf.file_id
+            WHERE a.content ILIKE :search_query
+            ORDER BY a.ayat_id
         """
-        rows = await self.connection.fetch(query, search_query)
-        return [
-            Ayat(**dict(row))
-            for row in rows
-        ]
+        rows = await self.connection.fetch_all(query, {'search_query': search_query})
+        return parse_obj_as(list[Ayat], [record._mapping for record in rows])  # noqa: WPS437

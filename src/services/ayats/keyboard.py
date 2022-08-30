@@ -2,9 +2,9 @@ from aiogram import types
 
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import AyatShort
+from services.answers.answer import KeyboardInterface
 from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate
-from services.ayats.keyboard_interface import AyatSearchKeyboardInterface
 
 CALLBACK_DATA_ADD_TO_FAVORITE_TEMPLATE = 'add_to_favorite({ayat_id})'
 CALLBACK_DATA_REMOVE_FROM_FAVORITE_TEMPLATE = 'remove_from_favorite({ayat_id})'
@@ -12,7 +12,7 @@ LEFT_BUTTON_TEXT_TEMPLATE = '⬅️ {0}'
 RIGHT_BUTTON_TEXT_TEMPLATE = '{0} ➡️'
 
 
-class AyatSearchKeyboard(AyatSearchKeyboardInterface):
+class AyatSearchKeyboard(KeyboardInterface):
     """Клавиатура, выводимая пользователям вместе с найденными аятами."""
 
     _ayat_search: AyatSearchInterface

@@ -4,12 +4,12 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext, filters
 
 from constants import GET_PRAYER_TIMES_REGEXP
-from db import DBConnection
+from db.connection import database
 from repository.prayer_time import PrayerTimeRepository
-from repository.update_log import UpdatesLogRepository
 from repository.users.user import UserRepository
-from services.answers.log_answer import LoggedAnswer, LoggedSourceMessageAnswerProcess
-from services.prayer_time import PrayerTimes, UserHasNotCityExistsSafeAnswer, UserPrayerTimes, UserPrayerTimesAnswer
+from services.prayers.prayer_status_markup import PrayerTimeKeyboard
+from services.prayers.prayer_times import PrayerForUserAnswer, PrayersWithoutSunrise, PrayerTimes, UserPrayerTimes
+from utlls import BotInstance
 
 
 async def prayer_times_handler(message: types.Message, state: FSMContext):
@@ -18,28 +18,31 @@ async def prayer_times_handler(message: types.Message, state: FSMContext):
     :param message: types.Message
     :param state: FSMContext
     """
-    async with DBConnection() as connection:
-        answer = await UserHasNotCityExistsSafeAnswer(
-            UserPrayerTimesAnswer(
-                UserPrayerTimes(
+    await PrayerForUserAnswer(
+        BotInstance.get(),
+        message.chat.id,
+        PrayerTimes(
+            message.chat.id,
+            UserRepository(database),
+            PrayerTimeRepository(database),
+            datetime.datetime.today(),
+        ),
+        PrayerTimeKeyboard(
+            UserPrayerTimes(
+                message.chat.id,
+                PrayersWithoutSunrise(
                     PrayerTimes(
-                        prayer_times_repository=PrayerTimeRepository(connection),
-                        user_repository=UserRepository(connection),
-                        chat_id=message.chat.id,
+                        message.chat.id,
+                        UserRepository(database),
+                        PrayerTimeRepository(database),
+                        datetime.datetime.today(),
                     ),
-                    datetime.datetime.now(),
                 ),
-                datetime.datetime.now(),
+                UserRepository(database),
+                PrayerTimeRepository(database),
             ),
-        ).to_answer()
-        updates_log_repository = UpdatesLogRepository(connection)
-        answer = LoggedSourceMessageAnswerProcess(
-            updates_log_repository,
-            message,
-            LoggedAnswer(answer, updates_log_repository),
-        )
-        await answer.send(message.chat.id)
-
+        ),
+    ).send()
     await state.finish()
 
 

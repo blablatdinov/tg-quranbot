@@ -1,5 +1,7 @@
-from asyncpg import Connection
+from databases import Database
 from pydantic import BaseModel
+
+from exceptions.base_exception import InternalBotError
 
 
 class QueryResult(BaseModel):
@@ -23,7 +25,7 @@ class AdminMessageRepositoryInterface(object):
 class AdminMessageRepository(AdminMessageRepositoryInterface):
     """Класс для работы с БД."""
 
-    def __init__(self, connection: Connection):
+    def __init__(self, connection: Database):
         self.connection = connection
 
     async def get(self, key: str) -> str:
@@ -31,8 +33,11 @@ class AdminMessageRepository(AdminMessageRepositoryInterface):
 
         :param key: str
         :returns: str
+        :raises InternalBotError: возбуждается если административное сообщение с переданным ключом не найдено
         """
-        record = await self.connection.fetchrow(
-            "SELECT text FROM bot_init_adminmessage m WHERE m.key = '$1'", key,
+        record = await self.connection.fetch_one(
+            'SELECT text FROM admin_messages m WHERE m.key = :key', {'key': key},
         )
-        return QueryResult.parse_obj(record).text
+        if not record:
+            raise InternalBotError('Не найдено административное сообщение с ключом {0}'.format(key))
+        return QueryResult.parse_obj(record._mapping).text  # noqa: WPS437

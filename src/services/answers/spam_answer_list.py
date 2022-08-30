@@ -3,13 +3,14 @@ import asyncio
 from aiogram import types
 from aiogram.utils.exceptions import BotBlocked, ChatNotFound, UserDeactivated
 
+from app_types.mailing_interface import MailingInterface
 from repository.mailing import MailingRepository
 from repository.users.users import UsersRepositoryInterface
-from services.answers.answer import Answer
-from services.answers.interface import AnswerInterface, SingleAnswerInterface
+from services.answers.answer import TextAnswer
+from services.answers.interface import AnswerInterface
 
 
-class SpamAnswerList(list, AnswerInterface):  # noqa: WPS600
+class SpamAnswerList(list, MailingInterface):  # noqa: WPS600
     """Список ответов для рассылки.
 
     Отправляет сообщения пачками
@@ -51,14 +52,14 @@ class SpamAnswerList(list, AnswerInterface):  # noqa: WPS600
         for elem in self:
             await elem.edit_markup(chat_id)
 
-    def to_list(self) -> list[SingleAnswerInterface]:
+    def to_list(self) -> list:
         """Форматировать в строку из элементов.
 
         :returns: list[Answer]
         """
         return self
 
-    async def _send_one_answer(self, answer: Answer) -> list[types.Message]:
+    async def _send_one_answer(self, answer: TextAnswer) -> list[types.Message]:
         try:
             return await answer.send()
         except (ChatNotFound, BotBlocked, UserDeactivated):
@@ -81,12 +82,12 @@ class SpamAnswerList(list, AnswerInterface):  # noqa: WPS600
         return messages
 
 
-class SavedSpamAnswerList(object):
+class SavedSpamAnswerList(MailingInterface):
     """Сохраненная рассылка."""
 
-    _spam_answer_list: SpamAnswerList
+    _spam_answer_list: MailingInterface
 
-    def __init__(self, spam_answer_list: SpamAnswerList, mailing_repository: MailingRepository):
+    def __init__(self, spam_answer_list: MailingInterface, mailing_repository: MailingRepository):
         self._spam_answer_list = spam_answer_list
         self._mailing_repository = mailing_repository
 
@@ -96,5 +97,12 @@ class SavedSpamAnswerList(object):
         :return: list[types.Message]
         """
         messages = await self._spam_answer_list.send()
-        await self._mailing_repository.create_mailing(messages)
+        self._mailing_num = await self._mailing_repository.create_mailing(messages)
         return messages
+
+    def mailing_num(self) -> int:
+        """Возвращает номер рассылки.
+
+        :return: int
+        """
+        return self._mailing_num
