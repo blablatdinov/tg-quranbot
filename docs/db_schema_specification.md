@@ -84,20 +84,6 @@ classDiagram
     }
 ```
 
-
-Схема приложения с API:
-
-```mermaid
-classDiagram
-    mailings <|-- messages
-    class messages{
-        message_id
-    }
-    class mailings{
-        id
-    }
-```
-
 Схема приложения с API:
 
 ```mermaid
@@ -128,6 +114,8 @@ classDiagram
     }
     class users{
         bigint chat_id
+        varchar username
+        varchar password_hatsh
         bool is_active
         varchar comment
         int day
