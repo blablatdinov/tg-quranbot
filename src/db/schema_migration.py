@@ -129,9 +129,9 @@ class CitiesMigration(object):
         self._new_db = new_db
 
     async def run(self):
-        # await self._new_db.execute('DELETE FROM cities')
+        await self._new_db.execute('DELETE FROM cities')
         rows = await self._old_db.fetch_all("""
-            SELECT name FROM prayer_city
+            SELECT name, uuid FROM prayer_city
         """)
         await self._new_db.execute_many("""
             INSERT INTO cities
@@ -140,8 +140,114 @@ class CitiesMigration(object):
             (:city_id, :name)
         """, [
             {
-                'city_id': str(uuid.uuid4()),
+                'city_id': str(row._mapping['uuid']),
                 'name': row._mapping['name'],
+            }
+            for row in rows
+        ])
+
+
+class PrayerDayMigration(object):
+
+    def __init__(self, old_db, new_db):
+        self._old_db = old_db
+        self._new_db = new_db
+
+    async def run(self):
+        rows = await self._old_db.fetch_all("""
+            SELECT date FROM prayer_day
+        """)
+        await self._new_db.execute_many("""
+            INSERT INTO prayer_days
+            (date)
+            VALUES
+            (:date)
+        """, [
+            {
+                'date': row._mapping['date'],
+            }
+            for row in rows
+        ])
+
+
+class PrayerMigration(object):
+
+    def __init__(self, old_db, new_db):
+        self._old_db = old_db
+        self._new_db = new_db
+
+    async def run(self):
+        rows = await self._old_db.fetch_all("""
+            SELECT pp.id, pp.name, time, pc.uuid as city_id, pd.date FROM prayer_prayer pp 
+            INNER JOIN prayer_city pc on pc.id = pp.city_id
+            INNER JOIN prayer_day pd on pp.day_id = pd.id
+        """)
+        await self._new_db.execute_many("""
+            INSERT INTO prayers
+            (prayer_id, name, time, city_id, day_id)
+            VALUES
+            (:prayer_id, :name, :time, :city_id, :day_id)
+        """, [
+            {
+                'prayer_id': row._mapping['id'],
+                'name': row._mapping['name'],
+                'time': row._mapping['time'],
+                'city_id': str(row._mapping['city_id']),
+                'day_id': row._mapping['date'],
+            }
+            for row in rows
+        ])
+
+
+class PrayerAtUserGroupMigration(object):
+
+    def __init__(self, old_db, new_db):
+        self._old_db = old_db
+        self._new_db = new_db
+
+    async def run(self):
+        rows = await self._old_db.fetch_all('SELECT uuid FROM prayer_prayeratusergroup')
+        await self._new_db.execute_many("""
+            INSERT INTO prayers_at_user_groups (prayers_at_user_group_id) VALUES (:id)
+        """, [
+            {
+                'id': str(row._mapping['uuid']),
+            }
+            for row in rows
+        ])
+
+
+class PrayerAtUserMigration(object):
+
+    def __init__(self, old_db, new_db):
+        self._old_db = old_db
+        self._new_db = new_db
+
+    async def run(self):
+        rows = await self._old_db.fetch_all("""
+            SELECT
+                pp.id,
+                bis.tg_chat_id as user_id,
+                pp.prayer_id,
+                pp.is_read,
+                pau.uuid 
+            FROM prayer_prayeratuser pp
+            INNER JOIN bot_init_subscriber bis on bis.id = pp.subscriber_id
+            INNER JOIN prayer_prayeratusergroup pau on pau.id = pp.prayer_group_id
+        """)
+        await self._new_db.execute_many("""
+            INSERT INTO prayers_at_user
+            (prayer_at_user_id, public_id, user_id, prayer_id, is_read, prayer_group_id)
+            VALUES
+            (:prayer_at_user_id, :public_id, :user_id, :prayer_id, :is_read, :prayer_group_id)
+        """, [
+            {
+                'prayer_at_user_id': row._mapping['id'],
+                'public_id': str(uuid.uuid4()),
+                'user_id': row._mapping['user_id'],
+                'prayer_id': row._mapping['prayer_id'],
+                'is_read': row._mapping['is_read'],
+                'prayer_group_id': row._mapping['uuid'],
             }
             for row in rows
         ])
@@ -159,6 +265,10 @@ async def migration():
         # PodcastMigration(old_db, new_db),
         # AdminMessagesMigration(old_db, new_db),
         # CitiesMigration(old_db, new_db),
+        # PrayerDayMigration(old_db, new_db),
+        # PrayerMigration(old_db, new_db),
+        # PrayerAtUserGroupMigration(old_db, new_db),
+        PrayerAtUserMigration(old_db, new_db),
     ]
     for migration in migrations:
         await migration.run()
