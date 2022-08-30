@@ -1,9 +1,8 @@
+import asyncio
 import datetime
 import uuid
 
 from databases import Database
-
-import asyncio
 
 
 class SuraMigration(object):
@@ -247,10 +246,52 @@ class PrayerAtUserMigration(object):
                 'user_id': row._mapping['user_id'],
                 'prayer_id': row._mapping['prayer_id'],
                 'is_read': row._mapping['is_read'],
-                'prayer_group_id': row._mapping['uuid'],
+                'prayer_group_id': str(row._mapping['uuid']),
             }
             for row in rows
         ])
+
+
+class UsersMigration(object):
+
+    def __init__(self, old_db, new_db):
+        self._old_db = old_db
+        self._new_db = new_db
+
+    async def run(self):
+        rows = await self._old_db.fetch_all("""
+            SELECT
+                bis.id,
+                bis.tg_chat_id,
+                bis.is_active,
+                bis.day,
+                pc.uuid as city_id,
+                r.tg_chat_id as referrer_id
+            FROM bot_init_subscriber bis
+            LEFT JOIN prayer_city pc on pc.id = bis.city_id
+            LEFT JOIN bot_init_subscriber r on bis.referer_id = r.id
+            ORDER BY r.id DESC
+        """)
+        await self._new_db.execute_many("""
+            INSERT INTO users
+            (chat_id, is_active, comment, day, city_id, legacy_id)
+            VALUES
+            (:chat_id, :is_active, :comment, :day, :city_id, :legacy_id)
+        """, [
+            {
+                'legacy_id': row._mapping['id'],
+                'chat_id': row._mapping['tg_chat_id'],
+                'is_active': row._mapping['is_active'],
+                'day': row._mapping['day'],
+                'city_id': str(row._mapping['city_id']) if row._mapping['city_id'] else None,
+            }
+            for row in rows
+        ])
+        for row in rows:
+            await self._new_db.execute(
+                'UPDATE users SET referrer_id = :referrer_id WHERE chat_id = :chat_id',
+                {'referrer_id': row._mapping['referrer_id'], 'chat_id': row._mapping['tg_chat_id']},
+            )
 
 
 async def migration():
@@ -268,6 +309,7 @@ async def migration():
         # PrayerDayMigration(old_db, new_db),
         # PrayerMigration(old_db, new_db),
         # PrayerAtUserGroupMigration(old_db, new_db),
+        UsersMigration(old_db, new_db),
         PrayerAtUserMigration(old_db, new_db),
     ]
     for migration in migrations:

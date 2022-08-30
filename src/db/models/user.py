@@ -1,6 +1,6 @@
 from sqlalchemy.sql import expression
 from sqlalchemy.sql.schema import Column, ForeignKey
-from sqlalchemy.sql.sqltypes import Boolean, Integer, String
+from sqlalchemy.sql.sqltypes import BigInteger, Boolean, Integer, String
 
 from db.base import Base
 
@@ -10,7 +10,7 @@ class User(Base):
 
     __tablename__ = 'users'
 
-    chat_id = Column(Integer(), primary_key=True)
+    chat_id = Column(BigInteger(), primary_key=True, autoincrement=False)
     is_active = Column(Boolean(), server_default=expression.true(), nullable=False)
     comment = Column(String())
     day = Column(Integer(), default=2)
