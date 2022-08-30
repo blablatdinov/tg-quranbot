@@ -25,7 +25,7 @@ class DefaultKeyboard(KeyboardInterface):
         :return: types.ReplyKeyboardMarkup
         """
         return (
-            types.ReplyKeyboardMarkup()
+            types.ReplyKeyboardMarkup(resize_keyboard=True)
             .row(types.KeyboardButton('🎧 Подкасты'))
             .row(types.KeyboardButton('🕋 Время намаза'))
             .row(types.KeyboardButton('🌟 Избранное'), types.KeyboardButton('🔍 Найти аят'))
