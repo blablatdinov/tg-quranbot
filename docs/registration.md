@@ -10,34 +10,14 @@
 
 При регистрации пользователя нужно сохранить его идентификатор чата.
 
-```mermaid
-flowchart TD
-    User --> is_active
-    User --> chat_id
-    User --> mailing_day
-
-    UserAction --> date
-    UserAction --> id1["action (subscribed, unsubscribed, reactivated)"]
-```
-
 ## Регистрация нового пользователя
 
-Event storming:
+При регистрации нового пользователя ему отправляется [приветственное сообщение](glossary.md#Приветственное-сообщение) и контент первого дня.
 
-```
-Command: User subscription
-Actor: User
-Event: UserSubscribed
-```
+## Регистрация активного пользователя
 
-```
-Command: User unsubscribed
-Actor: User
-Event: UserUnsubscribed
-```
+Если пользователь уже зарегистрирован и активен, бот должен отправлять сообщение `Вы уже зарегистрированы`
 
-```
-Command: User reactivated
-Actor: User
-Event: UserReactivated
-```
+## Регистрация пользователя, который отписан от бота
+
+Если пользователь был зарегистрирован и отписался от бота, ему отправляется сообщение `Рады видеть вас снова, вы продолжите с дня 43`
