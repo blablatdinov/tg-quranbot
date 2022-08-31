@@ -7,6 +7,7 @@ from repository.ayats.ayat import AyatRepository
 from repository.users.registration import RegistrationRepository
 from repository.users.user import UserRepository
 from repository.users.users import UsersRepository
+from services.answers.state_finish_answer import StateFinishAnswer
 from services.register_user import RegisterAlreadyExistsUser, RegisterNewUser, RegisterUser, RegisterUserWithReferrer
 from services.start_message import get_start_message_query
 from utlls import BotInstance
@@ -18,38 +19,33 @@ async def start_handler(message: types.Message, state: FSMContext):
     :param message: app_types.Message
     :param state: FSMContext
     """
-    await RegisterUser(
-        RegisterNewUser(
-            BotInstance.get(),
-            message.chat.id,
-            RegistrationRepository(
-                UserRepository(database),
-                AdminMessageRepository(database),
-                AyatRepository(database),
-            ),
-        ),
-        RegisterUserWithReferrer(
-            BotInstance.get(),
-            message.chat.id,
-            RegisterNewUser(
+    registration_repository = RegistrationRepository(
+        UserRepository(database),
+        AdminMessageRepository(database),
+        AyatRepository(database),
+    )
+    register_new_user = RegisterNewUser(
+        BotInstance.get(),
+        message.chat.id,
+        registration_repository,
+    )
+    await StateFinishAnswer(
+        RegisterUser(
+            register_new_user,
+            RegisterUserWithReferrer(
                 BotInstance.get(),
                 message.chat.id,
-                RegistrationRepository(
-                    UserRepository(database),
-                    AdminMessageRepository(database),
-                    AyatRepository(database),
-                ),
+                register_new_user,
+                UserRepository(database),
+                get_start_message_query(message.text),
             ),
-            UserRepository(database),
-            get_start_message_query(message.text),
-        ),
-        RegisterAlreadyExistsUser(
-            BotInstance.get(),
+            RegisterAlreadyExistsUser(
+                BotInstance.get(),
+                message.chat.id,
+                UserRepository(database),
+                UsersRepository(database),
+            ),
             message.chat.id,
-            UserRepository(database),
-            UsersRepository(database),
         ),
-        message.chat.id,
+        state,
     ).send()
-
-    await state.finish()
