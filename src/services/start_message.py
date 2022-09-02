@@ -37,6 +37,7 @@ class StartMessage(StartMessageInterface):
             except ValueError:
                 logger.error('Start message "{0}" can not be parsed'.format(self._message))
                 return
-        if ref_id < 3000:
+        max_legacy_referrer_id = 3000
+        if ref_id < max_legacy_referrer_id:
             return (await self._user_repository.get_by_id(ref_id)).chat_id
         return ref_id

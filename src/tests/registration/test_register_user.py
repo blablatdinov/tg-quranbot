@@ -51,7 +51,7 @@ async def test_with_referrer_content(
 
     assert got[0].text == 'start message_handlers'
     assert 'a href' in got[1].text
-    assert got[2].text == 'По вашей реферральной ссылке произошла регистрация'
+    assert got[2].text == 'По вашей реферальной ссылке произошла регистрация'
     assert got[0].chat.id == got[1].chat.id == 222
     assert got[2].chat.id == 444
     # TODO: check, that event about user action sended in queue

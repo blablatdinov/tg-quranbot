@@ -3,11 +3,11 @@ from aiogram import types
 from services.answers.interface import AnswerInterface
 
 
-class AnswersList(list, AnswerInterface):  # noqa: WPS600
+class AnswersList(AnswerInterface):
     """Список ответов."""
 
     def __init__(self, *args: AnswerInterface) -> None:
-        super().__init__(args)
+        self._answers = list(args)
 
     async def send(self) -> list[types.Message]:
         """Метод для отправки ответа.
@@ -15,6 +15,6 @@ class AnswersList(list, AnswerInterface):  # noqa: WPS600
         :return: list[types.Message]
         """
         messages: list[types.Message] = []
-        for elem in self:
+        for elem in self._answers:
             messages = sum([messages, await elem.send()], start=[])
         return messages

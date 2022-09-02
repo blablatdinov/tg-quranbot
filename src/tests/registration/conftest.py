@@ -45,7 +45,6 @@ def register_service(ayat_repository_mock):
         return await RegisterUser(
             RegisterNewUser(
                 BotMock(),
-                chat_id,
                 RegistrationRepository(
                     user_repository_mock,
                     AdminMessageRepositoryMock(),
@@ -54,10 +53,8 @@ def register_service(ayat_repository_mock):
             ),
             RegisterUserWithReferrer(
                 BotMock(),
-                chat_id,
                 RegisterNewUser(
                     BotMock(),
-                    chat_id,
                     RegistrationRepository(
                         user_repository_mock,
                         AdminMessageRepositoryMock(),
@@ -69,7 +66,6 @@ def register_service(ayat_repository_mock):
             ),
             RegisterAlreadyExistsUser(
                 BotMock(),
-                chat_id,
                 user_repository_mock,
                 UsersRepositoryMock(),
             ),
