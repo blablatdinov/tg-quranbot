@@ -1,6 +1,8 @@
 from aiogram import Bot, types
+from loguru import logger
 
 from exceptions.base_exception import InternalBotError
+from exceptions.content_exceptions import NotFoundReferrerIdError, UserNotFoundError
 from integrations.nats_integration import MessageBrokerInterface
 from repository.users.registration import RegistrationRepositoryInterface
 from repository.users.user import UserRepositoryInterface
@@ -8,10 +10,10 @@ from repository.users.users import UsersRepositoryInterface
 from services.answers.answer import DefaultKeyboard, TextAnswer
 from services.answers.answer_list import AnswersList
 from services.answers.interface import AnswerInterface
-from services.start_message import StartMessageMeta
+from services.start_message import StartMessageInterface
 
 
-class RegisterNewUser(object):
+class RegisterNewUser(AnswerInterface):
     """Регистрация нового пользователя."""
 
     def __init__(
@@ -24,19 +26,14 @@ class RegisterNewUser(object):
         self._chat_id = chat_id
         self._registration_repository = registration_repository
 
-    async def can(self, chat_id) -> bool:
-        """Проверка возможности регистрации.
-
-        :param chat_id: int
-        :returns: bool
-        """
-        return not await self._registration_repository.user_exists(chat_id)
-
     async def send(self) -> list[types.Message]:
         """Конвертация в ответ.
 
         :return: AnswerInterface
+        :raises InternalBotError: if user already exists
         """
+        if await self._registration_repository.user_exists(self._chat_id):
+            raise InternalBotError('User already exists')
         start_message = await self._registration_repository.admin_message()
         first_ayat = await self._registration_repository.first_ayat()
         await self._registration_repository.create(self._chat_id)
@@ -51,58 +48,38 @@ class RegisterNewUser(object):
 class RegisterUserWithReferrer(AnswerInterface):
     """Регистрация пользователя с реферером."""
 
-    _register_new_user: RegisterNewUser
-    _user_repository: UserRepositoryInterface
-    _start_message_meta: StartMessageMeta
-
     def __init__(  # noqa: WPS211 TODO: подумать как сократить
         self,
         bot: Bot,
         chat_id: int,
-        register_new_user: RegisterNewUser,
+        register_new_user: AnswerInterface,
         user_repository: UserRepositoryInterface,
-        start_message_meta: StartMessageMeta,
+        start_message: StartMessageInterface,
     ):
         self._bot = bot
         self._chat_id = chat_id
         self._register_new_user = register_new_user
         self._user_repository = user_repository
-        self._start_message_meta = start_message_meta
-
-    def can(self) -> bool:
-        """Проверка возможности зарегестрировать пользователя с реферрером.
-
-        :return: bool
-        """
-        return bool(self._start_message_meta.referrer)
+        self._start_message = start_message
 
     async def send(self) -> list[types.Message]:
         """Создание пользователя.
 
         :return: AnswerInterface
-        :raises InternalBotError: if referrer info is empty
+        :raises NotFoundReferrerIdError: if referrer info is empty
         """
-        if not self._start_message_meta.referrer:
-            raise InternalBotError
+        referrer_id = await self._start_message.referrer_id()
+        if not referrer_id:
+            raise NotFoundReferrerIdError
         new_user_messages = await self._register_new_user.send()
-        referer_chat_id = await self._get_referer_chat_id()
-        await self._user_repository.update_referrer(self._chat_id, referer_chat_id)
+        await self._user_repository.update_referrer(self._chat_id, referrer_id)
         referer_message = await TextAnswer(
             bot=self._bot,
             message='По вашей реферральной ссылке произошла регистрация',
-            chat_id=referer_chat_id,
+            chat_id=referrer_id,
             keyboard=DefaultKeyboard(),
         ).send()
         return new_user_messages + referer_message
-
-    async def _get_referer_chat_id(self) -> int:
-        max_legacy_referrer_id = 3000
-        if self._start_message_meta.referrer <= max_legacy_referrer_id:
-            referrer_user_record = await self._user_repository.get_by_id(self._start_message_meta.referrer)
-        else:
-            referrer_user_record = (await self._user_repository.get_by_id(self._start_message_meta.referrer)).chat_id
-
-        return referrer_user_record.chat_id
 
 
 class RegisterAlreadyExistsUser(AnswerInterface):
@@ -146,16 +123,24 @@ class RegisterAlreadyExistsUser(AnswerInterface):
         ).send()
 
 
-class RegisterUserEvent(AnswerInterface):
+class RegisterNewUserEvent(AnswerInterface):
+    """Событие о регистрации нового пользователя."""
 
-    def __init__(self, answer: AnswerInterface, nats_integration: MessageBrokerInterface):
+    def __init__(self, chat_id: int, answer: AnswerInterface, nats_integration: MessageBrokerInterface):
+        self._chat_id = chat_id
         self._origin = answer
         self._message_broker = nats_integration
 
     async def send(self) -> list[types.Message]:
+        """Отправка.
+
+        :return: list[types.Message]
+        """
         messages = await self._origin.send()
         await self._message_broker.send(
-            {''}
+            {'user_id': self._chat_id},
+            'User.Subscribed',
+            1
         )
         return messages
 
@@ -163,14 +148,9 @@ class RegisterUserEvent(AnswerInterface):
 class RegisterUser(AnswerInterface):
     """Класс осуществляющий регистрацию пользователя."""
 
-    _register_new_user: RegisterNewUser
-    _register_user_with_referrer: RegisterUserWithReferrer
-    _register_already_exists_user: RegisterAlreadyExistsUser
-    _chat_id: int
-
     def __init__(
         self,
-        register_new_user: RegisterNewUser,
+        register_new_user: AnswerInterface,
         register_user_with_referrer: RegisterUserWithReferrer,
         register_already_exists_user: RegisterAlreadyExistsUser,
         chat_id: int,
@@ -185,10 +165,11 @@ class RegisterUser(AnswerInterface):
 
         :returns: str Ответ пользователю
         """
-        if not await self._register_new_user.can(self._chat_id):
-            return await self._register_already_exists_user.send()
-
-        if self._register_user_with_referrer.can():
+        logger.info('Registering user with chat_id: {0}'.format(self._chat_id))
+        try:
             return await self._register_user_with_referrer.send()
-
-        return await self._register_new_user.send()
+        except NotFoundReferrerIdError:
+            try:
+                return await self._register_already_exists_user.send()
+            except UserNotFoundError:
+                return await self._register_new_user.send()

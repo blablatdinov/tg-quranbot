@@ -1104,7 +1104,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "quranbot-schema-registry"
-version = "0.0.12"
+version = "0.0.14"
 description = "quranbot-schema-registry"
 category = "main"
 optional = false
@@ -1113,6 +1113,10 @@ python-versions = ">=3.9,<4.0"
 [package.dependencies]
 jsonschema = ">=4.7.2,<5.0.0"
 pydantic = ">=1.9.0,<2.0.0"
+
+[package.source]
+type = "file"
+url = "../quranbot-schema-registry/dist/quranbot-schema-registry-0.0.14.tar.gz"
 
 [[package]]
 name = "restructuredtext-lint"
@@ -1370,7 +1374,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "53faa8f117a9ca1f7624cf9d1aa133e06a75be27c1dd156d552f5d30ae6d27b3"
+content-hash = "6e98ba84171b4ea164aa62b1c3416a9b6581c477f3215c7224338405fd77160b"
 
 [metadata.files]
 aiogram = [
@@ -2022,7 +2026,9 @@ pyyaml = [
     {file = "PyYAML-6.0-cp39-cp39-win_amd64.whl", hash = "sha256:b3d267842bf12586ba6c734f89d1f5b871df0273157918b0ccefa29deb05c21c"},
     {file = "PyYAML-6.0.tar.gz", hash = "sha256:68fb519c14306fec9720a2a5b45bc9f0c8d1b9c72adf45c37baedfcd949c35a2"},
 ]
-quranbot-schema-registry = []
+quranbot-schema-registry = [
+    {file = "quranbot-schema-registry-0.0.14.tar.gz", hash = "sha256:737d1d296104797d6d0bf926898a9157522acd1ab8b40f23546139482f1c73ed"},
+]
 restructuredtext-lint = [
     {file = "restructuredtext_lint-1.4.0.tar.gz", hash = "sha256:1b235c0c922341ab6c530390892eb9e92f90b9b75046063e047cacfb0f050c45"},
 ]

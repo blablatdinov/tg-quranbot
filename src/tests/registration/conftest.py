@@ -6,7 +6,7 @@ from repository.ayats.ayat import Ayat
 from repository.users.registration import RegistrationRepository
 from repository.users.user import User
 from services.register_user import RegisterAlreadyExistsUser, RegisterNewUser, RegisterUser, RegisterUserWithReferrer
-from services.start_message import get_start_message_query
+from services.start_message import StartMessage
 from tests.mocks.admin_messages_repository import AdminMessageRepositoryMock
 from tests.mocks.ayat_repository import AyatRepositoryMock
 from tests.mocks.bot import BotMock
@@ -65,7 +65,7 @@ def register_service(ayat_repository_mock):
                     ),
                 ),
                 user_repository_mock,
-                get_start_message_query(message_text),
+                StartMessage(message_text, user_repository_mock),
             ),
             RegisterAlreadyExistsUser(
                 BotMock(),

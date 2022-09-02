@@ -5,6 +5,7 @@ from databases import Database
 from pydantic import BaseModel
 
 from exceptions.base_exception import InternalBotError
+from exceptions.content_exceptions import UserNotFoundError
 
 
 class User(BaseModel):
@@ -110,7 +111,7 @@ class UserRepository(UserRepositoryInterface):
 
         :param chat_id: int
         :returns: User
-        :raises InternalBotError: возбуждается если пользователь с переданным идентификатором не найден
+        :raises UserNotFoundError: возбуждается если пользователь с переданным идентификатором не найден
         """
         query = """
             SELECT
@@ -124,7 +125,7 @@ class UserRepository(UserRepositoryInterface):
         """
         record = await self.connection.fetch_one(query, {'chat_id': chat_id})
         if not record:
-            raise InternalBotError('Пользователь с chat_id: {0} не найден'.format(chat_id))
+            raise UserNotFoundError('Пользователь с chat_id: {0} не найден'.format(chat_id))
         return User.parse_obj(dict(record._mapping))  # noqa: WPS437
 
     async def exists(self, chat_id: int) -> bool:
@@ -161,7 +162,4 @@ class UserRepository(UserRepositoryInterface):
             SET referrer_id = :referrer_id
             WHERE chat_id = :chat_id
         """
-        max_legacy_referrer_id = 3000
-        if referrer_id <= max_legacy_referrer_id:
-            referrer_id = (await self.get_by_id(referrer_id)).chat_id
         await self.connection.execute(query, {'referrer_id': referrer_id, 'chat_id': chat_id})
