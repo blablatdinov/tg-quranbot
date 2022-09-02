@@ -1,6 +1,7 @@
 from aiogram import Bot, types
 
 from exceptions.base_exception import InternalBotError
+from integrations.nats_integration import MessageBrokerInterface
 from repository.users.registration import RegistrationRepositoryInterface
 from repository.users.user import UserRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
@@ -143,6 +144,20 @@ class RegisterAlreadyExistsUser(AnswerInterface):
             message='Рады видеть вас снова, вы продолжите с дня {user_day}'.format(user_day=user.day),
             keyboard=DefaultKeyboard(),
         ).send()
+
+
+class RegisterUserEvent(AnswerInterface):
+
+    def __init__(self, answer: AnswerInterface, nats_integration: MessageBrokerInterface):
+        self._origin = answer
+        self._message_broker = nats_integration
+
+    async def send(self) -> list[types.Message]:
+        messages = await self._origin.send()
+        await self._message_broker.send(
+            {''}
+        )
+        return messages
 
 
 class RegisterUser(AnswerInterface):
