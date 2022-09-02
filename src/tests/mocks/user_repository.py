@@ -2,7 +2,7 @@ import random
 import uuid
 from typing import Optional
 
-from exceptions.content_exceptions import UserNotFoundError
+from exceptions.internal_exceptions import UserNotFoundError
 from repository.users.user import User, UserRepositoryInterface
 
 

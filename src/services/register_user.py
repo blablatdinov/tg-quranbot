@@ -5,7 +5,7 @@ from exceptions.base_exception import InternalBotError
 from repository.users.registration import RegistrationRepositoryInterface
 from repository.users.user import UserRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
-from services.answers.answer import TextAnswer, DefaultKeyboard
+from services.answers.answer import DefaultKeyboard, TextAnswer
 from services.answers.answer_list import AnswersList
 from services.answers.interface import AnswerInterface
 from services.start_message import StartMessageInterface
@@ -105,6 +105,7 @@ class RegisterAlreadyExistsUser(object):
 
     async def register(self, chat_id: int) -> AnswerInterface:
         """Обработка уже зарегестрированного пользователя.
+
         :param chat_id: int
         :return: Answer
         """
@@ -149,11 +150,18 @@ class RegisterUser(AnswerInterface):
         logger.info('Process start message for chat_id: {0}'.format(self._chat_id))
         if not await self._register_new_user.can(self._chat_id):
             logger.info('User <{0}> already subscribed'.format(self._chat_id))
-            return await (await self._register_already_exists_user.register(self._chat_id)).send()
-
+            return await self._process_already_subscribed_user()
         if await self._register_user_with_referrer.can():
             logger.info('Register chat_id: {0} with referrer'.format(self._chat_id))
-            return await (await self._register_user_with_referrer.register(self._chat_id)).send()
-
+            return await self._process_with_referrer()
         logger.info('Register new user chat_id: {0} without referrer'.format(self._chat_id))
+        return await self._process_without_referrer()
+
+    async def _process_already_subscribed_user(self):
+        return await (await self._register_already_exists_user.register(self._chat_id)).send()
+
+    async def _process_with_referrer(self):
+        return await (await self._register_user_with_referrer.register(self._chat_id)).send()
+
+    async def _process_without_referrer(self):
         return await (await self._register_new_user.register(self._chat_id)).send()

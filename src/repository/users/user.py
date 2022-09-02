@@ -5,7 +5,7 @@ from databases import Database
 from pydantic import BaseModel
 
 from exceptions.base_exception import InternalBotError
-from exceptions.content_exceptions import UserNotFoundError
+from exceptions.internal_exceptions import UserNotFoundError
 
 
 class User(BaseModel):
