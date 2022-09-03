@@ -9,15 +9,13 @@ from repository.users.registration import RegistrationRepository
 from repository.users.user import UserRepository
 from repository.users.users import UsersRepository
 from services.answers.state_finish_answer import StateFinishAnswer
-from services.register_user import (
-    RegisterAlreadyExistsUser,
-    RegisterNewUser,
-    RegisterUser,
-    RegisterUserWithReferrer,
-    RegisterNewUserEvent,
-    RegisterUserWithReferrerEvent,
-    SafeRegistrationWithReferrer,
-)
+from services.register.register_already_exists_user import RegisterAlreadyExistsUser
+from services.register.register_answer import RegisterAnswer
+from services.register.register_new_user import RegisterNewUser
+from services.register.register_user_event import RegisterNewUserEvent
+from services.register.register_user_with_referrer import RegisterUserWithReferrer
+from services.register.register_user_with_referrer_event import RegisterUserWithReferrerEvent
+from services.register.safe_register_with_referrer import SafeRegistrationWithReferrer
 from services.start_message import StartMessage
 from utlls import BotInstance
 
@@ -28,8 +26,9 @@ async def start_handler(message: types.Message, state: FSMContext):
     :param message: app_types.Message
     :param state: FSMContext
     """
+    user_repository = UserRepository(database)
     registration_repository = RegistrationRepository(
-        UserRepository(database),
+        user_repository,
         AdminMessageRepository(database),
         AyatRepository(database),
     )
@@ -38,7 +37,7 @@ async def start_handler(message: types.Message, state: FSMContext):
         registration_repository,
     )
     await StateFinishAnswer(
-        RegisterUser(
+        RegisterAnswer(
             RegisterNewUserEvent(
                 message.chat.id,
                 register_new_user,
@@ -50,11 +49,11 @@ async def start_handler(message: types.Message, state: FSMContext):
                     RegisterUserWithReferrer(
                         BotInstance.get(),
                         register_new_user,
-                        UserRepository(database),
-                        StartMessage(message.text, UserRepository(database)),
+                        user_repository,
+                        StartMessage(message.text, user_repository),
                     ),
                     NatsIntegration([]),
-                    StartMessage(message.text, UserRepository(database)),
+                    StartMessage(message.text, user_repository),
                 ),
                 RegisterNewUserEvent(
                     message.chat.id,
@@ -65,7 +64,7 @@ async def start_handler(message: types.Message, state: FSMContext):
             ),
             RegisterAlreadyExistsUser(
                 BotInstance.get(),
-                UserRepository(database),
+                user_repository,
                 UsersRepository(database),
             ),
             message.chat.id,

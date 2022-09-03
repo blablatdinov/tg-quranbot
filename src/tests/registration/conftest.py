@@ -5,7 +5,10 @@ import pytest
 from repository.ayats.ayat import Ayat
 from repository.users.registration import RegistrationRepository
 from repository.users.user import User
-from services.register_user import RegisterAlreadyExistsUser, RegisterNewUser, RegisterUser, RegisterUserWithReferrer
+from services.register.register_already_exists_user import RegisterAlreadyExistsUser
+from services.register.register_answer import RegisterAnswer
+from services.register.register_new_user import RegisterNewUser
+from services.register.register_user_with_referrer import RegisterUserWithReferrer
 from services.start_message import StartMessage
 from tests.mocks.admin_messages_repository import AdminMessageRepositoryMock
 from tests.mocks.ayat_repository import AyatRepositoryMock
@@ -42,7 +45,7 @@ def register_service(ayat_repository_mock):
         chat_id: int,
         message_text: str,
     ):
-        return await RegisterUser(
+        return await RegisterAnswer(
             RegisterNewUser(
                 BotMock(),
                 RegistrationRepository(
