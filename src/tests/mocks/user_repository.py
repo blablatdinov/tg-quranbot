@@ -2,6 +2,7 @@ import random
 import uuid
 from typing import Optional
 
+from exceptions.internal_exceptions import UserNotFoundError
 from repository.users.user import User, UserRepositoryInterface
 
 
@@ -29,11 +30,14 @@ class UserRepositoryMock(UserRepositoryInterface):
         )[0]
 
     async def get_by_chat_id(self, chat_id: int) -> User:
-        return list(
-            filter(
-                lambda user: user.chat_id == chat_id, self.storage,
-            ),
-        )[0]
+        users = [
+            user
+            for user in self.storage
+            if user.chat_id == chat_id
+        ]
+        if not users:
+            raise UserNotFoundError
+        return users[0]
 
     async def exists(self, chat_id: int):
         return chat_id in {user.chat_id for user in self.storage}

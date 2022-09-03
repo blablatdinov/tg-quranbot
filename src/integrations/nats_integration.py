@@ -49,16 +49,17 @@ class NatsIntegration(MessageBrokerInterface):
             'event_version': version,
             'event_name': event_name,
             'event_time': str(datetime.datetime.now()),
-            'producer': 'quranbot-admin',
+            'producer': 'quranbot-aiogram',
             'data': event_data,
         }
         validate_schema(event, event_name, version)
         nats_client = await nats.connect('localhost')
+        jetstream = nats_client.jetstream()
 
         logger.info('Publishing to queue: {0}, event_id: {1}, event_name: {2}'.format(
             self._queue_name, event['event_id'], event['event_name'],
         ))
-        await nats_client.publish(self._queue_name, json.dumps(event).encode('utf-8'))
+        await jetstream.publish(self._queue_name, json.dumps(event).encode('utf-8'))
         logger.info('Event: id={0} name={1} to queue: {2} successful published'.format(
             event['event_id'], event['event_name'], self._queue_name,
         ))
@@ -69,7 +70,8 @@ class NatsIntegration(MessageBrokerInterface):
         nats_client = await nats.connect('localhost')
         logger.info('Start handling events...')
         logger.info('Receive evenst list: {0}'.format([event_handler.event_name for event_handler in self._handlers]))
-        await nats_client.subscribe('default', cb=self._message_handler)
+        js = nats_client.jetstream()
+        await js.subscribe('default', durable='quranbot_aiogram', cb=self._message_handler)
         while True:  # noqa: WPS457
             await asyncio.sleep(1)
 

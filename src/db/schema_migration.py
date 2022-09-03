@@ -302,15 +302,15 @@ async def migration():
     migrations = [
         # SuraMigration(old_db, new_db),
         # FilesMigration(old_db, new_db),
-        # AyatsMigration(old_db, new_db),
+        AyatsMigration(old_db, new_db),
         # PodcastMigration(old_db, new_db),
         # AdminMessagesMigration(old_db, new_db),
         # CitiesMigration(old_db, new_db),
         # PrayerDayMigration(old_db, new_db),
         # PrayerMigration(old_db, new_db),
         # PrayerAtUserGroupMigration(old_db, new_db),
-        UsersMigration(old_db, new_db),
-        PrayerAtUserMigration(old_db, new_db),
+        # UsersMigration(old_db, new_db),
+        # PrayerAtUserMigration(old_db, new_db),
     ]
     for migration in migrations:
         await migration.run()
