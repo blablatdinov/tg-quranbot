@@ -12,11 +12,13 @@ from services.answers.state_finish_answer import StateFinishAnswer
 from services.register_user import (
     RegisterAlreadyExistsUser,
     RegisterNewUser,
-    RegisterNewUserEvent,
     RegisterUser,
     RegisterUserWithReferrer,
+    RegisterNewUserEvent,
+    RegisterUserWithReferrerEvent,
+    SafeRegistrationWithReferrer,
 )
-from services.start_message import get_start_message_query
+from services.start_message import StartMessage
 from utlls import BotInstance
 
 
@@ -31,28 +33,38 @@ async def start_handler(message: types.Message, state: FSMContext):
         AdminMessageRepository(database),
         AyatRepository(database),
     )
-    register_new_user = RegisterNewUserEvent(
-        message.chat.id,
-        RegisterNewUser(
-            BotInstance.get(),
-            message.chat.id,
-            registration_repository,
-        ),
-        NatsIntegration([]),
+    register_new_user = RegisterNewUser(
+        BotInstance.get(),
+        registration_repository,
     )
     await StateFinishAnswer(
         RegisterUser(
-            register_new_user,
-            RegisterUserWithReferrer(
-                BotInstance.get(),
+            RegisterNewUserEvent(
                 message.chat.id,
                 register_new_user,
-                UserRepository(database),
-                get_start_message_query(message.text),
+                NatsIntegration([]),
+            ),
+            SafeRegistrationWithReferrer(
+                RegisterUserWithReferrerEvent(
+                    message.chat.id,
+                    RegisterUserWithReferrer(
+                        BotInstance.get(),
+                        register_new_user,
+                        UserRepository(database),
+                        StartMessage(message.text, UserRepository(database)),
+                    ),
+                    NatsIntegration([]),
+                    StartMessage(message.text, UserRepository(database)),
+                ),
+                RegisterNewUserEvent(
+                    message.chat.id,
+                    register_new_user,
+                    NatsIntegration([]),
+                ),
+                database,
             ),
             RegisterAlreadyExistsUser(
                 BotInstance.get(),
-                message.chat.id,
                 UserRepository(database),
                 UsersRepository(database),
             ),

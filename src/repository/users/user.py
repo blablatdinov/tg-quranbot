@@ -3,6 +3,7 @@ from typing import Optional
 
 from databases import Database
 from pydantic import BaseModel
+from loguru import logger
 
 from exceptions.base_exception import InternalBotError
 from exceptions.internal_exceptions import UserNotFoundError
@@ -88,6 +89,7 @@ class UserRepository(UserRepositoryInterface):
         :returns: User
         :raises InternalBotError: if connection not return created user values
         """
+        logger.debug('Insert in DB User <{0}>...'.format(chat_id))
         query = """
             INSERT INTO
             users (chat_id, referrer_id, day)
@@ -97,6 +99,7 @@ class UserRepository(UserRepositoryInterface):
         query_return_value = await self.connection.fetch_one(query, {'chat_id': chat_id, 'referrer_id': referrer_id})
         if not query_return_value:
             raise InternalBotError
+        logger.debug('User <{0}> inserted in DB'.format(chat_id))
         row = dict(query_return_value._mapping)['row']  # noqa: WPS437
         return User(
             is_active=True,
