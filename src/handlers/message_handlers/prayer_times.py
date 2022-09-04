@@ -5,8 +5,12 @@ from aiogram.dispatcher import FSMContext, filters
 
 from constants import GET_PRAYER_TIMES_REGEXP
 from db.connection import database
+from integrations.nats_integration import NatsIntegration
 from repository.prayer_time import PrayerTimeRepository
+from repository.update_log import UpdatesLogRepository
 from repository.users.user import UserRepository
+from services.answers.log_answer import LoggedSourceMessageAnswer
+from services.answers.state_finish_answer import StateFinishAnswer
 from services.prayers.prayer_status_markup import PrayerTimeKeyboard
 from services.prayers.prayer_times import PrayerForUserAnswer, PrayersWithoutSunrise, PrayerTimes, UserPrayerTimes
 from utlls import BotInstance
@@ -18,32 +22,40 @@ async def prayer_times_handler(message: types.Message, state: FSMContext):
     :param message: types.Message
     :param state: FSMContext
     """
-    await PrayerForUserAnswer(
-        BotInstance.get(),
-        message.chat.id,
-        PrayerTimes(
-            message.chat.id,
-            UserRepository(database),
-            PrayerTimeRepository(database),
-            datetime.datetime.today(),
-        ),
-        PrayerTimeKeyboard(
-            UserPrayerTimes(
+    await StateFinishAnswer(
+        LoggedSourceMessageAnswer(
+            UpdatesLogRepository(
+                NatsIntegration([]),
+            ),
+            message,
+            PrayerForUserAnswer(
+                BotInstance.get(),
                 message.chat.id,
-                PrayersWithoutSunrise(
-                    PrayerTimes(
+                PrayerTimes(
+                    message.chat.id,
+                    UserRepository(database),
+                    PrayerTimeRepository(database),
+                    datetime.datetime.today(),
+                ),
+                PrayerTimeKeyboard(
+                    UserPrayerTimes(
                         message.chat.id,
+                        PrayersWithoutSunrise(
+                            PrayerTimes(
+                                message.chat.id,
+                                UserRepository(database),
+                                PrayerTimeRepository(database),
+                                datetime.datetime.today(),
+                            ),
+                        ),
                         UserRepository(database),
                         PrayerTimeRepository(database),
-                        datetime.datetime.today(),
                     ),
                 ),
-                UserRepository(database),
-                PrayerTimeRepository(database),
             ),
         ),
+        state,
     ).send()
-    await state.finish()
 
 
 def register_prayer_times_message_handlers(dp: Dispatcher):
