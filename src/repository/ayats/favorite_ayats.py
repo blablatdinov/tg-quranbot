@@ -1,8 +1,8 @@
 from databases import Database
+from loguru import logger
 from pydantic import parse_obj_as
 
 from repository.ayats.ayat import Ayat
-from repository.schemas import CountResult
 
 
 class FavoriteAyatRepositoryInterface(object):
@@ -73,6 +73,7 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
             INNER JOIN suras s ON a.sura_id = s.sura_id
             INNER JOIN files f ON a.audio_id = f.file_id
             WHERE u.chat_id = :chat_id
+            ORDER BY a.ayat_id
         """
         rows = await self._connection.fetch_all(query, {'chat_id': chat_id})
         return parse_obj_as(list[Ayat], [row._mapping for row in rows])  # noqa: WPS437
@@ -84,6 +85,7 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
         :param chat_id: int
         :returns: bool
         """
+        logger.debug('Check ayat <{0}> is favorite for user <{1}>...'.format(ayat_id, chat_id))
         query = """
             SELECT
                 COUNT(*)
@@ -91,8 +93,9 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
             INNER JOIN users u ON u.chat_id = fa.user_id
             WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id
         """
-        row = await self._connection.fetch_val(query, {'ayat_id': ayat_id, 'chat_id': chat_id})
-        return bool(CountResult.parse_obj(row._mapping).count)  # noqa: WPS437
+        count = await self._connection.fetch_val(query, {'ayat_id': ayat_id, 'chat_id': chat_id})
+        logger.debug('Ayat <{0}> is favorite for user <{1}> result: {2}'.format(ayat_id, chat_id, bool(count)))
+        return bool(count)
 
     async def add_to_favorite(self, chat_id: int, ayat_id: int):
         """Добавить аят в избранные.
