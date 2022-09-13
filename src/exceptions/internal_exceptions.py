@@ -11,3 +11,9 @@ class UserNotFoundError(BaseAppError):
     """Исключение возбуждается в случае если пользователь не найден."""
 
     user_message = 'Пользователь не найден'
+
+
+class TelegramIntegrationsError(BaseAppError):
+    """Исключение, возбуждаемое при некорректном ответе от API телеграмма."""
+
+    admin_message = 'Ошибка интеграции telegram'
