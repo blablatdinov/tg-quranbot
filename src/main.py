@@ -1,5 +1,6 @@
 import asyncio
 
+from db.connection import database
 from integrations.tg.app import PollingApp
 from integrations.tg.polling_updates import (
     PollingUpdatesIterator,
@@ -9,17 +10,17 @@ from integrations.tg.polling_updates import (
     UpdatesWithOffsetURL,
 )
 from integrations.tg.sendable import SendableAnswer
-from integrations.tg.tg_answers.answer_to_sender import TgAnswerToSender
 from integrations.tg.tg_answers.empty_answer import TgEmptyAnswer
-from integrations.tg.tg_answers.message_answer import TgMessageAnswer
-from integrations.tg.tg_answers.text_answer import TgTextAnswer
+from repository.podcast import PodcastRepository
+from services.podcast_answer import PodcastAnswer
 from settings import settings
 
 
-def main():
+async def main():
     """Точка входа в приложение."""
     empty_answer = TgEmptyAnswer(settings.API_TOKEN)
-    app = PollingApp(
+    await database.connect()
+    await PollingApp(
         PollingUpdatesIterator(
             UpdatesLongPollingURL(
                 UpdatesWithOffsetURL(
@@ -30,16 +31,14 @@ def main():
             UpdatesTimeout(),
         ),
         SendableAnswer(
-            TgTextAnswer(
-                TgAnswerToSender(
-                    TgMessageAnswer(empty_answer),
-                ),
-                'hello',
+            PodcastAnswer(
+                settings.DEBUG,
+                empty_answer,
+                PodcastRepository(database),
             ),
         ),
     ).run()
-    asyncio.run(app)
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())

@@ -1,6 +1,7 @@
 import json
 
 import httpx
+from loguru import logger
 
 from exceptions.internal_exceptions import TelegramIntegrationsError
 from integrations.tg.tg_answers.interface import TgAnswerInterface
@@ -35,6 +36,7 @@ class SendableAnswer(SendableInterface):
         success_status = 200
         async with httpx.AsyncClient() as client:
             for request in await self._answer.build(update):
+                logger.debug('Try send request to: {0}'.format(request.url))
                 resp = await client.send(request)
                 responses.append(resp.text)
                 if resp.status_code != success_status:

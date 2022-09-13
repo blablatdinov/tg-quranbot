@@ -8,7 +8,7 @@ from repository.podcast import PodcastRepository
 from repository.update_log import UpdatesLogRepository
 from services.answers.log_answer import LoggedSourceMessageAnswer
 from services.answers.state_finish_answer import StateFinishAnswer
-from services.podcast import PodcastAnswer
+from services.podcast_answer import PodcastAnswer
 from settings import settings
 from utlls import BotInstance
 

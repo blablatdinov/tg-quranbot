@@ -1,4 +1,4 @@
-from services.podcast import PodcastAnswer
+from services.podcast_answer import PodcastAnswer
 from tests.mocks.bot import BotMock
 from tests.mocks.podcast_repository import PodcastRepositoryMock
 
