@@ -25,18 +25,18 @@ class DefaultKeyboard(KeyboardInterface):
 
         :return: types.ReplyKeyboardMarkup
         """
-        return (
-            types.ReplyKeyboardMarkup(resize_keyboard=True)
-            .row(types.KeyboardButton('🎧 Подкасты'))
-            .row(types.KeyboardButton('🕋 Время намаза'))
-            .row(types.KeyboardButton('🌟 Избранное'), types.KeyboardButton('🔍 Найти аят'))
-        )
+        return '{"keyboard":[["🎧 Подкасты"],["🕋 Время намаза"],["🌟 Избранное","🔍 Найти аят"]]}'
 
 
 class FileAnswer(TgAnswerInterface):
     """Класс ответа с файлом."""
 
-    def __init__(self, debug_mode: bool, telegram_file_id_answer: TgAnswerInterface, file_link_answer: TgAnswerInterface):
+    def __init__(
+        self,
+        debug_mode: bool,
+        telegram_file_id_answer: TgAnswerInterface,
+        file_link_answer: TgAnswerInterface,
+    ):
         self._debug_mode = debug_mode
         self._telegram_file_id_answer = telegram_file_id_answer
         self._file_link_answer = file_link_answer
@@ -44,6 +44,7 @@ class FileAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Отправка.
 
+        :param update: Update
         :return: list[httpx.Request]
         """
         if self._debug_mode:
@@ -62,6 +63,7 @@ class TelegramFileIdAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Отправка.
 
+        :param update: Update
         :return: list[httpx.Request]
         """
         return [

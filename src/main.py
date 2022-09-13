@@ -1,4 +1,5 @@
 import asyncio
+from contextlib import suppress
 
 from db.connection import database
 from integrations.tg.app import PollingApp
@@ -11,7 +12,9 @@ from integrations.tg.polling_updates import (
 )
 from integrations.tg.sendable import SendableAnswer
 from integrations.tg.tg_answers.empty_answer import TgEmptyAnswer
-from repository.podcast import PodcastRepository
+from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
+from repository.podcast import RandomPodcast
+from services.answers.answer import DefaultKeyboard
 from services.podcast_answer import PodcastAnswer
 from settings import settings
 
@@ -31,14 +34,18 @@ async def main():
             UpdatesTimeout(),
         ),
         SendableAnswer(
-            PodcastAnswer(
-                settings.DEBUG,
-                empty_answer,
-                PodcastRepository(database),
+            TgAnswerMarkup(
+                PodcastAnswer(
+                    settings.DEBUG,
+                    empty_answer,
+                    RandomPodcast(database),
+                ),
+                DefaultKeyboard(),
             ),
         ),
     ).run()
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    with suppress(KeyboardInterrupt):
+        asyncio.run(main())
