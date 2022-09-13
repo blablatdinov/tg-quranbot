@@ -1,6 +1,6 @@
 import pytest
 
-from repository.podcast import Podcast, PodcastRepository
+from repository.podcast import PodcastRepository, RandomPodcast
 
 
 @pytest.fixture()
@@ -24,4 +24,4 @@ async def podcast(db_session):
 async def test(db_session, podcast):
     got = await PodcastRepository(db_session).get_random()
 
-    assert isinstance(got, Podcast)
+    assert isinstance(got, RandomPodcast)

@@ -1,7 +1,7 @@
 import httpx
 
+from integrations.tg.tg_answers.interface import TgAnswerInterface
 from services.answers.answer import KeyboardInterface
-from services.tg_answers.interface import TgAnswerInterface
 
 
 class TgAnswerMarkup(TgAnswerInterface):
@@ -20,7 +20,7 @@ class TgAnswerMarkup(TgAnswerInterface):
         return [
             httpx.Request(
                 request.method,
-                request.url.copy_add_param('keyboard', await self._keyboard.generate()),
+                request.url.copy_add_param('reply_markup', await self._keyboard.generate()),
                 stream=request.stream,
                 headers=request.headers,
             )
