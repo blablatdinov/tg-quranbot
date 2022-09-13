@@ -11,8 +11,10 @@ from integrations.tg.polling_updates import (
     UpdatesWithOffsetURL,
 )
 from integrations.tg.sendable import SendableAnswer
+from integrations.tg.tg_answers.answer_fork import AnswerFork
 from integrations.tg.tg_answers.empty_answer import TgEmptyAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
+from integrations.tg.tg_answers.message_regex_answer import MessageRegexAnswer
 from repository.podcast import RandomPodcast
 from services.answers.answer import DefaultKeyboard
 from services.podcast_answer import PodcastAnswer
@@ -34,13 +36,18 @@ async def main():
             UpdatesTimeout(),
         ),
         SendableAnswer(
-            TgAnswerMarkup(
-                PodcastAnswer(
-                    settings.DEBUG,
-                    empty_answer,
-                    RandomPodcast(database),
+            AnswerFork(
+                MessageRegexAnswer(
+                    'Подкасты',
+                    TgAnswerMarkup(
+                        PodcastAnswer(
+                            settings.DEBUG,
+                            empty_answer,
+                            RandomPodcast(database),
+                        ),
+                        DefaultKeyboard(),
+                    ),
                 ),
-                DefaultKeyboard(),
             ),
         ),
     ).run()
