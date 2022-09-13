@@ -1,6 +1,6 @@
 import httpx
 
-from services.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 class TgEmptyAnswer(TgAnswerInterface):

@@ -1,6 +1,6 @@
 import httpx
 
-from services.tg_answers.update import Update
+from integrations.tg.tg_answers.update import Update
 
 
 class TgAnswerInterface(object):
