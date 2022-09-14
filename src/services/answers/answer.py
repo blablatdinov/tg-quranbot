@@ -12,6 +12,7 @@ class KeyboardInterface(object):
     async def generate(self, update: Update) -> str:
         """Генерация.
 
+        :param update: Update
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -23,6 +24,7 @@ class DefaultKeyboard(KeyboardInterface):
     async def generate(self, update: Update):
         """Генерация.
 
+        :param update: Update
         :return: types.ReplyKeyboardMarkup
         """
         return '{"keyboard":[["🎧 Подкасты"],["🕋 Время намаза"],["🌟 Избранное","🔍 Найти аят"]]}'

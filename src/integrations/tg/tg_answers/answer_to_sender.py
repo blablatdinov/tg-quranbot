@@ -1,5 +1,4 @@
 import httpx
-from loguru import logger
 
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update

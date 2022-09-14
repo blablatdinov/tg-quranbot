@@ -1,3 +1,5 @@
+from databases import Database
+
 from services.regular_expression import IntableRegularExpression
 
 
@@ -20,3 +22,37 @@ class PrayerStatus(object):
         :return: bool
         """
         return 'not' not in self._source.split('(')[0]
+
+
+class UserPrayerStatusInterface(object):
+    """Интерфейс статуса прочитанности намаза."""
+
+    async def change(self, prayer_status: PrayerStatus):
+        """Изменить статус прочитанности.
+
+        :param prayer_status: PrayerStatus
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
+
+class UserPrayerStatus(UserPrayerStatusInterface):
+    """Статус прочитанности намаза."""
+
+    def __init__(self, connection: Database):
+        self._connection = connection
+
+    async def change(self, prayer_status: PrayerStatus):
+        """Изменить статус прочитанности.
+
+        :param prayer_status: PrayerStatus
+        """
+        query = """
+            UPDATE prayers_at_user
+            SET is_read = :is_read
+            WHERE prayer_at_user_id = :prayer_id
+        """
+        await self._connection.execute(query, {
+            'is_read': prayer_status.change_to(),
+            'prayer_id': prayer_status.user_prayer_id(),
+        })

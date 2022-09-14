@@ -1,7 +1,5 @@
 import asyncio
 
-from loguru import logger
-
 from integrations.tg.polling_updates import PollingUpdatesIterator
 from integrations.tg.sendable import SendableInterface
 
@@ -17,6 +15,5 @@ class PollingApp(object):
         """Запуск."""
         async for update_list in self._updates:
             for update in update_list:
-                logger.debug(f'{update=}')
                 await self._sendable.send(update)
                 await asyncio.sleep(0.1)

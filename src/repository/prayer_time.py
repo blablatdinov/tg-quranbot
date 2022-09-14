@@ -1,18 +1,12 @@
 import datetime
 import enum
-import json
 import uuid
 
 from databases import Database
 from loguru import logger
 from pydantic import BaseModel
 
-from app_types.stringable import Stringable
-from constants import PrayerReadedEmoji, PrayerNotReadedEmoji
 from exceptions.internal_exceptions import UserHasNotGeneratedPrayersError
-from integrations.tg.tg_answers.update import Update
-from services.answers.answer import KeyboardInterface
-from services.prayers.prayer_status import PrayerStatus
 
 
 class PrayerNames(str, enum.Enum):  # noqa: WPS600
@@ -41,17 +35,32 @@ class UserPrayer(BaseModel):
 
 
 class UserPrayersInterface(object):
+    """Интерфейс времени намаза пользователя."""
 
     async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
+        """Времена намаза.
+
+        :param chat_id: int
+        :param date: datetime.date
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
 
 class UserPrayers(UserPrayersInterface):
+    """Времена намазов пользователя."""
 
     def __init__(self, connection: Database):
         self._connection = connection
 
     async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
+        """Времена намаза.
+
+        :param chat_id: int
+        :param date: datetime.date
+        :return: list[UserPrayer]
+        :raises UserHasNotGeneratedPrayersError: if user hasn't prayer times
+        """
         logger.info('Getting prayer times for user <{0}>, date={1}'.format(chat_id, date))
         query = """
             SELECT
@@ -70,19 +79,26 @@ class UserPrayers(UserPrayersInterface):
             ORDER BY up.prayer_at_user_id
         """
         rows = await self._connection.fetch_all(query, {'date': date, 'chat_id': chat_id})
-        prayers = [UserPrayer.parse_obj(row._mapping) for row in rows]
+        prayers = [UserPrayer.parse_obj(row._mapping) for row in rows]  # noqa: WPS437
         if not prayers:
             raise UserHasNotGeneratedPrayersError
         return prayers
 
 
 class SafeUserPrayers(UserPrayersInterface):
+    """Времена намазов с защитой от UserHasNotGeneratedPrayersError."""
 
     def __init__(self, exists_user_prayers: UserPrayersInterface, new_user_prayers: UserPrayersInterface):
         self._exists_user_prayers = exists_user_prayers
         self._new_user_prayers = new_user_prayers
 
     async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
+        """Времена намаза.
+
+        :param chat_id: int
+        :param date: datetime.date
+        :return: list[UserPrayer]
+        """
         try:
             return await self._exists_user_prayers.prayer_times(chat_id, date)
         except UserHasNotGeneratedPrayersError:
@@ -90,19 +106,28 @@ class SafeUserPrayers(UserPrayersInterface):
 
 
 class PrayersWithoutSunrise(UserPrayersInterface):
+    """Времена намазов без восхода."""
 
     def __init__(self, prayers: UserPrayersInterface):
         self._origin = prayers
 
     async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
+        """Времена намаза.
+
+        :param chat_id: int
+        :param date: datetime.date
+        :return: list[UserPrayer]
+        """
+        prayers = await self._origin.prayer_times(chat_id, date)
         return [
-            prayer for prayer in
-            await self._origin.prayer_times(chat_id, date)
+            prayer
+            for prayer in prayers
             if prayer.name != PrayerNames.SUNRISE
         ]
 
 
 class NewUserPrayers(UserPrayersInterface):
+    """Объект генерирующий времена намазов пользователя."""
 
     def __init__(self, connection: Database, exists_user_prayers):
         self._connection = connection
@@ -130,7 +155,7 @@ class NewUserPrayers(UserPrayersInterface):
             WHERE pd.date = :date AND u.chat_id = :chat_id
         """
         rows = await self._connection.fetch_all(query, {'date': date, 'chat_id': chat_id})
-        prayer_ids = [row._mapping['prayer_id'] for row in rows]
+        prayer_ids = [row._mapping['prayer_id'] for row in rows]  # noqa: WPS437
         query = """
             INSERT INTO prayers_at_user
             (is_read, prayer_id, prayer_group_id, user_id)
@@ -150,58 +175,3 @@ class NewUserPrayers(UserPrayersInterface):
             ],
         )
         return await self._exists_user_prayers.prayer_times(chat_id, date)
-
-
-class UserPrayersButtonCallback(Stringable):
-
-    def __init__(self, user_prayer: UserPrayer):
-        self._user_prayer = user_prayer
-
-    def __str__(self):
-        if self._user_prayer.is_readed:
-            return 'mark_not_readed({0})'.format(self._user_prayer.id)
-        return 'mark_readed({0})'.format(self._user_prayer.id)
-
-
-class UserPrayersKeyboard(KeyboardInterface):
-
-    def __init__(self, user_prayer_times: UserPrayersInterface, date: datetime.date):
-        self._user_prayer_times = user_prayer_times
-        self._date = date
-
-    async def generate(self, update: Update) -> str:
-        for x in await self._user_prayer_times.prayer_times(update.chat_id(), self._date):
-            print(x.id, x.is_readed)
-        return json.dumps({
-            'inline_keyboard': [[
-                {
-                    'text': str(PrayerReadedEmoji()) if user_prayer.is_readed else str(PrayerNotReadedEmoji()),
-                    'callback_data': str(UserPrayersButtonCallback(user_prayer)),
-                }
-                for user_prayer in await self._user_prayer_times.prayer_times(update.chat_id(), self._date)
-            ]]
-        })
-
-
-class UserPrayerStatusInterface(object):
-
-    async def change(self, prayer_status: PrayerStatus):
-        raise NotImplementedError
-
-
-class UserPrayerStatus(UserPrayerStatusInterface):
-
-    def __init__(self, connection: Database):
-        self._connection = connection
-
-    async def change(self, prayer_status: PrayerStatus):
-        query = """
-            UPDATE prayers_at_user
-            SET is_read = :is_read
-            WHERE prayer_at_user_id = :prayer_id
-        """
-        await self._connection.execute(query, {
-            'is_read': prayer_status.change_to(),
-            'prayer_id': prayer_status.user_prayer_id(),
-        })
-

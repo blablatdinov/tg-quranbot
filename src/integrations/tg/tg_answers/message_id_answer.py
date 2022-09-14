@@ -4,6 +4,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 class TgMessageIdAnswer(TgAnswerInterface):
+    """Ответ с идентификатором сообщения."""
 
     def __init__(self, answer: TgAnswerInterface, message_id: int):
         self._origin = answer

@@ -1,5 +1,4 @@
 import asyncio
-import datetime
 from contextlib import suppress
 
 from db.connection import database
@@ -18,15 +17,13 @@ from integrations.tg.tg_answers.callback_query_regex_answer import CallbackQuery
 from integrations.tg.tg_answers.empty_answer import TgEmptyAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
-from integrations.tg.tg_answers.message_id_answer import TgMessageIdAnswer
 from integrations.tg.tg_answers.message_keyboard_edit_answer import TgKeyboardEditAnswer
 from integrations.tg.tg_answers.message_regex_answer import MessageRegexAnswer
-from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from repository.podcast import RandomPodcast
-from repository.prayer_time import UserPrayers, SafeUserPrayers, NewUserPrayers, UserPrayersKeyboard, PrayersWithoutSunrise, \
-    UserPrayerStatus
+from repository.prayer_time import NewUserPrayers, PrayersWithoutSunrise, SafeUserPrayers, UserPrayers
 from services.answers.answer import DefaultKeyboard
 from services.podcast_answer import PodcastAnswer
+from services.prayers.prayer_status import UserPrayerStatus
 from services.prayers.prayer_times import PrayerForUserAnswer, UserPrayerStatusChangeAnswer
 from settings import settings
 
@@ -71,14 +68,14 @@ async def main():
                             NewUserPrayers(
                                 database,
                                 PrayersWithoutSunrise(
-                                    UserPrayers(database)
+                                    UserPrayers(database),
                                 ),
                             ),
                         ),
                     ),
                 ),
                 CallbackQueryRegexAnswer(
-                    r'(mark_readed|mark_not_readed)',
+                    '(mark_readed|mark_not_readed)',
                     UserPrayerStatusChangeAnswer(
                         TgAnswerToSender(
                             TgKeyboardEditAnswer(

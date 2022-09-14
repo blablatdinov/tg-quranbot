@@ -6,12 +6,22 @@ PODCAST_BUTTON = '(П|п)одкасты'
 
 
 class PrayerReadedEmoji(Stringable):
+    """Смайлик для прочитанного намаза."""
 
     def __str__(self):
+        """Строковое представление.
+
+        :return: str
+        """
         return '✅'
 
 
 class PrayerNotReadedEmoji(Stringable):
+    """Смайлик для непрочитанного намаза."""
 
     def __str__(self):
+        """Строковое представление.
+
+        :return: str
+        """
         return '❌'

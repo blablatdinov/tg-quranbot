@@ -20,5 +20,6 @@ class TelegramIntegrationsError(BaseAppError):
 
 
 class UserHasNotGeneratedPrayersError(BaseAppError):
+    """У пользователя нет сгенерированных времен намаза на текущий день."""
 
     admin_message = ''

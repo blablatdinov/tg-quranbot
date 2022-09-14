@@ -18,15 +18,17 @@ class Message(BaseModel):
 
 
 class CallbackQueryFrom(BaseModel):
+    """Данные отправителя, нажавшего на кнопку."""
 
     id: int
 
 
 class CallbackQuery(BaseModel):
+    """Данные нажатия на кнопку."""
 
     from_: CallbackQueryFrom = Field(..., alias='from')
     message: Message
-    data: str
+    data: str  # noqa: WPS110
 
 
 class Update(BaseModel):
@@ -37,6 +39,10 @@ class Update(BaseModel):
     callback_query: Optional[CallbackQuery]
 
     def chat_id(self):
+        """Идентификатор чата.
+
+        :return: int
+        """
         try:
             return self.message.chat.id
         except AttributeError:

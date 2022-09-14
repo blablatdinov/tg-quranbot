@@ -6,8 +6,9 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.message_id_answer import TgMessageIdAnswer
 from integrations.tg.tg_answers.text_answer import TgTextAnswer
-from repository.prayer_time import UserPrayersInterface, UserPrayersKeyboard, PrayersWithoutSunrise, UserPrayerStatusInterface
-from services.prayers.prayer_status import PrayerStatus
+from repository.prayer_time import PrayersWithoutSunrise, UserPrayersInterface
+from services.prayers.prayer_status import PrayerStatus, UserPrayerStatusInterface
+from services.user_prayer_keyboard import UserPrayersKeyboard
 
 
 class PrayerForUserAnswer(TgAnswerInterface):
@@ -24,9 +25,12 @@ class PrayerForUserAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Отправить.
 
+        :param update: Update
         :return: list[types.Message]
         """
-        prayers = await self._user_prayers.prayer_times(update.message.chat.id, datetime.date.today())
+        prayers = await self._user_prayers.prayer_times(
+            update.message.chat.id, datetime.date.today(),
+        )
         time_format = '%H:%M'
         template = '\n'.join([
             'Время намаза для г. {city_name} ({date})\n',
@@ -56,13 +60,24 @@ class PrayerForUserAnswer(TgAnswerInterface):
 
 
 class UserPrayerStatusChangeAnswer(TgAnswerInterface):
+    """Ответ с изменением статуса прочитанности намаза."""
 
-    def __init__(self, answer: TgAnswerInterface, prayer_status: UserPrayerStatusInterface, user_prayers: UserPrayersInterface):
+    def __init__(
+        self,
+        answer: TgAnswerInterface,
+        prayer_status: UserPrayerStatusInterface,
+        user_prayers: UserPrayersInterface,
+    ):
         self._origin = answer
         self._prayer_status = prayer_status
         self._user_prayers = user_prayers
 
     async def build(self, update) -> list[httpx.Request]:
+        """Обработка запроса.
+
+        :param update: Update
+        :return: list[httpx.Request]
+        """
         await self._prayer_status.change(PrayerStatus(update.callback_query.data))
         return await TgAnswerMarkup(
             TgMessageIdAnswer(
