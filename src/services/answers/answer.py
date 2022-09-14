@@ -1,15 +1,15 @@
-from typing import Optional, Union
+from typing import Optional
 
 import httpx
-from aiogram import types
 
 from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.update import Update
 
 
 class KeyboardInterface(object):
     """Интерфейс клавиатуры."""
 
-    async def generate(self) -> Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup]:
+    async def generate(self, update: Update) -> str:
         """Генерация.
 
         :raises NotImplementedError: if not implemented
@@ -20,7 +20,7 @@ class KeyboardInterface(object):
 class DefaultKeyboard(KeyboardInterface):
     """Класс клавиатуры по умолчанию."""
 
-    async def generate(self):
+    async def generate(self, update: Update):
         """Генерация.
 
         :return: types.ReplyKeyboardMarkup

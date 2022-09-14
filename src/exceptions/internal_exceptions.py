@@ -17,3 +17,8 @@ class TelegramIntegrationsError(BaseAppError):
     """Исключение, возбуждаемое при некорректном ответе от API телеграмма."""
 
     admin_message = 'Ошибка интеграции telegram'
+
+
+class UserHasNotGeneratedPrayersError(BaseAppError):
+
+    admin_message = ''

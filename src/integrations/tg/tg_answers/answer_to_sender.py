@@ -1,4 +1,5 @@
 import httpx
+from loguru import logger
 
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
@@ -17,6 +18,6 @@ class TgAnswerToSender(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         return [
-            httpx.Request(request.method, request.url.copy_add_param('chat_id', update.message.chat.id))
+            httpx.Request(request.method, request.url.copy_add_param('chat_id', update.chat_id()))
             for request in await self._origin.build(update)
         ]

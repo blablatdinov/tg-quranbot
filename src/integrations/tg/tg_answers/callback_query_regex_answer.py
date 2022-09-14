@@ -6,7 +6,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
 
 
-class MessageRegexAnswer(TgAnswerInterface):
+class CallbackQueryRegexAnswer(TgAnswerInterface):
     """Маршрутизация ответов по регулярному выражению."""
 
     def __init__(self, pattern: str, answer: TgAnswerInterface):
@@ -20,7 +20,7 @@ class MessageRegexAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         try:
-            regex_result = re.search(self._pattern, update.message.text)
+            regex_result = re.search(self._pattern, update.callback_query.data)
         except AttributeError:
             return []
         if not regex_result:

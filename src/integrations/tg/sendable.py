@@ -40,5 +40,7 @@ class SendableAnswer(SendableInterface):
                 resp = await client.send(request)
                 responses.append(resp.text)
                 if resp.status_code != success_status:
+                    if 'new message content and reply markup are exactly' in resp.json()['description']:
+                        return []
                     raise TelegramIntegrationsError(resp.text)
             return [json.loads(response) for response in responses]
