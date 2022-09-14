@@ -12,12 +12,19 @@ from integrations.tg.polling_updates import (
 )
 from integrations.tg.sendable import SendableAnswer
 from integrations.tg.tg_answers.answer_fork import AnswerFork
+from integrations.tg.tg_answers.answer_to_sender import TgAnswerToSender
+from integrations.tg.tg_answers.callback_query_regex_answer import CallbackQueryRegexAnswer
 from integrations.tg.tg_answers.empty_answer import TgEmptyAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
+from integrations.tg.tg_answers.message_answer import TgMessageAnswer
+from integrations.tg.tg_answers.message_keyboard_edit_answer import TgKeyboardEditAnswer
 from integrations.tg.tg_answers.message_regex_answer import MessageRegexAnswer
 from repository.podcast import RandomPodcast
+from repository.prayer_time import NewUserPrayers, PrayersWithoutSunrise, SafeUserPrayers, UserPrayers
 from services.answers.answer import DefaultKeyboard
 from services.podcast_answer import PodcastAnswer
+from services.prayers.prayer_status import UserPrayerStatus
+from services.prayers.prayer_times import PrayerForUserAnswer, UserPrayerStatusChangeAnswer
 from settings import settings
 
 
@@ -46,6 +53,37 @@ async def main():
                             RandomPodcast(database),
                         ),
                         DefaultKeyboard(),
+                    ),
+                ),
+                MessageRegexAnswer(
+                    'Время намаза',
+                    PrayerForUserAnswer(
+                        TgAnswerToSender(
+                            TgMessageAnswer(
+                                empty_answer,
+                            ),
+                        ),
+                        SafeUserPrayers(
+                            UserPrayers(database),
+                            NewUserPrayers(
+                                database,
+                                PrayersWithoutSunrise(
+                                    UserPrayers(database),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+                CallbackQueryRegexAnswer(
+                    '(mark_readed|mark_not_readed)',
+                    UserPrayerStatusChangeAnswer(
+                        TgAnswerToSender(
+                            TgKeyboardEditAnswer(
+                                empty_answer,
+                            ),
+                        ),
+                        UserPrayerStatus(database),
+                        UserPrayers(database),
                     ),
                 ),
             ),

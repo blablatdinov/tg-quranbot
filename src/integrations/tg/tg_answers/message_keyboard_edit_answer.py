@@ -1,18 +1,16 @@
 import httpx
 
 from integrations.tg.tg_answers.interface import TgAnswerInterface
-from services.answers.answer import KeyboardInterface
 
 
-class TgAnswerMarkup(TgAnswerInterface):
-    """Ответ с клавиатурой."""
+class TgKeyboardEditAnswer(TgAnswerInterface):
+    """Ответ с отредактированной клавиатурой."""
 
-    def __init__(self, answer: TgAnswerInterface, keyboard: KeyboardInterface):
+    def __init__(self, answer: TgAnswerInterface):
         self._origin = answer
-        self._keyboard = keyboard
 
     async def build(self, update) -> list[httpx.Request]:
-        """Собрать ответ для пользователя.
+        """Пересобрать запросы к API к телеграмма.
 
         :param update: Update
         :return: list[httpx.Request]
@@ -20,7 +18,7 @@ class TgAnswerMarkup(TgAnswerInterface):
         return [
             httpx.Request(
                 request.method,
-                request.url.copy_add_param('reply_markup', await self._keyboard.generate(update)),
+                request.url.join('editMessageReplyMarkup'),
                 stream=request.stream,
                 headers=request.headers,
             )

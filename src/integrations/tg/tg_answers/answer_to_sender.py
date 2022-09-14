@@ -17,6 +17,6 @@ class TgAnswerToSender(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         return [
-            httpx.Request(request.method, request.url.copy_add_param('chat_id', update.message.chat.id))
+            httpx.Request(request.method, request.url.copy_add_param('chat_id', update.chat_id()))
             for request in await self._origin.build(update)
         ]

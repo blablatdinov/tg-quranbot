@@ -17,3 +17,9 @@ class TelegramIntegrationsError(BaseAppError):
     """Исключение, возбуждаемое при некорректном ответе от API телеграмма."""
 
     admin_message = 'Ошибка интеграции telegram'
+
+
+class UserHasNotGeneratedPrayersError(BaseAppError):
+    """У пользователя нет сгенерированных времен намаза на текущий день."""
+
+    admin_message = ''
