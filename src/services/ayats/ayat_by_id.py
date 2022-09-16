@@ -9,7 +9,11 @@ from integrations.tg.tg_answers.update import Update
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
 from services.answers.answer import FileAnswer, TelegramFileIdAnswer
-from services.ayats.search_by_sura_ayat_num import AyatSearchInterface, AyatNeighborAyatKeyboard, AyatFavoriteKeyboardButton
+from services.ayats.search_by_sura_ayat_num import (
+    AyatFavoriteKeyboardButton,
+    AyatNeighborAyatKeyboard,
+    AyatSearchInterface,
+)
 from services.regular_expression import IntableRegularExpression
 
 

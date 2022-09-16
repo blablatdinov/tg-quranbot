@@ -28,7 +28,7 @@ from repository.prayer_time import NewUserPrayers, PrayersWithoutSunrise, SafeUs
 from services.answers.answer import DefaultKeyboard
 from services.ayats.ayat_by_id import AyatByIdAnswer
 from services.ayats.favorite_ayats import FavoriteAyatAnswer
-from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNumAnswer, AyatBySuraAyatNum, AyatById
+from services.ayats.search_by_sura_ayat_num import AyatById, AyatBySuraAyatNum, AyatBySuraAyatNumAnswer
 from services.podcast_answer import PodcastAnswer
 from services.popug import DebugAnswer
 from services.prayers.prayer_status import UserPrayerStatus

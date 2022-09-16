@@ -13,9 +13,9 @@ from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from integrations.tg.tg_answers.update import Update
 from repository.ayats.ayat import Ayat, AyatRepositoryInterface
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface, FavoriteAyatsRepository
-from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface, NeighborAyats
+from repository.ayats.neighbor_ayats import NeighborAyats, NeighborAyatsRepositoryInterface
 from repository.ayats.sura import SuraInterface
-from services.answers.answer import FileAnswer, TelegramFileIdAnswer, KeyboardInterface
+from services.answers.answer import FileAnswer, KeyboardInterface, TelegramFileIdAnswer
 
 
 class SearchQueryInterface(object):
