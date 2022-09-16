@@ -13,16 +13,24 @@ from integrations.tg.polling_updates import (
 from integrations.tg.sendable import SendableAnswer
 from integrations.tg.tg_answers.answer_fork import AnswerFork
 from integrations.tg.tg_answers.answer_to_sender import TgAnswerToSender
+from integrations.tg.tg_answers.audio_answer import TgAudioAnswer
 from integrations.tg.tg_answers.callback_query_regex_answer import CallbackQueryRegexAnswer
 from integrations.tg.tg_answers.empty_answer import TgEmptyAnswer
+from integrations.tg.tg_answers.html_parse_answer import HtmlParseAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from integrations.tg.tg_answers.message_keyboard_edit_answer import TgKeyboardEditAnswer
 from integrations.tg.tg_answers.message_regex_answer import MessageRegexAnswer
+from repository.ayats.ayat import AyatRepository
+from repository.ayats.sura import Sura
 from repository.podcast import RandomPodcast
 from repository.prayer_time import NewUserPrayers, PrayersWithoutSunrise, SafeUserPrayers, UserPrayers
 from services.answers.answer import DefaultKeyboard
+from services.ayats.ayat_by_id import AyatByIdAnswer
+from services.ayats.favorite_ayats import FavoriteAyatAnswer
+from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNumAnswer, AyatBySuraAyatNum, AyatById
 from services.podcast_answer import PodcastAnswer
+from services.popug import DebugAnswer
 from services.prayers.prayer_status import UserPrayerStatus
 from services.prayers.prayer_times import PrayerForUserAnswer, UserPrayerStatusChangeAnswer
 from settings import settings
@@ -74,6 +82,27 @@ async def main():
                         ),
                     ),
                 ),
+                MessageRegexAnswer(
+                    r'\d+:\d+',
+                    AyatBySuraAyatNumAnswer(
+                        settings.DEBUG,
+                        TgAnswerToSender(
+                            HtmlParseAnswer(
+                                TgMessageAnswer(
+                                    empty_answer,
+                                ),
+                            ),
+                        ),
+                        TgAnswerToSender(
+                            TgAudioAnswer(
+                                empty_answer,
+                            ),
+                        ),
+                        AyatBySuraAyatNum(
+                            Sura(database),
+                        ),
+                    ),
+                ),
                 CallbackQueryRegexAnswer(
                     '(mark_readed|mark_not_readed)',
                     UserPrayerStatusChangeAnswer(
@@ -84,6 +113,37 @@ async def main():
                         ),
                         UserPrayerStatus(database),
                         UserPrayers(database),
+                    ),
+                ),
+                CallbackQueryRegexAnswer(
+                    'getAyat',
+                    AyatByIdAnswer(
+                        settings.DEBUG,
+                        AyatById(
+                            AyatRepository(database),
+                        ),
+                        TgAnswerToSender(
+                            HtmlParseAnswer(
+                                TgMessageAnswer(
+                                    empty_answer,
+                                ),
+                            ),
+                        ),
+                        TgAnswerToSender(
+                            TgAudioAnswer(
+                                empty_answer,
+                            ),
+                        ),
+                    ),
+                ),
+                CallbackQueryRegexAnswer(
+                    '(addToFavor|removeFromFavor)',
+                    FavoriteAyatAnswer(
+                        AyatById(
+                            AyatRepository(database),
+                        ),
+                        database,
+                        TgAnswerToSender(empty_answer),
                     ),
                 ),
             ),

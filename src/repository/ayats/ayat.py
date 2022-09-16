@@ -26,8 +26,6 @@ class Ayat(BaseModel):
     sura_link: str
     audio_telegram_id: str
     link_to_audio_file: str
-    left_neighbor: Optional[AyatShort]
-    right_neighbor: Optional[AyatShort]
 
     def __str__(self) -> str:
         """Отформатировать аят для сообщения.
@@ -44,20 +42,6 @@ class Ayat(BaseModel):
             content=self.content,
             transliteration=self.transliteration,
         )
-
-    def find_neighbors(self) -> AyatNeighbors:
-        """Возвращает соседние аяты.
-
-        :returns: AyatNeighbors
-        """
-        return AyatNeighbors(left=self.left_neighbor, right=self.right_neighbor)
-
-    def title(self) -> str:
-        """Заголовок.
-
-        :returns: str
-        """
-        return '{0}:{1}'.format(self.sura_num, self.ayat_num)
 
     def get_short(self) -> AyatShort:
         """Трансформировать в короткую версию.

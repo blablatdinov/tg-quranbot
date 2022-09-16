@@ -1,22 +1,59 @@
-from app_types.intable import Intable
-from repository.ayats.ayat import Ayat, AyatRepositoryInterface
-from services.ayats.ayat_search import AyatSearchInterface
+import httpx
+
+from db.connection import database
+from integrations.tg.tg_answers.answer_list import TgAnswerList
+from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
+from integrations.tg.tg_answers.text_answer import TgTextAnswer
+from integrations.tg.tg_answers.update import Update
+from repository.ayats.favorite_ayats import FavoriteAyatsRepository
+from repository.ayats.neighbor_ayats import NeighborAyats
+from services.answers.answer import FileAnswer, TelegramFileIdAnswer
+from services.ayats.search_by_sura_ayat_num import AyatSearchInterface, AyatNeighborAyatKeyboard, AyatFavoriteKeyboardButton
+from services.regular_expression import IntableRegularExpression
 
 
-# TODO: test
-class AyatById(AyatSearchInterface):
-    """Аят по идентификатору."""
+class AyatByIdAnswer(TgAnswerInterface):
 
-    _ayat_repository: AyatRepositoryInterface
-    _ayat_id: Intable
+    def __init__(
+        self,
+        debug_mode: bool,
+        ayat_search: AyatSearchInterface,
+        message_answer: TgAnswerInterface,
+        file_answer: TgAnswerInterface,
+    ):
+        self._debug_mode = debug_mode
+        self._ayat_search = ayat_search
+        self._message_answer = message_answer
+        self._file_answer = file_answer
 
-    def __init__(self, ayat_repository: AyatRepositoryInterface, ayat_id: Intable):
-        self._ayat_repository = ayat_repository
-        self._ayat_id = ayat_id
-
-    async def search(self) -> Ayat:
-        """Метод, осуществляющий поиск по идентификатору.
-
-        :returns: Ayat
-        """
-        return await self._ayat_repository.get(int(self._ayat_id))
+    async def build(self, update: Update) -> list[httpx.Request]:
+        result_ayat = await self._ayat_search.search(
+            int(IntableRegularExpression(update.callback_query.data)),
+        )
+        return await TgAnswerList(
+            TgAnswerMarkup(
+                TgTextAnswer(
+                    self._message_answer,
+                    str(result_ayat),
+                ),
+                AyatFavoriteKeyboardButton(
+                    result_ayat,
+                    AyatNeighborAyatKeyboard(
+                        NeighborAyats(database, result_ayat.id),
+                    ),
+                    FavoriteAyatsRepository(database),
+                ),
+            ),
+            FileAnswer(
+                self._debug_mode,
+                TelegramFileIdAnswer(
+                    self._file_answer,
+                    result_ayat.audio_telegram_id,
+                ),
+                TgTextAnswer(
+                    self._message_answer,
+                    result_ayat.link_to_audio_file,
+                ),
+            ),
+        ).build(update)
