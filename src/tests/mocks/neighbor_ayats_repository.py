@@ -1,5 +1,5 @@
-from repository.ayats.ayat import Ayat
-from repository.ayats.neighbor_ayats import AyatShort, NeighborAyatsRepositoryInterface
+from repository.ayats.schemas import Ayat, AyatShort
+from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
 
 
 class NeighborAyatsRepositoryMock(NeighborAyatsRepositoryInterface):

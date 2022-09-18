@@ -1,4 +1,6 @@
+import enum
 import json
+from contextlib import suppress
 from typing import Optional, Union
 
 import httpx
@@ -11,7 +13,8 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from integrations.tg.tg_answers.update import Update
-from repository.ayats.ayat import Ayat, AyatRepositoryInterface
+from repository.ayats.ayat import AyatRepositoryInterface
+from repository.ayats.schemas import Ayat
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface, FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats, NeighborAyatsRepositoryInterface
 from repository.ayats.sura import SuraInterface
@@ -88,25 +91,33 @@ class ValidatedSearchQuery(SearchQueryInterface):
         return ayat_num
 
 
+class AyatCallbackTemplate(str, enum.Enum):
+    get_ayat = 'getAyat({0})'
+    get_favorite_ayat = 'getFAyat({0})'
+
+
 class AyatNeighborAyatKeyboard(KeyboardInterface):
 
-    def __init__(self, ayats_neighbors: NeighborAyatsRepositoryInterface):
+    def __init__(self, ayats_neighbors: NeighborAyatsRepositoryInterface, callback_template: AyatCallbackTemplate):
         self._ayats_neighbors = ayats_neighbors
+        self._callback_template = callback_template
 
     async def generate(self, update: Update) -> str:
-        left = await self._ayats_neighbors.left_neighbor()
-        right = await self._ayats_neighbors.right_neighbor()
+        buttons = []
+        with suppress(AyatNotFoundError):
+            left = await self._ayats_neighbors.left_neighbor()
+            buttons.append({
+                'text': '<- {0}:{1}'.format(left.sura_num, left.ayat_num),
+                'callback_data': self._callback_template.format(left.id),
+            })
+        with suppress(AyatNotFoundError):
+            right = await self._ayats_neighbors.right_neighbor()
+            buttons.append({
+                'text': '{0}:{1} ->'.format(right.sura_num, right.ayat_num),
+                'callback_data': self._callback_template.format(right.id),
+            })
         return json.dumps({
-            'inline_keyboard': [[
-                {
-                    'text': '<- {0}:{1}'.format(left.sura_num, left.ayat_num),
-                    'callback_data': 'getAyat({0})'.format(left.id),
-                },
-                {
-                    'text': '{0}:{1} ->'.format(right.sura_num, right.ayat_num),
-                    'callback_data': 'getAyat({0})'.format(right.id),
-                },
-            ]],
+            'inline_keyboard': [buttons],
         })
 
 
@@ -160,7 +171,6 @@ class AyatBySuraAyatNum(AyatSearchInterface):
         )
         ayat_num = query.ayat()
         ayats = await self._sura.ayats(query.sura())
-        print(ayats)
         for ayat in ayats:
             result_ayat = self._search_in_sura_ayats(ayat, ayat_num)
             if result_ayat:
@@ -223,6 +233,7 @@ class AyatBySuraAyatNumAnswer(TgAnswerInterface):
                     result_ayat,
                     AyatNeighborAyatKeyboard(
                         NeighborAyats(database, result_ayat.id),
+                        AyatCallbackTemplate.get_ayat,
                     ),
                     FavoriteAyatsRepository(database),
                 )

@@ -4,7 +4,7 @@ from aiogram import Bot, types
 
 from app_types.intable import Intable
 from exceptions.content_exceptions import AyatNotFoundError, UserHasNotFavoriteAyatsError
-from repository.ayats.ayat import Ayat
+from repository.ayats.schemas import Ayat
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from services.answers.answer import DefaultKeyboard, FileAnswer, FileLinkAnswer, TelegramFileIdAnswer, TextAnswer
 from services.answers.answer_list import AnswersList

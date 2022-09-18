@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pytest
 
-from repository.ayats.ayat import Ayat
+from repository.ayats.schemas import Ayat
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 
 

@@ -1,7 +1,9 @@
 import json
+from pprint import pformat
 
 import httpx
 from pydantic import parse_obj_as
+from loguru import logger
 
 from app_types.intable import Intable
 from app_types.stringable import Stringable
@@ -128,4 +130,6 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
             if not parsed_result:
                 return []
             self._offset = parsed_result[-1]['update_id'] + 1
-            return parse_obj_as(list[Update], parsed_result)
+            update = parse_obj_as(list[Update], parsed_result)
+            logger.debug('\n{0}'.format(pformat([u.dict() for u in update])))
+            return update

@@ -12,7 +12,7 @@ from services.answers.answer import FileAnswer, TelegramFileIdAnswer
 from services.ayats.search_by_sura_ayat_num import (
     AyatFavoriteKeyboardButton,
     AyatNeighborAyatKeyboard,
-    AyatSearchInterface,
+    AyatSearchInterface, AyatCallbackTemplate,
 )
 from services.regular_expression import IntableRegularExpression
 
@@ -45,6 +45,7 @@ class AyatByIdAnswer(TgAnswerInterface):
                     result_ayat,
                     AyatNeighborAyatKeyboard(
                         NeighborAyats(database, result_ayat.id),
+                        AyatCallbackTemplate.get_ayat,
                     ),
                     FavoriteAyatsRepository(database),
                 ),

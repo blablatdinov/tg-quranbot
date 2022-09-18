@@ -1,22 +1,9 @@
 from databases import Database
-from pydantic import BaseModel, parse_obj_as
+from pydantic import parse_obj_as
 
 from exceptions.content_exceptions import AyatNotFoundError
-
-
-class AyatShort(BaseModel):
-    """Короткая модель аята."""
-
-    id: int
-    sura_num: int
-    ayat_num: str
-
-    def title(self) -> str:
-        """Заголовок.
-
-        :returns: str
-        """
-        return '{0}:{1}'.format(self.sura_num, self.ayat_num)
+from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
+from repository.ayats.schemas import AyatShort
 
 
 class NeighborAyatsRepositoryInterface(object):
@@ -37,40 +24,36 @@ class NeighborAyatsRepositoryInterface(object):
         raise NotImplementedError
 
 
-class FavoriteAyatsNeighborRepository(NeighborAyatsRepositoryInterface):
+class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
-    def __init__(self, connection: Database, chat_id: int) -> None:
-        self.connection = connection
-        self.chat_id = chat_id
+    def __init__(
+        self,
+        ayat_id: int,
+        chat_id: int,
+        favorite_ayats_repo: FavoriteAyatRepositoryInterface,
+    ) -> None:
+        self._chat_id = chat_id
+        self._ayat_id = ayat_id
+        self._favorite_ayats_repo = favorite_ayats_repo
 
-    async def get_ayat_neighbors(self, ayat_id: int) -> list[AyatShort]:
-        """Получить соседние аяты.
+    async def left_neighbor(self) -> AyatShort:
+        fayats = await self._favorite_ayats_repo.get_favorites(self._chat_id)
+        for ayat_index, ayat in enumerate(fayats):
+            if ayat.id == self._ayat_id and ayat_index == 0:
+                raise AyatNotFoundError
+            elif ayat.id == self._ayat_id:
+                return fayats[ayat_index - 1].get_short()
+        raise AyatNotFoundError
 
-        :param ayat_id: int
-        :returns: list[AyatShort]
-        """
-        query = """
-            SELECT
-                *
-            FROM (
-                SELECT
-                     ayats.ayat_id as id,
-                     ayats.ayat_number as ayat_num,
-                     ayats.sura_id as sura_num,
-                     lag(ayats.ayat_id) OVER (ORDER BY ayats.ayat_id ASC) AS prev,
-                     lead(ayats.ayat_id) OVER (ORDER BY ayats.ayat_id ASC) AS next
-                FROM (
-                    SELECT ayats.* FROM ayats
-                    INNER JOIN favorite_ayats fa on ayats.ayat_id = fa.ayat_id
-                    INNER JOIN users u on fa.user_id = u.chat_id
-                    WHERE u.chat_id = :chat_id
-                ) ayats
-            ) x
-            WHERE :ayat_id IN (id, prev, next)
-        """
-        rows = await self.connection.fetch_all(query, {'ayat_id': ayat_id, 'chat_id': self.chat_id})
-        return parse_obj_as(list[AyatShort], [row._mapping for row in rows])  # noqa: WPS437
+    async def right_neighbor(self) -> AyatShort:
+        fayats = await self._favorite_ayats_repo.get_favorites(self._chat_id)
+        for ayat_index, ayat in enumerate(fayats):
+            if ayat.id == self._ayat_id and ayat_index + 1 == len(fayats):
+                raise AyatNotFoundError
+            elif ayat.id == self._ayat_id:
+                return fayats[ayat_index + 1].get_short()
+        raise AyatNotFoundError
 
 
 class NeighborAyats(NeighborAyatsRepositoryInterface):

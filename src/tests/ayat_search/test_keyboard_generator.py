@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from aiogram import types
 
-from repository.ayats.ayat import Ayat
+from repository.ayats.schemas import Ayat
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from services.ayats.ayat_search import AyatPaginatorCallbackDataTemplate
 from services.ayats.ayat_search_interface import AyatSearchInterface

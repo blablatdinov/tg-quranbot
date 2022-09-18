@@ -2,7 +2,8 @@ from dataclasses import dataclass
 
 import pytest
 
-from repository.ayats.ayat import Ayat, AyatRepositoryInterface
+from repository.ayats.ayat import AyatRepositoryInterface
+from repository.ayats.schemas import Ayat
 from services.ayats.edit_markup import AyatFavoriteStatus
 from services.markup_edit.interface import MarkupEditInterface
 from tests.mocks.intable import IntableMock

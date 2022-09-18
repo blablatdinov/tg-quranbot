@@ -1,7 +1,7 @@
 from databases import Database
 from pydantic import parse_obj_as
 
-from repository.ayats.ayat import Ayat
+from repository.ayats.schemas import Ayat
 
 
 class SuraInterface(object):

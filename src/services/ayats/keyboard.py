@@ -1,7 +1,7 @@
 from aiogram import types
 
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
-from repository.ayats.neighbor_ayats import AyatShort
+from repository.ayats.schemas import AyatShort
 from services.answers.answer import KeyboardInterface
 from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate

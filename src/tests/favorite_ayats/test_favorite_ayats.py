@@ -1,8 +1,8 @@
 import pytest
 
 from exceptions.content_exceptions import UserHasNotFavoriteAyatsError
-from repository.ayats.ayat import Ayat
-from repository.ayats.neighbor_ayats import AyatShort, NeighborAyatsRepositoryInterface
+from repository.ayats.schemas import Ayat, AyatShort
+from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
 from services.ayats.ayat_search import FavoriteAyats
 from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.enums import AyatPaginatorCallbackDataTemplate

@@ -1,4 +1,5 @@
-from repository.ayats.ayat import Ayat, AyatRepositoryInterface
+from repository.ayats.ayat import AyatRepositoryInterface
+from repository.ayats.schemas import Ayat
 
 
 class AyatRepositoryMock(AyatRepositoryInterface):

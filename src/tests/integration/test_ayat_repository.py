@@ -1,6 +1,7 @@
 import pytest
 
-from repository.ayats.ayat import Ayat, AyatRepository
+from repository.ayats.ayat import AyatRepository
+from repository.ayats.schemas import Ayat
 from tests.factories.file_factory import factory
 
 
