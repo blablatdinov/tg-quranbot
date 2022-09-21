@@ -1,6 +1,7 @@
 import pytest
 
-from repository.ayats.neighbor_ayats import AyatShort, NeighborAyatsRepository
+from repository.ayats.neighbor_ayats import NeighborAyatsRepository
+from repository.ayats.schemas import AyatShort
 from tests.factories.file_factory import factory
 
 

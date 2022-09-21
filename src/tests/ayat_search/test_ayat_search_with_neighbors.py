@@ -1,4 +1,4 @@
-from repository.ayats.ayat import Ayat
+from repository.ayats.schemas import Ayat
 from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.search_by_sura_ayat_num import AyatSearchWithNeighbors
 from tests.mocks.neighbor_ayats_repository import NeighborAyatsRepositoryMock

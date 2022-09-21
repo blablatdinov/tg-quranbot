@@ -1,6 +1,6 @@
 import httpx
 
-from integrations.tg.tg_answers.audio_answer import AudioAnswer
+from integrations.tg.tg_answers.audio_answer import TgAudioAnswer
 from integrations.tg.tg_answers.chat_id_answer import TgChatIdAnswer
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
@@ -27,7 +27,7 @@ class PodcastAnswer(TgAnswerInterface):
             self._debug_mode,
             TelegramFileIdAnswer(
                 TgChatIdAnswer(
-                    AudioAnswer(
+                    TgAudioAnswer(
                         self._origin,
                     ),
                     update.message.chat.id,

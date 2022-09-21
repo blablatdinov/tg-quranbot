@@ -1,10 +1,10 @@
 from typing import NamedTuple, Optional
 
 from databases import Database
-from pydantic import BaseModel, parse_obj_as
+from pydantic import parse_obj_as
 
 from exceptions.base_exception import InternalBotError
-from repository.ayats.neighbor_ayats import AyatShort
+from repository.ayats.schemas import Ayat, AyatShort
 
 
 class AyatNeighbors(NamedTuple):
@@ -12,59 +12,6 @@ class AyatNeighbors(NamedTuple):
 
     left: Optional[AyatShort]
     right: Optional[AyatShort]
-
-
-class Ayat(BaseModel):
-    """Модель аята."""
-
-    id: int
-    sura_num: int
-    ayat_num: str
-    arab_text: str
-    content: str  # noqa: WPS110 wrong variable name
-    transliteration: str
-    sura_link: str
-    audio_telegram_id: str
-    link_to_audio_file: str
-    left_neighbor: Optional[AyatShort]
-    right_neighbor: Optional[AyatShort]
-
-    def __str__(self) -> str:
-        """Отформатировать аят для сообщения.
-
-        :returns: str
-        """
-        link = 'https://umma.ru{sura_link}'.format(sura_link=self.sura_link)
-        template = '<a href="{link}">{sura}:{ayat})</a>\n{arab_text}\n\n{content}\n\n<i>{transliteration}</i>'
-        return template.format(
-            link=link,
-            sura=self.sura_num,
-            ayat=self.ayat_num,
-            arab_text=self.arab_text,
-            content=self.content,
-            transliteration=self.transliteration,
-        )
-
-    def find_neighbors(self) -> AyatNeighbors:
-        """Возвращает соседние аяты.
-
-        :returns: AyatNeighbors
-        """
-        return AyatNeighbors(left=self.left_neighbor, right=self.right_neighbor)
-
-    def title(self) -> str:
-        """Заголовок.
-
-        :returns: str
-        """
-        return '{0}:{1}'.format(self.sura_num, self.ayat_num)
-
-    def get_short(self) -> AyatShort:
-        """Трансформировать в короткую версию.
-
-        :returns: AyatShort
-        """
-        return AyatShort(id=self.id, ayat_num=self.ayat_num, sura_num=self.sura_num)
 
 
 class AyatRepositoryInterface(object):

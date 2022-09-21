@@ -4,7 +4,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
 
 
-class AudioAnswer(TgAnswerInterface):
+class TgAudioAnswer(TgAnswerInterface):
     """Ответ с аудио файлом."""
 
     def __init__(self, answer: TgAnswerInterface):

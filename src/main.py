@@ -2,6 +2,7 @@ import asyncio
 from contextlib import suppress
 
 from db.connection import database
+from integrations.tg import tg_answers
 from integrations.tg.app import PollingApp
 from integrations.tg.polling_updates import (
     PollingUpdatesIterator,
@@ -11,17 +12,17 @@ from integrations.tg.polling_updates import (
     UpdatesWithOffsetURL,
 )
 from integrations.tg.sendable import SendableAnswer
-from integrations.tg.tg_answers.answer_fork import AnswerFork
-from integrations.tg.tg_answers.answer_to_sender import TgAnswerToSender
-from integrations.tg.tg_answers.callback_query_regex_answer import CallbackQueryRegexAnswer
-from integrations.tg.tg_answers.empty_answer import TgEmptyAnswer
-from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
-from integrations.tg.tg_answers.message_answer import TgMessageAnswer
-from integrations.tg.tg_answers.message_keyboard_edit_answer import TgKeyboardEditAnswer
-from integrations.tg.tg_answers.message_regex_answer import MessageRegexAnswer
+from repository.ayats.ayat import AyatRepository
+from repository.ayats.favorite_ayats import FavoriteAyatsRepository
+from repository.ayats.sura import Sura
 from repository.podcast import RandomPodcast
 from repository.prayer_time import NewUserPrayers, PrayersWithoutSunrise, SafeUserPrayers, UserPrayers
 from services.answers.answer import DefaultKeyboard
+from services.ayats.ayat_by_id import AyatByIdAnswer
+from services.ayats.favorite_ayats import FavoriteAyatAnswer, FavoriteAyatPage
+from services.ayats.favorites.change_favorite import ChangeFavoriteAyatAnswer
+from services.ayats.search.ayat_by_id import AyatById
+from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum, AyatBySuraAyatNumAnswer
 from services.podcast_answer import PodcastAnswer
 from services.prayers.prayer_status import UserPrayerStatus
 from services.prayers.prayer_times import PrayerForUserAnswer, UserPrayerStatusChangeAnswer
@@ -30,7 +31,8 @@ from settings import settings
 
 async def main():
     """Точка входа в приложение."""
-    empty_answer = TgEmptyAnswer(settings.API_TOKEN)
+    empty_answer = tg_answers.TgEmptyAnswer(settings.API_TOKEN)
+    message_answer = tg_answers.TgMessageAnswer(empty_answer)
     await database.connect()
     await PollingApp(
         PollingUpdatesIterator(
@@ -43,47 +45,119 @@ async def main():
             UpdatesTimeout(),
         ),
         SendableAnswer(
-            AnswerFork(
-                MessageRegexAnswer(
-                    'Подкасты',
-                    TgAnswerMarkup(
-                        PodcastAnswer(
-                            settings.DEBUG,
-                            empty_answer,
-                            RandomPodcast(database),
-                        ),
-                        DefaultKeyboard(),
-                    ),
-                ),
-                MessageRegexAnswer(
-                    'Время намаза',
-                    PrayerForUserAnswer(
-                        TgAnswerToSender(
-                            TgMessageAnswer(
+            tg_answers.TgMeasureAnswer(
+                tg_answers.TgAnswerFork(
+                    tg_answers.TgMessageRegexAnswer(
+                        'Подкасты',
+                        tg_answers.TgAnswerMarkup(
+                            PodcastAnswer(
+                                settings.DEBUG,
                                 empty_answer,
+                                RandomPodcast(database),
                             ),
+                            DefaultKeyboard(),
                         ),
-                        SafeUserPrayers(
-                            UserPrayers(database),
-                            NewUserPrayers(
-                                database,
-                                PrayersWithoutSunrise(
-                                    UserPrayers(database),
+                    ),
+                    tg_answers.TgMessageRegexAnswer(
+                        'Время намаза',
+                        PrayerForUserAnswer(
+                            tg_answers.TgAnswerToSender(message_answer),
+                            SafeUserPrayers(
+                                UserPrayers(database),
+                                NewUserPrayers(
+                                    database,
+                                    PrayersWithoutSunrise(
+                                        UserPrayers(database),
+                                    ),
                                 ),
                             ),
                         ),
                     ),
-                ),
-                CallbackQueryRegexAnswer(
-                    '(mark_readed|mark_not_readed)',
-                    UserPrayerStatusChangeAnswer(
-                        TgAnswerToSender(
-                            TgKeyboardEditAnswer(
-                                empty_answer,
+                    tg_answers.TgMessageRegexAnswer(
+                        'Избранное',
+                        FavoriteAyatAnswer(
+                            settings.DEBUG,
+                            tg_answers.TgAnswerToSender(
+                                tg_answers.TgHtmlParseAnswer(message_answer),
+                            ),
+                            tg_answers.TgAnswerToSender(
+                                tg_answers.TgAudioAnswer(
+                                    empty_answer,
+                                ),
+                            ),
+                            FavoriteAyatsRepository(database),
+                        ),
+                    ),
+                    tg_answers.TgMessageRegexAnswer(
+                        r'\d+:\d+',
+                        AyatBySuraAyatNumAnswer(
+                            settings.DEBUG,
+                            tg_answers.TgAnswerToSender(
+                                tg_answers.TgHtmlParseAnswer(message_answer),
+                            ),
+                            tg_answers.TgAnswerToSender(
+                                tg_answers.TgAudioAnswer(
+                                    empty_answer,
+                                ),
+                            ),
+                            AyatBySuraAyatNum(
+                                Sura(database),
                             ),
                         ),
-                        UserPrayerStatus(database),
-                        UserPrayers(database),
+                    ),
+                    tg_answers.TgCallbackQueryRegexAnswer(
+                        '(mark_readed|mark_not_readed)',
+                        UserPrayerStatusChangeAnswer(
+                            tg_answers.TgAnswerToSender(
+                                tg_answers.TgKeyboardEditAnswer(
+                                    empty_answer,
+                                ),
+                            ),
+                            UserPrayerStatus(database),
+                            UserPrayers(database),
+                        ),
+                    ),
+                    tg_answers.TgCallbackQueryRegexAnswer(
+                        'getAyat',
+                        AyatByIdAnswer(
+                            settings.DEBUG,
+                            AyatById(
+                                AyatRepository(database),
+                            ),
+                            tg_answers.TgAnswerToSender(
+                                tg_answers.TgHtmlParseAnswer(message_answer),
+                            ),
+                            tg_answers.TgAnswerToSender(
+                                tg_answers.TgAudioAnswer(
+                                    empty_answer,
+                                ),
+                            ),
+                        ),
+                    ),
+                    tg_answers.TgCallbackQueryRegexAnswer(
+                        'getFAyat',
+                        FavoriteAyatPage(
+                            settings.DEBUG,
+                            tg_answers.TgAnswerToSender(
+                                tg_answers.TgHtmlParseAnswer(message_answer),
+                            ),
+                            tg_answers.TgAnswerToSender(
+                                tg_answers.TgAudioAnswer(
+                                    empty_answer,
+                                ),
+                            ),
+                            FavoriteAyatsRepository(database),
+                        ),
+                    ),
+                    tg_answers.TgCallbackQueryRegexAnswer(
+                        '(addToFavor|removeFromFavor)',
+                        ChangeFavoriteAyatAnswer(
+                            AyatById(
+                                AyatRepository(database),
+                            ),
+                            database,
+                            tg_answers.TgAnswerToSender(empty_answer),
+                        ),
                     ),
                 ),
             ),

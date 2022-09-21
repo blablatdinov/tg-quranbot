@@ -3,7 +3,7 @@ import uuid
 
 import pytest
 
-from repository.ayats.ayat import Ayat
+from repository.ayats.schemas import Ayat
 from repository.users.user import User
 from settings import settings
 from tests.mocks.ayat_repository import AyatRepositoryMock

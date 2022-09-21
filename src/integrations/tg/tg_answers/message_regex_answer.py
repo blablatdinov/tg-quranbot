@@ -6,7 +6,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
 
 
-class MessageRegexAnswer(TgAnswerInterface):
+class TgMessageRegexAnswer(TgAnswerInterface):
     """Маршрутизация ответов по регулярному выражению."""
 
     def __init__(self, pattern: str, answer: TgAnswerInterface):

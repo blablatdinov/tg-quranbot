@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from repository.ayats.ayat import Ayat
+from repository.ayats.schemas import Ayat
 from repository.users.registration import RegistrationRepository
 from repository.users.user import User
 from services.register.register_already_exists_user import RegisterAlreadyExistsUser

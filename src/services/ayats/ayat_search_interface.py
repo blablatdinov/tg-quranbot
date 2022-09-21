@@ -1,4 +1,4 @@
-from repository.ayats.ayat import Ayat
+from repository.ayats.schemas import Ayat
 
 
 class AyatSearchInterface(object):

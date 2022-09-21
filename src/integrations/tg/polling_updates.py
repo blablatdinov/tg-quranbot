@@ -1,6 +1,8 @@
 import json
+from pprint import pformat
 
 import httpx
+from loguru import logger
 from pydantic import parse_obj_as
 
 from app_types.intable import Intable
@@ -117,10 +119,12 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
 
         :return: list[Update]
         """
-        url = self._updates_url.generate(self._offset)
         async with httpx.AsyncClient() as client:
             try:
-                resp = await client.get(url, timeout=int(self._updates_timeout))
+                resp = await client.get(
+                    self._updates_url.generate(self._offset),
+                    timeout=int(self._updates_timeout),
+                )
             except httpx.ReadTimeout:
                 return []
             resp_content = resp.text
@@ -128,4 +132,8 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
             if not parsed_result:
                 return []
             self._offset = parsed_result[-1]['update_id'] + 1
-            return parse_obj_as(list[Update], parsed_result)
+            updates = parse_obj_as(list[Update], parsed_result)
+            logger.debug('\n{0}'.format(
+                pformat([update.dict() for update in updates]),
+            ))
+            return updates

@@ -1,6 +1,7 @@
 import pytest
 
-from repository.ayats.neighbor_ayats import AyatShort, FavoriteAyatsNeighborRepository
+from repository.ayats.neighbor_ayats import FavoriteAyatsNeighborRepository
+from repository.ayats.schemas import AyatShort
 
 
 @pytest.fixture()
