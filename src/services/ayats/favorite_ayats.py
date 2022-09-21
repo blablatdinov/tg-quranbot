@@ -12,6 +12,7 @@ from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from integrations.tg.tg_answers.update import Update
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository, FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import NeighborAyats, FavoriteNeighborAyats
+from repository.ayats.schemas import Ayat
 from services.answers.answer import FileAnswer, TelegramFileIdAnswer
 from services.ayats.search_by_sura_ayat_num import (
     AyatFavoriteKeyboardButton,
@@ -77,6 +78,54 @@ class ChangeFavoriteAyatAnswer(TgAnswerInterface):
         ).build(update)
 
 
+class AyatAnswer(TgAnswerInterface):
+
+    def __init__(
+        self,
+        debug: bool,
+        answers: tuple[TgAnswerInterface, TgAnswerInterface],
+        ayat: Ayat,
+        favorite_ayats_repo: FavoriteAyatRepositoryInterface,
+    ):
+        self._debug_mode = debug
+        self._message_answer, self._file_answer = answers
+        self._ayat = ayat
+        self._favorite_ayats_repo = favorite_ayats_repo
+
+    async def build(self, update) -> list[httpx.Request]:
+        return await TgAnswerList(
+            TgAnswerMarkup(
+                TgTextAnswer(
+                    self._message_answer,
+                    str(self._ayat),
+                ),
+                AyatFavoriteKeyboardButton(
+                    self._ayat,
+                    AyatNeighborAyatKeyboard(
+                        FavoriteNeighborAyats(
+                            self._ayat.id,
+                            update.chat_id(),
+                            self._favorite_ayats_repo,
+                        ),
+                        AyatCallbackTemplate.get_favorite_ayat,
+                    ),
+                    FavoriteAyatsRepository(database),
+                )
+            ),
+            FileAnswer(
+                self._debug_mode,
+                TelegramFileIdAnswer(
+                    self._file_answer,
+                    self._ayat.audio_telegram_id,
+                ),
+                TgTextAnswer(
+                    self._message_answer,
+                    self._ayat.link_to_audio_file,
+                ),
+            ),
+        ).build(update)
+
+
 class FavoriteAyatAnswer(TgAnswerInterface):
 
     def __init__(
@@ -93,36 +142,11 @@ class FavoriteAyatAnswer(TgAnswerInterface):
 
     async def build(self, update: Update) -> list[httpx.Request]:
         result_ayat = (await self._favorite_ayats_repo.get_favorites(update.chat_id()))[0]
-        return await TgAnswerList(
-            TgAnswerMarkup(
-                TgTextAnswer(
-                    self._message_answer,
-                    str(result_ayat),
-                ),
-                AyatFavoriteKeyboardButton(
-                    result_ayat,
-                    AyatNeighborAyatKeyboard(
-                        FavoriteNeighborAyats(
-                            result_ayat.id,
-                            update.chat_id(),
-                            self._favorite_ayats_repo,
-                        ),
-                        AyatCallbackTemplate.get_favorite_ayat,
-                    ),
-                    FavoriteAyatsRepository(database),
-                )
-            ),
-            FileAnswer(
-                self._debug_mode,
-                TelegramFileIdAnswer(
-                    self._file_answer,
-                    result_ayat.audio_telegram_id,
-                ),
-                TgTextAnswer(
-                    self._message_answer,
-                    result_ayat.link_to_audio_file,
-                ),
-            ),
+        return await AyatAnswer(
+            self._debug_mode,
+            (self._message_answer, self._file_answer),
+            result_ayat,
+            self._favorite_ayats_repo,
         ).build(update)
 
 
@@ -144,34 +168,9 @@ class FavoriteAyatPage(TgAnswerInterface):
         result_ayat = await self._favorite_ayats_repo.get_favorite(
             int(IntableRegularExpression(update.callback_query.data)),
         )
-        return await TgAnswerList(
-            TgAnswerMarkup(
-                TgTextAnswer(
-                    self._message_answer,
-                    str(result_ayat),
-                ),
-                AyatFavoriteKeyboardButton(
-                    result_ayat,
-                    AyatNeighborAyatKeyboard(
-                        FavoriteNeighborAyats(
-                            result_ayat.id,
-                            update.chat_id(),
-                            self._favorite_ayats_repo,
-                        ),
-                        AyatCallbackTemplate.get_favorite_ayat,
-                    ),
-                    FavoriteAyatsRepository(database),
-                )
-            ),
-            FileAnswer(
-                self._debug_mode,
-                TelegramFileIdAnswer(
-                    self._file_answer,
-                    result_ayat.audio_telegram_id,
-                ),
-                TgTextAnswer(
-                    self._message_answer,
-                    result_ayat.link_to_audio_file,
-                ),
-            ),
+        return await AyatAnswer(
+            self._debug_mode,
+            (self._message_answer, self._file_answer),
+            result_ayat,
+            self._favorite_ayats_repo,
         ).build(update)
