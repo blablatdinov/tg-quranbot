@@ -20,5 +20,5 @@ class DebugAnswer(TgAnswerInterface):
             TgAnswerToSender(
                 TgMessageAnswer(self._origin),
             ),
-            'debug',
+            'DEBUG. Update <{0}>'.format(update.update_id),
         ).build(update)

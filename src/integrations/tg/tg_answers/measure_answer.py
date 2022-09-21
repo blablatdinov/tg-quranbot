@@ -20,6 +20,7 @@ class TgMeasureAnswer(TgAnswerInterface):
         :returns: list[httpx.Request]
         """
         start = time.time()
+        logger.info('Start process update <{0}>'.format(update.update_id))
         requests = await self._origin.build(update)
         logger.info('Update <{0}> process time: {1}'.format(update.update_id, time.time() - start))
         return requests

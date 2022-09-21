@@ -1,5 +1,6 @@
 import httpx
 
+from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
 
@@ -15,9 +16,10 @@ class TgAnswerFork(TgAnswerInterface):
 
         :param update: Update
         :return: list[httpx.Request]
+        :raises NotProcessableUpdateError: if not found matches
         """
         for answer in self._answers:
             origin_requests = await answer.build(update)
             if origin_requests:
                 return origin_requests
-        return []
+        raise NotProcessableUpdateError
