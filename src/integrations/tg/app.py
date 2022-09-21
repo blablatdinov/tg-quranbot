@@ -18,5 +18,5 @@ class PollingApp(object):
         logger.info('Start app on polling')
         async for update_list in self._updates:
             for update in update_list:
-                await self._sendable.send(update)
+                asyncio.ensure_future(self._sendable.send(update))
                 await asyncio.sleep(0.1)

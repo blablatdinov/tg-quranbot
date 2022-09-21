@@ -13,4 +13,5 @@ from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from integrations.tg.tg_answers.message_id_answer import TgMessageIdAnswer
 from integrations.tg.tg_answers.message_keyboard_edit_answer import TgKeyboardEditAnswer
 from integrations.tg.tg_answers.message_regex_answer import TgMessageRegexAnswer
+from integrations.tg.tg_answers.reply_source_answer import TgReplySourceAnswer
 from integrations.tg.tg_answers.text_answer import TgTextAnswer

@@ -23,3 +23,9 @@ class UserHasNotGeneratedPrayersError(BaseAppError):
     """У пользователя нет сгенерированных времен намаза на текущий день."""
 
     admin_message = ''
+
+
+class NotProcessableUpdateError(BaseAppError):
+    """Исключение, вызываемое если бот не знает как обработать запрос."""
+
+    admin_message = ''
