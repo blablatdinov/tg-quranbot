@@ -5,12 +5,19 @@ from repository.ayats.schemas import Ayat
 
 
 class SuraInterface(object):
+    """Интерфейс суры."""
 
     async def ayats(self, sura_num: int):
+        """Получить аяты суры.
+
+        :param sura_num: int
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
 
 class Sura(SuraInterface):
+    """Сура."""
 
     def __init__(self, connection: Database):
         self._connection = connection

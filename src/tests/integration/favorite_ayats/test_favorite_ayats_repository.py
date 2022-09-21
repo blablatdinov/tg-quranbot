@@ -1,5 +1,5 @@
-from repository.ayats.schemas import Ayat
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
+from repository.ayats.schemas import Ayat
 
 
 async def test_get_favorites(db_session, user_favorite_ayat, user: int):

@@ -1,23 +1,20 @@
 import httpx
 
 from db.connection import database
-from integrations.tg.tg_answers.answer_list import TgAnswerList
-from integrations.tg.tg_answers.interface import TgAnswerInterface
-from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
-from integrations.tg.tg_answers.text_answer import TgTextAnswer
+from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerMarkup, TgTextAnswer
 from integrations.tg.tg_answers.update import Update
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
 from services.answers.answer import FileAnswer, TelegramFileIdAnswer
-from services.ayats.search_by_sura_ayat_num import (
-    AyatFavoriteKeyboardButton,
-    AyatNeighborAyatKeyboard,
-    AyatSearchInterface, AyatCallbackTemplate,
-)
+from services.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
+from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
+from services.ayats.ayat_neighbor_keyboard import AyatNeighborAyatKeyboard
+from services.ayats.search_by_sura_ayat_num import AyatSearchInterface
 from services.regular_expression import IntableRegularExpression
 
 
 class AyatByIdAnswer(TgAnswerInterface):
+    """Ответ на аят по идентификатору."""
 
     def __init__(
         self,
@@ -32,6 +29,11 @@ class AyatByIdAnswer(TgAnswerInterface):
         self._file_answer = file_answer
 
     async def build(self, update: Update) -> list[httpx.Request]:
+        """Сборка ответа.
+
+        :param update: Update
+        :return: list[httpx.Request]
+        """
         result_ayat = await self._ayat_search.search(
             int(IntableRegularExpression(update.callback_query.data)),
         )

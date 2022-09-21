@@ -38,6 +38,11 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
         self._favorite_ayats_repo = favorite_ayats_repo
 
     async def left_neighbor(self) -> AyatShort:
+        """Получить левый аят.
+
+        :return: AyatShort
+        :raises AyatNotFoundError: if ayat not found
+        """
         fayats = await self._favorite_ayats_repo.get_favorites(self._chat_id)
         for ayat_index, ayat in enumerate(fayats):
             if ayat.id == self._ayat_id and ayat_index == 0:
@@ -47,6 +52,11 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
         raise AyatNotFoundError
 
     async def right_neighbor(self) -> AyatShort:
+        """Получить правый аят.
+
+        :return: AyatShort
+        :raises AyatNotFoundError: if ayat not found
+        """
         fayats = await self._favorite_ayats_repo.get_favorites(self._chat_id)
         for ayat_index, ayat in enumerate(fayats):
             if ayat.id == self._ayat_id and ayat_index + 1 == len(fayats):
@@ -64,6 +74,11 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
         self._ayat_id = ayat_id
 
     async def left_neighbor(self):
+        """Получить левый аят.
+
+        :return: AyatShort
+        :raises AyatNotFoundError: if ayat not found
+        """
         query = """
             SELECT
                 ayats.ayat_id as id,
@@ -75,9 +90,14 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
         row = await self._connection.fetch_one(query, {'ayat_id': self._ayat_id - 1})
         if not row:
             raise AyatNotFoundError
-        return parse_obj_as(AyatShort, row._mapping)
+        return parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
 
     async def right_neighbor(self):
+        """Получить правый аят.
+
+        :return: AyatShort
+        :raises AyatNotFoundError: if ayat not found
+        """
         query = """
             SELECT
                 ayats.ayat_id as id,
@@ -89,7 +109,7 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
         row = await self._connection.fetch_one(query, {'ayat_id': self._ayat_id + 1})
         if not row:
             raise AyatNotFoundError
-        return parse_obj_as(AyatShort, row._mapping)
+        return parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
 
 
 class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):

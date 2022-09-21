@@ -4,7 +4,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
 
 
-class AnswerFork(TgAnswerInterface):
+class TgAnswerFork(TgAnswerInterface):
     """Маршрутизация ответов."""
 
     def __init__(self, *answers: TgAnswerInterface):

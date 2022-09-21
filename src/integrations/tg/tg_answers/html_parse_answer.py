@@ -3,7 +3,8 @@ import httpx
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
-class HtmlParseAnswer(TgAnswerInterface):
+class TgHtmlParseAnswer(TgAnswerInterface):
+    """Ответ с HTML элементами."""
 
     def __init__(self, answer: TgAnswerInterface):
         self._origin = answer
@@ -23,4 +24,3 @@ class HtmlParseAnswer(TgAnswerInterface):
             )
             for request in await self._origin.build(update)
         ]
-

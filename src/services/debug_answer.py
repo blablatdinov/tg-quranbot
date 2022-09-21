@@ -5,9 +5,20 @@ from integrations.tg.tg_answers.text_answer import TgTextAnswer
 
 
 class DebugAnswer(TgAnswerInterface):
+    """Ответ для отладки."""
 
     def __init__(self, answer: TgAnswerInterface):
         self._origin = answer
 
     async def build(self, update):
-        return await TgTextAnswer(TgAnswerToSender(TgMessageAnswer(self._origin)), 'debug').build(update)
+        """Сборка ответа.
+
+        :param update: Update
+        :returns: list[httpx.Request]
+        """
+        return await TgTextAnswer(
+            TgAnswerToSender(
+                TgMessageAnswer(self._origin),
+            ),
+            'debug',
+        ).build(update)

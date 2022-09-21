@@ -72,6 +72,7 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
         """Метод для аятов в избранном для пользователя.
 
         :param ayat_id: int
+        :return: Ayat
         """
         query = """
             SELECT
@@ -92,7 +93,7 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
             WHERE a.ayat_id = :ayat_id
         """
         row = await self._connection.fetch_one(query, {'ayat_id': ayat_id})
-        return Ayat.parse_obj(row._mapping)
+        return Ayat.parse_obj(row._mapping)  # noqa: WPS437
 
     async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
         """Получить аят по номеру суры.
