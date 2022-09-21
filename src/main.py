@@ -19,10 +19,12 @@ from repository.podcast import RandomPodcast
 from repository.prayer_time import NewUserPrayers, PrayersWithoutSunrise, SafeUserPrayers, UserPrayers
 from services.answers.answer import DefaultKeyboard
 from services.ayats.ayat_by_id import AyatByIdAnswer
+from services.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 from services.ayats.favorite_ayats import FavoriteAyatAnswer, FavoriteAyatPage
 from services.ayats.favorites.change_favorite import ChangeFavoriteAyatAnswer
 from services.ayats.search.ayat_by_id import AyatById
 from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum, AyatBySuraAyatNumAnswer
+from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 from services.podcast_answer import PodcastAnswer
 from services.prayers.prayer_status import UserPrayerStatus
 from services.prayers.prayer_times import PrayerForUserAnswer, UserPrayerStatusChangeAnswer
@@ -90,19 +92,25 @@ async def main():
                     ),
                     tg_answers.TgMessageRegexAnswer(
                         r'\d+:\d+',
-                        AyatBySuraAyatNumAnswer(
-                            settings.DEBUG,
-                            tg_answers.TgAnswerToSender(
-                                tg_answers.TgHtmlParseAnswer(message_answer),
-                            ),
-                            tg_answers.TgAnswerToSender(
-                                tg_answers.TgAudioAnswer(
-                                    empty_answer,
+                        SuraNotFoundSafeAnswer(
+                            AyatNotFoundSafeAnswer(
+                                AyatBySuraAyatNumAnswer(
+                                    settings.DEBUG,
+                                    tg_answers.TgAnswerToSender(
+                                        tg_answers.TgHtmlParseAnswer(message_answer),
+                                    ),
+                                    tg_answers.TgAnswerToSender(
+                                        tg_answers.TgAudioAnswer(
+                                            empty_answer,
+                                        ),
+                                    ),
+                                    AyatBySuraAyatNum(
+                                        Sura(database),
+                                    ),
                                 ),
+                                tg_answers.TgAnswerToSender(message_answer),
                             ),
-                            AyatBySuraAyatNum(
-                                Sura(database),
-                            ),
+                            tg_answers.TgAnswerToSender(message_answer),
                         ),
                     ),
                     tg_answers.TgCallbackQueryRegexAnswer(
