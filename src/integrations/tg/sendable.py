@@ -10,7 +10,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 class SendableInterface(object):
     """Интерфейс объекта, отправляющего ответы в API."""
 
-    async def send(self, update):
+    async def send(self, update) -> list[str]:
         """Отправка.
 
         :param update: Update

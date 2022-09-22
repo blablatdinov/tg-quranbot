@@ -81,7 +81,7 @@ class FavoriteAyatPage(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         result_ayat = await self._favorite_ayats_repo.get_favorite(
-            int(IntableRegularExpression(update.callback_query.data)),
+            int(IntableRegularExpression(update.callback_query().data)),
         )
         answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(

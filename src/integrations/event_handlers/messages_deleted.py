@@ -21,11 +21,4 @@ class MessagesDeletedEvent(object):
 
         :param event: dict
         """
-        messages = await self._messages_repository.get_messages(event['message_ids'])
-        for message in messages:
-            try:
-                await bot.delete_message(message.chat_id, message.message_id)
-            except MessageToDeleteNotFound:
-                logger.warning('Message with id={0} chat_id={1} not found for deleting'.format(
-                    message.message_id, message.chat_id,
-                ))
+        raise NotImplementedError

@@ -32,7 +32,7 @@ class AyatBySuraAyatNum(AyatSearchInterface):
     def __init__(self, sura: SuraInterface):
         self._sura = sura
 
-    async def search(self, search_query: str) -> Ayat:
+    async def search(self, search_query: Union[str, int]) -> Ayat:
         """Поиск аята.
 
         :param search_query: str
@@ -40,6 +40,8 @@ class AyatBySuraAyatNum(AyatSearchInterface):
         :raises AyatNotFoundError: if ayat not found
         """
         logger.info('Search ayat by {0}'.format(search_query))
+        if isinstance(search_query, int):
+            raise TypeError
         query = ValidatedSearchQuery(
             SearchQuery(search_query),
         )
@@ -52,11 +54,11 @@ class AyatBySuraAyatNum(AyatSearchInterface):
         raise AyatNotFoundError
 
     def _search_in_sura_ayats(self, ayat: Ayat, ayat_num: str) -> tuple[Ayat, ...]:
-        result_ayat = ()
+        result_ayat: tuple[Ayat, ...] = ()
         if '-' in ayat.ayat_num:
-            result_ayat = (self._service_range_case(ayat, ayat_num),)
+            result_ayat = self._service_range_case(ayat, ayat_num)
         elif ',' in ayat.ayat_num:
-            result_ayat = (self._service_comma_case(ayat, ayat_num),)
+            result_ayat = self._service_comma_case(ayat, ayat_num)
         elif ayat.ayat_num == ayat_num:
             result_ayat = (ayat,)
         return result_ayat
@@ -95,7 +97,7 @@ class AyatBySuraAyatNumAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
-        result_ayat = await self._ayat_search.search(update.message.text)
+        result_ayat = await self._ayat_search.search(update.message().text)
         answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,

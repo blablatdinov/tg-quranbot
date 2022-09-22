@@ -1,8 +1,6 @@
+from integrations.tg.tg_answers import TgTextAnswer, TgChatIdAnswer, TgEmptyAnswer
 from repository.update_log import UpdatesLogRepositoryInterface
-from services.answers.answer import DefaultKeyboard, TextAnswer
-from services.answers.log_answer import LoggedAnswer
 from settings import settings
-from utlls import BotInstance
 
 
 class NotificationCreatedEvent(object):
@@ -19,12 +17,10 @@ class NotificationCreatedEvent(object):
         :param event: dict
         """
         notification_text = 'Уведомление: {0}'.format(event['text'])
-        await LoggedAnswer(
-            TextAnswer(
-                BotInstance.get(),
+        TgTextAnswer(
+            TgChatIdAnswer(
+                TgEmptyAnswer(settings.API_TOKEN),
                 settings.ADMIN_CHAT_IDS[0],
-                notification_text,
-                DefaultKeyboard(),
             ),
-            self._udpate_log_repository,
-        ).send()
+            notification_text,
+        )

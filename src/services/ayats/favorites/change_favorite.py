@@ -31,9 +31,9 @@ class ChangeFavoriteAyatAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
-        status = FavoriteAyatStatus(update.callback_query.data)
+        status = FavoriteAyatStatus(update.callback_query().data)
         result_ayat = await self._ayat_search.search(
-            int(IntableRegularExpression(update.callback_query.data)),
+            int(IntableRegularExpression(update.callback_query().data)),
         )
         if status.change_to():
             query = """
@@ -58,7 +58,7 @@ class ChangeFavoriteAyatAnswer(TgAnswerInterface):
                         result_ayat, FavoriteAyatsRepository(database),
                     ),
                 ),
-                update.callback_query.message.message_id,
+                update.message_id(),
             ),
             update.chat_id(),
         ).build(update)

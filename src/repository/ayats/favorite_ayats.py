@@ -2,6 +2,7 @@ from databases import Database
 from loguru import logger
 from pydantic import parse_obj_as
 
+from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.schemas import Ayat
 
 
@@ -93,6 +94,8 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
             WHERE a.ayat_id = :ayat_id
         """
         row = await self._connection.fetch_one(query, {'ayat_id': ayat_id})
+        if not row:
+            raise AyatNotFoundError
         return Ayat.parse_obj(row._mapping)  # noqa: WPS437
 
     async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:

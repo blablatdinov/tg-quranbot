@@ -20,7 +20,7 @@ class TgCallbackQueryRegexAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         try:
-            regex_result = re.search(self._pattern, update.callback_query.data)
+            regex_result = re.search(self._pattern, update.callback_query().data)
         except AttributeError:
             return []
         if not regex_result:

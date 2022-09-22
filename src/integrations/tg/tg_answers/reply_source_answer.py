@@ -17,6 +17,6 @@ class TgReplySourceAnswer(TgAnswerInterface):
         :returns: list[httpx.Request]
         """
         return [
-            httpx.Request(request.method, request.url.copy_add_param('reply_to_message_id', update.message.message_id))
+            httpx.Request(request.method, request.url.copy_add_param('reply_to_message_id', update.message_id()))
             for request in await self._origin.build(update)
         ]

@@ -20,7 +20,7 @@ class TgMessageRegexAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         try:
-            regex_result = re.search(self._pattern, update.message.text)
+            regex_result = re.search(self._pattern, update.message().text)
         except AttributeError:
             return []
         if not regex_result:
