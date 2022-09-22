@@ -9,14 +9,14 @@ class RandomPodcastInterface(object):
     https://www.yegor256.com/2014/12/01/orm-offensive-anti-pattern.html
     """
 
-    async def audio_telegram_id(self):
+    async def audio_telegram_id(self) -> str:
         """Получить идентификатор файла.
 
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
 
-    async def link_to_audio_file(self):
+    async def link_to_audio_file(self) -> str:
         """Получить ссылку на файл.
 
         :raises NotImplementedError: if not implemented

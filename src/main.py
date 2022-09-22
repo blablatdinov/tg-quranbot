@@ -32,7 +32,7 @@ from services.prayers.prayer_times import PrayerForUserAnswer, UserPrayerStatusC
 from settings import settings
 
 
-async def main():
+async def main() -> None:
     """Точка входа в приложение."""
     empty_answer = tg_answers.TgEmptyAnswer(settings.API_TOKEN)
     message_answer = tg_answers.TgMessageAnswer(empty_answer)

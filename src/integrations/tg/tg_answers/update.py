@@ -35,15 +35,31 @@ class Update(BaseModel):
     """Класс для парсинга данных обновления от телеграмма."""
 
     update_id: int
-    message: Optional[Message]
-    callback_query: Optional[CallbackQuery]
+    _message: Optional[Message] = Field(None, alias='message')
+    _callback_query: Optional[CallbackQuery] = Field(None, alias='callback_query')
 
-    def chat_id(self):
+    def message_id(self) -> int:
+        try:
+            return self.message().message_id
+        except AttributeError:
+            return self.callback_query().message.message_id
+
+    def chat_id(self) -> int:
         """Идентификатор чата.
 
         :return: int
         """
         try:
-            return self.message.chat.id
+            return self.message().chat.id
         except AttributeError:
-            return self.callback_query.from_.id
+            return self.callback_query().from_.id
+
+    def callback_query(self) -> CallbackQuery:
+        if self._callback_query:
+            return self._callback_query
+        raise AttributeError
+
+    def message(self) -> Message:
+        if self._message:
+            return self._message
+        raise AttributeError

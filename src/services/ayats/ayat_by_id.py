@@ -35,7 +35,7 @@ class AyatByIdAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         result_ayat = await self._ayat_search.search(
-            int(IntableRegularExpression(update.callback_query.data)),
+            int(IntableRegularExpression(update.callback_query().data)),
         )
         return await TgAnswerList(
             TgAnswerMarkup(

@@ -13,7 +13,7 @@ class PollingApp(object):
         self._sendable = sendable
         self._updates = updates
 
-    async def run(self):
+    async def run(self) -> None:
         """Запуск."""
         logger.info('Start app on polling')
         async for update_list in self._updates:

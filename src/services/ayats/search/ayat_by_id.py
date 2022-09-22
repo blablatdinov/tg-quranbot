@@ -17,4 +17,6 @@ class AyatById(AyatSearchInterface):
         :param search_query: str
         :return: list[httpx.Request]
         """
+        if isinstance(search_query, str):
+            raise TypeError
         return await self._ayat_repo.get(search_query)

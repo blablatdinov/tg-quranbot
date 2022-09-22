@@ -1,8 +1,5 @@
 from repository.mailing import MailingRepository
 from repository.users.users import UsersRepositoryInterface
-from services.answers.answer import DefaultKeyboard, TextAnswer
-from services.answers.spam_answer_list import SavedSpamAnswerList, SpamAnswerList
-from utlls import BotInstance
 
 
 class MailingCreatedEvent(object):
@@ -20,19 +17,4 @@ class MailingCreatedEvent(object):
 
         :param event: dict
         """
-        active_user_chat_ids = await self._users_repository.get_active_user_chat_ids()
-        await SavedSpamAnswerList(
-            SpamAnswerList(
-                self._users_repository,
-                *[
-                    TextAnswer(
-                        BotInstance.get(),
-                        active_user_chat_id,
-                        event['text'],
-                        DefaultKeyboard(),
-                    )
-                    for active_user_chat_id in active_user_chat_ids
-                ],
-            ),
-            self._mailing_repository,
-        ).send()
+        raise NotImplementedError

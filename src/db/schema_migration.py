@@ -11,7 +11,7 @@ class SuraMigration(object):
         self._old_db = old_db
         self._new_db = new_db
 
-    async def run(self):
+    async def run(self) -> None:
         await self._new_db.execute('DELETE FROM suras')
         rows = await self._old_db.fetch_all('SELECT id, link FROM content_sura')
         await self._new_db.execute_many('INSERT INTO suras (sura_id, link) VALUES (:sura_id, :link)', [
@@ -26,7 +26,7 @@ class FilesMigration(object):
         self._old_db = old_db
         self._new_db = new_db
 
-    async def run(self):
+    async def run(self) -> None:
         await self._new_db.execute('DELETE FROM files')
         rows = await self._old_db.fetch_all('SELECT uuid, tg_file_id, link_to_file FROM content_file')
         await self._new_db.execute_many('INSERT INTO files (file_id, telegram_file_id, link, created_at) VALUES (:file_id, :telegram_file_id, :link, :created_at)', [
@@ -41,7 +41,7 @@ class PodcastMigration(object):
         self._old_db = old_db
         self._new_db = new_db
 
-    async def run(self):
+    async def run(self) -> None:
         await self._new_db.execute('DELETE FROM ayats')
         rows = await self._old_db.fetch_all("""
             SELECT cf.uuid as file_id, article_link FROM content_podcast cp
@@ -64,11 +64,11 @@ class PodcastMigration(object):
 
 class AyatsMigration(object):
 
-    def __init__(self, old_db, new_db):
+    def __init__(self, old_db, new_db) -> None:
         self._old_db = old_db
         self._new_db = new_db
 
-    async def run(self):
+    async def run(self) -> None:
         await self._new_db.execute('DELETE FROM ayats')
         rows = await self._old_db.fetch_all("""
             SELECT ca.id, cm.day, sura_id, cf.uuid as audio_id, ayat, content, arab_text, trans FROM content_ayat ca
@@ -102,7 +102,7 @@ class AdminMessagesMigration(object):
         self._old_db = old_db
         self._new_db = new_db
 
-    async def run(self):
+    async def run(self) -> None:
         await self._new_db.execute('DELETE FROM admin_messages')
         rows = await self._old_db.fetch_all("""
             SELECT key, text FROM bot_init_adminmessage am
@@ -127,7 +127,7 @@ class CitiesMigration(object):
         self._old_db = old_db
         self._new_db = new_db
 
-    async def run(self):
+    async def run(self) -> None:
         await self._new_db.execute('DELETE FROM cities')
         rows = await self._old_db.fetch_all("""
             SELECT name, uuid FROM prayer_city
@@ -152,7 +152,7 @@ class PrayerDayMigration(object):
         self._old_db = old_db
         self._new_db = new_db
 
-    async def run(self):
+    async def run(self) -> None:
         rows = await self._old_db.fetch_all("""
             SELECT date FROM prayer_day
         """)
@@ -175,7 +175,7 @@ class PrayerMigration(object):
         self._old_db = old_db
         self._new_db = new_db
 
-    async def run(self):
+    async def run(self) -> None:
         rows = await self._old_db.fetch_all("""
             SELECT pp.id, pp.name, time, pc.uuid as city_id, pd.date FROM prayer_prayer pp 
             INNER JOIN prayer_city pc on pc.id = pp.city_id
@@ -204,7 +204,7 @@ class PrayerAtUserGroupMigration(object):
         self._old_db = old_db
         self._new_db = new_db
 
-    async def run(self):
+    async def run(self) -> None:
         rows = await self._old_db.fetch_all('SELECT uuid FROM prayer_prayeratusergroup')
         await self._new_db.execute_many("""
             INSERT INTO prayers_at_user_groups (prayers_at_user_group_id) VALUES (:id)
@@ -222,7 +222,7 @@ class PrayerAtUserMigration(object):
         self._old_db = old_db
         self._new_db = new_db
 
-    async def run(self):
+    async def run(self) -> None:
         rows = await self._old_db.fetch_all("""
             SELECT
                 pp.id,
@@ -258,7 +258,7 @@ class UsersMigration(object):
         self._old_db = old_db
         self._new_db = new_db
 
-    async def run(self):
+    async def run(self) -> None:
         rows = await self._old_db.fetch_all("""
             SELECT
                 bis.id,
@@ -294,7 +294,7 @@ class UsersMigration(object):
             )
 
 
-async def migration():
+async def migration() -> None:
     old_db = Database('postgres://almazilaletdinov@localhost:5432/qbot')
     await old_db.connect()
     new_db = Database('postgres://almazilaletdinov@localhost:5432/qbot_aiogram')

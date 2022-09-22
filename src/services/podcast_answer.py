@@ -30,7 +30,7 @@ class PodcastAnswer(TgAnswerInterface):
                     TgAudioAnswer(
                         self._origin,
                     ),
-                    update.message.chat.id,
+                    update._message.chat.id,
                 ),
                 await self._podcast.audio_telegram_id(),
             ),
@@ -39,7 +39,7 @@ class PodcastAnswer(TgAnswerInterface):
                     TgMessageAnswer(
                         self._origin,
                     ),
-                    update.message.chat.id,
+                    update._message.chat.id,
                 ),
                 await self._podcast.link_to_audio_file(),
             ),
