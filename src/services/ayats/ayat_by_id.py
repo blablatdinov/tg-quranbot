@@ -8,7 +8,7 @@ from repository.ayats.neighbor_ayats import NeighborAyats
 from services.answers.answer import FileAnswer, TelegramFileIdAnswer
 from services.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
 from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
-from services.ayats.ayat_neighbor_keyboard import AyatNeighborAyatKeyboard
+from services.ayats.ayat_neighbor_keyboard import NeighborAyatKeyboard
 from services.ayats.search_by_sura_ayat_num import AyatSearchInterface
 from services.regular_expression import IntableRegularExpression
 
@@ -45,7 +45,7 @@ class AyatByIdAnswer(TgAnswerInterface):
                 ),
                 AyatFavoriteKeyboardButton(
                     result_ayat,
-                    AyatNeighborAyatKeyboard(
+                    NeighborAyatKeyboard(
                         NeighborAyats(database, result_ayat.id),
                         AyatCallbackTemplate.get_ayat,
                     ),

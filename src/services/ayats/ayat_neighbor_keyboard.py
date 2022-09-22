@@ -8,7 +8,7 @@ from services.answers.answer import KeyboardInterface
 from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 
 
-class AyatNeighborAyatKeyboard(KeyboardInterface):
+class NeighborAyatKeyboard(KeyboardInterface):
     """Клавиатура с соседними аятами."""
 
     def __init__(self, ayats_neighbors: NeighborAyatsRepositoryInterface, callback_template: AyatCallbackTemplate):
