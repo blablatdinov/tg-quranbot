@@ -7,8 +7,6 @@ from exceptions.base_exception import BaseAppError
 class IntableRegularExpression(Intable):
     """Регулярное выражение, которое можно привести к числу."""
 
-    _text_for_searching: str
-
     def __init__(self, text_for_searching: str):
         self._text_for_searching = text_for_searching
 
