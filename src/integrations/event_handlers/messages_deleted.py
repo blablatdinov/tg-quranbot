@@ -1,6 +1,3 @@
-from aiogram.utils.exceptions import MessageToDeleteNotFound
-from loguru import logger
-
 from repository.update_log import UpdatesLogRepositoryInterface
 from utlls import get_bot_instance
 
@@ -20,5 +17,6 @@ class MessagesDeletedEvent(object):
         """Обработка события.
 
         :param event: dict
+        :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError

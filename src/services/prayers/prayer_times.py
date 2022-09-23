@@ -29,7 +29,7 @@ class PrayerForUserAnswer(TgAnswerInterface):
         :return: list[types.Message]
         """
         prayers = await self._user_prayers.prayer_times(
-            update._message.chat.id, datetime.date.today(),
+            update.chat_id(), datetime.date.today(),
         )
         time_format = '%H:%M'
         template = '\n'.join([
@@ -78,11 +78,11 @@ class UserPrayerStatusChangeAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
-        await self._prayer_status.change(PrayerStatus(update._callback_query.data))
+        await self._prayer_status.change(PrayerStatus(update.callback_query().data))
         return await TgAnswerMarkup(
             TgMessageIdAnswer(
                 self._origin,
-                update._callback_query.message.message_id,
+                update.message_id(),
             ),
             UserPrayersKeyboard(PrayersWithoutSunrise(self._user_prayers), datetime.date.today()),
         ).build(update)
