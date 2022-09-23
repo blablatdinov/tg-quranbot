@@ -38,6 +38,7 @@ class AyatBySuraAyatNum(AyatSearchInterface):
         :param search_query: str
         :return: list[httpx.Request]
         :raises AyatNotFoundError: if ayat not found
+        :raises TypeError: if search_query type is not available
         """
         logger.info('Search ayat by {0}'.format(search_query))
         if isinstance(search_query, int):

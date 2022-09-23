@@ -39,6 +39,10 @@ class Update(BaseModel):
     _callback_query: Optional[CallbackQuery] = Field(None, alias='callback_query')
 
     def message_id(self) -> int:
+        """Идентификатор сообщения.
+
+        :return: int
+        """
         try:
             return self.message().message_id
         except AttributeError:
@@ -55,11 +59,21 @@ class Update(BaseModel):
             return self.callback_query().from_.id
 
     def callback_query(self) -> CallbackQuery:
+        """Данные с инлайн кнопки.
+
+        :return: CallbackQuery
+        :raises AttributeError: if callback query not founc
+        """
         if self._callback_query:
             return self._callback_query
         raise AttributeError
 
     def message(self) -> Message:
+        """Сообщение.
+
+        :return: Message
+        :raises AttributeError: if message not founc
+        """
         if self._message:
             return self._message
         raise AttributeError

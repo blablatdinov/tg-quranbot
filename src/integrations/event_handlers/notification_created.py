@@ -1,4 +1,4 @@
-from integrations.tg.tg_answers import TgTextAnswer, TgChatIdAnswer, TgEmptyAnswer
+from integrations.tg.tg_answers import TgChatIdAnswer, TgEmptyAnswer, TgTextAnswer
 from repository.update_log import UpdatesLogRepositoryInterface
 from settings import settings
 
