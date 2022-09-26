@@ -1,4 +1,5 @@
 from typing import Optional
+from contextlib import suppress
 
 from pydantic import BaseModel, Field
 
@@ -31,35 +32,55 @@ class CallbackQuery(BaseModel):
     data: str  # noqa: WPS110
 
 
+class InlineQuery(BaseModel):
+
+    id: str
+    from_: CallbackQueryFrom = Field(..., alias='from')
+
+
 class Update(BaseModel):
     """Класс для парсинга данных обновления от телеграмма."""
 
     update_id: int
-    _message: Optional[Message] = Field(None, alias='message')
-    _callback_query: Optional[CallbackQuery] = Field(None, alias='callback_query')
+    message_: Optional[Message] = Field(None, alias='message')
+    callback_query_: Optional[CallbackQuery] = Field(None, alias='callback_query')
+    inline_query_: Optional[InlineQuery] = Field(None, alias='inline_query')
 
     def message_id(self) -> int:
-        try:
+        with suppress(AttributeError):
             return self.message().message_id
-        except AttributeError:
+        with suppress(AttributeError):
             return self.callback_query().message.message_id
+        with suppress(AttributeError):
+            return self.inline_query().message.message_id
+        raise AttributeError
 
     def chat_id(self) -> int:
         """Идентификатор чата.
 
         :return: int
         """
-        try:
+        with suppress(AttributeError):
             return self.message().chat.id
-        except AttributeError:
+        with suppress(AttributeError):
             return self.callback_query().from_.id
+        with suppress(AttributeError):
+            return self.inline_query().from_.id
+        raise AttributeError
+
+    def inline_query(self) -> CallbackQuery:
+        if self.inline_query_:
+            return self.inline_query_
+        raise AttributeError
 
     def callback_query(self) -> CallbackQuery:
-        if self._callback_query:
-            return self._callback_query
+        if self.callback_query_:
+            return self.callback_query_
         raise AttributeError
 
     def message(self) -> Message:
-        if self._message:
-            return self._message
+        if self.message_:
+            return self.message_
         raise AttributeError
+
+

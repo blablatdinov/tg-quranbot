@@ -1,3 +1,5 @@
+import httpx
+
 from integrations.tg.tg_answers.answer_to_sender import TgAnswerToSender
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
@@ -10,7 +12,7 @@ class DebugAnswer(TgAnswerInterface):
     def __init__(self, answer: TgAnswerInterface):
         self._origin = answer
 
-    async def build(self, update):
+    async def build(self, update) -> list[httpx.Request]:
         """Сборка ответа.
 
         :param update: Update

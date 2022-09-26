@@ -1,14 +1,20 @@
 import datetime
 
 import httpx
+from aioredis import Redis
 
+from exceptions.content_exceptions import UserHasNotCityIdError
+from integrations.tg.tg_answers import TgAnswerToSender
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.message_id_answer import TgMessageIdAnswer
 from integrations.tg.tg_answers.text_answer import TgTextAnswer
+from integrations.tg.tg_answers.update import Update
 from repository.prayer_time import PrayersWithoutSunrise, UserPrayersInterface
 from services.prayers.prayer_status import PrayerStatus, UserPrayerStatusInterface
+from services.switch_inline_query_answer import SwitchInlineQueryKeyboard
 from services.user_prayer_keyboard import UserPrayersKeyboard
+from services.user_state import UserState, UserStep, UserStateInterface
 
 
 class PrayerForUserAnswer(TgAnswerInterface):
@@ -29,7 +35,7 @@ class PrayerForUserAnswer(TgAnswerInterface):
         :return: list[types.Message]
         """
         prayers = await self._user_prayers.prayer_times(
-            update._message.chat.id, datetime.date.today(),
+            update.chat_id(), datetime.date.today(),
         )
         time_format = '%H:%M'
         template = '\n'.join([
@@ -57,6 +63,34 @@ class PrayerForUserAnswer(TgAnswerInterface):
             ),
             UserPrayersKeyboard(PrayersWithoutSunrise(self._user_prayers), datetime.date.today()),
         ).build(update)
+
+
+class InviteSetCityAnswer(TgAnswerInterface):
+
+    def __init__(
+        self,
+        prayer_time_answer: TgAnswerInterface,
+        message_answer: TgAnswerInterface,
+        redis: Redis,
+    ):
+        self._origin = prayer_time_answer
+        self._message_answer = message_answer
+        self._redis = redis
+
+    async def build(self, update: Update) -> list[httpx.Request]:
+        try:
+            return await self._origin.build(update)
+        except UserHasNotCityIdError:
+            await UserState(self._redis, update.chat_id()).change_step(UserStep.city_search)
+            return await TgAnswerMarkup(
+                TgAnswerToSender(
+                    TgTextAnswer(
+                        self._message_answer,
+                        'Вы не указали город, отправьте местоположение или воспользуйтесь поиском',
+                    )
+                ),
+                SwitchInlineQueryKeyboard(),
+            ).build(update)
 
 
 class UserPrayerStatusChangeAnswer(TgAnswerInterface):
