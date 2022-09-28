@@ -3,7 +3,7 @@ from aioredis import Redis
 
 from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
-from services.user_state import UserState, LoggedUserState
+from services.user_state import LoggedUserState, UserState
 
 
 class StepAnswer(TgAnswerInterface):

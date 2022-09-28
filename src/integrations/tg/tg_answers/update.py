@@ -1,5 +1,5 @@
-from typing import Optional
 from contextlib import suppress
+from typing import Optional
 
 from pydantic import BaseModel, Field
 

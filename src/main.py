@@ -19,7 +19,13 @@ from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.sura import Sura
 from repository.city import CityRepository
 from repository.podcast import RandomPodcast
-from repository.prayer_time import NewUserPrayers, PrayersWithoutSunrise, SafeUserPrayers, UserPrayers, SafeNotFoundPrayers
+from repository.prayer_time import (
+    NewUserPrayers,
+    PrayersWithoutSunrise,
+    SafeNotFoundPrayers,
+    SafeUserPrayers,
+    UserPrayers,
+)
 from repository.users.user import UserRepository
 from services.answers.answer import DefaultKeyboard
 from services.answers.safe_fork import SafeFork
@@ -36,7 +42,7 @@ from services.city.search import SearchCityByName
 from services.debug_answer import DebugAnswer
 from services.podcast_answer import PodcastAnswer
 from services.prayers.prayer_status import UserPrayerStatus
-from services.prayers.prayer_times import PrayerForUserAnswer, UserPrayerStatusChangeAnswer, InviteSetCityAnswer
+from services.prayers.prayer_times import InviteSetCityAnswer, PrayerForUserAnswer, UserPrayerStatusChangeAnswer
 from services.state_answer import StepAnswer
 from services.switch_inline_query_answer import SwitchInlineQueryKeyboard
 from services.user_state import UserStep

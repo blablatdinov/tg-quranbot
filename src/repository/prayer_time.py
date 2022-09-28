@@ -6,7 +6,7 @@ from databases import Database
 from loguru import logger
 from pydantic import BaseModel
 
-from exceptions.content_exceptions import UserPrayersNotFoundError, PrayersNotFoundError, UserHasNotCityIdError
+from exceptions.content_exceptions import PrayersNotFoundError, UserHasNotCityIdError, UserPrayersNotFoundError
 from exceptions.internal_exceptions import UserHasNotGeneratedPrayersError
 
 
