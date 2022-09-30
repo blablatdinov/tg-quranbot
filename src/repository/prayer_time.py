@@ -8,7 +8,7 @@ from loguru import logger
 from exceptions.content_exceptions import UserHasNotCityIdError
 from exceptions.internal_exceptions import UserHasNotGeneratedPrayersError
 from exceptions.prayer_exceptions import PrayersNotFoundError, UserPrayersNotFoundError
-from repository.user_prayers_interface import UserPrayersInterface, UserPrayer
+from repository.user_prayers_interface import UserPrayer, UserPrayersInterface
 
 
 class PrayerNames(str, enum.Enum):  # noqa: WPS600

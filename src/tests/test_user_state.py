@@ -1,14 +1,14 @@
 import asyncio
 
-from aioredis import Redis
 import pytest
+from aioredis import Redis
 
 from services.user_state import UserState, UserStep
 
 
 @pytest.fixture()
 def mock_redis(mocker):
-    future = asyncio.Future()
+    future: asyncio.Future = asyncio.Future()
     future.set_result(None)
     mocker.patch('aioredis.Redis.get', return_value=future)
 
