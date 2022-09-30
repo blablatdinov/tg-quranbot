@@ -8,25 +8,39 @@ from repository.city import City
 
 
 class SearchCityQueryInterface(object):
+    """Интерфейс поискового запроса городов."""
 
     def city_name(self):
+        """Имя города.
+
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
     def latitude(self):
+        """Ширина города.
+
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
     def longitude(self):
+        """Долгота города.
+
+        :raises NotImplementedError: if not implemented
+        """
         raise NotImplementedError
 
 
 class SearchCityQuery(SearchCityQueryInterface):
+    """Запрос для поиска города."""
 
     def __init__(
         self,
         *,
-        string_query: tuple[str, ...] = tuple(),
-        latitude: tuple[float, ...] = tuple(),
-        longitude: tuple[float, ...] = tuple(),
+        string_query: tuple[str, ...] = (),
+        latitude: tuple[float, ...] = (),
+        longitude: tuple[float, ...] = (),
     ):
         self._string_query = string_query
         self._latitude = latitude
@@ -34,23 +48,49 @@ class SearchCityQuery(SearchCityQueryInterface):
 
     @classmethod
     def from_string_cs(cls, query: str):
+        """Конструктор для строкового запроса.
+
+        :param query: str
+        :return: SearchCityQuery
+        """
         return SearchCityQuery(string_query=(query,))
 
     @classmethod
     def from_coordinates_cs(cls, latitude: float, longitude: float):
+        """Конструктор для запроса по координатам.
+
+        :param latitude: float
+        :param longitude: float
+        :return: SearchCityQuery
+        """
         return SearchCityQuery(latitude=(latitude,), longitude=(longitude,))
 
     def city_name(self) -> str:
+        """Имя города.
+
+        :return: str
+        :raises AttributeError: Если запрос собран по координатам
+        """
         if not self._string_query:
             raise AttributeError
         return self._string_query[0]
 
     def latitude(self):
+        """Широта города.
+
+        :return: float
+        :raises AttributeError: Если запрос собран по имени города
+        """
         if not self._latitude:
             raise AttributeError
         return self._latitude[0]
 
     def longitude(self):
+        """Долгота города.
+
+        :return: float
+        :raises AttributeError: Если запрос собран по имени города
+        """
         if not self._longitude:
             raise AttributeError
         return self._longitude[0]
@@ -62,6 +102,7 @@ class CitySearchInterface(object):
     async def search(self, query: SearchCityQueryInterface) -> list[City]:
         """Осуществить поиск.
 
+        :param query: SearchCityQueryInterface
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -76,6 +117,7 @@ class SearchCityByName(CitySearchInterface):
     async def search(self, query: SearchCityQueryInterface) -> list[City]:
         """Осуществить поиск.
 
+        :param query: SearchCityQueryInterface
         :returns: list[City]
         """
         search_query = '%{0}%'.format(query.city_name())
@@ -98,6 +140,7 @@ class SearchCityByCoordinates(CitySearchInterface):
     async def search(self, query: SearchCityQueryInterface) -> list[City]:
         """Осуществить поиск.
 
+        :param query: SearchCityQueryInterface
         :returns: list[City]
         :raises CityNotSupportedError: если город не найден в БД
         """

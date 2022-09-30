@@ -5,6 +5,7 @@ from integrations.tg.tg_answers.update import Update
 
 
 class TgLocationAnswer(TgAnswerInterface):
+    """Ответ на присланную геопозицию."""
 
     def __init__(self, answer: TgAnswerInterface):
         self._answer = answer

@@ -6,8 +6,10 @@ from databases import Database
 from loguru import logger
 from pydantic import BaseModel
 
-from exceptions.content_exceptions import PrayersNotFoundError, UserHasNotCityIdError, UserPrayersNotFoundError
+from exceptions.content_exceptions import UserHasNotCityIdError
 from exceptions.internal_exceptions import UserHasNotGeneratedPrayersError
+from exceptions.prayer_exceptions import PrayersNotFoundError, UserPrayersNotFoundError
+from repository.user_prayers_interface import UserPrayersInterface
 
 
 class PrayerNames(str, enum.Enum):  # noqa: WPS600
@@ -33,19 +35,6 @@ class UserPrayer(BaseModel):
     day: datetime.date
     time: datetime.time
     is_readed: bool
-
-
-class UserPrayersInterface(object):
-    """Интерфейс времени намаза пользователя."""
-
-    async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
-        """Времена намаза.
-
-        :param chat_id: int
-        :param date: datetime.date
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
 
 
 class UserPrayers(UserPrayersInterface):
@@ -120,8 +109,8 @@ class SafeNotFoundPrayers(UserPrayersInterface):
         :param chat_id: int
         :param date: datetime.date
         :return: list[UserPrayer]
-        :raise PrayersNotFoundError: у пользователя нет сгенерированных времен намаза
-        :raise PrayersNotFoundError: у пользователя нет города
+        :raises PrayersNotFoundError: у пользователя нет сгенерированных времен намаза
+        :raises UserHasNotCityIdError: у пользователя нет города
         """
         try:
             return await self._origin.prayer_times(chat_id, date)
@@ -176,6 +165,7 @@ class NewUserPrayers(UserPrayersInterface):
         :param chat_id: int
         :param date: datetime.date
         :returns: list[UserPrayer]
+        :raises UserPrayersNotFoundError: if user hasn't generated prayer times
         """
         query = """
             SELECT p.prayer_id

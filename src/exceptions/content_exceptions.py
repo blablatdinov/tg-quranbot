@@ -35,13 +35,3 @@ class UserHasNotFavoriteAyatsError(BaseAppError):
     """Исключение, вызываемое при попытке получить избранные ааяты, пользователем, у которого их нет."""
 
     user_message = 'Вы еще не добавляли аятов в избранное'
-
-
-class UserPrayersNotFoundError(BaseAppError):
-
-    admin_message = ''
-
-
-class PrayersNotFoundError(BaseAppError):
-
-    admin_message = ''

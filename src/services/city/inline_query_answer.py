@@ -10,16 +10,23 @@ from services.debug_answer import DebugAnswer
 
 
 class InlineQueryAnswer(TgAnswerInterface):
+    """Ответ на инлайн поиск."""
 
     def __init__(self, answer: TgAnswerInterface, cities: CitySearchInterface):
         self._origin = answer
         self._cities = cities
 
     async def build(self, update: Update) -> list[httpx.Request]:
+        """Собрать ответ.
+
+        :param update: Update
+        :return: list[httpx.Request]
+        :raises NotProcessableUpdateError: if update hasn't inline query
+        """
         try:
             update.inline_query()
-        except AttributeError:
-            raise NotProcessableUpdateError
+        except AttributeError as err:
+            raise NotProcessableUpdateError from err
         origin_requests = await DebugAnswer(self._origin).build(update)
         cities = await self._cities.search(
             SearchCityQuery.from_string_cs(
@@ -36,17 +43,15 @@ class InlineQueryAnswer(TgAnswerInterface):
                     .copy_add_param('inline_query_id', update.inline_query().id)
                     .copy_add_param(
                         'results',
-                        json.dumps(
-                            [
-                                {
-                                    'id': str(idx),
-                                    'type': 'article',
-                                    'title': city.name,
-                                    'input_message_content': {'message_text': city.name}
-                                }
-                                for idx, city in enumerate(cities)
-                            ]
-                        )
+                        json.dumps([
+                            {
+                                'id': str(idx),
+                                'type': 'article',
+                                'title': city.name,
+                                'input_message_content': {'message_text': city.name},
+                            }
+                            for idx, city in enumerate(cities)
+                        ]),
                     )
                 ),
             ),

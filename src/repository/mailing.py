@@ -21,6 +21,6 @@ class MailingRepository(object):
         """Создать рассылку.
 
         :param messages: list[types.Message]
-        :return: int
+        :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError

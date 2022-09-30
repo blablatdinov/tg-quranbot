@@ -16,5 +16,6 @@ class MailingCreatedEvent(object):
         """Обработка события.
 
         :param event: dict
+        :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError

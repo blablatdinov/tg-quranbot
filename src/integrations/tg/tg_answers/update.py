@@ -11,6 +11,7 @@ class Chat(BaseModel):
 
 
 class Location(BaseModel):
+    """Координаты."""
 
     latitude: float
     longitude: float
@@ -25,11 +26,21 @@ class Message(BaseModel):
     location_: Optional[Location] = Field(None, alias='location')
 
     def location(self):
+        """Местоположение.
+
+        :return: Location
+        :raises AttributeError: if update hasn't location
+        """
         if not self.location_:
             raise AttributeError
         return self.location_
 
     def text(self):
+        """Текст сообщения.
+
+        :return: str
+        :raises AttributeError: if update hasn't location
+        """
         if not self.text_:
             raise AttributeError
         return self.text_
@@ -50,12 +61,17 @@ class CallbackQuery(BaseModel):
 
 
 class InlineQuery(BaseModel):
+    """Инлайн запрос."""
 
     id: str
     from_: CallbackQueryFrom = Field(..., alias='from')
     query_: str = Field(..., alias='query')
 
     def query(self) -> str:
+        """Запрос.
+
+        :return: str
+        """
         return self.query_
 
 
@@ -68,6 +84,11 @@ class Update(BaseModel):
     inline_query_: Optional[InlineQuery] = Field(None, alias='inline_query')
 
     def message_id(self) -> int:
+        """Идентификатор сообщения.
+
+        :return: int
+        :raises AttributeError: if update hasn't message_id
+        """
         with suppress(AttributeError):
             return self.message().message_id
         with suppress(AttributeError):
@@ -78,6 +99,7 @@ class Update(BaseModel):
         """Идентификатор чата.
 
         :return: int
+        :raises AttributeError: if update hasn't chat_id
         """
         with suppress(AttributeError):
             return self.message().chat.id
@@ -88,18 +110,31 @@ class Update(BaseModel):
         raise AttributeError
 
     def inline_query(self) -> InlineQuery:
+        """Инлайн запрос.
+
+        :return: InlineQuery
+        :raises AttributeError: if update hasn't inline query
+        """
         if self.inline_query_:
             return self.inline_query_
         raise AttributeError
 
     def callback_query(self) -> CallbackQuery:
+        """Нажатие кнопки.
+
+        :return: CallbackQuery
+        :raises AttributeError: if update hasn't callback query
+        """
         if self.callback_query_:
             return self.callback_query_
         raise AttributeError
 
     def message(self) -> Message:
+        """Сообщение.
+
+        :return: Message
+        :raises AttributeError: if update hasn't message
+        """
         if self.message_:
             return self.message_
         raise AttributeError
-
-

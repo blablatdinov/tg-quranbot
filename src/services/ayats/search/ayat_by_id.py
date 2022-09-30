@@ -16,6 +16,7 @@ class AyatById(AyatSearchInterface):
 
         :param search_query: str
         :return: list[httpx.Request]
+        :raises TypeError: if search has str type
         """
         if isinstance(search_query, str):
             raise TypeError

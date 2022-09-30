@@ -6,16 +6,22 @@ from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
 from integrations.tg.tg_answers.update import Update
 from repository.users.user import UserRepositoryInterface
 from services.city.search import CitySearchInterface, SearchCityQuery
-from services.user_state import UserState, UserStep, LoggedUserState
+from services.user_state import LoggedUserState, UserState, UserStep
 
 
 class CityNotSupportedAnswer(TgAnswerInterface):
+    """Ответ о неподдерживаемом городе."""
 
     def __init__(self, answer: TgAnswerInterface, error_answer: TgAnswerInterface):
         self._origin = answer
         self._error_answer = error_answer
 
     async def build(self, update: Update) -> list[httpx.Request]:
+        """Собрать ответ.
+
+        :param update: Update
+        :return: list[httpx.Request]
+        """
         try:
             return await self._origin.build(update)
         except CityNotSupportedError:
@@ -26,6 +32,7 @@ class CityNotSupportedAnswer(TgAnswerInterface):
 
 
 class ChangeCityAnswer(TgAnswerInterface):
+    """Ответ со сменой города."""
 
     def __init__(
         self,
@@ -40,6 +47,12 @@ class ChangeCityAnswer(TgAnswerInterface):
         self._user_repo = user_repo
 
     async def build(self, update: Update) -> list[httpx.Request]:
+        """Сборка ответа.
+
+        :param update: Update
+        :return: list[httpx.Request]
+        :raises CityNotSupportedError: если город не поддерживается
+        """
         try:
             query = SearchCityQuery.from_string_cs(update.message().text())
         except AttributeError:

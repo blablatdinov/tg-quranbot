@@ -6,6 +6,7 @@ from integrations.tg.tg_answers.update import Update
 
 
 class TgSkipNotProcessable(TgAnswerInterface):
+    """Обработка и пропуск ответа, возбудившего NotProcessableUpdateError."""
 
     def __init__(self, answer: TgAnswerInterface):
         self._answer = answer

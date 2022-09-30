@@ -13,7 +13,7 @@ from integrations.tg.polling_updates import (
     UpdatesWithOffsetURL,
 )
 from integrations.tg.sendable import SendableAnswer
-from integrations.tg.tg_answers import TgMeasureAnswer, TgEmptyAnswer, TgMessageAnswer
+from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer, TgMessageAnswer
 from quranbot_answer import QuranbotAnswer
 from settings import settings
 

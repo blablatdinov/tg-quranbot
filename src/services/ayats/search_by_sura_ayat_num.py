@@ -35,9 +35,10 @@ class AyatBySuraAyatNum(AyatSearchInterface):
     async def search(self, search_query: Union[str, int]) -> Ayat:
         """Поиск аята.
 
-        :param search_query: str
+        :param search_query: Union[str, int]
         :return: list[httpx.Request]
         :raises AyatNotFoundError: if ayat not found
+        :raises TypeError: if search query has int type
         """
         logger.info('Search ayat by {0}'.format(search_query))
         if isinstance(search_query, int):

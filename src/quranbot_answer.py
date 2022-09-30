@@ -22,15 +22,8 @@ from integrations.tg.tg_answers.update import Update
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.sura import Sura
-from repository.city import CityRepository
 from repository.podcast import RandomPodcast
-from repository.prayer_time import (
-    NewUserPrayers,
-    PrayersWithoutSunrise,
-    SafeNotFoundPrayers,
-    SafeUserPrayers,
-    UserPrayers,
-)
+from repository.prayer_time import NewUserPrayers, SafeNotFoundPrayers, SafeUserPrayers, UserPrayers
 from repository.users.user import UserRepository
 from services.answers.answer import DefaultKeyboard
 from services.answers.safe_fork import SafeFork
@@ -43,16 +36,19 @@ from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum, AyatBySura
 from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 from services.city.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
 from services.city.inline_query_answer import InlineQueryAnswer
-from services.city.search import SearchCityByName, SearchCityByCoordinates
+from services.city.search import SearchCityByCoordinates, SearchCityByName
 from services.podcast_answer import PodcastAnswer
+from services.prayers.invite_set_city_answer import InviteSetCityAnswer
+from services.prayers.prayer_for_user_answer import PrayerForUserAnswer
 from services.prayers.prayer_status import UserPrayerStatus
-from services.prayers.prayer_times import InviteSetCityAnswer, PrayerForUserAnswer, UserPrayerStatusChangeAnswer
+from services.prayers.prayer_times import UserPrayerStatusChangeAnswer
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
 from settings import settings
 
 
 class QuranbotAnswer(TgAnswerInterface):
+    """Ответ бота quranbot."""
 
     def __init__(
         self,
@@ -67,6 +63,12 @@ class QuranbotAnswer(TgAnswerInterface):
         self._redis = redis
 
     async def build(self, update: Update) -> list[httpx.Request]:
+        """Сборка ответа.
+
+        :param update: Update
+        :return: list[httpx.Request]
+        """
+        answer_to_sender = TgAnswerToSender(self._message_answer)
         return await SafeFork(
             TgAnswerFork(
                 TgMessageRegexAnswer(
@@ -84,7 +86,7 @@ class QuranbotAnswer(TgAnswerInterface):
                     'Время намаза',
                     InviteSetCityAnswer(
                         PrayerForUserAnswer(
-                            TgAnswerToSender(self._message_answer),
+                            answer_to_sender,
                             SafeNotFoundPrayers(
                                 self._database,
                                 SafeUserPrayers(
@@ -121,18 +123,18 @@ class QuranbotAnswer(TgAnswerInterface):
                                 '.+',
                                 CityNotSupportedAnswer(
                                     ChangeCityAnswer(
-                                        TgAnswerToSender(self._message_answer),
+                                        answer_to_sender,
                                         SearchCityByName(self._database),
                                         self._redis,
                                         UserRepository(self._database),
                                     ),
-                                    TgAnswerToSender(self._message_answer),
+                                    answer_to_sender,
                                 ),
                             ),
                             TgLocationAnswer(
                                 CityNotSupportedAnswer(
                                     ChangeCityAnswer(
-                                        TgAnswerToSender(self._message_answer),
+                                        answer_to_sender,
                                         SearchCityByCoordinates(
                                             SearchCityByName(self._database),
                                             NominatimIntegration(IntegrationClient()),
@@ -140,7 +142,7 @@ class QuranbotAnswer(TgAnswerInterface):
                                         self._redis,
                                         UserRepository(self._database),
                                     ),
-                                    TgAnswerToSender(self._message_answer),
+                                    answer_to_sender,
                                 ),
                             ),
                         ),
@@ -163,9 +165,9 @@ class QuranbotAnswer(TgAnswerInterface):
                                     Sura(self._database),
                                 ),
                             ),
-                            TgAnswerToSender(self._message_answer),
+                            answer_to_sender,
                         ),
-                        TgAnswerToSender(self._message_answer),
+                        answer_to_sender,
                     ),
                 ),
                 TgCallbackQueryRegexAnswer(
@@ -222,6 +224,6 @@ class QuranbotAnswer(TgAnswerInterface):
                 ),
             ),
             TgReplySourceAnswer(
-                TgAnswerToSender(self._message_answer),
+                answer_to_sender,
             ),
         ).build(update)

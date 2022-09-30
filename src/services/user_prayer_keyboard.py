@@ -3,7 +3,7 @@ import json
 
 from constants import PrayerNotReadedEmoji, PrayerReadedEmoji
 from integrations.tg.tg_answers.update import Update
-from repository.prayer_time import UserPrayersInterface
+from repository.user_prayers_interface import UserPrayersInterface
 from services.answers.answer import KeyboardInterface
 from services.user_prayer_button_callback import UserPrayersButtonCallback
 
