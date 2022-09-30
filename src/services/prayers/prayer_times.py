@@ -15,7 +15,7 @@ from repository.prayer_time import PrayersWithoutSunrise, UserPrayersInterface
 from services.prayers.prayer_status import PrayerStatus, UserPrayerStatusInterface
 from services.switch_inline_query_answer import SwitchInlineQueryKeyboard
 from services.user_prayer_keyboard import UserPrayersKeyboard
-from services.user_state import UserState, UserStep
+from services.user_state import UserState, UserStep, LoggedUserState
 
 
 class PrayerForUserAnswer(TgAnswerInterface):
@@ -86,7 +86,9 @@ class InviteSetCityAnswer(TgAnswerInterface):
         try:
             return await self._origin.build(update)
         except UserHasNotCityIdError:
-            await UserState(self._redis, update.chat_id()).change_step(UserStep.city_search)
+            await LoggedUserState(
+                UserState(self._redis, update.chat_id())
+            ).change_step(UserStep.city_search)
             return await TgAnswerMarkup(
                 TgAnswerToSender(
                     TgTextAnswer(

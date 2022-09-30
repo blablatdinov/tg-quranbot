@@ -10,12 +10,29 @@ class Chat(BaseModel):
     id: int
 
 
+class Location(BaseModel):
+
+    latitude: float
+    longitude: float
+
+
 class Message(BaseModel):
     """Класс для парсинга данных сообщения."""
 
     message_id: int
-    text: str
+    text_: Optional[str] = Field(None, alias='text')
     chat: Chat
+    location_: Optional[Location] = Field(None, alias='location')
+
+    def location(self):
+        if not self.location_:
+            raise AttributeError
+        return self.location_
+
+    def text(self):
+        if not self.text_:
+            raise AttributeError
+        return self.text_
 
 
 class CallbackQueryFrom(BaseModel):
@@ -36,6 +53,10 @@ class InlineQuery(BaseModel):
 
     id: str
     from_: CallbackQueryFrom = Field(..., alias='from')
+    query_: str = Field(..., alias='query')
+
+    def query(self) -> str:
+        return self.query_
 
 
 class Update(BaseModel):
@@ -51,8 +72,6 @@ class Update(BaseModel):
             return self.message().message_id
         with suppress(AttributeError):
             return self.callback_query().message.message_id
-        with suppress(AttributeError):
-            return self.inline_query().message.message_id
         raise AttributeError
 
     def chat_id(self) -> int:
@@ -68,7 +87,7 @@ class Update(BaseModel):
             return self.inline_query().from_.id
         raise AttributeError
 
-    def inline_query(self) -> CallbackQuery:
+    def inline_query(self) -> InlineQuery:
         if self.inline_query_:
             return self.inline_query_
         raise AttributeError

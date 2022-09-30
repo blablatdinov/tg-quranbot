@@ -5,8 +5,8 @@ from exceptions.content_exceptions import CityNotSupportedError
 from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
 from integrations.tg.tg_answers.update import Update
 from repository.users.user import UserRepositoryInterface
-from services.city.search import CitySearchInterface
-from services.user_state import UserState, UserStep
+from services.city.search import CitySearchInterface, SearchCityQuery
+from services.user_state import UserState, UserStep, LoggedUserState
 
 
 class CityNotSupportedAnswer(TgAnswerInterface):
@@ -40,11 +40,20 @@ class ChangeCityAnswer(TgAnswerInterface):
         self._user_repo = user_repo
 
     async def build(self, update: Update) -> list[httpx.Request]:
-        cities = await self._city.search(update.message().text)
+        try:
+            query = SearchCityQuery.from_string_cs(update.message().text())
+        except AttributeError:
+            query = SearchCityQuery.from_coordinates_cs(
+                update.message().location().latitude,
+                update.message().location().longitude,
+            )
+        cities = await self._city.search(query)
         if not cities:
             raise CityNotSupportedError
         await self._user_repo.update_city(update.chat_id(), cities[0].id)
-        await UserState(self._redis, update.chat_id()).change_step(UserStep.nothing)
+        await LoggedUserState(
+            UserState(self._redis, update.chat_id()),
+        ).change_step(UserStep.nothing)
         return await TgTextAnswer(
             self._origin,
             'Вам будет приходить время намаза для города {0}'.format(cities[0].name),

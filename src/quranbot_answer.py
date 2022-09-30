@@ -2,6 +2,8 @@ import httpx
 from aioredis import Redis
 from databases import Database
 
+from integrations.client import IntegrationClient
+from integrations.nominatim import NominatimIntegration
 from integrations.tg.tg_answers import (
     TgAnswerFork,
     TgAnswerInterface,
@@ -14,6 +16,8 @@ from integrations.tg.tg_answers import (
     TgMessageRegexAnswer,
     TgReplySourceAnswer,
 )
+from integrations.tg.tg_answers.location_answer import TgLocationAnswer
+from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from integrations.tg.tg_answers.update import Update
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
@@ -39,11 +43,12 @@ from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum, AyatBySura
 from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 from services.city.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
 from services.city.inline_query_answer import InlineQueryAnswer
-from services.city.search import SearchCityByName
+from services.city.search import SearchCityByName, SearchCityByCoordinates
 from services.podcast_answer import PodcastAnswer
 from services.prayers.prayer_status import UserPrayerStatus
 from services.prayers.prayer_times import InviteSetCityAnswer, PrayerForUserAnswer, UserPrayerStatusChangeAnswer
 from services.state_answer import StepAnswer
+from services.user_state import UserStep
 from settings import settings
 
 
@@ -109,19 +114,35 @@ class QuranbotAnswer(TgAnswerInterface):
                     ),
                 ),
                 StepAnswer(
-                    'city_search',
-                    TgMessageRegexAnswer(
-                        '.+',
-                        CityNotSupportedAnswer(
-                            ChangeCityAnswer(
-                                TgAnswerToSender(self._message_answer),
-                                SearchCityByName(
-                                    CityRepository(self._database),
+                    UserStep.city_search.value,
+                    TgSkipNotProcessable(
+                        TgAnswerFork(
+                            TgMessageRegexAnswer(
+                                '.+',
+                                CityNotSupportedAnswer(
+                                    ChangeCityAnswer(
+                                        TgAnswerToSender(self._message_answer),
+                                        SearchCityByName(self._database),
+                                        self._redis,
+                                        UserRepository(self._database),
+                                    ),
+                                    TgAnswerToSender(self._message_answer),
                                 ),
-                                self._redis,
-                                UserRepository(self._database),
                             ),
-                            TgAnswerToSender(self._message_answer),
+                            TgLocationAnswer(
+                                CityNotSupportedAnswer(
+                                    ChangeCityAnswer(
+                                        TgAnswerToSender(self._message_answer),
+                                        SearchCityByCoordinates(
+                                            SearchCityByName(self._database),
+                                            NominatimIntegration(IntegrationClient()),
+                                        ),
+                                        self._redis,
+                                        UserRepository(self._database),
+                                    ),
+                                    TgAnswerToSender(self._message_answer),
+                                ),
+                            ),
                         ),
                     ),
                     self._redis,
@@ -195,7 +216,10 @@ class QuranbotAnswer(TgAnswerInterface):
                         TgAnswerToSender(self._empty_answer),
                     ),
                 ),
-                InlineQueryAnswer(self._empty_answer)
+                InlineQueryAnswer(
+                    self._empty_answer,
+                    SearchCityByName(self._database),
+                ),
             ),
             TgReplySourceAnswer(
                 TgAnswerToSender(self._message_answer),

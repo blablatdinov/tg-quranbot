@@ -42,15 +42,13 @@ class UserState(UserStateInterface):
         self._chat_id = chat_id
 
     async def step(self) -> UserStep:
-        redis_state_data = await self._redis.get('{0}_state'.format(self._chat_id))
+        redis_state_data = (await self._redis.get('{0}:step'.format(self._chat_id))).decode('utf-8')
         if not redis_state_data:
             return UserStep.nothing
-        return UserStep(
-            json.loads(redis_state_data)['step']
-        )
+        return UserStep[redis_state_data]
 
     async def change_step(self, step: UserStep):
         await self._redis.set(
-            '{0}_state'.format(self._chat_id),
-            json.dumps({'step': step.value}),
+            '{0}:step'.format(self._chat_id),
+            step.value,
         )
