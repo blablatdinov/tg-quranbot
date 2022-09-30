@@ -113,7 +113,7 @@ class SafeNotFoundPrayers(UserPrayersInterface):
         :raises UserHasNotCityIdError: у пользователя нет города
         """
         try:
-            return await self._origin.prayer_times(chat_id, date)
+            prayer_times = await self._origin.prayer_times(chat_id, date)
         except UserPrayersNotFoundError:
             query = """
                 SELECT COUNT(*) FROM prayers p
@@ -129,6 +129,7 @@ class SafeNotFoundPrayers(UserPrayersInterface):
             city_id = await self._connection.fetch_val(query, {'chat_id': chat_id})
             if not city_id:
                 raise UserHasNotCityIdError
+        return prayer_times
 
 
 class PrayersWithoutSunrise(UserPrayersInterface):

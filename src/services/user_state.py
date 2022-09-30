@@ -14,7 +14,7 @@ class UserStep(enum.Enum):
 class UserStateInterface(object):
     """Интерфейс для работы с состоянием пользователя."""
 
-    async def step(self):
+    async def step(self) -> UserStep:
         """Состояние пользователя.
 
         :raises NotImplementedError: if not implemented

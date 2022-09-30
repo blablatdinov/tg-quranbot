@@ -10,21 +10,21 @@ from repository.city import City
 class SearchCityQueryInterface(object):
     """Интерфейс поискового запроса городов."""
 
-    def city_name(self):
+    def city_name(self) -> str:
         """Имя города.
 
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
 
-    def latitude(self):
+    def latitude(self) -> float:
         """Ширина города.
 
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
 
-    def longitude(self):
+    def longitude(self) -> float:
         """Долгота города.
 
         :raises NotImplementedError: if not implemented
@@ -121,8 +121,8 @@ class SearchCityByName(CitySearchInterface):
         :returns: list[City]
         """
         search_query = '%{0}%'.format(query.city_name())
-        query = 'SELECT city_id AS id, name FROM cities WHERE name ILIKE :search_query'
-        rows = await self._db.fetch_all(query, {'search_query': search_query})
+        db_query = 'SELECT city_id AS id, name FROM cities WHERE name ILIKE :search_query'
+        rows = await self._db.fetch_all(db_query, {'search_query': search_query})
         return parse_obj_as(list[City], [row._mapping for row in rows])  # noqa: WPS437
 
 

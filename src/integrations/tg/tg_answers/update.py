@@ -25,7 +25,7 @@ class Message(BaseModel):
     chat: Chat
     location_: Optional[Location] = Field(None, alias='location')
 
-    def location(self):
+    def location(self) -> Location:
         """Местоположение.
 
         :return: Location
@@ -35,7 +35,7 @@ class Message(BaseModel):
             raise AttributeError
         return self.location_
 
-    def text(self):
+    def text(self) -> str:
         """Текст сообщения.
 
         :return: str

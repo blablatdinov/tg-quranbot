@@ -98,7 +98,7 @@ class AyatBySuraAyatNumAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
-        result_ayat = await self._ayat_search.search(update.message().text)
+        result_ayat = await self._ayat_search.search(update.message().text())
         answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,

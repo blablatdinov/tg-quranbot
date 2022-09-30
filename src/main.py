@@ -20,7 +20,7 @@ from settings import settings
 
 async def main() -> None:
     """Точка входа в приложение."""
-    redis = await aioredis.from_url(str(settings.REDIS_DSN))
+    redis = await aioredis.from_url(str(settings.REDIS_DSN))  # type: ignore
     empty_answer = TgEmptyAnswer(settings.API_TOKEN)
     message_answer = TgMessageAnswer(empty_answer)
     await database.connect()
