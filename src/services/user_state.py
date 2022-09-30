@@ -69,10 +69,10 @@ class UserState(UserStateInterface):
         """
         redis_state_data = (
             await self._redis.get('{0}:step'.format(self._chat_id))
-        ).decode('utf-8')
+        )
         if not redis_state_data:
             return UserStep.nothing
-        return UserStep[redis_state_data]
+        return UserStep[redis_state_data.decode('utf-8')]
 
     async def change_step(self, step: UserStep):
         """Изменение, состояние пользователя.
