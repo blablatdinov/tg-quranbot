@@ -1,16 +1,13 @@
-import re
-
 import httpx
 
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
 
 
-class TgMessageRegexAnswer(TgAnswerInterface):
-    """Маршрутизация ответов по регулярному выражению."""
+class TgLocationAnswer(TgAnswerInterface):
+    """Ответ на присланную геопозицию."""
 
-    def __init__(self, pattern: str, answer: TgAnswerInterface):
-        self._pattern = pattern
+    def __init__(self, answer: TgAnswerInterface):
         self._answer = answer
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -20,9 +17,7 @@ class TgMessageRegexAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         try:
-            regex_result = re.search(self._pattern, update.message().text())
+            update.message().location()
         except AttributeError:
-            return []
-        if not regex_result:
             return []
         return await self._answer.build(update)

@@ -35,10 +35,10 @@ class AyatBySuraAyatNum(AyatSearchInterface):
     async def search(self, search_query: Union[str, int]) -> Ayat:
         """Поиск аята.
 
-        :param search_query: str
+        :param search_query: Union[str, int]
         :return: list[httpx.Request]
         :raises AyatNotFoundError: if ayat not found
-        :raises TypeError: if search_query type is not available
+        :raises TypeError: if search query has int type
         """
         logger.info('Search ayat by {0}'.format(search_query))
         if isinstance(search_query, int):
@@ -98,7 +98,7 @@ class AyatBySuraAyatNumAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
-        result_ayat = await self._ayat_search.search(update.message().text)
+        result_ayat = await self._ayat_search.search(update.message().text())
         answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,

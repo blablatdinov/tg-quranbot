@@ -1,5 +1,5 @@
 from app_types.stringable import Stringable
-from repository.prayer_time import UserPrayer
+from repository.user_prayers_interface import UserPrayer
 
 
 class UserPrayersButtonCallback(Stringable):

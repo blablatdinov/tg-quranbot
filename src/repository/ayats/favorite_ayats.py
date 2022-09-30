@@ -74,7 +74,7 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
 
         :param ayat_id: int
         :return: Ayat
-        :raises AyatNotFoundError: if ayats not found
+        :raises AyatNotFoundError: if ayat not found
         """
         query = """
             SELECT

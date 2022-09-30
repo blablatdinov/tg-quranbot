@@ -3,7 +3,7 @@ from typing import Optional
 from urllib.parse import urljoin
 
 import sentry_sdk
-from pydantic import BaseSettings, HttpUrl
+from pydantic import BaseSettings, HttpUrl, RedisDsn
 
 BASE_DIR = Path(__file__).parent
 
@@ -17,9 +17,7 @@ class Settings(BaseSettings):
     TEST_DATABASE_URL: str = ''
     SENTRY_DSN: Optional[HttpUrl] = None
     DEBUG: bool
-    REDIS_HOST: str = 'localhost'
-    REDIS_PORT: int = 6379
-    REDIS_DB: int = 5
+    REDIS_DSN: RedisDsn
     ADMIN_CHAT_IDS: list[int] = [358610865]
     WEBHOOK_HOST: str = 'https://quranbot.ilaletdinov.ru'
     WEBHOOK_PATH: str = '/bot'

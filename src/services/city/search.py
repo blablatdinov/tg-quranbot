@@ -1,19 +1,108 @@
-from aiogram import types
+from databases import Database
 from loguru import logger
+from pydantic import parse_obj_as
 
 from exceptions.content_exceptions import CityNotSupportedError
 from integrations.nominatim import GeoServiceIntegrationInterface
-from repository.city import City, CityRepositoryInterface
+from repository.city import City
+
+
+class SearchCityQueryInterface(object):
+    """Интерфейс поискового запроса городов."""
+
+    def city_name(self) -> str:
+        """Имя города.
+
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
+    def latitude(self) -> float:
+        """Ширина города.
+
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
+    def longitude(self) -> float:
+        """Долгота города.
+
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
+
+class SearchCityQuery(SearchCityQueryInterface):
+    """Запрос для поиска города."""
+
+    def __init__(
+        self,
+        *,
+        string_query: tuple[str, ...] = (),
+        latitude: tuple[float, ...] = (),
+        longitude: tuple[float, ...] = (),
+    ):
+        self._string_query = string_query
+        self._latitude = latitude
+        self._longitude = longitude
+
+    @classmethod
+    def from_string_cs(cls, query: str):
+        """Конструктор для строкового запроса.
+
+        :param query: str
+        :return: SearchCityQuery
+        """
+        return SearchCityQuery(string_query=(query,))
+
+    @classmethod
+    def from_coordinates_cs(cls, latitude: float, longitude: float):
+        """Конструктор для запроса по координатам.
+
+        :param latitude: float
+        :param longitude: float
+        :return: SearchCityQuery
+        """
+        return SearchCityQuery(latitude=(latitude,), longitude=(longitude,))
+
+    def city_name(self) -> str:
+        """Имя города.
+
+        :return: str
+        :raises AttributeError: Если запрос собран по координатам
+        """
+        if not self._string_query:
+            raise AttributeError
+        return self._string_query[0]
+
+    def latitude(self):
+        """Широта города.
+
+        :return: float
+        :raises AttributeError: Если запрос собран по имени города
+        """
+        if not self._latitude:
+            raise AttributeError
+        return self._latitude[0]
+
+    def longitude(self):
+        """Долгота города.
+
+        :return: float
+        :raises AttributeError: Если запрос собран по имени города
+        """
+        if not self._longitude:
+            raise AttributeError
+        return self._longitude[0]
 
 
 class CitySearchInterface(object):
     """Интерфейс для поиска городов."""
 
-    _city_service: CityRepositoryInterface
-
-    async def search(self) -> list[City]:
+    async def search(self, query: SearchCityQueryInterface) -> list[City]:
         """Осуществить поиск.
 
+        :param query: SearchCityQueryInterface
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -22,75 +111,49 @@ class CitySearchInterface(object):
 class SearchCityByName(CitySearchInterface):
     """Поиск города по названию."""
 
-    _city_service: CityRepositoryInterface
+    def __init__(self, db: Database):
+        self._db = db
 
-    def __init__(self, city_service: CityRepositoryInterface, query: str):
-        self._city_service = city_service
-        self._query = query
-
-    async def search(self) -> list[City]:
+    async def search(self, query: SearchCityQueryInterface) -> list[City]:
         """Осуществить поиск.
 
+        :param query: SearchCityQueryInterface
         :returns: list[City]
         """
-        return await self._city_service.search_by_name(self._query)
+        search_query = '%{0}%'.format(query.city_name())
+        db_query = 'SELECT city_id AS id, name FROM cities WHERE name ILIKE :search_query'
+        rows = await self._db.fetch_all(db_query, {'search_query': search_query})
+        return parse_obj_as(list[City], [row._mapping for row in rows])  # noqa: WPS437
 
 
 class SearchCityByCoordinates(CitySearchInterface):
     """Поиск города по координатам."""
 
-    _city_service: CityRepositoryInterface
-    _geo_service_integration: GeoServiceIntegrationInterface
-    _latitude: str
-    _longitude: str
-
     def __init__(
         self,
-        city_service: CityRepositoryInterface,
+        city_search: CitySearchInterface,
         geo_service_integration: GeoServiceIntegrationInterface,
-        latitude: str,
-        longitude: str,
     ):
-        self._city_service = city_service
+        self._city_search = city_search
         self._geo_service_integration = geo_service_integration
-        self._latitude = latitude
-        self._longitude = longitude
 
-    async def search(self) -> list[City]:
+    async def search(self, query: SearchCityQueryInterface) -> list[City]:
         """Осуществить поиск.
 
+        :param query: SearchCityQueryInterface
         :returns: list[City]
         :raises CityNotSupportedError: если город не найден в БД
         """
-        city_name = await self._geo_service_integration.search(self._latitude, self._longitude)
+        city_name = await self._geo_service_integration.search(
+            str(query.latitude()),
+            str(query.longitude()),
+        )
         logger.info('Search city {0} in DB'.format(city_name))
-        cities = await self._city_service.search_by_name(city_name)
+        cities = await self._city_search.search(
+            SearchCityQuery.from_string_cs(city_name),
+        )
         logger.info('Finded cities: {0}'.format(cities))
         if not cities:
             template = 'Для города {0} я не знаю времен намазов, пожалуйста напишите моему разработчику'
             raise CityNotSupportedError(template.format(city_name))
         return cities
-
-
-class CitySearchInlineAnswer(object):
-    """Ответ на поиск."""
-
-    _city_search: CitySearchInterface
-
-    def __init__(self, city_search: CitySearchInterface):
-        self._city_search = city_search
-
-    async def to_inline_search_result(self) -> list[types.InlineQueryResultArticle]:
-        """Форматировать в ответ поиска.
-
-        :returns: list[app_types.InlineQueryResultArticle]
-        """
-        cities = await self._city_search.search()
-        return [
-            types.InlineQueryResultArticle(
-                id=str(city.id),
-                title=city.name,
-                input_message_content=types.InputMessageContent(message_text=city.name),
-            )
-            for city in cities
-        ]

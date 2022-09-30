@@ -4,9 +4,11 @@ import uuid
 
 from databases import Database
 from loguru import logger
-from pydantic import BaseModel
 
+from exceptions.content_exceptions import UserHasNotCityIdError
 from exceptions.internal_exceptions import UserHasNotGeneratedPrayersError
+from exceptions.prayer_exceptions import PrayersNotFoundError, UserPrayersNotFoundError
+from repository.user_prayers_interface import UserPrayersInterface, UserPrayer
 
 
 class PrayerNames(str, enum.Enum):  # noqa: WPS600
@@ -18,33 +20,6 @@ class PrayerNames(str, enum.Enum):  # noqa: WPS600
     ASR = 'asr'
     MAGRIB = 'magrib'
     ISHA = "isha'a"
-
-
-class UserPrayer(BaseModel):
-    """Время намаза пользователя.
-
-    Нужна для учета прочитанных/непрочитанных намазов
-    """
-
-    id: int
-    city: str
-    name: str
-    day: datetime.date
-    time: datetime.time
-    is_readed: bool
-
-
-class UserPrayersInterface(object):
-    """Интерфейс времени намаза пользователя."""
-
-    async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
-        """Времена намаза.
-
-        :param chat_id: int
-        :param date: datetime.date
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
 
 
 class UserPrayers(UserPrayersInterface):
@@ -82,6 +57,7 @@ class UserPrayers(UserPrayersInterface):
         prayers = [UserPrayer.parse_obj(row._mapping) for row in rows]  # noqa: WPS437
         if not prayers:
             raise UserHasNotGeneratedPrayersError
+        logger.info('Prayer times taked: {0}'.format(prayers))
         return prayers
 
 
@@ -103,6 +79,42 @@ class SafeUserPrayers(UserPrayersInterface):
             return await self._exists_user_prayers.prayer_times(chat_id, date)
         except UserHasNotGeneratedPrayersError:
             return await self._new_user_prayers.prayer_times(chat_id, date)
+
+
+class SafeNotFoundPrayers(UserPrayersInterface):
+    """Времена намазов с защитой от UserPrayersNotFoundError."""
+
+    def __init__(self, connection: Database, user_prayers: UserPrayersInterface):
+        self._connection = connection
+        self._origin = user_prayers
+
+    async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
+        """Времена намаза.
+
+        :param chat_id: int
+        :param date: datetime.date
+        :return: list[UserPrayer]
+        :raises PrayersNotFoundError: у пользователя нет сгенерированных времен намаза
+        :raises UserHasNotCityIdError: у пользователя нет города
+        """
+        try:
+            prayer_times = await self._origin.prayer_times(chat_id, date)
+        except UserPrayersNotFoundError:
+            query = """
+                SELECT COUNT(*) FROM prayers p
+                INNER JOIN prayer_days pd ON pd.date = p.day_id
+                WHERE pd.date = :date
+            """
+            prayers_count = await self._connection.fetch_val(query, {'date': date})
+            if not prayers_count:
+                raise PrayersNotFoundError
+            query = """
+                SELECT city_id FROM users WHERE chat_id = :chat_id
+            """
+            city_id = await self._connection.fetch_val(query, {'chat_id': chat_id})
+            if not city_id:
+                raise UserHasNotCityIdError
+        return prayer_times
 
 
 class PrayersWithoutSunrise(UserPrayersInterface):
@@ -139,13 +151,8 @@ class NewUserPrayers(UserPrayersInterface):
         :param chat_id: int
         :param date: datetime.date
         :returns: list[UserPrayer]
+        :raises UserPrayersNotFoundError: if user hasn't generated prayer times
         """
-        user_prayer_group_id = uuid.uuid4()
-        await self._connection.execute(
-            'INSERT INTO prayers_at_user_groups (prayers_at_user_group_id) VALUES (:prayers_at_user_group_id)',
-            {'prayers_at_user_group_id': str(user_prayer_group_id)},
-        )
-        logger.info('Creating prayers for user <{0}>, date={1}'.format(chat_id, date))
         query = """
             SELECT p.prayer_id
             FROM prayers p
@@ -155,6 +162,14 @@ class NewUserPrayers(UserPrayersInterface):
             WHERE pd.date = :date AND u.chat_id = :chat_id
         """
         rows = await self._connection.fetch_all(query, {'date': date, 'chat_id': chat_id})
+        if not rows:
+            raise UserPrayersNotFoundError
+        user_prayer_group_id = uuid.uuid4()
+        await self._connection.execute(
+            'INSERT INTO prayers_at_user_groups (prayers_at_user_group_id) VALUES (:prayers_at_user_group_id)',
+            {'prayers_at_user_group_id': str(user_prayer_group_id)},
+        )
+        logger.info('Creating prayers for user <{0}>, date={1}'.format(chat_id, date))
         prayer_ids = [row._mapping['prayer_id'] for row in rows]  # noqa: WPS437
         query = """
             INSERT INTO prayers_at_user
