@@ -120,10 +120,10 @@ class Update(BaseModel):
         raise AttributeError
 
     def callback_query(self) -> CallbackQuery:
-        """Нажатие кнопки.
+        """Данные с инлайн кнопки.
 
         :return: CallbackQuery
-        :raises AttributeError: if update hasn't callback query
+        :raises AttributeError: if callback query not founc
         """
         if self.callback_query_:
             return self.callback_query_
@@ -133,7 +133,7 @@ class Update(BaseModel):
         """Сообщение.
 
         :return: Message
-        :raises AttributeError: if update hasn't message
+        :raises AttributeError: if message not founc
         """
         if self.message_:
             return self.message_
