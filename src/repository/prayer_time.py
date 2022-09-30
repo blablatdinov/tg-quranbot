@@ -120,6 +120,8 @@ class SafeNotFoundPrayers(UserPrayersInterface):
         :param chat_id: int
         :param date: datetime.date
         :return: list[UserPrayer]
+        :raise PrayersNotFoundError: у пользователя нет сгенерированных времен намаза
+        :raise PrayersNotFoundError: у пользователя нет города
         """
         try:
             return await self._origin.prayer_times(chat_id, date)

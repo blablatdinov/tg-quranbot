@@ -2,6 +2,7 @@
 .idea/
 .vscode
 *.swp
+.vim
 
 # system files
 .DS_Store

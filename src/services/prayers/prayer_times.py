@@ -2,6 +2,7 @@ import datetime
 
 import httpx
 from aioredis import Redis
+from loguru import logger
 
 from exceptions.content_exceptions import UserHasNotCityIdError
 from integrations.tg.tg_answers import TgAnswerToSender
@@ -14,7 +15,7 @@ from repository.prayer_time import PrayersWithoutSunrise, UserPrayersInterface
 from services.prayers.prayer_status import PrayerStatus, UserPrayerStatusInterface
 from services.switch_inline_query_answer import SwitchInlineQueryKeyboard
 from services.user_prayer_keyboard import UserPrayersKeyboard
-from services.user_state import UserState, UserStateInterface, UserStep
+from services.user_state import UserState, UserStep
 
 
 class PrayerForUserAnswer(TgAnswerInterface):
@@ -37,6 +38,7 @@ class PrayerForUserAnswer(TgAnswerInterface):
         prayers = await self._user_prayers.prayer_times(
             update.chat_id(), datetime.date.today(),
         )
+        logger.debug(f'{prayers=}')
         time_format = '%H:%M'
         template = '\n'.join([
             'Время намаза для г. {city_name} ({date})\n',
@@ -61,7 +63,10 @@ class PrayerForUserAnswer(TgAnswerInterface):
                     ishaa_prayer_time=prayers[5].time.strftime(time_format),
                 ),
             ),
-            UserPrayersKeyboard(PrayersWithoutSunrise(self._user_prayers), datetime.date.today()),
+            UserPrayersKeyboard(
+                PrayersWithoutSunrise(self._user_prayers),
+                datetime.date.today(),
+            ),
         ).build(update)
 
 
