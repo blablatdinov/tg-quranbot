@@ -1,5 +1,4 @@
 from databases import Database
-from loguru import logger
 from pydantic import parse_obj_as
 
 from exceptions.content_exceptions import AyatNotFoundError
@@ -117,6 +116,16 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
 class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
     """Класс для работы с сосденими аятами, при текстовом поиске."""
 
+    _search_sql_query = """
+        SELECT
+            ayats.ayat_id as id,
+            ayats.ayat_number as ayat_num,
+            ayats.sura_id as sura_num
+        FROM ayats
+        WHERE content ILIKE :search_query
+        ORDER BY ayat_id
+    """
+
     def __init__(self, connection: Database, ayat_id, query: AyatTextSearchQueryInterface):
         self._connection = connection
         self._ayat_id = ayat_id
@@ -129,19 +138,9 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
         :raises AyatNotFoundError: if ayat not found
         """
         search_query = '%{0}%'.format(await self._query.read())
-        query = """
-            SELECT
-                ayats.ayat_id as id,
-                ayats.ayat_number as ayat_num,
-                ayats.sura_id as sura_num
-            FROM ayats
-            WHERE content ILIKE :search_query
-            ORDER BY ayat_id
-        """
-        rows = await self._connection.fetch_all(query, {'search_query': search_query})
+        rows = await self._connection.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[1:], start=1):
             ayat = parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
-            print(f'Search left neighbor {idx=} {ayat.id=} {self._ayat_id=} {search_query=}')
             if ayat.id == self._ayat_id:
                 try:
                     return parse_obj_as(AyatShort, rows[idx - 1]._mapping)  # noqa: WPS437
@@ -156,21 +155,9 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
         :raises AyatNotFoundError: if ayat not found
         """
         search_query = '%{0}%'.format(await self._query.read())
-        logger.debug(f'{search_query=}')
-        query = """
-            SELECT
-                ayats.ayat_id as id,
-                ayats.ayat_number as ayat_num,
-                ayats.sura_id as sura_num
-            FROM ayats
-            WHERE content ILIKE :search_query
-            ORDER BY ayat_id
-        """
-        rows = await self._connection.fetch_all(query, {'search_query': search_query})
-        logger.debug(f'{rows=}')
+        rows = await self._connection.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[:-1]):
             ayat = parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
-            print(f'Search right neighbor {idx=} {ayat.id=} {self._ayat_id=} {search_query=}')
             if ayat.id == self._ayat_id:
                 try:
                     return parse_obj_as(AyatShort, rows[idx + 1]._mapping)  # noqa: WPS437

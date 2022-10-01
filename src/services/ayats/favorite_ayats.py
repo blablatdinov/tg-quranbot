@@ -3,7 +3,8 @@ import httpx
 from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
-from services.ayats.ayat_answer import AyatAnswer, FavoriteAyatAnswerKeyboard
+from services.ayats.ayat_answer import AyatAnswer
+from services.ayats.keyboards import FavoriteAyatAnswerKeyboard
 from services.regular_expression import IntableRegularExpression
 
 

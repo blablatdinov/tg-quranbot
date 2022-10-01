@@ -14,7 +14,8 @@ from integrations.tg.tg_answers import (
     TgHtmlParseAnswer,
     TgKeyboardEditAnswer,
     TgMessageRegexAnswer,
-    TgReplySourceAnswer, TgTextAnswer,
+    TgReplySourceAnswer,
+    TgTextAnswer,
 )
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
@@ -29,24 +30,28 @@ from services.answers.answer import DefaultKeyboard
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
 from services.ayats.ayat_by_id import AyatByIdAnswer
+from services.ayats.ayat_by_sura_ayat_num_answer import AyatBySuraAyatNumAnswer
 from services.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 from services.ayats.favorite_ayats import FavoriteAyatAnswer, FavoriteAyatPage
 from services.ayats.favorites.change_favorite import ChangeFavoriteAyatAnswer
 from services.ayats.search.ayat_by_id import AyatById
-from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum, AyatBySuraAyatNumAnswer
-from services.ayats.search_by_text import SearchAyatByTextAnswer, CachedAyatSearchQueryAnswer, SearchAyatByTextCallbackAnswer
+from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum
+from services.ayats.search_by_text import (
+    CachedAyatSearchQueryAnswer,
+    SearchAyatByTextAnswer,
+    SearchAyatByTextCallbackAnswer,
+)
 from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 from services.city.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
 from services.city.inline_query_answer import InlineQueryAnswer
 from services.city.search import SearchCityByCoordinates, SearchCityByName
-from services.debug_answer import DebugAnswer
 from services.podcast_answer import PodcastAnswer
 from services.prayers.invite_set_city_answer import InviteSetCityAnswer
 from services.prayers.prayer_for_user_answer import PrayerForUserAnswer
 from services.prayers.prayer_status import UserPrayerStatus
 from services.prayers.prayer_times import UserPrayerStatusChangeAnswer
 from services.state_answer import StepAnswer
-from services.user_state import UserStep, LoggedUserState, UserState
+from services.user_state import UserStep
 from settings import settings
 
 
@@ -72,6 +77,10 @@ class QuranbotAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         answer_to_sender = TgAnswerToSender(self._message_answer)
+        audio_to_sender = TgAudioAnswer(answer_to_sender)
+        html_to_sender = TgAnswerToSender(
+            TgHtmlParseAnswer(self._message_answer),
+        )
         return await SafeFork(
             TgAnswerFork(
                 TgMessageRegexAnswer(
@@ -109,12 +118,8 @@ class QuranbotAnswer(TgAnswerInterface):
                     'Избранное',
                     FavoriteAyatAnswer(
                         settings.DEBUG,
-                        TgAnswerToSender(
-                            TgHtmlParseAnswer(self._message_answer),
-                        ),
-                        TgAnswerToSender(
-                            TgAudioAnswer(self._empty_answer),
-                        ),
+                        audio_to_sender,
+                        html_to_sender,
                         FavoriteAyatsRepository(self._database),
                     ),
                 ),
@@ -158,12 +163,8 @@ class QuranbotAnswer(TgAnswerInterface):
                         AyatNotFoundSafeAnswer(
                             AyatBySuraAyatNumAnswer(
                                 settings.DEBUG,
-                                TgAnswerToSender(
-                                    TgHtmlParseAnswer(self._message_answer),
-                                ),
-                                TgAnswerToSender(
-                                    TgAudioAnswer(self._empty_answer),
-                                ),
+                                html_to_sender,
+                                audio_to_sender,
                                 AyatBySuraAyatNum(
                                     Sura(self._database),
                                 ),
@@ -178,11 +179,11 @@ class QuranbotAnswer(TgAnswerInterface):
                     ChangeStateAnswer(
                         TgTextAnswer(
                             answer_to_sender,
-                            'Введите слово для поиска:'
+                            'Введите слово для поиска:',
                         ),
                         self._redis,
                         UserStep.ayat_search,
-                    )
+                    ),
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,
@@ -191,14 +192,10 @@ class QuranbotAnswer(TgAnswerInterface):
                         CachedAyatSearchQueryAnswer(
                             SearchAyatByTextAnswer(
                                 settings.DEBUG,
-                                TgAnswerToSender(
-                                    TgHtmlParseAnswer(self._message_answer),
-                                ),
-                                TgAnswerToSender(
-                                    TgAudioAnswer(self._empty_answer),
-                                ),
+                                html_to_sender,
+                                audio_to_sender,
                                 AyatRepository(self._database),
-                                self._redis
+                                self._redis,
                             ),
                             self._redis,
                         ),
@@ -222,12 +219,8 @@ class QuranbotAnswer(TgAnswerInterface):
                         AyatById(
                             AyatRepository(self._database),
                         ),
-                        TgAnswerToSender(
-                            TgHtmlParseAnswer(self._message_answer),
-                        ),
-                        TgAnswerToSender(
-                            TgAudioAnswer(self._empty_answer),
-                        ),
+                        html_to_sender,
+                        audio_to_sender,
                     ),
                 ),
                 StepAnswer(
@@ -236,14 +229,10 @@ class QuranbotAnswer(TgAnswerInterface):
                         'getSAyat',
                         SearchAyatByTextCallbackAnswer(
                             settings.DEBUG,
-                            TgAnswerToSender(
-                                TgHtmlParseAnswer(self._message_answer),
-                            ),
-                            TgAnswerToSender(
-                                TgAudioAnswer(self._empty_answer),
-                            ),
+                            html_to_sender,
+                            audio_to_sender,
                             AyatRepository(self._database),
-                            self._redis
+                            self._redis,
                         ),
                     ),
                     self._redis,
@@ -252,12 +241,8 @@ class QuranbotAnswer(TgAnswerInterface):
                     'getFAyat',
                     FavoriteAyatPage(
                         settings.DEBUG,
-                        TgAnswerToSender(
-                            TgHtmlParseAnswer(self._message_answer),
-                        ),
-                        TgAnswerToSender(
-                            TgAudioAnswer(self._empty_answer),
-                        ),
+                        html_to_sender,
+                        audio_to_sender,
                         FavoriteAyatsRepository(self._database),
                     ),
                 ),
@@ -268,7 +253,7 @@ class QuranbotAnswer(TgAnswerInterface):
                             AyatRepository(self._database),
                         ),
                         self._database,
-                        TgAnswerToSender(self._empty_answer),
+                        answer_to_sender,
                     ),
                 ),
                 InlineQueryAnswer(
