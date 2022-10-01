@@ -29,12 +29,12 @@ class CachedAyatSearchQueryAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
-        requests = await self._origin.build(update)
         await AyatTextSearchQuery.for_write_cs(
             self._redis,
             update.message().text(),
             update.chat_id(),
         ).write()
+        requests = await self._origin.build(update)
         return requests
 
 
