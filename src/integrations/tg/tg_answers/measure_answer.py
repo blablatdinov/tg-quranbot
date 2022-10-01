@@ -3,8 +3,34 @@ import time
 import httpx
 from loguru import logger
 
+from app_types.floatable import Floatable
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
+
+
+class Millis(Floatable):
+
+    def __init__(self, millis: float):
+        self._millis = millis
+
+    @classmethod
+    def seconds_cs(cls, seconds: float):
+        return Millis(
+            seconds * 1000
+        )
+
+    def __float__(self):
+        return self._millis
+
+
+class RoundedFloat(Floatable):
+
+    def __init__(self, origin_float: Floatable, shift_comma: int):
+        self._origin = origin_float
+        self._shift_comma = shift_comma
+
+    def __float__(self):
+        return round(float(self._origin), self._shift_comma)
 
 
 class TgMeasureAnswer(TgAnswerInterface):
@@ -22,5 +48,15 @@ class TgMeasureAnswer(TgAnswerInterface):
         start = time.time()
         logger.info('Start process update <{0}>'.format(update.update_id))
         requests = await self._origin.build(update)
-        logger.info('Update <{0}> process time: {1}'.format(update.update_id, time.time() - start))
+        logger.info('Update <{0}> process time: {1} ms'.format(
+            update.update_id,
+            float(
+                RoundedFloat(
+                    Millis.seconds_cs(
+                        time.time() - start,
+                    ),
+                    2,
+                ),
+            ),
+        ))
         return requests
