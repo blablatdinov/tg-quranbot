@@ -118,8 +118,8 @@ class QuranbotAnswer(TgAnswerInterface):
                     'Избранное',
                     FavoriteAyatAnswer(
                         settings.DEBUG,
-                        audio_to_sender,
                         html_to_sender,
+                        audio_to_sender,
                         FavoriteAyatsRepository(self._database),
                     ),
                 ),

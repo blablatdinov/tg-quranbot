@@ -22,7 +22,7 @@ class TgAnswerFake(TgAnswerInterface):
 @pytest.fixture()
 def mock_redis():
     redis = Redis()
-    redis.set = AsyncMock()
+    redis.set = AsyncMock()  # type: ignore
     return redis
 
 
@@ -47,7 +47,6 @@ def update():
 
 
 async def test(update, mock_redis):
-    mock_redis.set: AsyncMock
     with suppress(FakeError):
         await CachedAyatSearchQueryAnswer(TgAnswerFake(), mock_redis).build(update)
 

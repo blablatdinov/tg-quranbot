@@ -51,7 +51,6 @@ class FileAnswer(TgAnswerInterface):
         """
         if self._debug_mode:
             return await self._file_link_answer.build(update)
-
         return await self._telegram_file_id_answer.build(update)
 
 

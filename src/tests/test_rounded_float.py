@@ -14,8 +14,8 @@ class FloatableFake(Floatable):
 def test():
     got = float(
         RoundedFloat(
-            FloatableFake(0.222), 1
-        )
+            FloatableFake(0.222), 1,
+        ),
     )
 
     assert got == 0.2
