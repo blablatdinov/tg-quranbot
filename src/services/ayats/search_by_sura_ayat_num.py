@@ -11,19 +11,8 @@ from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.schemas import Ayat
 from repository.ayats.sura import SuraInterface
 from services.ayats.ayat_answer import AyatAnswer, AyatAnswerKeyboard
+from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.search.ayat_search_query import SearchQuery, ValidatedSearchQuery
-
-
-class AyatSearchInterface(object):
-    """Интерфейс поиска аята."""
-
-    async def search(self, search_query: Union[str, int]) -> Ayat:
-        """Поиск аята.
-
-        :param search_query: str
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
 
 
 class AyatBySuraAyatNum(AyatSearchInterface):

@@ -1,9 +1,11 @@
 from databases import Database
+from loguru import logger
 from pydantic import parse_obj_as
 
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.schemas import AyatShort
+from services.ayats.ayat_text_search_query import AyatTextSearchQueryInterface
 
 
 class NeighborAyatsRepositoryInterface(object):
@@ -115,36 +117,63 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
 class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
     """Класс для работы с сосденими аятами, при текстовом поиске."""
 
-    def __init__(self, connection: Database, query: str):
-        self.connection = connection
+    def __init__(self, connection: Database, ayat_id, query: AyatTextSearchQueryInterface):
+        self._connection = connection
+        self._ayat_id = ayat_id
         self._query = query
 
-    async def get_ayat_neighbors(self, ayat_id: int) -> list[AyatShort]:
-        """Получить соседние аяты.
+    async def left_neighbor(self):
+        """Получить левый аят.
 
-        :param ayat_id: int
-        :returns: list[AyatShort]
+        :return: AyatShort
+        :raises AyatNotFoundError: if ayat not found
         """
+        search_query = '%{0}%'.format(await self._query.read())
         query = """
             SELECT
-                *
-            FROM (
-                SELECT
-                     a.ayat_id AS id,
-                     a.ayat_number AS ayat_num,
-                     cs.sura_id AS sura_num,
-                     lag(a.ayat_id) OVER (ORDER BY a.ayat_id ASC) AS prev,
-                     lead(a.ayat_id) OVER (ORDER BY a.ayat_id ASC) AS next
-                FROM (
-                    SELECT ayats.* FROM ayats
-                    WHERE ayats.content ILIKE :query
-                ) a
-                INNER JOIN suras cs ON cs.sura_id = a.sura_id
-            ) x
-            WHERE :ayat_id IN (id, prev, next)
+                ayats.ayat_id as id,
+                ayats.ayat_number as ayat_num,
+                ayats.sura_id as sura_num
+            FROM ayats
+            WHERE content ILIKE :search_query
+            ORDER BY ayat_id
         """
-        rows = await self.connection.fetch_all(
-            query,
-            {'ayat_id': ayat_id, 'query': '%{0}%'.format(self._query)},
-        )
-        return parse_obj_as(list[AyatShort], [row._mapping for row in rows])  # noqa: WPS437
+        rows = await self._connection.fetch_all(query, {'search_query': search_query})
+        for idx, row in enumerate(rows[1:], start=1):
+            ayat = parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
+            print(f'Search left neighbor {idx=} {ayat.id=} {self._ayat_id=} {search_query=}')
+            if ayat.id == self._ayat_id:
+                try:
+                    return parse_obj_as(AyatShort, rows[idx - 1]._mapping)  # noqa: WPS437
+                except IndexError as err:
+                    raise AyatNotFoundError from err
+        raise AyatNotFoundError
+
+    async def right_neighbor(self):
+        """Получить правый аят.
+
+        :return: AyatShort
+        :raises AyatNotFoundError: if ayat not found
+        """
+        search_query = '%{0}%'.format(await self._query.read())
+        logger.debug(f'{search_query=}')
+        query = """
+            SELECT
+                ayats.ayat_id as id,
+                ayats.ayat_number as ayat_num,
+                ayats.sura_id as sura_num
+            FROM ayats
+            WHERE content ILIKE :search_query
+            ORDER BY ayat_id
+        """
+        rows = await self._connection.fetch_all(query, {'search_query': search_query})
+        logger.debug(f'{rows=}')
+        for idx, row in enumerate(rows[:-1]):
+            ayat = parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
+            print(f'Search right neighbor {idx=} {ayat.id=} {self._ayat_id=} {search_query=}')
+            if ayat.id == self._ayat_id:
+                try:
+                    return parse_obj_as(AyatShort, rows[idx + 1]._mapping)  # noqa: WPS437
+                except IndexError as err:
+                    raise AyatNotFoundError from err
+        raise AyatNotFoundError

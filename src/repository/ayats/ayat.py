@@ -42,7 +42,7 @@ class AyatRepositoryInterface(object):
         """
         raise NotImplementedError
 
-    async def search_by_text(self, query: str):
+    async def search_by_text(self, query: str) -> list[Ayat]:
         """Поиск по тексту.
 
         :param query: str

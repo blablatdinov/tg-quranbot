@@ -1,4 +1,5 @@
 import httpx
+from loguru import logger
 
 from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.tg_answers.interface import TgAnswerInterface

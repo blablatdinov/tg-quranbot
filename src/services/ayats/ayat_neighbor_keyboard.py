@@ -29,11 +29,13 @@ class NeighborAyatKeyboard(KeyboardInterface):
                 'callback_data': self._callback_template.format(left.id),
             })
         with suppress(AyatNotFoundError):
+            print('Try get right neighbor')
             right = await self._ayats_neighbors.right_neighbor()
             buttons.append({
                 'text': '{0}:{1} ->'.format(right.sura_num, right.ayat_num),
                 'callback_data': self._callback_template.format(right.id),
             })
+        print(f'{buttons=}')
         return json.dumps({
             'inline_keyboard': [buttons],
         })

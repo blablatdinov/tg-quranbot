@@ -34,6 +34,7 @@ from services.ayats.favorite_ayats import FavoriteAyatAnswer, FavoriteAyatPage
 from services.ayats.favorites.change_favorite import ChangeFavoriteAyatAnswer
 from services.ayats.search.ayat_by_id import AyatById
 from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum, AyatBySuraAyatNumAnswer
+from services.ayats.search_by_text import SearchAyatByTextAnswer, CachedAyatSearchQueryAnswer, SearchAyatByTextCallbackAnswer
 from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 from services.city.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
 from services.city.inline_query_answer import InlineQueryAnswer
@@ -183,6 +184,27 @@ class QuranbotAnswer(TgAnswerInterface):
                         UserStep.ayat_search,
                     )
                 ),
+                StepAnswer(
+                    UserStep.ayat_search.value,
+                    TgMessageRegexAnswer(
+                        '.+',
+                        CachedAyatSearchQueryAnswer(
+                            SearchAyatByTextAnswer(
+                                settings.DEBUG,
+                                TgAnswerToSender(
+                                    TgHtmlParseAnswer(self._message_answer),
+                                ),
+                                TgAnswerToSender(
+                                    TgAudioAnswer(self._empty_answer),
+                                ),
+                                AyatRepository(self._database),
+                                self._redis
+                            ),
+                            self._redis,
+                        ),
+                    ),
+                    self._redis,
+                ),
                 TgCallbackQueryRegexAnswer(
                     '(mark_readed|mark_not_readed)',
                     UserPrayerStatusChangeAnswer(
@@ -207,6 +229,24 @@ class QuranbotAnswer(TgAnswerInterface):
                             TgAudioAnswer(self._empty_answer),
                         ),
                     ),
+                ),
+                StepAnswer(
+                    UserStep.ayat_search.value,
+                    TgCallbackQueryRegexAnswer(
+                        'getSAyat',
+                        SearchAyatByTextCallbackAnswer(
+                            settings.DEBUG,
+                            TgAnswerToSender(
+                                TgHtmlParseAnswer(self._message_answer),
+                            ),
+                            TgAnswerToSender(
+                                TgAudioAnswer(self._empty_answer),
+                            ),
+                            AyatRepository(self._database),
+                            self._redis
+                        ),
+                    ),
+                    self._redis,
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getFAyat',
