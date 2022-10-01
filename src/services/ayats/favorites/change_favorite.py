@@ -11,8 +11,8 @@ from integrations.tg.tg_answers import (
 )
 from integrations.tg.tg_answers.update import Update
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
-from services.ayats.ayat_answer import FavoriteAyatAnswerKeyboard
 from services.ayats.favorite_ayats import FavoriteAyatStatus
+from services.ayats.keyboards import FavoriteAyatAnswerKeyboard
 from services.ayats.search_by_sura_ayat_num import AyatSearchInterface
 from services.regular_expression import IntableRegularExpression
 

@@ -9,6 +9,7 @@ class UserStep(enum.Enum):
 
     city_search = 'city_search'
     nothing = 'nothing'
+    ayat_search = 'ayat_search'
 
 
 class UserStateInterface(object):
