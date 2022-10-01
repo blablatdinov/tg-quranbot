@@ -34,8 +34,7 @@ class CachedAyatSearchQueryAnswer(TgAnswerInterface):
             update.message().text(),
             update.chat_id(),
         ).write()
-        requests = await self._origin.build(update)
-        return requests
+        return await self._origin.build(update)
 
 
 class SearchAyatByTextAnswer(TgAnswerInterface):
