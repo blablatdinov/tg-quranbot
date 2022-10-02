@@ -1,3 +1,5 @@
+import pytest
+
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import FavoriteNeighborAyats
 from repository.ayats.schemas import Ayat
@@ -43,9 +45,14 @@ class FavoriteAyatRepositoryFake(FavoriteAyatRepositoryInterface):
         ]
 
 
-async def test_page():
+@pytest.mark.parametrize('ayat_id,expected', [
+    (1, 'стр. 1/3'),
+    (2, 'стр. 2/3'),
+    (3, 'стр. 3/3'),
+])
+async def test_page(ayat_id, expected):
     got = await FavoriteNeighborAyats(
-        2, 1, FavoriteAyatRepositoryFake(),
+        ayat_id, 1, FavoriteAyatRepositoryFake(),
     ).page()
 
-    assert got == 'стр. 2/3'
+    assert got == expected
