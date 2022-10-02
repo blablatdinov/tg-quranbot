@@ -24,6 +24,13 @@ class NeighborAyatsRepositoryInterface(object):
         """
         raise NotImplementedError
 
+    async def page(self) -> str:
+        """Информация о странице.
+
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
 
 class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
@@ -65,6 +72,19 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
             elif ayat.id == self._ayat_id:
                 return fayats[ayat_index + 1].get_short()
         raise AyatNotFoundError
+
+    async def page(self) -> str:
+        """Информация о странице.
+
+        :return: str
+        """
+        fayats = await self._favorite_ayats_repo.get_favorites(self._chat_id)
+        for ayat_idx, ayat in enumerate(fayats, start=1):
+            if ayat.id == 1:
+                return 'стр. 1/{0}'.format(len(fayats))
+            elif ayat.id == len(fayats):
+                return 'стр. {0}/{0}'.format(len(fayats))
+            return 'стр. {0}/{1}'.format(ayat_idx, len(fayats))
 
 
 class NeighborAyats(NeighborAyatsRepositoryInterface):
@@ -111,6 +131,18 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
         if not row:
             raise AyatNotFoundError
         return parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
+
+    async def page(self) -> str:
+        """Информация о странице.
+
+        :return: str
+        """
+        ayats_count = await self._connection.fetch_val('SELECT COUNT(*) FROM ayats')
+        actual_page_num = await self._connection.fetch_val(
+            'SELECT COUNT(*) FROM ayats WHERE ayat_id <= :ayat_id',
+            {'ayat_id': self._ayat_id},
+        )
+        return 'стр. {0}/{1}'.format(actual_page_num, ayats_count)
 
 
 class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
@@ -164,3 +196,19 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
                 except IndexError as err:
                     raise AyatNotFoundError from err
         raise AyatNotFoundError
+
+    async def page(self) -> str:
+        """Информация о странице.
+
+        :return: str
+        """
+        actual_page_num = 0
+        rows = await self._connection.fetch_all(
+            self._search_sql_query,
+            {'search_query': '%{0}%'.format(await self._query.read())},
+        )
+        for idx, row in enumerate(rows, start=1):
+            ayat = parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
+            if ayat.id == self._ayat_id:
+                actual_page_num = idx
+        return 'стр. {0}/{1}'.format(actual_page_num, len(rows))

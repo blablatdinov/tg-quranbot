@@ -28,6 +28,10 @@ class NeighborAyatKeyboard(KeyboardInterface):
                 'text': '<- {0}:{1}'.format(left.sura_num, left.ayat_num),
                 'callback_data': self._callback_template.format(left.id),
             })
+        buttons.append({
+            'text': await self._ayats_neighbors.page(),
+            'callback_data': 'fake',
+        })
         with suppress(AyatNotFoundError):
             right = await self._ayats_neighbors.right_neighbor()
             buttons.append({
