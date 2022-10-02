@@ -51,6 +51,7 @@ from services.prayers.invite_set_city_answer import InviteSetCityAnswer
 from services.prayers.prayer_for_user_answer import PrayerForUserAnswer
 from services.prayers.prayer_status import UserPrayerStatus
 from services.prayers.prayer_times import UserPrayerStatusChangeAnswer
+from services.start_answer import SafeStartAnswer, StartAnswer
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
 from settings import settings
@@ -184,6 +185,14 @@ class QuranbotAnswer(TgAnswerInterface):
                         ),
                         self._redis,
                         UserStep.ayat_search,
+                    ),
+                ),
+                TgMessageRegexAnswer(
+                    '/start',
+                    SafeStartAnswer(
+                        StartAnswer(self._empty_answer, UserRepository(self._database)),
+                        answer_to_sender,
+                        UserRepository(self._database),
                     ),
                 ),
                 StepAnswer(

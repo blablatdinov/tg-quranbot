@@ -166,3 +166,24 @@ class UserRepository(UserRepositoryInterface):
             WHERE chat_id = :chat_id
         """
         await self.connection.execute(query, {'referrer_id': referrer_id, 'chat_id': chat_id})
+
+    async def get_by_id(self, user_id: int) -> User:
+        """Метод для получения пользователя.
+
+        :param user_id: int
+        :raises UserNotFoundError: if user not found
+        :return: User
+        """
+        query = """
+            SELECT
+                chat_id,
+                is_active,
+                day,
+                referrer_id as referrer,
+                city_id
+            FROM users WHERE legacy_id = :user_id
+        """
+        row = await self.connection.fetch_one(query, {'user_id': user_id})
+        if not row:
+            raise UserNotFoundError('Пользователь с legacy_id: {0} не найден'.format(user_id))
+        return User.parse_obj(row._mapping)  # noqa: WPS437
