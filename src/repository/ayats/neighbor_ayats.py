@@ -82,12 +82,13 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
         """
         fayats = await self._favorite_ayats_repo.get_favorites(self._chat_id)
         for ayat_idx, ayat in enumerate(fayats, start=1):
-            if ayat.id == 1:
+            if self._ayat_id == 1:
                 return 'стр. 1/{0}'.format(len(fayats))
             elif ayat.id == len(fayats):
                 return 'стр. {0}/{0}'.format(len(fayats))
-            return 'стр. {0}/{1}'.format(ayat_idx, len(fayats))
-        raise BaseAppError('Page not generated')
+            elif self._ayat_id == ayat.id:
+                return 'стр. {0}/{1}'.format(ayat_idx, len(fayats))
+        raise BaseAppError('Page info not generated')
 
 
 class NeighborAyats(NeighborAyatsRepositoryInterface):
