@@ -7,9 +7,10 @@ from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
 from repository.ayats.ayat import AyatRepositoryInterface
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
+from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
 from services.ayats.ayat_answer import AyatAnswer
 from services.ayats.ayat_text_search_query import AyatTextSearchQuery
-from services.ayats.keyboards import AyatSearchByTextAnswerKeyboard
+from services.ayats.keyboards import AyatAnswerKeyboard
 from services.regular_expression import IntableRegularExpression
 
 
@@ -71,8 +72,14 @@ class SearchAyatByTextAnswer(TgAnswerInterface):
             self._debug_mode,
             answers,
             result_ayat,
-            AyatSearchByTextAnswerKeyboard(
-                result_ayat, FavoriteAyatsRepository(database), self._redis,
+            AyatAnswerKeyboard(
+                result_ayat,
+                FavoriteAyatsRepository(database),
+                TextSearchNeighborAyatsRepository(
+                    database,
+                    result_ayat.id,
+                    AyatTextSearchQuery.for_reading_cs(self._redis, update.chat_id()),
+                ),
             ),
         ).build(update)
 

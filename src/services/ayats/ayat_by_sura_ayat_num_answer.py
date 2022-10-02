@@ -4,6 +4,7 @@ from db.connection import database
 from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
+from repository.ayats.neighbor_ayats import NeighborAyats
 from services.ayats.ayat_answer import AyatAnswer
 from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.keyboards import AyatAnswerKeyboard
@@ -36,5 +37,9 @@ class AyatBySuraAyatNumAnswer(TgAnswerInterface):
             self._debug_mode,
             answers,
             result_ayat,
-            AyatAnswerKeyboard(result_ayat, FavoriteAyatsRepository(database)),
+            AyatAnswerKeyboard(
+                result_ayat,
+                FavoriteAyatsRepository(database),
+                NeighborAyats(database, result_ayat.id)
+            ),
         ).build(update)

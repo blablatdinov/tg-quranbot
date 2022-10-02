@@ -11,8 +11,9 @@ from integrations.tg.tg_answers import (
 )
 from integrations.tg.tg_answers.update import Update
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
+from repository.ayats.neighbor_ayats import NeighborAyats
 from services.ayats.favorite_ayats import FavoriteAyatStatus
-from services.ayats.keyboards import FavoriteAyatAnswerKeyboard
+from services.ayats.keyboards import AyatAnswerKeyboard
 from services.ayats.search_by_sura_ayat_num import AyatSearchInterface
 from services.regular_expression import IntableRegularExpression
 
@@ -20,7 +21,12 @@ from services.regular_expression import IntableRegularExpression
 class ChangeFavoriteAyatAnswer(TgAnswerInterface):
     """Ответ на запрос о смене аята в избранном."""
 
-    def __init__(self, ayat_search: AyatSearchInterface, connection: Database, answer: TgAnswerInterface):
+    def __init__(
+        self,
+        ayat_search: AyatSearchInterface,
+        connection: Database,
+        answer: TgAnswerInterface
+    ):
         self._ayat_search = ayat_search
         self._origin = answer
         self._connection = connection
@@ -54,8 +60,12 @@ class ChangeFavoriteAyatAnswer(TgAnswerInterface):
             TgMessageIdAnswer(
                 TgAnswerMarkup(
                     TgKeyboardEditAnswer(self._origin),
-                    FavoriteAyatAnswerKeyboard(
-                        result_ayat, FavoriteAyatsRepository(database),
+                    AyatAnswerKeyboard(
+                        result_ayat,
+                        FavoriteAyatsRepository(database),
+                        NeighborAyats(
+                            database, result_ayat,
+                        ),
                     ),
                 ),
                 update.message_id(),
