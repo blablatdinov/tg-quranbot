@@ -1,5 +1,8 @@
 import httpx
 from aioredis import Redis
+from urllib import parse
+
+from loguru import logger
 
 from db.connection import database
 from exceptions.content_exceptions import AyatNotFoundError
@@ -123,3 +126,31 @@ class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
                 result_ayat, FavoriteAyatsRepository(database), self._redis,
             ),
         ).build(update)
+
+
+class HighlightedSearchAnswer(TgAnswerInterface):
+
+    def __init__(self, answer: TgAnswerInterface, redis: Redis):
+        self._origin = answer
+        self._redis = redis
+
+    async def build(self, update: Update) -> list[httpx.Request]:
+        new_requests = []
+        search_query = await AyatTextSearchQuery.for_reading_cs(self._redis, update.chat_id()).read()
+        requests = await self._origin.build(update)
+        logger.debug(f'Try highlight search query: "{search_query}"')
+        for request in requests:
+            text = request.url.params['text']
+            if search_query in text:
+                logger.debug(f'Find search query in text')
+                new_requests.append(httpx.Request(
+                    method=request.method,
+                    url=request.url.copy_set_param(
+                        'text',
+                        text.replace('+', ' ') .replace(search_query, '<b>{0}</b>'.format(search_query))
+                    ),
+                    headers=request.headers,
+                ))
+            else:
+                new_requests.append(request)
+        return new_requests

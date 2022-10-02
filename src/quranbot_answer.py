@@ -39,7 +39,7 @@ from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum
 from services.ayats.search_by_text import (
     CachedAyatSearchQueryAnswer,
     SearchAyatByTextAnswer,
-    SearchAyatByTextCallbackAnswer,
+    SearchAyatByTextCallbackAnswer, HighlightedSearchAnswer,
 )
 from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 from services.city.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
@@ -189,12 +189,15 @@ class QuranbotAnswer(TgAnswerInterface):
                     UserStep.ayat_search.value,
                     TgMessageRegexAnswer(
                         '.+',
-                        CachedAyatSearchQueryAnswer(
-                            SearchAyatByTextAnswer(
-                                settings.DEBUG,
-                                html_to_sender,
-                                audio_to_sender,
-                                AyatRepository(self._database),
+                        HighlightedSearchAnswer(
+                            CachedAyatSearchQueryAnswer(
+                                SearchAyatByTextAnswer(
+                                    settings.DEBUG,
+                                    html_to_sender,
+                                    audio_to_sender,
+                                    AyatRepository(self._database),
+                                    self._redis,
+                                ),
                                 self._redis,
                             ),
                             self._redis,
@@ -227,11 +230,14 @@ class QuranbotAnswer(TgAnswerInterface):
                     UserStep.ayat_search.value,
                     TgCallbackQueryRegexAnswer(
                         'getSAyat',
-                        SearchAyatByTextCallbackAnswer(
-                            settings.DEBUG,
-                            html_to_sender,
-                            audio_to_sender,
-                            AyatRepository(self._database),
+                        HighlightedSearchAnswer(
+                            SearchAyatByTextCallbackAnswer(
+                                settings.DEBUG,
+                                html_to_sender,
+                                audio_to_sender,
+                                AyatRepository(self._database),
+                                self._redis,
+                            ),
                             self._redis,
                         ),
                     ),
