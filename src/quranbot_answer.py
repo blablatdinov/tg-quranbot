@@ -20,6 +20,7 @@ from integrations.tg.tg_answers import (
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from integrations.tg.tg_answers.update import Update
+from repository.admin_message import AdminMessageRepository
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.sura import Sura
@@ -83,6 +84,7 @@ class QuranbotAnswer(TgAnswerInterface):
         html_to_sender = TgAnswerToSender(
             TgHtmlParseAnswer(self._message_answer),
         )
+        ayat_repo = AyatRepository(self._database)
         return await SafeFork(
             TgAnswerFork(
                 TgMessageRegexAnswer(
@@ -190,7 +192,12 @@ class QuranbotAnswer(TgAnswerInterface):
                 TgMessageRegexAnswer(
                     '/start',
                     SafeStartAnswer(
-                        StartAnswer(self._empty_answer, UserRepository(self._database)),
+                        StartAnswer(
+                            self._empty_answer,
+                            UserRepository(self._database),
+                            AdminMessageRepository(self._database),
+                            ayat_repo,
+                        ),
                         answer_to_sender,
                         UserRepository(self._database),
                     ),
@@ -205,7 +212,7 @@ class QuranbotAnswer(TgAnswerInterface):
                                     settings.DEBUG,
                                     html_to_sender,
                                     audio_to_sender,
-                                    AyatRepository(self._database),
+                                    ayat_repo,
                                     self._redis,
                                 ),
                                 self._redis,
@@ -230,7 +237,7 @@ class QuranbotAnswer(TgAnswerInterface):
                     AyatByIdAnswer(
                         settings.DEBUG,
                         AyatById(
-                            AyatRepository(self._database),
+                            ayat_repo,
                         ),
                         html_to_sender,
                         audio_to_sender,
@@ -245,7 +252,7 @@ class QuranbotAnswer(TgAnswerInterface):
                                 settings.DEBUG,
                                 html_to_sender,
                                 audio_to_sender,
-                                AyatRepository(self._database),
+                                ayat_repo,
                                 self._redis,
                             ),
                             self._redis,
@@ -266,7 +273,7 @@ class QuranbotAnswer(TgAnswerInterface):
                     '(addToFavor|removeFromFavor)',
                     ChangeFavoriteAyatAnswer(
                         AyatById(
-                            AyatRepository(self._database),
+                            ayat_repo,
                         ),
                         self._database,
                         answer_to_sender,
