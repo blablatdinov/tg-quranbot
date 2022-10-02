@@ -6,7 +6,7 @@ from aioredis import Redis
 
 from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
-from services.ayats.search_by_text import CachedAyatSearchQueryAnswer
+from services.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
 
 
 class FakeError(Exception):

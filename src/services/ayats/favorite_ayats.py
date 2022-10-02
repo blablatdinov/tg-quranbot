@@ -62,7 +62,7 @@ class FavoriteAyatAnswer(TgAnswerInterface):
                 self._favorite_ayats_repo,
                 FavoriteNeighborAyats(
                     result_ayat.id, update.chat_id(), self._favorite_ayats_repo,
-                )
+                ),
             ),
         ).build(update)
 

@@ -40,6 +40,6 @@ class AyatBySuraAyatNumAnswer(TgAnswerInterface):
             AyatAnswerKeyboard(
                 result_ayat,
                 FavoriteAyatsRepository(database),
-                NeighborAyats(database, result_ayat.id)
+                NeighborAyats(database, result_ayat.id),
             ),
         ).build(update)

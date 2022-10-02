@@ -25,7 +25,7 @@ class ChangeFavoriteAyatAnswer(TgAnswerInterface):
         self,
         ayat_search: AyatSearchInterface,
         connection: Database,
-        answer: TgAnswerInterface
+        answer: TgAnswerInterface,
     ):
         self._ayat_search = ayat_search
         self._origin = answer
