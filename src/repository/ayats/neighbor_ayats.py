@@ -78,6 +78,7 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
         """Информация о странице.
 
         :return: str
+        :raises BaseAppError: if page not generated
         """
         fayats = await self._favorite_ayats_repo.get_favorites(self._chat_id)
         for ayat_idx, ayat in enumerate(fayats, start=1):

@@ -3,7 +3,7 @@ from contextlib import suppress
 import httpx
 
 from exceptions.base_exception import BaseAppError
-from exceptions.content_exceptions import StartMessageNotContainReferrer, UserAlreadyExists
+from exceptions.user import StartMessageNotContainReferrer, UserAlreadyExists
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
 from integrations.tg.tg_answers.update import Update
 from repository.users.user import UserRepositoryInterface
