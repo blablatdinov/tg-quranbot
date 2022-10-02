@@ -20,12 +20,14 @@ from integrations.tg.tg_answers import (
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from integrations.tg.tg_answers.update import Update
+from repository.admin_message import AdminMessageRepository
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.sura import Sura
 from repository.podcast import RandomPodcast
 from repository.prayer_time import NewUserPrayers, SafeNotFoundPrayers, SafeUserPrayers, UserPrayers
 from repository.users.user import UserRepository
+from repository.users.users import UsersRepository
 from services.answers.answer import DefaultKeyboard
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
@@ -51,6 +53,7 @@ from services.prayers.invite_set_city_answer import InviteSetCityAnswer
 from services.prayers.prayer_for_user_answer import PrayerForUserAnswer
 from services.prayers.prayer_status import UserPrayerStatus
 from services.prayers.prayer_times import UserPrayerStatusChangeAnswer
+from services.start_answer import SafeStartAnswer, StartAnswer
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
 from settings import settings
@@ -82,6 +85,7 @@ class QuranbotAnswer(TgAnswerInterface):
         html_to_sender = TgAnswerToSender(
             TgHtmlParseAnswer(self._message_answer),
         )
+        ayat_repo = AyatRepository(self._database)
         return await SafeFork(
             TgAnswerFork(
                 TgMessageRegexAnswer(
@@ -186,6 +190,20 @@ class QuranbotAnswer(TgAnswerInterface):
                         UserStep.ayat_search,
                     ),
                 ),
+                TgMessageRegexAnswer(
+                    '/start',
+                    SafeStartAnswer(
+                        StartAnswer(
+                            self._empty_answer,
+                            UserRepository(self._database),
+                            AdminMessageRepository(self._database),
+                            ayat_repo,
+                        ),
+                        answer_to_sender,
+                        UserRepository(self._database),
+                        UsersRepository(self._database),
+                    ),
+                ),
                 StepAnswer(
                     UserStep.ayat_search.value,
                     TgMessageRegexAnswer(
@@ -196,7 +214,7 @@ class QuranbotAnswer(TgAnswerInterface):
                                     settings.DEBUG,
                                     html_to_sender,
                                     audio_to_sender,
-                                    AyatRepository(self._database),
+                                    ayat_repo,
                                     self._redis,
                                 ),
                                 self._redis,
@@ -221,7 +239,7 @@ class QuranbotAnswer(TgAnswerInterface):
                     AyatByIdAnswer(
                         settings.DEBUG,
                         AyatById(
-                            AyatRepository(self._database),
+                            ayat_repo,
                         ),
                         html_to_sender,
                         audio_to_sender,
@@ -236,7 +254,7 @@ class QuranbotAnswer(TgAnswerInterface):
                                 settings.DEBUG,
                                 html_to_sender,
                                 audio_to_sender,
-                                AyatRepository(self._database),
+                                ayat_repo,
                                 self._redis,
                             ),
                             self._redis,
@@ -257,7 +275,7 @@ class QuranbotAnswer(TgAnswerInterface):
                     '(addToFavor|removeFromFavor)',
                     ChangeFavoriteAyatAnswer(
                         AyatById(
-                            AyatRepository(self._database),
+                            ayat_repo,
                         ),
                         self._database,
                         answer_to_sender,

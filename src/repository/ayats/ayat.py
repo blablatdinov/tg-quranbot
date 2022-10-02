@@ -4,6 +4,7 @@ from databases import Database
 from pydantic import parse_obj_as
 
 from exceptions.base_exception import InternalBotError
+from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.schemas import Ayat, AyatShort
 
 
@@ -21,6 +22,13 @@ class AyatRepositoryInterface(object):
         """Метод для получения аята по идентификатору.
 
         :param ayat_id: int
+        :raises NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
+    async def first(self) -> Ayat:
+        """Получить первый аят.
+
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -56,6 +64,33 @@ class AyatRepository(AyatRepositoryInterface):
 
     def __init__(self, connection: Database):
         self.connection = connection
+
+    async def first(self) -> Ayat:
+        """Получить первый аят.
+
+        :return: Ayat
+        :raises AyatNotFoundError: if ayat not found
+        """
+        query = """
+            SELECT
+                a.ayat_id as id,
+                s.sura_id as sura_num,
+                s.link as sura_link,
+                a.ayat_number as ayat_num,
+                a.arab_text,
+                a.content,
+                a.transliteration,
+                cf.telegram_file_id as audio_telegram_id,
+                cf.link as link_to_audio_file
+            FROM ayats a
+            INNER JOIN suras s on a.sura_id = s.sura_id
+            INNER JOIN files cf on a.audio_id = cf.file_id
+            LIMIT 1
+        """
+        row = await self.connection.fetch_one(query)
+        if not row:
+            raise AyatNotFoundError
+        return Ayat.parse_obj(row._mapping)  # noqa: WPS437
 
     async def get(self, ayat_id: int) -> Ayat:
         """Метод для получения аята по идентификатору.

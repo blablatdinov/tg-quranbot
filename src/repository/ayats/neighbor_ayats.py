@@ -1,6 +1,7 @@
 from databases import Database
 from pydantic import parse_obj_as
 
+from exceptions.base_exception import BaseAppError
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.schemas import AyatShort
@@ -77,6 +78,7 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
         """Информация о странице.
 
         :return: str
+        :raises BaseAppError: if page not generated
         """
         fayats = await self._favorite_ayats_repo.get_favorites(self._chat_id)
         for ayat_idx, ayat in enumerate(fayats, start=1):
@@ -85,6 +87,7 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
             elif ayat.id == len(fayats):
                 return 'стр. {0}/{0}'.format(len(fayats))
             return 'стр. {0}/{1}'.format(ayat_idx, len(fayats))
+        raise BaseAppError('Page not generated')
 
 
 class NeighborAyats(NeighborAyatsRepositoryInterface):
