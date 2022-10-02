@@ -84,9 +84,7 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
                 return 'стр. 1/{0}'.format(len(fayats))
             elif ayat.id == len(fayats):
                 return 'стр. {0}/{0}'.format(len(fayats))
-            else:
-                return 'стр. {0}/{1}'.format(ayat_idx, len(fayats))
-        raise AyatNotFoundError
+            return 'стр. {0}/{1}'.format(ayat_idx, len(fayats))
 
 
 class NeighborAyats(NeighborAyatsRepositoryInterface):
@@ -142,7 +140,7 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
         ayats_count = await self._connection.fetch_val('SELECT COUNT(*) FROM ayats')
         actual_page_num = await self._connection.fetch_val(
             'SELECT COUNT(*) FROM ayats WHERE ayat_id <= :ayat_id',
-            {'ayat_id': self._ayat_id}
+            {'ayat_id': self._ayat_id},
         )
         return 'стр. {0}/{1}'.format(actual_page_num, ayats_count)
 
@@ -200,9 +198,15 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
         raise AyatNotFoundError
 
     async def page(self) -> str:
-        search_query = '%{0}%'.format(await self._query.read())
+        """Информация о странице.
+
+        :return: str
+        """
         actual_page_num = 0
-        rows = await self._connection.fetch_all(self._search_sql_query, {'search_query': search_query})
+        rows = await self._connection.fetch_all(
+            self._search_sql_query,
+            {'search_query': '%{0}%'.format(await self._query.read())},
+        )
         for idx, row in enumerate(rows, start=1):
             ayat = parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
             if ayat.id == self._ayat_id:
