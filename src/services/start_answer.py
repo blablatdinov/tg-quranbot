@@ -99,11 +99,11 @@ class StartAnswer(TgAnswerInterface):
             ),
         ).build(update)
 
-    async def _check_user_exists(self, update):
+    async def _check_user_exists(self, update) -> None:
         if await self._user_repo.exists(update.chat_id()):
             raise UserAlreadyExists
 
-    async def _create_with_referrer(self, update):
+    async def _create_with_referrer(self, update) -> list[httpx.Request]:
         with suppress(StartMessageNotContainReferrer):
             referrer_id = await StartMessage(update.message().text(), self._user_repo).referrer_chat_id()
             await self._user_repo.update_referrer(update.chat_id(), referrer_id)
@@ -129,3 +129,4 @@ class StartAnswer(TgAnswerInterface):
                     settings.ADMIN_CHAT_IDS[0],
                 ),
             ).build(update)
+        return []

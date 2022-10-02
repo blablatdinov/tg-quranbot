@@ -1,6 +1,7 @@
 from databases import Database
 from pydantic import parse_obj_as
 
+from exceptions.base_exception import BaseAppError
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.schemas import AyatShort
@@ -85,6 +86,7 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
             elif ayat.id == len(fayats):
                 return 'стр. {0}/{0}'.format(len(fayats))
             return 'стр. {0}/{1}'.format(ayat_idx, len(fayats))
+        raise BaseAppError('Page not generated')
 
 
 class NeighborAyats(NeighborAyatsRepositoryInterface):
