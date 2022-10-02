@@ -15,6 +15,7 @@ from integrations.tg.polling_updates import (
 from integrations.tg.sendable import SendableAnswer
 from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer, TgMessageAnswer
 from quranbot_answer import QuranbotAnswer
+from services.append_update_id_answer import AppendUpdateIdAnswer
 from settings import settings
 
 
@@ -35,9 +36,12 @@ async def main() -> None:
             UpdatesTimeout(),
         ),
         SendableAnswer(
-            TgMeasureAnswer(
-                QuranbotAnswer(empty_answer, message_answer, database, redis),
-            ),
+            AppendUpdateIdAnswer(
+                settings.DEBUG,
+                TgMeasureAnswer(
+                    QuranbotAnswer(empty_answer, message_answer, database, redis),
+                ),
+            )
         ),
     ).run()
 
