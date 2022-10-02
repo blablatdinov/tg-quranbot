@@ -1,5 +1,5 @@
 import json
-from urllib import parse
+from urllib import parse as url_parse
 
 import httpx
 from loguru import logger
@@ -37,7 +37,7 @@ class SendableAnswer(SendableInterface):
         success_status = 200
         async with httpx.AsyncClient() as client:
             for request in await self._answer.build(update):
-                logger.debug('Try send request to: {0}'.format(parse.unquote(str(request.url))))
+                logger.debug('Try send request to: {0}'.format(url_parse.unquote(str(request.url))))
                 resp = await client.send(request)
                 responses.append(resp.text)
                 if resp.status_code != success_status:

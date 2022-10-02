@@ -34,12 +34,13 @@ from services.ayats.ayat_by_sura_ayat_num_answer import AyatBySuraAyatNumAnswer
 from services.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 from services.ayats.favorite_ayats import FavoriteAyatAnswer, FavoriteAyatPage
 from services.ayats.favorites.change_favorite import ChangeFavoriteAyatAnswer
+from services.ayats.highlited_search_answer import HighlightedSearchAnswer
 from services.ayats.search.ayat_by_id import AyatById
 from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum
 from services.ayats.search_by_text import (
     CachedAyatSearchQueryAnswer,
     SearchAyatByTextAnswer,
-    SearchAyatByTextCallbackAnswer, HighlightedSearchAnswer,
+    SearchAyatByTextCallbackAnswer,
 )
 from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 from services.city.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
