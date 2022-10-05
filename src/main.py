@@ -15,6 +15,8 @@ from integrations.tg.polling_updates import (
 from integrations.tg.sendable import SendableAnswer
 from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer, TgMessageAnswer
 from quranbot_answer import QuranbotAnswer
+from repository.users.users import UsersRepository
+from schedule_app import CheckUsersStatus
 from services.append_update_id_answer import (
     AppendDebugInfoAnswer,
     ChatIdDebugParam,
@@ -67,6 +69,18 @@ def main() -> None:
         CommandCliApp(
             'run_polling',
             quranbot_polling_app,
+        ),
+        CommandCliApp(
+            'check_user_status',
+            CliApp(
+                DatabaseConnectedApp(
+                    database,
+                    CheckUsersStatus(
+                        UsersRepository(database),
+                        empty_answer,
+                    ),
+                ),
+            )
         ),
     ).run(sys.argv)
 

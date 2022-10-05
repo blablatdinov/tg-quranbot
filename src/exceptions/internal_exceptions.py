@@ -18,6 +18,16 @@ class TelegramIntegrationsError(BaseAppError):
 
     admin_message = 'Ошибка интеграции telegram'
 
+    def __init__(self, message: str, chat_id: int):
+        self._message = message
+        self._chat_id = chat_id
+
+    def __str__(self):
+        return self._message
+
+    def chat_id(self):
+        return self._chat_id
+
 
 class UserHasNotGeneratedPrayersError(BaseAppError):
     """У пользователя нет сгенерированных времен намаза на текущий день."""
