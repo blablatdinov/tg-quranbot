@@ -1,10 +1,10 @@
-import asyncio
+import sys
 from contextlib import suppress
 
 import aioredis
 
 from db.connection import database
-from integrations.tg.app import PollingApp
+from integrations.tg.app import DatabaseConnectedApp, PollingApp
 from integrations.tg.polling_updates import (
     PollingUpdatesIterator,
     UpdatesLongPollingURL,
@@ -22,40 +22,55 @@ from services.append_update_id_answer import (
     TimeDebugParam,
     UpdateIdDebugParam,
 )
+from services.cli_app import CliApp, CommandCliApp, ForkCliApp
 from settings import settings
 
 
-async def main() -> None:
+def main() -> None:
     """Точка входа в приложение."""
-    redis = await aioredis.from_url(str(settings.REDIS_DSN))  # type: ignore
     empty_answer = TgEmptyAnswer(settings.API_TOKEN)
     message_answer = TgMessageAnswer(empty_answer)
-    await database.connect()
-    await PollingApp(
-        PollingUpdatesIterator(
-            UpdatesLongPollingURL(
-                UpdatesWithOffsetURL(
-                    UpdatesURL(settings.API_TOKEN),
+    quranbot_polling_app = CliApp(
+        DatabaseConnectedApp(
+            database,
+            PollingApp(
+                PollingUpdatesIterator(
+                    UpdatesLongPollingURL(
+                        UpdatesWithOffsetURL(
+                            UpdatesURL(settings.API_TOKEN),
+                        ),
+                        UpdatesTimeout(),
+                    ),
+                    UpdatesTimeout(),
                 ),
-                UpdatesTimeout(),
-            ),
-            UpdatesTimeout(),
-        ),
-        SendableAnswer(
-            AppendDebugInfoAnswer(
-                settings.DEBUG,
-                TgMeasureAnswer(
-                    QuranbotAnswer(empty_answer, message_answer, database, redis),
+                SendableAnswer(
+                    AppendDebugInfoAnswer(
+                        settings.DEBUG,
+                        TgMeasureAnswer(
+                            QuranbotAnswer(
+                                empty_answer,
+                                message_answer,
+                                database,
+                                aioredis.from_url(str(settings.REDIS_DSN)),  # type: ignore
+                            ),
+                        ),
+                        UpdateIdDebugParam(),
+                        ChatIdDebugParam(),
+                        TimeDebugParam(),
+                        CommitHashDebugParam(settings.BASE_DIR.parent),
+                    ),
                 ),
-                UpdateIdDebugParam(),
-                ChatIdDebugParam(),
-                TimeDebugParam(),
-                CommitHashDebugParam(settings.BASE_DIR.parent),
             ),
         ),
-    ).run()
+    )
+    ForkCliApp(
+        CommandCliApp(
+            'run_polling',
+            quranbot_polling_app,
+        ),
+    ).run(sys.argv)
 
 
 if __name__ == '__main__':
     with suppress(KeyboardInterrupt):
-        asyncio.run(main())
+        main()

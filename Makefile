@@ -1,5 +1,5 @@
 run:
-	python src/main.py
+	python src/main.py run_polling
 
 lint:
 	isort src && flake8 src
