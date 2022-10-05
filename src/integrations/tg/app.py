@@ -1,5 +1,6 @@
 import asyncio
 
+from databases import Database
 from loguru import logger
 
 from app_types.runable import Runable
@@ -24,11 +25,13 @@ class PollingApp(Runable):
 
 
 class DatabaseConnectedApp(Runable):
+    """Декоратор для подключения к БД."""
 
-    def __init__(self, database, app):
+    def __init__(self, database: Database, app: Runable) -> None:
         self._database = database
         self._app = app
 
     async def run(self):
+        """Запуск."""
         await self._database.connect()
         await self._app.run()

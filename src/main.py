@@ -4,7 +4,7 @@ from contextlib import suppress
 import aioredis
 
 from db.connection import database
-from integrations.tg.app import PollingApp, DatabaseConnectedApp
+from integrations.tg.app import DatabaseConnectedApp, PollingApp
 from integrations.tg.polling_updates import (
     PollingUpdatesIterator,
     UpdatesLongPollingURL,
@@ -22,7 +22,7 @@ from services.append_update_id_answer import (
     TimeDebugParam,
     UpdateIdDebugParam,
 )
-from services.cli_app import CliApp, ForkCliApp, CommandCliApp
+from services.cli_app import CliApp, CommandCliApp, ForkCliApp
 from settings import settings
 
 
@@ -51,7 +51,7 @@ def main() -> None:
                                 empty_answer,
                                 message_answer,
                                 database,
-                                aioredis.from_url(str(settings.REDIS_DSN)),
+                                aioredis.from_url(str(settings.REDIS_DSN)),  # type: ignore
                             ),
                         ),
                         UpdateIdDebugParam(),
