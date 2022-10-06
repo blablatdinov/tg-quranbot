@@ -28,7 +28,7 @@ from repository.podcast import RandomPodcast
 from repository.prayer_time import NewUserPrayers, SafeNotFoundPrayers, SafeUserPrayers, UserPrayers
 from repository.users.user import UserRepository
 from repository.users.users import UsersRepository
-from services.answers.answer import DefaultKeyboard
+from services.answers.answer import DefaultKeyboard, ResizedKeyboard
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
 from services.ayats.ayat_by_id import AyatByIdAnswer
@@ -90,13 +90,10 @@ class QuranbotAnswer(TgAnswerInterface):
             TgAnswerFork(
                 TgMessageRegexAnswer(
                     'Подкасты',
-                    TgAnswerMarkup(
-                        PodcastAnswer(
-                            settings.DEBUG,
-                            self._empty_answer,
-                            RandomPodcast(self._database),
-                        ),
-                        DefaultKeyboard(),
+                    PodcastAnswer(
+                        settings.DEBUG,
+                        self._empty_answer,
+                        RandomPodcast(self._database),
                     ),
                 ),
                 TgMessageRegexAnswer(
@@ -192,16 +189,21 @@ class QuranbotAnswer(TgAnswerInterface):
                 ),
                 TgMessageRegexAnswer(
                     '/start',
-                    SafeStartAnswer(
-                        StartAnswer(
-                            self._empty_answer,
+                    TgAnswerMarkup(
+                        SafeStartAnswer(
+                            StartAnswer(
+                                self._empty_answer,
+                                UserRepository(self._database),
+                                AdminMessageRepository(self._database),
+                                ayat_repo,
+                            ),
+                            answer_to_sender,
                             UserRepository(self._database),
-                            AdminMessageRepository(self._database),
-                            ayat_repo,
+                            UsersRepository(self._database),
                         ),
-                        answer_to_sender,
-                        UserRepository(self._database),
-                        UsersRepository(self._database),
+                        ResizedKeyboard(
+                            DefaultKeyboard(),
+                        ),
                     ),
                 ),
                 StepAnswer(

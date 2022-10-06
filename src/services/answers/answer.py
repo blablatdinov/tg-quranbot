@@ -1,3 +1,4 @@
+import json
 from typing import Optional
 
 import httpx
@@ -16,6 +17,24 @@ class KeyboardInterface(object):
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
+
+
+class ResizedKeyboard(KeyboardInterface):
+    """Сжатая в высоту клавиатура."""
+
+    def __init__(self, keyboard: KeyboardInterface):
+        self._origin = keyboard
+
+    async def generate(self, update):
+        """Генерация.
+
+        :param update: Update
+        :return: str
+        """
+        origin_keyboard = await self._origin.generate(update)
+        keyboard_as_dict = json.loads(origin_keyboard)
+        keyboard_as_dict['resize_keyboard'] = True
+        return json.dumps(keyboard_as_dict)
 
 
 class DefaultKeyboard(KeyboardInterface):
