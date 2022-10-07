@@ -73,6 +73,8 @@ class UsersRepository(UsersRepositoryInterface):
         :param chat_ids: list[int]
         :param to: bool
         """
+        if not chat_ids:
+            return
         chat_ids_for_query = '({0})'.format(','.join(list(map(str, chat_ids))))
         query_template = """
             UPDATE users

@@ -61,6 +61,8 @@ class AppendDebugInfoAnswer(TgAnswerInterface):
                     ),
                     headers=request.headers,
                 ))
+            else:
+                new_requests.append(request)
         return new_requests
 
 
