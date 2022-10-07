@@ -39,7 +39,7 @@ class CheckUsersStatus(Runable):
         """Запуск."""
         chat_ids = await self._users_repo.get_active_user_chat_ids()
         deactivated_users = []
-        answers = [
+        answers: list[TgAnswerInterface] = [
             TypingAction(
                 TgChatIdAnswer(
                     TgChatAction(self._empty_answer),

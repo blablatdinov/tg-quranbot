@@ -42,7 +42,7 @@ class SendableAnswer(SendableInterface):
                 resp = await client.send(request)
                 responses.append(resp.text)
                 if resp.status_code != success_status:
-                    raise TelegramIntegrationsError(resp.text, request.url.params['chat_id'])
+                    raise TelegramIntegrationsError(resp.text, int(request.url.params['chat_id']))
             return [json.loads(response) for response in responses]
 
 

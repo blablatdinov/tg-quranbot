@@ -37,7 +37,7 @@ class TelegramIntegrationsError(BaseAppError):
     def __str__(self):
         return self._message
 
-    def chat_id(self):
+    def chat_id(self) -> int:
         """Получить идентификатор чата.
 
         :return: int
