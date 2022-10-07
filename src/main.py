@@ -80,7 +80,7 @@ def main() -> None:
                         empty_answer,
                     ),
                 ),
-            )
+            ),
         ),
     ).run(sys.argv)
 

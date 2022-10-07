@@ -2,12 +2,21 @@ from integrations.tg.sendable import SliceIterator
 
 
 def test():
-    got = [elem for elem in SliceIterator(list(range(1, 11)), 2)]
+    got = list(SliceIterator(list(range(1, 11)), 2))
 
-    assert got == [(1, 2), (3, 4), (5, 6), (7, 8), (9, 10)]
+    assert got == [
+        (1, 2),
+        (3, 4),
+        (5, 6),
+        (7, 8),
+        (9, 10),
+    ]
 
 
 def test_other_slice_size():
-    got = [elem for elem in SliceIterator(list(range(1, 10)), 5)]
+    got = list(SliceIterator(list(range(1, 10)), 5))
 
-    assert got == [(1, 2, 3, 4, 5), (6, 7, 8, 9)]
+    assert got == [
+        (1, 2, 3, 4, 5),
+        (6, 7, 8, 9),
+    ]

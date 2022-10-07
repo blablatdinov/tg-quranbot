@@ -4,6 +4,10 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 class TgChatAction(TgAnswerInterface):
+    """Запрос на API телеграма с действием.
+
+    Используется для проверки статуса пользователя.
+    """
 
     def __init__(self, answer: TgAnswerInterface):
         self._origin = answer

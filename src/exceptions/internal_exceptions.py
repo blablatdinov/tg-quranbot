@@ -13,6 +13,18 @@ class UserNotFoundError(BaseAppError):
     user_message = 'Пользователь не найден'
 
 
+class UserHasNotGeneratedPrayersError(BaseAppError):
+    """У пользователя нет сгенерированных времен намаза на текущий день."""
+
+    admin_message = ''
+
+
+class NotProcessableUpdateError(BaseAppError):
+    """Исключение, вызываемое если бот не знает как обработать запрос."""
+
+    admin_message = ''
+
+
 class TelegramIntegrationsError(BaseAppError):
     """Исключение, возбуждаемое при некорректном ответе от API телеграмма."""
 
@@ -26,16 +38,8 @@ class TelegramIntegrationsError(BaseAppError):
         return self._message
 
     def chat_id(self):
+        """Получить идентификатор чата.
+
+        :return: int
+        """
         return self._chat_id
-
-
-class UserHasNotGeneratedPrayersError(BaseAppError):
-    """У пользователя нет сгенерированных времен намаза на текущий день."""
-
-    admin_message = ''
-
-
-class NotProcessableUpdateError(BaseAppError):
-    """Исключение, вызываемое если бот не знает как обработать запрос."""
-
-    admin_message = ''
