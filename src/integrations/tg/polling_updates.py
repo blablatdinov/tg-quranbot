@@ -1,9 +1,6 @@
 import json
-from pprint import pformat
 
 import httpx
-from loguru import logger
-from pydantic import parse_obj_as
 
 from app_types.intable import Intable
 from app_types.stringable import Stringable
@@ -91,7 +88,7 @@ class UpdatesIteratorInterface(object):
         """
         raise NotImplementedError
 
-    async def __anext__(self) -> list[Update]:
+    async def __anext__(self) -> list[str]:
         """Вернуть следующий элемент.
 
         :raises NotImplementedError: if not implemented
@@ -114,7 +111,7 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
         """
         return self
 
-    async def __anext__(self) -> list[Update]:
+    async def __anext__(self) -> list[str]:
         """Вернуть следующий элемент.
 
         :return: list[Update]
@@ -132,8 +129,4 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
             if not parsed_result:
                 return []
             self._offset = parsed_result[-1]['update_id'] + 1
-            updates = parse_obj_as(list[Update], parsed_result)
-            logger.debug('\n{0}'.format(
-                pformat([update.dict() for update in updates]),
-            ))
-            return updates
+            return [json.dumps(elem, ensure_ascii=False) for elem in parsed_result]

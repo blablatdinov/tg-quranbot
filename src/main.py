@@ -4,6 +4,7 @@ from contextlib import suppress
 import aioredis
 
 from db.connection import database
+from integrations.nats_integration import NatsSink
 from integrations.tg.app import DatabaseConnectedApp, PollingApp
 from integrations.tg.polling_updates import (
     PollingUpdatesIterator,
@@ -13,7 +14,7 @@ from integrations.tg.polling_updates import (
     UpdatesWithOffsetURL,
 )
 from integrations.tg.sendable import SendableAnswer
-from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer, TgMessageAnswer
+from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer
 from quranbot_answer import QuranbotAnswer
 from repository.users.users import UsersRepository
 from schedule_app import CheckUsersStatus
@@ -25,13 +26,13 @@ from services.append_update_id_answer import (
     UpdateIdDebugParam,
 )
 from services.cli_app import CliApp, CommandCliApp, ForkCliApp
+from services.logged_answer import LoggedAnswer
 from settings import settings
 
 
 def main() -> None:
     """Точка входа в приложение."""
-    empty_answer = TgEmptyAnswer(settings.API_TOKEN)
-    message_answer = TgMessageAnswer(empty_answer)
+    nats_sink = NatsSink()
     quranbot_polling_app = CliApp(
         DatabaseConnectedApp(
             database,
@@ -45,22 +46,24 @@ def main() -> None:
                     ),
                     UpdatesTimeout(),
                 ),
-                SendableAnswer(
-                    AppendDebugInfoAnswer(
-                        settings.DEBUG,
-                        TgMeasureAnswer(
-                            QuranbotAnswer(
-                                empty_answer,
-                                message_answer,
-                                database,
-                                aioredis.from_url(str(settings.REDIS_DSN)),  # type: ignore
+                LoggedAnswer(
+                    SendableAnswer(
+                        AppendDebugInfoAnswer(
+                            settings.DEBUG,
+                            TgMeasureAnswer(
+                                QuranbotAnswer(
+                                    database,
+                                    aioredis.from_url(str(settings.REDIS_DSN)),  # type: ignore
+                                    nats_sink,
+                                ),
                             ),
+                            UpdateIdDebugParam(),
+                            ChatIdDebugParam(),
+                            TimeDebugParam(),
+                            CommitHashDebugParam(settings.BASE_DIR.parent),
                         ),
-                        UpdateIdDebugParam(),
-                        ChatIdDebugParam(),
-                        TimeDebugParam(),
-                        CommitHashDebugParam(settings.BASE_DIR.parent),
                     ),
+                    nats_sink,
                 ),
             ),
         ),
@@ -77,7 +80,7 @@ def main() -> None:
                     database,
                     CheckUsersStatus(
                         UsersRepository(database),
-                        empty_answer,
+                        TgEmptyAnswer(settings.API_TOKEN),
                     ),
                 ),
             ),

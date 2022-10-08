@@ -3,6 +3,7 @@ from aioredis import Redis
 from databases import Database
 
 from integrations.client import IntegrationClient
+from integrations.nats_integration import SinkInterface
 from integrations.nominatim import NominatimIntegration
 from integrations.tg.tg_answers import (
     TgAnswerFork,
@@ -11,8 +12,10 @@ from integrations.tg.tg_answers import (
     TgAnswerToSender,
     TgAudioAnswer,
     TgCallbackQueryRegexAnswer,
+    TgEmptyAnswer,
     TgHtmlParseAnswer,
     TgKeyboardEditAnswer,
+    TgMessageAnswer,
     TgMessageRegexAnswer,
     TgReplySourceAnswer,
     TgTextAnswer,
@@ -65,15 +68,13 @@ class QuranbotAnswer(TgAnswerInterface):
 
     def __init__(
         self,
-        empty_answer: TgAnswerInterface,
-        message_answer: TgAnswerInterface,
         database: Database,
         redis: Redis,
+        event_sink: SinkInterface,
     ):
-        self._empty_answer = empty_answer
-        self._message_answer = message_answer
         self._database = database
         self._redis = redis
+        self._event_sink = event_sink
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -81,10 +82,13 @@ class QuranbotAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
-        answer_to_sender = TgAnswerToSender(self._message_answer)
+        empty_answer = TgEmptyAnswer(settings.API_TOKEN)
+        answer_to_sender = TgAnswerToSender(TgMessageAnswer(empty_answer))
         audio_to_sender = TgAudioAnswer(answer_to_sender)
         html_to_sender = TgAnswerToSender(
-            TgHtmlParseAnswer(self._message_answer),
+            TgHtmlParseAnswer(
+                TgMessageAnswer(empty_answer),
+            ),
         )
         ayat_repo = AyatRepository(self._database)
         return await SafeFork(
@@ -94,7 +98,7 @@ class QuranbotAnswer(TgAnswerInterface):
                     ResetStateAnswer(
                         PodcastAnswer(
                             settings.DEBUG,
-                            self._empty_answer,
+                            empty_answer,
                             RandomPodcast(self._database),
                         ),
                         self._redis,
@@ -119,7 +123,7 @@ class QuranbotAnswer(TgAnswerInterface):
                             ),
                             self._redis,
                         ),
-                        self._message_answer,
+                        TgMessageAnswer(empty_answer),
                         self._redis,
                     ),
                 ),
@@ -206,7 +210,7 @@ class QuranbotAnswer(TgAnswerInterface):
                         TgAnswerMarkup(
                             SafeStartAnswer(
                                 StartAnswer(
-                                    self._empty_answer,
+                                    empty_answer,
                                     UserRepository(self._database),
                                     AdminMessageRepository(self._database),
                                     ayat_repo,
@@ -246,7 +250,7 @@ class QuranbotAnswer(TgAnswerInterface):
                     '(mark_readed|mark_not_readed)',
                     UserPrayerStatusChangeAnswer(
                         TgAnswerToSender(
-                            TgKeyboardEditAnswer(self._empty_answer),
+                            TgKeyboardEditAnswer(empty_answer),
                         ),
                         UserPrayerStatus(self._database),
                         UserPrayers(self._database),
@@ -300,7 +304,7 @@ class QuranbotAnswer(TgAnswerInterface):
                     ),
                 ),
                 InlineQueryAnswer(
-                    self._empty_answer,
+                    empty_answer,
                     SearchCityByName(self._database),
                 ),
             ),
