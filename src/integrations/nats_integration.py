@@ -4,11 +4,11 @@ import uuid
 
 import nats
 from loguru import logger
-from nats.aio.client import Client
 from quranbot_schema_registry.validate_schema import validate_schema
 
 
 class SinkInterface(object):
+    """Интерфейс отправщика событий."""
 
     async def send(self, event_data: dict, event_name: str, version: int) -> None:
         """Отправить событие.
@@ -22,6 +22,7 @@ class SinkInterface(object):
 
 
 class NatsSink(SinkInterface):
+    """Отправщик событий в nats."""
 
     _queue_name = 'quranbot'
 

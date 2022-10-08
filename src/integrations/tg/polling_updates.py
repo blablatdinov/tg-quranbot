@@ -1,9 +1,6 @@
 import json
-from pprint import pformat
 
 import httpx
-from loguru import logger
-from pydantic import parse_obj_as
 
 from app_types.intable import Intable
 from app_types.stringable import Stringable
@@ -91,7 +88,7 @@ class UpdatesIteratorInterface(object):
         """
         raise NotImplementedError
 
-    async def __anext__(self) -> list[Update]:
+    async def __anext__(self) -> list[str]:
         """Вернуть следующий элемент.
 
         :raises NotImplementedError: if not implemented

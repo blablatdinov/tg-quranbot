@@ -1,9 +1,7 @@
-import asyncio
 import sys
 from contextlib import suppress
 
 import aioredis
-import nats
 
 from db.connection import database
 from integrations.nats_integration import NatsSink

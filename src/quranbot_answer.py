@@ -1,8 +1,6 @@
 import httpx
-import nats
 from aioredis import Redis
 from databases import Database
-from nats.aio.client import Client
 
 from integrations.client import IntegrationClient
 from integrations.nats_integration import SinkInterface
@@ -72,7 +70,7 @@ class QuranbotAnswer(TgAnswerInterface):
         self,
         database: Database,
         redis: Redis,
-        event_sink: SinkInterface
+        event_sink: SinkInterface,
     ):
         self._database = database
         self._redis = redis
