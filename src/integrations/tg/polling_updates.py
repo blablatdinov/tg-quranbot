@@ -114,7 +114,7 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
         """
         return self
 
-    async def __anext__(self) -> list[Update]:
+    async def __anext__(self) -> list[str]:
         """Вернуть следующий элемент.
 
         :return: list[Update]
@@ -132,8 +132,4 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
             if not parsed_result:
                 return []
             self._offset = parsed_result[-1]['update_id'] + 1
-            updates = parse_obj_as(list[Update], parsed_result)
-            logger.debug('\n{0}'.format(
-                pformat([update.dict() for update in updates]),
-            ))
-            return updates
+            return [json.dumps(elem, ensure_ascii=False) for elem in parsed_result]
