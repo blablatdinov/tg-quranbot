@@ -53,6 +53,7 @@ from services.prayers.invite_set_city_answer import InviteSetCityAnswer
 from services.prayers.prayer_for_user_answer import PrayerForUserAnswer
 from services.prayers.prayer_status import UserPrayerStatus
 from services.prayers.prayer_times import UserPrayerStatusChangeAnswer
+from services.reset_state_answer import ResetStateAnswer
 from services.start_answer import SafeStartAnswer, StartAnswer
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
@@ -90,27 +91,33 @@ class QuranbotAnswer(TgAnswerInterface):
             TgAnswerFork(
                 TgMessageRegexAnswer(
                     'Подкасты',
-                    PodcastAnswer(
-                        settings.DEBUG,
-                        self._empty_answer,
-                        RandomPodcast(self._database),
+                    ResetStateAnswer(
+                        PodcastAnswer(
+                            settings.DEBUG,
+                            self._empty_answer,
+                            RandomPodcast(self._database),
+                        ),
+                        self._redis,
                     ),
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',
                     InviteSetCityAnswer(
-                        PrayerForUserAnswer(
-                            answer_to_sender,
-                            SafeNotFoundPrayers(
-                                self._database,
-                                SafeUserPrayers(
-                                    UserPrayers(self._database),
-                                    NewUserPrayers(
-                                        self._database,
+                        ResetStateAnswer(
+                            PrayerForUserAnswer(
+                                answer_to_sender,
+                                SafeNotFoundPrayers(
+                                    self._database,
+                                    SafeUserPrayers(
                                         UserPrayers(self._database),
+                                        NewUserPrayers(
+                                            self._database,
+                                            UserPrayers(self._database),
+                                        ),
                                     ),
                                 ),
                             ),
+                            self._redis,
                         ),
                         self._message_answer,
                         self._redis,
@@ -118,11 +125,14 @@ class QuranbotAnswer(TgAnswerInterface):
                 ),
                 TgMessageRegexAnswer(
                     'Избранное',
-                    FavoriteAyatAnswer(
-                        settings.DEBUG,
-                        html_to_sender,
-                        audio_to_sender,
-                        FavoriteAyatsRepository(self._database),
+                    ResetStateAnswer(
+                        FavoriteAyatAnswer(
+                            settings.DEBUG,
+                            html_to_sender,
+                            audio_to_sender,
+                            FavoriteAyatsRepository(self._database),
+                        ),
+                        self._redis,
                     ),
                 ),
                 StepAnswer(
@@ -161,19 +171,22 @@ class QuranbotAnswer(TgAnswerInterface):
                 ),
                 TgMessageRegexAnswer(
                     r'\d+:\d+',
-                    SuraNotFoundSafeAnswer(
-                        AyatNotFoundSafeAnswer(
-                            AyatBySuraAyatNumAnswer(
-                                settings.DEBUG,
-                                html_to_sender,
-                                audio_to_sender,
-                                AyatBySuraAyatNum(
-                                    Sura(self._database),
+                    ResetStateAnswer(
+                        SuraNotFoundSafeAnswer(
+                            AyatNotFoundSafeAnswer(
+                                AyatBySuraAyatNumAnswer(
+                                    settings.DEBUG,
+                                    html_to_sender,
+                                    audio_to_sender,
+                                    AyatBySuraAyatNum(
+                                        Sura(self._database),
+                                    ),
                                 ),
+                                answer_to_sender,
                             ),
                             answer_to_sender,
                         ),
-                        answer_to_sender,
+                        self._redis,
                     ),
                 ),
                 TgMessageRegexAnswer(
@@ -189,21 +202,24 @@ class QuranbotAnswer(TgAnswerInterface):
                 ),
                 TgMessageRegexAnswer(
                     '/start',
-                    TgAnswerMarkup(
-                        SafeStartAnswer(
-                            StartAnswer(
-                                self._empty_answer,
+                    ResetStateAnswer(
+                        TgAnswerMarkup(
+                            SafeStartAnswer(
+                                StartAnswer(
+                                    self._empty_answer,
+                                    UserRepository(self._database),
+                                    AdminMessageRepository(self._database),
+                                    ayat_repo,
+                                ),
+                                answer_to_sender,
                                 UserRepository(self._database),
-                                AdminMessageRepository(self._database),
-                                ayat_repo,
+                                UsersRepository(self._database),
                             ),
-                            answer_to_sender,
-                            UserRepository(self._database),
-                            UsersRepository(self._database),
+                            ResizedKeyboard(
+                                DefaultKeyboard(),
+                            ),
                         ),
-                        ResizedKeyboard(
-                            DefaultKeyboard(),
-                        ),
+                        self._redis,
                     ),
                 ),
                 StepAnswer(
