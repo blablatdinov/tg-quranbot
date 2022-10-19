@@ -23,7 +23,7 @@ httpx = "^0.23.0"
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = {git = "https://github.com/blablatdinov/wemake-python-styleguide", branch="empty-lines-fix-dedent-search"}
 ipython = "^8.4.0"
-mypy = "^0.981"
+mypy = "^0.982"
 asyncpg-stubs = "^0.26.0"
 pytest-cov = "^3.0.0"
 pytest = "^7.1.2"
