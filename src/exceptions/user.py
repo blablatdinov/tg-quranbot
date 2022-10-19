@@ -11,3 +11,7 @@ class StartMessageNotContainReferrer(BaseAppError):
     """Стартовое сообщение не содержит информации о пригласившем."""
 
     admin_message = ''
+
+
+class UserAlreadyActive(BaseAppError):
+    """Пользователь уже активен."""

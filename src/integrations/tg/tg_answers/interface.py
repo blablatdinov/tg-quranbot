@@ -1,9 +1,11 @@
+from typing import Protocol
+
 import httpx
 
 from integrations.tg.tg_answers.update import Update
 
 
-class TgAnswerInterface(object):
+class TgAnswerInterface(Protocol):
     """Интерфейс ответа пользователю."""
 
     async def build(self, update: Update) -> list[httpx.Request]:

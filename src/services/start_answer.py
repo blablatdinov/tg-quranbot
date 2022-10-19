@@ -3,7 +3,8 @@ from contextlib import suppress
 import httpx
 
 from exceptions.base_exception import BaseAppError
-from exceptions.user import StartMessageNotContainReferrer, UserAlreadyExists
+from exceptions.user import StartMessageNotContainReferrer, UserAlreadyActive, UserAlreadyExists
+from integrations.nats_integration import SinkInterface
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
 from integrations.tg.tg_answers.update import Update
 from repository.admin_message import AdminMessageRepositoryInterface
@@ -37,7 +38,7 @@ class StartMessage(object):
         return message_meta
 
 
-class SafeStartAnswer(TgAnswerInterface):
+class UserAlreadyExistsAnswer(TgAnswerInterface):
     """Декоратор обработчика стартового сообщение с предохранением от UserAlreadyExists."""
 
     def __init__(
@@ -46,11 +47,13 @@ class SafeStartAnswer(TgAnswerInterface):
         sender_answer: TgAnswerInterface,
         user_repo: UserRepositoryInterface,
         users_repo: UsersRepositoryInterface,
+        event_sink: SinkInterface,
     ):
         self._origin = start_answer
         self._user_repo = user_repo
         self._sender_answer = sender_answer
         self._users_repo = users_repo
+        self._event_sink = event_sink
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
@@ -62,15 +65,61 @@ class SafeStartAnswer(TgAnswerInterface):
             return await self._origin.build(update)
         user = await self._user_repo.get_by_chat_id(update.chat_id())
         if user.is_active:
-            return await TgTextAnswer(
-                self._sender_answer,
-                'Вы уже зарегистрированы!',
-            ).build(update)
+            raise UserAlreadyActive
         await self._users_repo.update_status([update.chat_id()], to=True)
+        await self._event_sink.send(
+            {
+                'user_id': update.chat_id(),
+                'date_time': str(update.message().date),
+            },
+            'User.Reactivated',
+            1
+        )
         return await TgTextAnswer(
             self._sender_answer,
             'Рады видеть вас снова, вы продолжите с дня {0}'.format(user.day),
         ).build(update)
+
+
+class UserAlreadyActiveSafeAnswer(TgAnswerInterface):
+
+    def __init__(self, answer: TgAnswerInterface, sender_answer: TgAnswerInterface):
+        self._origin = answer
+        self._sender_answer = sender_answer
+
+    async def build(self, update: Update) -> list[httpx.Request]:
+        try:
+            return await self._origin.build(update)
+        except UserAlreadyActive:
+            return await TgTextAnswer(
+                self._sender_answer,
+                'Вы уже зарегистрированы!',
+            ).build(update)
+
+
+class StartWithEventAnswer(TgAnswerInterface):
+
+    def __init__(self, answer: TgAnswerInterface, event_sink: SinkInterface, user_repo: UserRepositoryInterface):
+        self._origin = answer
+        self._event_sink = event_sink
+        self._user_repo = user_repo
+
+    async def build(self, update: Update) -> list[httpx.Request]:
+        try:
+            referrer_id = await StartMessage(update.message().text(), self._user_repo).referrer_chat_id()
+        except StartMessageNotContainReferrer:
+            referrer_id = None
+        requests = await self._origin.build(update)
+        await self._event_sink.send(
+            {
+                'user_id': update.chat_id(),
+                'referrer_id': referrer_id,
+                'date_time': str(update.message().date),
+            },
+            'User.Subscribed',
+            1,
+        )
+        return requests
 
 
 class StartAnswer(TgAnswerInterface):
