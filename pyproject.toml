@@ -25,7 +25,7 @@ wemake-python-styleguide = {git = "https://github.com/blablatdinov/wemake-python
 ipython = "^8.4.0"
 mypy = "^0.982"
 asyncpg-stubs = "^0.26.0"
-pytest-cov = "^3.0.0"
+pytest-cov = "^4.0.0"
 pytest = "^7.1.2"
 pytest-asyncio = "^0.19.0"
 mixer = "^7.2.2"
