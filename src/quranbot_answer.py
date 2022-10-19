@@ -56,8 +56,11 @@ from services.prayers.invite_set_city_answer import InviteSetCityAnswer
 from services.prayers.prayer_for_user_answer import PrayerForUserAnswer
 from services.prayers.prayer_status import UserPrayerStatus
 from services.prayers.prayer_times import UserPrayerStatusChangeAnswer
+from services.register_event import StartWithEventAnswer
 from services.reset_state_answer import ResetStateAnswer
-from services.start_answer import SafeStartAnswer, StartAnswer
+from services.start.start_answer import StartAnswer
+from services.start.user_already_active import UserAlreadyActiveSafeAnswer
+from services.start.user_already_exists import UserAlreadyExistsAnswer
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
 from settings import settings
@@ -208,16 +211,24 @@ class QuranbotAnswer(TgAnswerInterface):
                     '/start',
                     ResetStateAnswer(
                         TgAnswerMarkup(
-                            SafeStartAnswer(
-                                StartAnswer(
-                                    empty_answer,
+                            UserAlreadyActiveSafeAnswer(
+                                UserAlreadyExistsAnswer(
+                                    StartWithEventAnswer(
+                                        StartAnswer(
+                                            TgMessageAnswer(empty_answer),
+                                            UserRepository(self._database),
+                                            AdminMessageRepository(self._database),
+                                            ayat_repo,
+                                        ),
+                                        self._event_sink,
+                                        UserRepository(self._database),
+                                    ),
+                                    answer_to_sender,
                                     UserRepository(self._database),
-                                    AdminMessageRepository(self._database),
-                                    ayat_repo,
+                                    UsersRepository(self._database),
+                                    self._event_sink,
                                 ),
                                 answer_to_sender,
-                                UserRepository(self._database),
-                                UsersRepository(self._database),
                             ),
                             ResizedKeyboard(
                                 DefaultKeyboard(),
