@@ -49,7 +49,6 @@ class NatsSink(SinkInterface):
         logger.info('Publishing to queue: {0}, event_id: {1}, event_name: {2}'.format(
             self._queue_name, event['event_id'], event['event_name'],
         ))
-        print(f'{event=}')
         await jetstream.publish(self._queue_name, json.dumps(event).encode('utf-8'))
         logger.info('Event: id={0} name={1} to queue: {2} successful published'.format(
             event['event_id'], event['event_name'], self._queue_name,

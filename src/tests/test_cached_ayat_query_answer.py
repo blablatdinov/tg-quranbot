@@ -38,7 +38,8 @@ def update():
             },
             "location_": null,
             "message_id": 22199,
-            "text": "камни"
+            "text": "камни",
+            "date": 1666185977
         },
         "update_id": 637462858
     }
