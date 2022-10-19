@@ -2,10 +2,10 @@ import datetime
 from pathlib import Path
 
 import httpx
-from git import Repo
 
 from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
+from settings import settings
 
 
 class DebugParamInterface(object):
@@ -114,5 +114,5 @@ class CommitHashDebugParam(DebugParamInterface):
         :param update: Update
         :return: str
         """
-        git_repo = Repo(self._path_to_repo)
+        git_repo = settings.COMMIT_HASH
         return 'Commit hash: {0}'.format(git_repo.head.commit.hexsha[:6])
