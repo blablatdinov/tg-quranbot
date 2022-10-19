@@ -36,7 +36,6 @@ async def run_migrations_offline() -> None:
         dialect_opts={'paramstyle': 'named'},
         compare_type=True,
     )
-
     with context.begin_transaction():
         context.run_migrations()
 
@@ -47,7 +46,6 @@ def do_run_migrations(connection: Connection) -> None:
     :param connection: connection to the database.
     """
     context.configure(connection=connection, target_metadata=target_metadata, compare_type=True)
-
     with context.begin_transaction():
         context.run_migrations()
 
@@ -59,9 +57,9 @@ async def run_migrations_online() -> None:
     and associate a connection with the context.
     """
     connectable = create_async_engine(settings.alembic_db_url)
-
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)
+
 
 loop = asyncio.get_event_loop()
 if context.is_offline_mode():

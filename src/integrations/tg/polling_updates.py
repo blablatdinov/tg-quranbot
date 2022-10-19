@@ -4,7 +4,6 @@ import httpx
 
 from app_types.intable import Intable
 from app_types.stringable import Stringable
-from integrations.tg.tg_answers.update import Update
 
 
 class UpdatesTimeout(Intable):
