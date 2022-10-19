@@ -30,7 +30,6 @@ class UsersStatus(object):
                 ]
                 user_number += 1
             await asyncio.gather(*tasks)
-
         if self._unsubscribed_user_chat_ids:
             await self._users_repository.update_status(self._unsubscribed_user_chat_ids, to=False)
 

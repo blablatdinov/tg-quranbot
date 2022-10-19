@@ -36,7 +36,6 @@ class IntegrationClient(IntegrationClientInterface):
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as resp:
                 text = await resp.text()
-
         return model_for_parse.parse_raw(text)
 
 

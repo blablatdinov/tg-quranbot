@@ -19,5 +19,4 @@ class TgAnswerList(TgAnswerInterface):
         for answer in self._answers:
             answer_requests = await answer.build(update)
             rebuilded_requests += answer_requests
-
         return rebuilded_requests
