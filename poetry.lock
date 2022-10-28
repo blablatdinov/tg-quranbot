@@ -1440,9 +1440,9 @@ typing_extensions = ">=4.0,<5.0"
 
 [package.source]
 type = "git"
-url = "https://github.com/blablatdinov/wemake-python-styleguide"
-reference = "empty-lines-fix-dedent-search"
-resolved_reference = "35fba1403035fbf8151df626a2300ed1b6428d98"
+url = "https://github.com/wemake-services/wemake-python-styleguide"
+reference = "master"
+resolved_reference = "89a621e0b55ddc8ec7d666d24e91f90d1d91a012"
 
 [[package]]
 name = "win32-setctime"
@@ -1470,7 +1470,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "d81e2a14163dd082baa89a533971cacc3270d80d6be43a1f69c5a0af51bf19c5"
+content-hash = "14e5fa078cb91636738ecb04e198bcf0df4d647b224bf4c356223d1c416a630c"
 
 [metadata.files]
 aiogram = [
