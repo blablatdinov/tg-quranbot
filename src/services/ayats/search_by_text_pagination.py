@@ -10,10 +10,11 @@ from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
 from services.ayats.ayat_answer import AyatAnswer
 from services.ayats.ayat_text_search_query import AyatTextSearchQuery
 from services.ayats.keyboards import AyatAnswerKeyboard
+from services.regular_expression import IntableRegularExpression
 
 
-class SearchAyatByTextAnswer(TgAnswerInterface):
-    """Поиск аята по тексту."""
+class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
+    """Поиск аята по тексту для обработки нажатия кнопки."""
 
     def __init__(
         self,
@@ -36,11 +37,19 @@ class SearchAyatByTextAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         :raises AyatNotFoundError: if ayat not found
         """
-        query = update.message().text()
+        target_ayat_id = int(IntableRegularExpression(update.callback_query().data))
         try:
-            result_ayat = (await self._ayat_repo.search_by_text(query))[0]
+            ayats = await self._ayat_repo.search_by_text(
+                await AyatTextSearchQuery.for_reading_cs(self._redis, update.chat_id()).read(),
+            )
         except IndexError as err:
             raise AyatNotFoundError from err
+        for ayat in ayats:
+            if ayat.id == target_ayat_id:
+                result_ayat = ayat
+                break
+        else:
+            raise AyatNotFoundError
         answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,
@@ -52,7 +61,10 @@ class SearchAyatByTextAnswer(TgAnswerInterface):
                 TextSearchNeighborAyatsRepository(
                     database,
                     result_ayat.id,
-                    AyatTextSearchQuery.for_reading_cs(self._redis, update.chat_id()),
+                    AyatTextSearchQuery.for_reading_cs(
+                        self._redis,
+                        update.chat_id(),
+                    ),
                 ),
             ),
         ).build(update)

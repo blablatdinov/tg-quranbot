@@ -3,8 +3,9 @@ import httpx
 from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
+from repository.ayats.neighbor_ayats import FavoriteNeighborAyats
 from services.ayats.ayat_answer import AyatAnswer
-from services.ayats.keyboards import FavoriteAyatAnswerKeyboard
+from services.ayats.keyboards import AyatAnswerKeyboard
 from services.regular_expression import IntableRegularExpression
 
 
@@ -56,7 +57,13 @@ class FavoriteAyatAnswer(TgAnswerInterface):
             self._debug_mode,
             answers,
             result_ayat,
-            FavoriteAyatAnswerKeyboard(result_ayat, self._favorite_ayats_repo),
+            AyatAnswerKeyboard(
+                result_ayat,
+                self._favorite_ayats_repo,
+                FavoriteNeighborAyats(
+                    result_ayat.id, update.chat_id(), self._favorite_ayats_repo,
+                ),
+            ),
         ).build(update)
 
 
@@ -89,5 +96,9 @@ class FavoriteAyatPage(TgAnswerInterface):
             self._debug_mode,
             answers,
             result_ayat,
-            FavoriteAyatAnswerKeyboard(result_ayat, self._favorite_ayats_repo),
+            AyatAnswerKeyboard(
+                result_ayat,
+                self._favorite_ayats_repo,
+                FavoriteNeighborAyats(result_ayat.id, update.chat_id(), self._favorite_ayats_repo),
+            ),
         ).build(update)
