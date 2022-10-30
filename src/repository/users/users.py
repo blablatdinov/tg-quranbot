@@ -1,3 +1,5 @@
+from typing import Protocol
+
 from databases import Database
 from pydantic import BaseModel, parse_obj_as
 
@@ -8,39 +10,27 @@ class QueryResultItem(BaseModel):
     chat_id: int
 
 
-class UsersRepositoryInterface(object):
+class UsersRepositoryInterface(Protocol):
     """Интерфейс для работы с хранилищем множества пользователей."""
 
     async def get_active_user_chat_ids(self) -> list[int]:
-        """Получить активных пользователей.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Получить активных пользователей."""
 
     async def update_status(self, chat_ids: list[int], to: bool):
         """Обнвоить статус пользователей.
 
         :param chat_ids: list[int]
         :param to: bool
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
     async def increment_user_days(self, chat_ids: list[int]):
         """Обнвоить статус пользователей.
 
         :param chat_ids: list[int]
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
-    async def active_users_with_city(self):
-        """Вернуть активных пользователей, у которых есть город.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+    async def active_users_with_city(self) -> list[int]:
+        """Вернуть активных пользователей, у которых есть город."""
 
 
 class UsersRepository(UsersRepositoryInterface):

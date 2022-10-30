@@ -4,6 +4,8 @@ from contextlib import suppress
 import aioredis
 
 from db.connection import database
+from event_recieve import RecievedEvents
+from integrations.event_handlers.prayers_sended import SendPrayersEvent
 from integrations.nats_integration import NatsSink
 from integrations.tg.app import DatabaseConnectedApp, PollingApp
 from integrations.tg.polling_updates import (
@@ -81,6 +83,21 @@ def main() -> None:
                     CheckUsersStatus(
                         UsersRepository(database),
                         TgEmptyAnswer(settings.API_TOKEN),
+                    ),
+                ),
+            ),
+        ),
+        CommandCliApp(
+            'recieve_events',
+            CliApp(
+                DatabaseConnectedApp(
+                    database,
+                    RecievedEvents(
+                        SendPrayersEvent(
+                            UsersRepository(database),
+                            TgEmptyAnswer(settings.API_TOKEN),
+                            database,
+                        ),
                     ),
                 ),
             ),

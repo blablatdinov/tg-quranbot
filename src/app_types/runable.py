@@ -1,21 +1,18 @@
-class Runable(object):
+from typing import Protocol
+
+
+class Runable(Protocol):
     """Интерфейс запускаемого объекта."""
 
     async def run(self) -> None:
-        """Запуск.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Запуск."""
 
 
-class SyncRunable(object):
+class SyncRunable(Protocol):
     """Интерфейс блокирующего запускаемого объекта."""
 
     def run(self, args: list[str]) -> int:
         """Запуск.
 
         :param args: list[str]
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
