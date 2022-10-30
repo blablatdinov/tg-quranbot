@@ -2,7 +2,6 @@ import datetime
 from pathlib import Path
 
 import httpx
-from git import Repo
 
 from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.tg_answers.update import Update
@@ -105,8 +104,8 @@ class ChatIdDebugParam(DebugParamInterface):
 class CommitHashDebugParam(DebugParamInterface):
     """Отладочная информация с хэшом коммита."""
 
-    def __init__(self, path_to_repo: Path):
-        self._path_to_repo = path_to_repo
+    def __init__(self, commit_hash: str):
+        self._commit_hash = commit_hash
 
     async def debug_value(self, update: Update) -> str:
         """Хэш коммита.
@@ -114,5 +113,4 @@ class CommitHashDebugParam(DebugParamInterface):
         :param update: Update
         :return: str
         """
-        git_repo = Repo(self._path_to_repo)
-        return 'Commit hash: {0}'.format(git_repo.head.commit.hexsha[:6])
+        return 'Commit hash: {0}'.format(self._commit_hash)

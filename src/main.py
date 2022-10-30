@@ -62,7 +62,7 @@ def main() -> None:
                             UpdateIdDebugParam(),
                             ChatIdDebugParam(),
                             TimeDebugParam(),
-                            CommitHashDebugParam(settings.BASE_DIR.parent),
+                            CommitHashDebugParam(''),
                         ),
                     ),
                     nats_sink,
