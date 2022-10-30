@@ -4,7 +4,8 @@ from contextlib import suppress
 import aioredis
 
 from db.connection import database
-from event_recieve import RecievedEvents, SendPrayersEvent
+from event_recieve import RecievedEvents
+from integrations.event_handlers.prayers_sended import SendPrayersEvent
 from integrations.nats_integration import NatsSink
 from integrations.tg.app import DatabaseConnectedApp, PollingApp
 from integrations.tg.polling_updates import (
