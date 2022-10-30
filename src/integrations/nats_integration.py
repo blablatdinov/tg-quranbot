@@ -42,8 +42,8 @@ class NatsSink(SinkInterface):
             'producer': 'quranbot-aiogram',
             'data': event_data,
         }
-        ns = await nats.connect('localhost:4222')
         validate_schema(event, event_name, version)
+        ns = await nats.connect('localhost:4222')
         jetstream = ns.jetstream()
         await jetstream.add_stream(name=self._queue_name)
         logger.info('Publishing to queue: {0}, event_id: {1}, event_name: {2}'.format(
