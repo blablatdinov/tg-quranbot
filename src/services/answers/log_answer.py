@@ -46,7 +46,7 @@ class LoggedSourceMessageAnswer(AnswerInterface):
         self._source_message = message
         self._updates_log_repository = updates_log_repository
 
-    async def send(self, chat_id: int = None) -> list[types.Message]:
+    async def send(self, chat_id: int | None = None) -> list[types.Message]:
         """Метод для отправки ответа.
 
         :param chat_id: int
@@ -72,7 +72,7 @@ class LoggedAnswerByCallback(AnswerInterface):
         self._source_callback_query = callback_query
         self._updates_log_repository = updates_log_repository
 
-    async def send(self, chat_id: int = None) -> list[types.Message]:
+    async def send(self, chat_id: int | None = None) -> list[types.Message]:
         """Метод для отправки ответа.
 
         :param chat_id: int
