@@ -5,10 +5,10 @@ description = ""
 authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.10,<3.11"
 aiogram = "^2.21"
 pydantic = {extras = ["dotenv"], version = "^1.9.1"}
-asyncpg = "^0.27.0"
+asyncpg = "0.27.0"
 loguru = "^0.6.0"
 aioredis = "^2.0.1"
 nats-py = "^2.1.4"
@@ -24,7 +24,7 @@ httpx = "^0.23.0"
 wemake-python-styleguide = {git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master"}
 ipython = "^8.4.0"
 mypy = "^0.982"
-asyncpg-stubs = "^0.26.0"
+asyncpg-stubs = "0.27.0"
 pytest-cov = "^4.0.0"
 pytest = "^7.1.2"
 pytest-asyncio = "^0.20.0"
