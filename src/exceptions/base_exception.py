@@ -4,7 +4,7 @@ class BaseAppError(Exception):
     user_message: str = 'Произошла какая-то ошибка'
     admin_message: str
 
-    def __init__(self, answer_message: str = None, message_for_admin_text: str = None):
+    def __init__(self, answer_message: str | None = None, message_for_admin_text: str | None = None):
         if answer_message:
             self.user_message = answer_message  # noqa: WPS601
         # TODO: get traceback
