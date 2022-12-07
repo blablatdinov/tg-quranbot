@@ -102,12 +102,12 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "APScheduler"
-version = "3.9.1"
+name = "apscheduler"
+version = "3.9.1.post1"
 description = "In-process task scheduler with Cron-like capabilities"
 category = "main"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
+python-versions = "!=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
 
 [package.dependencies]
 pytz = "*"
@@ -1477,7 +1477,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10,<3.11"
-content-hash = "e91bde55bb5dfaa53964d9bbc6a19eb5196d655bb717da2b869542de24ad9147"
+content-hash = "980d3a137ddd2f08f5962592eed8485e37db18d0b15549eef21b2dbefc6da78e"
 
 [metadata.files]
 aiogram = [
@@ -1593,9 +1593,9 @@ appnope = [
     {file = "appnope-0.1.3-py2.py3-none-any.whl", hash = "sha256:265a455292d0bd8a72453494fa24df5a11eb18373a60c7c0430889f22548605e"},
     {file = "appnope-0.1.3.tar.gz", hash = "sha256:02bd91c4de869fbb1e1c50aafc4098827a7a54ab2f39d9dcba6c9547ed920e24"},
 ]
-APScheduler = [
-    {file = "APScheduler-3.9.1-py2.py3-none-any.whl", hash = "sha256:ddc25a0ddd899de44d7f451f4375fb971887e65af51e41e5dcf681f59b8b2c9a"},
-    {file = "APScheduler-3.9.1.tar.gz", hash = "sha256:65e6574b6395498d371d045f2a8a7e4f7d50c6ad21ef7313d15b1c7cf20df1e3"},
+apscheduler = [
+    {file = "APScheduler-3.9.1.post1-py2.py3-none-any.whl", hash = "sha256:c8c618241dbb2785ed5a687504b14cb1851d6f7b5a4edf3a51e39cc6a069967a"},
+    {file = "APScheduler-3.9.1.post1.tar.gz", hash = "sha256:b2bea0309569da53a7261bfa0ce19c67ddbfe151bda776a6a907579fdbd3eb2a"},
 ]
 astor = [
     {file = "astor-0.8.1-py2.py3-none-any.whl", hash = "sha256:070a54e890cefb5b3739d19f30f5a5ec840ffc9c50ffa7d23cc9fc1a38ebbfc5"},
