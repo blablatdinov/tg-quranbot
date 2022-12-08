@@ -11,7 +11,7 @@ pydantic = {extras = ["dotenv"], version = "1.10.2"}
 asyncpg = "0.27.0"
 loguru = "0.6.0"
 aioredis = "2.0.1"
-nats-py = "2.1.7"
+nats-py = "2.2.0"
 quranbot-schema-registry = {git = "https://github.com/blablatdinov/quranbot-schema-registry", branch="master"}
 APScheduler = "3.9.1.post1"
 databases = "0.6.1"
