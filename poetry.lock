@@ -844,11 +844,11 @@ python-versions = "*"
 
 [[package]]
 name = "nats-py"
-version = "2.1.7"
+version = "2.2.0"
 description = "NATS client for Python"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 
 [package.extras]
 nkeys = ["nkeys"]
@@ -1486,7 +1486,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10,<3.11"
-content-hash = "a55b984f33f402946bcc0f2e74e149f5d57c376ed1a0195e92873f1bf4ab3cdf"
+content-hash = "26cb1c64da048a0c6f6952e3f410dfddf977542fde0f69ce5844fbcdee10889a"
 
 [metadata.files]
 aiogram = [
@@ -2171,7 +2171,7 @@ mypy-extensions = [
     {file = "mypy_extensions-0.4.3.tar.gz", hash = "sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8"},
 ]
 nats-py = [
-    {file = "nats-py-2.1.7.tar.gz", hash = "sha256:e26e2c8be52e7f76c3f701d5d7d4b0935e52b17c97b2e01ab9275d4c71423c41"},
+    {file = "nats-py-2.2.0.tar.gz", hash = "sha256:e45a0bafde2d04fb2d2bd6b0527b95bc77f371beaf7b6237354be0234ff9bba9"},
 ]
 packaging = [
     {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},
