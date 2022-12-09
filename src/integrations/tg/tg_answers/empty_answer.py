@@ -12,7 +12,7 @@ class TgEmptyAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Создать ответ с токеном.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         return [httpx.Request('GET', httpx.URL('https://api.telegram.org/bot{0}/'.format(self._token)))]

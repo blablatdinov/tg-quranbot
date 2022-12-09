@@ -1,6 +1,6 @@
 import json
 
-from integrations.tg.tg_answers.update import Update
+from app_types.stringable import Stringable
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.schemas import Ayat
 from services.answers.answer import KeyboardInterface
@@ -14,10 +14,10 @@ class AyatFavoriteKeyboardButton(KeyboardInterface):
         self._origin = keyboard
         self._favorite_ayat_repo = favorite_ayat_repo
 
-    async def generate(self, update: Update) -> str:
+    async def generate(self, update: Stringable) -> str:
         """Генерация клавиатуры.
 
-        :param update: Update
+        :param update: Stringable
         :return: str
         """
         keyboard = json.loads(await self._origin.generate(update))

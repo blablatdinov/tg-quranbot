@@ -1,6 +1,7 @@
 import httpx
 from databases import Database
 
+from app_types.stringable import Stringable
 from db.connection import database
 from integrations.tg.tg_answers import (
     TgAnswerInterface,
@@ -9,7 +10,6 @@ from integrations.tg.tg_answers import (
     TgKeyboardEditAnswer,
     TgMessageIdAnswer,
 )
-from integrations.tg.tg_answers.update import Update
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
 from services.ayats.favorite_ayats import FavoriteAyatStatus
@@ -31,10 +31,10 @@ class ChangeFavoriteAyatAnswer(TgAnswerInterface):
         self._origin = answer
         self._connection = connection
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         status = FavoriteAyatStatus(update.callback_query().data)

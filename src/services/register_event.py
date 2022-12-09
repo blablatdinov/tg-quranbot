@@ -1,9 +1,9 @@
 import httpx
 
+from app_types.stringable import Stringable
 from exceptions.user import StartMessageNotContainReferrer
 from integrations.nats_integration import SinkInterface
 from integrations.tg.tg_answers import TgAnswerInterface
-from integrations.tg.tg_answers.update import Update
 from repository.users.user import UserRepositoryInterface
 from services.start.start_message import StartMessage
 
@@ -16,10 +16,10 @@ class StartWithEventAnswer(TgAnswerInterface):
         self._event_sink = event_sink
         self._user_repo = user_repo
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         try:

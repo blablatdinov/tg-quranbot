@@ -1,9 +1,9 @@
 import httpx
 from aioredis import Redis
 
+from app_types.stringable import Stringable
 from exceptions.content_exceptions import CityNotSupportedError
 from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
-from integrations.tg.tg_answers.update import Update
 from repository.users.user import UserRepositoryInterface
 from services.city.search import CitySearchInterface, SearchCityQuery
 from services.user_state import LoggedUserState, UserState, UserStep
@@ -16,10 +16,10 @@ class CityNotSupportedAnswer(TgAnswerInterface):
         self._origin = answer
         self._error_answer = error_answer
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         try:
@@ -46,10 +46,10 @@ class ChangeCityAnswer(TgAnswerInterface):
         self._redis = redis
         self._user_repo = user_repo
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         :raises CityNotSupportedError: если город не поддерживается
         """

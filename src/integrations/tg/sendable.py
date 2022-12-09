@@ -16,7 +16,7 @@ class SendableInterface(object):
     async def send(self, update) -> list[dict]:
         """Отправка.
 
-        :param update: Update
+        :param update: Stringable
         :raises NotImplementedError: if not implemented
         """
         raise NotImplementedError
@@ -28,17 +28,17 @@ class SendableAnswer(SendableInterface):
     def __init__(self, answer: TgAnswerInterface):
         self._answer = answer
 
-    async def send(self, update) -> list[dict]:
+    async def send(self, update: Stringable) -> list[dict]:
         """Отправка.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[str]
         :raises TelegramIntegrationsError: при невалидном ответе от API телеграмма
         """
         responses = []
         success_status = 200
         async with httpx.AsyncClient() as client:
-            for request in await self._answer.build(Update.parse_raw(update)):
+            for request in await self._answer.build(update):
                 logger.debug('Try send request to: {0}'.format(url_parse.unquote(str(request.url))))
                 resp = await client.send(request)
                 responses.append(resp.text)
@@ -56,7 +56,7 @@ class UserNotSubscribedSafeSendable(SendableInterface):
     async def send(self, update) -> list[dict]:
         """Отправка.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[dict]
         :raises TelegramIntegrationsError: если ошибка не связана с блокировкой бота
         """
@@ -115,7 +115,7 @@ class BulkSendableAnswer(SendableInterface):
     async def send(self, update) -> list[dict]:
         """Отправка.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[dict]
         """
         tasks = [

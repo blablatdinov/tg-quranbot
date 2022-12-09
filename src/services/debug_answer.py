@@ -15,7 +15,7 @@ class DebugAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Update
+        :param update: Stringable
         :returns: list[httpx.Request]
         """
         return await TgTextAnswer(

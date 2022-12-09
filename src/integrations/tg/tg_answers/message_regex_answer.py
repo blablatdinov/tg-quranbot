@@ -2,8 +2,8 @@ import re
 
 import httpx
 
+from app_types.stringable import Stringable
 from integrations.tg.tg_answers.interface import TgAnswerInterface
-from integrations.tg.tg_answers.update import Update
 
 
 class TgMessageRegexAnswer(TgAnswerInterface):
@@ -13,10 +13,10 @@ class TgMessageRegexAnswer(TgAnswerInterface):
         self._pattern = pattern
         self._answer = answer
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         try:

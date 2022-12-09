@@ -20,7 +20,7 @@ class PodcastAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Трансформация в ответ.
 
-        :param update: Update
+        :param update: Stringable
         :return: AnswerInterface
         """
         return await FileAnswer(

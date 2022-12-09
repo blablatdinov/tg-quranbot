@@ -1,4 +1,4 @@
-from integrations.tg.tg_answers.update import Update
+from app_types.stringable import Stringable
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
 from repository.ayats.schemas import Ayat
@@ -21,10 +21,10 @@ class AyatAnswerKeyboard(KeyboardInterface):
         self._favorite_ayats_repo = favorite_ayats_repo
         self._neighbor_ayats = neighbor_ayats
 
-    async def generate(self, update: Update) -> str:
+    async def generate(self, update: Stringable) -> str:
         """Генерация.
 
-        :param update: Update
+        :param update: Stringable
         :return: str
         """
         return await AyatFavoriteKeyboardButton(

@@ -1,16 +1,16 @@
 import json
 
-from integrations.tg.tg_answers.update import Update
+from app_types.stringable import Stringable
 from services.answers.answer import KeyboardInterface
 
 
 class SwitchInlineQueryKeyboard(KeyboardInterface):
     """Переключение на инлайн поиск."""
 
-    async def generate(self, update: Update) -> str:
+    async def generate(self, update: Stringable) -> str:
         """Сборка клавиатуры.
 
-        :param update: Update
+        :param update: Stringable
         :return: str
         """
         return json.dumps({

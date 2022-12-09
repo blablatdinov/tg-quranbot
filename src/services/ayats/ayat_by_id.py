@@ -1,8 +1,8 @@
 import httpx
 
+from app_types.stringable import Stringable
 from db.connection import database
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerMarkup, TgTextAnswer
-from integrations.tg.tg_answers.update import Update
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
 from services.answers.answer import FileAnswer, TelegramFileIdAnswer
@@ -28,10 +28,10 @@ class AyatByIdAnswer(TgAnswerInterface):
         self._message_answer = message_answer
         self._file_answer = file_answer
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         result_ayat = await self._ayat_search.search(

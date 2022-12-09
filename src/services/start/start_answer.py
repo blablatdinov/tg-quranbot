@@ -2,9 +2,9 @@ from contextlib import suppress
 
 import httpx
 
+from app_types.stringable import Stringable
 from exceptions.user import StartMessageNotContainReferrer, UserAlreadyExists
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
-from integrations.tg.tg_answers.update import Update
 from repository.admin_message import AdminMessageRepositoryInterface
 from repository.ayats.ayat import AyatRepositoryInterface
 from repository.users.user import UserRepositoryInterface
@@ -27,10 +27,10 @@ class StartAnswer(TgAnswerInterface):
         self._admin_message_repo = admin_message_repo
         self._ayat_repo = ayat_repo
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         await self._check_user_exists(update)

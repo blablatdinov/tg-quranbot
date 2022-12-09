@@ -22,7 +22,7 @@ class PrayerForUserAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Отправить.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[types.Message]
         """
         prayers = await self._user_prayers.prayer_times(

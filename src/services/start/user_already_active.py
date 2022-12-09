@@ -1,8 +1,8 @@
 import httpx
 
+from app_types.stringable import Stringable
 from exceptions.user import UserAlreadyActive
 from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
-from integrations.tg.tg_answers.update import Update
 
 
 class UserAlreadyActiveSafeAnswer(TgAnswerInterface):
@@ -12,10 +12,10 @@ class UserAlreadyActiveSafeAnswer(TgAnswerInterface):
         self._origin = answer
         self._sender_answer = sender_answer
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         try:

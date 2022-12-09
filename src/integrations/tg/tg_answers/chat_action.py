@@ -15,7 +15,7 @@ class TgChatAction(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Формирование запросов.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         return [

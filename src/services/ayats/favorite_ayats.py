@@ -1,7 +1,7 @@
 import httpx
 
+from app_types.stringable import Stringable
 from integrations.tg.tg_answers import TgAnswerInterface
-from integrations.tg.tg_answers.update import Update
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import FavoriteNeighborAyats
 from services.ayats.ayat_answer import AyatAnswer
@@ -45,10 +45,10 @@ class FavoriteAyatAnswer(TgAnswerInterface):
         self._file_answer = file_answer
         self._favorite_ayats_repo = favorite_ayats_repo
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         result_ayat = (await self._favorite_ayats_repo.get_favorites(update.chat_id()))[0]
@@ -82,10 +82,10 @@ class FavoriteAyatPage(TgAnswerInterface):
         self._file_answer = file_answer
         self._favorite_ayats_repo = favorite_ayats_repo
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         result_ayat = await self._favorite_ayats_repo.get_favorite(

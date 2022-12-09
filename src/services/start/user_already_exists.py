@@ -2,10 +2,10 @@ from contextlib import suppress
 
 import httpx
 
+from app_types.stringable import Stringable
 from exceptions.user import UserAlreadyActive, UserAlreadyExists
 from integrations.nats_integration import SinkInterface
 from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
-from integrations.tg.tg_answers.update import Update
 from repository.users.user import UserRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
 
@@ -27,10 +27,10 @@ class UserAlreadyExistsAnswer(TgAnswerInterface):
         self._users_repo = users_repo
         self._event_sink = event_sink
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         :raises UserAlreadyActive: if user already active
         """
