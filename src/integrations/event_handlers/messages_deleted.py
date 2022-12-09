@@ -1,5 +1,6 @@
-from repository.update_log import UpdatesLogRepositoryInterface
 from utlls import get_bot_instance
+
+from repository.update_log import UpdatesLogRepositoryInterface
 
 bot = get_bot_instance()
 
