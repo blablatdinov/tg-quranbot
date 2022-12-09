@@ -1,6 +1,7 @@
 import json
 
 from app_types.stringable import Stringable
+from exceptions.internal_exceptions import CallbackQueryNotFoundError
 
 
 class CallbackQueryData(Stringable):
@@ -17,6 +18,10 @@ class CallbackQueryData(Stringable):
         """Строковое представление.
 
         :return: str
+        :raises CallbackQueryNotFoundError: если не удалось получить данные с кнопки
         """
         parsed_json = json.loads(str(self._raw))
-        return parsed_json['result'][0]['callback_query']['data']
+        try:
+            return parsed_json['result'][0]['callback_query']['data']
+        except KeyError as err:
+            raise CallbackQueryNotFoundError from err

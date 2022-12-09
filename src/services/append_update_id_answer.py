@@ -3,7 +3,9 @@ import datetime
 import httpx
 
 from app_types.stringable import Stringable
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.update_id import UpdateId
 
 
 class DebugParamInterface(object):
@@ -73,7 +75,7 @@ class UpdateIdDebugParam(DebugParamInterface):
         :param update: Stringable
         :return: str
         """
-        return 'Update id: {0}'.format(update.update_id)
+        return 'Update id: {0}'.format(int(UpdateId(update)))
 
 
 class TimeDebugParam(DebugParamInterface):
@@ -97,7 +99,7 @@ class ChatIdDebugParam(DebugParamInterface):
         :param update: Stringable
         :return: str
         """
-        return 'Chat id: {0}'.format(update.chat_id())
+        return 'Chat id: {0}'.format(int(TgChatId(update)))
 
 
 class CommitHashDebugParam(DebugParamInterface):

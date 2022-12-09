@@ -2,6 +2,8 @@ import datetime
 
 import httpx
 
+from app_types.stringable import Stringable
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup, TgTextAnswer
 from repository.prayer_time import PrayersWithoutSunrise
 from repository.user_prayers_interface import UserPrayersInterface
@@ -19,14 +21,14 @@ class PrayerForUserAnswer(TgAnswerInterface):
         self._origin = answer
         self._user_prayers = user_prayers
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Отправить.
 
         :param update: Stringable
         :return: list[types.Message]
         """
         prayers = await self._user_prayers.prayer_times(
-            update.chat_id(), datetime.date.today(),
+            int(TgChatId(update)), datetime.date.today(),
         )
         time_format = '%H:%M'
         template = '\n'.join([

@@ -2,6 +2,7 @@ import httpx
 from aioredis import Redis
 
 from app_types.stringable import Stringable
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface
 from services.user_state import UserState, UserStep
 
@@ -21,6 +22,6 @@ class ResetStateAnswer(TgAnswerInterface):
         """
         requests = await self._origin.build(update)
         await UserState(
-            self._redis, update.chat_id(),
+            self._redis, int(TgChatId(update)),
         ).change_step(UserStep.nothing)
         return requests

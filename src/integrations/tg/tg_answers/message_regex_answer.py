@@ -3,6 +3,7 @@ import re
 import httpx
 
 from app_types.stringable import Stringable
+from exceptions.internal_exceptions import MessageTextNotFoundError
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
@@ -22,7 +23,7 @@ class TgMessageRegexAnswer(TgAnswerInterface):
         """
         try:
             regex_result = re.search(self._pattern, str(MessageText(update)))
-        except AttributeError:
+        except (AttributeError, MessageTextNotFoundError):
             return []
         if not regex_result:
             return []

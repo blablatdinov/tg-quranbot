@@ -4,6 +4,7 @@ import httpx
 
 from app_types.stringable import Stringable
 from exceptions.internal_exceptions import NotProcessableUpdateError
+from integrations.tg.inline_query import InlineQuery, InlineQueryId
 from integrations.tg.tg_answers import TgAnswerInterface
 from services.city.search import CitySearchInterface, SearchCityQuery
 from services.debug_answer import DebugAnswer
@@ -24,14 +25,12 @@ class InlineQueryAnswer(TgAnswerInterface):
         :raises NotProcessableUpdateError: if update hasn't inline query
         """
         try:
-            update.inline_query()
+            inline_query_data = str(InlineQuery(update))
         except AttributeError as err:
             raise NotProcessableUpdateError from err
         origin_requests = await DebugAnswer(self._origin).build(update)
         cities = await self._cities.search(
-            SearchCityQuery.from_string_cs(
-                update.inline_query().query(),
-            ),
+            SearchCityQuery.from_string_cs(inline_query_data),
         )
         return [
             httpx.Request(
@@ -40,7 +39,7 @@ class InlineQueryAnswer(TgAnswerInterface):
                     origin_requests[0]
                     .url
                     .join('answerInlineQuery')
-                    .copy_add_param('inline_query_id', update.inline_query().id)
+                    .copy_add_param('inline_query_id', int(InlineQueryId(update)))
                     .copy_add_param(
                         'results',
                         json.dumps([

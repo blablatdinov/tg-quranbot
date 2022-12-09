@@ -2,7 +2,7 @@ import re
 from typing import Protocol
 
 from app_types.stringable import Stringable
-from exceptions.base_exception import InternalBotError
+from exceptions.internal_exceptions import CoordinatesNotFoundError
 
 
 class Coordinates(Protocol):
@@ -29,20 +29,20 @@ class TgMessageCoordinates(Coordinates):
         """Ширина.
 
         :return: float
-        :raises InternalBotError: если ширина не найдена
+        :raises CoordinatesNotFoundError: если ширина не найдена
         """
         regex_result = re.search(r'latitude"(:|: )((-|)\d+\.\d+)', str(self._raw))
         if not regex_result:
-            raise InternalBotError
+            raise CoordinatesNotFoundError
         return float(regex_result.group(2))
 
     def longitude(self) -> float:
         """Долгота.
 
         :return: float
-        :raises InternalBotError: если долгота не найдена
+        :raises CoordinatesNotFoundError: если долгота не найдена
         """
         regex_result = re.search(r'longitude"(:|: )((-|)\d+\.\d+)', str(self._raw))
         if not regex_result:
-            raise InternalBotError
+            raise CoordinatesNotFoundError
         return float(regex_result.group(2))

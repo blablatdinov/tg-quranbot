@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pytest
@@ -21,9 +22,31 @@ def stringable_callback_update():
     )
 
 
+@pytest.fixture()
+def query_search_update():
+    return json.dumps({
+        'update_id': 637463119,
+        'inline_query': {
+            'id': '1540221937896102808',
+            'from': {
+                'id': 358610865,
+                'is_bot': False,
+                'first_name': 'Almaz',
+                'last_name': 'Ilaletdinov',
+                'username': 'ilaletdinov',
+                'language_code': 'ru',
+            },
+            'chat_type': 'sender',
+            'query': 'adsfawef',
+            'offset': '',
+        },
+    })
+
+
 @pytest.mark.parametrize('input_', [
     lazy_fixture('stringable_update'),
     lazy_fixture('stringable_callback_update'),
+    lazy_fixture('query_search_update'),
 ])
 def test(input_):
     chat_id = TgChatId(input_)

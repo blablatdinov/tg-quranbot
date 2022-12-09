@@ -2,6 +2,7 @@ import httpx
 from aioredis import Redis
 
 from app_types.stringable import Stringable
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface
 from services.user_state import LoggedUserState, UserState
 
@@ -21,7 +22,7 @@ class StepAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         step = await LoggedUserState(
-            UserState(self._redis, update.chat_id()),
+            UserState(self._redis, int(TgChatId(update))),
         ).step()
         if step.value != self._step:
             return []

@@ -3,6 +3,7 @@ from aioredis import Redis
 
 from app_types.stringable import Stringable
 from exceptions.content_exceptions import UserHasNotCityIdError
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup, TgAnswerToSender, TgTextAnswer
 from services.switch_inline_query_answer import SwitchInlineQueryKeyboard
 from services.user_state import LoggedUserState, UserState, UserStep
@@ -31,7 +32,7 @@ class InviteSetCityAnswer(TgAnswerInterface):
             return await self._origin.build(update)
         except UserHasNotCityIdError:
             await LoggedUserState(
-                UserState(self._redis, update.chat_id()),
+                UserState(self._redis, int(TgChatId(update))),
             ).change_step(UserStep.city_search)
             return await TgAnswerMarkup(
                 TgAnswerToSender(

@@ -4,6 +4,7 @@ import httpx
 
 from app_types.stringable import Stringable
 from exceptions.user import StartMessageNotContainReferrer, UserAlreadyExists
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
 from repository.admin_message import AdminMessageRepositoryInterface
 from repository.ayats.ayat import AyatRepositoryInterface
@@ -34,7 +35,7 @@ class StartAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         await self._check_user_exists(update)
-        await self._user_repo.create(update.chat_id())
+        await self._user_repo.create(int(TgChatId(update)))
         start_message, ayat_message = await self._start_answers()
         create_with_referrer_answers = await self._create_with_referrer(update, start_message, ayat_message)
         if create_with_referrer_answers:
@@ -68,13 +69,13 @@ class StartAnswer(TgAnswerInterface):
         )
 
     async def _check_user_exists(self, update) -> None:
-        if await self._user_repo.exists(update.chat_id()):
+        if await self._user_repo.exists(int(TgChatId(update))):
             raise UserAlreadyExists
 
     async def _create_with_referrer(self, update, start_message, ayat_message) -> list[httpx.Request]:
         with suppress(StartMessageNotContainReferrer):
             referrer_id = await StartMessage(update.message().text(), self._user_repo).referrer_chat_id()
-            await self._user_repo.update_referrer(update.chat_id(), referrer_id)
+            await self._user_repo.update_referrer(int(TgChatId(update)), referrer_id)
             return await TgAnswerList(
                 TgAnswerToSender(
                     TgTextAnswer(

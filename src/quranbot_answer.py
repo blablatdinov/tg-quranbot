@@ -18,7 +18,6 @@ from integrations.tg.tg_answers import (
     TgKeyboardEditAnswer,
     TgMessageAnswer,
     TgMessageRegexAnswer,
-    TgReplySourceAnswer,
     TgTextAnswer,
 )
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
@@ -317,7 +316,10 @@ class QuranbotAnswer(TgAnswerInterface):
                     SearchCityByName(self._database),
                 ),
             ),
-            TgReplySourceAnswer(
-                answer_to_sender,
+            TgAnswerToSender(
+                TgTextAnswer(
+                    TgMessageAnswer(empty_answer),
+                    'sorry',
+                ),
             ),
         ).build(update)
