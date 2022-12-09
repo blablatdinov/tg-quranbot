@@ -5,9 +5,9 @@ from urllib import parse as url_parse
 import httpx
 from loguru import logger
 
+from app_types.stringable import Stringable
 from exceptions.internal_exceptions import TelegramIntegrationsError
 from integrations.tg.tg_answers.interface import TgAnswerInterface
-from integrations.tg.tg_answers.update import Update
 
 
 class SendableInterface(object):

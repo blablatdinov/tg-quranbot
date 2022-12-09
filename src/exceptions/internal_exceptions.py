@@ -43,3 +43,7 @@ class TelegramIntegrationsError(BaseAppError):
         :return: int
         """
         return self._chat_id
+
+
+class MessageTextNotFoundException(BaseAppError):
+    """Текст сообщения не найден."""

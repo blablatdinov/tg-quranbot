@@ -3,6 +3,7 @@ import json
 
 from app_types.stringable import Stringable
 from constants import PrayerNotReadedEmoji, PrayerReadedEmoji
+from integrations.tg.chat_id import TgChatId
 from repository.user_prayers_interface import UserPrayersInterface
 from services.answers.answer import KeyboardInterface
 from services.user_prayer_button_callback import UserPrayersButtonCallback
@@ -49,5 +50,5 @@ class UserPrayersKeyboard(KeyboardInterface):
         return await UserPrayersKeyboardByChatId(
             self._user_prayer_times,
             self._date,
-            update.chat_id(),
+            int(TgChatId(update)),
         ).generate(update)

@@ -1,6 +1,7 @@
 import httpx
 
 from app_types.stringable import Stringable
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
@@ -17,6 +18,6 @@ class TgAnswerToSender(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         return [
-            httpx.Request(request.method, request.url.copy_add_param('chat_id', update.chat_id()))
+            httpx.Request(request.method, request.url.copy_add_param('chat_id', TgChatId(update)))
             for request in await self._origin.build(update)
         ]

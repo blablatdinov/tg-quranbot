@@ -2,6 +2,8 @@ import httpx
 from aioredis import Redis
 
 from app_types.stringable import Stringable
+from integrations.tg.chat_id import TgChatId
+from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerInterface
 from services.ayats.ayat_text_search_query import AyatTextSearchQuery
 
@@ -24,7 +26,7 @@ class CachedAyatSearchQueryAnswer(TgAnswerInterface):
         """
         await AyatTextSearchQuery.for_write_cs(
             self._redis,
-            update.message().text(),
-            update.chat_id(),
+            str(MessageText(update)),
+            int(TgChatId(update)),
         ).write()
         return await self._origin.build(update)

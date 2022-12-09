@@ -2,6 +2,7 @@ import httpx
 
 from app_types.stringable import Stringable
 from db.connection import database
+from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerMarkup, TgTextAnswer
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
@@ -35,7 +36,7 @@ class AyatByIdAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         result_ayat = await self._ayat_search.search(
-            int(IntableRegularExpression(update.callback_query().data)),
+            int(IntableRegularExpression(str(CallbackQueryData(update)))),
         )
         return await TgAnswerList(
             TgAnswerMarkup(

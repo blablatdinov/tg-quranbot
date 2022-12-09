@@ -1,6 +1,7 @@
 import httpx
 
 from app_types.stringable import Stringable
+from integrations.tg.coordinates import TgMessageCoordinates
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
@@ -17,7 +18,7 @@ class TgLocationAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         try:
-            update.message().location()
+            TgMessageCoordinates(update).latitude()
         except AttributeError:
             return []
         return await self._answer.build(update)

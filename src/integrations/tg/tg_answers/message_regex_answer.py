@@ -3,6 +3,7 @@ import re
 import httpx
 
 from app_types.stringable import Stringable
+from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
@@ -20,7 +21,7 @@ class TgMessageRegexAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         try:
-            regex_result = re.search(self._pattern, update.message().text())
+            regex_result = re.search(self._pattern, str(MessageText(update)))
         except AttributeError:
             return []
         if not regex_result:

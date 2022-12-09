@@ -2,6 +2,7 @@ import httpx
 
 from app_types.stringable import Stringable
 from db.connection import database
+from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerInterface
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
@@ -31,7 +32,7 @@ class AyatBySuraAyatNumAnswer(TgAnswerInterface):
         :param update: Stringable
         :return: list[httpx.Request]
         """
-        result_ayat = await self._ayat_search.search(update.message().text())
+        result_ayat = await self._ayat_search.search(str(MessageText(update)))
         answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,

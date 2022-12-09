@@ -1,6 +1,7 @@
 import httpx
 
 from app_types.stringable import Stringable
+from integrations.tg.message_id import MessageId
 from integrations.tg.tg_answers import TgAnswerInterface
 
 
@@ -17,6 +18,9 @@ class TgReplySourceAnswer(TgAnswerInterface):
         :returns: list[httpx.Request]
         """
         return [
-            httpx.Request(request.method, request.url.copy_add_param('reply_to_message_id', update.message_id()))
+            httpx.Request(
+                request.method,
+                request.url.copy_add_param('reply_to_message_id', int(MessageId(update))),
+            )
             for request in await self._origin.build(update)
         ]
