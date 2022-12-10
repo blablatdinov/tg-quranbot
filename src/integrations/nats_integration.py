@@ -1,13 +1,14 @@
 import datetime
 import json
 import uuid
+from typing import Protocol
 
 import nats
 from loguru import logger
 from quranbot_schema_registry.validate_schema import validate_schema
 
 
-class SinkInterface(object):
+class SinkInterface(Protocol):
     """Интерфейс отправщика событий."""
 
     async def send(self, event_data: dict, event_name: str, version: int) -> None:
@@ -41,9 +42,10 @@ class NatsSink(SinkInterface):
             'producer': 'quranbot-aiogram',
             'data': event_data,
         }
-        ns = await nats.connect('localhost:4222')
         validate_schema(event, event_name, version)
+        ns = await nats.connect('localhost:4222')
         jetstream = ns.jetstream()
+        await jetstream.add_stream(name=self._queue_name)
         logger.info('Publishing to queue: {0}, event_id: {1}, event_name: {2}'.format(
             self._queue_name, event['event_id'], event['event_name'],
         ))

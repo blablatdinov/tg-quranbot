@@ -1,8 +1,16 @@
+from contextlib import suppress
+
 import httpx
 
+from app_types.stringable import Stringable
 from exceptions.internal_exceptions import NotProcessableUpdateError
+from integrations.tg.exceptions.update_parse_exceptions import (
+    CallbackQueryNotFoundError,
+    CoordinatesNotFoundError,
+    InlineQueryNotFoundError,
+    MessageIdNotFoundError,
+)
 from integrations.tg.tg_answers.interface import TgAnswerInterface
-from integrations.tg.tg_answers.update import Update
 
 
 class TgAnswerFork(TgAnswerInterface):
@@ -11,15 +19,18 @@ class TgAnswerFork(TgAnswerInterface):
     def __init__(self, *answers: TgAnswerInterface):
         self._answers = answers
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         :raises NotProcessableUpdateError: if not found matches
         """
         for answer in self._answers:
-            origin_requests = await answer.build(update)
-            if origin_requests:
-                return origin_requests
+            with suppress(
+                CoordinatesNotFoundError, CallbackQueryNotFoundError, MessageIdNotFoundError, InlineQueryNotFoundError,
+            ):
+                origin_requests = await answer.build(update)
+                if origin_requests:
+                    return origin_requests
         raise NotProcessableUpdateError

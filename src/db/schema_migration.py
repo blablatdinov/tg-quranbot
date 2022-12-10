@@ -295,7 +295,7 @@ class UsersMigration(object):
 
 
 async def migration() -> None:
-    old_db = Database('postgres://almazilaletdinov@localhost:5432/qbot')
+    old_db = Database('postgres://almazilaletdinov@localhost:5432/quranbot')
     await old_db.connect()
     new_db = Database('postgres://almazilaletdinov@localhost:5432/qbot_aiogram')
     await new_db.connect()

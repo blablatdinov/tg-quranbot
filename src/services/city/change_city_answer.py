@@ -1,9 +1,12 @@
 import httpx
 from aioredis import Redis
 
+from app_types.stringable import Stringable
 from exceptions.content_exceptions import CityNotSupportedError
+from integrations.tg.chat_id import TgChatId
+from integrations.tg.coordinates import TgMessageCoordinates
+from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
-from integrations.tg.tg_answers.update import Update
 from repository.users.user import UserRepositoryInterface
 from services.city.search import CitySearchInterface, SearchCityQuery
 from services.user_state import LoggedUserState, UserState, UserStep
@@ -16,10 +19,10 @@ class CityNotSupportedAnswer(TgAnswerInterface):
         self._origin = answer
         self._error_answer = error_answer
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         try:
@@ -46,26 +49,30 @@ class ChangeCityAnswer(TgAnswerInterface):
         self._redis = redis
         self._user_repo = user_repo
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         :raises CityNotSupportedError: если город не поддерживается
         """
         try:
-            query = SearchCityQuery.from_string_cs(update.message().text())
+            query = SearchCityQuery.from_string_cs(str(MessageText(update)))
         except AttributeError:
+            coordinates = TgMessageCoordinates(update)
             query = SearchCityQuery.from_coordinates_cs(
-                update.message().location().latitude,
-                update.message().location().longitude,
+                coordinates.latitude(),
+                coordinates.longitude(),
             )
         cities = await self._city.search(query)
         if not cities:
             raise CityNotSupportedError
-        await self._user_repo.update_city(update.chat_id(), cities[0].id)
+        await self._user_repo.update_city(
+            int(TgChatId(update)),
+            cities[0].id,
+        )
         await LoggedUserState(
-            UserState(self._redis, update.chat_id()),
+            UserState(self._redis, int(TgChatId(update))),
         ).change_step(UserStep.nothing)
         return await TgTextAnswer(
             self._origin,

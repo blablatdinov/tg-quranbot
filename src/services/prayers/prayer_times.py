@@ -26,7 +26,7 @@ class PrayerForUserAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Отправить.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[types.Message]
         """
         prayers = await self._user_prayers.prayer_times(
@@ -76,7 +76,7 @@ class UserPrayerStatusChangeAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Обработка запроса.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         await self._prayer_status.change(PrayerStatus(update.callback_query().data))

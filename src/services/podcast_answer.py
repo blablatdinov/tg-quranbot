@@ -1,5 +1,7 @@
 import httpx
 
+from app_types.stringable import Stringable
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers.audio_answer import TgAudioAnswer
 from integrations.tg.tg_answers.chat_id_answer import TgChatIdAnswer
 from integrations.tg.tg_answers.interface import TgAnswerInterface
@@ -17,12 +19,13 @@ class PodcastAnswer(TgAnswerInterface):
         self._debug_mode = debug_mode
         self._podcast = podcast
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Трансформация в ответ.
 
-        :param update: Update
+        :param update: Stringable
         :return: AnswerInterface
         """
+        chat_id = int(TgChatId(update))
         return await FileAnswer(
             self._debug_mode,
             TelegramFileIdAnswer(
@@ -30,7 +33,7 @@ class PodcastAnswer(TgAnswerInterface):
                     TgAudioAnswer(
                         self._origin,
                     ),
-                    update.chat_id(),
+                    chat_id,
                 ),
                 await self._podcast.audio_telegram_id(),
             ),
@@ -39,7 +42,7 @@ class PodcastAnswer(TgAnswerInterface):
                     TgMessageAnswer(
                         self._origin,
                     ),
-                    update.chat_id(),
+                    chat_id,
                 ),
                 await self._podcast.link_to_audio_file(),
             ),

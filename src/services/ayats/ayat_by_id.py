@@ -1,14 +1,10 @@
 import httpx
 
-from db.connection import database
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerMarkup, TgTextAnswer
-from integrations.tg.tg_answers.update import Update
-from repository.ayats.favorite_ayats import FavoriteAyatsRepository
-from repository.ayats.neighbor_ayats import NeighborAyats
+from app_types.stringable import Stringable
+from integrations.tg.callback_query import CallbackQueryData
+from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgTextAnswer
 from services.answers.answer import FileAnswer, TelegramFileIdAnswer
-from services.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
-from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
-from services.ayats.ayat_neighbor_keyboard import NeighborAyatKeyboard
+from services.ayats.ayat_by_id_message_answer import AyatByIdMessageAnswer
 from services.ayats.search_by_sura_ayat_num import AyatSearchInterface
 from services.regular_expression import IntableRegularExpression
 
@@ -28,29 +24,18 @@ class AyatByIdAnswer(TgAnswerInterface):
         self._message_answer = message_answer
         self._file_answer = file_answer
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         result_ayat = await self._ayat_search.search(
-            int(IntableRegularExpression(update.callback_query().data)),
+            int(IntableRegularExpression(str(CallbackQueryData(update)))),
         )
         return await TgAnswerList(
-            TgAnswerMarkup(
-                TgTextAnswer(
-                    self._message_answer,
-                    str(result_ayat),
-                ),
-                AyatFavoriteKeyboardButton(
-                    result_ayat,
-                    NeighborAyatKeyboard(
-                        NeighborAyats(database, result_ayat.id),
-                        AyatCallbackTemplate.get_ayat,
-                    ),
-                    FavoriteAyatsRepository(database),
-                ),
+            AyatByIdMessageAnswer(
+                result_ayat, self._message_answer,
             ),
             FileAnswer(
                 self._debug_mode,

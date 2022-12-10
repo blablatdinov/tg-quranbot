@@ -4,8 +4,9 @@ import httpx
 from loguru import logger
 
 from app_types.floatable import Floatable
+from app_types.stringable import Stringable
 from integrations.tg.tg_answers.interface import TgAnswerInterface
-from integrations.tg.tg_answers.update import Update
+from integrations.tg.update_id import UpdateId
 
 
 class Millis(Floatable):
@@ -52,17 +53,17 @@ class TgMeasureAnswer(TgAnswerInterface):
     def __init__(self, answer: TgAnswerInterface):
         self._origin = answer
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Update
+        :param update: Stringable
         :returns: list[httpx.Request]
         """
         start = time.time()
-        logger.info('Start process update <{0}>'.format(update.update_id))
+        logger.info('Start process update <{0}>'.format(int(UpdateId(update))))
         requests = await self._origin.build(update)
         logger.info('Update <{0}> process time: {1} ms'.format(
-            update.update_id,
+            int(UpdateId(update)),
             float(
                 RoundedFloat(
                     Millis.seconds_cs(

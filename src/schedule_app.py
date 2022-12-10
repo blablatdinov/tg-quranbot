@@ -1,6 +1,7 @@
 import httpx
 
 from app_types.runable import Runable
+from app_types.stringable import Stringable
 from integrations.tg.sendable import BulkSendableAnswer
 from integrations.tg.tg_answers import TgAnswerInterface, TgChatIdAnswer
 from integrations.tg.tg_answers.chat_action import TgChatAction
@@ -14,10 +15,10 @@ class TypingAction(TgAnswerInterface):
     def __init__(self, answer: TgAnswerInterface):
         self._origin = answer
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         return [

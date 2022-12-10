@@ -1,3 +1,4 @@
+import datetime
 from contextlib import suppress
 from typing import Optional
 
@@ -24,6 +25,7 @@ class Message(BaseModel):
     text_: Optional[str] = Field(None, alias='text')
     chat: Chat
     location_: Optional[Location] = Field(None, alias='location')
+    date: datetime.datetime
 
     def location(self) -> Location:
         """Местоположение.

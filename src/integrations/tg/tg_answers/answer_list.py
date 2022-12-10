@@ -12,7 +12,7 @@ class TgAnswerList(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         rebuilded_requests = []

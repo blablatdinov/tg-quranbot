@@ -1,7 +1,7 @@
 import httpx
 
+from app_types.stringable import Stringable
 from integrations.tg.tg_answers.interface import TgAnswerInterface
-from integrations.tg.tg_answers.update import Update
 
 
 class TgAudioAnswer(TgAnswerInterface):
@@ -10,10 +10,10 @@ class TgAudioAnswer(TgAnswerInterface):
     def __init__(self, answer: TgAnswerInterface):
         self._origin = answer
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Создание.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         return [
