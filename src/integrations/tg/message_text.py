@@ -1,7 +1,7 @@
 import re
 
 from app_types.stringable import Stringable
-from exceptions.internal_exceptions import MessageTextNotFoundError
+from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 
 
 class MessageText(Stringable):

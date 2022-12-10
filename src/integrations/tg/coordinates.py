@@ -2,7 +2,7 @@ import re
 from typing import Protocol
 
 from app_types.stringable import Stringable
-from exceptions.internal_exceptions import CoordinatesNotFoundError
+from integrations.tg.exceptions.update_parse_exceptions import CoordinatesNotFoundError
 
 
 class Coordinates(Protocol):

@@ -3,7 +3,7 @@ import re
 import httpx
 
 from app_types.stringable import Stringable
-from exceptions.internal_exceptions import MessageTextNotFoundError
+from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 

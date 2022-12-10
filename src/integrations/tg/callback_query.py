@@ -1,7 +1,7 @@
 import json
 
 from app_types.stringable import Stringable
-from exceptions.internal_exceptions import CallbackQueryNotFoundError
+from integrations.tg.exceptions.update_parse_exceptions import CallbackQueryNotFoundError
 
 
 class CallbackQueryData(Stringable):

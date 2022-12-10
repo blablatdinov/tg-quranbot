@@ -3,12 +3,12 @@ from contextlib import suppress
 import httpx
 
 from app_types.stringable import Stringable
-from exceptions.internal_exceptions import (
+from exceptions.internal_exceptions import NotProcessableUpdateError
+from integrations.tg.exceptions.update_parse_exceptions import (
     CallbackQueryNotFoundError,
     CoordinatesNotFoundError,
     InlineQueryNotFoundError,
     MessageIdNotFoundError,
-    NotProcessableUpdateError,
 )
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 

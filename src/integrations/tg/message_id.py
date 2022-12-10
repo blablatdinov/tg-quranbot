@@ -2,7 +2,7 @@ import re
 
 from app_types.intable import Intable
 from app_types.stringable import Stringable
-from exceptions.internal_exceptions import MessageIdNotFoundError
+from integrations.tg.exceptions.update_parse_exceptions import MessageIdNotFoundError
 
 
 class MessageId(Intable):
