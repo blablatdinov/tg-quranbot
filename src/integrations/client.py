@@ -2,7 +2,7 @@ import abc
 import time
 from typing import TypeVar
 
-import aiohttp
+import httpx
 from loguru import logger
 from pydantic import BaseModel
 
@@ -24,7 +24,7 @@ class IntegrationClientInterface(object):
 
 
 class IntegrationClient(IntegrationClientInterface):
-    """Aiohttp клиент."""
+    """Httpx клиент."""
 
     async def act(self, url: str, model_for_parse: type[ParseModel]) -> ParseModel:
         """Выполнить запрос.
@@ -33,9 +33,9 @@ class IntegrationClient(IntegrationClientInterface):
         :param model_for_parse: type(BaseModel)
         :returns: type(BaseModel)
         """
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as resp:
-                text = await resp.text()
+        async with httpx.AsyncClient() as session:
+            response = await session.get(url)
+            text = response.text
         return model_for_parse.parse_raw(text)
 
 

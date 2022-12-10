@@ -1,8 +1,8 @@
 import httpx
 
+from app_types.stringable import Stringable
 from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
-from integrations.tg.tg_answers.update import Update
 
 
 class SafeFork(TgAnswerInterface):
@@ -12,10 +12,10 @@ class SafeFork(TgAnswerInterface):
         self._origin = answer
         self._message_answer = message_answer
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Update
+        :param update: Stringable
         :returns: list[httpx.Request]
         """
         try:

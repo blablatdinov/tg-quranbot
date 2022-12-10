@@ -2,6 +2,7 @@ import httpx
 from aioredis import Redis
 from databases import Database
 
+from app_types.stringable import Stringable
 from integrations.client import IntegrationClient
 from integrations.nats_integration import SinkInterface
 from integrations.nominatim import NominatimIntegration
@@ -17,12 +18,10 @@ from integrations.tg.tg_answers import (
     TgKeyboardEditAnswer,
     TgMessageAnswer,
     TgMessageRegexAnswer,
-    TgReplySourceAnswer,
     TgTextAnswer,
 )
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
-from integrations.tg.tg_answers.update import Update
 from repository.admin_message import AdminMessageRepository
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
@@ -77,10 +76,10 @@ class QuranbotAnswer(TgAnswerInterface):
         self._redis = redis
         self._event_sink = event_sink
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         empty_answer = TgEmptyAnswer(settings.API_TOKEN)
@@ -317,7 +316,10 @@ class QuranbotAnswer(TgAnswerInterface):
                     SearchCityByName(self._database),
                 ),
             ),
-            TgReplySourceAnswer(
-                answer_to_sender,
+            TgAnswerToSender(
+                TgTextAnswer(
+                    TgMessageAnswer(empty_answer),
+                    'sorry',
+                ),
             ),
         ).build(update)

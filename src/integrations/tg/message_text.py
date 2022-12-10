@@ -1,7 +1,7 @@
 import re
 
 from app_types.stringable import Stringable
-from exceptions.base_exception import InternalBotError
+from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 
 
 class MessageText(Stringable):
@@ -18,9 +18,9 @@ class MessageText(Stringable):
         """Строковое представление.
 
         :return: str
-        :raises InternalBotError: если текст сообщения не найден
+        :raises MessageTextNotFoundError: если текст сообщения не найден
         """
         regex_res = re.search('text"(:|: )"(.+?)"', str(self._raw))
         if not regex_res:
-            raise InternalBotError
+            raise MessageTextNotFoundError
         return regex_res.group(2)

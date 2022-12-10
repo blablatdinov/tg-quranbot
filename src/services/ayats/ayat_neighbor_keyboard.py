@@ -1,8 +1,8 @@
 import json
 from contextlib import suppress
 
+from app_types.stringable import Stringable
 from exceptions.content_exceptions import AyatNotFoundError
-from integrations.tg.tg_answers.update import Update
 from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
 from services.answers.answer import KeyboardInterface
 from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
@@ -15,10 +15,10 @@ class NeighborAyatKeyboard(KeyboardInterface):
         self._ayats_neighbors = ayats_neighbors
         self._callback_template = callback_template
 
-    async def generate(self, update: Update) -> str:
+    async def generate(self, update: Stringable) -> str:
         """Генерация клавиатуры.
 
-        :param update: Update
+        :param update: Stringable
         :return: str
         """
         buttons = []

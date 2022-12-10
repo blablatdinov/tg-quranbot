@@ -14,7 +14,7 @@ class TgAnswerMarkup(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Собрать ответ для пользователя.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         """
         return [

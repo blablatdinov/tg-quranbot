@@ -2,10 +2,12 @@ from contextlib import suppress
 
 import httpx
 
+from app_types.stringable import Stringable
 from exceptions.user import UserAlreadyActive, UserAlreadyExists
 from integrations.nats_integration import SinkInterface
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
-from integrations.tg.tg_answers.update import Update
+from integrations.tg.tg_datetime import TgDateTime
 from repository.users.user import UserRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
 
@@ -27,23 +29,23 @@ class UserAlreadyExistsAnswer(TgAnswerInterface):
         self._users_repo = users_repo
         self._event_sink = event_sink
 
-    async def build(self, update: Update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Update
+        :param update: Stringable
         :return: list[httpx.Request]
         :raises UserAlreadyActive: if user already active
         """
         with suppress(UserAlreadyExists):
             return await self._origin.build(update)
-        user = await self._user_repo.get_by_chat_id(update.chat_id())
+        user = await self._user_repo.get_by_chat_id(int(TgChatId(update)))
         if user.is_active:
             raise UserAlreadyActive
-        await self._users_repo.update_status([update.chat_id()], to=True)
+        await self._users_repo.update_status([int(TgChatId(update))], to=True)
         await self._event_sink.send(
             {
-                'user_id': update.chat_id(),
-                'date_time': str(update.message().date),
+                'user_id': int(TgChatId(update)),
+                'date_time': TgDateTime(update).datetime(),
             },
             'User.Reactivated',
             1,
