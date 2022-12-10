@@ -13,9 +13,9 @@ aioredis = "2.0.1"
 nats-py = "2.2.0"
 quranbot-schema-registry = {git = "https://github.com/blablatdinov/quranbot-schema-registry", branch="master"}
 APScheduler = "3.9.1.post1"
-databases = "0.6.1"
+databases = "0.6.2"
 sentry-sdk = "1.11.1"
-SQLAlchemy = "1.4.44"
+SQLAlchemy = "1.4.41"
 alembic = "1.8.1"
 httpx = "0.23.1"
 
