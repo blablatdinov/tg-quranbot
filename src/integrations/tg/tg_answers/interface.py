@@ -12,6 +12,4 @@ class TgAnswerInterface(Protocol):
         """Собрать ответ.
 
         :param update: Stringable
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
