@@ -124,7 +124,10 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
             except httpx.ReadTimeout:
                 return []
             resp_content = resp.text
-            parsed_result = json.loads(resp_content)['result']
+            try:
+                parsed_result = json.loads(resp_content)['result']
+            except KeyError:
+                return []
             if not parsed_result:
                 return []
             self._offset = parsed_result[-1]['update_id'] + 1

@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     WEBHOOK_PATH: str = '/bot'
     WEBAPP_HOST: str = 'localhost'
     WEBAPP_PORT: int = 8010
+    NATS_HOST: str = 'localhost'
+    NATS_PORT: int = 4222
+    NATS_TOKEN: str
 
     @property
     def webhook_url(self) -> str:

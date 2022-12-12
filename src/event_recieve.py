@@ -7,6 +7,7 @@ from quranbot_schema_registry import validate_schema
 
 from app_types.runable import Runable
 from integrations.event_handlers.prayers_sended import RecievedEventInterface
+from settings import settings
 
 
 class RecievedEvents(Runable):
@@ -19,7 +20,10 @@ class RecievedEvents(Runable):
 
     async def run(self):
         """Запуск."""
-        nats_client = await nats.connect('localhost')
+        nats_client = await nats.connect(
+            'nats://{0}:{1}'.format(settings.NATS_HOST, settings.NATS_PORT),
+            token=settings.NATS_TOKEN,
+        )
         logger.info('Start handling events...')
         logger.info('Receive evenst list: {0}'.format([event_handler.name for event_handler in self._handlers]))
         await nats_client.subscribe(self._queue_name, cb=self._message_handler)
