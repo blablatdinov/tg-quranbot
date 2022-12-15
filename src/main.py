@@ -7,7 +7,7 @@ from db.connection import database
 from event_recieve import RecievedEvents
 from integrations.event_handlers.prayers_sended import SendPrayersEvent
 from integrations.nats_integration import NatsSink
-from integrations.tg.app import DatabaseConnectedApp, PollingApp
+from integrations.tg.app import AppWithGetMe, DatabaseConnectedApp, PollingApp
 from integrations.tg.polling_updates import (
     PollingUpdatesIterator,
     UpdatesLongPollingURL,
@@ -38,35 +38,38 @@ def main() -> None:
     quranbot_polling_app = CliApp(
         DatabaseConnectedApp(
             database,
-            PollingApp(
-                PollingUpdatesIterator(
-                    UpdatesLongPollingURL(
-                        UpdatesWithOffsetURL(
-                            UpdatesURL(settings.API_TOKEN),
+            AppWithGetMe(
+                PollingApp(
+                    PollingUpdatesIterator(
+                        UpdatesLongPollingURL(
+                            UpdatesWithOffsetURL(
+                                UpdatesURL(settings.API_TOKEN),
+                            ),
+                            UpdatesTimeout(),
                         ),
                         UpdatesTimeout(),
                     ),
-                    UpdatesTimeout(),
-                ),
-                LoggedAnswer(
-                    SendableAnswer(
-                        AppendDebugInfoAnswer(
-                            settings.DEBUG,
-                            TgMeasureAnswer(
-                                QuranbotAnswer(
-                                    database,
-                                    aioredis.from_url(str(settings.REDIS_DSN)),  # type: ignore
-                                    nats_sink,
+                    LoggedAnswer(
+                        SendableAnswer(
+                            AppendDebugInfoAnswer(
+                                settings.DEBUG,
+                                TgMeasureAnswer(
+                                    QuranbotAnswer(
+                                        database,
+                                        aioredis.from_url(str(settings.REDIS_DSN)),  # type: ignore
+                                        nats_sink,
+                                    ),
                                 ),
+                                UpdateIdDebugParam(),
+                                ChatIdDebugParam(),
+                                TimeDebugParam(),
+                                CommitHashDebugParam(''),
                             ),
-                            UpdateIdDebugParam(),
-                            ChatIdDebugParam(),
-                            TimeDebugParam(),
-                            CommitHashDebugParam(''),
                         ),
+                        nats_sink,
                     ),
-                    nats_sink,
                 ),
+                settings.API_TOKEN,
             ),
         ),
     )
