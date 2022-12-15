@@ -13,6 +13,7 @@ class Settings(BaseSettings):
 
     BASE_DIR: Path = BASE_DIR
     API_TOKEN: str
+    COMMIT_HASH: str = 'unknown'
     DATABASE_URL: str
     TEST_DATABASE_URL: str = ''
     SENTRY_DSN: Optional[HttpUrl] = None
