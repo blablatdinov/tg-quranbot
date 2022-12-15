@@ -7,6 +7,8 @@ import nats
 from loguru import logger
 from quranbot_schema_registry.validate_schema import validate_schema
 
+from settings import settings
+
 
 class SinkInterface(Protocol):
     """Интерфейс отправщика событий."""
@@ -43,7 +45,10 @@ class NatsSink(SinkInterface):
             'data': event_data,
         }
         validate_schema(event, event_name, version)
-        ns = await nats.connect('localhost:4222')
+        ns = await nats.connect(
+            'nats://{0}:{1}'.format(settings.NATS_HOST, settings.NATS_PORT),
+            token=settings.NATS_TOKEN,
+        )
         jetstream = ns.jetstream()
         await jetstream.add_stream(name=self._queue_name)
         logger.info('Publishing to queue: {0}, event_id: {1}, event_name: {2}'.format(
