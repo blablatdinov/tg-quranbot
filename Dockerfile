@@ -17,14 +17,6 @@ RUN python -m venv /app/.venv && \
 
 FROM python:3.10-alpine as runtime
 
-ENV API_TOKEN=452230948:AAG5HvsT-2KCwa-MI1hSrKhHXBM_-Qyh2_s \
-  DATABASE_URL=postgres://quranbot_old:!@193.178.170.151:5432/quranbot \
-  PYTHONUNBUFFERED=1 \
-  PYTHONHASHSEED=random \
-  DEBUG=off \
-  REDIS_DSN=redis://193.178.170.151:6379/0 \
-  PIP_DEFAULT_TIMEOUT=100
-
 # Copy only requirements to cache them in docker layer
 WORKDIR /app
 COPY --from=build /app/.venv /app/.venv
