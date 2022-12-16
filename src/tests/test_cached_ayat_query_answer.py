@@ -3,7 +3,7 @@ from contextlib import suppress
 from unittest.mock import AsyncMock
 
 import pytest
-from aioredis import Redis
+from redis.asyncio import Redis
 
 from app_types.stringable import ThroughStringable
 from integrations.tg.tg_answers import TgAnswerInterface

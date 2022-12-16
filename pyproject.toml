@@ -5,11 +5,10 @@ description = ""
 authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+python = ">=3.11,<3.12"
 pydantic = {extras = ["dotenv"], version = "1.10.2"}
 asyncpg = "0.27.0"
 loguru = "0.6.0"
-aioredis = "2.0.1"
 nats-py = "2.2.0"
 quranbot-schema-registry = "0.0.16"
 APScheduler = "3.9.1.post1"
@@ -19,6 +18,7 @@ SQLAlchemy = "1.4.41"
 alembic = "1.9.0"
 httpx = "0.23.1"
 pytz = "2022.6"
+redis = "4.4.0"
 
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = {git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master"}

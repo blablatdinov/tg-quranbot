@@ -1,5 +1,5 @@
 import httpx
-from aioredis import Redis
+from redis.asyncio import Redis
 
 from db.connection import database
 from exceptions.content_exceptions import AyatNotFoundError
