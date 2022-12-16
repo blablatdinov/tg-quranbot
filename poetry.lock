@@ -406,6 +406,7 @@ files = [
 ]
 
 [package.dependencies]
+asyncpg = {version = "*", optional = true, markers = "extra == \"asyncpg\""}
 sqlalchemy = ">=1.4,<=1.4.41"
 
 [package.extras]
@@ -2168,4 +2169,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.12"
-content-hash = "eae90a0c64904890f5e5900692f9a2d33cf407c651666e73cb33ac7dce9bec5d"
+content-hash = "2def65c700b284cca948799d3309ed2be10b782e63f72082e65f9ba4ab6ef259"
