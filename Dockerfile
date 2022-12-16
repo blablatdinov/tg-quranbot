@@ -1,4 +1,4 @@
-FROM python:3.11 as base
+FROM python:3.10 as base
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN python -m venv /app/.venv && \
     /app/.venv/bin/pip install 'wheel==0.36.2' && \
     /app/.venv/bin/pip install -r /tmp/requirements.txt
 
-FROM python:3.11-alpine as runtime
+FROM python:3.10-alpine as runtime
 
 # Copy only requirements to cache them in docker layer
 WORKDIR /app
