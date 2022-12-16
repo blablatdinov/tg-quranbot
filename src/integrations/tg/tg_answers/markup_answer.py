@@ -1,7 +1,7 @@
 import httpx
 
+from integrations.tg.keyboard import KeyboardInterface
 from integrations.tg.tg_answers.interface import TgAnswerInterface
-from services.answers.answer import KeyboardInterface
 
 
 class TgAnswerMarkup(TgAnswerInterface):

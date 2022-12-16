@@ -4,19 +4,8 @@ from typing import Optional
 import httpx
 
 from app_types.stringable import Stringable
+from integrations.tg.keyboard import KeyboardInterface
 from integrations.tg.tg_answers.interface import TgAnswerInterface
-
-
-class KeyboardInterface(object):
-    """Интерфейс клавиатуры."""
-
-    async def generate(self, update: Stringable) -> str:
-        """Генерация.
-
-        :param update: Stringable
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
 
 
 class ResizedKeyboard(KeyboardInterface):
@@ -44,7 +33,7 @@ class DefaultKeyboard(KeyboardInterface):
         """Генерация.
 
         :param update: Stringable
-        :return: types.ReplyKeyboardMarkup
+        :return: str
         """
         return '{"keyboard":[["🎧 Подкасты"],["🕋 Время намаза"],["🌟 Избранное","🔍 Найти аят"]]}'
 
@@ -80,13 +69,13 @@ class TelegramFileIdAnswer(TgAnswerInterface):
         self._origin = answer
         self._telegram_file_id = telegram_file_id
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Отправка.
 
         :param update: Stringable
         :return: list[httpx.Request]
         """
         return [
-            httpx.Request(request.method, request.url.copy_add_param('audio_id', self._telegram_file_id))
+            httpx.Request(request.method, request.url.copy_add_param('audio', self._telegram_file_id))
             for request in await self._origin.build(update)
         ]
