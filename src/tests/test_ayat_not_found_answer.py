@@ -1,18 +1,17 @@
 import httpx
-import pytest
 
-from app_types.stringable import ThroughStringable
+from app_types.stringable import Stringable, ThroughStringable
 from exceptions.content_exceptions import AyatNotFoundError
-from integrations.tg.tg_answers import FkAnswer, TgAnswerInterface
+from integrations.tg.tg_answers import TgAnswerInterface
 from services.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 
 
 class ThroughDomainAnswer(TgAnswerInterface):
 
-    def __init__(self, domain):
+    def __init__(self, domain: str):
         self._domain = domain
 
-    async def build(self, update):
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         return [httpx.Request('GET', self._domain)]
 
 
