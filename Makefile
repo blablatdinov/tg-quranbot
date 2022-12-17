@@ -11,3 +11,4 @@ test:
 
 cov:
 	poetry run pytest src --cov=src
+	poetry run coverage html
