@@ -22,6 +22,6 @@ class CallbackQueryData(Stringable):
         """
         parsed_json = json.loads(str(self._raw))
         try:
-            return parsed_json['result'][0]['callback_query']['data']
+            return parsed_json['callback_query']['data']
         except KeyError as err:
             raise CallbackQueryNotFoundError from err

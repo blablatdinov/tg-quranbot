@@ -317,9 +317,6 @@ class QuranbotAnswer(TgAnswerInterface):
                 ),
             ),
             TgAnswerToSender(
-                TgTextAnswer(
-                    TgMessageAnswer(empty_answer),
-                    'sorry',
-                ),
+                TgMessageAnswer(empty_answer),
             ),
         ).build(update)
