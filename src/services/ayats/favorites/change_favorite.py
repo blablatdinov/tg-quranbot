@@ -67,7 +67,7 @@ class ChangeFavoriteAyatAnswer(TgAnswerInterface):
                         result_ayat,
                         FavoriteAyatsRepository(database),
                         NeighborAyats(
-                            database, result_ayat,
+                            database, result_ayat.id,
                         ),
                     ),
                 ),
