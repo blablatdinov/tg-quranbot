@@ -8,7 +8,7 @@ from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
-class TgMessageRegexAnswer(TgAnswerInterface):
+class TgMessageRegexAnswer(TgAnswerInterface, Stringable):
     """Маршрутизация ответов по регулярному выражению."""
 
     def __init__(self, pattern: str, answer: TgAnswerInterface):
@@ -21,6 +21,8 @@ class TgMessageRegexAnswer(TgAnswerInterface):
         :param update: Stringable
         :return: list[httpx.Request]
         """
+        if 'callback_query' in str(update):
+            return []
         try:
             regex_result = re.search(self._pattern, str(MessageText(update)))
         except (AttributeError, MessageTextNotFoundError):
@@ -28,3 +30,6 @@ class TgMessageRegexAnswer(TgAnswerInterface):
         if not regex_result:
             return []
         return await self._answer.build(update)
+
+    def __str__(self):
+        return 'TgMessageRegexAnswer. pattern: {0}'.format(self._pattern)

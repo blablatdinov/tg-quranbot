@@ -42,7 +42,7 @@ class SendableAnswer(SendableInterface):
                 resp = await client.send(request)
                 responses.append(resp.text)
                 if resp.status_code != success_status:
-                    raise TelegramIntegrationsError(resp.text, int(request.url.params['chat_id']))
+                    raise TelegramIntegrationsError(resp.text)
             return [json.loads(response) for response in responses]
 
 
@@ -71,7 +71,6 @@ class UserNotSubscribedSafeSendable(SendableInterface):
                 if error_message not in str(err):
                     continue
                 dict_response = json.loads(str(err))
-                dict_response['chat_id'] = err.chat_id()
                 return [dict_response]
             raise err
         return responses

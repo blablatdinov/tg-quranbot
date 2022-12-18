@@ -1,0 +1,71 @@
+{
+  "update_id":637463205,
+  "callback_query":{
+    "id":"1540221940885375076",
+    "from":{
+      "id":358610865,
+      "is_bot":false,
+      "first_name":"Алмаз",
+      "last_name":"Илалетдинов",
+      "username":"ilaletdinov",
+      "language_code":"ru"
+    },
+    "message":{
+      "message_id":22718,
+      "from":{
+        "id":452230948,
+        "is_bot":true,
+        "first_name":"WokeUpSmiled",
+        "username":"WokeUpSmiled_bot"
+      },
+      "chat":{
+        "id":358610865,
+        "first_name":"Алмаз",
+        "last_name":"Илалетдинов",
+        "username":"ilaletdinov",
+        "type":"private"
+      },
+      "date":1671365152,
+      "text":"3:2)\nاللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ\n\nАллах (Бог, Господь)… Нет бога, кроме Него, вечно Живого, Сущего.\n\n[Аллаху Ляя Илляяхя Илляхуаль-Хаййуль-Каййуум]",
+      "entities":[
+        {
+          "offset":0,
+          "length":4,
+          "type":"text_link",
+          "url":"https://umma.ru/sura-3-alyu-imran-rod-imrana/"
+        },
+        {
+          "offset":125,
+          "length":46,
+          "type":"italic"
+        }
+      ],
+      "reply_markup":{
+        "inline_keyboard":[
+          [
+            {
+              "text":"<- 3:1",
+              "callback_data":"getAyat(277)"
+            },
+            {
+              "text":"стр. 278/5737",
+              "callback_data":"fake"
+            },
+            {
+              "text":"3:3 ->",
+              "callback_data":"getAyat(279)"
+            }
+          ],
+          [
+            {
+              "text":"Добавить в избранное",
+              "callback_data":"addToFavor(278)"
+            }
+          ]
+        ]
+      }
+    },
+    "chat_instance":"-8377414756201282502",
+    "data":"getAyat(279)"
+  }
+}

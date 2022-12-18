@@ -30,16 +30,8 @@ class TelegramIntegrationsError(BaseAppError):
 
     admin_message = 'Ошибка интеграции telegram'
 
-    def __init__(self, message: str, chat_id: int):
+    def __init__(self, message: str):
         self._message = message
-        self._chat_id = chat_id
 
     def __str__(self):
         return self._message
-
-    def chat_id(self) -> int:
-        """Получить идентификатор чата.
-
-        :return: int
-        """
-        return self._chat_id
