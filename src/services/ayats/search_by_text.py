@@ -1,8 +1,11 @@
 import httpx
 from aioredis import Redis
 
+from app_types.stringable import Stringable
 from db.connection import database
 from exceptions.content_exceptions import AyatNotFoundError
+from integrations.tg.chat_id import TgChatId
+from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerInterface
 from repository.ayats.ayat import AyatRepositoryInterface
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
@@ -29,14 +32,14 @@ class SearchAyatByTextAnswer(TgAnswerInterface):
         self._ayat_repo = ayat_repo
         self._redis = redis
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Собрать ответ.
 
         :param update: Stringable
         :return: list[httpx.Request]
         :raises AyatNotFoundError: if ayat not found
         """
-        query = update.message().text()
+        query = str(MessageText(update))
         try:
             result_ayat = (await self._ayat_repo.search_by_text(query))[0]
         except IndexError as err:
@@ -52,7 +55,7 @@ class SearchAyatByTextAnswer(TgAnswerInterface):
                 TextSearchNeighborAyatsRepository(
                     database,
                     result_ayat.id,
-                    AyatTextSearchQuery.for_reading_cs(self._redis, update.chat_id()),
+                    AyatTextSearchQuery.for_reading_cs(self._redis, int(TgChatId(update))),
                 ),
             ),
         ).build(update)
