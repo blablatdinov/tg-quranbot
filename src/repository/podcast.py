@@ -1,27 +1,21 @@
+from typing import Protocol
+
 from databases import Database
 
 from exceptions.base_exception import InternalBotError
 
 
-class RandomPodcastInterface(object):
+class RandomPodcastInterface(Protocol):
     """Интерфейс подкаста.
 
     https://www.yegor256.com/2014/12/01/orm-offensive-anti-pattern.html
     """
 
     async def audio_telegram_id(self) -> str:
-        """Получить идентификатор файла.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Получить идентификатор файла."""
 
     async def link_to_audio_file(self) -> str:
-        """Получить ссылку на файл.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Получить ссылку на файл."""
 
 
 class RandomPodcast(RandomPodcastInterface):

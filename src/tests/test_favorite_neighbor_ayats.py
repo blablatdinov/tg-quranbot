@@ -7,6 +7,12 @@ from repository.ayats.schemas import Ayat
 
 class FavoriteAyatRepositoryFake(FavoriteAyatRepositoryInterface):
 
+    async def get_favorite(self, ayat_id: int) -> Ayat:
+        raise NotImplementedError
+
+    async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
+        raise NotImplementedError
+
     async def get_favorites(self, chat_id: int) -> list[Ayat]:
         return [
             Ayat(

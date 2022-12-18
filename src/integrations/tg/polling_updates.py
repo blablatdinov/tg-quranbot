@@ -1,4 +1,5 @@
 import json
+from typing import Protocol
 
 import httpx
 
@@ -17,16 +18,14 @@ class UpdatesTimeout(Intable):
         return 5
 
 
-class UpdatesURLInterface(object):
+class UpdatesURLInterface(Protocol):
     """Интерфейс URL запроса для получения уведомлений."""
 
     def generate(self, update_id: int) -> str:
         """Генерация.
 
         :param update_id: int
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class UpdatesURL(Stringable):
@@ -77,22 +76,14 @@ class UpdatesLongPollingURL(UpdatesURLInterface):
         )
 
 
-class UpdatesIteratorInterface(object):
+class UpdatesIteratorInterface(Protocol):
     """Интерфейс итератора по обновлениям."""
 
     def __aiter__(self):
-        """Точка входа в итератор.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Точка входа в итератор."""
 
     async def __anext__(self) -> list[str]:
-        """Вернуть следующий элемент.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Вернуть следующий элемент."""
 
 
 class PollingUpdatesIterator(UpdatesIteratorInterface):

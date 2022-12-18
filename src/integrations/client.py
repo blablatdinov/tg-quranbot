@@ -1,6 +1,5 @@
-import abc
 import time
-from typing import TypeVar
+from typing import Protocol, TypeVar
 
 import httpx
 from loguru import logger
@@ -9,18 +8,15 @@ from pydantic import BaseModel
 ParseModel = TypeVar('ParseModel', bound=BaseModel)
 
 
-class IntegrationClientInterface(object):
+class IntegrationClientInterface(Protocol):
     """Интерфейс HTTP клиента."""
 
-    @abc.abstractmethod
     async def act(self, url: str, model_for_parse: type[ParseModel]) -> ParseModel:
         """Выполнить запрос.
 
         :param url: str
         :param model_for_parse: type(BaseModel)
-        :raises NotImplementedError: if not implement
         """
-        raise NotImplementedError
 
 
 class IntegrationClient(IntegrationClientInterface):

@@ -1,5 +1,5 @@
 import uuid
-from typing import Optional
+from typing import Optional, Protocol
 
 from databases import Database
 from loguru import logger
@@ -20,7 +20,7 @@ class User(BaseModel):
     city_id: Optional[uuid.UUID]
 
 
-class UserRepositoryInterface(object):
+class UserRepositoryInterface(Protocol):
     """Интерфейс репозитория для работы с пользователями."""
 
     async def create(self, chat_id: int, referrer_id: Optional[int] = None):
@@ -28,51 +28,39 @@ class UserRepositoryInterface(object):
 
         :param chat_id: int
         :param referrer_id: Optional[int]
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
     async def get_by_chat_id(self, chat_id: int) -> User:
         """Метод для получения пользователя.
 
         :param chat_id: int
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
     async def get_by_id(self, user_id: int) -> User:
         """Метод для получения пользователя.
 
         :param user_id: int
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
     async def exists(self, chat_id: int) -> bool:
         """Метод для проверки наличия пользователя в БД.
 
         :param chat_id: int
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
     async def update_city(self, chat_id: int, city_id: uuid.UUID):
         """Обновить город пользователя.
 
         :param chat_id: int
         :param city_id: int
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
     async def update_referrer(self, chat_id: int, referrer_id: int):
         """Обновить город пользователя.
 
         :param chat_id: int
         :param referrer_id: [int]
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class UserRepository(UserRepositoryInterface):

@@ -19,9 +19,7 @@ class SinkInterface(Protocol):
         :param event_data: dict
         :param event_name: str
         :param version: int
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class NatsSink(SinkInterface):

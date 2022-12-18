@@ -1,5 +1,6 @@
 import datetime
 import enum
+from typing import Protocol
 
 from asyncpg import Connection
 from pydantic import BaseModel
@@ -21,7 +22,7 @@ class UserAction(BaseModel):
     chat_id: int
 
 
-class UserActionRepositoryInterface(object):
+class UserActionRepositoryInterface(Protocol):
     """Интерфейс к хранилищу действий пользователя."""
 
     async def create_user_action(self, chat_id: int, action: UserActionEnum):
@@ -29,9 +30,7 @@ class UserActionRepositoryInterface(object):
 
         :param chat_id: int
         :param action: UserActionEnum
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class UserActionRepository(UserActionRepositoryInterface):

@@ -10,6 +10,4 @@ class KeyboardInterface(Protocol):
         """Генерация.
 
         :param update: Stringable
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError

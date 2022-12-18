@@ -1,19 +1,19 @@
+from typing import Protocol
+
 from databases import Database
 from pydantic import parse_obj_as
 
 from repository.ayats.schemas import Ayat
 
 
-class SuraInterface(object):
+class SuraInterface(Protocol):
     """Интерфейс суры."""
 
     async def ayats(self, sura_num: int):
         """Получить аяты суры.
 
         :param sura_num: int
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class Sura(SuraInterface):

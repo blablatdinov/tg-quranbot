@@ -1,4 +1,5 @@
 import datetime
+from typing import Protocol
 
 import httpx
 
@@ -8,16 +9,14 @@ from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.update_id import UpdateId
 
 
-class DebugParamInterface(object):
+class DebugParamInterface(Protocol):
     """Интерфейс отладочной информации."""
 
     async def debug_value(self, update) -> str:
         """Значение отладочной информации.
 
         :param update: Stringable
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class AppendDebugInfoAnswer(TgAnswerInterface):

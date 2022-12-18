@@ -1,3 +1,5 @@
+from typing import Protocol
+
 from databases import Database
 
 from services.regular_expression import IntableRegularExpression
@@ -24,16 +26,14 @@ class PrayerStatus(object):
         return 'not' not in self._source.split('(')[0]
 
 
-class UserPrayerStatusInterface(object):
+class UserPrayerStatusInterface(Protocol):
     """Интерфейс статуса прочитанности намаза."""
 
     async def change(self, prayer_status: PrayerStatus):
         """Изменить статус прочитанности.
 
         :param prayer_status: PrayerStatus
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class UserPrayerStatus(UserPrayerStatusInterface):

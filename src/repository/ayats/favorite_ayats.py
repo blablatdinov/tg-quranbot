@@ -1,3 +1,5 @@
+from typing import Protocol
+
 from databases import Database
 from loguru import logger
 from pydantic import parse_obj_as
@@ -6,33 +8,27 @@ from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.schemas import Ayat
 
 
-class FavoriteAyatRepositoryInterface(object):
+class FavoriteAyatRepositoryInterface(Protocol):
     """Интерфейс для работы с хранилищем избранных аятов."""
 
     async def get_favorites(self, chat_id: int) -> list[Ayat]:
         """Метод для аятов в избранном для пользователя.
 
         :param chat_id: int
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
     async def get_favorite(self, ayat_id: int) -> Ayat:
         """Метод для аятов в избранном для пользователя.
 
         :param ayat_id: int
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
     async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
         """Проверить входит ли аят в избранные.
 
         :param ayat_id: int
         :param chat_id: int
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
