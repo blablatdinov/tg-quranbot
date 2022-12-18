@@ -75,6 +75,7 @@ class QuranbotAnswer(TgAnswerInterface):
         self._database = database
         self._redis = redis
         self._event_sink = event_sink
+        self._pre_build()
 
     async def build(self, update: Stringable) -> list[httpx.Request]:
         """Сборка ответа.
@@ -82,16 +83,19 @@ class QuranbotAnswer(TgAnswerInterface):
         :param update: Stringable
         :return: list[httpx.Request]
         """
+        return await self._answer.build(update)
+
+    def _pre_build(self) -> None:
         empty_answer = TgEmptyAnswer(settings.API_TOKEN)
         answer_to_sender = TgAnswerToSender(TgMessageAnswer(empty_answer))
-        audio_to_sender = TgAudioAnswer(answer_to_sender)
+        audio_to_sender = TgAnswerToSender(TgAudioAnswer(empty_answer))
         html_to_sender = TgAnswerToSender(
             TgHtmlParseAnswer(
                 TgMessageAnswer(empty_answer),
             ),
         )
         ayat_repo = AyatRepository(self._database)
-        return await SafeFork(
+        self._answer = SafeFork(
             TgAnswerFork(
                 TgMessageRegexAnswer(
                     'Подкасты',
@@ -319,4 +323,4 @@ class QuranbotAnswer(TgAnswerInterface):
             TgAnswerToSender(
                 TgMessageAnswer(empty_answer),
             ),
-        ).build(update)
+        )
