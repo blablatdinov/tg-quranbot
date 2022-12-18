@@ -1,4 +1,5 @@
 import enum
+from typing import Protocol
 
 from aioredis import Redis
 from loguru import logger
@@ -12,23 +13,17 @@ class UserStep(enum.Enum):
     ayat_search = 'ayat_search'
 
 
-class UserStateInterface(object):
+class UserStateInterface(Protocol):
     """Интерфейс для работы с состоянием пользователя."""
 
     async def step(self) -> UserStep:
-        """Состояние пользователя.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Состояние пользователя."""
 
     async def change_step(self, step: UserStep):
         """Изменение, состояние пользователя.
 
         :param step: UserStep
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class LoggedUserState(UserStateInterface):

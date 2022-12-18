@@ -1,3 +1,5 @@
+from typing import Protocol
+
 from databases import Database
 from pydantic import BaseModel
 
@@ -10,16 +12,14 @@ class QueryResult(BaseModel):
     text: str
 
 
-class AdminMessageRepositoryInterface(object):
+class AdminMessageRepositoryInterface(Protocol):
     """Интерфейс репозитория для работы с административными сообщениями."""
 
     async def get(self, key: str) -> str:
         """Метод для получения административного сообщения.
 
         :param key: str
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class AdminMessageRepository(AdminMessageRepositoryInterface):

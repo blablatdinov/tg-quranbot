@@ -1,12 +1,11 @@
-class Stringable(object):
+from typing import Protocol
+
+
+class Stringable(Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
     def __str__(self) -> str:
-        """Приведение к строке.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Приведение к строке."""
 
 
 class ThroughStringable(Stringable):

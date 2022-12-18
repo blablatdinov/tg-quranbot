@@ -1,4 +1,4 @@
-from typing import NamedTuple, Optional
+from typing import NamedTuple, Optional, Protocol
 
 from databases import Database
 from pydantic import parse_obj_as
@@ -15,48 +15,36 @@ class AyatNeighbors(NamedTuple):
     right: Optional[AyatShort]
 
 
-class AyatRepositoryInterface(object):
+class AyatRepositoryInterface(Protocol):
     """Интерфейс репозитория для работы с административными сообщениями."""
 
     async def get(self, ayat_id: int) -> Ayat:
         """Метод для получения аята по идентификатору.
 
         :param ayat_id: int
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
     async def first(self) -> Ayat:
-        """Получить первый аят.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Получить первый аят."""
 
     async def get_ayat_by_sura_ayat_num(self, sura_num: str, ayat_num: str) -> Ayat:
         """Получить аят по номеру суры и аята.
 
         :param sura_num: int
         :param ayat_num: int
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
     async def get_ayats_by_sura_num(self, sura_num: int) -> list[Ayat]:
         """Получить аят по номеру суры.
 
         :param sura_num: int
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
     async def search_by_text(self, query: str) -> list[Ayat]:
         """Поиск по тексту.
 
         :param query: str
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class AyatRepository(AyatRepositoryInterface):
@@ -171,3 +159,12 @@ class AyatRepository(AyatRepositoryInterface):
         """
         rows = await self.connection.fetch_all(query, {'search_query': search_query})
         return parse_obj_as(list[Ayat], [record._mapping for record in rows])  # noqa: WPS437
+
+    async def get_ayat_by_sura_ayat_num(self, sura_num: str, ayat_num: str) -> Ayat:
+        """Получить аят по номеру суры и аята.
+
+        :param sura_num: int
+        :param ayat_num: int
+        :raises NotImplementedError: not implemented
+        """
+        raise NotImplementedError

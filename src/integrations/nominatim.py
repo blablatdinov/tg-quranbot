@@ -1,27 +1,18 @@
-import abc
+from typing import Protocol
 
 from integrations.client import IntegrationClientInterface
 from integrations.schemas import NominatimSearchResponse
 
 
-class GeoServiceIntegrationInterface(object):
+class GeoServiceIntegrationInterface(Protocol):
     """Интерфейс интеграции с геосервисом."""
 
-    _request_client: IntegrationClientInterface
-
-    @abc.abstractmethod
-    def __init__(self, request_client: IntegrationClientInterface):
-        raise NotImplementedError
-
-    @abc.abstractmethod
     async def search(self, latitude: str, longitude: str) -> str:
         """Поиск по координатам.
 
         :param latitude: str
         :param longitude: str
-        :raises NotImplementedError: if not implement
         """
-        raise NotImplementedError
 
 
 class NominatimIntegration(GeoServiceIntegrationInterface):

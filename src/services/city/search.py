@@ -1,3 +1,5 @@
+from typing import Protocol
+
 from databases import Database
 from loguru import logger
 from pydantic import parse_obj_as
@@ -7,29 +9,17 @@ from integrations.nominatim import GeoServiceIntegrationInterface
 from repository.city import City
 
 
-class SearchCityQueryInterface(object):
+class SearchCityQueryInterface(Protocol):
     """Интерфейс поискового запроса городов."""
 
     def city_name(self) -> str:
-        """Имя города.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Имя города."""
 
     def latitude(self) -> float:
-        """Ширина города.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Ширина города."""
 
     def longitude(self) -> float:
-        """Долгота города.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Долгота города."""
 
 
 class SearchCityQuery(SearchCityQueryInterface):
@@ -96,16 +86,14 @@ class SearchCityQuery(SearchCityQueryInterface):
         return self._longitude[0]
 
 
-class CitySearchInterface(object):
+class CitySearchInterface(Protocol):
     """Интерфейс для поиска городов."""
 
     async def search(self, query: SearchCityQueryInterface) -> list[City]:
         """Осуществить поиск.
 
         :param query: SearchCityQueryInterface
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class SearchCityByName(CitySearchInterface):

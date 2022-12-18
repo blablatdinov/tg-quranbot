@@ -1,5 +1,6 @@
 import asyncio
 import json
+from typing import Protocol
 from urllib import parse as url_parse
 
 import httpx
@@ -10,16 +11,14 @@ from exceptions.internal_exceptions import TelegramIntegrationsError
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
-class SendableInterface(object):
+class SendableInterface(Protocol):
     """Интерфейс объекта, отправляющего ответы в API."""
 
     async def send(self, update) -> list[dict]:
         """Отправка.
 
         :param update: Stringable
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class SendableAnswer(SendableInterface):

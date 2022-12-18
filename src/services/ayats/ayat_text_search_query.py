@@ -1,23 +1,17 @@
+from typing import Protocol
+
 from aioredis import Redis
 from loguru import logger
 
 
-class AyatTextSearchQueryInterface(object):
+class AyatTextSearchQueryInterface(Protocol):
     """Интерфейс запроса для поиска аятов."""
 
     async def write(self) -> None:
-        """Запись.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Запись."""
 
     async def read(self) -> str:
-        """Чтение.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Чтение."""
 
 
 class AyatTextSearchQuery(AyatTextSearchQueryInterface):

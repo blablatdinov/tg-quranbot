@@ -1,22 +1,16 @@
+from typing import Protocol
+
 from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
 
 
-class SearchQueryInterface(object):
+class SearchQueryInterface(Protocol):
     """Интерфейс объекта с запросом для поиска."""
 
     def sura(self) -> int:
-        """Номер суры.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Номер суры."""
 
     def ayat(self) -> str:
-        """Номер аята.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Номер аята."""
 
 
 class SearchQuery(SearchQueryInterface):

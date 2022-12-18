@@ -1,3 +1,5 @@
+from typing import Protocol
+
 from databases import Database
 from pydantic import parse_obj_as
 
@@ -8,29 +10,17 @@ from repository.ayats.schemas import AyatShort
 from services.ayats.ayat_text_search_query import AyatTextSearchQueryInterface
 
 
-class NeighborAyatsRepositoryInterface(object):
+class NeighborAyatsRepositoryInterface(Protocol):
     """Интерфейс для работы с соседними аятами в хранилище."""
 
     async def left_neighbor(self) -> AyatShort:
-        """Левый аят.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Левый аят."""
 
     async def right_neighbor(self) -> AyatShort:
-        """Правый аят.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Правый аят."""
 
     async def page(self) -> str:
-        """Информация о странице.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Информация о странице."""
 
 
 class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):

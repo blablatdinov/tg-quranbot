@@ -1,3 +1,5 @@
+from typing import Protocol
+
 from databases import Database
 from pydantic import BaseModel, parse_obj_as
 
@@ -10,15 +12,11 @@ class ContentSpam(BaseModel):
     link: str
 
 
-class AyatMorningContentRepositoryInterface(object):
+class AyatMorningContentRepositoryInterface(Protocol):
     """Интерфейс для работы с хранилищем данных для рассылок."""
 
     async def get_morning_content(self) -> list[ContentSpam]:
-        """Получить контент для рассылки.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Получить контент для рассылки."""
 
 
 class AyatMorningContentRepository(AyatMorningContentRepositoryInterface):
