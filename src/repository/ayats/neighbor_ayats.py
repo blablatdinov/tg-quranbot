@@ -84,7 +84,7 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
 class NeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
-    def __init__(self, connection: Database, ayat_id):
+    def __init__(self, connection: Database, ayat_id: int):
         self._connection = connection
         self._ayat_id = ayat_id
 
