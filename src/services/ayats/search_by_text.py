@@ -11,6 +11,7 @@ from repository.ayats.ayat import AyatRepositoryInterface
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
 from services.ayats.ayat_answer import AyatAnswer
+from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 from services.ayats.ayat_text_search_query import AyatTextSearchQuery
 from services.ayats.keyboards import AyatAnswerKeyboard
 
@@ -57,5 +58,6 @@ class SearchAyatByTextAnswer(TgAnswerInterface):
                     result_ayat.id,
                     AyatTextSearchQuery.for_reading_cs(self._redis, int(TgChatId(update))),
                 ),
+                AyatCallbackTemplate.get_search_ayat,
             ),
         ).build(update)
