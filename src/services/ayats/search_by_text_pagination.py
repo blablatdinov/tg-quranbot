@@ -8,6 +8,7 @@ from repository.ayats.ayat import AyatRepositoryInterface
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
 from services.ayats.ayat_answer import AyatAnswer
+from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 from services.ayats.ayat_text_search_query import AyatTextSearchQuery
 from services.ayats.keyboards import AyatAnswerKeyboard
 from services.regular_expression import IntableRegularExpression
@@ -66,5 +67,6 @@ class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
                         update.chat_id(),
                     ),
                 ),
+                AyatCallbackTemplate.get_search_ayat,
             ),
         ).build(update)

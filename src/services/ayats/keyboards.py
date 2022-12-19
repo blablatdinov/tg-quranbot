@@ -16,10 +16,12 @@ class AyatAnswerKeyboard(KeyboardInterface):
         ayat: Ayat,
         favorite_ayats_repo: FavoriteAyatRepositoryInterface,
         neighbor_ayats: NeighborAyatsRepositoryInterface,
+        ayat_callback_template: AyatCallbackTemplate,
     ):
         self._ayat = ayat
         self._favorite_ayats_repo = favorite_ayats_repo
         self._neighbor_ayats = neighbor_ayats
+        self._ayat_callback_template = ayat_callback_template
 
     async def generate(self, update: Stringable) -> str:
         """Генерация.
@@ -29,6 +31,6 @@ class AyatAnswerKeyboard(KeyboardInterface):
         """
         return await AyatFavoriteKeyboardButton(
             self._ayat,
-            NeighborAyatKeyboard(self._neighbor_ayats, AyatCallbackTemplate.get_ayat),
+            NeighborAyatKeyboard(self._neighbor_ayats, self._ayat_callback_template),
             self._favorite_ayats_repo,
         ).generate(update)
