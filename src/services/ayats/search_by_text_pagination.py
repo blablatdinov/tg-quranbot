@@ -3,6 +3,8 @@ from aioredis import Redis
 
 from db.connection import database
 from exceptions.content_exceptions import AyatNotFoundError
+from integrations.tg.callback_query import CallbackQueryData
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface
 from repository.ayats.ayat import AyatRepositoryInterface
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
@@ -38,10 +40,10 @@ class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         :raises AyatNotFoundError: if ayat not found
         """
-        target_ayat_id = int(IntableRegularExpression(update.callback_query().data))
+        target_ayat_id = int(IntableRegularExpression(str(CallbackQueryData(update))))
         try:
             ayats = await self._ayat_repo.search_by_text(
-                await AyatTextSearchQuery.for_reading_cs(self._redis, update.chat_id()).read(),
+                await AyatTextSearchQuery.for_reading_cs(self._redis, int(TgChatId(update))).read(),
             )
         except IndexError as err:
             raise AyatNotFoundError from err
@@ -64,7 +66,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
                     result_ayat.id,
                     AyatTextSearchQuery.for_reading_cs(
                         self._redis,
-                        update.chat_id(),
+                        int(TgChatId(update)),
                     ),
                 ),
                 AyatCallbackTemplate.get_search_ayat,
