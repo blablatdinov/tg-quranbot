@@ -216,7 +216,9 @@ class QuranbotAnswer(TgAnswerInterface):
                                 UserAlreadyExistsAnswer(
                                     StartWithEventAnswer(
                                         StartAnswer(
-                                            TgMessageAnswer(empty_answer),
+                                            TgHtmlParseAnswer(
+                                                TgMessageAnswer(empty_answer),
+                                            ),
                                             UserRepository(self._database),
                                             AdminMessageRepository(self._database),
                                             ayat_repo,
