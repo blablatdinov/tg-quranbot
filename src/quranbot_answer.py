@@ -22,7 +22,7 @@ from integrations.tg.tg_answers import (
 )
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
-from repository.admin_message import AdminMessageRepository
+from repository.admin_message import AdminMessage, AdminMessageRepository
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.sura import Sura
@@ -48,6 +48,7 @@ from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 from services.city.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
 from services.city.inline_query_answer import InlineQueryAnswer
 from services.city.search import SearchCityByCoordinates, SearchCityByName
+from services.help_answer import HelpAnswer
 from services.podcast_answer import PodcastAnswer
 from services.prayers.invite_set_city_answer import InviteSetCityAnswer
 from services.prayers.prayer_for_user_answer import PrayerForUserAnswer
@@ -238,6 +239,13 @@ class QuranbotAnswer(TgAnswerInterface):
                             ),
                         ),
                         self._redis,
+                    ),
+                ),
+                TgMessageRegexAnswer(
+                    '/help',
+                    HelpAnswer(
+                        html_to_sender,
+                        AdminMessage('start', self._database),
                     ),
                 ),
                 StepAnswer(
