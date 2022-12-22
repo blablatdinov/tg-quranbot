@@ -22,7 +22,7 @@ from integrations.tg.tg_answers import (
 )
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
-from repository.admin_message import AdminMessage, AdminMessageRepository
+from repository.admin_message import AdminMessage
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.sura import Sura
@@ -221,7 +221,7 @@ class QuranbotAnswer(TgAnswerInterface):
                                                 TgMessageAnswer(empty_answer),
                                             ),
                                             UserRepository(self._database),
-                                            AdminMessageRepository(self._database),
+                                            AdminMessage('start', self._database),
                                             ayat_repo,
                                         ),
                                         self._event_sink,

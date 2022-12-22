@@ -1,6 +1,6 @@
 from typing import Optional, Protocol
 
-from repository.admin_message import AdminMessageRepositoryInterface
+from repository.admin_message import AdminMessageInterface
 from repository.ayats.ayat import AyatRepositoryInterface
 from repository.ayats.schemas import Ayat
 from repository.users.user import UserRepositoryInterface
@@ -35,7 +35,7 @@ class RegistrationRepository(RegistrationRepositoryInterface):
     def __init__(
         self,
         user_repository: UserRepositoryInterface,
-        admin_messages_repository: AdminMessageRepositoryInterface,
+        admin_messages_repository: AdminMessageInterface,
         ayats_repository: AyatRepositoryInterface,
     ):
         self._user_repository = user_repository
@@ -55,7 +55,7 @@ class RegistrationRepository(RegistrationRepositoryInterface):
 
         :return: str
         """
-        return await self._admin_messages_repository.get('start')
+        return await self._admin_messages_repository.text()
 
     async def first_ayat(self):
         """Получить первый аят.
