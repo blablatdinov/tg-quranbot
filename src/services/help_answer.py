@@ -1,7 +1,7 @@
 import httpx
 
 from app_types.stringable import Stringable
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
 from repository.admin_message import AdminMessageInterface
 
 
@@ -23,10 +23,7 @@ class HelpAnswer(TgAnswerInterface):
         :param update: Stringable
         :return: list[httpx.Request]
         """
-        return [
-            httpx.Request(
-                request.method,
-                request.url.copy_add_param('text', await self._admin_message.text()),
-            )
-            for request in await self._origin.build(update)
-        ]
+        return await TgTextAnswer(
+            self._origin,
+            await self._admin_message.text(),
+        ).build(update)
