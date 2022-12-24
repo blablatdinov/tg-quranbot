@@ -73,6 +73,7 @@ class AyatRepository(AyatRepositoryInterface):
             FROM ayats a
             INNER JOIN suras s on a.sura_id = s.sura_id
             INNER JOIN files cf on a.audio_id = cf.file_id
+            ORDER BY a.ayat_id
             LIMIT 1
         """
         row = await self.connection.fetch_one(query)
