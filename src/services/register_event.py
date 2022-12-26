@@ -34,7 +34,7 @@ class StartWithEventAnswer(TgAnswerInterface):
             {
                 'user_id': int(TgChatId(update)),
                 'referrer_id': referrer_id,
-                'date_time': TgDateTime(update).datetime(),
+                'date_time': TgDateTime(update).datetime().isoformat(),
             },
             'User.Subscribed',
             1,

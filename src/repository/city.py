@@ -1,5 +1,5 @@
-import abc
 import uuid
+from typing import Protocol
 
 from databases import Database
 from pydantic import BaseModel, parse_obj_as
@@ -12,17 +12,14 @@ class City(BaseModel):
     name: str
 
 
-class CityRepositoryInterface(object):
+class CityRepositoryInterface(Protocol):
     """Интерфейс репозитория городов."""
 
-    @abc.abstractmethod
     async def search_by_name(self, query: str) -> list[City]:
         """Поиск по имени.
 
         :param query: str
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class CityRepository(CityRepositoryInterface):

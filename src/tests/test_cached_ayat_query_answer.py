@@ -22,7 +22,7 @@ class TgAnswerFake(TgAnswerInterface):
 
 @pytest.fixture()
 def mock_redis():
-    redis = Redis()
+    redis: Redis = Redis()
     redis.set = AsyncMock()  # type: ignore
     return redis
 

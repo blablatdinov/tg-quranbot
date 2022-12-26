@@ -6,7 +6,7 @@ from integrations.tg.tg_answers.callback_query_regex_answer import TgCallbackQue
 from integrations.tg.tg_answers.chat_id_answer import TgChatIdAnswer
 from integrations.tg.tg_answers.empty_answer import TgEmptyAnswer
 from integrations.tg.tg_answers.html_parse_answer import TgHtmlParseAnswer
-from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import FkAnswer, TgAnswerInterface
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.measure_answer import TgMeasureAnswer
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer

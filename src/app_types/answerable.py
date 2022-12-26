@@ -1,12 +1,10 @@
+from typing import Protocol
+
 from services.answers.interface import AnswerInterface
 
 
-class Answerable(object):
+class Answerable(Protocol):
     """Интерфейс, сообщающий, что класс может быть трансформирован в ответ."""
 
     async def to_answer(self) -> AnswerInterface:
-        """Трансформация экземпляра в AnswerInterface.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Трансформация экземпляра в AnswerInterface."""

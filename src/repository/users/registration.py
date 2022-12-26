@@ -1,44 +1,32 @@
-from typing import Optional
+from typing import Optional, Protocol
 
-from repository.admin_message import AdminMessageRepositoryInterface
+from repository.admin_message import AdminMessageInterface
 from repository.ayats.ayat import AyatRepositoryInterface
 from repository.ayats.schemas import Ayat
 from repository.users.user import UserRepositoryInterface
 
 
-class RegistrationRepositoryInterface(object):
+class RegistrationRepositoryInterface(Protocol):
     """Интерфейс для регистрации пользователя."""
 
     async def user_exists(self, chat_id: int):
         """Проверить наличие пользователя.
 
         :param chat_id: int
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
     async def admin_message(self) -> str:
-        """Получить административное сообщение.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Получить административное сообщение."""
 
     async def first_ayat(self) -> Ayat:
-        """Получить первый аят.
-
-        :raises NotImplementedError: if not implemented
-        """
-        raise NotImplementedError
+        """Получить первый аят."""
 
     async def create(self, chat_id: int, referrer_id: Optional[int] = None):
         """Создать пользователя.
 
         :param chat_id: int
         :param referrer_id: Optional[int]
-        :raises NotImplementedError: if not implemented
         """
-        raise NotImplementedError
 
 
 class RegistrationRepository(RegistrationRepositoryInterface):
@@ -47,7 +35,7 @@ class RegistrationRepository(RegistrationRepositoryInterface):
     def __init__(
         self,
         user_repository: UserRepositoryInterface,
-        admin_messages_repository: AdminMessageRepositoryInterface,
+        admin_messages_repository: AdminMessageInterface,
         ayats_repository: AyatRepositoryInterface,
     ):
         self._user_repository = user_repository
@@ -67,7 +55,7 @@ class RegistrationRepository(RegistrationRepositoryInterface):
 
         :return: str
         """
-        return await self._admin_messages_repository.get('start')
+        return await self._admin_messages_repository.text()
 
     async def first_ayat(self):
         """Получить первый аят.

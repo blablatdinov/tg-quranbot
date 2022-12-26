@@ -1,7 +1,7 @@
 import httpx
 
 from app_types.stringable import Stringable
-from db.connection import database
+from db.base import database
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup, TgTextAnswer
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats

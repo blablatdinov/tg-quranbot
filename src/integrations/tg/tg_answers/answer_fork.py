@@ -1,6 +1,7 @@
 from contextlib import suppress
 
 import httpx
+from loguru import logger
 
 from app_types.stringable import Stringable
 from exceptions.internal_exceptions import NotProcessableUpdateError
@@ -32,5 +33,6 @@ class TgAnswerFork(TgAnswerInterface):
             ):
                 origin_requests = await answer.build(update)
                 if origin_requests:
+                    logger.debug('Update processed by: {handler}', handler=answer)
                     return origin_requests
         raise NotProcessableUpdateError

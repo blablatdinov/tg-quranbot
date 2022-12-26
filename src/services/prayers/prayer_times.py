@@ -2,6 +2,10 @@ import datetime
 
 import httpx
 
+from app_types.stringable import Stringable
+from integrations.tg.callback_query import CallbackQueryData
+from integrations.tg.chat_id import TgChatId
+from integrations.tg.message_id import MessageId
 from integrations.tg.tg_answers import TgTextAnswer
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
@@ -23,14 +27,14 @@ class PrayerForUserAnswer(TgAnswerInterface):
         self._origin = answer
         self._user_prayers = user_prayers
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Stringable) -> list[httpx.Request]:
         """Отправить.
 
         :param update: Stringable
         :return: list[types.Message]
         """
         prayers = await self._user_prayers.prayer_times(
-            update.chat_id(), datetime.date.today(),
+            int(TgChatId(update)), datetime.date.today(),
         )
         time_format = '%H:%M'
         template = '\n'.join([
@@ -79,11 +83,11 @@ class UserPrayerStatusChangeAnswer(TgAnswerInterface):
         :param update: Stringable
         :return: list[httpx.Request]
         """
-        await self._prayer_status.change(PrayerStatus(update.callback_query().data))
+        await self._prayer_status.change(PrayerStatus(str(CallbackQueryData(update))))
         return await TgAnswerMarkup(
             TgMessageIdAnswer(
                 self._origin,
-                update.message_id(),
+                int(MessageId(update)),
             ),
             UserPrayersKeyboard(PrayersWithoutSunrise(self._user_prayers), datetime.date.today()),
         ).build(update)

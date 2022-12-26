@@ -1,12 +1,13 @@
 import httpx
 
 from app_types.stringable import Stringable
-from db.connection import database
+from db.base import database
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerInterface
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
 from services.ayats.ayat_answer import AyatAnswer
+from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.keyboards import AyatAnswerKeyboard
 
@@ -42,5 +43,6 @@ class AyatBySuraAyatNumAnswer(TgAnswerInterface):
                 result_ayat,
                 FavoriteAyatsRepository(database),
                 NeighborAyats(database, result_ayat.id),
+                AyatCallbackTemplate.get_ayat,
             ),
         ).build(update)

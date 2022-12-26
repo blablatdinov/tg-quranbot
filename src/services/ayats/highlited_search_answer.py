@@ -21,13 +21,16 @@ class HighlightedSearchAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         new_requests = []
+        requests = await self._origin.build(update)
         search_query = await AyatTextSearchQuery.for_reading_cs(
             self._redis,
             int(TgChatId(update)),
         ).read()
-        requests = await self._origin.build(update)
         for request in requests:
-            text = request.url.params['text']
+            try:
+                text = request.url.params['text']
+            except KeyError:
+                continue
             if search_query in text:
                 new_requests.append(httpx.Request(
                     method=request.method,

@@ -1,13 +1,16 @@
 import httpx
 from redis.asyncio import Redis
 
-from db.connection import database
+from db.base import database
 from exceptions.content_exceptions import AyatNotFoundError
+from integrations.tg.callback_query import CallbackQueryData
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface
 from repository.ayats.ayat import AyatRepositoryInterface
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
 from services.ayats.ayat_answer import AyatAnswer
+from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 from services.ayats.ayat_text_search_query import AyatTextSearchQuery
 from services.ayats.keyboards import AyatAnswerKeyboard
 from services.regular_expression import IntableRegularExpression
@@ -37,10 +40,10 @@ class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         :raises AyatNotFoundError: if ayat not found
         """
-        target_ayat_id = int(IntableRegularExpression(update.callback_query().data))
+        target_ayat_id = int(IntableRegularExpression(str(CallbackQueryData(update))))
         try:
             ayats = await self._ayat_repo.search_by_text(
-                await AyatTextSearchQuery.for_reading_cs(self._redis, update.chat_id()).read(),
+                await AyatTextSearchQuery.for_reading_cs(self._redis, int(TgChatId(update))).read(),
             )
         except IndexError as err:
             raise AyatNotFoundError from err
@@ -63,8 +66,9 @@ class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
                     result_ayat.id,
                     AyatTextSearchQuery.for_reading_cs(
                         self._redis,
-                        update.chat_id(),
+                        int(TgChatId(update)),
                     ),
                 ),
+                AyatCallbackTemplate.get_search_ayat,
             ),
         ).build(update)

@@ -2,7 +2,7 @@ import httpx
 from databases import Database
 
 from app_types.stringable import Stringable
-from db.connection import database
+from db.base import database
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_id import MessageId
@@ -15,6 +15,7 @@ from integrations.tg.tg_answers import (
 )
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
+from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 from services.ayats.favorite_ayats import FavoriteAyatStatus
 from services.ayats.keyboards import AyatAnswerKeyboard
 from services.ayats.search_by_sura_ayat_num import AyatSearchInterface
@@ -67,8 +68,9 @@ class ChangeFavoriteAyatAnswer(TgAnswerInterface):
                         result_ayat,
                         FavoriteAyatsRepository(database),
                         NeighborAyats(
-                            database, result_ayat,
+                            database, result_ayat.id,
                         ),
+                        AyatCallbackTemplate.get_favorite_ayat,
                     ),
                 ),
                 int(MessageId(update)),
