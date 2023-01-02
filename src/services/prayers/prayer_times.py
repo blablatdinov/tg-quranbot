@@ -1,6 +1,7 @@
 import datetime
 
 import httpx
+import pytz
 
 from app_types.stringable import Stringable
 from integrations.tg.callback_query import CallbackQueryData
@@ -34,7 +35,8 @@ class PrayerForUserAnswer(TgAnswerInterface):
         :return: list[types.Message]
         """
         prayers = await self._user_prayers.prayer_times(
-            int(TgChatId(update)), datetime.date.today(),
+            int(TgChatId(update)),
+            datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
         )
         time_format = '%H:%M'
         template = '\n'.join([
@@ -60,7 +62,10 @@ class PrayerForUserAnswer(TgAnswerInterface):
                     ishaa_prayer_time=prayers[5].time.strftime(time_format),
                 ),
             ),
-            UserPrayersKeyboard(PrayersWithoutSunrise(self._user_prayers), datetime.date.today()),
+            UserPrayersKeyboard(
+                PrayersWithoutSunrise(self._user_prayers),
+                datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
+            ),
         ).build(update)
 
 
@@ -89,5 +94,8 @@ class UserPrayerStatusChangeAnswer(TgAnswerInterface):
                 self._origin,
                 int(MessageId(update)),
             ),
-            UserPrayersKeyboard(PrayersWithoutSunrise(self._user_prayers), datetime.date.today()),
+            UserPrayersKeyboard(
+                PrayersWithoutSunrise(self._user_prayers),
+                datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
+            ),
         ).build(update)

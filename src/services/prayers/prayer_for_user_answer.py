@@ -1,6 +1,7 @@
 import datetime
 
 import httpx
+import pytz
 
 from app_types.stringable import Stringable
 from integrations.tg.chat_id import TgChatId
@@ -28,7 +29,8 @@ class PrayerForUserAnswer(TgAnswerInterface):
         :return: list[types.Message]
         """
         prayers = await self._user_prayers.prayer_times(
-            int(TgChatId(update)), datetime.date.today(),
+            int(TgChatId(update)),
+            datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
         )
         time_format = '%H:%M'
         template = '\n'.join([
@@ -56,6 +58,6 @@ class PrayerForUserAnswer(TgAnswerInterface):
             ),
             UserPrayersKeyboard(
                 PrayersWithoutSunrise(self._user_prayers),
-                datetime.date.today(),
+                datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
             ),
         ).build(update)
