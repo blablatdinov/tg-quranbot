@@ -4,6 +4,7 @@ import uuid
 from typing import Protocol
 
 import nats
+import pytz
 from loguru import logger
 from quranbot_schema_registry.validate_schema import validate_schema
 
@@ -38,7 +39,7 @@ class NatsSink(SinkInterface):
             'event_id': str(uuid.uuid4()),
             'event_version': version,
             'event_name': event_name,
-            'event_time': str(datetime.datetime.now()),
+            'event_time': str(datetime.datetime.now(pytz.timezone('Europe/Moscow'))),
             'producer': 'quranbot-aiogram',
             'data': event_data,
         }

@@ -2,6 +2,7 @@ import datetime
 import enum
 from typing import Protocol
 
+import pytz
 from asyncpg import Connection
 from pydantic import BaseModel
 
@@ -52,4 +53,9 @@ class UserActionRepository(UserActionRepositoryInterface):
             VALUES
             ($1, $2, (SELECT id FROM bot_init_subscriber WHERE tg_chat_id = $3))
         """
-        await self.connection.execute(query, datetime.datetime.now(), action, chat_id)
+        await self.connection.execute(
+            query,
+            datetime.datetime.now(pytz.timezone('Europe/Moscow')),
+            action,
+            chat_id,
+        )

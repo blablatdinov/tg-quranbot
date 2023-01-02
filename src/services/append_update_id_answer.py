@@ -2,6 +2,7 @@ import datetime
 from typing import Protocol
 
 import httpx
+import pytz
 
 from app_types.stringable import Stringable
 from integrations.tg.chat_id import TgChatId
@@ -86,7 +87,7 @@ class TimeDebugParam(DebugParamInterface):
         :param update: Stringable
         :return: str
         """
-        return 'Time: {0}'.format(datetime.datetime.now())
+        return 'Time: {0}'.format(datetime.datetime.now(pytz.timezone('Europe/Moscow')))
 
 
 class ChatIdDebugParam(DebugParamInterface):
