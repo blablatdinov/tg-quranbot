@@ -37,7 +37,7 @@ from services.ayats.ayat_by_id import AyatByIdAnswer
 from services.ayats.ayat_by_sura_ayat_num_answer import AyatBySuraAyatNumAnswer
 from services.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 from services.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
-from services.ayats.favorite_ayats import FavoriteAyatAnswer, FavoriteAyatPage
+from services.ayats.favorite_ayats import FavoriteAyatAnswer, FavoriteAyatEmptySafeAnswer, FavoriteAyatPage
 from services.ayats.favorites.change_favorite import ChangeFavoriteAyatAnswer
 from services.ayats.highlited_search_answer import HighlightedSearchAnswer
 from services.ayats.search.ayat_by_id import AyatById
@@ -135,11 +135,17 @@ class QuranbotAnswer(TgAnswerInterface):
                 TgMessageRegexAnswer(
                     'Избранное',
                     ResetStateAnswer(
-                        FavoriteAyatAnswer(
-                            settings.DEBUG,
-                            html_to_sender,
-                            audio_to_sender,
-                            FavoriteAyatsRepository(self._database),
+                        FavoriteAyatEmptySafeAnswer(
+                            FavoriteAyatAnswer(
+                                settings.DEBUG,
+                                html_to_sender,
+                                audio_to_sender,
+                                FavoriteAyatsRepository(self._database),
+                            ),
+                            TgTextAnswer(
+                                answer_to_sender,
+                                'Вы еще не добавляли аятов в избранное',
+                            ),
                         ),
                         self._redis,
                     ),
