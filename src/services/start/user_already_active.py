@@ -9,6 +9,11 @@ class UserAlreadyActiveSafeAnswer(TgAnswerInterface):
     """Ответ для случаев когда пользователь уже активен."""
 
     def __init__(self, answer: TgAnswerInterface, sender_answer: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param sender_answer: TgAnswerInterface
+        """
         self._origin = answer
         self._sender_answer = sender_answer
 

@@ -9,6 +9,10 @@ class AyatById(AyatSearchInterface):
     """Поиск аята по идентификатору аята."""
 
     def __init__(self, ayat_repo: AyatRepositoryInterface):
+        """Конструктор класса.
+
+        :param ayat_repo: AyatRepositoryInterface
+        """
         self._ayat_repo = ayat_repo
 
     async def search(self, search_query: Union[str, int]) -> Ayat:

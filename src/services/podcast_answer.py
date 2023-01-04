@@ -15,6 +15,12 @@ class PodcastAnswer(TgAnswerInterface):
     """Ответ с подкастом."""
 
     def __init__(self, debug_mode: bool, answer: TgAnswerInterface, podcast: RandomPodcastInterface):
+        """Конструктор класса.
+
+        :param debug_mode: bool
+        :param answer: TgAnswerInterface
+        :param podcast: RandomPodcastInterface
+        """
         self._origin = answer
         self._debug_mode = debug_mode
         self._podcast = podcast

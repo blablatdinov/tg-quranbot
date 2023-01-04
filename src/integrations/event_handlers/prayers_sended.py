@@ -48,6 +48,12 @@ class SendPrayersEvent(RecievedEventInterface):
     ])
 
     def __init__(self, users_repo: UsersRepositoryInterface, empty_answer: TgAnswerInterface, database: Database):
+        """Конструктор класса.
+
+        :param users_repo: UsersRepositoryInterface
+        :param empty_answer: TgAnswerInterface
+        :param database: Database
+        """
         self._users_repo = users_repo
         self._empty_answer = empty_answer
         self._database = database

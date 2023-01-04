@@ -9,6 +9,10 @@ class TgLocationAnswer(TgAnswerInterface):
     """Ответ на присланную геопозицию."""
 
     def __init__(self, answer: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        """
         self._answer = answer
 
     async def build(self, update: Stringable) -> list[httpx.Request]:

@@ -14,6 +14,11 @@ class InlineQueryAnswer(TgAnswerInterface):
     """Ответ на инлайн поиск."""
 
     def __init__(self, answer: TgAnswerInterface, cities: CitySearchInterface):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param cities: CitySearchInterface
+        """
         self._origin = answer
         self._cities = cities
 

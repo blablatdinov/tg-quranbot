@@ -9,6 +9,11 @@ class AyatNotFoundSafeAnswer(TgAnswerInterface):
     """Объект обрабатывающий ошибку с не найденным аятом."""
 
     def __init__(self, answer: TgAnswerInterface, error_answer: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param error_answer: TgAnswerInterface
+        """
         self._origin = answer
         self._error_answer = error_answer
 

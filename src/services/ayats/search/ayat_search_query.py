@@ -17,6 +17,10 @@ class SearchQuery(SearchQueryInterface):
     """Запросом для поиска."""
 
     def __init__(self, query: str):
+        """Конструктор класса.
+
+        :param query: str
+        """
         self._query = query
 
     def sura(self) -> int:
@@ -38,6 +42,10 @@ class ValidatedSearchQuery(SearchQueryInterface):
     """Декоратор, валидирующий запрос для поиска."""
 
     def __init__(self, query: SearchQueryInterface):
+        """Конструктор класса.
+
+        :param query: SearchQueryInterface
+        """
         self._origin = query
 
     def sura(self) -> int:

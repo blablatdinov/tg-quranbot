@@ -9,6 +9,10 @@ class PrayerStatus(object):
     """Объект, рассчитывающий данные кнопки для изменения статуса прочитанности намаза."""
 
     def __init__(self, source: str):
+        """Конструктор класса.
+
+        :param source: str
+        """
         self._source = source
 
     def user_prayer_id(self) -> int:
@@ -40,6 +44,10 @@ class UserPrayerStatus(UserPrayerStatusInterface):
     """Статус прочитанности намаза."""
 
     def __init__(self, connection: Database):
+        """Конструктор класса.
+
+        :param connection: Database
+        """
         self._connection = connection
 
     async def change(self, prayer_status: PrayerStatus):

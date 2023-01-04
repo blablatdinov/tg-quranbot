@@ -18,6 +18,10 @@ class TgAnswerFork(TgAnswerInterface):
     """Маршрутизация ответов."""
 
     def __init__(self, *answers: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param answers: TgAnswerInterface
+        """
         self._answers = answers
 
     async def build(self, update: Stringable) -> list[httpx.Request]:

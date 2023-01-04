@@ -7,6 +7,10 @@ class CliApp(SyncRunable):
     """CLI приложение."""
 
     def __init__(self, origin_runable: Runable):
+        """Конструктор класса.
+
+        :param origin_runable: Runable
+        """
         self._origin = origin_runable
 
     def run(self, args: list[str]):
@@ -23,6 +27,10 @@ class ForkCliApp(SyncRunable):
     """Маршрутизация для CLI приложения."""
 
     def __init__(self, *apps: SyncRunable):
+        """Конструктор класса.
+
+        :param apps: SyncRunable
+        """
         self._apps = apps
 
     def run(self, args: list[str]):
@@ -40,6 +48,11 @@ class CommandCliApp(SyncRunable):
     """CLI команда."""
 
     def __init__(self, command: str, app: SyncRunable):
+        """Конструктор класса.
+
+        :param command: str
+        :param app: SyncRunable
+        """
         self._command = command
         self._app = app
 

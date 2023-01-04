@@ -11,6 +11,12 @@ class StepAnswer(TgAnswerInterface):
     """Роутинг ответа по состоянию пользователя."""
 
     def __init__(self, step: str, answer: TgAnswerInterface, redis: Redis):
+        """Конструктор класса.
+
+        :param step: str
+        :param answer: TgAnswerInterface
+        :param redis: Redis
+        """
         self._step = step
         self._origin = answer
         self._redis = redis

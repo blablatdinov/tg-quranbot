@@ -23,6 +23,14 @@ class UserAlreadyExistsAnswer(TgAnswerInterface):
         users_repo: UsersRepositoryInterface,
         event_sink: SinkInterface,
     ):
+        """Конструктор класса.
+
+        :param start_answer: TgAnswerInterface
+        :param sender_answer: TgAnswerInterface
+        :param user_repo: UserRepositoryInterface
+        :param users_repo: UsersRepositoryInterface
+        :param event_sink: SinkInterface
+        """
         self._origin = start_answer
         self._user_repo = user_repo
         self._sender_answer = sender_answer

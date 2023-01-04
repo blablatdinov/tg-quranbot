@@ -19,6 +19,11 @@ class PrayerForUserAnswer(TgAnswerInterface):
         answer: TgAnswerInterface,
         user_prayers: UserPrayersInterface,
     ):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param user_prayers: UserPrayersInterface
+        """
         self._origin = answer
         self._user_prayers = user_prayers
 

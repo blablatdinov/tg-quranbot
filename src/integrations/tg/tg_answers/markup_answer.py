@@ -8,6 +8,11 @@ class TgAnswerMarkup(TgAnswerInterface):
     """Ответ с клавиатурой."""
 
     def __init__(self, answer: TgAnswerInterface, keyboard: KeyboardInterface):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param keyboard: KeyboardInterface
+        """
         self._origin = answer
         self._keyboard = keyboard
 

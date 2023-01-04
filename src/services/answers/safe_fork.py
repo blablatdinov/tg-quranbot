@@ -9,6 +9,11 @@ class SafeFork(TgAnswerInterface):
     """Безопасный Fork."""
 
     def __init__(self, answer: TgAnswerInterface, message_answer: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param message_answer: TgAnswerInterface
+        """
         self._origin = answer
         self._message_answer = message_answer
 

@@ -18,6 +18,13 @@ class AyatAnswerKeyboard(KeyboardInterface):
         neighbor_ayats: NeighborAyatsRepositoryInterface,
         ayat_callback_template: AyatCallbackTemplate,
     ):
+        """Конструктор класса.
+
+        :param ayat: Ayat
+        :param favorite_ayats_repo: FavoriteAyatRepositoryInterface
+        :param neighbor_ayats: NeighborAyatsRepositoryInterface
+        :param ayat_callback_template: AyatCallbackTemplate
+        """
         self._ayat = ayat
         self._favorite_ayats_repo = favorite_ayats_repo
         self._neighbor_ayats = neighbor_ayats

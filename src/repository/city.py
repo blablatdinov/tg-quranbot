@@ -26,6 +26,10 @@ class CityRepository(CityRepositoryInterface):
     """Класс для работы с городами в БД."""
 
     def __init__(self, connection: Database):
+        """Конструктор класса.
+
+        :param connection: Database
+        """
         self._connection = connection
 
     async def search_by_name(self, search_query: str) -> list[City]:

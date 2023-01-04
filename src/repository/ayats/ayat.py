@@ -51,6 +51,10 @@ class AyatRepository(AyatRepositoryInterface):
     """Интерфейс репозитория для работы с административными сообщениями."""
 
     def __init__(self, connection: Database):
+        """Конструктор класса.
+
+        :param connection: Database
+        """
         self.connection = connection
 
     async def first(self) -> Ayat:

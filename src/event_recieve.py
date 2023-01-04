@@ -16,6 +16,10 @@ class RecievedEvents(Runable):
     _queue_name = 'quranbot'
 
     def __init__(self, *events: RecievedEventInterface):
+        """Конструктор класса.
+
+        :param events: RecievedEventInterface
+        """
         self._handlers = events
 
     async def run(self):

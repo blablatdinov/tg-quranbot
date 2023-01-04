@@ -8,6 +8,11 @@ class LoggedAnswer(SendableInterface):
     """Декоратор логирующий сообщения."""
 
     def __init__(self, answer: SendableInterface, event_sink: SinkInterface):
+        """Конструктор класса.
+
+        :param answer: SendableInterface
+        :param event_sink: SinkInterface
+        """
         self._origin = answer
         self._event_sink = event_sink
 

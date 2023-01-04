@@ -18,6 +18,12 @@ class InviteSetCityAnswer(TgAnswerInterface):
         message_answer: TgAnswerInterface,
         redis: Redis,
     ):
+        """Конструктор класса.
+
+        :param prayer_time_answer: TgAnswerInterface
+        :param message_answer: TgAnswerInterface
+        :param redis: Redis
+        """
         self._origin = prayer_time_answer
         self._message_answer = message_answer
         self._redis = redis

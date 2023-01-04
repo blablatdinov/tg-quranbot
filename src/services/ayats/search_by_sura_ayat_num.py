@@ -11,6 +11,10 @@ class AyatBySuraAyatNum(AyatSearchInterface):
     """Поиск аята по номеру суры, аята."""
 
     def __init__(self, sura: SuraInterface):
+        """Конструктор класса.
+
+        :param sura: SuraInterface
+        """
         self._sura = sura
 
     async def search(self, search_query: Union[str, int]) -> Ayat:

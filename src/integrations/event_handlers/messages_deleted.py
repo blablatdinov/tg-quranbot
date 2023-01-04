@@ -12,6 +12,10 @@ class MessagesDeletedEvent(object):
     _messages_repository: UpdatesLogRepositoryInterface
 
     def __init__(self, messages_repository: UpdatesLogRepositoryInterface):
+        """Конструктор класса.
+
+        :param messages_repository: UpdatesLogRepositoryInterface
+        """
         self._messages_repository = messages_repository
 
     async def handle_event(self, event):

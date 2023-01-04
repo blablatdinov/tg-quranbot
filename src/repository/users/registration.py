@@ -35,11 +35,17 @@ class RegistrationRepository(RegistrationRepositoryInterface):
     def __init__(
         self,
         user_repository: UserRepositoryInterface,
-        admin_messages_repository: AdminMessageInterface,
+        admin_message: AdminMessageInterface,
         ayats_repository: AyatRepositoryInterface,
     ):
+        """Конструктор класса.
+
+        :param user_repository: UserRepositoryInterface
+        :param admin_message: AdminMessageInterface
+        :param ayats_repository: AyatRepositoryInterface
+        """
         self._user_repository = user_repository
-        self._admin_messages_repository = admin_messages_repository
+        self._admin_message = admin_message
         self._ayats_repository = ayats_repository
 
     async def user_exists(self, chat_id: int):
@@ -55,7 +61,7 @@ class RegistrationRepository(RegistrationRepositoryInterface):
 
         :return: str
         """
-        return await self._admin_messages_repository.text()
+        return await self._admin_message.text()
 
     async def first_ayat(self):
         """Получить первый аят.

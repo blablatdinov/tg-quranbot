@@ -11,6 +11,12 @@ class ChangeStateAnswer(TgAnswerInterface):
     """Ответ, с изменением шага пользователя."""
 
     def __init__(self, answer: TgAnswerInterface, redis: Redis, step: UserStep):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param redis: Redis
+        :param step: UserStep
+        """
         self._origin = answer
         self._step = step
         self._redis = redis

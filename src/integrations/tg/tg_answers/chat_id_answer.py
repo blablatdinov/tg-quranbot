@@ -8,6 +8,11 @@ class TgChatIdAnswer(TgAnswerInterface):
     """Ответ пользователю на конкретный идентификатор чата."""
 
     def __init__(self, answer: TgAnswerInterface, chat_id: int):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param chat_id: int
+        """
         self._origin = answer
         self._chat_id = chat_id
 

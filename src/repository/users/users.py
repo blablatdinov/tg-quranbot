@@ -37,6 +37,10 @@ class UsersRepository(UsersRepositoryInterface):
     """Класс для работы с хранилищем множества пользователей."""
 
     def __init__(self, connection: Database):
+        """Конструктор класса.
+
+        :param connection: Database
+        """
         self._connection = connection
 
     async def get_active_user_chat_ids(self) -> list[int]:

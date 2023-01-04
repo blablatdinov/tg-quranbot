@@ -31,6 +31,12 @@ class ChangeFavoriteAyatAnswer(TgAnswerInterface):
         connection: Database,
         answer: TgAnswerInterface,
     ):
+        """Конструктор класса.
+
+        :param ayat_search: AyatSearchInterface
+        :param connection: Database
+        :param answer: TgAnswerInterface
+        """
         self._ayat_search = ayat_search
         self._origin = answer
         self._connection = connection

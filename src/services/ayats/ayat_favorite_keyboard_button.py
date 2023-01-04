@@ -11,6 +11,12 @@ class AyatFavoriteKeyboardButton(KeyboardInterface):
     """Кнопка с добавлением аята в избранные."""
 
     def __init__(self, ayat: Ayat, keyboard: KeyboardInterface, favorite_ayat_repo: FavoriteAyatRepositoryInterface):
+        """Конструктор класса.
+
+        :param ayat: Ayat
+        :param keyboard: KeyboardInterface
+        :param favorite_ayat_repo: FavoriteAyatRepositoryInterface
+        """
         self._ayat = ayat
         self._origin = keyboard
         self._favorite_ayat_repo = favorite_ayat_repo

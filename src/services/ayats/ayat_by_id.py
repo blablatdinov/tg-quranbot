@@ -19,6 +19,13 @@ class AyatByIdAnswer(TgAnswerInterface):
         message_answer: TgAnswerInterface,
         file_answer: TgAnswerInterface,
     ):
+        """Конструктор класса.
+
+        :param debug_mode: bool
+        :param ayat_search: AyatSearchInterface
+        :param message_answer: TgAnswerInterface
+        :param file_answer: TgAnswerInterface
+        """
         self._debug_mode = debug_mode
         self._ayat_search = ayat_search
         self._message_answer = message_answer

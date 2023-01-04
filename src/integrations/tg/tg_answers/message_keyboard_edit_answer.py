@@ -7,6 +7,10 @@ class TgKeyboardEditAnswer(TgAnswerInterface):
     """Ответ с отредактированной клавиатурой."""
 
     def __init__(self, answer: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        """
         self._origin = answer
 
     async def build(self, update) -> list[httpx.Request]:

@@ -26,6 +26,10 @@ class UserPrayers(UserPrayersInterface):
     """Времена намазов пользователя."""
 
     def __init__(self, connection: Database):
+        """Конструктор класса.
+
+        :param connection: Database
+        """
         self._connection = connection
 
     async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
@@ -65,6 +69,11 @@ class SafeUserPrayers(UserPrayersInterface):
     """Времена намазов с защитой от UserHasNotGeneratedPrayersError."""
 
     def __init__(self, exists_user_prayers: UserPrayersInterface, new_user_prayers: UserPrayersInterface):
+        """Конструктор класса.
+
+        :param exists_user_prayers: UserPrayersInterface
+        :param new_user_prayers: UserPrayersInterface
+        """
         self._exists_user_prayers = exists_user_prayers
         self._new_user_prayers = new_user_prayers
 
@@ -85,6 +94,11 @@ class SafeNotFoundPrayers(UserPrayersInterface):
     """Времена намазов с защитой от UserPrayersNotFoundError."""
 
     def __init__(self, connection: Database, user_prayers: UserPrayersInterface):
+        """Конструктор класса.
+
+        :param connection: Database
+        :param user_prayers: UserPrayersInterface
+        """
         self._connection = connection
         self._origin = user_prayers
 
@@ -121,6 +135,10 @@ class PrayersWithoutSunrise(UserPrayersInterface):
     """Времена намазов без восхода."""
 
     def __init__(self, prayers: UserPrayersInterface):
+        """Конструктор класса.
+
+        :param prayers: UserPrayersInterface
+        """
         self._origin = prayers
 
     async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
@@ -141,7 +159,12 @@ class PrayersWithoutSunrise(UserPrayersInterface):
 class NewUserPrayers(UserPrayersInterface):
     """Объект генерирующий времена намазов пользователя."""
 
-    def __init__(self, connection: Database, exists_user_prayers):
+    def __init__(self, connection: Database, exists_user_prayers: UserPrayersInterface):
+        """Конструктор класса.
+
+        :param connection: Database
+        :param exists_user_prayers: UserPrayersInterface
+        """
         self._connection = connection
         self._exists_user_prayers = exists_user_prayers
 

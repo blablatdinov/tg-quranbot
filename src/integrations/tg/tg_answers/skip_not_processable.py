@@ -9,6 +9,10 @@ class TgSkipNotProcessable(TgAnswerInterface):
     """Обработка и пропуск ответа, возбудившего NotProcessableUpdateError."""
 
     def __init__(self, answer: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        """
         self._answer = answer
 
     async def build(self, update: Stringable) -> list[httpx.Request]:

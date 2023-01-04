@@ -12,6 +12,10 @@ class TgDateTime(DateTimeIterface):
     """Время сообщения."""
 
     def __init__(self, update: Stringable):
+        """Конструктор класса.
+
+        :param update: Stringable
+        """
         self._update = update
 
     def datetime(self) -> datetime.datetime:

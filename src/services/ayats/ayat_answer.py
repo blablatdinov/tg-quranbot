@@ -15,6 +15,13 @@ class AyatAnswer(TgAnswerInterface):
         ayat: Ayat,
         ayat_answer_keyboard: KeyboardInterface,
     ):
+        """Конструктор класса.
+
+        :param debug: bool
+        :param answers: tuple[TgAnswerInterface, TgAnswerInterface]
+        :param ayat: Ayat
+        :param ayat_answer_keyboard: KeyboardInterface
+        """
         self._debug_mode = debug
         self._message_answer = answers[0]
         self._file_answer = answers[1]

@@ -21,6 +21,10 @@ class NominatimIntegration(GeoServiceIntegrationInterface):
     _request_client: IntegrationClientInterface
 
     def __init__(self, request_client: IntegrationClientInterface):
+        """Конструктор класса.
+
+        :param request_client: IntegrationClientInterface
+        """
         self._request_client = request_client
 
     async def search(self, latitude: str, longitude: str) -> str:

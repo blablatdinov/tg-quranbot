@@ -23,6 +23,10 @@ class AyatMorningContentRepository(AyatMorningContentRepositoryInterface):
     """Класс для работы с хранилищем данных для рассылок."""
 
     def __init__(self, connection: Database):
+        """Конструктор класса.
+
+        :param connection: Database
+        """
         self._connection = connection
 
     async def get_morning_content(self) -> list[ContentSpam]:

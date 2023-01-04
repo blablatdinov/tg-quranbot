@@ -27,6 +27,14 @@ class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
         ayat_repo: AyatRepositoryInterface,
         redis: Redis,
     ):
+        """Конструктор класса.
+
+        :param debug_mode: bool
+        :param message_answer: TgAnswerInterface
+        :param file_answer: TgAnswerInterface
+        :param ayat_repo: AyatRepositoryInterface
+        :param redis: Redis
+        """
         self._debug_mode = debug_mode
         self._message_answer = message_answer
         self._file_answer = file_answer
