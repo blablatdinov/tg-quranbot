@@ -9,6 +9,11 @@ class MailingCreatedEvent(object):
     _users_repository: UsersRepositoryInterface
 
     def __init__(self, users_repository: UsersRepositoryInterface, mailing_repository: MailingRepository):
+        """Конструктор класса.
+
+        :param users_repository: UsersRepositoryInterface
+        :param mailing_repository: MailingRepository
+        """
         self._users_repository = users_repository
         self._mailing_repository = mailing_repository
 

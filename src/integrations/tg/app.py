@@ -14,6 +14,11 @@ class PollingApp(Runable):
     """Приложение на long polling."""
 
     def __init__(self, updates: PollingUpdatesIterator, sendable: SendableInterface):
+        """Конструктор класса.
+
+        :param updates: PollingUpdatesIterator
+        :param sendable: SendableInterface
+        """
         self._sendable = sendable
         self._updates = updates
 
@@ -56,6 +61,11 @@ class DatabaseConnectedApp(Runable):
     """Декоратор для подключения к БД."""
 
     def __init__(self, database: Database, app: Runable) -> None:
+        """Конструктор класса.
+
+        :param database: Database
+        :param app: Runnable
+        """
         self._database = database
         self._app = app
 

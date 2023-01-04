@@ -22,6 +22,13 @@ class AyatBySuraAyatNumAnswer(TgAnswerInterface):
         file_answer: TgAnswerInterface,
         ayat_search: AyatSearchInterface,
     ):
+        """Конструктор класса.
+
+        :param debug_mode: bool
+        :param message_answer: TgAnswerInterface
+        :param file_answer: TgAnswerInterface
+        :param ayat_search: AyatSearchInterface
+        """
         self._debug_mode = debug_mode
         self._message_answer = message_answer
         self._file_answer = file_answer

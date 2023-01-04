@@ -22,6 +22,10 @@ class RandomPodcast(RandomPodcastInterface):
     """Объект подкаста."""
 
     def __init__(self, connection: Database):
+        """Конструктор класса.
+
+        :param connection: Database
+        """
         self._connection = connection
 
     async def audio_telegram_id(self):

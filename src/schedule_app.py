@@ -13,6 +13,10 @@ class TypingAction(TgAnswerInterface):
     """Действие с печатью."""
 
     def __init__(self, answer: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        """
         self._origin = answer
 
     async def build(self, update: Stringable) -> list[httpx.Request]:
@@ -33,6 +37,11 @@ class CheckUsersStatus(Runable):
     """Статусы пользователей."""
 
     def __init__(self, users_repo: UsersRepositoryInterface, empty_answer: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param users_repo: UsersRepositoryInterface
+        :param empty_answer: TgAnswerInterface
+        """
         self._users_repo = users_repo
         self._empty_answer = empty_answer
 

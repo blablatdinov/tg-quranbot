@@ -7,6 +7,11 @@ class TgTextAnswer(TgAnswerInterface):
     """Ответ пользователю с текстом."""
 
     def __init__(self, answer: TgAnswerInterface, text: str):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param text: str
+        """
         self._origin = answer
         self._text = text
 

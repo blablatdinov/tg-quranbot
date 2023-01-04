@@ -13,6 +13,12 @@ class UserPrayersKeyboardByChatId(KeyboardInterface):
     """Клавиатура времен намаза с идентификатором чата в конструкторе."""
 
     def __init__(self, user_prayer_times: UserPrayersInterface, date: datetime.date, chat_id: int):
+        """Конструктор класса.
+
+        :param user_prayer_times: UserPrayersInterface
+        :param date: datetime.date
+        :param chat_id: int
+        """
         self._user_prayer_times = user_prayer_times
         self._date = date
         self._chat_id = chat_id
@@ -38,6 +44,11 @@ class UserPrayersKeyboard(KeyboardInterface):
     """Клавиатура времен намаза."""
 
     def __init__(self, user_prayer_times: UserPrayersInterface, date: datetime.date):
+        """Конструктор класса.
+
+        :param user_prayer_times: UserPrayersInterface
+        :param date: datetime.date
+        """
         self._user_prayer_times = user_prayer_times
         self._date = date
 

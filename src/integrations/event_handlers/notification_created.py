@@ -9,6 +9,10 @@ class NotificationCreatedEvent(object):
     event_name = 'Notification.Created'
 
     def __init__(self, updates_log_repository: UpdatesLogRepositoryInterface):
+        """Конструктор класса.
+
+        :param updates_log_repository: UpdatesLogRepositoryInterface
+        """
         self._udpate_log_repository = updates_log_repository
 
     async def handle_event(self, event):

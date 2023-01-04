@@ -31,6 +31,10 @@ class TelegramIntegrationsError(BaseAppError):
     admin_message = 'Ошибка интеграции telegram'
 
     def __init__(self, message: str):
+        """Конструктор класса.
+
+        :param message: str
+        """
         self._message = message
 
     def __str__(self):

@@ -16,6 +16,10 @@ class FavoriteAyatStatus(object):
     """Пользовательский ввод статуса аята в избранном."""
 
     def __init__(self, source: str):
+        """Конструктор класса.
+
+        :param source: str
+        """
         self._source = source
 
     def ayat_id(self) -> int:
@@ -43,6 +47,13 @@ class FavoriteAyatAnswer(TgAnswerInterface):
         file_answer: TgAnswerInterface,
         favorite_ayats_repo: FavoriteAyatRepositoryInterface,
     ):
+        """Конструктор класса.
+
+        :param debug: bool
+        :param message_answer: TgAnswerInterface
+        :param file_answer: TgAnswerInterface
+        :param favorite_ayats_repo: FavoriteAyatRepositoryInterface
+        """
         self._debug_mode = debug
         self._message_answer = message_answer
         self._file_answer = file_answer
@@ -105,6 +116,13 @@ class FavoriteAyatPage(TgAnswerInterface):
         file_answer: TgAnswerInterface,
         favorite_ayats_repo: FavoriteAyatRepositoryInterface,
     ):
+        """Конструктор класса.
+
+        :param debug: bool
+        :param message_answer: TgAnswerInterface
+        :param file_answer: TgAnswerInterface
+        :param favorite_ayats_repo: FavoriteAyatRepositoryInterface
+        """
         self._debug_mode = debug
         self._message_answer = message_answer
         self._file_answer = file_answer

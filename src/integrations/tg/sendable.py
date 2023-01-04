@@ -25,6 +25,10 @@ class SendableAnswer(SendableInterface):
     """Объект, отправляющий ответы в API."""
 
     def __init__(self, answer: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        """
         self._answer = answer
 
     async def send(self, update: Stringable) -> list[dict]:
@@ -50,6 +54,10 @@ class UserNotSubscribedSafeSendable(SendableInterface):
     """Декоратор для обработки отписанных пользователей."""
 
     def __init__(self, sendable: SendableInterface):
+        """Конструктор класса.
+
+        :param sendable: SendableInterface
+        """
         self._origin = sendable
 
     async def send(self, update) -> list[dict]:
@@ -79,9 +87,14 @@ class UserNotSubscribedSafeSendable(SendableInterface):
 class SliceIterator(object):
     """Итератор по срезам массива."""
 
-    def __init__(self, origin: list, slize_size: int):
+    def __init__(self, origin: list, slice_size: int):
+        """Конструктор класса.
+
+        :param origin: list
+        :param slice_size: int
+        """
         self._origin = origin
-        self._slice_size = slize_size
+        self._slice_size = slice_size
         self._shift = 0
 
     def __iter__(self):
@@ -108,6 +121,10 @@ class BulkSendableAnswer(SendableInterface):
     """Массовая отправка."""
 
     def __init__(self, answers: list[TgAnswerInterface]):
+        """Конструктор класса.
+
+        :param answers: list[TgAnswerInterface]
+        """
         self._answers = answers
 
     async def send(self, update) -> list[dict]:

@@ -7,6 +7,11 @@ class TgMessageIdAnswer(TgAnswerInterface):
     """Ответ с идентификатором сообщения."""
 
     def __init__(self, answer: TgAnswerInterface, message_id: int):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param message_id: int
+        """
         self._origin = answer
         self._message_id = message_id
 

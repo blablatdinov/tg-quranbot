@@ -11,6 +11,11 @@ class HighlightedSearchAnswer(TgAnswerInterface):
     """Ответ с подсвеченным поисковым текстом."""
 
     def __init__(self, answer: TgAnswerInterface, redis: Redis):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param redis: Redis
+        """
         self._origin = answer
         self._redis = redis
 

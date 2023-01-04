@@ -24,6 +24,12 @@ class AppendDebugInfoAnswer(TgAnswerInterface):
     """Ответ с отладочной информацией."""
 
     def __init__(self, debug_mode: bool, answer: TgAnswerInterface, *debug_params: DebugParamInterface):
+        """Конструктор класса.
+
+        :param debug_mode: bool
+        :param answer: TgAnswerInterface
+        :param debug_params: DebugParamInterface
+        """
         self._debug = debug_mode
         self._origin = answer
         self._debug_params = debug_params
@@ -106,6 +112,10 @@ class CommitHashDebugParam(DebugParamInterface):
     """Отладочная информация с хэшом коммита."""
 
     def __init__(self, commit_hash: str):
+        """Конструктор класса.
+
+        :param commit_hash: str
+        """
         self._commit_hash = commit_hash
 
     async def debug_value(self, update: Stringable) -> str:

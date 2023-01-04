@@ -7,6 +7,10 @@ class TgAnswerList(TgAnswerInterface):
     """Список ответов пользователю."""
 
     def __init__(self, *answers: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param answers: TgAnswerInterface
+        """
         self._answers = answers
 
     async def build(self, update) -> list[httpx.Request]:

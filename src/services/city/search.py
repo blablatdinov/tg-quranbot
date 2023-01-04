@@ -32,6 +32,12 @@ class SearchCityQuery(SearchCityQueryInterface):
         latitude: tuple[float, ...] = (),
         longitude: tuple[float, ...] = (),
     ):
+        """Конструктор класса.
+
+        :param string_query: tuple[str, ...]
+        :param latitude: tuple[str, ...]
+        :param longitude: tuple[str, ...]
+        """
         self._string_query = string_query
         self._latitude = latitude
         self._longitude = longitude
@@ -100,6 +106,10 @@ class SearchCityByName(CitySearchInterface):
     """Поиск города по названию."""
 
     def __init__(self, db: Database):
+        """Конструктор класса.
+
+        :param db: Database
+        """
         self._db = db
 
     async def search(self, query: SearchCityQueryInterface) -> list[City]:
@@ -122,6 +132,11 @@ class SearchCityByCoordinates(CitySearchInterface):
         city_search: CitySearchInterface,
         geo_service_integration: GeoServiceIntegrationInterface,
     ):
+        """Конструктор класса.
+
+        :param city_search: CitySearchInterface
+        :param geo_service_integration: GeoServiceIntegrationInterface
+        """
         self._city_search = city_search
         self._geo_service_integration = geo_service_integration
 

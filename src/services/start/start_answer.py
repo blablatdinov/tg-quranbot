@@ -21,12 +21,19 @@ class StartAnswer(TgAnswerInterface):
         self,
         answer: TgAnswerInterface,
         user_repo: UserRepositoryInterface,
-        admin_message_repo: AdminMessageInterface,
+        admin_message: AdminMessageInterface,
         ayat_repo: AyatRepositoryInterface,
     ):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param user_repo: UserRepositoryInterface
+        :param admin_message: AdminMessageInterface
+        :param ayat_repo: AyatRepositoryInterface
+        """
         self._origin = answer
         self._user_repo = user_repo
-        self._admin_message_repo = admin_message_repo
+        self._admin_message = admin_message
         self._ayat_repo = ayat_repo
 
     async def build(self, update: Stringable) -> list[httpx.Request]:
@@ -65,7 +72,7 @@ class StartAnswer(TgAnswerInterface):
 
     async def _start_answers(self) -> tuple[str, str]:
         return (
-            await self._admin_message_repo.text(),
+            await self._admin_message.text(),
             str(await self._ayat_repo.first()),
         )
 

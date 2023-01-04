@@ -12,6 +12,11 @@ class NeighborAyatKeyboard(KeyboardInterface):
     """Клавиатура с соседними аятами."""
 
     def __init__(self, ayats_neighbors: NeighborAyatsRepositoryInterface, callback_template: AyatCallbackTemplate):
+        """Конструктор класса.
+
+        :param ayats_neighbors: NeighborAyatsRepositoryInterface
+        :param callback_template: AyatCallbackTemplate
+        """
         self._ayats_neighbors = ayats_neighbors
         self._callback_template = callback_template
 

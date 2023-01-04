@@ -39,6 +39,10 @@ class LoggedIntegrationClient(IntegrationClientInterface):
     """Декоратор логирующий http запрос."""
 
     def __init__(self, integration_client: IntegrationClientInterface):
+        """Конструктор класса.
+
+        :param integration_client: IntegrationClientInterface
+        """
         self._origin = integration_client
 
     async def act(self, url: str, model_for_parse: type[ParseModel]) -> ParseModel:

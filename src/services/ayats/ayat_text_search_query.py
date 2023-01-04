@@ -20,6 +20,12 @@ class AyatTextSearchQuery(AyatTextSearchQueryInterface):
     _key_template = '{0}:ayat_search_query'
 
     def __init__(self, redis: Redis, chat_id: int, query: tuple[str, ...] = ()):
+        """Конструктор класса.
+
+        :param redis: Redis
+        :param chat_id: int
+        :param query: tuple[str, ...]
+        """
         self._redis = redis
         self._query = query
         self._chat_id = chat_id

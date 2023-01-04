@@ -6,6 +6,10 @@ class UserPrayersButtonCallback(Stringable):
     """Кнопка клавиатуры времен намазов."""
 
     def __init__(self, user_prayer: UserPrayer):
+        """Конструктор класса.
+
+        :param user_prayer: UserPrayer
+        """
         self._user_prayer = user_prayer
 
     def __str__(self):

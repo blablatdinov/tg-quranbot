@@ -12,6 +12,10 @@ class DebugAnswer(TgAnswerInterface):
     """Ответ для отладки."""
 
     def __init__(self, answer: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        """
         self._origin = answer
 
     async def build(self, update: Stringable) -> list[httpx.Request]:

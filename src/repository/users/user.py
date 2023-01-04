@@ -67,6 +67,10 @@ class UserRepository(UserRepositoryInterface):
     """Репозиторий для работы с пользователями."""
 
     def __init__(self, connection: Database):
+        """Конструктор класса.
+
+        :param connection: Database
+        """
         self.connection = connection
 
     async def create(self, chat_id: int, referrer_id: Optional[int] = None) -> User:

@@ -32,6 +32,10 @@ class UpdatesURL(Stringable):
     """Базовый URL обновлений из телеграма."""
 
     def __init__(self, token: str):
+        """Конструктор класса.
+
+        :param token: str
+        """
         self._token = token
 
     def __str__(self):
@@ -46,6 +50,10 @@ class UpdatesWithOffsetURL(UpdatesURLInterface):
     """URL для получения только новых обновлений."""
 
     def __init__(self, updates_url: Stringable):
+        """Конструктор класса.
+
+        :param updates_url: Stringable
+        """
         self._updates_url = updates_url
 
     def generate(self, update_id: int):
@@ -61,6 +69,11 @@ class UpdatesLongPollingURL(UpdatesURLInterface):
     """URL обновлений с таймаутом."""
 
     def __init__(self, updates_url: UpdatesURLInterface, long_polling_timeout: Intable):
+        """Конструктор класса.
+
+        :param updates_url: UpdatesURLInterface
+        :param long_polling_timeout: Intable
+        """
         self._origin = updates_url
         self._long_polling_timeout = long_polling_timeout
 
@@ -90,6 +103,11 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
     """Итератор по обновлениям."""
 
     def __init__(self, updates_url: UpdatesURLInterface, updates_timeout: Intable):
+        """Конструктор класса.
+
+        :param updates_url: UpdatesURLInterface
+        :param updates_timeout: Intable
+        """
         self._updates_url = updates_url
         self._offset = 0
         self._updates_timeout = updates_timeout

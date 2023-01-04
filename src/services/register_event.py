@@ -15,6 +15,12 @@ class StartWithEventAnswer(TgAnswerInterface):
     """Регистрация с отправкой события."""
 
     def __init__(self, answer: TgAnswerInterface, event_sink: SinkInterface, user_repo: UserRepositoryInterface):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param event_sink: SinkInterface
+        :param user_repo: UserRepositoryInterface
+        """
         self._origin = answer
         self._event_sink = event_sink
         self._user_repo = user_repo

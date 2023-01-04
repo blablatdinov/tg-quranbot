@@ -73,6 +73,12 @@ class QuranbotAnswer(TgAnswerInterface):
         redis: Redis,
         event_sink: SinkInterface,
     ):
+        """Конструктор класса.
+
+        :param database: Database
+        :param redis: Redis
+        :param event_sink: SinkInterface
+        """
         self._database = database
         self._redis = redis
         self._event_sink = event_sink

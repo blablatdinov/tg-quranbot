@@ -11,6 +11,11 @@ class TgCallbackQueryRegexAnswer(TgAnswerInterface):
     """Маршрутизация ответов по регулярному выражению."""
 
     def __init__(self, pattern: str, answer: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param pattern: str
+        :param answer: TgAnswerInterface
+        """
         self._pattern = pattern
         self._answer = answer
 

@@ -16,6 +16,11 @@ class CityNotSupportedAnswer(TgAnswerInterface):
     """Ответ о неподдерживаемом городе."""
 
     def __init__(self, answer: TgAnswerInterface, error_answer: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param error_answer: TgAnswerInterface
+        """
         self._origin = answer
         self._error_answer = error_answer
 
@@ -44,6 +49,13 @@ class ChangeCityAnswer(TgAnswerInterface):
         redis: Redis,
         user_repo: UserRepositoryInterface,
     ):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        :param search_city: CitySearchInterface
+        :param redis: Redis
+        :param user_repo: UserRepositoryInterface
+        """
         self._city = search_city
         self._origin = answer
         self._redis = redis

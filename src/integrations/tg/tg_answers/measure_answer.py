@@ -13,6 +13,10 @@ class Millis(Floatable):
     """Миллисекунды."""
 
     def __init__(self, millis: float):
+        """Конструктор класса.
+
+        :param millis: float
+        """
         self._millis = millis
 
     @classmethod
@@ -36,6 +40,11 @@ class RoundedFloat(Floatable):
     """Округленное дробное число."""
 
     def __init__(self, origin_float: Floatable, shift_comma: int):
+        """Конструктор класса.
+
+        :param origin_float: Floatable
+        :param shift_comma: int
+        """
         self._origin = origin_float
         self._shift_comma = shift_comma
 
@@ -51,6 +60,10 @@ class TgMeasureAnswer(TgAnswerInterface):
     """Замеренный ответ."""
 
     def __init__(self, answer: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param answer: TgAnswerInterface
+        """
         self._origin = answer
 
     async def build(self, update: Stringable) -> list[httpx.Request]:

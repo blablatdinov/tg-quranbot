@@ -8,6 +8,11 @@ class StartMessage(object):
     """Стартовое сообщение."""
 
     def __init__(self, message: str, user_repo: UserRepositoryInterface):
+        """Конструктор класса.
+
+        :param message: str
+        :param user_repo: UserRepositoryInterface
+        """
         self._message = message
         self._user_repo = user_repo
 

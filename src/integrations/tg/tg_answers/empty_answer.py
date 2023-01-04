@@ -7,6 +7,10 @@ class TgEmptyAnswer(TgAnswerInterface):
     """Пустой ответ."""
 
     def __init__(self, token: str):
+        """Конструктор класса.
+
+        :param token: str
+        """
         self._token = token
 
     async def build(self, update) -> list[httpx.Request]:

@@ -20,6 +20,10 @@ class Sura(SuraInterface):
     """Сура."""
 
     def __init__(self, connection: Database):
+        """Конструктор класса.
+
+        :param connection: Database
+        """
         self._connection = connection
 
     async def ayats(self, sura_num: int) -> list[Ayat]:

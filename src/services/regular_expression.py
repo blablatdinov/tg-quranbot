@@ -8,6 +8,10 @@ class IntableRegularExpression(Intable):
     """Регулярное выражение, которое можно привести к числу."""
 
     def __init__(self, text_for_searching: str):
+        """Конструктор класса.
+
+        :param text_for_searching: str
+        """
         self._text_for_searching = text_for_searching
 
     def __int__(self) -> int:
