@@ -71,6 +71,30 @@ class FavoriteAyatAnswer(TgAnswerInterface):
         ).build(update)
 
 
+class FavoriteAyatEmptySafeAnswer(TgAnswerInterface):
+    """Обработка ошибок с пустыми избранными."""
+
+    def __init__(self, sender_answer: TgAnswerInterface, error_answer: TgAnswerInterface):
+        """Конструктор класса.
+
+        :param sender_answer: TgAnswerInterface
+        :param error_answer: TgAnswerInterface
+        """
+        self._origin = sender_answer
+        self._error_answer = error_answer
+
+    async def build(self, update: Stringable) -> list[httpx.Request]:
+        """Сборка ответа.
+
+        :param update: Stringable
+        :return: list[httpx.Request]
+        """
+        try:
+            return await self._origin.build(update)
+        except IndexError:
+            return await self._error_answer.build(update)
+
+
 class FavoriteAyatPage(TgAnswerInterface):
     """Страница с избранным аятом."""
 
