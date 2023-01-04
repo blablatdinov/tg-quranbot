@@ -622,6 +622,21 @@ files = [
 flake8 = ">=3.0,<3.2.0 || >3.2.0"
 
 [[package]]
+name = "flake8-copyright"
+version = "0.2.3"
+description = "Adds copyright checks to flake8"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "flake8-copyright-0.2.3.tar.gz", hash = "sha256:698840480d377e7c70172672636d898ad7b8af210492f431fff066e75b481d59"},
+    {file = "flake8_copyright-0.2.3-py3-none-any.whl", hash = "sha256:1f899782bedce6bf086419fd5fb66da6ae0698b0d7faa5269520b4c965d74883"},
+]
+
+[package.dependencies]
+setuptools = "*"
+
+[[package]]
 name = "flake8-debugger"
 version = "4.1.2"
 description = "ipdb/pdb statement checker plugin for flake8"
@@ -2191,4 +2206,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "40eb543fff13da5373aa819f231b39cea86e856a3ba862b509c6e86cc71cbad8"
+content-hash = "e300500cdd4aef5e5d88bc7309001f0fffd56e2c89bcb300c1eeb3cbb7706698"

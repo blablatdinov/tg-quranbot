@@ -1,4 +1,10 @@
-"""The MIT License (MIT).
+"""Init.
+
+Revision ID: 5121993f7cc8
+Revises:
+Create Date: 2022-08-30 16:44:20.614564
+
+The MIT License (MIT).
 
 Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 
@@ -19,13 +25,6 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
-"""
-"""Init.
-
-Revision ID: 5121993f7cc8
-Revises:
-Create Date: 2022-08-30 16:44:20.614564
-
 """
 import sqlalchemy as sa
 from alembic import op
