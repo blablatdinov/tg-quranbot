@@ -61,4 +61,8 @@ class TgMessageRegexAnswer(TgAnswerInterface, Stringable):
         return await self._answer.build(update)
 
     def __str__(self):
+        """Строковое представление.
+
+        :return: str
+        """
         return 'TgMessageRegexAnswer. pattern: {0}'.format(self._pattern)

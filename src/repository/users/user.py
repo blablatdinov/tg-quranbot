@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import uuid
-from typing import Optional, Protocol, final
+from typing import Final, Optional, Protocol, final
 
 from databases import Database
 from loguru import logger
@@ -29,6 +29,8 @@ from pydantic import BaseModel
 
 from exceptions.base_exception import InternalBotError
 from exceptions.internal_exceptions import UserNotFoundError
+
+CHAT_ID_LITERAL: Final = 'chat_id'
 
 
 @final
@@ -112,7 +114,10 @@ class UserRepository(UserRepositoryInterface):
             VALUES (:chat_id, :referrer_id, 2)
             RETURNING (chat_id, referrer_id)
         """
-        query_return_value = await self.connection.fetch_one(query, {'chat_id': chat_id, 'referrer_id': referrer_id})
+        query_return_value = await self.connection.fetch_one(
+            query,
+            {CHAT_ID_LITERAL: chat_id, 'referrer_id': referrer_id},
+        )
         if not query_return_value:
             raise InternalBotError
         logger.debug('User <{0}> inserted in DB'.format(chat_id))
@@ -142,7 +147,7 @@ class UserRepository(UserRepositoryInterface):
             FROM users
             WHERE chat_id = :chat_id
         """
-        record = await self.connection.fetch_one(query, {'chat_id': chat_id})
+        record = await self.connection.fetch_one(query, {CHAT_ID_LITERAL: chat_id})
         if not record:
             raise UserNotFoundError('Пользователь с chat_id: {0} не найден'.format(chat_id))
         return User.parse_obj(dict(record._mapping))  # noqa: WPS437
@@ -154,7 +159,7 @@ class UserRepository(UserRepositoryInterface):
         :returns: bool
         """
         query = 'SELECT COUNT(*) FROM users WHERE chat_id = :chat_id'
-        count = await self.connection.fetch_val(query, {'chat_id': chat_id})
+        count = await self.connection.fetch_val(query, {CHAT_ID_LITERAL: chat_id})
         return bool(count)
 
     async def update_city(self, chat_id: int, city_id: uuid.UUID):
@@ -168,7 +173,7 @@ class UserRepository(UserRepositoryInterface):
             SET city_id = :city_id
             WHERE chat_id = :chat_id
         """
-        await self.connection.execute(query, {'city_id': str(city_id), 'chat_id': chat_id})
+        await self.connection.execute(query, {'city_id': str(city_id), CHAT_ID_LITERAL: chat_id})
 
     async def update_referrer(self, chat_id: int, referrer_id: int):
         """Обновить город пользователя.
@@ -181,7 +186,7 @@ class UserRepository(UserRepositoryInterface):
             SET referrer_id = :referrer_id
             WHERE chat_id = :chat_id
         """
-        await self.connection.execute(query, {'referrer_id': referrer_id, 'chat_id': chat_id})
+        await self.connection.execute(query, {'referrer_id': referrer_id, CHAT_ID_LITERAL: chat_id})
 
     async def get_by_id(self, user_id: int) -> User:
         """Метод для получения пользователя.
