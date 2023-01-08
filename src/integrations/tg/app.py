@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import asyncio
 
 import httpx
+from typing import final
 from databases import Database
 from loguru import logger
 

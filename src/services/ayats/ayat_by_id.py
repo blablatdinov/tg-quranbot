@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import httpx
 
+from typing import final
 from app_types.stringable import Stringable
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgTextAnswer

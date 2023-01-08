@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
 
+from typing import final
 from app_types.stringable import Stringable
 from services.answers.answer import KeyboardInterface
 

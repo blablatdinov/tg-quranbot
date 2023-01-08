@@ -24,6 +24,7 @@ import asyncio
 import datetime
 import uuid
 
+from typing import final
 from databases import Database
 
 

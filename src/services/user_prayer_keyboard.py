@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import datetime
 import json
 
+from typing import final
 from app_types.stringable import Stringable
 from constants import PrayerNotReadedEmoji, PrayerReadedEmoji
 from integrations.tg.chat_id import TgChatId

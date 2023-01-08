@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import time
 
 import httpx
+from typing import final
 from loguru import logger
 
 from app_types.floatable import Floatable

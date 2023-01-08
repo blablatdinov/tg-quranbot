@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import httpx
 
+from typing import final
 from app_types.stringable import Stringable
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer

@@ -24,6 +24,7 @@ import datetime
 import enum
 import uuid
 
+from typing import final
 from databases import Database
 from loguru import logger
 

@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import httpx
 
+from typing import final
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerMarkup, TgTextAnswer
 from repository.ayats.schemas import Ayat
 from services.answers.answer import FileAnswer, KeyboardInterface, TelegramFileIdAnswer

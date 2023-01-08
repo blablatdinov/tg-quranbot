@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
 
+from typing import final
 from app_types.runable import Runable, SyncRunable
 
 

@@ -25,6 +25,7 @@ import re
 
 import pytz
 
+from typing import final
 from app_types.date_time import DateTimeIterface
 from app_types.stringable import Stringable
 from exceptions.base_exception import InternalBotError

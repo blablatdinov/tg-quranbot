@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import datetime
 import json
 import uuid
+from typing import final
 from typing import Protocol
 
 import nats

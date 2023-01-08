@@ -24,6 +24,7 @@ import re
 
 import httpx
 
+from typing import final
 from app_types.stringable import Stringable
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 from integrations.tg.message_text import MessageText

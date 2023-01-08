@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
 import json
+from typing import final
 from typing import Protocol
 from urllib import parse as url_parse
 

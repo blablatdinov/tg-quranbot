@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import httpx
 
+from typing import final
 from app_types.runable import Runable
 from app_types.stringable import Stringable
 from integrations.tg.sendable import BulkSendableAnswer

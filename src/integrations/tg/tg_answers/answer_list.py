@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import httpx
 
+from typing import final
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 

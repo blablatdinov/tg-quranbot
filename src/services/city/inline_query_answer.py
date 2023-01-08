@@ -24,6 +24,7 @@ import json
 
 import httpx
 
+from typing import final
 from app_types.stringable import Stringable
 from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.inline_query import InlineQuery, InlineQueryId

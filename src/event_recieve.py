@@ -24,6 +24,7 @@ import asyncio
 import json
 
 import nats
+from typing import final
 from loguru import logger
 from quranbot_schema_registry import validate_schema
 

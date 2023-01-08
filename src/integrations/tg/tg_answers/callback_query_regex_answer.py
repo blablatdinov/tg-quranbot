@@ -24,6 +24,7 @@ import re
 
 import httpx
 
+from typing import final
 from app_types.stringable import Stringable
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers.interface import TgAnswerInterface

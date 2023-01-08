@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import httpx
 
+from typing import final
 from app_types.stringable import Stringable
 from db.connection import database
 from integrations.tg.message_text import MessageText

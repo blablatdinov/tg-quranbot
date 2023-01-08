@@ -25,6 +25,7 @@ import datetime
 import httpx
 import pytz
 
+from typing import final
 from app_types.stringable import Stringable
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup, TgTextAnswer

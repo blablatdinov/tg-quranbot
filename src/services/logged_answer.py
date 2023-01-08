@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
 
+from typing import final
 from integrations.nats_integration import SinkInterface
 from integrations.tg.sendable import SendableInterface
 
