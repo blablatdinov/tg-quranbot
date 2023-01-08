@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import uuid
-from typing import Optional, Protocol
+from typing import Optional, Protocol, final
 
 from databases import Database
 from loguru import logger
@@ -31,6 +31,7 @@ from exceptions.base_exception import InternalBotError
 from exceptions.internal_exceptions import UserNotFoundError
 
 
+@final
 class User(BaseModel):
     """Модель пользователя."""
 
@@ -85,6 +86,7 @@ class UserRepositoryInterface(Protocol):
         """
 
 
+@final
 class UserRepository(UserRepositoryInterface):
     """Репозиторий для работы с пользователями."""
 

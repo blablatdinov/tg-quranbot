@@ -21,11 +21,13 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
+from typing import final
 
 from integrations.nats_integration import SinkInterface
 from integrations.tg.sendable import SendableInterface
 
 
+@final
 class LoggedAnswer(SendableInterface):
     """Декоратор логирующий сообщения."""
 

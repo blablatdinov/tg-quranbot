@@ -20,33 +20,40 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import final
+
 from exceptions.base_exception import BaseAppError
 
 
+@final
 class NotFoundReferrerIdError(BaseAppError):
     """Исключение возбуждается в случае если невозможно зарегистрировать пользователя с рефералом."""
 
     user_message = 'Невозможно зарегистрировать пользователя с рефералом'
 
 
+@final
 class UserNotFoundError(BaseAppError):
     """Исключение возбуждается в случае если пользователь не найден."""
 
     user_message = 'Пользователь не найден'
 
 
+@final
 class UserHasNotGeneratedPrayersError(BaseAppError):
     """У пользователя нет сгенерированных времен намаза на текущий день."""
 
     admin_message = ''
 
 
+@final
 class NotProcessableUpdateError(BaseAppError):
     """Исключение, вызываемое если бот не знает как обработать запрос."""
 
     admin_message = ''
 
 
+@final
 class TelegramIntegrationsError(BaseAppError):
     """Исключение, возбуждаемое при некорректном ответе от API телеграмма."""
 

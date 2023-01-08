@@ -20,15 +20,19 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import final
+
 from exceptions.base_exception import BaseAppError
 
 
+@final
 class UserPrayersNotFoundError(BaseAppError):
     """У пользователя нет сгенерированных времен намазов."""
 
     admin_message = ''
 
 
+@final
 class PrayersNotFoundError(BaseAppError):
     """Не найдены времена намазов."""
 

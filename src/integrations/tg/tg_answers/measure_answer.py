@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import time
+from typing import final
 
 import httpx
 from loguru import logger
@@ -31,6 +32,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.update_id import UpdateId
 
 
+@final
 class Millis(Floatable):
     """Миллисекунды."""
 
@@ -58,6 +60,7 @@ class Millis(Floatable):
         return self._millis
 
 
+@final
 class RoundedFloat(Floatable):
     """Округленное дробное число."""
 
@@ -78,6 +81,7 @@ class RoundedFloat(Floatable):
         return round(float(self._origin), self._shift_comma)
 
 
+@final
 class TgMeasureAnswer(TgAnswerInterface):
     """Замеренный ответ."""
 

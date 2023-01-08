@@ -20,6 +20,8 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import final
+
 import httpx
 
 from app_types.stringable import Stringable
@@ -27,6 +29,7 @@ from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
+@final
 class TgAnswerToSender(TgAnswerInterface):
     """Ответ пользователю, от которого пришло сообщение."""
 

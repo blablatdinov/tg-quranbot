@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol
+from typing import Protocol, final
 
 from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
 
@@ -35,6 +35,7 @@ class SearchQueryInterface(Protocol):
         """Номер аята."""
 
 
+@final
 class SearchQuery(SearchQueryInterface):
     """Запросом для поиска."""
 
@@ -60,6 +61,7 @@ class SearchQuery(SearchQueryInterface):
         return self._query.split(':')[1]
 
 
+@final
 class ValidatedSearchQuery(SearchQueryInterface):
     """Декоратор, валидирующий запрос для поиска."""
 

@@ -20,6 +20,8 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import final
+
 import httpx
 
 from app_types.stringable import Stringable
@@ -31,6 +33,7 @@ from services.ayats.search_by_sura_ayat_num import AyatSearchInterface
 from services.regular_expression import IntableRegularExpression
 
 
+@final
 class AyatByIdAnswer(TgAnswerInterface):
     """Ответ на аят по идентификатору."""
 

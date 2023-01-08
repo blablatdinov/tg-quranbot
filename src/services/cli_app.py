@@ -21,10 +21,12 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
+from typing import final
 
 from app_types.runable import Runable, SyncRunable
 
 
+@final
 class CliApp(SyncRunable):
     """CLI приложение."""
 
@@ -45,6 +47,7 @@ class CliApp(SyncRunable):
         return 0
 
 
+@final
 class ForkCliApp(SyncRunable):
     """Маршрутизация для CLI приложения."""
 
@@ -66,6 +69,7 @@ class ForkCliApp(SyncRunable):
         return 0
 
 
+@final
 class CommandCliApp(SyncRunable):
     """CLI команда."""
 

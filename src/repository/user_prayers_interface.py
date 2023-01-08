@@ -21,11 +21,12 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from typing import Protocol
+from typing import Protocol, final
 
 from pydantic import BaseModel
 
 
+@final
 class UserPrayer(BaseModel):
     """Время намаза пользователя.
 

@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
 from contextlib import suppress
+from typing import final
 
 from app_types.stringable import Stringable
 from exceptions.content_exceptions import AyatNotFoundError
@@ -30,6 +31,7 @@ from services.answers.answer import KeyboardInterface
 from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 
 
+@final
 class NeighborAyatKeyboard(KeyboardInterface):
     """Клавиатура с соседними аятами."""
 

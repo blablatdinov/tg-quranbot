@@ -20,6 +20,8 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import final
+
 import httpx
 
 from app_types.runable import Runable
@@ -31,6 +33,7 @@ from integrations.tg.tg_answers.update import Update
 from repository.users.users import UsersRepositoryInterface
 
 
+@final
 class TypingAction(TgAnswerInterface):
     """Действие с печатью."""
 
@@ -55,6 +58,7 @@ class TypingAction(TgAnswerInterface):
         ]
 
 
+@final
 class CheckUsersStatus(Runable):
     """Статусы пользователей."""
 
@@ -85,8 +89,3 @@ class CheckUsersStatus(Runable):
                 if not response_dict['ok']:
                     deactivated_users.append(response_dict['chat_id'])
         await self._users_repo.update_status(list(set(deactivated_users)), to=False)
-
-
-# class ScheduleApp(Runable):
-#
-#     async def run(self) -> None:

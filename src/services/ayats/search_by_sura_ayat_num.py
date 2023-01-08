@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Union
+from typing import Union, final
 
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.schemas import Ayat
@@ -29,6 +29,7 @@ from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.search.ayat_search_query import SearchQuery, ValidatedSearchQuery
 
 
+@final
 class AyatBySuraAyatNum(AyatSearchInterface):
     """Поиск аята по номеру суры, аята."""
 

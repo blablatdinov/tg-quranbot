@@ -21,12 +21,13 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import uuid
-from typing import Protocol
+from typing import Protocol, final
 
 from databases import Database
 from pydantic import BaseModel, parse_obj_as
 
 
+@final
 class City(BaseModel):
     """Модель города."""
 
@@ -44,6 +45,7 @@ class CityRepositoryInterface(Protocol):
         """
 
 
+@final
 class CityRepository(CityRepositoryInterface):
     """Класс для работы с городами в БД."""
 

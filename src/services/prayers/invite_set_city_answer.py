@@ -20,6 +20,8 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import final
+
 import httpx
 from aioredis import Redis
 
@@ -31,6 +33,7 @@ from services.switch_inline_query_answer import SwitchInlineQueryKeyboard
 from services.user_state import LoggedUserState, UserState, UserStep
 
 
+@final
 class InviteSetCityAnswer(TgAnswerInterface):
     """Ответ с приглашением ввести город."""
 

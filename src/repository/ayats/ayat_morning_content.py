@@ -20,12 +20,13 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol
+from typing import Protocol, final
 
 from databases import Database
 from pydantic import BaseModel, parse_obj_as
 
 
+@final
 class ContentSpam(BaseModel):
     """Модель для рассылки утреннего контента."""
 
@@ -41,6 +42,7 @@ class AyatMorningContentRepositoryInterface(Protocol):
         """Получить контент для рассылки."""
 
 
+@final
 class AyatMorningContentRepository(AyatMorningContentRepositoryInterface):
     """Класс для работы с хранилищем данных для рассылок."""
 

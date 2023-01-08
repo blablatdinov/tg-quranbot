@@ -21,11 +21,13 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
+from typing import final
 
 from app_types.stringable import Stringable
 from services.answers.answer import KeyboardInterface
 
 
+@final
 class SwitchInlineQueryKeyboard(KeyboardInterface):
     """Переключение на инлайн поиск."""
 

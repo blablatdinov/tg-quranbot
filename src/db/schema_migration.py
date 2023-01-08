@@ -23,10 +23,12 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import asyncio
 import datetime
 import uuid
+from typing import final
 
 from databases import Database
 
 
+@final
 class SuraMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -42,6 +44,7 @@ class SuraMigration(object):
         ])
 
 
+@final
 class FilesMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -57,6 +60,7 @@ class FilesMigration(object):
         ])
 
 
+@final
 class PodcastMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -84,6 +88,7 @@ class PodcastMigration(object):
         ])
 
 
+@final
 class AyatsMigration(object):
 
     def __init__(self, old_db, new_db) -> None:
@@ -118,6 +123,7 @@ class AyatsMigration(object):
         ])
 
 
+@final
 class AdminMessagesMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -143,6 +149,7 @@ class AdminMessagesMigration(object):
         ])
 
 
+@final
 class CitiesMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -168,6 +175,7 @@ class CitiesMigration(object):
         ])
 
 
+@final
 class PrayerDayMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -191,6 +199,7 @@ class PrayerDayMigration(object):
         ])
 
 
+@final
 class PrayerMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -220,6 +229,7 @@ class PrayerMigration(object):
         ])
 
 
+@final
 class PrayerAtUserGroupMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -238,6 +248,7 @@ class PrayerAtUserGroupMigration(object):
         ])
 
 
+@final
 class PrayerAtUserMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -274,6 +285,7 @@ class PrayerAtUserMigration(object):
         ])
 
 
+@final
 class UsersMigration(object):
 
     def __init__(self, old_db, new_db):

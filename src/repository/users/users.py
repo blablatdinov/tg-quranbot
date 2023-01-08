@@ -20,12 +20,13 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol
+from typing import Protocol, final
 
 from databases import Database
 from pydantic import BaseModel, parse_obj_as
 
 
+@final
 class QueryResultItem(BaseModel):
     """Результат запроса."""
 
@@ -55,6 +56,7 @@ class UsersRepositoryInterface(Protocol):
         """Вернуть активных пользователей, у которых есть город."""
 
 
+@final
 class UsersRepository(UsersRepositoryInterface):
     """Класс для работы с хранилищем множества пользователей."""
 

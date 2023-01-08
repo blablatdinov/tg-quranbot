@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import re
+from typing import final
 
 import httpx
 
@@ -29,6 +30,7 @@ from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
+@final
 class TgCallbackQueryRegexAnswer(TgAnswerInterface):
     """Маршрутизация ответов по регулярному выражению."""
 

@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol
+from typing import Protocol, final
 
 from databases import Database
 from pydantic import parse_obj_as
@@ -45,6 +45,7 @@ class NeighborAyatsRepositoryInterface(Protocol):
         """Информация о странице."""
 
 
+@final
 class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
@@ -109,6 +110,7 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
         raise BaseAppError('Page info not generated')
 
 
+@final
 class NeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
@@ -172,6 +174,7 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
         return 'стр. {0}/{1}'.format(actual_page_num, ayats_count)
 
 
+@final
 class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
     """Класс для работы с сосденими аятами, при текстовом поиске."""
 

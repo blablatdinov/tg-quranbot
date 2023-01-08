@@ -21,12 +21,13 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import enum
-from typing import Protocol
+from typing import Protocol, final
 
 from aioredis import Redis
 from loguru import logger
 
 
+@final
 class UserStep(enum.Enum):
     """Перечисление возможных состояний пользователя."""
 
@@ -48,6 +49,7 @@ class UserStateInterface(Protocol):
         """
 
 
+@final
 class LoggedUserState(UserStateInterface):
     """Логгирующий декоратор объекта, работающего с состоянием пользователя."""
 
@@ -77,6 +79,7 @@ class LoggedUserState(UserStateInterface):
         logger.info('State {0} setted'.format(step))
 
 
+@final
 class UserState(UserStateInterface):
     """Объект, работающий с состоянием пользователя."""
 

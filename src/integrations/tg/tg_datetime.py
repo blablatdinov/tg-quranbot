@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
 import re
+from typing import final
 
 import pytz
 
@@ -30,6 +31,7 @@ from app_types.stringable import Stringable
 from exceptions.base_exception import InternalBotError
 
 
+@final
 class TgDateTime(DateTimeIterface):
     """Время сообщения."""
 

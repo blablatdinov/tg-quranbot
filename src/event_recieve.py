@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
 import json
+from typing import final
 
 import nats
 from loguru import logger
@@ -32,6 +33,7 @@ from integrations.event_handlers.prayers_sended import RecievedEventInterface
 from settings import settings
 
 
+@final
 class RecievedEvents(Runable):
     """Обработка событий из очереди."""
 

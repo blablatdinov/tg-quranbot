@@ -20,6 +20,8 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import final
+
 from app_types.stringable import Stringable
 
 AYAT_SEARCH_INPUT_REGEXP = r'\d( |):( |)\d'
@@ -27,6 +29,7 @@ GET_PRAYER_TIMES_REGEXP = '(В|в)ремя намаза'
 PODCAST_BUTTON = '(П|п)одкасты'
 
 
+@final
 class PrayerReadedEmoji(Stringable):
     """Смайлик для прочитанного намаза."""
 
@@ -38,6 +41,7 @@ class PrayerReadedEmoji(Stringable):
         return '✅'
 
 
+@final
 class PrayerNotReadedEmoji(Stringable):
     """Смайлик для непрочитанного намаза."""
 

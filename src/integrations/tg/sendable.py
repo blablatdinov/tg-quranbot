@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
 import json
-from typing import Protocol
+from typing import Protocol, final
 from urllib import parse as url_parse
 
 import httpx
@@ -43,6 +43,7 @@ class SendableInterface(Protocol):
         """
 
 
+@final
 class SendableAnswer(SendableInterface):
     """Объект, отправляющий ответы в API."""
 
@@ -72,6 +73,7 @@ class SendableAnswer(SendableInterface):
             return [json.loads(response) for response in responses]
 
 
+@final
 class UserNotSubscribedSafeSendable(SendableInterface):
     """Декоратор для обработки отписанных пользователей."""
 
@@ -106,6 +108,7 @@ class UserNotSubscribedSafeSendable(SendableInterface):
         return responses
 
 
+@final
 class SliceIterator(object):
     """Итератор по срезам массива."""
 
@@ -139,6 +142,7 @@ class SliceIterator(object):
         return res
 
 
+@final
 class BulkSendableAnswer(SendableInterface):
     """Массовая отправка."""
 

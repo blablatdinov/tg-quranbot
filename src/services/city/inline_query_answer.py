@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
+from typing import final
 
 import httpx
 
@@ -32,6 +33,7 @@ from services.city.search import CitySearchInterface, SearchCityQuery
 from services.debug_answer import DebugAnswer
 
 
+@final
 class InlineQueryAnswer(TgAnswerInterface):
     """Ответ на инлайн поиск."""
 

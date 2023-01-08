@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from contextlib import suppress
+from typing import final
 
 import httpx
 
@@ -36,6 +37,7 @@ from services.start.start_message import StartMessage
 from settings import settings
 
 
+@final
 class StartAnswer(TgAnswerInterface):
     """Обработчик стартового сообщения."""
 

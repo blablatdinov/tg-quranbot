@@ -21,12 +21,14 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import re
+from typing import final
 
 from app_types.intable import Intable
 from app_types.stringable import Stringable, UnwrappedString
 from integrations.tg.exceptions.update_parse_exceptions import InlineQueryIdNotFoundError, InlineQueryNotFoundError
 
 
+@final
 class InlineQuery(Stringable):
     """Данные с инлайн поиска."""
 
@@ -50,6 +52,7 @@ class InlineQuery(Stringable):
         return query_regex_result.group(2)
 
 
+@final
 class InlineQueryId(Intable):
     """Идентификатор инлайн поиска."""
 

@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from contextlib import suppress
+from typing import final
 
 import httpx
 from loguru import logger
@@ -36,6 +37,7 @@ from integrations.tg.exceptions.update_parse_exceptions import (
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
+@final
 class TgAnswerFork(TgAnswerInterface):
     """Маршрутизация ответов."""
 

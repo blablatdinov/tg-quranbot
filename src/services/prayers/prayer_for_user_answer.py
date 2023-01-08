@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
+from typing import final
 
 import httpx
 import pytz
@@ -33,6 +34,7 @@ from repository.user_prayers_interface import UserPrayersInterface
 from services.user_prayer_keyboard import UserPrayersKeyboard
 
 
+@final
 class PrayerForUserAnswer(TgAnswerInterface):
     """Ответ пользователю с временами намаза."""
 

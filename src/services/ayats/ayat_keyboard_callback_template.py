@@ -21,8 +21,10 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import enum
+from typing import final
 
 
+@final
 class AyatCallbackTemplate(str, enum.Enum):  # noqa: WPS600
     """Шаблон для метаинформации кнопки."""
 
