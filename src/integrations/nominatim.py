@@ -20,8 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
-from typing import Protocol
+from typing import Protocol, final
 
 from integrations.client import IntegrationClientInterface
 from integrations.schemas import NominatimSearchResponse
@@ -38,6 +37,7 @@ class GeoServiceIntegrationInterface(Protocol):
         """
 
 
+@final
 class NominatimIntegration(GeoServiceIntegrationInterface):
     """Интеграция с https://nominatim.openstreetmap.org ."""
 

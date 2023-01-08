@@ -21,16 +21,17 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import re
+from typing import final
 
 import httpx
 
-from typing import final
 from app_types.stringable import Stringable
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
+@final
 class TgMessageRegexAnswer(TgAnswerInterface, Stringable):
     """Маршрутизация ответов по регулярному выражению."""
 

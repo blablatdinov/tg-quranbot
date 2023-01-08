@@ -22,8 +22,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
 import json
-
 from typing import final
+
 from app_types.stringable import Stringable
 from constants import PrayerNotReadedEmoji, PrayerReadedEmoji
 from integrations.tg.chat_id import TgChatId
@@ -32,6 +32,7 @@ from services.answers.answer import KeyboardInterface
 from services.user_prayer_button_callback import UserPrayersButtonCallback
 
 
+@final
 class UserPrayersKeyboardByChatId(KeyboardInterface):
     """Клавиатура времен намаза с идентификатором чата в конструкторе."""
 
@@ -63,6 +64,7 @@ class UserPrayersKeyboardByChatId(KeyboardInterface):
         })
 
 
+@final
 class UserPrayersKeyboard(KeyboardInterface):
     """Клавиатура времен намаза."""
 

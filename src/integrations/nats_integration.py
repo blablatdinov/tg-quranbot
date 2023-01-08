@@ -23,8 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import datetime
 import json
 import uuid
-from typing import final
-from typing import Protocol
+from typing import Protocol, final
 
 import nats
 import pytz
@@ -46,6 +45,7 @@ class SinkInterface(Protocol):
         """
 
 
+@final
 class NatsSink(SinkInterface):
     """Отправщик событий в nats."""
 

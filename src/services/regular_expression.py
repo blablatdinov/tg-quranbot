@@ -21,12 +21,13 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import re
-
 from typing import final
+
 from app_types.intable import Intable
 from exceptions.base_exception import BaseAppError
 
 
+@final
 class IntableRegularExpression(Intable):
     """Регулярное выражение, которое можно привести к числу."""
 

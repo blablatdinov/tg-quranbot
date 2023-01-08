@@ -21,12 +21,14 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
+
 from exceptions.base_exception import BaseAppError
 from exceptions.user import StartMessageNotContainReferrer
 from repository.users.user import UserRepositoryInterface
 from services.regular_expression import IntableRegularExpression
 
 
+@final
 class StartMessage(object):
     """Стартовое сообщение."""
 

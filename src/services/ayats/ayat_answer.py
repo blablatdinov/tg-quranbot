@@ -20,14 +20,16 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import final
+
 import httpx
 
-from typing import final
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerMarkup, TgTextAnswer
 from repository.ayats.schemas import Ayat
 from services.answers.answer import FileAnswer, KeyboardInterface, TelegramFileIdAnswer
 
 
+@final
 class AyatAnswer(TgAnswerInterface):
     """Ответ с аятом."""
 

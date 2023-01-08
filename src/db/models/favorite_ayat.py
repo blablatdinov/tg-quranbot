@@ -21,12 +21,14 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
+
 from sqlalchemy.schema import Column, ForeignKey, PrimaryKeyConstraint
 from sqlalchemy.sql.sqltypes import Integer
 
 from db.base import Base
 
 
+@final
 class FavoriteAyat(Base):
     """Модель избранных аятов."""
 

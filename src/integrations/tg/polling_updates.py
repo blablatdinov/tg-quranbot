@@ -21,8 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-from typing import final
-from typing import Protocol
+from typing import Protocol, final
 
 import httpx
 
@@ -30,6 +29,7 @@ from app_types.intable import Intable
 from app_types.stringable import Stringable
 
 
+@final
 class UpdatesTimeout(Intable):
     """Таймаут для обновлений."""
 
@@ -51,6 +51,7 @@ class UpdatesURLInterface(Protocol):
         """
 
 
+@final
 class UpdatesURL(Stringable):
     """Базовый URL обновлений из телеграма."""
 
@@ -69,6 +70,7 @@ class UpdatesURL(Stringable):
         return 'https://api.telegram.org/bot{0}/getUpdates'.format(self._token)
 
 
+@final
 class UpdatesWithOffsetURL(UpdatesURLInterface):
     """URL для получения только новых обновлений."""
 
@@ -88,6 +90,7 @@ class UpdatesWithOffsetURL(UpdatesURLInterface):
         return '{0}?offset={1}'.format(self._updates_url, update_id)
 
 
+@final
 class UpdatesLongPollingURL(UpdatesURLInterface):
     """URL обновлений с таймаутом."""
 
@@ -122,6 +125,7 @@ class UpdatesIteratorInterface(Protocol):
         """Вернуть следующий элемент."""
 
 
+@final
 class PollingUpdatesIterator(UpdatesIteratorInterface):
     """Итератор по обновлениям."""
 

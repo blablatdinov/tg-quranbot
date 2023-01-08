@@ -21,20 +21,24 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
+
 from exceptions.base_exception import BaseAppError
 
 
+@final
 class UserAlreadyExists(BaseAppError):
     """Пользователь уже зарегистрирован."""
 
     admin_message = ''
 
 
+@final
 class StartMessageNotContainReferrer(BaseAppError):
     """Стартовое сообщение не содержит информации о пригласившем."""
 
     admin_message = ''
 
 
+@final
 class UserAlreadyActive(BaseAppError):
     """Пользователь уже активен."""

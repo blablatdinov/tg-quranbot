@@ -23,8 +23,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import datetime
 import enum
 import uuid
-
 from typing import final
+
 from databases import Database
 from loguru import logger
 
@@ -34,6 +34,7 @@ from exceptions.prayer_exceptions import PrayersNotFoundError, UserPrayersNotFou
 from repository.user_prayers_interface import UserPrayer, UserPrayersInterface
 
 
+@final
 class PrayerNames(str, enum.Enum):  # noqa: WPS600
     """Имена намазов."""
 
@@ -45,6 +46,7 @@ class PrayerNames(str, enum.Enum):  # noqa: WPS600
     ISHA = "isha'a"
 
 
+@final
 class UserPrayers(UserPrayersInterface):
     """Времена намазов пользователя."""
 
@@ -88,6 +90,7 @@ class UserPrayers(UserPrayersInterface):
         return prayers
 
 
+@final
 class SafeUserPrayers(UserPrayersInterface):
     """Времена намазов с защитой от UserHasNotGeneratedPrayersError."""
 
@@ -113,6 +116,7 @@ class SafeUserPrayers(UserPrayersInterface):
             return await self._new_user_prayers.prayer_times(chat_id, date)
 
 
+@final
 class SafeNotFoundPrayers(UserPrayersInterface):
     """Времена намазов с защитой от UserPrayersNotFoundError."""
 
@@ -154,6 +158,7 @@ class SafeNotFoundPrayers(UserPrayersInterface):
         return prayer_times
 
 
+@final
 class PrayersWithoutSunrise(UserPrayersInterface):
     """Времена намазов без восхода."""
 
@@ -179,6 +184,7 @@ class PrayersWithoutSunrise(UserPrayersInterface):
         ]
 
 
+@final
 class NewUserPrayers(UserPrayersInterface):
     """Объект генерирующий времена намазов пользователя."""
 

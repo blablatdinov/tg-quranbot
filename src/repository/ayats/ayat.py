@@ -20,8 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
-from typing import NamedTuple, Optional, Protocol
+from typing import NamedTuple, Optional, Protocol, final
 
 from databases import Database
 from pydantic import parse_obj_as
@@ -31,6 +30,7 @@ from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.schemas import Ayat, AyatShort
 
 
+@final
 class AyatNeighbors(NamedTuple):
     """DTO для передачи соседних аятов."""
 
@@ -70,6 +70,7 @@ class AyatRepositoryInterface(Protocol):
         """
 
 
+@final
 class AyatRepository(AyatRepositoryInterface):
     """Интерфейс репозитория для работы с административными сообщениями."""
 

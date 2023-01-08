@@ -21,13 +21,14 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import re
-
 from typing import final
+
 from app_types.intable import Intable
 from app_types.stringable import Stringable
 from integrations.tg.exceptions.update_parse_exceptions import MessageIdNotFoundError
 
 
+@final
 class MessageId(Intable):
     """Идентификатор сообщения."""
 

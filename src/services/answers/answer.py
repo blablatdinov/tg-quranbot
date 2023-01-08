@@ -21,8 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-from typing import final
-from typing import Optional
+from typing import Optional, final
 
 import httpx
 
@@ -31,6 +30,7 @@ from integrations.tg.keyboard import KeyboardInterface
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
+@final
 class ResizedKeyboard(KeyboardInterface):
     """Сжатая в высоту клавиатура."""
 
@@ -53,6 +53,7 @@ class ResizedKeyboard(KeyboardInterface):
         return json.dumps(keyboard_as_dict)
 
 
+@final
 class DefaultKeyboard(KeyboardInterface):
     """Класс клавиатуры по умолчанию."""
 
@@ -65,6 +66,7 @@ class DefaultKeyboard(KeyboardInterface):
         return '{"keyboard":[["🎧 Подкасты"],["🕋 Время намаза"],["🌟 Избранное","🔍 Найти аят"]]}'
 
 
+@final
 class FileAnswer(TgAnswerInterface):
     """Класс ответа с файлом."""
 
@@ -95,6 +97,7 @@ class FileAnswer(TgAnswerInterface):
         return await self._telegram_file_id_answer.build(update)
 
 
+@final
 class TelegramFileIdAnswer(TgAnswerInterface):
     """Класс ответа с файлом."""
 

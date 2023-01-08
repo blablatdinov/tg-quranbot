@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
+
 from utlls import get_bot_instance
 
 from repository.update_log import UpdatesLogRepositoryInterface
@@ -28,6 +29,7 @@ from repository.update_log import UpdatesLogRepositoryInterface
 bot = get_bot_instance()
 
 
+@final
 class MessagesDeletedEvent(object):
     """Событие удаления сообщений."""
 

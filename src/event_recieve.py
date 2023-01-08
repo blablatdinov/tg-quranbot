@@ -22,9 +22,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
 import json
+from typing import final
 
 import nats
-from typing import final
 from loguru import logger
 from quranbot_schema_registry import validate_schema
 
@@ -33,6 +33,7 @@ from integrations.event_handlers.prayers_sended import RecievedEventInterface
 from settings import settings
 
 
+@final
 class RecievedEvents(Runable):
     """Обработка событий из очереди."""
 

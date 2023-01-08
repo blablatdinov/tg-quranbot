@@ -21,8 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import re
-from typing import final
-from typing import Protocol
+from typing import Protocol, final
 
 from app_types.stringable import Stringable
 from integrations.tg.exceptions.update_parse_exceptions import CoordinatesNotFoundError
@@ -38,6 +37,7 @@ class Coordinates(Protocol):
         """Долгота."""
 
 
+@final
 class TgMessageCoordinates(Coordinates):
     """Координаты, принятые из чата."""
 

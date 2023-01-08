@@ -20,12 +20,14 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import final
+
 import httpx
 
-from typing import final
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
+@final
 class TgChatAction(TgAnswerInterface):
     """Запрос на API телеграма с действием.
 

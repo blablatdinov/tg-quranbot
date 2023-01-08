@@ -20,8 +20,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import httpx
 from typing import final
+
+import httpx
 from aioredis import Redis
 
 from app_types.stringable import Stringable
@@ -30,6 +31,7 @@ from integrations.tg.tg_answers import TgAnswerInterface
 from services.user_state import UserState, UserStep
 
 
+@final
 class ResetStateAnswer(TgAnswerInterface):
     """Декоратор для обнуления состояния пользователя."""
 

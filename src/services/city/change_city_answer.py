@@ -20,8 +20,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import httpx
 from typing import final
+
+import httpx
 from aioredis import Redis
 
 from app_types.stringable import Stringable
@@ -35,6 +36,7 @@ from services.city.search import CitySearchInterface, SearchCityQuery
 from services.user_state import LoggedUserState, UserState, UserStep
 
 
+@final
 class CityNotSupportedAnswer(TgAnswerInterface):
     """Ответ о неподдерживаемом городе."""
 
@@ -62,6 +64,7 @@ class CityNotSupportedAnswer(TgAnswerInterface):
             ).build(update)
 
 
+@final
 class ChangeCityAnswer(TgAnswerInterface):
     """Ответ со сменой города."""
 

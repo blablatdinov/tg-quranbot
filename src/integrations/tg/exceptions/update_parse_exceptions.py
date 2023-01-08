@@ -21,28 +21,35 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
+
 from exceptions.base_exception import BaseAppError
 
 
+@final
 class MessageTextNotFoundError(BaseAppError):
     """Текст сообщения не найден."""
 
 
+@final
 class CoordinatesNotFoundError(BaseAppError):
     """Координаты не найдены."""
 
 
+@final
 class CallbackQueryNotFoundError(BaseAppError):
     """Информация с кнопки не найдена."""
 
 
+@final
 class MessageIdNotFoundError(BaseAppError):
     """Идентификатор сообщеня не найден."""
 
 
+@final
 class InlineQueryNotFoundError(BaseAppError):
     """Ошибка при отсутствии данных для поиска города."""
 
 
+@final
 class InlineQueryIdNotFoundError(BaseAppError):
     """Ошибка при отсутствии данных для поиска города."""

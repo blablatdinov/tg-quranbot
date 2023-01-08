@@ -21,19 +21,20 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from typing import final
 from contextlib import suppress
-from typing import Optional
+from typing import Optional, final
 
 from pydantic import BaseModel, Field
 
 
+@final
 class Chat(BaseModel):
     """Класс для парсинга данных чата."""
 
     id: int
 
 
+@final
 class Location(BaseModel):
     """Координаты."""
 
@@ -41,6 +42,7 @@ class Location(BaseModel):
     longitude: float
 
 
+@final
 class Message(BaseModel):
     """Класс для парсинга данных сообщения."""
 
@@ -71,12 +73,14 @@ class Message(BaseModel):
         return self.text_
 
 
+@final
 class CallbackQueryFrom(BaseModel):
     """Данные отправителя, нажавшего на кнопку."""
 
     id: int
 
 
+@final
 class CallbackQuery(BaseModel):
     """Данные нажатия на кнопку."""
 
@@ -85,6 +89,7 @@ class CallbackQuery(BaseModel):
     data: str  # noqa: WPS110
 
 
+@final
 class InlineQuery(BaseModel):
     """Инлайн запрос."""
 
@@ -100,6 +105,7 @@ class InlineQuery(BaseModel):
         return self.query_
 
 
+@final
 class Update(BaseModel):
     """Класс для парсинга данных обновления от телеграмма."""
 

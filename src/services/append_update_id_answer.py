@@ -21,8 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from typing import final
-from typing import Protocol
+from typing import Protocol, final
 
 import httpx
 import pytz
@@ -43,6 +42,7 @@ class DebugParamInterface(Protocol):
         """
 
 
+@final
 class AppendDebugInfoAnswer(TgAnswerInterface):
     """Ответ с отладочной информацией."""
 
@@ -95,6 +95,7 @@ class AppendDebugInfoAnswer(TgAnswerInterface):
         return new_requests
 
 
+@final
 class UpdateIdDebugParam(DebugParamInterface):
     """Отладочная информация с идентификатором обновления."""
 
@@ -107,6 +108,7 @@ class UpdateIdDebugParam(DebugParamInterface):
         return 'Update id: {0}'.format(int(UpdateId(update)))
 
 
+@final
 class TimeDebugParam(DebugParamInterface):
     """Отладочная информация с временем."""
 
@@ -119,6 +121,7 @@ class TimeDebugParam(DebugParamInterface):
         return 'Time: {0}'.format(datetime.datetime.now(pytz.timezone('Europe/Moscow')))
 
 
+@final
 class ChatIdDebugParam(DebugParamInterface):
     """Отладочная информация с идентификатором чата."""
 
@@ -131,6 +134,7 @@ class ChatIdDebugParam(DebugParamInterface):
         return 'Chat id: {0}'.format(int(TgChatId(update)))
 
 
+@final
 class CommitHashDebugParam(DebugParamInterface):
     """Отладочная информация с хэшом коммита."""
 

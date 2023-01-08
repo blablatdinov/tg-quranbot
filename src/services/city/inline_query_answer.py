@@ -21,10 +21,10 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
+from typing import final
 
 import httpx
 
-from typing import final
 from app_types.stringable import Stringable
 from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.inline_query import InlineQuery, InlineQueryId
@@ -33,6 +33,7 @@ from services.city.search import CitySearchInterface, SearchCityQuery
 from services.debug_answer import DebugAnswer
 
 
+@final
 class InlineQueryAnswer(TgAnswerInterface):
     """Ответ на инлайн поиск."""
 

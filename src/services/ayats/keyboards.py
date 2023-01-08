@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
+
 from app_types.stringable import Stringable
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
@@ -31,6 +32,7 @@ from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 from services.ayats.ayat_neighbor_keyboard import NeighborAyatKeyboard
 
 
+@final
 class AyatAnswerKeyboard(KeyboardInterface):
     """Клавиатура аята."""
 

@@ -21,8 +21,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-
 from typing import final
+
 from app_types.stringable import Stringable
 from integrations.tg.chat_id import TgChatId
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
@@ -30,6 +30,7 @@ from repository.ayats.schemas import Ayat
 from services.answers.answer import KeyboardInterface
 
 
+@final
 class AyatFavoriteKeyboardButton(KeyboardInterface):
     """Кнопка с добавлением аята в избранные."""
 

@@ -21,8 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import time
-from typing import final
-from typing import Protocol, TypeVar
+from typing import Protocol, TypeVar, final
 
 import httpx
 from loguru import logger
@@ -42,6 +41,7 @@ class IntegrationClientInterface(Protocol):
         """
 
 
+@final
 class IntegrationClient(IntegrationClientInterface):
     """Httpx клиент."""
 
@@ -58,6 +58,7 @@ class IntegrationClient(IntegrationClientInterface):
         return model_for_parse.parse_raw(text)
 
 
+@final
 class LoggedIntegrationClient(IntegrationClientInterface):
     """Декоратор логирующий http запрос."""
 

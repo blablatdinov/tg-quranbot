@@ -20,9 +20,10 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import final
+
 import httpx
 
-from typing import final
 from app_types.stringable import Stringable
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
@@ -35,6 +36,7 @@ from services.ayats.keyboards import AyatAnswerKeyboard
 from services.regular_expression import IntableRegularExpression
 
 
+@final
 class FavoriteAyatStatus(object):
     """Пользовательский ввод статуса аята в избранном."""
 
@@ -60,6 +62,7 @@ class FavoriteAyatStatus(object):
         return 'addToFavor' in self._source
 
 
+@final
 class FavoriteAyatAnswer(TgAnswerInterface):
     """Ответ с избранными аятами."""
 
@@ -105,6 +108,7 @@ class FavoriteAyatAnswer(TgAnswerInterface):
         ).build(update)
 
 
+@final
 class FavoriteAyatEmptySafeAnswer(TgAnswerInterface):
     """Обработка ошибок с пустыми избранными."""
 
@@ -129,6 +133,7 @@ class FavoriteAyatEmptySafeAnswer(TgAnswerInterface):
             return await self._error_answer.build(update)
 
 
+@final
 class FavoriteAyatPage(TgAnswerInterface):
     """Страница с избранным аятом."""
 

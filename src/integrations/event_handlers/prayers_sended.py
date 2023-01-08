@@ -21,8 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from typing import final
-from typing import Protocol
+from typing import Protocol, final
 
 from databases import Database
 
@@ -53,6 +52,7 @@ class RecievedEventInterface(Protocol):
         """
 
 
+@final
 class SendPrayersEvent(RecievedEventInterface):
     """Событие о рассылки времени намаза."""
 

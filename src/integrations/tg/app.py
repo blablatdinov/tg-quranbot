@@ -21,9 +21,9 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
+from typing import final
 
 import httpx
-from typing import final
 from databases import Database
 from loguru import logger
 
@@ -33,6 +33,7 @@ from integrations.tg.polling_updates import PollingUpdatesIterator
 from integrations.tg.sendable import SendableInterface
 
 
+@final
 class PollingApp(Runable):
     """Приложение на long polling."""
 
@@ -55,6 +56,7 @@ class PollingApp(Runable):
                 await asyncio.sleep(0.1)
 
 
+@final
 class AppWithGetMe(Runable):
     """Объект для запуска с предварительным запросом getMe."""
 
@@ -80,6 +82,7 @@ class AppWithGetMe(Runable):
         await self._origin.run()
 
 
+@final
 class DatabaseConnectedApp(Runable):
     """Декоратор для подключения к БД."""
 
