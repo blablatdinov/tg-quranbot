@@ -67,4 +67,8 @@ class TelegramIntegrationsError(BaseAppError):
         self._message = message
 
     def __str__(self):
+        """Строковое представление.
+
+        :return: str
+        """
         return self._message
