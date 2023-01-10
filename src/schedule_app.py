@@ -25,11 +25,10 @@ from typing import final
 import httpx
 
 from app_types.runable import Runable
-from app_types.stringable import Stringable
+from app_types.stringable import Stringable, ThroughStringable
 from integrations.tg.sendable import BulkSendableAnswer
 from integrations.tg.tg_answers import TgAnswerInterface, TgChatIdAnswer
 from integrations.tg.tg_answers.chat_action import TgChatAction
-from integrations.tg.tg_answers.update import Update
 from repository.users.users import UsersRepositoryInterface
 
 
@@ -84,7 +83,7 @@ class CheckUsersStatus(Runable):
             )
             for chat_id in chat_ids
         ]
-        for response_list in await BulkSendableAnswer(answers).send(Update(update_id=0)):
+        for response_list in await BulkSendableAnswer(answers).send(ThroughStringable('')):
             for response_dict in response_list:
                 if not response_dict['ok']:
                     deactivated_users.append(response_dict['chat_id'])
