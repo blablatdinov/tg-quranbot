@@ -153,7 +153,7 @@ class BulkSendableAnswer(SendableInterface):
         """
         self._answers = answers
 
-    async def send(self, update) -> list[dict]:
+    async def send(self, update: Stringable) -> list[dict]:
         """Отправка.
 
         :param update: Stringable

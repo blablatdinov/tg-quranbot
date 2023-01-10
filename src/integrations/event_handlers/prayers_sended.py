@@ -25,9 +25,9 @@ from typing import Protocol, final
 
 from databases import Database
 
+from app_types.stringable import ThroughStringable
 from integrations.tg.sendable import BulkSendableAnswer
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup, TgChatIdAnswer, TgMessageAnswer, TgTextAnswer
-from integrations.tg.tg_answers.update import Update
 from repository.prayer_time import (
     NewUserPrayers,
     PrayersWithoutSunrise,
@@ -89,7 +89,7 @@ class SendPrayersEvent(RecievedEventInterface):
         deactivated_users = []
         chat_ids = await self._users_repo.active_users_with_city()
         answers = await self._build_requests(chat_ids)
-        for response_list in await BulkSendableAnswer(answers).send(Update(update_id=0).json()):
+        for response_list in await BulkSendableAnswer(answers).send(ThroughStringable('')):
             for response_dict in response_list:
                 if not response_dict['ok']:
                     deactivated_users.append(response_dict['chat_id'])
