@@ -44,7 +44,6 @@ from services.ayats.ayat import QAyat
 from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 from services.ayats.favorite_ayats import FavoriteAyatStatus
 from services.ayats.keyboards import AyatAnswerKeyboard
-from services.ayats.search_by_sura_ayat_num import AyatSearchInterface
 from services.regular_expression import IntableRegularExpression
 
 
@@ -54,17 +53,14 @@ class ChangeFavoriteAyatAnswer(TgAnswerInterface):
 
     def __init__(
         self,
-        ayat_search: AyatSearchInterface,
         connection: Database,
         answer: TgAnswerInterface,
     ):
         """Конструктор класса.
 
-        :param ayat_search: AyatSearchInterface
         :param connection: Database
         :param answer: TgAnswerInterface
         """
-        self._ayat_search = ayat_search
         self._origin = answer
         self._connection = connection
 
