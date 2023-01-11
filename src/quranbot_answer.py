@@ -47,7 +47,6 @@ from integrations.tg.tg_answers import (
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from repository.admin_message import AdminMessage
-from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.podcast import RandomPodcast
 from repository.prayer_time import NewUserPrayers, SafeNotFoundPrayers, SafeUserPrayers, UserPrayers
@@ -123,7 +122,6 @@ class QuranbotAnswer(TgAnswerInterface):
                 TgMessageAnswer(empty_answer),
             ),
         )
-        ayat_repo = AyatRepository(self._database)
         self._answer = SafeFork(
             TgAnswerFork(
                 TgMessageRegexAnswer(
