@@ -31,7 +31,6 @@ from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface
-from repository.ayats.ayat import AyatRepositoryInterface
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
 from services.ayats.ayat import AyatsByTextQuery
@@ -51,7 +50,6 @@ class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
         debug_mode: bool,
         message_answer: TgAnswerInterface,
         file_answer: TgAnswerInterface,
-        ayat_repo: AyatRepositoryInterface,
         redis: Redis,
     ):
         """Конструктор класса.
@@ -59,13 +57,11 @@ class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
         :param debug_mode: bool
         :param message_answer: TgAnswerInterface
         :param file_answer: TgAnswerInterface
-        :param ayat_repo: AyatRepositoryInterface
         :param redis: Redis
         """
         self._debug_mode = debug_mode
         self._message_answer = message_answer
         self._file_answer = file_answer
-        self._ayat_repo = ayat_repo
         self._redis = redis
 
     async def build(self, update) -> list[httpx.Request]:

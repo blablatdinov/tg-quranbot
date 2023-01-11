@@ -326,7 +326,6 @@ class QuranbotAnswer(TgAnswerInterface):
                                 settings.DEBUG,
                                 html_to_sender,
                                 audio_to_sender,
-                                ayat_repo,
                                 self._redis,
                             ),
                             self._redis,
