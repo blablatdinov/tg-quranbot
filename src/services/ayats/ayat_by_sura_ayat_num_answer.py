@@ -30,9 +30,9 @@ from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerInterface
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
+from services.ayats.ayat import QAyat
 from services.ayats.ayat_answer import AyatAnswer
 from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
-from services.ayats.ayat_search_interface import AyatSearchInterface
 from services.ayats.keyboards import AyatAnswerKeyboard
 
 
@@ -45,19 +45,16 @@ class AyatBySuraAyatNumAnswer(TgAnswerInterface):
         debug_mode: bool,
         message_answer: TgAnswerInterface,
         file_answer: TgAnswerInterface,
-        ayat_search: AyatSearchInterface,
     ):
         """Конструктор класса.
 
         :param debug_mode: bool
         :param message_answer: TgAnswerInterface
         :param file_answer: TgAnswerInterface
-        :param ayat_search: AyatSearchInterface
         """
         self._debug_mode = debug_mode
         self._message_answer = message_answer
         self._file_answer = file_answer
-        self._ayat_search = ayat_search
 
     async def build(self, update: Stringable) -> list[httpx.Request]:
         """Собрать ответ.
@@ -65,7 +62,7 @@ class AyatBySuraAyatNumAnswer(TgAnswerInterface):
         :param update: Stringable
         :return: list[httpx.Request]
         """
-        result_ayat = await self._ayat_search.search(str(MessageText(update)))
+        result_ayat = await QAyat.by_sura_ayat_num(MessageText(update), database)
         answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,
@@ -74,7 +71,7 @@ class AyatBySuraAyatNumAnswer(TgAnswerInterface):
             AyatAnswerKeyboard(
                 result_ayat,
                 FavoriteAyatsRepository(database),
-                NeighborAyats(database, result_ayat.id),
+                NeighborAyats(database, await result_ayat.id()),
                 AyatCallbackTemplate.get_ayat,
             ),
         ).build(update)

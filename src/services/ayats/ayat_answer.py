@@ -25,8 +25,8 @@ from typing import final
 import httpx
 
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerMarkup, TgTextAnswer
-from repository.ayats.schemas import Ayat
 from services.answers.answer import FileAnswer, KeyboardInterface, TelegramFileIdAnswer
+from services.ayats.ayat import Ayat
 
 
 @final
@@ -63,7 +63,7 @@ class AyatAnswer(TgAnswerInterface):
             TgAnswerMarkup(
                 TgTextAnswer(
                     self._message_answer,
-                    str(self._ayat),
+                    await self._ayat.text(),
                 ),
                 self._ayat_answer_keyboard,
             ),
@@ -71,11 +71,11 @@ class AyatAnswer(TgAnswerInterface):
                 self._debug_mode,
                 TelegramFileIdAnswer(
                     self._file_answer,
-                    self._ayat.audio_telegram_id,
+                    await self._ayat.tg_file_id(),
                 ),
                 TgTextAnswer(
                     self._message_answer,
-                    self._ayat.link_to_audio_file,
+                    await self._ayat.file_link(),
                 ),
             ),
         ).build(update)

@@ -25,6 +25,7 @@ from typing import final
 import httpx
 from aioredis import Redis
 
+from app_types.stringable import ThroughStringable
 from db.connection import database
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.callback_query import CallbackQueryData
@@ -33,6 +34,7 @@ from integrations.tg.tg_answers import TgAnswerInterface
 from repository.ayats.ayat import AyatRepositoryInterface
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
+from services.ayats.ayat import AyatsByTextQuery
 from services.ayats.ayat_answer import AyatAnswer
 from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 from services.ayats.ayat_text_search_query import AyatTextSearchQuery
@@ -75,13 +77,19 @@ class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
         """
         target_ayat_id = int(IntableRegularExpression(str(CallbackQueryData(update))))
         try:
-            ayats = await self._ayat_repo.search_by_text(
-                await AyatTextSearchQuery.for_reading_cs(self._redis, int(TgChatId(update))).read(),
-            )
+            ayats = await AyatsByTextQuery(
+                ThroughStringable(
+                    await AyatTextSearchQuery.for_reading_cs(
+                        self._redis,
+                        int(TgChatId(update)),
+                    ).read(),
+                ),
+                database,
+            ).to_list()
         except IndexError as err:
             raise AyatNotFoundError from err
         for ayat in ayats:
-            if ayat.id == target_ayat_id:
+            if await ayat.id() == target_ayat_id:
                 result_ayat = ayat
                 break
         else:
@@ -96,7 +104,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
                 FavoriteAyatsRepository(database),
                 TextSearchNeighborAyatsRepository(
                     database,
-                    result_ayat.id,
+                    await result_ayat.id(),
                     AyatTextSearchQuery.for_reading_cs(
                         self._redis,
                         int(TgChatId(update)),

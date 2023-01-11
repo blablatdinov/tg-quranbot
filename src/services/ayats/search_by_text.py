@@ -34,6 +34,7 @@ from integrations.tg.tg_answers import TgAnswerInterface
 from repository.ayats.ayat import AyatRepositoryInterface
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
+from services.ayats.ayat import AyatsByTextQuery
 from services.ayats.ayat_answer import AyatAnswer
 from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 from services.ayats.ayat_text_search_query import AyatTextSearchQuery
@@ -73,9 +74,13 @@ class SearchAyatByTextAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         :raises AyatNotFoundError: if ayat not found
         """
-        query = str(MessageText(update))
         try:
-            result_ayat = (await self._ayat_repo.search_by_text(query))[0]
+            result_ayat = (
+                await AyatsByTextQuery(
+                    str(MessageText(update)),
+                    database,
+                ).to_list()
+            )[0]
         except IndexError as err:
             raise AyatNotFoundError from err
         answers = (self._message_answer, self._file_answer)
@@ -88,7 +93,7 @@ class SearchAyatByTextAnswer(TgAnswerInterface):
                 FavoriteAyatsRepository(database),
                 TextSearchNeighborAyatsRepository(
                     database,
-                    result_ayat.id,
+                    await result_ayat.id(),
                     AyatTextSearchQuery.for_reading_cs(self._redis, int(TgChatId(update))),
                 ),
                 AyatCallbackTemplate.get_search_ayat,

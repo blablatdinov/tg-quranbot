@@ -25,13 +25,14 @@ from typing import final
 import httpx
 
 from app_types.stringable import Stringable
-from integrations.tg.callback_query import CallbackQueryData
+from db.connection import database
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import FavoriteNeighborAyats
 from services.ayats.ayat_answer import AyatAnswer
 from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
+from services.ayats.favorites.favorite_ayats import FavoriteAyats
 from services.ayats.keyboards import AyatAnswerKeyboard
 from services.regular_expression import IntableRegularExpression
 
@@ -91,7 +92,12 @@ class FavoriteAyatAnswer(TgAnswerInterface):
         :param update: Stringable
         :return: list[httpx.Request]
         """
-        result_ayat = (await self._favorite_ayats_repo.get_favorites(int(TgChatId(update))))[0]
+        result_ayat = (
+            await FavoriteAyats(
+                TgChatId(update),
+                database,
+            ).to_list()
+        )[0]
         answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,
@@ -101,7 +107,7 @@ class FavoriteAyatAnswer(TgAnswerInterface):
                 result_ayat,
                 self._favorite_ayats_repo,
                 FavoriteNeighborAyats(
-                    result_ayat.id, int(TgChatId(update)), self._favorite_ayats_repo,
+                    await result_ayat.id(), int(TgChatId(update)), self._favorite_ayats_repo,
                 ),
                 AyatCallbackTemplate.get_favorite_ayat,
             ),
@@ -162,9 +168,12 @@ class FavoriteAyatPage(TgAnswerInterface):
         :param update: Stringable
         :return: list[httpx.Request]
         """
-        result_ayat = await self._favorite_ayats_repo.get_favorite(
-            int(IntableRegularExpression(str(CallbackQueryData(update)))),
-        )
+        result_ayat = (
+            await FavoriteAyats(
+                TgChatId(update),
+                database,
+            ).to_list()
+        )[0]
         answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,
@@ -173,7 +182,11 @@ class FavoriteAyatPage(TgAnswerInterface):
             AyatAnswerKeyboard(
                 result_ayat,
                 self._favorite_ayats_repo,
-                FavoriteNeighborAyats(result_ayat.id, int(TgChatId(update)), self._favorite_ayats_repo),
+                FavoriteNeighborAyats(
+                    await result_ayat.id(),
+                    int(TgChatId(update)),
+                    self._favorite_ayats_repo,
+                ),
                 AyatCallbackTemplate.get_favorite_ayat,
             ),
         ).build(update)

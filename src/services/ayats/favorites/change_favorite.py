@@ -25,6 +25,7 @@ from typing import final
 import httpx
 from databases import Database
 
+from app_types.intable import SyncToAsyncIntable
 from app_types.stringable import Stringable
 from db.connection import database
 from integrations.tg.callback_query import CallbackQueryData
@@ -39,6 +40,7 @@ from integrations.tg.tg_answers import (
 )
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
+from services.ayats.ayat import QAyat
 from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 from services.ayats.favorite_ayats import FavoriteAyatStatus
 from services.ayats.keyboards import AyatAnswerKeyboard
@@ -73,8 +75,13 @@ class ChangeFavoriteAyatAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         status = FavoriteAyatStatus(str(CallbackQueryData(update)))
-        result_ayat = await self._ayat_search.search(
-            int(IntableRegularExpression(str(CallbackQueryData(update)))),
+        result_ayat = QAyat(
+            SyncToAsyncIntable(
+                IntableRegularExpression(
+                    str(CallbackQueryData(update)),
+                ),
+            ),
+            database,
         )
         if status.change_to():
             query = """
@@ -99,7 +106,7 @@ class ChangeFavoriteAyatAnswer(TgAnswerInterface):
                         result_ayat,
                         FavoriteAyatsRepository(database),
                         NeighborAyats(
-                            database, result_ayat.id,
+                            database, await result_ayat.id(),
                         ),
                         AyatCallbackTemplate.get_favorite_ayat,
                     ),

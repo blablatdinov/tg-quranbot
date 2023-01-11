@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
+from app_types.stringable import Stringable
 from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
 
 
@@ -39,7 +40,7 @@ class SearchQueryInterface(Protocol):
 class SearchQuery(SearchQueryInterface):
     """Запросом для поиска."""
 
-    def __init__(self, query: str):
+    def __init__(self, query: Stringable):
         """Конструктор класса.
 
         :param query: str
@@ -51,14 +52,14 @@ class SearchQuery(SearchQueryInterface):
 
         :return: int
         """
-        return int(self._query.split(':')[0])
+        return int(str(self._query).split(':')[0])
 
     def ayat(self) -> str:
         """Номер аята.
 
         :return: str
         """
-        return self._query.split(':')[1]
+        return str(self._query).split(':')[1]
 
 
 @final

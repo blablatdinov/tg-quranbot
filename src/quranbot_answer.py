@@ -49,7 +49,6 @@ from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from repository.admin_message import AdminMessage
 from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
-from repository.ayats.sura import Sura
 from repository.podcast import RandomPodcast
 from repository.prayer_time import NewUserPrayers, SafeNotFoundPrayers, SafeUserPrayers, UserPrayers
 from repository.users.user import UserRepository
@@ -65,7 +64,6 @@ from services.ayats.favorite_ayats import FavoriteAyatAnswer, FavoriteAyatEmptyS
 from services.ayats.favorites.change_favorite import ChangeFavoriteAyatAnswer
 from services.ayats.highlited_search_answer import HighlightedSearchAnswer
 from services.ayats.search.ayat_by_id import AyatById
-from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum
 from services.ayats.search_by_text import SearchAyatByTextAnswer
 from services.ayats.search_by_text_pagination import SearchAyatByTextCallbackAnswer
 from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
@@ -224,9 +222,6 @@ class QuranbotAnswer(TgAnswerInterface):
                                     settings.DEBUG,
                                     html_to_sender,
                                     audio_to_sender,
-                                    AyatBySuraAyatNum(
-                                        Sura(self._database),
-                                    ),
                                 ),
                                 answer_to_sender,
                             ),

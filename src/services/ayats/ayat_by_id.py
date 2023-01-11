@@ -24,10 +24,13 @@ from typing import final
 
 import httpx
 
+from app_types.intable import ThroughAsyncIntable
 from app_types.stringable import Stringable
+from db.connection import database
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgTextAnswer
 from services.answers.answer import FileAnswer, TelegramFileIdAnswer
+from services.ayats.ayat import QAyat
 from services.ayats.ayat_by_id_message_answer import AyatByIdMessageAnswer
 from services.ayats.search_by_sura_ayat_num import AyatSearchInterface
 from services.regular_expression import IntableRegularExpression
@@ -62,8 +65,13 @@ class AyatByIdAnswer(TgAnswerInterface):
         :param update: Stringable
         :return: list[httpx.Request]
         """
-        result_ayat = await self._ayat_search.search(
-            int(IntableRegularExpression(str(CallbackQueryData(update)))),
+        result_ayat = QAyat(
+            ThroughAsyncIntable(
+                int(IntableRegularExpression(
+                    str(CallbackQueryData(update)),
+                )),
+            ),
+            database,
         )
         return await TgAnswerList(
             AyatByIdMessageAnswer(
@@ -73,11 +81,11 @@ class AyatByIdAnswer(TgAnswerInterface):
                 self._debug_mode,
                 TelegramFileIdAnswer(
                     self._file_answer,
-                    result_ayat.audio_telegram_id,
+                    await result_ayat.tg_file_id(),
                 ),
                 TgTextAnswer(
                     self._message_answer,
-                    result_ayat.link_to_audio_file,
+                    await result_ayat.file_link(),
                 ),
             ),
         ).build(update)
