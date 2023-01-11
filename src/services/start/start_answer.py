@@ -24,15 +24,17 @@ from contextlib import suppress
 from typing import final
 
 import httpx
+from databases import Database
 
+from app_types.intable import ThroughAsyncIntable
 from app_types.stringable import Stringable
 from exceptions.user import StartMessageNotContainReferrer, UserAlreadyExists
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
 from repository.admin_message import AdminMessageInterface
-from repository.ayats.ayat import AyatRepositoryInterface
 from repository.users.user import UserRepositoryInterface
+from services.ayats.ayat import QAyat
 from services.start.start_message import StartMessage
 from settings import settings
 
@@ -46,19 +48,19 @@ class StartAnswer(TgAnswerInterface):
         answer: TgAnswerInterface,
         user_repo: UserRepositoryInterface,
         admin_message: AdminMessageInterface,
-        ayat_repo: AyatRepositoryInterface,
+        database: Database,
     ):
         """Конструктор класса.
 
         :param answer: TgAnswerInterface
         :param user_repo: UserRepositoryInterface
         :param admin_message: AdminMessageInterface
-        :param ayat_repo: AyatRepositoryInterface
+        :param database: Database
         """
         self._origin = answer
         self._user_repo = user_repo
         self._admin_message = admin_message
-        self._ayat_repo = ayat_repo
+        self._database = database
 
     async def build(self, update: Stringable) -> list[httpx.Request]:
         """Собрать ответ.
@@ -97,7 +99,7 @@ class StartAnswer(TgAnswerInterface):
     async def _start_answers(self) -> tuple[str, str]:
         return (
             await self._admin_message.text(),
-            str(await self._ayat_repo.first()),
+            await QAyat(ThroughAsyncIntable(1), self._database).text(),
         )
 
     async def _check_user_exists(self, update: Stringable) -> None:

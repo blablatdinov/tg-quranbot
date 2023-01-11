@@ -254,7 +254,7 @@ class QuranbotAnswer(TgAnswerInterface):
                                             ),
                                             UserRepository(self._database),
                                             AdminMessage('start', self._database),
-                                            ayat_repo,
+                                            self._database,
                                         ),
                                         self._event_sink,
                                         UserRepository(self._database),
