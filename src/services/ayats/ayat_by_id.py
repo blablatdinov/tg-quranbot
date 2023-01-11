@@ -32,7 +32,6 @@ from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgTextAn
 from services.answers.answer import FileAnswer, TelegramFileIdAnswer
 from services.ayats.ayat import QAyat
 from services.ayats.ayat_by_id_message_answer import AyatByIdMessageAnswer
-from services.ayats.search_by_sura_ayat_num import AyatSearchInterface
 from services.regular_expression import IntableRegularExpression
 
 
@@ -43,19 +42,16 @@ class AyatByIdAnswer(TgAnswerInterface):
     def __init__(
         self,
         debug_mode: bool,
-        ayat_search: AyatSearchInterface,
         message_answer: TgAnswerInterface,
         file_answer: TgAnswerInterface,
     ):
         """Конструктор класса.
 
         :param debug_mode: bool
-        :param ayat_search: AyatSearchInterface
         :param message_answer: TgAnswerInterface
         :param file_answer: TgAnswerInterface
         """
         self._debug_mode = debug_mode
-        self._ayat_search = ayat_search
         self._message_answer = message_answer
         self._file_answer = file_answer
 

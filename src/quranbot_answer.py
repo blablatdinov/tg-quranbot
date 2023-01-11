@@ -314,9 +314,6 @@ class QuranbotAnswer(TgAnswerInterface):
                     'getAyat',
                     AyatByIdAnswer(
                         settings.DEBUG,
-                        AyatById(
-                            ayat_repo,
-                        ),
                         html_to_sender,
                         audio_to_sender,
                     ),
