@@ -63,7 +63,6 @@ from services.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
 from services.ayats.favorite_ayats import FavoriteAyatAnswer, FavoriteAyatEmptySafeAnswer, FavoriteAyatPage
 from services.ayats.favorites.change_favorite import ChangeFavoriteAyatAnswer
 from services.ayats.highlited_search_answer import HighlightedSearchAnswer
-from services.ayats.search.ayat_by_id import AyatById
 from services.ayats.search_by_text import SearchAyatByTextAnswer
 from services.ayats.search_by_text_pagination import SearchAyatByTextCallbackAnswer
 from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
@@ -346,9 +345,6 @@ class QuranbotAnswer(TgAnswerInterface):
                 TgCallbackQueryRegexAnswer(
                     '(addToFavor|removeFromFavor)',
                     ChangeFavoriteAyatAnswer(
-                        AyatById(
-                            ayat_repo,
-                        ),
                         self._database,
                         answer_to_sender,
                     ),
