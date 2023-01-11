@@ -20,58 +20,40 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import NamedTuple, Protocol, final
-
 from databases import Database
 
-
-@final
-class AyatStructure(NamedTuple):
-    """Структура для передачи данных аята."""
-
-    id: int
-    sura_num: int
-    ayat_num: str
+from app_types.intable import Intable, ThroughAsyncIntable
+from app_types.listable import AsyncListable
+from services.ayats.ayat import Ayat, QAyat
 
 
-class SuraInterface(Protocol):
-    """Интерфейс суры."""
+class FavoriteAyats(AsyncListable):
+    """Избранные аяты."""
 
-    async def ayats(self, sura_num: int):
-        """Получить аяты суры.
-
-        :param sura_num: int
-        """
-
-
-@final
-class Sura(SuraInterface):
-    """Сура."""
-
-    def __init__(self, connection: Database):
+    def __init__(self, chat_id: Intable, database: Database):
         """Конструктор класса.
 
-        :param connection: Database
+        :param chat_id: Intable
+        :param database: Database
         """
-        self._connection = connection
+        self._chat_id = chat_id
+        self._database = database
 
-    async def ayats(self, sura_num: int) -> list[tuple]:
-        """Получить аяты по номеру суры.
+    async def to_list(self) -> list[Ayat]:
+        """Получить избранные аяты.
 
-        :param sura_num: int
-        :returns: list[Ayat]
+        :returns: list[QAyat]
         """
         query = """
             SELECT
-                a.ayat_id as id,
-                a.sura_id as sura_num,
-                a.ayat_number as ayat_num
-            FROM ayats a
-            WHERE a.sura_id = :sura_num
-            ORDER BY a.ayat_id
+                fa.ayat_id
+            FROM favorite_ayats fa
+            INNER JOIN users u ON fa.user_id = u.chat_id
+            WHERE u.chat_id = :chat_id
+            ORDER BY fa.ayat_id
         """
-        records = await self._connection.fetch_all(query, {'sura_num': sura_num})
+        rows = await self._database.fetch_all(query, {'chat_id': int(self._chat_id)})
         return [
-            AyatStructure(row['id'], row['sura_num'], row['ayat_num'])
-            for row in records
+            QAyat(ThroughAsyncIntable(row['ayat_id']), self._database)
+            for row in rows
         ]

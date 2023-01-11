@@ -25,8 +25,8 @@ from typing import final
 from app_types.stringable import Stringable
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
-from repository.ayats.schemas import Ayat
 from services.answers.answer import KeyboardInterface
+from services.ayats.ayat import Ayat
 from services.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
 from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 from services.ayats.ayat_neighbor_keyboard import NeighborAyatKeyboard

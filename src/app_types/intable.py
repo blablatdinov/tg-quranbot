@@ -28,3 +28,64 @@ class Intable(Protocol):
 
     def __int__(self) -> int:
         """Приведение к числу."""
+
+
+class AsyncIntable(Protocol):
+    """Интерфейс объектов, которые можно привести к числу."""
+
+    async def to_int(self) -> int:
+        """Приведение к числу с возможностью переключения контекста."""
+
+
+class ThroughIntable(Intable):
+    """Сквозное число."""
+
+    def __init__(self, source: int):
+        """Конструктор класса.
+
+        :param source: int
+        """
+        self._source = source
+
+    def __int__(self) -> int:
+        """Приведение к числу.
+
+        :return: int
+        """
+        return self._source
+
+
+class ThroughAsyncIntable(AsyncIntable):
+    """Сквозное число."""
+
+    def __init__(self, source: int):
+        """Конструктор класса.
+
+        :param source: int
+        """
+        self._source = source
+
+    async def to_int(self) -> int:
+        """Приведение к числу с возможностью переключения контекста.
+
+        :return: int
+        """
+        return self._source
+
+
+class SyncToAsyncIntable(AsyncIntable):
+    """Объект для использования синхронного Intable в кач-ве асинхронного AsyncIntable."""
+
+    def __init__(self, origin: Intable):
+        """Конструктор класса.
+
+        :param origin: Intable
+        """
+        self._origin = origin
+
+    async def to_int(self) -> int:
+        """Числовое представление.
+
+        :return: int
+        """
+        return int(self._origin)
