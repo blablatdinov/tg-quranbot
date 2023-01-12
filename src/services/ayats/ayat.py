@@ -24,8 +24,7 @@ from typing import Protocol, final
 
 from databases import Database
 
-from app_types.intable import AsyncIntable, ThroughAsyncIntable
-from app_types.listable import AsyncListable
+from app_types.intable import AsyncIntable
 from app_types.stringable import Stringable
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.sura import Sura
@@ -159,40 +158,3 @@ class QAyat(Ayat):
         if not row:
             raise AyatNotFoundError('Аят с id={0} не найден'.format(ayat_id))
         return row['link']
-
-
-@final
-class AyatsByTextQuery(AsyncListable):
-    """Список аятов, найденных по текстовому запросу."""
-
-    def __init__(self, query: Stringable, database: Database):
-        """Конструктор класса.
-
-        :param query: Stringable
-        :param database: Database
-        """
-        self._query = query
-        self._database = database
-
-    async def to_list(self) -> list[QAyat]:
-        """Список.
-
-        :return: list[QAyat]
-        """
-        query = """
-            SELECT
-                a.ayat_id as id
-            FROM ayats a
-            WHERE a.content ILIKE :search_query
-            ORDER BY a.ayat_id
-        """
-        rows = await self._database.fetch_all(query, {
-            'search_query': '%{0}%'.format(query),
-        })
-        return [
-            QAyat(
-                ThroughAsyncIntable(row['id']),
-                self._database,
-            )
-            for row in rows
-        ]
