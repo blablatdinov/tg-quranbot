@@ -37,7 +37,7 @@ class AyatStructure(NamedTuple):
 class SuraInterface(Protocol):
     """Интерфейс суры."""
 
-    async def ayats(self, sura_num: int):
+    async def ayats(self, sura_num: int) -> list[AyatStructure]:
         """Получить аяты суры.
 
         :param sura_num: int
@@ -55,7 +55,7 @@ class Sura(SuraInterface):
         """
         self._connection = connection
 
-    async def ayats(self, sura_num: int) -> list[tuple]:
+    async def ayats(self, sura_num: int) -> list[AyatStructure]:
         """Получить аяты по номеру суры.
 
         :param sura_num: int
