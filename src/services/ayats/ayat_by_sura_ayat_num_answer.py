@@ -32,7 +32,7 @@ from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
 from services.ayats.ayat import QAyat
 from services.ayats.ayat_answer import AyatAnswer
-from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
+from services.ayats.enums import AyatCallbackTemplateEnum
 from services.ayats.keyboards import AyatAnswerKeyboard
 
 
@@ -72,6 +72,6 @@ class AyatBySuraAyatNumAnswer(TgAnswerInterface):
                 result_ayat,
                 FavoriteAyatsRepository(database),
                 NeighborAyats(database, await result_ayat.id()),
-                AyatCallbackTemplate.get_ayat,
+                AyatCallbackTemplateEnum.get_ayat,
             ),
         ).build(update)

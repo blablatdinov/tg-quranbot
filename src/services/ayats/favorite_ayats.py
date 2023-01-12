@@ -31,7 +31,7 @@ from integrations.tg.tg_answers import TgAnswerInterface
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import FavoriteNeighborAyats
 from services.ayats.ayat_answer import AyatAnswer
-from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
+from services.ayats.enums import AyatCallbackTemplateEnum
 from services.ayats.favorites.favorite_ayats import FavoriteAyats
 from services.ayats.keyboards import AyatAnswerKeyboard
 from services.regular_expression import IntableRegularExpression
@@ -109,7 +109,7 @@ class FavoriteAyatAnswer(TgAnswerInterface):
                 FavoriteNeighborAyats(
                     await result_ayat.id(), int(TgChatId(update)), self._favorite_ayats_repo,
                 ),
-                AyatCallbackTemplate.get_favorite_ayat,
+                AyatCallbackTemplateEnum.get_favorite_ayat,
             ),
         ).build(update)
 
@@ -187,6 +187,6 @@ class FavoriteAyatPage(TgAnswerInterface):
                     int(TgChatId(update)),
                     self._favorite_ayats_repo,
                 ),
-                AyatCallbackTemplate.get_favorite_ayat,
+                AyatCallbackTemplateEnum.get_favorite_ayat,
             ),
         ).build(update)

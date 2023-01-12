@@ -28,8 +28,8 @@ from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
 from services.answers.answer import KeyboardInterface
 from services.ayats.ayat import Ayat
 from services.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
-from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 from services.ayats.ayat_neighbor_keyboard import NeighborAyatKeyboard
+from services.ayats.enums import AyatCallbackTemplateEnum
 
 
 @final
@@ -41,14 +41,14 @@ class AyatAnswerKeyboard(KeyboardInterface):
         ayat: Ayat,
         favorite_ayats_repo: FavoriteAyatRepositoryInterface,
         neighbor_ayats: NeighborAyatsRepositoryInterface,
-        ayat_callback_template: AyatCallbackTemplate,
+        ayat_callback_template: AyatCallbackTemplateEnum,
     ):
         """Конструктор класса.
 
         :param ayat: Ayat
         :param favorite_ayats_repo: FavoriteAyatRepositoryInterface
         :param neighbor_ayats: NeighborAyatsRepositoryInterface
-        :param ayat_callback_template: AyatCallbackTemplate
+        :param ayat_callback_template: AyatCallbackTemplateEnum
         """
         self._ayat = ayat
         self._favorite_ayats_repo = favorite_ayats_repo

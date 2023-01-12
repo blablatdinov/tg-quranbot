@@ -31,8 +31,8 @@ from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
 from services.ayats.ayat import Ayat
 from services.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
-from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
 from services.ayats.ayat_neighbor_keyboard import NeighborAyatKeyboard
+from services.ayats.enums import AyatCallbackTemplateEnum
 
 
 @final
@@ -63,7 +63,7 @@ class AyatByIdMessageAnswer(TgAnswerInterface):
                 self._result_ayat,
                 NeighborAyatKeyboard(
                     NeighborAyats(database, await self._result_ayat.id()),
-                    AyatCallbackTemplate.get_ayat,
+                    AyatCallbackTemplateEnum.get_ayat,
                 ),
                 FavoriteAyatsRepository(database),
             ),
