@@ -28,18 +28,18 @@ from app_types.stringable import Stringable
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
 from services.answers.answer import KeyboardInterface
-from services.ayats.ayat_keyboard_callback_template import AyatCallbackTemplate
+from services.ayats.enums import AyatCallbackTemplateEnum
 
 
 @final
 class NeighborAyatKeyboard(KeyboardInterface):
     """Клавиатура с соседними аятами."""
 
-    def __init__(self, ayats_neighbors: NeighborAyatsRepositoryInterface, callback_template: AyatCallbackTemplate):
+    def __init__(self, ayats_neighbors: NeighborAyatsRepositoryInterface, callback_template: AyatCallbackTemplateEnum):
         """Конструктор класса.
 
         :param ayats_neighbors: NeighborAyatsRepositoryInterface
-        :param callback_template: AyatCallbackTemplate
+        :param callback_template: AyatCallbackTemplateEnum
         """
         self._ayats_neighbors = ayats_neighbors
         self._callback_template = callback_template
