@@ -56,7 +56,7 @@ class AyatsByTextQuery(AsyncListable):
             ORDER BY a.ayat_id
         """
         rows = await self._database.fetch_all(query, {
-            'search_query': '%{0}%'.format(query),
+            'search_query': '%{0}%'.format(self._query),
         })
         return [
             QAyat(
