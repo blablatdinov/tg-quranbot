@@ -24,8 +24,15 @@ import datetime
 from typing import Protocol
 
 
-class DateTimeIterface(Protocol):
+class DateTimeInterface(Protocol):
     """Интерфейс даты/времени."""
 
     def datetime(self) -> datetime.datetime:
+        """Дата/время."""
+
+
+class AsyncDateTimeInterface(Protocol):
+    """Интерфейс даты/времени для вычисления с возможностью переключения контекста."""
+
+    async def datetime(self) -> datetime.datetime:
         """Дата/время."""

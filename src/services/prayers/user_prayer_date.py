@@ -21,37 +21,42 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import re
 from typing import final
 
-import pytz
+from databases import Database
 
-from app_types.date_time import DateTimeInterface
-from app_types.stringable import Stringable
-from exceptions.base_exception import InternalBotError
+from app_types.date_time import AsyncDateTimeInterface
+from app_types.intable import Intable
+from exceptions.internal_exceptions import UserHasNotGeneratedPrayersError
 
 
 @final
-class TgDateTime(DateTimeInterface):
-    """Время сообщения."""
+class UserPrayerDate(AsyncDateTimeInterface):
+    """Объект времени намаза привязанного к пользователю."""
 
-    def __init__(self, update: Stringable):
+    def __init__(self, user_prayer_id: Intable, database: Database):
         """Конструктор класса.
 
-        :param update: Stringable
+        :param user_prayer_id: Intable
+        :param database: Database
         """
-        self._update = update
+        self._user_prayer_id = user_prayer_id
+        self._database = database
 
-    def datetime(self) -> datetime.datetime:
-        """Дата/время.
+    async def datetime(self) -> datetime.datetime:
+        """Дата.
 
-        :return: datetime.datetime
-        :raises InternalBotError: если время не найдено
+        :return: datetime.date
+        :raises UserHasNotGeneratedPrayersError: если времня намаза не найдено
         """
-        regex_result = re.search(r'date"(:|: )(\d+)', str(self._update))
-        if not regex_result:
-            raise InternalBotError
-        return datetime.datetime.fromtimestamp(
-            int(regex_result.group(2)),
-            tz=pytz.timezone('UTC'),
-        )
+        query = """
+            SELECT
+                day_id
+            FROM prayers_at_user pau
+            INNER JOIN prayers p ON pau.prayer_id = p.prayer_id
+            WHERE prayer_at_user_id = :user_prayer_id
+        """
+        row = await self._database.fetch_one(query, {'user_prayer_id': int(self._user_prayer_id)})
+        if not row:
+            raise UserHasNotGeneratedPrayersError
+        return row['day_id']

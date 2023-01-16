@@ -20,12 +20,12 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import datetime
 from typing import final
 
 import httpx
-import pytz
 
+from app_types.intable import ThroughIntable
+from db.connection import database
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.message_id import MessageId
 from integrations.tg.tg_answers.interface import TgAnswerInterface
@@ -34,6 +34,7 @@ from integrations.tg.tg_answers.message_id_answer import TgMessageIdAnswer
 from repository.prayer_time import PrayersWithoutSunrise
 from repository.user_prayers_interface import UserPrayersInterface
 from services.prayers.prayer_status import PrayerStatus, UserPrayerStatusInterface
+from services.prayers.user_prayer_date import UserPrayerDate
 from services.user_prayer_keyboard import UserPrayersKeyboard
 
 
@@ -63,7 +64,8 @@ class UserPrayerStatusChangeAnswer(TgAnswerInterface):
         :param update: Stringable
         :return: list[httpx.Request]
         """
-        await self._prayer_status.change(PrayerStatus(str(CallbackQueryData(update))))
+        prayer_status = PrayerStatus(str(CallbackQueryData(update)))
+        await self._prayer_status.change(prayer_status)
         return await TgAnswerMarkup(
             TgMessageIdAnswer(
                 self._origin,
@@ -71,6 +73,9 @@ class UserPrayerStatusChangeAnswer(TgAnswerInterface):
             ),
             UserPrayersKeyboard(
                 PrayersWithoutSunrise(self._user_prayers),
-                datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
+                await UserPrayerDate(
+                    ThroughIntable(prayer_status.user_prayer_id()),
+                    database,
+                ).datetime(),
             ),
         ).build(update)
