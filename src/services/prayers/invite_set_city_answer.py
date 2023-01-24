@@ -28,30 +28,23 @@ from aioredis import Redis
 from app_types.stringable import Stringable
 from exceptions.content_exceptions import UserHasNotCityIdError
 from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup, TgAnswerToSender, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup
 from services.switch_inline_query_answer import SwitchInlineQueryKeyboard
 from services.user_state import LoggedUserState, UserState, UserStep
 
 
 @final
-class InviteSetCityAnswer(TgAnswerInterface):
-    """Ответ с приглашением ввести город."""
+class UserWithoutCitySafeAnswer(TgAnswerInterface):
+    """Объект для обработки случаев когда пользователь запрашивает время намаза без установленного города."""
 
-    def __init__(
-        self,
-        prayer_time_answer: TgAnswerInterface,
-        message_answer: TgAnswerInterface,
-        redis: Redis,
-    ):
+    def __init__(self, prayer_time_answer: TgAnswerInterface, invite_set_city_answer: TgAnswerInterface):
         """Конструктор класса.
 
         :param prayer_time_answer: TgAnswerInterface
-        :param message_answer: TgAnswerInterface
-        :param redis: Redis
+        :param invite_set_city_answer: TgAnswerInterface
         """
         self._origin = prayer_time_answer
-        self._message_answer = message_answer
-        self._redis = redis
+        self._invite_set_city_answer = invite_set_city_answer
 
     async def build(self, update: Stringable) -> list[httpx.Request]:
         """Сборка ответа.
@@ -62,15 +55,32 @@ class InviteSetCityAnswer(TgAnswerInterface):
         try:
             return await self._origin.build(update)
         except UserHasNotCityIdError:
-            await LoggedUserState(
-                UserState(self._redis, int(TgChatId(update))),
-            ).change_step(UserStep.city_search)
-            return await TgAnswerMarkup(
-                TgAnswerToSender(
-                    TgTextAnswer(
-                        self._message_answer,
-                        'Вы не указали город, отправьте местоположение или воспользуйтесь поиском',
-                    ),
-                ),
-                SwitchInlineQueryKeyboard(),
-            ).build(update)
+            return await self._invite_set_city_answer.build(update)
+
+
+@final
+class InviteSetCityAnswer(TgAnswerInterface):
+    """Ответ с приглашением ввести город."""
+
+    def __init__(self, message_answer: TgAnswerInterface, redis: Redis):
+        """Конструктор класса.
+
+        :param message_answer: TgAnswerInterface
+        :param redis: Redis
+        """
+        self._message_answer = message_answer
+        self._redis = redis
+
+    async def build(self, update: Stringable) -> list[httpx.Request]:
+        """Сборка ответа.
+
+        :param update: Stringable
+        :return: list[httpx.Request]
+        """
+        await LoggedUserState(
+            UserState(self._redis, int(TgChatId(update))),
+        ).change_step(UserStep.city_search)
+        return await TgAnswerMarkup(
+            self._message_answer,
+            SwitchInlineQueryKeyboard(),
+        ).build(update)
