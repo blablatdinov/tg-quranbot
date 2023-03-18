@@ -31,7 +31,7 @@ pytest-lazy-fixture = "0.6.3"
 types-pytest-lazy-fixture = "0.6.3.3"
 types-pytz = "2022.7.1.2"
 flake8-copyright = "0.2.4"
-SQLAlchemy = "1.4.46"
+SQLAlchemy = "1.4.47"
 alembic = "1.10.2"
 
 [build-system]
