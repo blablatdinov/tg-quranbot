@@ -18,7 +18,7 @@ databases = {extras = ["asyncpg"], version = "0.7.0"}
 
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = {git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master"}
-ipython = "8.12.0"
+ipython = "8.13.0"
 mypy = "1.0.1"
 asyncpg-stubs = "0.27.0"
 pytest-cov = "4.0.0"
