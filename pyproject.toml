@@ -12,7 +12,7 @@ aioredis = "2.0.1"
 nats-py = "2.2.0"
 quranbot-schema-registry = "0.0.16"
 sentry-sdk = "1.23.1"
-httpx = "0.24.0"
+httpx = "0.24.1"
 pytz = "2022.7.1"
 databases = {extras = ["asyncpg"], version = "0.7.0"}
 
