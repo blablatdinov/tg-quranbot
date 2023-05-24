@@ -6,7 +6,7 @@ authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.11"
-pydantic = {extras = ["dotenv"], version = "1.10.7"}
+pydantic = {extras = ["dotenv"], version = "1.10.8"}
 loguru = "0.7.0"
 aioredis = "2.0.1"
 nats-py = "2.2.0"
