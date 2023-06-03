@@ -1202,16 +1202,18 @@ files = [
 
 [[package]]
 name = "nats-py"
-version = "2.2.0"
+version = "2.3.0"
 description = "NATS client for Python"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "nats-py-2.2.0.tar.gz", hash = "sha256:e45a0bafde2d04fb2d2bd6b0527b95bc77f371beaf7b6237354be0234ff9bba9"},
+    {file = "nats-py-2.3.0.tar.gz", hash = "sha256:0375be9fbdeb7c8756a1401f87928d6780e30c36941e85f74ae22e4d3448ca47"},
 ]
 
 [package.extras]
+aiohttp = ["aiohttp"]
+fast-parse = ["fast-mail-parser"]
 nkeys = ["nkeys"]
 
 [[package]]
@@ -2112,4 +2114,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "0589576a59b8d8d77800dbf5739aac61f3796229fdd8d083efedc0cc9904a230"
+content-hash = "9c51572bd6a1950be4899f4638bbe1ee93119ad0ea6ffd7e5166986d5b0e8a0c"
