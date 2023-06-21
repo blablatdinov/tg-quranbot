@@ -23,21 +23,19 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import re
 from typing import final
 
+from attrs import define
+
 from app_types.intable import Intable
 from app_types.stringable import Stringable, UnwrappedString
 from exceptions.base_exception import InternalBotError
 
 
 @final
+@define
 class TgChatId(Intable):
     """Идентификатор чата."""
 
-    def __init__(self, update: Stringable):
-        """Конструктор класса.
-
-        :param update: Stringable
-        """
-        self._update = update
+    _update: Stringable
 
     def __int__(self):
         """Числовое представление.
