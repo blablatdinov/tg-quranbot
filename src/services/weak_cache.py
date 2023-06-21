@@ -20,43 +20,24 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
-
-from app_types.stringable import Stringable
-
-# TODO: delete it
-# ===============
-AYAT_SEARCH_INPUT_REGEXP = r'\d( |):( |)\d'
-GET_PRAYER_TIMES_REGEXP = '(В|в)ремя намаза'
-PODCAST_BUTTON = '(П|п)одкасты'
-# ===============
+import functools
+import weakref
 
 
-@final
-class PrayerReadedEmoji(Stringable):
-    """Смайлик для прочитанного намаза.
+def weak_lru(maxsize: int = 128, typed: bool = False):  # noqa: WPS473
+    """LRU Cache decorator that keeps a weak reference to "self".
 
-    TODO: move to the used place
+    :param maxsize: int
+    :param typed: bool
+    :return: Callable
     """
+    def wrapper(func):
+        @functools.lru_cache(maxsize, typed)
+        def _func(_self, *args, **kwargs):  # noqa: WPS430
+            return func(_self(), *args, **kwargs)
 
-    def __str__(self):
-        """Строковое представление.
-
-        :return: str
-        """
-        return '✅'
-
-
-@final
-class PrayerNotReadedEmoji(Stringable):
-    """Смайлик для непрочитанного намаза.
-
-    TODO: move to the used place
-    """
-
-    def __str__(self):
-        """Строковое представление.
-
-        :return: str
-        """
-        return '❌'
+        @functools.wraps(func)
+        def inner(self, *args, **kwargs):  # noqa: WPS430
+            return _func(weakref.ref(self), *args, **kwargs)
+        return inner
+    return wrapper

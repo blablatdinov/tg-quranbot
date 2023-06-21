@@ -20,43 +20,20 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import Protocol
 
 from app_types.stringable import Stringable
-
-# TODO: delete it
-# ===============
-AYAT_SEARCH_INPUT_REGEXP = r'\d( |):( |)\d'
-GET_PRAYER_TIMES_REGEXP = '(В|в)ремя намаза'
-PODCAST_BUTTON = '(П|п)одкасты'
-# ===============
+from integrations.tg.update_struct import UpdateStruct
 
 
-@final
-class PrayerReadedEmoji(Stringable):
-    """Смайлик для прочитанного намаза.
+class Update(Stringable, Protocol):
+    """Интерфейс объектов, которые можно привести к строке."""
 
-    TODO: move to the used place
-    """
+    def __str__(self) -> str:
+        """Приведение к строке."""
 
-    def __str__(self):
-        """Строковое представление.
+    def parsed(self) -> UpdateStruct:
+        """Десериализованный объект."""
 
-        :return: str
-        """
-        return '✅'
-
-
-@final
-class PrayerNotReadedEmoji(Stringable):
-    """Смайлик для непрочитанного намаза.
-
-    TODO: move to the used place
-    """
-
-    def __str__(self):
-        """Строковое представление.
-
-        :return: str
-        """
-        return '❌'
+    def dict(self) -> dict:
+        """Словарь."""

@@ -20,43 +20,20 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
-
-from app_types.stringable import Stringable
-
-# TODO: delete it
-# ===============
-AYAT_SEARCH_INPUT_REGEXP = r'\d( |):( |)\d'
-GET_PRAYER_TIMES_REGEXP = '(В|в)ремя намаза'
-PODCAST_BUTTON = '(П|п)одкасты'
-# ===============
+from integrations.tg.update import CachedTgUpdate, TgUpdate
+from integrations.tg.update_struct import UpdateStruct
+from settings import settings
 
 
-@final
-class PrayerReadedEmoji(Stringable):
-    """Смайлик для прочитанного намаза.
+def test():
+    update = TgUpdate((settings.BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text())
 
-    TODO: move to the used place
-    """
-
-    def __str__(self):
-        """Строковое представление.
-
-        :return: str
-        """
-        return '✅'
+    assert update.parsed() == UpdateStruct(ok=True)
 
 
-@final
-class PrayerNotReadedEmoji(Stringable):
-    """Смайлик для непрочитанного намаза.
+def test_cached():
+    update = CachedTgUpdate(
+        TgUpdate((settings.BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text()),
+    )
 
-    TODO: move to the used place
-    """
-
-    def __str__(self):
-        """Строковое представление.
-
-        :return: str
-        """
-        return '❌'
+    assert update.parsed() == UpdateStruct(ok=True)
