@@ -24,7 +24,7 @@ from typing import final
 
 import httpx
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
@@ -41,10 +41,10 @@ class TgChatIdAnswer(TgAnswerInterface):
         self._origin = answer
         self._chat_id = chat_id
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         return [

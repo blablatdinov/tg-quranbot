@@ -25,7 +25,7 @@ from typing import final
 import httpx
 
 from app_types.runable import Runable
-from app_types.stringable import Stringable, ThroughStringable
+from app_types.update import FkUpdate, Update
 from integrations.tg.sendable import BulkSendableAnswer
 from integrations.tg.tg_answers import TgAnswerInterface, TgChatIdAnswer
 from integrations.tg.tg_answers.chat_action import TgChatAction
@@ -43,10 +43,10 @@ class TypingAction(TgAnswerInterface):
         """
         self._origin = answer
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         return [
@@ -83,7 +83,7 @@ class CheckUsersStatus(Runable):
             )
             for chat_id in chat_ids
         ]
-        for response_list in await BulkSendableAnswer(answers).send(ThroughStringable('')):
+        for response_list in await BulkSendableAnswer(answers).send(FkUpdate()):
             for response_dict in response_list:
                 if not response_dict['ok']:
                     deactivated_users.append(response_dict['chat_id'])

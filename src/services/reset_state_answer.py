@@ -25,7 +25,7 @@ from typing import final
 import httpx
 from aioredis import Redis
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface
 from services.user_state import UserState, UserStep
@@ -44,10 +44,10 @@ class ResetStateAnswer(TgAnswerInterface):
         self._origin = answer
         self._redis = redis
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         requests = await self._origin.build(update)

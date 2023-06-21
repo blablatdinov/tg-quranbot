@@ -28,7 +28,7 @@ from urllib import parse as url_parse
 import httpx
 from loguru import logger
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from exceptions.internal_exceptions import TelegramIntegrationsError
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
@@ -39,7 +39,7 @@ class SendableInterface(Protocol):
     async def send(self, update) -> list[dict]:
         """Отправка.
 
-        :param update: Stringable
+        :param update: Update
         """
 
 
@@ -54,10 +54,10 @@ class SendableAnswer(SendableInterface):
         """
         self._answer = answer
 
-    async def send(self, update: Stringable) -> list[dict]:
+    async def send(self, update: Update) -> list[dict]:
         """Отправка.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[str]
         :raises TelegramIntegrationsError: при невалидном ответе от API телеграмма
         """
@@ -87,7 +87,7 @@ class UserNotSubscribedSafeSendable(SendableInterface):
     async def send(self, update) -> list[dict]:
         """Отправка.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[dict]
         :raises TelegramIntegrationsError: если ошибка не связана с блокировкой бота
         """
@@ -153,10 +153,10 @@ class BulkSendableAnswer(SendableInterface):
         """
         self._answers = answers
 
-    async def send(self, update: Stringable) -> list[dict]:
+    async def send(self, update: Update) -> list[dict]:
         """Отправка.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[dict]
         """
         tasks = [

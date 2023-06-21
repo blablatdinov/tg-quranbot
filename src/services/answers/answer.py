@@ -25,7 +25,7 @@ from typing import Optional, final
 
 import httpx
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from integrations.tg.keyboard import KeyboardInterface
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
@@ -44,7 +44,7 @@ class ResizedKeyboard(KeyboardInterface):
     async def generate(self, update):
         """Генерация.
 
-        :param update: Stringable
+        :param update: Update
         :return: str
         """
         origin_keyboard = await self._origin.generate(update)
@@ -57,10 +57,10 @@ class ResizedKeyboard(KeyboardInterface):
 class DefaultKeyboard(KeyboardInterface):
     """Класс клавиатуры по умолчанию."""
 
-    async def generate(self, update: Stringable):
+    async def generate(self, update: Update):
         """Генерация.
 
-        :param update: Stringable
+        :param update: Update
         :return: str
         """
         return '{"keyboard":[["🎧 Подкасты"],["🕋 Время намаза","🏘️ Поменять город"],["🌟 Избранное","🔍 Найти аят"]]}'
@@ -89,7 +89,7 @@ class FileAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Отправка.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         if self._debug_mode:
@@ -110,10 +110,10 @@ class TelegramFileIdAnswer(TgAnswerInterface):
         self._origin = answer
         self._telegram_file_id = telegram_file_id
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Отправка.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         return [

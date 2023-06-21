@@ -24,7 +24,7 @@ from typing import final
 
 import httpx
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from db.connection import database
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface
@@ -86,10 +86,10 @@ class FavoriteAyatAnswer(TgAnswerInterface):
         self._file_answer = file_answer
         self._favorite_ayats_repo = favorite_ayats_repo
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         result_ayat = (
@@ -127,10 +127,10 @@ class FavoriteAyatEmptySafeAnswer(TgAnswerInterface):
         self._origin = sender_answer
         self._error_answer = error_answer
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         try:
@@ -162,10 +162,10 @@ class FavoriteAyatPage(TgAnswerInterface):
         self._file_answer = file_answer
         self._favorite_ayats_repo = favorite_ayats_repo
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         result_ayat = (

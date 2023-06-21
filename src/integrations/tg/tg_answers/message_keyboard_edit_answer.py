@@ -41,7 +41,7 @@ class TgKeyboardEditAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Пересобрать запросы к API к телеграмма.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         return [

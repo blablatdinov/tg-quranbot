@@ -26,7 +26,7 @@ import httpx
 from aioredis import Redis
 from databases import Database
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from integrations.client import IntegrationClient
 from integrations.nats_integration import SinkInterface
 from integrations.nominatim import NominatimIntegration
@@ -105,10 +105,10 @@ class QuranbotAnswer(TgAnswerInterface):
         self._event_sink = event_sink
         self._pre_build()
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         return await self._answer.build(update)

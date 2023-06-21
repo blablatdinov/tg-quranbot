@@ -24,7 +24,7 @@ from typing import final
 
 import httpx
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers.audio_answer import TgAudioAnswer
 from integrations.tg.tg_answers.chat_id_answer import TgChatIdAnswer
@@ -50,10 +50,10 @@ class PodcastAnswer(TgAnswerInterface):
         self._debug_mode = debug_mode
         self._podcast = podcast
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Трансформация в ответ.
 
-        :param update: Stringable
+        :param update: Update
         :return: AnswerInterface
         """
         chat_id = int(TgChatId(update))

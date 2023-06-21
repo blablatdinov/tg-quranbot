@@ -27,7 +27,7 @@ import httpx
 from databases import Database
 
 from app_types.intable import ThroughAsyncIntable
-from app_types.stringable import Stringable
+from app_types.update import Update
 from exceptions.user import StartMessageNotContainReferrer, UserAlreadyExists
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
@@ -62,10 +62,10 @@ class StartAnswer(TgAnswerInterface):
         self._admin_message = admin_message
         self._database = database
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         await self._check_user_exists(update)
@@ -102,7 +102,7 @@ class StartAnswer(TgAnswerInterface):
             await QAyat(ThroughAsyncIntable(1), self._database).text(),
         )
 
-    async def _check_user_exists(self, update: Stringable) -> None:
+    async def _check_user_exists(self, update: Update) -> None:
         if await self._user_repo.exists(int(TgChatId(update))):
             raise UserAlreadyExists
 

@@ -56,7 +56,7 @@ class AyatAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         return await TgAnswerList(

@@ -24,7 +24,7 @@ from typing import final
 
 import httpx
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from db.connection import database
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerInterface
@@ -56,10 +56,10 @@ class AyatBySuraAyatNumAnswer(TgAnswerInterface):
         self._message_answer = message_answer
         self._file_answer = file_answer
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         result_ayat = await QAyat.by_sura_ayat_num(MessageText(update), database)

@@ -27,7 +27,7 @@ from typing import final
 import pytz
 
 from app_types.date_time import DateTimeInterface
-from app_types.stringable import Stringable
+from app_types.update import Update
 from exceptions.base_exception import InternalBotError
 
 
@@ -35,10 +35,10 @@ from exceptions.base_exception import InternalBotError
 class TgDateTime(DateTimeInterface):
     """Время сообщения."""
 
-    def __init__(self, update: Stringable):
+    def __init__(self, update: Update):
         """Конструктор класса.
 
-        :param update: Stringable
+        :param update: Update
         """
         self._update = update
 

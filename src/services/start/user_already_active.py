@@ -24,7 +24,7 @@ from typing import final
 
 import httpx
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from exceptions.user import UserAlreadyActive
 from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
 
@@ -42,10 +42,10 @@ class UserAlreadyActiveSafeAnswer(TgAnswerInterface):
         self._origin = answer
         self._sender_answer = sender_answer
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         try:

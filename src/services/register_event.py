@@ -24,7 +24,7 @@ from typing import final
 
 import httpx
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from exceptions.user import StartMessageNotContainReferrer
 from integrations.nats_integration import SinkInterface
 from integrations.tg.chat_id import TgChatId
@@ -50,10 +50,10 @@ class StartWithEventAnswer(TgAnswerInterface):
         self._event_sink = event_sink
         self._user_repo = user_repo
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         try:

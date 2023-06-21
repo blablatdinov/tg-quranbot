@@ -20,7 +20,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol
+from typing import Protocol, final
+
+from attrs import define
 
 from app_types.stringable import Stringable
 from integrations.tg.update_struct import UpdateStruct
@@ -37,3 +39,32 @@ class Update(Stringable, Protocol):
 
     def dict(self) -> dict:
         """Словарь."""
+
+
+@final
+@define
+class FkUpdate(Update):
+    """Подделка обновления."""
+
+    _raw: Stringable | None = ''
+
+    def __str__(self):
+        """Приведение к строке.
+
+        :return: str
+        """
+        return self._raw
+
+    def parsed(self) -> UpdateStruct:
+        """Десериализованный объект.
+
+        :return: UpdateStruct
+        """
+        return UpdateStruct(ok=True)
+
+    def dict(self):
+        """Словарь.
+
+        :return: dict
+        """
+        return {}
