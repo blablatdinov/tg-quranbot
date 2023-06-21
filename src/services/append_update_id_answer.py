@@ -26,7 +26,7 @@ from typing import Protocol, final
 import httpx
 import pytz
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.update_id import UpdateId
@@ -38,7 +38,7 @@ class DebugParamInterface(Protocol):
     async def debug_value(self, update) -> str:
         """Значение отладочной информации.
 
-        :param update: Stringable
+        :param update: Update
         """
 
 
@@ -57,10 +57,10 @@ class AppendDebugInfoAnswer(TgAnswerInterface):
         self._origin = answer
         self._debug_params = debug_params
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         origin_requests = await self._origin.build(update)
@@ -99,10 +99,10 @@ class AppendDebugInfoAnswer(TgAnswerInterface):
 class UpdateIdDebugParam(DebugParamInterface):
     """Отладочная информация с идентификатором обновления."""
 
-    async def debug_value(self, update: Stringable) -> str:
+    async def debug_value(self, update: Update) -> str:
         """Идентификатор обновления.
 
-        :param update: Stringable
+        :param update: Update
         :return: str
         """
         return 'Update id: {0}'.format(int(UpdateId(update)))
@@ -112,10 +112,10 @@ class UpdateIdDebugParam(DebugParamInterface):
 class TimeDebugParam(DebugParamInterface):
     """Отладочная информация с временем."""
 
-    async def debug_value(self, update: Stringable) -> str:
+    async def debug_value(self, update: Update) -> str:
         """Время.
 
-        :param update: Stringable
+        :param update: Update
         :return: str
         """
         return 'Time: {0}'.format(datetime.datetime.now(pytz.timezone('Europe/Moscow')))
@@ -125,10 +125,10 @@ class TimeDebugParam(DebugParamInterface):
 class ChatIdDebugParam(DebugParamInterface):
     """Отладочная информация с идентификатором чата."""
 
-    async def debug_value(self, update: Stringable) -> str:
+    async def debug_value(self, update: Update) -> str:
         """Идентификатор чата.
 
-        :param update: Stringable
+        :param update: Update
         :return: str
         """
         return 'Chat id: {0}'.format(int(TgChatId(update)))
@@ -145,10 +145,10 @@ class CommitHashDebugParam(DebugParamInterface):
         """
         self._commit_hash = commit_hash
 
-    async def debug_value(self, update: Stringable) -> str:
+    async def debug_value(self, update: Update) -> str:
         """Хэш коммита.
 
-        :param update: Stringable
+        :param update: Update
         :return: str
         """
         return 'Commit hash: {0}'.format(self._commit_hash)

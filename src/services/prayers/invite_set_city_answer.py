@@ -25,7 +25,7 @@ from typing import final
 import httpx
 from aioredis import Redis
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from exceptions.content_exceptions import UserHasNotCityIdError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup
@@ -46,10 +46,10 @@ class UserWithoutCitySafeAnswer(TgAnswerInterface):
         self._origin = prayer_time_answer
         self._invite_set_city_answer = invite_set_city_answer
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         try:
@@ -71,10 +71,10 @@ class InviteSetCityAnswer(TgAnswerInterface):
         self._message_answer = message_answer
         self._redis = redis
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         await LoggedUserState(

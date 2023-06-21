@@ -26,6 +26,7 @@ from typing import final
 import httpx
 
 from app_types.stringable import Stringable
+from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers.interface import TgAnswerInterface
@@ -44,10 +45,10 @@ class TgMessageRegexAnswer(TgAnswerInterface, Stringable):
         self._pattern = pattern
         self._answer = answer
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         if 'callback_query' in str(update):

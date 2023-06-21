@@ -27,7 +27,7 @@ import httpx
 from loguru import logger
 
 from app_types.floatable import Floatable
-from app_types.stringable import Stringable
+from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.update_id import UpdateId
 
@@ -92,10 +92,10 @@ class TgMeasureAnswer(TgAnswerInterface):
         """
         self._origin = answer
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :returns: list[httpx.Request]
         """
         start = time.time()

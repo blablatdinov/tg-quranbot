@@ -25,7 +25,7 @@ from typing import final
 
 import httpx
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from exceptions.user import UserAlreadyActive, UserAlreadyExists
 from integrations.nats_integration import SinkInterface
 from integrations.tg.chat_id import TgChatId
@@ -61,10 +61,10 @@ class UserAlreadyExistsAnswer(TgAnswerInterface):
         self._users_repo = users_repo
         self._event_sink = event_sink
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         :raises UserAlreadyActive: if user already active
         """

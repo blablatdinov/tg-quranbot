@@ -61,7 +61,7 @@ class UserPrayerStatusChangeAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Обработка запроса.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         prayer_status = PrayerStatus(str(CallbackQueryData(update)))

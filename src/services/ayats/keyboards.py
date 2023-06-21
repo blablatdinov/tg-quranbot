@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
 from services.answers.answer import KeyboardInterface
@@ -55,10 +55,10 @@ class AyatAnswerKeyboard(KeyboardInterface):
         self._neighbor_ayats = neighbor_ayats
         self._ayat_callback_template = ayat_callback_template
 
-    async def generate(self, update: Stringable) -> str:
+    async def generate(self, update: Update) -> str:
         """Генерация.
 
-        :param update: Stringable
+        :param update: Update
         :return: str
         """
         return await AyatFavoriteKeyboardButton(

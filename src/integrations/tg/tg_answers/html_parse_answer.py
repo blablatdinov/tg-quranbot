@@ -41,7 +41,7 @@ class TgHtmlParseAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         return [

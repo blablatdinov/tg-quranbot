@@ -24,7 +24,7 @@ from typing import final
 
 import httpx
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from integrations.tg.tg_answers.answer_to_sender import TgAnswerToSender
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
@@ -43,10 +43,10 @@ class DebugAnswer(TgAnswerInterface):
         """
         self._origin = answer
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :returns: list[httpx.Request]
         """
         return await TgTextAnswer(

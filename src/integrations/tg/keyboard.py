@@ -22,14 +22,14 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 
 
 class KeyboardInterface(Protocol):
     """Интерфейс клавиатуры."""
 
-    async def generate(self, update: Stringable) -> str:
+    async def generate(self, update: Update) -> str:
         """Генерация.
 
-        :param update: Stringable
+        :param update: Update
         """

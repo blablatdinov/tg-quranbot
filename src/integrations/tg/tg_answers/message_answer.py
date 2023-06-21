@@ -41,7 +41,7 @@ class TgMessageAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Формирование запросов.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         return [

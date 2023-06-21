@@ -25,7 +25,7 @@ from typing import final
 
 import httpx
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.inline_query import InlineQuery, InlineQueryId
 from integrations.tg.tg_answers import TgAnswerInterface
@@ -46,10 +46,10 @@ class InlineQueryAnswer(TgAnswerInterface):
         self._origin = answer
         self._cities = cities
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         :raises NotProcessableUpdateError: if update hasn't inline query
         """

@@ -26,7 +26,7 @@ import httpx
 from databases import Database
 
 from app_types.intable import SyncToAsyncIntable
-from app_types.stringable import Stringable
+from app_types.update import Update
 from db.connection import database
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
@@ -64,10 +64,10 @@ class ChangeFavoriteAyatAnswer(TgAnswerInterface):
         self._origin = answer
         self._connection = connection
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         status = FavoriteAyatStatus(str(CallbackQueryData(update)))

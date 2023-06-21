@@ -24,7 +24,7 @@ import datetime
 import json
 from typing import final
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from constants import PrayerNotReadedEmoji, PrayerReadedEmoji
 from integrations.tg.chat_id import TgChatId
 from repository.user_prayers_interface import UserPrayersInterface
@@ -47,10 +47,10 @@ class UserPrayersKeyboardByChatId(KeyboardInterface):
         self._date = date
         self._chat_id = chat_id
 
-    async def generate(self, update: Stringable) -> str:
+    async def generate(self, update: Update) -> str:
         """Генерация.
 
-        :param update: Stringable
+        :param update: Update
         :return: str
         """
         return json.dumps({
@@ -77,10 +77,10 @@ class UserPrayersKeyboard(KeyboardInterface):
         self._user_prayer_times = user_prayer_times
         self._date = date
 
-    async def generate(self, update: Stringable) -> str:
+    async def generate(self, update: Update) -> str:
         """Генерация.
 
-        :param update: Stringable
+        :param update: Update
         :return: str
         """
         return await UserPrayersKeyboardByChatId(

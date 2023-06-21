@@ -24,16 +24,16 @@ from typing import Protocol, final
 
 import httpx
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 
 
 class TgAnswerInterface(Protocol):
     """Интерфейс ответа пользователю."""
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         """
 
 
@@ -41,10 +41,10 @@ class TgAnswerInterface(Protocol):
 class FkAnswer(TgAnswerInterface):
     """Фейковый ответ."""
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         return [httpx.Request('GET', url='https://some.domain')]

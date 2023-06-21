@@ -26,7 +26,7 @@ from typing import final
 import httpx
 from loguru import logger
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.exceptions.update_parse_exceptions import (
     CallbackQueryNotFoundError,
@@ -48,10 +48,10 @@ class TgAnswerFork(TgAnswerInterface):
         """
         self._answers = answers
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         :raises NotProcessableUpdateError: if not found matches
         """

@@ -20,12 +20,13 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import operator
 from typing import final
 
 import httpx
 from aioredis import Redis
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from db.connection import database
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.chat_id import TgChatId
@@ -63,10 +64,10 @@ class SearchAyatByTextAnswer(TgAnswerInterface):
         self._file_answer = file_answer
         self._redis = redis
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         :raises AyatNotFoundError: if ayat not found
         """

@@ -76,7 +76,7 @@ class Settings(BaseSettings):
         env_file = '.env'
 
 
-settings = Settings()
+settings = Settings()  # type: ignore[call-arg]
 
 if settings.SENTRY_DSN:
     sentry_sdk.init(

@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import httpx
 
 from app_types.stringable import Stringable
+from app_types.update import FkUpdate
 from integrations.tg.tg_answers import TgAnswerInterface
 from services.answers.answer import TelegramFileIdAnswer
 
@@ -42,6 +43,6 @@ class FakeString(Stringable):
 
 
 async def test():
-    got = await TelegramFileIdAnswer(FakeAnswer(), 'file_id').build(FakeString())
+    got = await TelegramFileIdAnswer(FakeAnswer(), 'file_id').build(FkUpdate())
 
     assert got[0].url.query.decode('utf-8') == 'audio=file_id'

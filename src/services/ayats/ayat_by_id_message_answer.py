@@ -24,7 +24,7 @@ from typing import final
 
 import httpx
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from db.connection import database
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup, TgTextAnswer
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
@@ -48,10 +48,10 @@ class AyatByIdMessageAnswer(TgAnswerInterface):
         self._result_ayat = result_ayat
         self._message_answer = message_answer
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         return await TgAnswerMarkup(

@@ -23,7 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import json
 from typing import final
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from services.answers.answer import KeyboardInterface
 
 
@@ -31,10 +31,10 @@ from services.answers.answer import KeyboardInterface
 class SwitchInlineQueryKeyboard(KeyboardInterface):
     """Переключение на инлайн поиск."""
 
-    async def generate(self, update: Stringable) -> str:
+    async def generate(self, update: Update) -> str:
         """Сборка клавиатуры.
 
-        :param update: Stringable
+        :param update: Update
         :return: str
         """
         return json.dumps({

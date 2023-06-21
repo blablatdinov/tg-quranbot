@@ -24,7 +24,7 @@ from typing import final
 
 import httpx
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
 
@@ -42,10 +42,10 @@ class AyatNotFoundSafeAnswer(TgAnswerInterface):
         self._origin = answer
         self._error_answer = error_answer
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Stringable
+        :param update: Update
         :returns: list[httpx.Request]
         """
         try:
