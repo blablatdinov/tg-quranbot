@@ -39,14 +39,8 @@ from integrations.tg.sendable import SendableInterface
 class PollingApp(Runable):
     """Приложение на long polling."""
 
-    def __init__(self, updates: PollingUpdatesIterator, sendable: SendableInterface):
-        """Конструктор класса.
-
-        :param updates: PollingUpdatesIterator
-        :param sendable: SendableInterface
-        """
-        self._sendable = sendable
-        self._updates = updates
+    _updates: PollingUpdatesIterator
+    _sendable: SendableInterface
 
     async def run(self) -> None:
         """Запуск."""
@@ -63,14 +57,8 @@ class PollingApp(Runable):
 class AppWithGetMe(Runable):
     """Объект для запуска с предварительным запросом getMe."""
 
-    def __init__(self, origin: Runable, token: str):
-        """Конструктор класса.
-
-        :param origin: Runable
-        :param token: str
-        """
-        self._origin = origin
-        self._token = token
+    _origin: Runable
+    _token: str
 
     async def run(self) -> None:
         """Запуск.

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import attrs
 import httpx
 
 from app_types.update import FkUpdate, Update
@@ -28,10 +29,10 @@ from integrations.tg.tg_answers import TgAnswerInterface
 from services.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 
 
+@attrs.define
 class ThroughDomainAnswer(TgAnswerInterface):
 
-    def __init__(self, domain: str):
-        self._domain = domain
+    _domain: str
 
     async def build(self, update: Update) -> list[httpx.Request]:
         return [httpx.Request('GET', self._domain)]

@@ -20,7 +20,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol
+from typing import Protocol, final
+
+import attrs
 
 
 class Intable(Protocol):
@@ -37,15 +39,12 @@ class AsyncIntable(Protocol):
         """Приведение к числу с возможностью переключения контекста."""
 
 
+@final
+@attrs.define
 class ThroughIntable(Intable):
     """Сквозное число."""
 
-    def __init__(self, source: int):
-        """Конструктор класса.
-
-        :param source: int
-        """
-        self._source = source
+    _source: int
 
     def __int__(self) -> int:
         """Приведение к числу.
@@ -55,15 +54,12 @@ class ThroughIntable(Intable):
         return self._source
 
 
+@final
+@attrs.define
 class ThroughAsyncIntable(AsyncIntable):
     """Сквозное число."""
 
-    def __init__(self, source: int):
-        """Конструктор класса.
-
-        :param source: int
-        """
-        self._source = source
+    _source: int
 
     async def to_int(self) -> int:
         """Приведение к числу с возможностью переключения контекста.
@@ -73,15 +69,12 @@ class ThroughAsyncIntable(AsyncIntable):
         return self._source
 
 
+@final
+@attrs.define
 class SyncToAsyncIntable(AsyncIntable):
     """Объект для использования синхронного Intable в кач-ве асинхронного AsyncIntable."""
 
-    def __init__(self, origin: Intable):
-        """Конструктор класса.
-
-        :param origin: Intable
-        """
-        self._origin = origin
+    _origin: Intable
 
     async def to_int(self) -> int:
         """Числовое представление.

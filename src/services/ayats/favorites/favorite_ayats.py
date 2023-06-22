@@ -20,6 +20,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import final
+
+import attrs
 from databases import Database
 
 from app_types.intable import Intable, ThroughAsyncIntable
@@ -27,17 +30,13 @@ from app_types.listable import AsyncListable
 from services.ayats.ayat import Ayat, QAyat
 
 
+@final
+@attrs.define
 class FavoriteAyats(AsyncListable):
     """Избранные аяты."""
 
-    def __init__(self, chat_id: Intable, database: Database):
-        """Конструктор класса.
-
-        :param chat_id: Intable
-        :param database: Database
-        """
-        self._chat_id = chat_id
-        self._database = database
+    _chat_id: Intable
+    _database: Database
 
     async def to_list(self) -> list[Ayat]:
         """Получить избранные аяты.
