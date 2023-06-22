@@ -23,20 +23,18 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import re
 from typing import final
 
+import attrs
+
 from app_types.intable import Intable
 from exceptions.base_exception import BaseAppError
 
 
 @final
+@attrs.define
 class IntableRegularExpression(Intable):
     """Регулярное выражение, которое можно привести к числу."""
 
-    def __init__(self, text_for_searching: str):
-        """Конструктор класса.
-
-        :param text_for_searching: str
-        """
-        self._text_for_searching = text_for_searching
+    _text_for_searching: str
 
     def __int__(self) -> int:
         """Приведение к числу.

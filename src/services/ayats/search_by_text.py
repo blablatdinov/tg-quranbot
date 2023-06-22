@@ -20,9 +20,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import operator
 from typing import final
 
+import attrs
 import httpx
 from aioredis import Redis
 
@@ -42,27 +42,14 @@ from services.ayats.keyboards import AyatAnswerKeyboard
 
 
 @final
+@attrs.define
 class SearchAyatByTextAnswer(TgAnswerInterface):
     """Поиск аята по тексту."""
 
-    def __init__(
-        self,
-        debug_mode: bool,
-        message_answer: TgAnswerInterface,
-        file_answer: TgAnswerInterface,
-        redis: Redis,
-    ):
-        """Конструктор класса.
-
-        :param debug_mode: bool
-        :param message_answer: TgAnswerInterface
-        :param file_answer: TgAnswerInterface
-        :param redis: Redis
-        """
-        self._debug_mode = debug_mode
-        self._message_answer = message_answer
-        self._file_answer = file_answer
-        self._redis = redis
+    _debug_mode: bool
+    _message_answer: TgAnswerInterface
+    _file_answer: TgAnswerInterface
+    _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.

@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -38,15 +39,11 @@ from services.regular_expression import IntableRegularExpression
 
 
 @final
+@attrs.define
 class FavoriteAyatStatus(object):
     """Пользовательский ввод статуса аята в избранном."""
 
-    def __init__(self, source: str):
-        """Конструктор класса.
-
-        :param source: str
-        """
-        self._source = source
+    _source: str
 
     def ayat_id(self) -> int:
         """Идентификатор аята.
@@ -64,27 +61,14 @@ class FavoriteAyatStatus(object):
 
 
 @final
+@attrs.define
 class FavoriteAyatAnswer(TgAnswerInterface):
     """Ответ с избранными аятами."""
 
-    def __init__(
-        self,
-        debug: bool,
-        message_answer: TgAnswerInterface,
-        file_answer: TgAnswerInterface,
-        favorite_ayats_repo: FavoriteAyatRepositoryInterface,
-    ):
-        """Конструктор класса.
-
-        :param debug: bool
-        :param message_answer: TgAnswerInterface
-        :param file_answer: TgAnswerInterface
-        :param favorite_ayats_repo: FavoriteAyatRepositoryInterface
-        """
-        self._debug_mode = debug
-        self._message_answer = message_answer
-        self._file_answer = file_answer
-        self._favorite_ayats_repo = favorite_ayats_repo
+    _debug_mode: bool
+    _message_answer: TgAnswerInterface
+    _file_answer: TgAnswerInterface
+    _favorite_ayats_repo: FavoriteAyatRepositoryInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -115,17 +99,12 @@ class FavoriteAyatAnswer(TgAnswerInterface):
 
 
 @final
+@attrs.define
 class FavoriteAyatEmptySafeAnswer(TgAnswerInterface):
     """Обработка ошибок с пустыми избранными."""
 
-    def __init__(self, sender_answer: TgAnswerInterface, error_answer: TgAnswerInterface):
-        """Конструктор класса.
-
-        :param sender_answer: TgAnswerInterface
-        :param error_answer: TgAnswerInterface
-        """
-        self._origin = sender_answer
-        self._error_answer = error_answer
+    _origin: TgAnswerInterface
+    _error_answer: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -140,27 +119,14 @@ class FavoriteAyatEmptySafeAnswer(TgAnswerInterface):
 
 
 @final
+@attrs.define
 class FavoriteAyatPage(TgAnswerInterface):
     """Страница с избранным аятом."""
 
-    def __init__(
-        self,
-        debug: bool,
-        message_answer: TgAnswerInterface,
-        file_answer: TgAnswerInterface,
-        favorite_ayats_repo: FavoriteAyatRepositoryInterface,
-    ):
-        """Конструктор класса.
-
-        :param debug: bool
-        :param message_answer: TgAnswerInterface
-        :param file_answer: TgAnswerInterface
-        :param favorite_ayats_repo: FavoriteAyatRepositoryInterface
-        """
-        self._debug_mode = debug
-        self._message_answer = message_answer
-        self._file_answer = file_answer
-        self._favorite_ayats_repo = favorite_ayats_repo
+    _debug_mode: bool
+    _message_answer: TgAnswerInterface
+    _file_answer: TgAnswerInterface
+    _favorite_ayats_repo: FavoriteAyatRepositoryInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

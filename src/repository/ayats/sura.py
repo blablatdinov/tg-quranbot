@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import NamedTuple, Protocol, final
 
+import attrs
 from databases import Database
 
 
@@ -45,15 +46,11 @@ class SuraInterface(Protocol):
 
 
 @final
+@attrs.define
 class Sura(SuraInterface):
     """Сура."""
 
-    def __init__(self, connection: Database):
-        """Конструктор класса.
-
-        :param connection: Database
-        """
-        self._connection = connection
+    _connection: Database
 
     async def ayats(self, sura_num: int) -> list[AyatStructure]:
         """Получить аяты по номеру суры.

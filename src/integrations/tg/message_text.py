@@ -23,20 +23,19 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import re
 from typing import final
 
+import attrs
+
 from app_types.stringable import Stringable
+from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 
 
 @final
+@attrs.define
 class MessageText(Stringable):
     """Текст сообщения."""
 
-    def __init__(self, raw: Stringable):
-        """Конструктор класса.
-
-        :param raw: Stringable
-        """
-        self._raw = raw
+    _update: Update
 
     def __str__(self):
         """Строковое представление.
@@ -44,7 +43,7 @@ class MessageText(Stringable):
         :return: str
         :raises MessageTextNotFoundError: если текст сообщения не найден
         """
-        regex_res = re.search('text"(:|: )"(.+?)"', str(self._raw))
+        regex_res = re.search('text"(:|: )"(.+?)"', str(self._update))
         if not regex_res:
             raise MessageTextNotFoundError
         return regex_res.group(2)

@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import re
 from typing import final
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -31,17 +32,12 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
+@attrs.define
 class TgCallbackQueryRegexAnswer(TgAnswerInterface):
     """Маршрутизация ответов по регулярному выражению."""
 
-    def __init__(self, pattern: str, answer: TgAnswerInterface):
-        """Конструктор класса.
-
-        :param pattern: str
-        :param answer: TgAnswerInterface
-        """
-        self._pattern = pattern
-        self._answer = answer
+    _pattern: str
+    _answer: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.

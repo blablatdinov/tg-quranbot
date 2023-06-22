@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
+import attrs
 from databases import Database
 from pydantic import parse_obj_as
 
@@ -46,24 +47,13 @@ class NeighborAyatsRepositoryInterface(Protocol):
 
 
 @final
+@attrs.define
 class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
-    def __init__(
-        self,
-        ayat_id: int,
-        chat_id: int,
-        favorite_ayats_repo: FavoriteAyatRepositoryInterface,
-    ) -> None:
-        """Конструктор класса.
-
-        :param ayat_id: int
-        :param chat_id: int
-        :param favorite_ayats_repo: FavoriteAyatRepositoryInterface
-        """
-        self._chat_id = chat_id
-        self._ayat_id = ayat_id
-        self._favorite_ayats_repo = favorite_ayats_repo
+    _ayat_id: int
+    _chat_id: int
+    _favorite_ayats_repo: FavoriteAyatRepositoryInterface
 
     async def left_neighbor(self) -> AyatShort:
         """Получить левый аят.
@@ -111,19 +101,14 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
 
 
 @final
+@attrs.define
 class NeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
-    def __init__(self, connection: Database, ayat_id: int):
-        """Конструктор класса.
+    _connection: Database
+    _ayat_id: int
 
-        :param connection: Database
-        :param ayat_id: int
-        """
-        self._connection = connection
-        self._ayat_id = ayat_id
-
-    async def left_neighbor(self):
+    async def left_neighbor(self) -> AyatShort:
         """Получить левый аят.
 
         :return: AyatShort
@@ -142,7 +127,7 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
             raise AyatNotFoundError
         return parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
 
-    async def right_neighbor(self):
+    async def right_neighbor(self) -> AyatShort:
         """Получить правый аят.
 
         :return: AyatShort
@@ -175,9 +160,13 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
 
 
 @final
+@attrs.define
 class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
     """Класс для работы с сосденими аятами, при текстовом поиске."""
 
+    _connection: Database
+    _ayat_id: int
+    _query: AyatTextSearchQueryInterface
     _search_sql_query = """
         SELECT
             ayats.ayat_id as id,
@@ -188,18 +177,7 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
         ORDER BY ayat_id
     """
 
-    def __init__(self, connection: Database, ayat_id: int, query: AyatTextSearchQueryInterface):
-        """Конструктор класса.
-
-        :param connection: Database
-        :param ayat_id: int
-        :param query: AyatTextSearchQueryInterface
-        """
-        self._connection = connection
-        self._ayat_id = ayat_id
-        self._query = query
-
-    async def left_neighbor(self):
+    async def left_neighbor(self) -> AyatShort:
         """Получить левый аят.
 
         :return: AyatShort
@@ -216,7 +194,7 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
                     raise AyatNotFoundError from err
         raise AyatNotFoundError
 
-    async def right_neighbor(self):
+    async def right_neighbor(self) -> AyatShort:
         """Получить правый аят.
 
         :return: AyatShort

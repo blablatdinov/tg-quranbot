@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import json
 from typing import final
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -34,17 +35,12 @@ from services.debug_answer import DebugAnswer
 
 
 @final
+@attrs.define
 class InlineQueryAnswer(TgAnswerInterface):
     """Ответ на инлайн поиск."""
 
-    def __init__(self, answer: TgAnswerInterface, cities: CitySearchInterface):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param cities: CitySearchInterface
-        """
-        self._origin = answer
-        self._cities = cities
+    _origin: TgAnswerInterface
+    _cities: CitySearchInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.

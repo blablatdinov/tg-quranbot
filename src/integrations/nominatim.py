@@ -22,6 +22,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
+import attrs
+
 from integrations.client import IntegrationClientInterface
 from integrations.schemas import NominatimSearchResponse
 
@@ -38,17 +40,11 @@ class GeoServiceIntegrationInterface(Protocol):
 
 
 @final
+@attrs.define
 class NominatimIntegration(GeoServiceIntegrationInterface):
     """Интеграция с https://nominatim.openstreetmap.org ."""
 
     _request_client: IntegrationClientInterface
-
-    def __init__(self, request_client: IntegrationClientInterface):
-        """Конструктор класса.
-
-        :param request_client: IntegrationClientInterface
-        """
-        self._request_client = request_client
 
     async def search(self, latitude: str, longitude: str) -> str:
         """Поиск по координатам.

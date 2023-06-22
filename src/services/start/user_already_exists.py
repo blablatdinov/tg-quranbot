@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from contextlib import suppress
 from typing import final
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -36,30 +37,15 @@ from repository.users.users import UsersRepositoryInterface
 
 
 @final
+@attrs.define
 class UserAlreadyExistsAnswer(TgAnswerInterface):
     """Декоратор обработчика стартового сообщение с предохранением от UserAlreadyExists."""
 
-    def __init__(
-        self,
-        start_answer: TgAnswerInterface,
-        sender_answer: TgAnswerInterface,
-        user_repo: UserRepositoryInterface,
-        users_repo: UsersRepositoryInterface,
-        event_sink: SinkInterface,
-    ):
-        """Конструктор класса.
-
-        :param start_answer: TgAnswerInterface
-        :param sender_answer: TgAnswerInterface
-        :param user_repo: UserRepositoryInterface
-        :param users_repo: UsersRepositoryInterface
-        :param event_sink: SinkInterface
-        """
-        self._origin = start_answer
-        self._user_repo = user_repo
-        self._sender_answer = sender_answer
-        self._users_repo = users_repo
-        self._event_sink = event_sink
+    _origin: TgAnswerInterface
+    _sender_answer: TgAnswerInterface
+    _user_repo: UserRepositoryInterface
+    _users_repo: UsersRepositoryInterface
+    _event_sink: SinkInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.

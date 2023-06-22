@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
+import attrs
 from databases import Database
 
 from exceptions.base_exception import InternalBotError
@@ -41,17 +42,13 @@ class RandomPodcastInterface(Protocol):
 
 
 @final
+@attrs.define
 class RandomPodcast(RandomPodcastInterface):
     """Объект подкаста."""
 
-    def __init__(self, connection: Database):
-        """Конструктор класса.
+    _connection: Database
 
-        :param connection: Database
-        """
-        self._connection = connection
-
-    async def audio_telegram_id(self):
+    async def audio_telegram_id(self) -> str:
         """Получить идентификатор файла.
 
         :returns: str
@@ -70,7 +67,7 @@ class RandomPodcast(RandomPodcastInterface):
             raise InternalBotError('Подкасты не найдены')
         return row._mapping['telegram_file_id']  # noqa: WPS437
 
-    async def link_to_audio_file(self):
+    async def link_to_audio_file(self) -> str:
         """Получить ссылку на файл.
 
         :returns: str

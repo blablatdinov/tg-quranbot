@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 from aioredis import Redis
 
@@ -37,17 +38,12 @@ from services.user_state import LoggedUserState, UserState, UserStep
 
 
 @final
+@attrs.define
 class CityNotSupportedAnswer(TgAnswerInterface):
     """Ответ о неподдерживаемом городе."""
 
-    def __init__(self, answer: TgAnswerInterface, error_answer: TgAnswerInterface):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param error_answer: TgAnswerInterface
-        """
-        self._origin = answer
-        self._error_answer = error_answer
+    _origin: TgAnswerInterface
+    _error_answer: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
@@ -65,27 +61,14 @@ class CityNotSupportedAnswer(TgAnswerInterface):
 
 
 @final
+@attrs.define
 class ChangeCityAnswer(TgAnswerInterface):
     """Ответ со сменой города."""
 
-    def __init__(
-        self,
-        answer: TgAnswerInterface,
-        search_city: CitySearchInterface,
-        redis: Redis,
-        user_repo: UserRepositoryInterface,
-    ):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param search_city: CitySearchInterface
-        :param redis: Redis
-        :param user_repo: UserRepositoryInterface
-        """
-        self._city = search_city
-        self._origin = answer
-        self._redis = redis
-        self._user_repo = user_repo
+    _origin: TgAnswerInterface
+    _city: CitySearchInterface
+    _redis: Redis
+    _user_repo: UserRepositoryInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

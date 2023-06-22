@@ -25,6 +25,7 @@ import json
 from typing import Protocol, final
 from urllib import parse as url_parse
 
+import attrs
 import httpx
 from loguru import logger
 
@@ -44,15 +45,11 @@ class SendableInterface(Protocol):
 
 
 @final
+@attrs.define
 class SendableAnswer(SendableInterface):
     """Объект, отправляющий ответы в API."""
 
-    def __init__(self, answer: TgAnswerInterface):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        """
-        self._answer = answer
+    _answer: TgAnswerInterface
 
     async def send(self, update: Update) -> list[dict]:
         """Отправка.
@@ -74,15 +71,11 @@ class SendableAnswer(SendableInterface):
 
 
 @final
+@attrs.define
 class UserNotSubscribedSafeSendable(SendableInterface):
     """Декоратор для обработки отписанных пользователей."""
 
-    def __init__(self, sendable: SendableInterface):
-        """Конструктор класса.
-
-        :param sendable: SendableInterface
-        """
-        self._origin = sendable
+    _origin: SendableInterface
 
     async def send(self, update) -> list[dict]:
         """Отправка.
@@ -138,20 +131,16 @@ class SliceIterator(object):
         if len(self._origin) <= self._shift:
             raise StopIteration
         res = self._origin[self._shift:self._shift + self._slice_size]
-        self._shift += self._slice_size
+        self._shift += self._slice_size  # noqa: WPS601
         return res
 
 
 @final
+@attrs.define
 class BulkSendableAnswer(SendableInterface):
     """Массовая отправка."""
 
-    def __init__(self, answers: list[TgAnswerInterface]):
-        """Конструктор класса.
-
-        :param answers: list[TgAnswerInterface]
-        """
-        self._answers = answers
+    _answers: list[TgAnswerInterface]
 
     async def send(self, update: Update) -> list[dict]:
         """Отправка.

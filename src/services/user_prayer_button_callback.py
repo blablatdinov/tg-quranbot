@@ -22,20 +22,18 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
+
 from app_types.stringable import Stringable
 from repository.user_prayers_interface import UserPrayer
 
 
 @final
+@attrs.define
 class UserPrayersButtonCallback(Stringable):
     """Кнопка клавиатуры времен намазов."""
 
-    def __init__(self, user_prayer: UserPrayer):
-        """Конструктор класса.
-
-        :param user_prayer: UserPrayer
-        """
-        self._user_prayer = user_prayer
+    _user_prayer: UserPrayer
 
     def __str__(self):
         """Строковое представление.

@@ -23,19 +23,17 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import asyncio
 from typing import final
 
+import attrs
+
 from app_types.runable import Runable, SyncRunable
 
 
 @final
+@attrs.define
 class CliApp(SyncRunable):
     """CLI приложение."""
 
-    def __init__(self, origin_runable: Runable):
-        """Конструктор класса.
-
-        :param origin_runable: Runable
-        """
-        self._origin = origin_runable
+    _origin: Runable
 
     def run(self, args: list[str]):
         """Запуск.
@@ -70,17 +68,12 @@ class ForkCliApp(SyncRunable):
 
 
 @final
+@attrs.define
 class CommandCliApp(SyncRunable):
     """CLI команда."""
 
-    def __init__(self, command: str, app: SyncRunable):
-        """Конструктор класса.
-
-        :param command: str
-        :param app: SyncRunable
-        """
-        self._command = command
-        self._app = app
+    _command: str
+    _app: SyncRunable
 
     def run(self, args: list[str]) -> int:
         """Запуск.

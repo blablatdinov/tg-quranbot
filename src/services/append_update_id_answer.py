@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import datetime
 from typing import Protocol, final
 
+import attrs
 import httpx
 import pytz
 
@@ -135,15 +136,11 @@ class ChatIdDebugParam(DebugParamInterface):
 
 
 @final
+@attrs.define
 class CommitHashDebugParam(DebugParamInterface):
     """Отладочная информация с хэшом коммита."""
 
-    def __init__(self, commit_hash: str):
-        """Конструктор класса.
-
-        :param commit_hash: str
-        """
-        self._commit_hash = commit_hash
+    _commit_hash: str
 
     async def debug_value(self, update: Update) -> str:
         """Хэш коммита.

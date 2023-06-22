@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
+import attrs
 from databases import Database
 from loguru import logger
 from pydantic import parse_obj_as
@@ -45,25 +46,13 @@ class SearchCityQueryInterface(Protocol):
 
 
 @final
+@attrs.define
 class SearchCityQuery(SearchCityQueryInterface):
     """Запрос для поиска города."""
 
-    def __init__(
-        self,
-        *,
-        string_query: tuple[str, ...] = (),
-        latitude: tuple[float, ...] = (),
-        longitude: tuple[float, ...] = (),
-    ):
-        """Конструктор класса.
-
-        :param string_query: tuple[str, ...]
-        :param latitude: tuple[str, ...]
-        :param longitude: tuple[str, ...]
-        """
-        self._string_query = string_query
-        self._latitude = latitude
-        self._longitude = longitude
+    _string_query: tuple[str, ...] = ()
+    _latitude: tuple[float, ...] = ()
+    _longitude: tuple[float, ...] = ()
 
     @classmethod
     def from_string_cs(cls, query: str):
@@ -126,15 +115,11 @@ class CitySearchInterface(Protocol):
 
 
 @final
+@attrs.define
 class SearchCityByName(CitySearchInterface):
     """Поиск города по названию."""
 
-    def __init__(self, db: Database):
-        """Конструктор класса.
-
-        :param db: Database
-        """
-        self._db = db
+    _db: Database
 
     async def search(self, query: SearchCityQueryInterface) -> list[City]:
         """Осуществить поиск.
@@ -149,21 +134,12 @@ class SearchCityByName(CitySearchInterface):
 
 
 @final
+@attrs.define
 class SearchCityByCoordinates(CitySearchInterface):
     """Поиск города по координатам."""
 
-    def __init__(
-        self,
-        city_search: CitySearchInterface,
-        geo_service_integration: GeoServiceIntegrationInterface,
-    ):
-        """Конструктор класса.
-
-        :param city_search: CitySearchInterface
-        :param geo_service_integration: GeoServiceIntegrationInterface
-        """
-        self._city_search = city_search
-        self._geo_service_integration = geo_service_integration
+    _city_search: CitySearchInterface
+    _geo_service_integration: GeoServiceIntegrationInterface
 
     async def search(self, query: SearchCityQueryInterface) -> list[City]:
         """Осуществить поиск.

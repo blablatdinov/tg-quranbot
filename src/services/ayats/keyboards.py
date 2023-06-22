@@ -22,6 +22,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
+
 from app_types.update import Update
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
@@ -33,27 +35,14 @@ from services.ayats.enums import AyatCallbackTemplateEnum
 
 
 @final
+@attrs.define
 class AyatAnswerKeyboard(KeyboardInterface):
     """Клавиатура аята."""
 
-    def __init__(
-        self,
-        ayat: Ayat,
-        favorite_ayats_repo: FavoriteAyatRepositoryInterface,
-        neighbor_ayats: NeighborAyatsRepositoryInterface,
-        ayat_callback_template: AyatCallbackTemplateEnum,
-    ):
-        """Конструктор класса.
-
-        :param ayat: Ayat
-        :param favorite_ayats_repo: FavoriteAyatRepositoryInterface
-        :param neighbor_ayats: NeighborAyatsRepositoryInterface
-        :param ayat_callback_template: AyatCallbackTemplateEnum
-        """
-        self._ayat = ayat
-        self._favorite_ayats_repo = favorite_ayats_repo
-        self._neighbor_ayats = neighbor_ayats
-        self._ayat_callback_template = ayat_callback_template
+    _ayat: Ayat
+    _favorite_ayats_repo: FavoriteAyatRepositoryInterface
+    _neighbor_ayats: NeighborAyatsRepositoryInterface
+    _ayat_callback_template: AyatCallbackTemplateEnum
 
     async def generate(self, update: Update) -> str:
         """Генерация.

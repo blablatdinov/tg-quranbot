@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import time
 from typing import Protocol, TypeVar, final
 
+import attrs
 import httpx
 from loguru import logger
 from pydantic import BaseModel
@@ -42,6 +43,7 @@ class IntegrationClientInterface(Protocol):
 
 
 @final
+@attrs.define
 class IntegrationClient(IntegrationClientInterface):
     """Httpx клиент."""
 
@@ -59,15 +61,11 @@ class IntegrationClient(IntegrationClientInterface):
 
 
 @final
+@attrs.define
 class LoggedIntegrationClient(IntegrationClientInterface):
     """Декоратор логирующий http запрос."""
 
-    def __init__(self, integration_client: IntegrationClientInterface):
-        """Конструктор класса.
-
-        :param integration_client: IntegrationClientInterface
-        """
-        self._origin = integration_client
+    _origin: IntegrationClientInterface
 
     async def act(self, url: str, model_for_parse: type[ParseModel]) -> ParseModel:
         """Выполнить запрос.

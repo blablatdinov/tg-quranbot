@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from app_types.intable import ThroughAsyncIntable
@@ -36,24 +37,13 @@ from services.regular_expression import IntableRegularExpression
 
 
 @final
+@attrs.define
 class AyatByIdAnswer(TgAnswerInterface):
     """Ответ на аят по идентификатору."""
 
-    def __init__(
-        self,
-        debug_mode: bool,
-        message_answer: TgAnswerInterface,
-        file_answer: TgAnswerInterface,
-    ):
-        """Конструктор класса.
-
-        :param debug_mode: bool
-        :param message_answer: TgAnswerInterface
-        :param file_answer: TgAnswerInterface
-        """
-        self._debug_mode = debug_mode
-        self._message_answer = message_answer
-        self._file_answer = file_answer
+    _debug_mode: bool
+    _message_answer: TgAnswerInterface
+    _file_answer: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

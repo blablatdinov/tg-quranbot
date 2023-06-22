@@ -23,21 +23,19 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import re
 from typing import final
 
+import attrs
+
 from app_types.intable import Intable
-from app_types.stringable import Stringable
+from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import MessageIdNotFoundError
 
 
 @final
+@attrs.define
 class MessageId(Intable):
     """Идентификатор сообщения."""
 
-    def __init__(self, raw: Stringable):
-        """Конструктор класса.
-
-        :param raw: Stringable
-        """
-        self._raw = raw
+    _update: Update
 
     def __int__(self):
         """Числовое представление.
@@ -45,7 +43,7 @@ class MessageId(Intable):
         :return: int
         :raises MessageIdNotFoundError: если идентификатор сообщения не найден
         """
-        regex_result = re.search(r'message_id"(:|: )(\d+)', str(self._raw))
+        regex_result = re.search(r'message_id"(:|: )(\d+)', str(self._update))
         if not regex_result:
             raise MessageIdNotFoundError
         return int(regex_result.group(2))

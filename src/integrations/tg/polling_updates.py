@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import json
 from typing import Protocol, final
 
+import attrs
 import httpx
 
 from app_types.intable import Intable
@@ -52,15 +53,11 @@ class UpdatesURLInterface(Protocol):
 
 
 @final
+@attrs.define
 class UpdatesURL(Stringable):
     """Базовый URL обновлений из телеграма."""
 
-    def __init__(self, token: str):
-        """Конструктор класса.
-
-        :param token: str
-        """
-        self._token = token
+    _token: str
 
     def __str__(self):
         """Строчное представление.
@@ -71,15 +68,11 @@ class UpdatesURL(Stringable):
 
 
 @final
+@attrs.define
 class UpdatesWithOffsetURL(UpdatesURLInterface):
     """URL для получения только новых обновлений."""
 
-    def __init__(self, updates_url: Stringable):
-        """Конструктор класса.
-
-        :param updates_url: Stringable
-        """
-        self._updates_url = updates_url
+    _updates_url: Stringable
 
     def generate(self, update_id: int):
         """Генерация.
@@ -91,17 +84,12 @@ class UpdatesWithOffsetURL(UpdatesURLInterface):
 
 
 @final
+@attrs.define
 class UpdatesLongPollingURL(UpdatesURLInterface):
     """URL обновлений с таймаутом."""
 
-    def __init__(self, updates_url: UpdatesURLInterface, long_polling_timeout: Intable):
-        """Конструктор класса.
-
-        :param updates_url: UpdatesURLInterface
-        :param long_polling_timeout: Intable
-        """
-        self._origin = updates_url
-        self._long_polling_timeout = long_polling_timeout
+    _origin: UpdatesURLInterface
+    _long_polling_timeout: Intable
 
     def generate(self, update_id: int):
         """Генерация.
@@ -126,18 +114,14 @@ class UpdatesIteratorInterface(Protocol):
 
 
 @final
+@attrs.define
 class PollingUpdatesIterator(UpdatesIteratorInterface):
     """Итератор по обновлениям."""
 
-    def __init__(self, updates_url: UpdatesURLInterface, updates_timeout: Intable):
-        """Конструктор класса.
+    _updates_url: UpdatesURLInterface
+    _updates_timeout: Intable
 
-        :param updates_url: UpdatesURLInterface
-        :param updates_timeout: Intable
-        """
-        self._updates_url = updates_url
-        self._offset = 0
-        self._updates_timeout = updates_timeout
+    _offset = 0
 
     def __aiter__(self):
         """Точка входа в итератор.
@@ -166,5 +150,5 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
                 return []
             if not parsed_result:
                 return []
-            self._offset = parsed_result[-1]['update_id'] + 1
+            self._offset = parsed_result[-1]['update_id'] + 1  # noqa: WPS601
             return [json.dumps(elem, ensure_ascii=False) for elem in parsed_result]

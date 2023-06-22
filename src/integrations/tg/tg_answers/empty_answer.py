@@ -22,21 +22,18 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
+@attrs.define
 class TgEmptyAnswer(TgAnswerInterface):
     """Пустой ответ."""
 
-    def __init__(self, token: str):
-        """Конструктор класса.
-
-        :param token: str
-        """
-        self._token = token
+    _token: str
 
     async def build(self, update) -> list[httpx.Request]:
         """Создать ответ с токеном.

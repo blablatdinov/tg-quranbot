@@ -23,6 +23,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import json
 from typing import final
 
+import attrs
+
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
@@ -31,19 +33,13 @@ from services.ayats.ayat import Ayat
 
 
 @final
+@attrs.define
 class AyatFavoriteKeyboardButton(KeyboardInterface):
     """Кнопка с добавлением аята в избранные."""
 
-    def __init__(self, ayat: Ayat, keyboard: KeyboardInterface, favorite_ayat_repo: FavoriteAyatRepositoryInterface):
-        """Конструктор класса.
-
-        :param ayat: Ayat
-        :param keyboard: KeyboardInterface
-        :param favorite_ayat_repo: FavoriteAyatRepositoryInterface
-        """
-        self._ayat = ayat
-        self._origin = keyboard
-        self._favorite_ayat_repo = favorite_ayat_repo
+    _ayat: Ayat
+    _origin: KeyboardInterface
+    _favorite_ayat_repo: FavoriteAyatRepositoryInterface
 
     async def generate(self, update: Update) -> str:
         """Генерация клавиатуры.

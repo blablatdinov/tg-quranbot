@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
+import attrs
 from databases import Database
 from loguru import logger
 from pydantic import parse_obj_as
@@ -54,15 +55,11 @@ class FavoriteAyatRepositoryInterface(Protocol):
 
 
 @final
+@attrs.define
 class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
     """Класс для работы с хранилищем избранных аятов."""
 
-    def __init__(self, connection: Database):
-        """Конструктор класса.
-
-        :param connection: Database
-        """
-        self._connection = connection
+    _connection: Database
 
     async def get_favorites(self, chat_id: int) -> list[Ayat]:
         """Получить избранные аяты.

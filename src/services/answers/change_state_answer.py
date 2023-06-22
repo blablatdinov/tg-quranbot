@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 from aioredis import Redis
 
@@ -32,19 +33,13 @@ from services.user_state import LoggedUserState, UserState, UserStep
 
 
 @final
+@attrs.define
 class ChangeStateAnswer(TgAnswerInterface):
     """Ответ, с изменением шага пользователя."""
 
-    def __init__(self, answer: TgAnswerInterface, redis: Redis, step: UserStep):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param redis: Redis
-        :param step: UserStep
-        """
-        self._origin = answer
-        self._step = step
-        self._redis = redis
+    _origin: TgAnswerInterface
+    _redis: Redis
+    _step: UserStep
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

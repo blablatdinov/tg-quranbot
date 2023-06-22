@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from contextlib import suppress
 from typing import final
 
+import attrs
 import httpx
 from databases import Database
 
@@ -40,27 +41,14 @@ from settings import settings
 
 
 @final
+@attrs.define
 class StartAnswer(TgAnswerInterface):
     """Обработчик стартового сообщения."""
 
-    def __init__(
-        self,
-        answer: TgAnswerInterface,
-        user_repo: UserRepositoryInterface,
-        admin_message: AdminMessageInterface,
-        database: Database,
-    ):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param user_repo: UserRepositoryInterface
-        :param admin_message: AdminMessageInterface
-        :param database: Database
-        """
-        self._origin = answer
-        self._user_repo = user_repo
-        self._admin_message = admin_message
-        self._database = database
+    _origin: TgAnswerInterface
+    _user_repo: UserRepositoryInterface
+    _admin_message: AdminMessageInterface
+    _database: Database
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.

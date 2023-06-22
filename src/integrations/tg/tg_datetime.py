@@ -24,6 +24,7 @@ import datetime
 import re
 from typing import final
 
+import attrs
 import pytz
 
 from app_types.date_time import DateTimeInterface
@@ -32,15 +33,11 @@ from exceptions.base_exception import InternalBotError
 
 
 @final
+@attrs.define
 class TgDateTime(DateTimeInterface):
     """Время сообщения."""
 
-    def __init__(self, update: Update):
-        """Конструктор класса.
-
-        :param update: Update
-        """
-        self._update = update
+    _update: Update
 
     def datetime(self) -> datetime.datetime:
         """Дата/время.

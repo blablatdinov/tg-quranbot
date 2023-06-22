@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import enum
 from typing import Protocol, final
 
+import attrs
 from aioredis import Redis
 from loguru import logger
 
@@ -50,15 +51,11 @@ class UserStateInterface(Protocol):
 
 
 @final
+@attrs.define
 class LoggedUserState(UserStateInterface):
     """Логгирующий декоратор объекта, работающего с состоянием пользователя."""
 
-    def __init__(self, user_state: UserStateInterface):
-        """Конструктор класса.
-
-        :param user_state: UserStateInterface
-        """
-        self._origin = user_state
+    _origin: UserStateInterface
 
     async def step(self) -> UserStep:
         """Состояние пользователя.
@@ -80,17 +77,12 @@ class LoggedUserState(UserStateInterface):
 
 
 @final
+@attrs.define
 class UserState(UserStateInterface):
     """Объект, работающий с состоянием пользователя."""
 
-    def __init__(self, redis: Redis, chat_id: int):
-        """Конструктор класса.
-
-        :param redis: Redis
-        :param chat_id: int
-        """
-        self._redis = redis
-        self._chat_id = chat_id
+    _redis: Redis
+    _chat_id: int
 
     async def step(self) -> UserStep:
         """Состояние пользователя.

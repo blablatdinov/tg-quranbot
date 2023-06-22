@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -29,17 +30,12 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
+@attrs.define
 class TgChatIdAnswer(TgAnswerInterface):
     """Ответ пользователю на конкретный идентификатор чата."""
 
-    def __init__(self, answer: TgAnswerInterface, chat_id: int):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param chat_id: int
-        """
-        self._origin = answer
-        self._chat_id = chat_id
+    _origin: TgAnswerInterface
+    _chat_id: int
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
