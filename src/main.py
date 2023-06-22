@@ -54,8 +54,11 @@ from services.logged_answer import LoggedAnswer
 from settings import settings
 
 
-def main() -> None:
-    """Точка входа в приложение."""
+def main(sys_args) -> None:
+    """Точка входа в приложение.
+
+    :param sys_args: list[str]
+    """
     nats_sink = NatsSink()
     quranbot_polling_app = CliApp(
         DatabaseConnectedApp(
@@ -127,9 +130,9 @@ def main() -> None:
                 ),
             ),
         ),
-    ).run(sys.argv)
+    ).run(sys_args)
 
 
 if __name__ == '__main__':
     with suppress(KeyboardInterrupt):
-        main()
+        main(sys.argv)
