@@ -78,12 +78,7 @@ class RoundedFloat(Floatable):
 class TgMeasureAnswer(TgAnswerInterface):
     """Замеренный ответ."""
 
-    def __init__(self, answer: TgAnswerInterface):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        """
-        self._origin = answer
+    _origin: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

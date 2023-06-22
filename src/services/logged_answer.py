@@ -34,14 +34,8 @@ from integrations.tg.sendable import SendableInterface
 class LoggedAnswer(SendableInterface):
     """Декоратор логирующий сообщения."""
 
-    def __init__(self, answer: SendableInterface, event_sink: SinkInterface):
-        """Конструктор класса.
-
-        :param answer: SendableInterface
-        :param event_sink: SinkInterface
-        """
-        self._origin = answer
-        self._event_sink = event_sink
+    _origin: SendableInterface
+    _event_sink: SinkInterface
 
     async def send(self, update: str) -> list[dict]:
         """Отправка.
