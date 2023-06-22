@@ -20,22 +20,53 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pathlib import Path
+from functools import reduce
+from operator import truediv
 
 import pytest
 
-from app_types.stringable import ThroughStringable
-from integrations.tg.callback_query import CallbackQueryData
+from app_types.update import FkUpdate
+from integrations.tg.tg_answers import FkAnswer, TgMessageRegexAnswer
+from settings import settings
 
 
 @pytest.fixture()
-def stringable_callback_update():
-    return ThroughStringable(
-        (Path(__file__).parent / 'fixtures' / 'button_callback.json').read_text(),
-    )
+def callback_update():
+    return reduce(
+        truediv,
+        [
+            'tests',
+            'unit',
+            'message_regex_answer',
+            'fixtures',
+            'callback_update.json',
+        ],
+        settings.BASE_DIR,
+    ).read_text()
 
 
-def test(stringable_callback_update):
-    cb_query_data = CallbackQueryData(stringable_callback_update)
+@pytest.fixture()
+def message_update():
+    return reduce(
+        truediv,
+        [
+            'tests',
+            'unit',
+            'message_regex_answer',
+            'fixtures',
+            'message_update.json',
+        ],
+        settings.BASE_DIR,
+    ).read_text()
 
-    assert str(cb_query_data) == 'mark_readed(2362)'
+
+async def test_on_message_update(message_update):
+    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(FkUpdate(message_update))
+
+    assert got
+
+
+async def test_on_callback_update(callback_update):
+    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(FkUpdate(callback_update))
+
+    assert not got

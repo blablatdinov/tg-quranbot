@@ -20,23 +20,33 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pathlib import Path
-
 import pytest
+from pytest_lazyfixture import lazy_fixture
 
 from app_types.stringable import ThroughStringable
-from integrations.tg.coordinates import TgMessageCoordinates
+from integrations.tg.message_id import MessageId
+from settings import settings
 
 
 @pytest.fixture()
-def coordinates_json():
+def stringable_update():
     return ThroughStringable(
-        (Path(__file__).parent / 'fixtures' / 'coordinates.json').read_text(),
+        (settings.BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),
     )
 
 
-def test(coordinates_json):
-    coordinates = TgMessageCoordinates(coordinates_json)
+@pytest.fixture()
+def stringable_callback_update():
+    return ThroughStringable(
+        (settings.BASE_DIR / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
+    )
 
-    assert coordinates.latitude() == 40.329649
-    assert coordinates.longitude() == -93.599524
+
+@pytest.mark.parametrize('input_,expected', [
+    (lazy_fixture('stringable_update'), 22628),
+    (lazy_fixture('stringable_callback_update'), 22627),
+])
+def test(input_, expected):
+    message_id = MessageId(input_)
+
+    assert int(message_id) == expected

@@ -24,27 +24,19 @@ from pathlib import Path
 
 import pytest
 
-from app_types.update import FkUpdate
-from integrations.tg.tg_answers import FkAnswer, TgMessageRegexAnswer
+from app_types.stringable import ThroughStringable
+from integrations.tg.callback_query import CallbackQueryData
+from settings import settings
 
 
 @pytest.fixture()
-def callback_update():
-    return (Path(__file__).parent / 'fixtures' / 'callback_update.json').read_text()
+def stringable_callback_update():
+    return ThroughStringable(
+        (Path(settings.BASE_DIR) / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
+    )
 
 
-@pytest.fixture()
-def message_update():
-    return (Path(__file__).parent / 'fixtures' / 'message_update.json').read_text()
+def test(stringable_callback_update):
+    cb_query_data = CallbackQueryData(stringable_callback_update)
 
-
-async def test_on_message_update(message_update):
-    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(FkUpdate(message_update))
-
-    assert got
-
-
-async def test_on_callback_update(callback_update):
-    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(FkUpdate(callback_update))
-
-    assert not got
+    assert str(cb_query_data) == 'mark_readed(2362)'
