@@ -22,6 +22,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
+import attrs
+
 
 class Stringable(Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
@@ -31,15 +33,11 @@ class Stringable(Protocol):
 
 
 @final
+@attrs.define
 class ThroughStringable(Stringable):
     """Обертка для строки."""
 
-    def __init__(self, source: str):
-        """Конструктор класса.
-
-        :param source: str
-        """
-        self._source = source
+    _source: str
 
     def __str__(self):
         """Строковое представление.
@@ -50,15 +48,11 @@ class ThroughStringable(Stringable):
 
 
 @final
+@attrs.define
 class UnwrappedString(Stringable):
     """Строки без переноса."""
 
-    def __init__(self, origin: Stringable):
-        """Конструктор класса.
-
-        :param origin: str
-        """
-        self._origin = origin
+    _origin: Stringable
 
     def __str__(self):
         """Строковое представление.

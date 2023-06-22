@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -30,17 +31,12 @@ from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
 
 
 @final
+@attrs.define
 class AyatNotFoundSafeAnswer(TgAnswerInterface):
     """Объект обрабатывающий ошибку с не найденным аятом."""
 
-    def __init__(self, answer: TgAnswerInterface, error_answer: TgAnswerInterface):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param error_answer: TgAnswerInterface
-        """
-        self._origin = answer
-        self._error_answer = error_answer
+    _origin: TgAnswerInterface
+    _error_answer: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.

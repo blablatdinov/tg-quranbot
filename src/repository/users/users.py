@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
+import attrs
 from databases import Database
 from pydantic import BaseModel, parse_obj_as
 
@@ -57,15 +58,11 @@ class UsersRepositoryInterface(Protocol):
 
 
 @final
+@attrs.define
 class UsersRepository(UsersRepositoryInterface):
     """Класс для работы с хранилищем множества пользователей."""
 
-    def __init__(self, connection: Database):
-        """Конструктор класса.
-
-        :param connection: Database
-        """
-        self._connection = connection
+    _connection: Database
 
     async def get_active_user_chat_ids(self) -> list[int]:
         """Получить активных пользователей.

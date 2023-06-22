@@ -23,11 +23,14 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import json
 from typing import final
 
+import attrs
+
 from integrations.nats_integration import SinkInterface
 from integrations.tg.sendable import SendableInterface
 
 
 @final
+@attrs.define
 class LoggedAnswer(SendableInterface):
     """Декоратор логирующий сообщения."""
 

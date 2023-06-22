@@ -22,21 +22,18 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
+import attrs
 from databases import Database
 
 from services.regular_expression import IntableRegularExpression
 
 
 @final
+@attrs.define
 class PrayerStatus(object):
     """Объект, рассчитывающий данные кнопки для изменения статуса прочитанности намаза."""
 
-    def __init__(self, source: str):
-        """Конструктор класса.
-
-        :param source: str
-        """
-        self._source = source
+    _source: str
 
     def user_prayer_id(self) -> int:
         """Рассчитать идентификатор времени намаза пользователя.
@@ -64,15 +61,11 @@ class UserPrayerStatusInterface(Protocol):
 
 
 @final
+@attrs.define
 class UserPrayerStatus(UserPrayerStatusInterface):
     """Статус прочитанности намаза."""
 
-    def __init__(self, connection: Database):
-        """Конструктор класса.
-
-        :param connection: Database
-        """
-        self._connection = connection
+    _connection: Database
 
     async def change(self, prayer_status: PrayerStatus):
         """Изменить статус прочитанности.

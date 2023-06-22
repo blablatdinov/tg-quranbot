@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import final
 
 import httpx
+from attrs import define
 
 from app_types.update import Update
 from integrations.tg.tg_answers.answer_to_sender import TgAnswerToSender
@@ -33,15 +34,11 @@ from integrations.tg.update_id import UpdateId
 
 
 @final
+@define
 class DebugAnswer(TgAnswerInterface):
     """Ответ для отладки."""
 
-    def __init__(self, answer: TgAnswerInterface):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        """
-        self._origin = answer
+    _origin: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

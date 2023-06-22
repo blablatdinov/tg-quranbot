@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import datetime
 from typing import final
 
+import attrs
 from databases import Database
 
 from app_types.date_time import AsyncDateTimeInterface
@@ -31,17 +32,12 @@ from exceptions.internal_exceptions import UserHasNotGeneratedPrayersError
 
 
 @final
+@attrs.define
 class UserPrayerDate(AsyncDateTimeInterface):
     """Объект времени намаза привязанного к пользователю."""
 
-    def __init__(self, user_prayer_id: Intable, database: Database):
-        """Конструктор класса.
-
-        :param user_prayer_id: Intable
-        :param database: Database
-        """
-        self._user_prayer_id = user_prayer_id
-        self._database = database
+    _user_prayer_id: Intable
+    _database: Database
 
     async def datetime(self) -> datetime.datetime:
         """Дата.

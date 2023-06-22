@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 from databases import Database
 
@@ -48,21 +49,12 @@ from services.regular_expression import IntableRegularExpression
 
 
 @final
+@attrs.define
 class ChangeFavoriteAyatAnswer(TgAnswerInterface):
     """Ответ на запрос о смене аята в избранном."""
 
-    def __init__(
-        self,
-        connection: Database,
-        answer: TgAnswerInterface,
-    ):
-        """Конструктор класса.
-
-        :param connection: Database
-        :param answer: TgAnswerInterface
-        """
-        self._origin = answer
-        self._connection = connection
+    _connection: Database
+    _origin: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

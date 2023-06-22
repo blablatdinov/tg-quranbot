@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 from databases import Database
 
 from app_types.intable import AsyncIntable
@@ -31,19 +32,13 @@ from services.ayats.search.ayat_search_query import SearchQueryInterface
 
 
 @final
+@attrs.define
 class AyatIdBySuraAyatNum(AsyncIntable):
     """Поиск аятов по номеру суры, аята."""
 
-    def __init__(self, sura: SuraInterface, query: SearchQueryInterface, database: Database):
-        """Конструктор класса.
-
-        :param sura: SuraInterface
-        :param query: SearchQueryInterface
-        :param database: Database
-        """
-        self._sura = sura
-        self._query = query
-        self._database = database
+    _sura: SuraInterface
+    _query: SearchQueryInterface
+    _database: Database
 
     async def to_int(self) -> int:
         """Числовое представление.

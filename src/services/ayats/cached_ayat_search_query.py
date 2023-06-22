@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 from aioredis import Redis
 
@@ -33,20 +34,15 @@ from services.ayats.ayat_text_search_query import AyatTextSearchQuery
 
 
 @final
+@attrs.define
 class CachedAyatSearchQueryAnswer(TgAnswerInterface):
     """Закешированный запрос пользователя на поиск аятов.
 
     TODO: что делать если данные из кэша будут удалены
     """
 
-    def __init__(self, answer: TgAnswerInterface, redis: Redis):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param redis: Redis
-        """
-        self._origin = answer
-        self._redis = redis
+    _origin: TgAnswerInterface
+    _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.

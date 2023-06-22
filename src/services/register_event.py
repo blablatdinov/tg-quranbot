@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -36,19 +37,13 @@ from services.start.start_message import StartMessage
 
 
 @final
+@attrs.define
 class StartWithEventAnswer(TgAnswerInterface):
     """Регистрация с отправкой события."""
 
-    def __init__(self, answer: TgAnswerInterface, event_sink: SinkInterface, user_repo: UserRepositoryInterface):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param event_sink: SinkInterface
-        :param user_repo: UserRepositoryInterface
-        """
-        self._origin = answer
-        self._event_sink = event_sink
-        self._user_repo = user_repo
+    _origin: TgAnswerInterface
+    _event_sink: SinkInterface
+    _user_repo: UserRepositoryInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

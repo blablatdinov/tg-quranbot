@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import datetime
 from typing import Protocol, final
 
+import attrs
 from databases import Database
 
 from app_types.update import FkUpdate
@@ -53,12 +54,16 @@ class RecievedEventInterface(Protocol):
 
 
 @final
+@attrs.define
 class SendPrayersEvent(RecievedEventInterface):
     """Событие о рассылки времени намаза."""
 
+    _users_repo: UsersRepositoryInterface
+    _empty_answer: TgAnswerInterface
+    _database: Database
+
     name = 'Prayers.Sended'
     version = 1
-
     _time_format = '%H:%M'
     _template = '\n'.join([
         'Время намаза для г. {city_name} ({date})\n',
@@ -69,17 +74,6 @@ class SendPrayersEvent(RecievedEventInterface):
         'Ахшам: {magrib_prayer_time}',
         'Ястү: {ishaa_prayer_time}',
     ])
-
-    def __init__(self, users_repo: UsersRepositoryInterface, empty_answer: TgAnswerInterface, database: Database):
-        """Конструктор класса.
-
-        :param users_repo: UsersRepositoryInterface
-        :param empty_answer: TgAnswerInterface
-        :param database: Database
-        """
-        self._users_repo = users_repo
-        self._empty_answer = empty_answer
-        self._database = database
 
     async def handle_event(self, event_data: dict):
         """Обработать событие.

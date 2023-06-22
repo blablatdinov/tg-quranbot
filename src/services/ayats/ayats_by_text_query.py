@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 from databases import Database
 
 from app_types.intable import ThroughAsyncIntable
@@ -31,17 +32,12 @@ from services.ayats.ayat import QAyat
 
 
 @final
+@attrs.define
 class AyatsByTextQuery(AsyncListable):
     """Список аятов, найденных по текстовому запросу."""
 
-    def __init__(self, query: Stringable, database: Database):
-        """Конструктор класса.
-
-        :param query: Stringable
-        :param database: Database
-        """
-        self._query = query
-        self._database = database
+    _query: Stringable
+    _database: Database
 
     async def to_list(self) -> list[QAyat]:
         """Список.

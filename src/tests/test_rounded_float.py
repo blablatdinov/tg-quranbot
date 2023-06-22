@@ -20,14 +20,16 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import attrs
+
 from app_types.floatable import Floatable
 from integrations.tg.tg_answers.measure_answer import RoundedFloat
 
 
+@attrs.define
 class FloatableFake(Floatable):
 
-    def __init__(self, origin_float: float):
-        self._origin = origin_float
+    _origin: float
 
     def __float__(self):
         return self._origin

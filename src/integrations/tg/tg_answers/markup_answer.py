@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from integrations.tg.keyboard import KeyboardInterface
@@ -29,17 +30,12 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
+@attrs.define
 class TgAnswerMarkup(TgAnswerInterface):
     """Ответ с клавиатурой."""
 
-    def __init__(self, answer: TgAnswerInterface, keyboard: KeyboardInterface):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param keyboard: KeyboardInterface
-        """
-        self._origin = answer
-        self._keyboard = keyboard
+    _origin: TgAnswerInterface
+    _keyboard: KeyboardInterface
 
     async def build(self, update) -> list[httpx.Request]:
         """Собрать ответ для пользователя.

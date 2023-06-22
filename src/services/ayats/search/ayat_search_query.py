@@ -22,6 +22,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
+import attrs
+
 from app_types.stringable import Stringable
 from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
 
@@ -37,15 +39,11 @@ class SearchQueryInterface(Protocol):
 
 
 @final
+@attrs.define
 class SearchQuery(SearchQueryInterface):
     """Запросом для поиска."""
 
-    def __init__(self, query: Stringable):
-        """Конструктор класса.
-
-        :param query: str
-        """
-        self._query = query
+    _query: Stringable
 
     def sura(self) -> int:
         """Номер суры.
@@ -63,15 +61,11 @@ class SearchQuery(SearchQueryInterface):
 
 
 @final
+@attrs.define
 class ValidatedSearchQuery(SearchQueryInterface):
     """Декоратор, валидирующий запрос для поиска."""
 
-    def __init__(self, query: SearchQueryInterface):
-        """Конструктор класса.
-
-        :param query: SearchQueryInterface
-        """
-        self._origin = query
+    _origin: SearchQueryInterface
 
     def sura(self) -> int:
         """Номер суры.

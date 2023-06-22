@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -36,17 +37,12 @@ from services.ayats.enums import AyatCallbackTemplateEnum
 
 
 @final
+@attrs.define
 class AyatByIdMessageAnswer(TgAnswerInterface):
     """Текстовый ответ на поиск аята."""
 
-    def __init__(self, result_ayat: Ayat, message_answer: TgAnswerInterface):
-        """Конструктор класса.
-
-        :param result_ayat: Ayat
-        :param message_answer: TgAnswerInterface
-        """
-        self._result_ayat = result_ayat
-        self._message_answer = message_answer
+    _result_ayat: Ayat
+    _message_answer: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

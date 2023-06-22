@@ -23,6 +23,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import re
 from typing import final
 
+import attrs
+
 from app_types.intable import Intable
 from app_types.stringable import Stringable, UnwrappedString
 from app_types.update import Update
@@ -30,15 +32,11 @@ from integrations.tg.exceptions.update_parse_exceptions import InlineQueryIdNotF
 
 
 @final
+@attrs.define
 class InlineQuery(Stringable):
     """Данные с инлайн поиска."""
 
-    def __init__(self, update: Update):
-        """Конструктор класса.
-
-        :param update: Update
-        """
-        self._update = update
+    _update: Update
 
     def __str__(self):
         """Строковое представление.
@@ -54,15 +52,11 @@ class InlineQuery(Stringable):
 
 
 @final
+@attrs.define
 class InlineQueryId(Intable):
     """Идентификатор инлайн поиска."""
 
-    def __init__(self, update: Update):
-        """Конструктор класса.
-
-        :param update: Update
-        """
-        self._update = update
+    _update: Update
 
     def __int__(self):
         """Числовое представление.

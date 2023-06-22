@@ -23,20 +23,19 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import json
 from typing import final
 
+import attrs
+
 from app_types.stringable import Stringable
+from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import CallbackQueryNotFoundError
 
 
 @final
+@attrs.define
 class CallbackQueryData(Stringable):
     """Информация с кнопки."""
 
-    def __init__(self, raw: Stringable):
-        """Конструктор класса.
-
-        :param raw: Stringable
-        """
-        self._raw = raw
+    _update: Update
 
     def __str__(self):
         """Строковое представление.
@@ -44,7 +43,7 @@ class CallbackQueryData(Stringable):
         :return: str
         :raises CallbackQueryNotFoundError: если не удалось получить данные с кнопки
         """
-        parsed_json = json.loads(str(self._raw))
+        parsed_json = json.loads(str(self._update))
         try:
             return parsed_json['callback_query']['data']
         except KeyError as err:

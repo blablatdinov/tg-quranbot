@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import datetime
 from typing import final
 
+import attrs
 import httpx
 import pytz
 
@@ -35,21 +36,12 @@ from services.user_prayer_keyboard import UserPrayersKeyboard
 
 
 @final
+@attrs.define
 class PrayerForUserAnswer(TgAnswerInterface):
     """Ответ пользователю с временами намаза."""
 
-    def __init__(
-        self,
-        answer: TgAnswerInterface,
-        user_prayers: UserPrayersInterface,
-    ):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param user_prayers: UserPrayersInterface
-        """
-        self._origin = answer
-        self._user_prayers = user_prayers
+    _origin: TgAnswerInterface
+    _user_prayers: UserPrayersInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Отправить.

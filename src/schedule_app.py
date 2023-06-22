@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from app_types.runable import Runable
@@ -33,15 +34,11 @@ from repository.users.users import UsersRepositoryInterface
 
 
 @final
+@attrs.define
 class TypingAction(TgAnswerInterface):
     """Действие с печатью."""
 
-    def __init__(self, answer: TgAnswerInterface):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        """
-        self._origin = answer
+    _origin: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -58,17 +55,12 @@ class TypingAction(TgAnswerInterface):
 
 
 @final
+@attrs.define
 class CheckUsersStatus(Runable):
     """Статусы пользователей."""
 
-    def __init__(self, users_repo: UsersRepositoryInterface, empty_answer: TgAnswerInterface):
-        """Конструктор класса.
-
-        :param users_repo: UsersRepositoryInterface
-        :param empty_answer: TgAnswerInterface
-        """
-        self._users_repo = users_repo
-        self._empty_answer = empty_answer
+    _users_repo: UsersRepositoryInterface
+    _empty_answer: TgAnswerInterface
 
     async def run(self):
         """Запуск."""

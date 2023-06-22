@@ -24,6 +24,8 @@ import json
 from contextlib import suppress
 from typing import final
 
+import attrs
+
 from app_types.update import Update
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
@@ -32,17 +34,12 @@ from services.ayats.enums import AyatCallbackTemplateEnum
 
 
 @final
+@attrs.define
 class NeighborAyatKeyboard(KeyboardInterface):
     """Клавиатура с соседними аятами."""
 
-    def __init__(self, ayats_neighbors: NeighborAyatsRepositoryInterface, callback_template: AyatCallbackTemplateEnum):
-        """Конструктор класса.
-
-        :param ayats_neighbors: NeighborAyatsRepositoryInterface
-        :param callback_template: AyatCallbackTemplateEnum
-        """
-        self._ayats_neighbors = ayats_neighbors
-        self._callback_template = callback_template
+    _ayats_neighbors: NeighborAyatsRepositoryInterface
+    _callback_template: AyatCallbackTemplateEnum
 
     async def generate(self, update: Update) -> str:
         """Генерация клавиатуры.

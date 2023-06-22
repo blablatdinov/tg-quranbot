@@ -23,21 +23,19 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import re
 from typing import final
 
+import attrs
+
 from app_types.intable import Intable
 from app_types.stringable import Stringable
 from exceptions.base_exception import InternalBotError
 
 
 @final
+@attrs.define
 class UpdateId(Intable):
     """Идентификатор обновления."""
 
-    def __init__(self, raw_json: Stringable):
-        """Конструктор класса.
-
-        :param raw_json: Stringable
-        """
-        self._raw = raw_json
+    _raw: Stringable
 
     def __int__(self):
         """Числовое представление.

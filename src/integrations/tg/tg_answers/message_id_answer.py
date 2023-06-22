@@ -22,23 +22,19 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
+@attrs.define
 class TgMessageIdAnswer(TgAnswerInterface):
     """Ответ с идентификатором сообщения."""
 
-    def __init__(self, answer: TgAnswerInterface, message_id: int):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param message_id: int
-        """
-        self._origin = answer
-        self._message_id = message_id
+    _origin: TgAnswerInterface
+    _message_id: int
 
     async def build(self, update) -> list[httpx.Request]:
         """Собрать ответ.

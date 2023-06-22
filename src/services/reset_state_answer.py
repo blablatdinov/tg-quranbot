@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 from aioredis import Redis
 
@@ -32,17 +33,12 @@ from services.user_state import UserState, UserStep
 
 
 @final
+@attrs.define
 class ResetStateAnswer(TgAnswerInterface):
     """Декоратор для обнуления состояния пользователя."""
 
-    def __init__(self, answer: TgAnswerInterface, redis: Redis):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param redis: Redis
-        """
-        self._origin = answer
-        self._redis = redis
+    _origin: TgAnswerInterface
+    _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 from aioredis import Redis
 
@@ -34,17 +35,12 @@ from services.user_state import LoggedUserState, UserState, UserStep
 
 
 @final
+@attrs.define
 class UserWithoutCitySafeAnswer(TgAnswerInterface):
     """Объект для обработки случаев когда пользователь запрашивает время намаза без установленного города."""
 
-    def __init__(self, prayer_time_answer: TgAnswerInterface, invite_set_city_answer: TgAnswerInterface):
-        """Конструктор класса.
-
-        :param prayer_time_answer: TgAnswerInterface
-        :param invite_set_city_answer: TgAnswerInterface
-        """
-        self._origin = prayer_time_answer
-        self._invite_set_city_answer = invite_set_city_answer
+    _origin: TgAnswerInterface
+    _invite_set_city_answer: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -59,17 +55,12 @@ class UserWithoutCitySafeAnswer(TgAnswerInterface):
 
 
 @final
+@attrs.define
 class InviteSetCityAnswer(TgAnswerInterface):
     """Ответ с приглашением ввести город."""
 
-    def __init__(self, message_answer: TgAnswerInterface, redis: Redis):
-        """Конструктор класса.
-
-        :param message_answer: TgAnswerInterface
-        :param redis: Redis
-        """
-        self._message_answer = message_answer
-        self._redis = redis
+    _message_answer: TgAnswerInterface
+    _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

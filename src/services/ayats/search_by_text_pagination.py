@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 from aioredis import Redis
 
@@ -42,27 +43,14 @@ from services.regular_expression import IntableRegularExpression
 
 
 @final
+@attrs.define
 class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
     """Поиск аята по тексту для обработки нажатия кнопки."""
 
-    def __init__(
-        self,
-        debug_mode: bool,
-        message_answer: TgAnswerInterface,
-        file_answer: TgAnswerInterface,
-        redis: Redis,
-    ):
-        """Конструктор класса.
-
-        :param debug_mode: bool
-        :param message_answer: TgAnswerInterface
-        :param file_answer: TgAnswerInterface
-        :param redis: Redis
-        """
-        self._debug_mode = debug_mode
-        self._message_answer = message_answer
-        self._file_answer = file_answer
-        self._redis = redis
+    _debug_mode: bool
+    _message_answer: TgAnswerInterface
+    _file_answer: TgAnswerInterface
+    _redis: Redis
 
     async def build(self, update) -> list[httpx.Request]:
         """Собрать ответ.

@@ -24,6 +24,8 @@ import datetime
 import json
 from typing import final
 
+import attrs
+
 from app_types.update import Update
 from constants import PrayerNotReadedEmoji, PrayerReadedEmoji
 from integrations.tg.chat_id import TgChatId
@@ -33,19 +35,13 @@ from services.user_prayer_button_callback import UserPrayersButtonCallback
 
 
 @final
+@attrs.define
 class UserPrayersKeyboardByChatId(KeyboardInterface):
     """Клавиатура времен намаза с идентификатором чата в конструкторе."""
 
-    def __init__(self, user_prayer_times: UserPrayersInterface, date: datetime.date, chat_id: int):
-        """Конструктор класса.
-
-        :param user_prayer_times: UserPrayersInterface
-        :param date: datetime.date
-        :param chat_id: int
-        """
-        self._user_prayer_times = user_prayer_times
-        self._date = date
-        self._chat_id = chat_id
+    _user_prayer_times: UserPrayersInterface
+    _date: datetime.date
+    _chat_id: int
 
     async def generate(self, update: Update) -> str:
         """Генерация.
@@ -65,17 +61,12 @@ class UserPrayersKeyboardByChatId(KeyboardInterface):
 
 
 @final
+@attrs.define
 class UserPrayersKeyboard(KeyboardInterface):
     """Клавиатура времен намаза."""
 
-    def __init__(self, user_prayer_times: UserPrayersInterface, date: datetime.date):
-        """Конструктор класса.
-
-        :param user_prayer_times: UserPrayersInterface
-        :param date: datetime.date
-        """
-        self._user_prayer_times = user_prayer_times
-        self._date = date
+    _user_prayer_times: UserPrayersInterface
+    _date: datetime.date
 
     async def generate(self, update: Update) -> str:
         """Генерация.

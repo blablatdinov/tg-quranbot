@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import asyncio
 from typing import final
 
+import attrs
 import httpx
 from databases import Database
 from loguru import logger
@@ -34,6 +35,7 @@ from integrations.tg.sendable import SendableInterface
 
 
 @final
+@attrs.define
 class PollingApp(Runable):
     """Приложение на long polling."""
 
@@ -57,6 +59,7 @@ class PollingApp(Runable):
 
 
 @final
+@attrs.define
 class AppWithGetMe(Runable):
     """Объект для запуска с предварительным запросом getMe."""
 
@@ -83,17 +86,12 @@ class AppWithGetMe(Runable):
 
 
 @final
+@attrs.define
 class DatabaseConnectedApp(Runable):
     """Декоратор для подключения к БД."""
 
-    def __init__(self, database: Database, app: Runable) -> None:
-        """Конструктор класса.
-
-        :param database: Database
-        :param app: Runnable
-        """
-        self._database = database
-        self._app = app
+    _database: Database
+    _app: Runable
 
     async def run(self):
         """Запуск."""

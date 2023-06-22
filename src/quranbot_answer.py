@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 from aioredis import Redis
 from databases import Database
@@ -85,6 +86,7 @@ from settings import settings
 
 
 @final
+@attrs.define
 class QuranbotAnswer(TgAnswerInterface):
     """Ответ бота quranbot."""
 

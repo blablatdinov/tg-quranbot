@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import time
 from typing import final
 
+import attrs
 import httpx
 from loguru import logger
 
@@ -33,18 +34,14 @@ from integrations.tg.update_id import UpdateId
 
 
 @final
+@attrs.define
 class Millis(Floatable):
     """Миллисекунды."""
 
-    def __init__(self, millis: float):
-        """Конструктор класса.
-
-        :param millis: float
-        """
-        self._millis = millis
+    _millis: float
 
     @classmethod
-    def seconds_cs(cls, seconds: float):
+    def seconds_ctor(cls, seconds: float):
         """Конструктор для секунд.
 
         :param seconds: float
@@ -61,17 +58,12 @@ class Millis(Floatable):
 
 
 @final
+@attrs.define
 class RoundedFloat(Floatable):
     """Округленное дробное число."""
 
-    def __init__(self, origin_float: Floatable, shift_comma: int):
-        """Конструктор класса.
-
-        :param origin_float: Floatable
-        :param shift_comma: int
-        """
-        self._origin = origin_float
-        self._shift_comma = shift_comma
+    _origin: Floatable
+    _shift_comma: int
 
     def __float__(self):
         """Представление в форме числа с плавающей запятой.
@@ -82,6 +74,7 @@ class RoundedFloat(Floatable):
 
 
 @final
+@attrs.define
 class TgMeasureAnswer(TgAnswerInterface):
     """Замеренный ответ."""
 
@@ -105,7 +98,7 @@ class TgMeasureAnswer(TgAnswerInterface):
             int(UpdateId(update)),
             float(
                 RoundedFloat(
-                    Millis.seconds_cs(
+                    Millis.seconds_ctor(
                         time.time() - start,
                     ),
                     2,

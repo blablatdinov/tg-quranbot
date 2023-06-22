@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -29,15 +30,11 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
+@attrs.define
 class TgAudioAnswer(TgAnswerInterface):
     """Ответ с аудио файлом."""
 
-    def __init__(self, answer: TgAnswerInterface):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        """
-        self._origin = answer
+    _origin: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Создание.

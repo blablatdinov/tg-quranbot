@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
+import attrs
 from databases import Database
 
 from app_types.intable import AsyncIntable
@@ -49,17 +50,12 @@ class Ayat(Protocol):
 
 
 @final
+@attrs.define
 class QAyat(Ayat):
     """Аят."""
 
-    def __init__(self, ayat_id: AsyncIntable, database: Database):
-        """Конструктор класса.
-
-        :param ayat_id: AsyncIntable
-        :param database: Database
-        """
-        self._ayat_id = ayat_id
-        self._database = database
+    _ayat_id: AsyncIntable
+    _database: Database
 
     @classmethod
     async def by_sura_ayat_num(cls, sura_ayat_num: Stringable, database: Database) -> Ayat:

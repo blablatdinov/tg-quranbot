@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -36,19 +37,13 @@ from services.answers.answer import FileAnswer, TelegramFileIdAnswer
 
 
 @final
+@attrs.define
 class PodcastAnswer(TgAnswerInterface):
     """Ответ с подкастом."""
 
-    def __init__(self, debug_mode: bool, answer: TgAnswerInterface, podcast: RandomPodcastInterface):
-        """Конструктор класса.
-
-        :param debug_mode: bool
-        :param answer: TgAnswerInterface
-        :param podcast: RandomPodcastInterface
-        """
-        self._origin = answer
-        self._debug_mode = debug_mode
-        self._podcast = podcast
+    _debug_mode: bool
+    _origin: TgAnswerInterface
+    _podcast: RandomPodcastInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Трансформация в ответ.

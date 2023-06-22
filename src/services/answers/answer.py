@@ -21,8 +21,9 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-from typing import Optional, final
+from typing import final
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -31,15 +32,11 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
+@attrs.define
 class ResizedKeyboard(KeyboardInterface):
     """Сжатая в высоту клавиатура."""
 
-    def __init__(self, keyboard: KeyboardInterface):
-        """Конструктор класса.
-
-        :param keyboard: KeyboardInterface
-        """
-        self._origin = keyboard
+    _origin: KeyboardInterface
 
     async def generate(self, update):
         """Генерация.
@@ -67,24 +64,13 @@ class DefaultKeyboard(KeyboardInterface):
 
 
 @final
+@attrs.define
 class FileAnswer(TgAnswerInterface):
     """Класс ответа с файлом."""
 
-    def __init__(
-        self,
-        debug_mode: bool,
-        telegram_file_id_answer: TgAnswerInterface,
-        file_link_answer: TgAnswerInterface,
-    ):
-        """Конструктор класса.
-
-        :param debug_mode: bool
-        :param telegram_file_id_answer: TgAnswerInterface
-        :param file_link_answer: TgAnswerInterface
-        """
-        self._debug_mode = debug_mode
-        self._telegram_file_id_answer = telegram_file_id_answer
-        self._file_link_answer = file_link_answer
+    _debug_mode: bool
+    _telegram_file_id_answer: TgAnswerInterface
+    _file_link_answer: TgAnswerInterface
 
     async def build(self, update) -> list[httpx.Request]:
         """Отправка.
@@ -98,17 +84,12 @@ class FileAnswer(TgAnswerInterface):
 
 
 @final
+@attrs.define
 class TelegramFileIdAnswer(TgAnswerInterface):
     """Класс ответа с файлом."""
 
-    def __init__(self, answer: TgAnswerInterface, telegram_file_id: Optional[str]):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param telegram_file_id: Optional[str]
-        """
-        self._origin = answer
-        self._telegram_file_id = telegram_file_id
+    _origin: TgAnswerInterface
+    _telegram_file_id: str | None
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Отправка.

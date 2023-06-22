@@ -22,21 +22,18 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
+@attrs.define
 class TgHtmlParseAnswer(TgAnswerInterface):
     """Ответ с HTML элементами."""
 
-    def __init__(self, answer: TgAnswerInterface):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        """
-        self._origin = answer
+    _origin: TgAnswerInterface
 
     async def build(self, update) -> list[httpx.Request]:
         """Собрать ответ.

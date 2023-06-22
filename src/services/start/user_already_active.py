@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -30,17 +31,12 @@ from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
 
 
 @final
+@attrs.define
 class UserAlreadyActiveSafeAnswer(TgAnswerInterface):
     """Ответ для случаев когда пользователь уже активен."""
 
-    def __init__(self, answer: TgAnswerInterface, sender_answer: TgAnswerInterface):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param sender_answer: TgAnswerInterface
-        """
-        self._origin = answer
-        self._sender_answer = sender_answer
+    _origin: TgAnswerInterface
+    _sender_answer: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

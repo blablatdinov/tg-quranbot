@@ -22,6 +22,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
+
 from exceptions.base_exception import BaseAppError
 
 
@@ -54,17 +56,12 @@ class NotProcessableUpdateError(BaseAppError):
 
 
 @final
+@attrs.define
 class TelegramIntegrationsError(BaseAppError):
     """Исключение, возбуждаемое при некорректном ответе от API телеграмма."""
 
+    _message: str
     admin_message = 'Ошибка интеграции telegram'
-
-    def __init__(self, message: str):
-        """Конструктор класса.
-
-        :param message: str
-        """
-        self._message = message
 
     def __str__(self):
         """Строковое представление.

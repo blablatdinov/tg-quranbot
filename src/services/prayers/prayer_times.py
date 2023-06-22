@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 
 from app_types.intable import ThroughIntable
@@ -39,24 +40,13 @@ from services.user_prayer_keyboard import UserPrayersKeyboard
 
 
 @final
+@attrs.define
 class UserPrayerStatusChangeAnswer(TgAnswerInterface):
     """Ответ с изменением статуса прочитанности намаза."""
 
-    def __init__(
-        self,
-        answer: TgAnswerInterface,
-        prayer_status: UserPrayerStatusInterface,
-        user_prayers: UserPrayersInterface,
-    ):
-        """Конструктор класса.
-
-        :param answer: TgAnswerInterface
-        :param prayer_status: UserPrayerStatus
-        :param user_prayers: UserPrayersInterface
-        """
-        self._origin = answer
-        self._prayer_status = prayer_status
-        self._user_prayers = user_prayers
+    _origin: TgAnswerInterface
+    _prayer_status: UserPrayerStatusInterface
+    _user_prayers: UserPrayersInterface
 
     async def build(self, update) -> list[httpx.Request]:
         """Обработка запроса.

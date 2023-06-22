@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
+import attrs
 from databases import Database
 
 from exceptions.base_exception import InternalBotError
@@ -35,17 +36,12 @@ class AdminMessageInterface(Protocol):
 
 
 @final
+@attrs.define
 class AdminMessage(AdminMessageInterface):
     """Административное сообщение."""
 
-    def __init__(self, key: str, connection: Database):
-        """Конструктор класса.
-
-        :param key: str
-        :param connection: Database
-        """
-        self._key = key
-        self._connection = connection
+    _key: str
+    _connection: Database
 
     async def text(self) -> str:
         """Текст административного сообщения.
