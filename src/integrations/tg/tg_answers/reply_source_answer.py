@@ -31,7 +31,7 @@ from integrations.tg.tg_answers import TgAnswerInterface
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class TgReplySourceAnswer(TgAnswerInterface):
     """Ответ на сообщение."""
 

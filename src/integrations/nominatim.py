@@ -40,7 +40,7 @@ class GeoServiceIntegrationInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class NominatimIntegration(GeoServiceIntegrationInterface):
     """Интеграция с https://nominatim.openstreetmap.org ."""
 

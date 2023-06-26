@@ -47,7 +47,7 @@ class NeighborAyatsRepositoryInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
@@ -101,7 +101,7 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class NeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
@@ -160,7 +160,7 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
     """Класс для работы с сосденими аятами, при текстовом поиске."""
 

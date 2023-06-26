@@ -46,7 +46,7 @@ class SearchCityQueryInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class SearchCityQuery(SearchCityQueryInterface):
     """Запрос для поиска города."""
 
@@ -115,7 +115,7 @@ class CitySearchInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class SearchCityByName(CitySearchInterface):
     """Поиск города по названию."""
 
@@ -134,7 +134,7 @@ class SearchCityByName(CitySearchInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class SearchCityByCoordinates(CitySearchInterface):
     """Поиск города по координатам."""
 

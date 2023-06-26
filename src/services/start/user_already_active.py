@@ -31,7 +31,7 @@ from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UserAlreadyActiveSafeAnswer(TgAnswerInterface):
     """Ответ для случаев когда пользователь уже активен."""
 

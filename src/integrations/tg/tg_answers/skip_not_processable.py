@@ -31,7 +31,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class TgSkipNotProcessable(TgAnswerInterface):
     """Обработка и пропуск ответа, возбудившего NotProcessableUpdateError."""
 

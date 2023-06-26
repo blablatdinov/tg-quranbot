@@ -37,7 +37,7 @@ from services.start.start_message import StartMessage
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class StartWithEventAnswer(TgAnswerInterface):
     """Регистрация с отправкой события."""
 

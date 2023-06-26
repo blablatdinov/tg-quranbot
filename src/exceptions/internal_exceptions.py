@@ -56,7 +56,7 @@ class NotProcessableUpdateError(BaseAppError):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class TelegramIntegrationsError(BaseAppError):
     """Исключение, возбуждаемое при некорректном ответе от API телеграмма."""
 

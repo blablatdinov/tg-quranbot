@@ -31,7 +31,7 @@ from exceptions.base_exception import InternalBotError
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UpdateId(Intable):
     """Идентификатор обновления."""
 

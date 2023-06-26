@@ -33,7 +33,7 @@ from services.user_state import UserState, UserStep
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class ResetStateAnswer(TgAnswerInterface):
     """Декоратор для обнуления состояния пользователя."""
 

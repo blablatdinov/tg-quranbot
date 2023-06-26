@@ -32,7 +32,7 @@ from integrations.tg.exceptions.update_parse_exceptions import InlineQueryIdNotF
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class InlineQuery(Stringable):
     """Данные с инлайн поиска."""
 
@@ -52,7 +52,7 @@ class InlineQuery(Stringable):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class InlineQueryId(Intable):
     """Идентификатор инлайн поиска."""
 

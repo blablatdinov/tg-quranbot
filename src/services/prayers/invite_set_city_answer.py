@@ -35,7 +35,7 @@ from services.user_state import LoggedUserState, UserState, UserStep
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UserWithoutCitySafeAnswer(TgAnswerInterface):
     """Объект для обработки случаев когда пользователь запрашивает время намаза без установленного города."""
 
@@ -55,7 +55,7 @@ class UserWithoutCitySafeAnswer(TgAnswerInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class InviteSetCityAnswer(TgAnswerInterface):
     """Ответ с приглашением ввести город."""
 

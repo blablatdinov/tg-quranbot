@@ -45,7 +45,7 @@ class SendableInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class SendableAnswer(SendableInterface):
     """Объект, отправляющий ответы в API."""
 
@@ -71,7 +71,7 @@ class SendableAnswer(SendableInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UserNotSubscribedSafeSendable(SendableInterface):
     """Декоратор для обработки отписанных пользователей."""
 
@@ -136,7 +136,7 @@ class SliceIterator(object):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class BulkSendableAnswer(SendableInterface):
     """Массовая отправка."""
 

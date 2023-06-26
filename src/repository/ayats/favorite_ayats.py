@@ -55,7 +55,7 @@ class FavoriteAyatRepositoryInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
     """Класс для работы с хранилищем избранных аятов."""
 

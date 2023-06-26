@@ -38,7 +38,7 @@ from services.ayats.keyboards import AyatAnswerKeyboard
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class AyatBySuraAyatNumAnswer(TgAnswerInterface):
     """Ответ на поиск аята по номеру суры, аята."""
 

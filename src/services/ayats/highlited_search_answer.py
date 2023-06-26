@@ -33,7 +33,7 @@ from services.ayats.ayat_text_search_query import AyatTextSearchQuery
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class HighlightedSearchAnswer(TgAnswerInterface):
     """Ответ с подсвеченным поисковым текстом."""
 

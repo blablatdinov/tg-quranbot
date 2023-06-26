@@ -37,7 +37,7 @@ from services.regular_expression import IntableRegularExpression
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class AyatByIdAnswer(TgAnswerInterface):
     """Ответ на аят по идентификатору."""
 

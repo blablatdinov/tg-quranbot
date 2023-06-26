@@ -22,8 +22,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
-from attrs import define
 
 from app_types.update import Update
 from integrations.tg.tg_answers.answer_to_sender import TgAnswerToSender
@@ -34,7 +34,7 @@ from integrations.tg.update_id import UpdateId
 
 
 @final
-@define
+@attrs.define
 class DebugAnswer(TgAnswerInterface):
     """Ответ для отладки."""
 

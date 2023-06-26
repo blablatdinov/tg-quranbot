@@ -42,7 +42,7 @@ from services.ayats.keyboards import AyatAnswerKeyboard
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class SearchAyatByTextAnswer(TgAnswerInterface):
     """Поиск аята по тексту."""
 
