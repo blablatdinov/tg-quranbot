@@ -39,7 +39,7 @@ from services.regular_expression import IntableRegularExpression
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class FavoriteAyatStatus(object):
     """Пользовательский ввод статуса аята в избранном."""
 
@@ -61,7 +61,7 @@ class FavoriteAyatStatus(object):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class FavoriteAyatAnswer(TgAnswerInterface):
     """Ответ с избранными аятами."""
 
@@ -99,7 +99,7 @@ class FavoriteAyatAnswer(TgAnswerInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class FavoriteAyatEmptySafeAnswer(TgAnswerInterface):
     """Обработка ошибок с пустыми избранными."""
 
@@ -119,7 +119,7 @@ class FavoriteAyatEmptySafeAnswer(TgAnswerInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class FavoriteAyatPage(TgAnswerInterface):
     """Страница с избранным аятом."""
 

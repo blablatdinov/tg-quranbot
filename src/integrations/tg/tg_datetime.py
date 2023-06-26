@@ -33,7 +33,7 @@ from exceptions.base_exception import InternalBotError
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class TgDateTime(DateTimeInterface):
     """Время сообщения."""
 

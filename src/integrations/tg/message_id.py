@@ -31,7 +31,7 @@ from integrations.tg.exceptions.update_parse_exceptions import MessageIdNotFound
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class MessageId(Intable):
     """Идентификатор сообщения."""
 

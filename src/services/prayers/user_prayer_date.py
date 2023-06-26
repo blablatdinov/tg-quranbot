@@ -32,7 +32,7 @@ from exceptions.internal_exceptions import UserHasNotGeneratedPrayersError
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UserPrayerDate(AsyncDateTimeInterface):
     """Объект времени намаза привязанного к пользователю."""
 

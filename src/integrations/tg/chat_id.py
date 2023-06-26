@@ -23,7 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import re
 from typing import final
 
-from attrs import define
+import attrs
 
 from app_types.intable import Intable
 from app_types.stringable import Stringable, UnwrappedString
@@ -31,7 +31,7 @@ from exceptions.base_exception import InternalBotError
 
 
 @final
-@define
+@attrs.define(frozen=True)
 class TgChatId(Intable):
     """Идентификатор чата."""
 

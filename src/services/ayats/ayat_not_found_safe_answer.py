@@ -31,7 +31,7 @@ from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class AyatNotFoundSafeAnswer(TgAnswerInterface):
     """Объект обрабатывающий ошибку с не найденным аятом."""
 

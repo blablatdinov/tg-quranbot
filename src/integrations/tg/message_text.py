@@ -31,7 +31,7 @@ from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFou
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class MessageText(Stringable):
     """Текст сообщения."""
 

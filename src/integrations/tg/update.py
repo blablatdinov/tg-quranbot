@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
-from attrs import define
+import attrs
 
 from app_types.stringable import Stringable
 from app_types.update import Update
@@ -31,7 +31,7 @@ from services.weak_cache import weak_lru
 
 
 @final
-@define
+@attrs.define(frozen=True)
 class TgUpdate(Update):
     """Объект обновления от телеграмма.
 
@@ -63,7 +63,7 @@ class TgUpdate(Update):
 
 
 @final
-@define
+@attrs.define(frozen=True)
 class CachedTgUpdate(Update):
     """Декоратор, для избежания повторной десериализации.
 
@@ -95,10 +95,3 @@ class CachedTgUpdate(Update):
         :return: dict
         """
         return self._origin.dict()
-
-    def __hash__(self):
-        """Хэш объекта.
-
-        :return: Something
-        """
-        return str(self._origin).__hash__()

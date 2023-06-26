@@ -53,7 +53,7 @@ class UpdatesURLInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UpdatesURL(Stringable):
     """Базовый URL обновлений из телеграма."""
 
@@ -68,7 +68,7 @@ class UpdatesURL(Stringable):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UpdatesWithOffsetURL(UpdatesURLInterface):
     """URL для получения только новых обновлений."""
 
@@ -84,7 +84,7 @@ class UpdatesWithOffsetURL(UpdatesURLInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UpdatesLongPollingURL(UpdatesURLInterface):
     """URL обновлений с таймаутом."""
 
@@ -114,7 +114,7 @@ class UpdatesIteratorInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class PollingUpdatesIterator(UpdatesIteratorInterface):
     """Итератор по обновлениям."""
 

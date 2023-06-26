@@ -31,7 +31,7 @@ from services.regular_expression import IntableRegularExpression
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class StartMessage(object):
     """Стартовое сообщение."""
 

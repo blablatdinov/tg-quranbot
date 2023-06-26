@@ -36,7 +36,7 @@ class AdminMessageInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class AdminMessage(AdminMessageInterface):
     """Административное сообщение."""
 

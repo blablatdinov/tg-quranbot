@@ -37,7 +37,7 @@ from services.answers.answer import FileAnswer, TelegramFileIdAnswer
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class PodcastAnswer(TgAnswerInterface):
     """Ответ с подкастом."""
 

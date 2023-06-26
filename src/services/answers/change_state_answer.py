@@ -33,7 +33,7 @@ from services.user_state import LoggedUserState, UserState, UserStep
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class ChangeStateAnswer(TgAnswerInterface):
     """Ответ, с изменением шага пользователя."""
 

@@ -34,7 +34,7 @@ from integrations.tg.update_id import UpdateId
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class Millis(Floatable):
     """Миллисекунды."""
 
@@ -58,7 +58,7 @@ class Millis(Floatable):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class RoundedFloat(Floatable):
     """Округленное дробное число."""
 
@@ -74,7 +74,7 @@ class RoundedFloat(Floatable):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class TgMeasureAnswer(TgAnswerInterface):
     """Замеренный ответ."""
 

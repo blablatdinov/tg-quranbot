@@ -33,7 +33,7 @@ from services.ayats.ayat import Ayat
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class AyatFavoriteKeyboardButton(KeyboardInterface):
     """Кнопка с добавлением аята в избранные."""
 

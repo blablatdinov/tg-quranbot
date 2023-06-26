@@ -42,7 +42,7 @@ class RandomPodcastInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class RandomPodcast(RandomPodcastInterface):
     """Объект подкаста."""
 

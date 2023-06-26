@@ -35,7 +35,7 @@ from services.user_prayer_button_callback import UserPrayersButtonCallback
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UserPrayersKeyboardByChatId(KeyboardInterface):
     """Клавиатура времен намаза с идентификатором чата в конструкторе."""
 
@@ -61,7 +61,7 @@ class UserPrayersKeyboardByChatId(KeyboardInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UserPrayersKeyboard(KeyboardInterface):
     """Клавиатура времен намаза."""
 

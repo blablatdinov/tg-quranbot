@@ -29,7 +29,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class TgChatAction(TgAnswerInterface):
     """Запрос на API телеграма с действием.
 

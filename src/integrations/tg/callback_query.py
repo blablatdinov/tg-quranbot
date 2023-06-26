@@ -31,7 +31,7 @@ from integrations.tg.exceptions.update_parse_exceptions import CallbackQueryNotF
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class CallbackQueryData(Stringable):
     """Информация с кнопки."""
 

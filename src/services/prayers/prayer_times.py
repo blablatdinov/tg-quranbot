@@ -40,7 +40,7 @@ from services.user_prayer_keyboard import UserPrayersKeyboard
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UserPrayerStatusChangeAnswer(TgAnswerInterface):
     """Ответ с изменением статуса прочитанности намаза."""
 

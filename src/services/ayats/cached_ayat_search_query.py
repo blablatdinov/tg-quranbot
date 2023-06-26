@@ -34,7 +34,7 @@ from services.ayats.ayat_text_search_query import AyatTextSearchQuery
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class CachedAyatSearchQueryAnswer(TgAnswerInterface):
     """Закешированный запрос пользователя на поиск аятов.
 

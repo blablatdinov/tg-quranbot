@@ -35,7 +35,7 @@ from integrations.tg.sendable import SendableInterface
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class PollingApp(Runable):
     """Приложение на long polling."""
 
@@ -53,7 +53,7 @@ class PollingApp(Runable):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class AppWithGetMe(Runable):
     """Объект для запуска с предварительным запросом getMe."""
 
@@ -74,7 +74,7 @@ class AppWithGetMe(Runable):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class DatabaseConnectedApp(Runable):
     """Декоратор для подключения к БД."""
 

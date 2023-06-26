@@ -29,7 +29,7 @@ from repository.user_prayers_interface import UserPrayer
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UserPrayersButtonCallback(Stringable):
     """Кнопка клавиатуры времен намазов."""
 
