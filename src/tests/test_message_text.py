@@ -27,6 +27,7 @@ from pytest_lazyfixture import lazy_fixture
 
 from app_types.stringable import ThroughStringable
 from integrations.tg.message_text import MessageText
+from integrations.tg.update import TgUpdate
 
 
 @pytest.fixture()
@@ -46,9 +47,9 @@ def stringable_callback_update():
 @pytest.mark.parametrize('input_,expected', [
     (lazy_fixture('stringable_update'), 'afwe'),
     (lazy_fixture('stringable_callback_update'), 'awef'),
-    ('{"text":"hello"}', 'hello'),
+    ('{"message":{"text":"hello"}}', 'hello'),
 ])
 def test(input_, expected):
-    got = MessageText(input_)
+    got = MessageText(TgUpdate(input_))
 
     assert str(got) == expected

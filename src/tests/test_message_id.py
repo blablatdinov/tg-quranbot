@@ -28,6 +28,7 @@ from pytest_lazyfixture import lazy_fixture
 
 from app_types.stringable import ThroughStringable
 from integrations.tg.message_id import MessageId
+from integrations.tg.update import TgUpdate
 
 
 @pytest.fixture()
@@ -49,6 +50,6 @@ def stringable_callback_update():
     (lazy_fixture('stringable_callback_update'), 22627),
 ])
 def test(input_, expected):
-    message_id = MessageId(input_)
+    message_id = MessageId(TgUpdate(input_))
 
     assert int(message_id) == expected
