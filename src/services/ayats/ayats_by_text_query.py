@@ -32,7 +32,7 @@ from services.ayats.ayat import QAyat
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class AyatsByTextQuery(AsyncListable):
     """Список аятов, найденных по текстовому запросу."""
 

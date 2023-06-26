@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
-from attrs import define
+import attrs
 
 from app_types.intable import Intable
 from app_types.update import Update
@@ -31,7 +31,7 @@ from services.json_path_value import MatchManyJsonPath, SafeJsonPathValue
 
 
 @final
-@define
+@attrs.define(frozen=True)
 class TgChatId(Intable):
     """Идентификатор чата."""
 

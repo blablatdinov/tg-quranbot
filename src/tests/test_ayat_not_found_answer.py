@@ -29,7 +29,7 @@ from integrations.tg.tg_answers import TgAnswerInterface
 from services.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 
 
-@attrs.define
+@attrs.define(frozen=True)
 class ThroughDomainAnswer(TgAnswerInterface):
 
     _domain: str

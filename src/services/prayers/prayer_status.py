@@ -29,7 +29,7 @@ from services.regular_expression import IntableRegularExpression
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class PrayerStatus(object):
     """Объект, рассчитывающий данные кнопки для изменения статуса прочитанности намаза."""
 
@@ -61,7 +61,7 @@ class UserPrayerStatusInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UserPrayerStatus(UserPrayerStatusInterface):
     """Статус прочитанности намаза."""
 

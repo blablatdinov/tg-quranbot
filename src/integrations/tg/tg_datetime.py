@@ -33,7 +33,7 @@ from services.json_path_value import JsonPathValue, SafeJsonPathValue
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class TgDateTime(DateTimeInterface):
     """Время сообщения."""
 

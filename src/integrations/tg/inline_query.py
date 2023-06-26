@@ -32,7 +32,7 @@ from services.json_path_value import JsonPathValue, SafeJsonPathValue
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class InlineQuery(Stringable):
     """Данные с инлайн поиска."""
 
@@ -55,7 +55,7 @@ class InlineQuery(Stringable):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class InlineQueryId(Intable):
     """Идентификатор инлайн поиска."""
 

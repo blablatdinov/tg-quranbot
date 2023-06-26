@@ -31,7 +31,7 @@ from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class SafeFork(TgAnswerInterface):
     """Безопасный Fork."""
 

@@ -46,7 +46,7 @@ class SuraInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class Sura(SuraInterface):
     """Сура."""
 

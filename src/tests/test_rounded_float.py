@@ -26,7 +26,7 @@ from app_types.floatable import Floatable
 from integrations.tg.tg_answers.measure_answer import RoundedFloat
 
 
-@attrs.define
+@attrs.define(frozen=True)
 class FloatableFake(Floatable):
 
     _origin: float

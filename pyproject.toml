@@ -21,10 +21,10 @@ jsonpath-ng = "1.5.3"
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = {git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master"}
 ipython = "8.14.0"
-mypy = "1.4.0"
+mypy = "1.4.1"
 asyncpg-stubs = "0.27.0"
 pytest-cov = "4.1.0"
-pytest = "7.3.2"
+pytest = "7.4.0"
 pytest-asyncio = "0.21.0"
 mixer = "7.2.2"
 pytest-mock = "3.11.1"

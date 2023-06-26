@@ -40,7 +40,7 @@ class Coordinates(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class TgMessageCoordinates(Coordinates):
     """Координаты, принятые из чата."""
 

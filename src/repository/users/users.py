@@ -58,7 +58,7 @@ class UsersRepositoryInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UsersRepository(UsersRepositoryInterface):
     """Класс для работы с хранилищем множества пользователей."""
 

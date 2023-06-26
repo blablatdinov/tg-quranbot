@@ -48,7 +48,7 @@ class PrayerNames(str, enum.Enum):  # noqa: WPS600
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UserPrayers(UserPrayersInterface):
     """Времена намазов пользователя."""
 
@@ -88,7 +88,7 @@ class UserPrayers(UserPrayersInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class SafeUserPrayers(UserPrayersInterface):
     """Времена намазов с защитой от UserHasNotGeneratedPrayersError."""
 
@@ -109,7 +109,7 @@ class SafeUserPrayers(UserPrayersInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class SafeNotFoundPrayers(UserPrayersInterface):
     """Времена намазов с защитой от UserPrayersNotFoundError."""
 
@@ -146,7 +146,7 @@ class SafeNotFoundPrayers(UserPrayersInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class PrayersWithoutSunrise(UserPrayersInterface):
     """Времена намазов без восхода."""
 
@@ -168,7 +168,7 @@ class PrayersWithoutSunrise(UserPrayersInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class NewUserPrayers(UserPrayersInterface):
     """Объект генерирующий времена намазов пользователя."""
 

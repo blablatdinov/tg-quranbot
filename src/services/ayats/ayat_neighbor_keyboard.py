@@ -34,7 +34,7 @@ from services.ayats.enums import AyatCallbackTemplateEnum
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class NeighborAyatKeyboard(KeyboardInterface):
     """Клавиатура с соседними аятами."""
 

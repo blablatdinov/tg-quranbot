@@ -29,7 +29,7 @@ from app_types.runable import Runable, SyncRunable
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class CliApp(SyncRunable):
     """CLI приложение."""
 
@@ -68,7 +68,7 @@ class ForkCliApp(SyncRunable):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class CommandCliApp(SyncRunable):
     """CLI команда."""
 

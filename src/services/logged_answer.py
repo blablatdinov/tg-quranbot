@@ -30,7 +30,7 @@ from integrations.tg.sendable import SendableInterface
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class LoggedAnswer(SendableInterface):
     """Декоратор логирующий сообщения."""
 

@@ -37,7 +37,7 @@ from services.ayats.enums import AyatCallbackTemplateEnum
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class AyatByIdMessageAnswer(TgAnswerInterface):
     """Текстовый ответ на поиск аята."""
 
