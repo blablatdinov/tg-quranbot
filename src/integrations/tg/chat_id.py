@@ -27,7 +27,7 @@ import attrs
 from app_types.intable import Intable
 from app_types.update import Update
 from exceptions.base_exception import InternalBotError
-from services.json_path_value import MatchManyJsonPath, SafeJsonPathValue
+from services.json_path_value import ErrRedirectJsonPath, MatchManyJsonPath
 
 
 @final
@@ -43,7 +43,7 @@ class TgChatId(Intable):
         :return: int
         """
         return int(
-            SafeJsonPathValue(
+            ErrRedirectJsonPath(
                 MatchManyJsonPath(
                     self._update.dict(),
                     ('$..chat.id', '$..from.id'),
