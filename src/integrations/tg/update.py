@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import json
 from typing import final
 
 from attrs import define
@@ -57,9 +58,12 @@ class TgUpdate(Update):
     def dict(self) -> dict:
         """Словарь.
 
+        TODO: возможно стоит возвращать валидированный dict:
+            return self.parsed().dict()
+
         :return: dict
         """
-        return self.parsed().dict()
+        return json.loads(str(self._raw_update))
 
 
 @final

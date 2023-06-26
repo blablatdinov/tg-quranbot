@@ -26,6 +26,7 @@ import pytest
 
 from app_types.stringable import ThroughStringable
 from integrations.tg.coordinates import TgMessageCoordinates
+from integrations.tg.update import TgUpdate
 
 
 @pytest.fixture()
@@ -36,7 +37,7 @@ def coordinates_json():
 
 
 def test(coordinates_json):
-    coordinates = TgMessageCoordinates(coordinates_json)
+    coordinates = TgMessageCoordinates(TgUpdate(coordinates_json))
 
     assert coordinates.latitude() == 40.329649
     assert coordinates.longitude() == -93.599524

@@ -20,7 +20,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import re
 from typing import final
 
 import attrs
@@ -28,6 +27,7 @@ import attrs
 from app_types.stringable import Stringable
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
+from services.json_path_value import JsonPathValue, SafeJsonPathValue
 
 
 @final
@@ -41,9 +41,13 @@ class MessageText(Stringable):
         """Строковое представление.
 
         :return: str
-        :raises MessageTextNotFoundError: если текст сообщения не найден
         """
-        regex_res = re.search('text"(:|: )"(.+?)"', str(self._update))
-        if not regex_res:
-            raise MessageTextNotFoundError
-        return regex_res.group(2)
+        return str(
+            SafeJsonPathValue(
+                JsonPathValue(
+                    self._update.dict(),
+                    '$..message.text',
+                ),
+                MessageTextNotFoundError(),
+            ).evaluate(),
+        )

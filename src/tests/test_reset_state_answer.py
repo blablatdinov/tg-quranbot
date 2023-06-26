@@ -27,6 +27,7 @@ from aioredis import Redis
 
 from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer
+from integrations.tg.update import TgUpdate
 from services.reset_state_answer import ResetStateAnswer
 
 
@@ -38,13 +39,13 @@ def mock_redis(mocker):
 
 
 async def test_redis_query(mock_redis):
-    await ResetStateAnswer(FkAnswer(), Redis()).build(FkUpdate('{"from":{"chat_id":123}}'))
+    await ResetStateAnswer(FkAnswer(), Redis()).build(TgUpdate('{"from":{"id":123}}'))
 
     mock_redis.assert_called_with('123:step', 'nothing')
 
 
 async def test_origin_answer_not_modificated(mock_redis):
-    got = await ResetStateAnswer(FkAnswer(), Redis()).build(FkUpdate('{"from":{"chat_id":123}}'))
+    got = await ResetStateAnswer(FkAnswer(), Redis()).build(TgUpdate('{"from":{"id":123}}'))
     origin = (await FkAnswer().build(FkUpdate()))[0].url
 
     assert got[0].url == origin
