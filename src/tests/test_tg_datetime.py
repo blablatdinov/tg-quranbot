@@ -29,6 +29,7 @@ from pytest_lazyfixture import lazy_fixture
 
 from app_types.stringable import ThroughStringable
 from integrations.tg.tg_datetime import TgDateTime
+from integrations.tg.update import TgUpdate
 
 
 @pytest.fixture()
@@ -56,6 +57,6 @@ def stringable_callback_update():
     ),
 ])
 def test(input_, expected):
-    tg_datetime = TgDateTime(input_)
+    tg_datetime = TgDateTime(TgUpdate(input_))
 
     assert tg_datetime.datetime() == expected

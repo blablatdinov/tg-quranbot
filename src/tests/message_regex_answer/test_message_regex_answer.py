@@ -24,8 +24,8 @@ from pathlib import Path
 
 import pytest
 
-from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer, TgMessageRegexAnswer
+from integrations.tg.update import TgUpdate
 
 
 @pytest.fixture()
@@ -39,12 +39,12 @@ def message_update():
 
 
 async def test_on_message_update(message_update):
-    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(FkUpdate(message_update))
+    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(TgUpdate(message_update))
 
     assert got
 
 
 async def test_on_callback_update(callback_update):
-    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(FkUpdate(callback_update))
+    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(TgUpdate(callback_update))
 
     assert not got
