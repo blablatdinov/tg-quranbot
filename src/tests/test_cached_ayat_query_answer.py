@@ -27,8 +27,8 @@ from unittest.mock import AsyncMock
 import pytest
 from aioredis import Redis
 
-from app_types.update import FkUpdate
 from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.update import TgUpdate
 from services.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
 
 
@@ -72,6 +72,6 @@ def update():
 
 async def test(update, mock_redis):
     with suppress(FakeError):
-        await CachedAyatSearchQueryAnswer(TgAnswerFake(), mock_redis).build(FkUpdate(update))
+        await CachedAyatSearchQueryAnswer(TgAnswerFake(), mock_redis).build(TgUpdate(update))
 
     mock_redis.set.assert_called_with('358610865:ayat_search_query', 'камни')

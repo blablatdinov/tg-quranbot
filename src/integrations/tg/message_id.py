@@ -20,7 +20,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import re
 from typing import final
 
 import attrs
@@ -28,6 +27,7 @@ import attrs
 from app_types.intable import Intable
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import MessageIdNotFoundError
+from services.json_path_value import JsonPathValue, SafeJsonPathValue
 
 
 @final
@@ -41,9 +41,13 @@ class MessageId(Intable):
         """Числовое представление.
 
         :return: int
-        :raises MessageIdNotFoundError: если идентификатор сообщения не найден
         """
-        regex_result = re.search(r'message_id"(:|: )(\d+)', str(self._update))
-        if not regex_result:
-            raise MessageIdNotFoundError
-        return int(regex_result.group(2))
+        return int(
+            SafeJsonPathValue(
+                JsonPathValue(
+                    self._update.dict(),
+                    '$..message.message_id',
+                ),
+                MessageIdNotFoundError(),
+            ).evaluate(),
+        )
