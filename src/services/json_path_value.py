@@ -31,7 +31,7 @@ from app_types.stringable import Stringable
 _ET = TypeVar('_ET', covariant=True)
 
 
-class JsonPathValueInterface(Protocol[_ET]):
+class JsonPath(Protocol[_ET]):
     """Интерфейс объектов, получающих значение по jsonpath."""
 
     def evaluate(self) -> _ET:
@@ -40,7 +40,7 @@ class JsonPathValueInterface(Protocol[_ET]):
 
 @final
 @attrs.define(frozen=True)
-class JsonPathValue(JsonPathValueInterface, Generic[_ET]):
+class JsonPathValue(JsonPath, Generic[_ET]):
     """Объект, получающий значение по jsonpath.
 
     Пример поиска идентификатора чата:
@@ -67,8 +67,7 @@ class JsonPathValue(JsonPathValueInterface, Generic[_ET]):
         :return: T
         :raises ValueError: если поиск не дал результатов
         """
-        path = jsonpath_ng.parse(self._json_path)
-        match = path.find(self._json)
+        match = jsonpath_ng.parse(self._json_path).find(self._json)
         if not match:
             raise ValueError
         return match[0].value
@@ -76,7 +75,7 @@ class JsonPathValue(JsonPathValueInterface, Generic[_ET]):
 
 @final
 @attrs.define(frozen=True)
-class MatchManyJsonPath(JsonPathValueInterface, Generic[_ET]):
+class MatchManyJsonPath(JsonPath, Generic[_ET]):
     """Поиск по нескольким jsonpath."""
 
     _json: dict
@@ -99,10 +98,10 @@ class MatchManyJsonPath(JsonPathValueInterface, Generic[_ET]):
 
 @final
 @attrs.define(frozen=True)
-class SafeJsonPathValue(JsonPathValueInterface, Generic[_ET]):
+class ErrRedirectJsonPath(JsonPath, Generic[_ET]):
     """JsonPath с преобразованием исключений."""
 
-    _origin: JsonPathValueInterface
+    _origin: JsonPath
     _to_error: Exception
 
     def evaluate(self) -> _ET:

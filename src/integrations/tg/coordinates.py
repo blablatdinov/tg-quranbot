@@ -26,7 +26,7 @@ import attrs
 
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import CoordinatesNotFoundError
-from services.json_path_value import JsonPathValue, SafeJsonPathValue
+from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
 class Coordinates(Protocol):
@@ -52,7 +52,7 @@ class TgMessageCoordinates(Coordinates):
         :return: float
         """
         return float(
-            SafeJsonPathValue(
+            ErrRedirectJsonPath(
                 JsonPathValue(
                     self._update.dict(),
                     '$..[latitude]',
@@ -67,7 +67,7 @@ class TgMessageCoordinates(Coordinates):
         :return: float
         """
         return float(
-            SafeJsonPathValue(
+            ErrRedirectJsonPath(
                 JsonPathValue(
                     self._update.dict(),
                     '$..[longitude]',

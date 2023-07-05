@@ -28,7 +28,7 @@ from app_types.intable import Intable
 from app_types.stringable import Stringable
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import InlineQueryNotFoundError
-from services.json_path_value import JsonPathValue, SafeJsonPathValue
+from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
 @final
@@ -44,7 +44,7 @@ class InlineQuery(Stringable):
         :return: str
         """
         return str(
-            SafeJsonPathValue(
+            ErrRedirectJsonPath(
                 JsonPathValue(
                     self._update.dict(),
                     '$..query',
@@ -67,7 +67,7 @@ class InlineQueryId(Intable):
         :return: int
         """
         return int(
-            SafeJsonPathValue(
+            ErrRedirectJsonPath(
                 JsonPathValue(
                     self._update.dict(),
                     '$..inline_query.id',

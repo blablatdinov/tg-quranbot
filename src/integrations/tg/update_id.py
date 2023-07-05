@@ -27,7 +27,7 @@ import attrs
 from app_types.intable import Intable
 from app_types.update import Update
 from exceptions.base_exception import InternalBotError
-from services.json_path_value import JsonPathValue, SafeJsonPathValue
+from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
 @final
@@ -43,7 +43,7 @@ class UpdateId(Intable):
         :return: int
         """
         return int(
-            SafeJsonPathValue(
+            ErrRedirectJsonPath(
                 JsonPathValue(
                     self._update.dict(),
                     '$..update_id',

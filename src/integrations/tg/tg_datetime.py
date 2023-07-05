@@ -29,7 +29,7 @@ import pytz
 from app_types.date_time import DateTimeInterface
 from app_types.update import Update
 from exceptions.base_exception import InternalBotError
-from services.json_path_value import JsonPathValue, SafeJsonPathValue
+from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
 @final
@@ -46,7 +46,7 @@ class TgDateTime(DateTimeInterface):
         """
         return datetime.datetime.fromtimestamp(
             int(
-                SafeJsonPathValue(
+                ErrRedirectJsonPath(
                     JsonPathValue(
                         self._update.dict(),
                         '$..date',
