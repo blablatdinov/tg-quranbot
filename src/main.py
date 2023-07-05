@@ -42,13 +42,6 @@ from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer
 from quranbot_answer import QuranbotAnswer
 from repository.users.users import UsersRepository
 from schedule_app import CheckUsersStatus
-from services.append_update_id_answer import (
-    AppendDebugInfoAnswer,
-    ChatIdDebugParam,
-    CommitHashDebugParam,
-    TimeDebugParam,
-    UpdateIdDebugParam,
-)
 from services.cli_app import CliApp, CommandCliApp, ForkCliApp
 from services.logged_answer import LoggedAnswer
 from settings import settings
@@ -76,19 +69,12 @@ def main(sys_args) -> None:
                     ),
                     LoggedAnswer(
                         SendableAnswer(
-                            AppendDebugInfoAnswer(
-                                settings.DEBUG,
-                                TgMeasureAnswer(
-                                    QuranbotAnswer(
-                                        database,
-                                        aioredis.from_url(str(settings.REDIS_DSN)),  # type: ignore
-                                        nats_sink,
-                                    ),
+                            TgMeasureAnswer(
+                                QuranbotAnswer(
+                                    database,
+                                    aioredis.from_url(str(settings.REDIS_DSN)),  # type: ignore
+                                    nats_sink,
                                 ),
-                                UpdateIdDebugParam(),
-                                ChatIdDebugParam(),
-                                TimeDebugParam(),
-                                CommitHashDebugParam(''),
                             ),
                         ),
                         nats_sink,
