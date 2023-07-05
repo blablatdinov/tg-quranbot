@@ -35,7 +35,7 @@ from services.ayats.enums import AyatCallbackTemplateEnum
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class AyatAnswerKeyboard(KeyboardInterface):
     """Клавиатура аята."""
 

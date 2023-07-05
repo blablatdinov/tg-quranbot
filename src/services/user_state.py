@@ -51,7 +51,7 @@ class UserStateInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class LoggedUserState(UserStateInterface):
     """Логгирующий декоратор объекта, работающего с состоянием пользователя."""
 
@@ -77,7 +77,7 @@ class LoggedUserState(UserStateInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UserState(UserStateInterface):
     """Объект, работающий с состоянием пользователя."""
 

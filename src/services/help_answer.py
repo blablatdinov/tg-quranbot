@@ -31,7 +31,7 @@ from repository.admin_message import AdminMessageInterface
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class HelpAnswer(TgAnswerInterface):
     """Ответ на команду /help."""
 

@@ -32,7 +32,7 @@ from services.ayats.search.ayat_search_query import SearchQueryInterface
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class AyatIdBySuraAyatNum(AsyncIntable):
     """Поиск аятов по номеру суры, аята."""
 

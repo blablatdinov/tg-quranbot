@@ -38,7 +38,7 @@ class AyatTextSearchQueryInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class AyatTextSearchQuery(AyatTextSearchQueryInterface):
     """Запрос поиска аята."""
 

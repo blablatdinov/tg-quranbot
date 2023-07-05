@@ -34,7 +34,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class TgMessageRegexAnswer(TgAnswerInterface, Stringable):
     """Маршрутизация ответов по регулярному выражению."""
 

@@ -34,7 +34,7 @@ from repository.users.users import UsersRepositoryInterface
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class TypingAction(TgAnswerInterface):
     """Действие с печатью."""
 
@@ -55,7 +55,7 @@ class TypingAction(TgAnswerInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class CheckUsersStatus(Runable):
     """Статусы пользователей."""
 

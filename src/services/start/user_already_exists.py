@@ -37,7 +37,7 @@ from repository.users.users import UsersRepositoryInterface
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UserAlreadyExistsAnswer(TgAnswerInterface):
     """Декоратор обработчика стартового сообщение с предохранением от UserAlreadyExists."""
 

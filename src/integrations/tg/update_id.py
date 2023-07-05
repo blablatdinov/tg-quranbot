@@ -20,30 +20,34 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import re
 from typing import final
 
 import attrs
 
 from app_types.intable import Intable
-from app_types.stringable import Stringable
+from app_types.update import Update
 from exceptions.base_exception import InternalBotError
+from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UpdateId(Intable):
     """Идентификатор обновления."""
 
-    _raw: Stringable
+    _update: Update
 
     def __int__(self):
         """Числовое представление.
 
         :return: int
-        :raises InternalBotError: если не удалось получить идентификатор обновления
         """
-        regex_result = re.search(r'update_id"(:|: )(\d+)', str(self._raw))
-        if not regex_result:
-            raise InternalBotError
-        return int(regex_result.group(2))
+        return int(
+            ErrRedirectJsonPath(
+                JsonPathValue(
+                    self._update.dict(),
+                    '$..update_id',
+                ),
+                InternalBotError(),
+            ).evaluate(),
+        )

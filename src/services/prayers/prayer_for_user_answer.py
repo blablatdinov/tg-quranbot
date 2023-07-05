@@ -36,7 +36,7 @@ from services.user_prayer_keyboard import UserPrayersKeyboard
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class PrayerForUserAnswer(TgAnswerInterface):
     """Ответ пользователю с временами намаза."""
 

@@ -32,7 +32,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class ResizedKeyboard(KeyboardInterface):
     """Сжатая в высоту клавиатура."""
 
@@ -64,7 +64,7 @@ class DefaultKeyboard(KeyboardInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class FileAnswer(TgAnswerInterface):
     """Класс ответа с файлом."""
 
@@ -84,7 +84,7 @@ class FileAnswer(TgAnswerInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class TelegramFileIdAnswer(TgAnswerInterface):
     """Класс ответа с файлом."""
 

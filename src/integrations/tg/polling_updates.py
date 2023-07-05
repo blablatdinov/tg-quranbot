@@ -28,6 +28,8 @@ import httpx
 
 from app_types.intable import Intable
 from app_types.stringable import Stringable
+from app_types.update import Update
+from integrations.tg.update import TgUpdate
 
 
 @final
@@ -53,7 +55,7 @@ class UpdatesURLInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UpdatesURL(Stringable):
     """Базовый URL обновлений из телеграма."""
 
@@ -68,7 +70,7 @@ class UpdatesURL(Stringable):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UpdatesWithOffsetURL(UpdatesURLInterface):
     """URL для получения только новых обновлений."""
 
@@ -84,7 +86,7 @@ class UpdatesWithOffsetURL(UpdatesURLInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UpdatesLongPollingURL(UpdatesURLInterface):
     """URL обновлений с таймаутом."""
 
@@ -106,10 +108,10 @@ class UpdatesLongPollingURL(UpdatesURLInterface):
 class UpdatesIteratorInterface(Protocol):
     """Интерфейс итератора по обновлениям."""
 
-    def __aiter__(self):
+    def __aiter__(self) -> 'UpdatesIteratorInterface':
         """Точка входа в итератор."""
 
-    async def __anext__(self) -> list[str]:
+    async def __anext__(self) -> list[Update]:
         """Вернуть следующий элемент."""
 
 
@@ -123,15 +125,17 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
 
     _offset = 0
 
-    def __aiter__(self):
+    def __aiter__(self) -> 'UpdatesIteratorInterface':
         """Точка входа в итератор.
 
-        :return: PollingUpdatesIterator
+        :return: UpdatesIteratorInterface
         """
         return self
 
-    async def __anext__(self) -> list[str]:
+    async def __anext__(self) -> list[Update]:
         """Вернуть следующий элемент.
+
+        TODO: мы парсим json, потом обратно перегоняем его в строку
 
         :return: list[Update]
         """
@@ -151,4 +155,4 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
             if not parsed_result:
                 return []
             self._offset = parsed_result[-1]['update_id'] + 1  # noqa: WPS601
-            return [json.dumps(elem, ensure_ascii=False) for elem in parsed_result]
+            return [TgUpdate(json.dumps(elem, ensure_ascii=False)) for elem in parsed_result]

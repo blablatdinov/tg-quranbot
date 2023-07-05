@@ -43,7 +43,7 @@ from services.regular_expression import IntableRegularExpression
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
     """Поиск аята по тексту для обработки нажатия кнопки."""
 

@@ -33,7 +33,7 @@ from services.user_state import LoggedUserState, UserState
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class StepAnswer(TgAnswerInterface):
     """Роутинг ответа по состоянию пользователя."""
 

@@ -38,7 +38,7 @@ from services.user_state import LoggedUserState, UserState, UserStep
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class CityNotSupportedAnswer(TgAnswerInterface):
     """Ответ о неподдерживаемом городе."""
 
@@ -61,7 +61,7 @@ class CityNotSupportedAnswer(TgAnswerInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class ChangeCityAnswer(TgAnswerInterface):
     """Ответ со сменой города."""
 

@@ -6,24 +6,25 @@ authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.11"
-pydantic = {extras = ["dotenv"], version = "1.10.9"}
+pydantic = {extras = ["dotenv"], version = "1.10.11"}
 loguru = "0.7.0"
 aioredis = "2.0.1"
 nats-py = "2.3.0"
 quranbot-schema-registry = "0.0.16"
-sentry-sdk = "1.26.0"
+sentry-sdk = "1.27.0"
 httpx = "0.24.1"
 pytz = "2023.3"
 databases = {extras = ["asyncpg"], version = "0.7.0"}
 attrs = "23.1.0"
+jsonpath-ng = "1.5.3"
 
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = {git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master"}
 ipython = "8.14.0"
-mypy = "1.4.0"
+mypy = "1.4.1"
 asyncpg-stubs = "0.27.0"
 pytest-cov = "4.1.0"
-pytest = "7.3.2"
+pytest = "7.4.0"
 pytest-asyncio = "0.21.0"
 mixer = "7.2.2"
 pytest-mock = "3.11.1"
@@ -33,6 +34,7 @@ types-pytz = "2023.3.0.0"
 flake8-copyright = "0.2.4"
 SQLAlchemy = "1.4.48"
 alembic = "1.11.1"
+pytest-random-order = "1.1.0"
 telethon = "1.28.5"
 
 [build-system]
@@ -47,3 +49,4 @@ filterwarnings = [
   "error::DeprecationWarning",
 ]
 asyncio_mode = "auto"
+addopts = ['--random-order']

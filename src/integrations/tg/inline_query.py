@@ -20,19 +20,19 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import re
 from typing import final
 
 import attrs
 
 from app_types.intable import Intable
-from app_types.stringable import Stringable, UnwrappedString
+from app_types.stringable import Stringable
 from app_types.update import Update
-from integrations.tg.exceptions.update_parse_exceptions import InlineQueryIdNotFoundError, InlineQueryNotFoundError
+from integrations.tg.exceptions.update_parse_exceptions import InlineQueryNotFoundError
+from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class InlineQuery(Stringable):
     """Данные с инлайн поиска."""
 
@@ -42,17 +42,20 @@ class InlineQuery(Stringable):
         """Строковое представление.
 
         :return: str
-        :raises InlineQueryNotFoundError: если не найдены данные инлайн поиска
         """
-        unwrapped_string = str(self._update)
-        query_regex_result = re.search('query"(:|: )"(.+?)"', unwrapped_string)
-        if not query_regex_result:
-            raise InlineQueryNotFoundError
-        return query_regex_result.group(2)
+        return str(
+            ErrRedirectJsonPath(
+                JsonPathValue(
+                    self._update.dict(),
+                    '$..query',
+                ),
+                InlineQueryNotFoundError(),
+            ).evaluate(),
+        )
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class InlineQueryId(Intable):
     """Идентификатор инлайн поиска."""
 
@@ -62,13 +65,13 @@ class InlineQueryId(Intable):
         """Числовое представление.
 
         :return: int
-        :raises InlineQueryIdNotFoundError: если не найден идентификатор инлайн поиска
         """
-        unwrapped_string = str(UnwrappedString(self._update))
-        regex_result = re.search('inline_query"(:|: )({.+?})', unwrapped_string)
-        if not regex_result:
-            raise InlineQueryIdNotFoundError
-        regex_result = re.search(r'id"(:|: )"(\d+)"', regex_result.group(2))
-        if not regex_result:
-            raise InlineQueryIdNotFoundError
-        return int(regex_result.group(2))
+        return int(
+            ErrRedirectJsonPath(
+                JsonPathValue(
+                    self._update.dict(),
+                    '$..inline_query.id',
+                ),
+                InlineQueryNotFoundError(),
+            ).evaluate(),
+        )

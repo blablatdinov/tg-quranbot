@@ -30,7 +30,7 @@ from exceptions.base_exception import BaseAppError
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class IntableRegularExpression(Intable):
     """Регулярное выражение, которое можно привести к числу."""
 

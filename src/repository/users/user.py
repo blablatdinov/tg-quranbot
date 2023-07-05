@@ -90,7 +90,7 @@ class UserRepositoryInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UserRepository(UserRepositoryInterface):
     """Репозиторий для работы с пользователями."""
 

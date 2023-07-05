@@ -20,53 +20,31 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from functools import reduce
-from operator import truediv
+from pathlib import Path
 
 import pytest
 
-from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer, TgMessageRegexAnswer
-from settings import settings
+from integrations.tg.update import TgUpdate
 
 
 @pytest.fixture()
 def callback_update():
-    return reduce(
-        truediv,
-        [
-            'tests',
-            'unit',
-            'message_regex_answer',
-            'fixtures',
-            'callback_update.json',
-        ],
-        settings.BASE_DIR,
-    ).read_text()
+    return (Path(__file__).parent / 'fixtures' / 'callback_update.json').read_text()
 
 
 @pytest.fixture()
 def message_update():
-    return reduce(
-        truediv,
-        [
-            'tests',
-            'unit',
-            'message_regex_answer',
-            'fixtures',
-            'message_update.json',
-        ],
-        settings.BASE_DIR,
-    ).read_text()
+    return (Path(__file__).parent / 'fixtures' / 'message_update.json').read_text()
 
 
 async def test_on_message_update(message_update):
-    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(FkUpdate(message_update))
+    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(TgUpdate(message_update))
 
     assert got
 
 
 async def test_on_callback_update(callback_update):
-    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(FkUpdate(callback_update))
+    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(TgUpdate(callback_update))
 
     assert not got

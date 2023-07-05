@@ -35,7 +35,7 @@ from services.debug_answer import DebugAnswer
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class InlineQueryAnswer(TgAnswerInterface):
     """Ответ на инлайн поиск."""
 

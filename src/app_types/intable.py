@@ -40,7 +40,7 @@ class AsyncIntable(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class ThroughIntable(Intable):
     """Сквозное число."""
 
@@ -55,7 +55,7 @@ class ThroughIntable(Intable):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class ThroughAsyncIntable(AsyncIntable):
     """Сквозное число."""
 
@@ -70,7 +70,7 @@ class ThroughAsyncIntable(AsyncIntable):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class SyncToAsyncIntable(AsyncIntable):
     """Объект для использования синхронного Intable в кач-ве асинхронного AsyncIntable."""
 

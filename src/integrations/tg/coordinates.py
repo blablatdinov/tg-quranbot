@@ -20,13 +20,13 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import re
 from typing import Protocol, final
 
 import attrs
 
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import CoordinatesNotFoundError
+from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
 class Coordinates(Protocol):
@@ -40,7 +40,7 @@ class Coordinates(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class TgMessageCoordinates(Coordinates):
     """Координаты, принятые из чата."""
 
@@ -50,20 +50,28 @@ class TgMessageCoordinates(Coordinates):
         """Ширина.
 
         :return: float
-        :raises CoordinatesNotFoundError: если ширина не найдена
         """
-        regex_result = re.search(r'latitude"(:|: )((-|)\d+\.\d+)', str(self._update))
-        if not regex_result:
-            raise CoordinatesNotFoundError
-        return float(regex_result.group(2))
+        return float(
+            ErrRedirectJsonPath(
+                JsonPathValue(
+                    self._update.dict(),
+                    '$..[latitude]',
+                ),
+                CoordinatesNotFoundError(),
+            ).evaluate(),
+        )
 
     def longitude(self) -> float:
         """Долгота.
 
         :return: float
-        :raises CoordinatesNotFoundError: если долгота не найдена
         """
-        regex_result = re.search(r'longitude"(:|: )((-|)\d+\.\d+)', str(self._update))
-        if not regex_result:
-            raise CoordinatesNotFoundError
-        return float(regex_result.group(2))
+        return float(
+            ErrRedirectJsonPath(
+                JsonPathValue(
+                    self._update.dict(),
+                    '$..[longitude]',
+                ),
+                CoordinatesNotFoundError(),
+            ).evaluate(),
+        )

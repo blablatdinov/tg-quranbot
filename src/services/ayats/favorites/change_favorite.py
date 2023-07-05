@@ -49,7 +49,7 @@ from services.regular_expression import IntableRegularExpression
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class ChangeFavoriteAyatAnswer(TgAnswerInterface):
     """Ответ на запрос о смене аята в избранном."""
 

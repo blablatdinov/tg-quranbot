@@ -21,7 +21,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import re
 from typing import final
 
 import attrs
@@ -30,10 +29,11 @@ import pytz
 from app_types.date_time import DateTimeInterface
 from app_types.update import Update
 from exceptions.base_exception import InternalBotError
+from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class TgDateTime(DateTimeInterface):
     """Время сообщения."""
 
@@ -43,12 +43,16 @@ class TgDateTime(DateTimeInterface):
         """Дата/время.
 
         :return: datetime.datetime
-        :raises InternalBotError: если время не найдено
         """
-        regex_result = re.search(r'date"(:|: )(\d+)', str(self._update))
-        if not regex_result:
-            raise InternalBotError
         return datetime.datetime.fromtimestamp(
-            int(regex_result.group(2)),
+            int(
+                ErrRedirectJsonPath(
+                    JsonPathValue(
+                        self._update.dict(),
+                        '$..date',
+                    ),
+                    InternalBotError(),
+                ).evaluate(),
+            ),
             tz=pytz.timezone('UTC'),
         )

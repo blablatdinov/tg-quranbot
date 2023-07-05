@@ -41,7 +41,7 @@ from settings import settings
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class StartAnswer(TgAnswerInterface):
     """Обработчик стартового сообщения."""
 

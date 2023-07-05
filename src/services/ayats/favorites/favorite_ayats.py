@@ -31,7 +31,7 @@ from services.ayats.ayat import Ayat, QAyat
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class FavoriteAyats(AsyncListable):
     """Избранные аяты."""
 

@@ -33,7 +33,7 @@ class Stringable(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class ThroughStringable(Stringable):
     """Обертка для строки."""
 
@@ -48,7 +48,7 @@ class ThroughStringable(Stringable):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class UnwrappedString(Stringable):
     """Строки без переноса."""
 

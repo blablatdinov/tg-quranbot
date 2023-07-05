@@ -39,7 +39,7 @@ class SearchQueryInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class SearchQuery(SearchQueryInterface):
     """Запросом для поиска."""
 
@@ -61,7 +61,7 @@ class SearchQuery(SearchQueryInterface):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class ValidatedSearchQuery(SearchQueryInterface):
     """Декоратор, валидирующий запрос для поиска."""
 

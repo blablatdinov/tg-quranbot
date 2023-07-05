@@ -25,6 +25,7 @@ import json
 import pytest
 
 from integrations.tg.inline_query import InlineQuery, InlineQueryId
+from integrations.tg.update import TgUpdate
 
 
 @pytest.fixture()
@@ -49,12 +50,12 @@ def inline_query_update():
 
 
 def test(inline_query_update):
-    got = str(InlineQuery(inline_query_update))
+    got = str(InlineQuery(TgUpdate(inline_query_update)))
 
     assert got == 'Search'
 
 
 def test_inline_query_id(inline_query_update):
-    got = int(InlineQueryId(inline_query_update))
+    got = int(InlineQueryId(TgUpdate(inline_query_update)))
 
     assert got == 1540221937896102808

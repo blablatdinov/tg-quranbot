@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
-from attrs import define
+import attrs
 
 from app_types.stringable import Stringable
 from integrations.tg.update_struct import UpdateStruct
@@ -42,7 +42,7 @@ class Update(Stringable, Protocol):
 
 
 @final
-@define
+@attrs.define(frozen=True)
 class FkUpdate(Update):
     """Подделка обновления."""
 

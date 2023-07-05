@@ -54,7 +54,7 @@ class RecievedEventInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class SendPrayersEvent(RecievedEventInterface):
     """Событие о рассылки времени намаза."""
 
