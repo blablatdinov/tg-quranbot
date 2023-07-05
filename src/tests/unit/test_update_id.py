@@ -20,27 +20,26 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pathlib import Path
-
 import pytest
 from pytest_lazyfixture import lazy_fixture
 
 from app_types.stringable import ThroughStringable
 from integrations.tg.update import TgUpdate
 from integrations.tg.update_id import UpdateId
+from settings import settings
 
 
 @pytest.fixture()
 def stringable_update():
     return ThroughStringable(
-        (Path(__file__).parent / 'fixtures' / 'message_update.json').read_text(),
+        (settings.BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),
     )
 
 
 @pytest.fixture()
 def stringable_callback_update():
     return ThroughStringable(
-        (Path(__file__).parent / 'fixtures' / 'button_callback.json').read_text(),
+        (settings.BASE_DIR / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
     )
 
 

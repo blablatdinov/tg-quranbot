@@ -20,53 +20,23 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from pathlib import Path
 
 import pytest
-from pytest_lazyfixture import lazy_fixture
 
-from integrations.tg.chat_id import TgChatId
-from integrations.tg.update import TgUpdate
-
-
-@pytest.fixture()
-def stringable_update():
-    return (Path(__file__).parent / 'fixtures' / 'message_update.json').read_text()
+from app_types.stringable import ThroughStringable
+from integrations.tg.callback_query import CallbackQueryData
+from settings import settings
 
 
 @pytest.fixture()
 def stringable_callback_update():
-    return (Path(__file__).parent / 'fixtures' / 'button_callback.json').read_text()
+    return ThroughStringable(
+        (Path(settings.BASE_DIR) / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
+    )
 
 
-@pytest.fixture()
-def query_search_update():
-    return json.dumps({
-        'update_id': 637463119,
-        'inline_query': {
-            'id': '1540221937896102808',
-            'from': {
-                'id': 358610865,
-                'is_bot': False,
-                'first_name': 'Almaz',
-                'last_name': 'Ilaletdinov',
-                'username': 'ilaletdinov',
-                'language_code': 'ru',
-            },
-            'chat_type': 'sender',
-            'query': 'adsfawef',
-            'offset': '',
-        },
-    })
+def test(stringable_callback_update):
+    cb_query_data = CallbackQueryData(stringable_callback_update)
 
-
-@pytest.mark.parametrize('input_', [
-    lazy_fixture('stringable_update'),
-    lazy_fixture('stringable_callback_update'),
-    lazy_fixture('query_search_update'),
-])
-def test(input_):
-    chat_id = TgChatId(TgUpdate(input_))
-
-    assert int(chat_id) == 358610865
+    assert str(cb_query_data) == 'mark_readed(2362)'

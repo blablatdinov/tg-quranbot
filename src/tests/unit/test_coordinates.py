@@ -25,17 +25,19 @@ from pathlib import Path
 import pytest
 
 from app_types.stringable import ThroughStringable
-from integrations.tg.callback_query import CallbackQueryData
+from integrations.tg.coordinates import TgMessageCoordinates
+from integrations.tg.update import TgUpdate
 
 
 @pytest.fixture()
-def stringable_callback_update():
+def coordinates_json():
     return ThroughStringable(
-        (Path(__file__).parent / 'fixtures' / 'button_callback.json').read_text(),
+        (Path(__file__).parent.parent / 'fixtures' / 'coordinates.json').read_text(),
     )
 
 
-def test(stringable_callback_update):
-    cb_query_data = CallbackQueryData(stringable_callback_update)
+def test(coordinates_json):
+    coordinates = TgMessageCoordinates(TgUpdate(coordinates_json))
 
-    assert str(cb_query_data) == 'mark_readed(2362)'
+    assert coordinates.latitude() == 40.329649
+    assert coordinates.longitude() == -93.599524

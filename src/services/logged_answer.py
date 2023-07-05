@@ -46,7 +46,7 @@ class LoggedAnswer(SendableInterface):
         await self._event_sink.send(
             {
                 'messages': [{
-                    'message_json': update,
+                    'message_json': str(update),
                     'is_unknown': False,
                     'trigger_message_id': None,
                 }],

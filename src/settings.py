@@ -51,6 +51,9 @@ class Settings(BaseSettings):
     NATS_PORT: int = 4222
     NATS_TOKEN: str
 
+    TELEGRAM_CLIENT_ID: int = 0
+    TELEGRAM_CLIENT_HASH: str = ''
+
     @property
     def webhook_url(self) -> str:
         """Путь для приема пакетов от телеграма.
