@@ -25,28 +25,14 @@ import time
 import pytest
 
 
-@pytest.fixture()
-def expected_message():
-    return '\n'.join([
-        'Этот бот поможет тебе изучить Коран по богословскому переводу Шамиля Аляутдинова. ',
-        '',
-        'Каждое утро, вам будут приходить аяты из Священного Корана.',
-        'При нажатии на кнопку Подкасты, вам будут присылаться проповеди с сайта umma.ru.',
-        '',
-        (
-            'Также вы можете отправите номер суры, аята (например 4:7) и получить: аят в оригинале, '
-            + 'перевод на русский язык, транслитерацию и аудио'
-        ),
-    ])
-
-
 @pytest.mark.usefixtures('bot_process')
-def test_help(expected_message, tg_client, bot_name):
-    tg_client.send_message(bot_name, '/help')
+def test_help(tg_client, bot_name):
+    tg_client.send_message(bot_name, '🎧 Подкасты')
     for _ in range(50):
         time.sleep(0.1)
         message = next(tg_client.iter_messages(bot_name))
-        if message.message != '/help':
+        if 'http' in message.message:
             break
 
-    assert message.message == expected_message
+    assert message.message.startswith('http')
+    assert message.message.endswith('.mp3')
