@@ -1917,13 +1917,13 @@ test = ["argcomplete (>=2.0)", "pre-commit", "pytest", "pytest-mock"]
 
 [[package]]
 name = "types-pytest-lazy-fixture"
-version = "0.6.3.3"
+version = "0.6.3.4"
 description = "Typing stubs for pytest-lazy-fixture"
 optional = false
 python-versions = "*"
 files = [
-    {file = "types-pytest-lazy-fixture-0.6.3.3.tar.gz", hash = "sha256:2ef79d66bcde0e50acdac8dc55074b9ae0d4cfaeabdd638f5522f4cac7c8a2c7"},
-    {file = "types_pytest_lazy_fixture-0.6.3.3-py3-none-any.whl", hash = "sha256:a56a55649147ff960ff79d4b2c781a4f769351abc1876873f3116d0bd0c96353"},
+    {file = "types-pytest-lazy-fixture-0.6.3.4.tar.gz", hash = "sha256:4882a7a9a0fe0a38d407df17907167e9f336f5f5571b6e9954b4b4b4b30b7cca"},
+    {file = "types_pytest_lazy_fixture-0.6.3.4-py3-none-any.whl", hash = "sha256:a12d4f2878b88d0a4e7644fc6978fcf5683859e33f77d4ebe6a61f211a066c30"},
 ]
 
 [[package]]
@@ -2029,4 +2029,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "b762747bb6ed5ae5ceedc1630fc98255a61ca307b3912f336e1555d5d9412917"
+content-hash = "4b69a55ab494973eb3e8df0826d06907741cdd16670268f6332706ad0c8bdf90"
