@@ -35,7 +35,7 @@ flake8-copyright = "0.2.4"
 SQLAlchemy = "1.4.49"
 alembic = "1.11.1"
 pytest-random-order = "1.1.0"
-telethon = "1.29.1"
+telethon = "1.29.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
