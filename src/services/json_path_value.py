@@ -20,12 +20,12 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pyeo import elegant
 from contextlib import suppress
 from typing import Generic, Iterable, Protocol, TypeVar, final
 
 import attrs
 import jsonpath_ng
+from pyeo import elegant
 
 from app_types.stringable import Stringable
 

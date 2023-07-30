@@ -20,12 +20,12 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pyeo import elegant
 from contextlib import suppress
 from typing import final
 
 import httpx
 from loguru import logger
+from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError

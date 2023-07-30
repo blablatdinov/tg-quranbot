@@ -20,7 +20,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pyeo import elegant
 import asyncio
 from typing import final
 
@@ -28,6 +27,7 @@ import attrs
 import httpx
 from databases import Database
 from loguru import logger
+from pyeo import elegant
 
 from app_types.runable import Runable
 from exceptions.base_exception import InternalBotError

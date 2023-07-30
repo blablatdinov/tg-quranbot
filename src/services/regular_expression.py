@@ -20,11 +20,11 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pyeo import elegant
 import re
 from typing import final
 
 import attrs
+from pyeo import elegant
 
 from app_types.intable import Intable
 from exceptions.base_exception import BaseAppError

@@ -20,13 +20,13 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pyeo import elegant
 import asyncio
 import json
 from typing import final
 
 import nats
 from loguru import logger
+from pyeo import elegant
 from quranbot_schema_registry import validate_schema
 
 from app_types.runable import Runable

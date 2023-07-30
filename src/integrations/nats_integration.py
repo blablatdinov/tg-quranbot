@@ -20,7 +20,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pyeo import elegant
 import datetime
 import json
 import uuid
@@ -29,6 +28,7 @@ from typing import Protocol, final
 import nats
 import pytz
 from loguru import logger
+from pyeo import elegant
 from quranbot_schema_registry.validate_schema import validate_schema
 
 from settings import settings

@@ -20,13 +20,13 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pyeo import elegant
 import enum
 from typing import Protocol, final
 
 import attrs
 from aioredis import Redis
 from loguru import logger
+from pyeo import elegant
 
 
 @final

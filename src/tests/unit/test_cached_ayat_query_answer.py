@@ -20,13 +20,13 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pyeo import elegant
 import json
 from contextlib import suppress
 from unittest.mock import AsyncMock
 
 import pytest
 from aioredis import Redis
+from pyeo import elegant
 
 from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.update import TgUpdate

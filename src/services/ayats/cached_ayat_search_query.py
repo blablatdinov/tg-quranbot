@@ -20,12 +20,12 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pyeo import elegant
 from typing import final
 
 import attrs
 import httpx
 from aioredis import Redis
+from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId

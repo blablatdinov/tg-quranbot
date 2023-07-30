@@ -20,12 +20,12 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pyeo import elegant
 import datetime
 from typing import final
 
 import attrs
 from databases import Database
+from pyeo import elegant
 
 from app_types.date_time import AsyncDateTimeInterface
 from app_types.intable import Intable
