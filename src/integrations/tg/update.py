@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import json
 from typing import final
 
@@ -33,6 +34,7 @@ from services.weak_cache import weak_lru
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class TgUpdate(Update):
     """Объект обновления от телеграмма.
 
@@ -68,6 +70,7 @@ class TgUpdate(Update):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class CachedTgUpdate(Update):
     """Декоратор, для избежания повторной десериализации.
 

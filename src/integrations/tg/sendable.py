@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import asyncio
 import json
 from typing import Protocol, final
@@ -34,6 +35,7 @@ from exceptions.internal_exceptions import TelegramIntegrationsError
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
+@elegant
 class SendableInterface(Protocol):
     """Интерфейс объекта, отправляющего ответы в API."""
 
@@ -46,6 +48,7 @@ class SendableInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class SendableAnswer(SendableInterface):
     """Объект, отправляющий ответы в API."""
 
@@ -72,6 +75,7 @@ class SendableAnswer(SendableInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserNotSubscribedSafeSendable(SendableInterface):
     """Декоратор для обработки отписанных пользователей."""
 
@@ -102,6 +106,7 @@ class UserNotSubscribedSafeSendable(SendableInterface):
 
 
 @final
+@elegant
 class SliceIterator(object):
     """Итератор по срезам массива."""
 
@@ -137,6 +142,7 @@ class SliceIterator(object):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class BulkSendableAnswer(SendableInterface):
     """Массовая отправка."""
 

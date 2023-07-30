@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import Protocol, final
 
 import attrs
@@ -30,6 +31,7 @@ from services.regular_expression import IntableRegularExpression
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class PrayerStatus(object):
     """Объект, рассчитывающий данные кнопки для изменения статуса прочитанности намаза."""
 
@@ -50,6 +52,7 @@ class PrayerStatus(object):
         return 'not' not in self._source.split('(')[0]
 
 
+@elegant
 class UserPrayerStatusInterface(Protocol):
     """Интерфейс статуса прочитанности намаза."""
 
@@ -62,6 +65,7 @@ class UserPrayerStatusInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserPrayerStatus(UserPrayerStatusInterface):
     """Статус прочитанности намаза."""
 

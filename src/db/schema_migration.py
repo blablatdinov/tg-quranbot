@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import asyncio
 import datetime
 import uuid
@@ -29,6 +30,7 @@ from databases import Database
 
 
 @final
+@elegant
 class SuraMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -45,6 +47,7 @@ class SuraMigration(object):
 
 
 @final
+@elegant
 class FilesMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -61,6 +64,7 @@ class FilesMigration(object):
 
 
 @final
+@elegant
 class PodcastMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -89,6 +93,7 @@ class PodcastMigration(object):
 
 
 @final
+@elegant
 class AyatsMigration(object):
 
     def __init__(self, old_db, new_db) -> None:
@@ -124,6 +129,7 @@ class AyatsMigration(object):
 
 
 @final
+@elegant
 class AdminMessagesMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -150,6 +156,7 @@ class AdminMessagesMigration(object):
 
 
 @final
+@elegant
 class CitiesMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -176,6 +183,7 @@ class CitiesMigration(object):
 
 
 @final
+@elegant
 class PrayerDayMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -200,6 +208,7 @@ class PrayerDayMigration(object):
 
 
 @final
+@elegant
 class PrayerMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -230,6 +239,7 @@ class PrayerMigration(object):
 
 
 @final
+@elegant
 class PrayerAtUserGroupMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -249,6 +259,7 @@ class PrayerAtUserGroupMigration(object):
 
 
 @final
+@elegant
 class PrayerAtUserMigration(object):
 
     def __init__(self, old_db, new_db):
@@ -286,6 +297,7 @@ class PrayerAtUserMigration(object):
 
 
 @final
+@elegant
 class UsersMigration(object):
 
     def __init__(self, old_db, new_db):

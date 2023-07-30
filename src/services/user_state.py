@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import enum
 from typing import Protocol, final
 
@@ -29,6 +30,7 @@ from loguru import logger
 
 
 @final
+@elegant
 class UserStep(enum.Enum):
     """Перечисление возможных состояний пользователя."""
 
@@ -37,6 +39,7 @@ class UserStep(enum.Enum):
     ayat_search = 'ayat_search'
 
 
+@elegant
 class UserStateInterface(Protocol):
     """Интерфейс для работы с состоянием пользователя."""
 
@@ -52,6 +55,7 @@ class UserStateInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class LoggedUserState(UserStateInterface):
     """Логгирующий декоратор объекта, работающего с состоянием пользователя."""
 
@@ -78,6 +82,7 @@ class LoggedUserState(UserStateInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserState(UserStateInterface):
     """Объект, работающий с состоянием пользователя."""
 

@@ -20,12 +20,14 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import final
 
 from pydantic import BaseModel
 
 
 @final
+@elegant
 class AyatShort(BaseModel):
     """Короткая модель аята."""
 
@@ -42,6 +44,7 @@ class AyatShort(BaseModel):
 
 
 @final
+@elegant
 class Ayat(BaseModel):
     """Модель аята."""
 

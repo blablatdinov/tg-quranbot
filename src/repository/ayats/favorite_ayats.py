@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import Protocol, final
 
 import attrs
@@ -31,6 +32,7 @@ from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.schemas import Ayat
 
 
+@elegant
 class FavoriteAyatRepositoryInterface(Protocol):
     """Интерфейс для работы с хранилищем избранных аятов."""
 
@@ -56,6 +58,7 @@ class FavoriteAyatRepositoryInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
     """Класс для работы с хранилищем избранных аятов."""
 

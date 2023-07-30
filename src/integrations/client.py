@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import time
 from typing import Protocol, TypeVar, final
 
@@ -31,6 +32,7 @@ from pydantic import BaseModel
 ParseModel = TypeVar('ParseModel', bound=BaseModel)
 
 
+@elegant
 class IntegrationClientInterface(Protocol):
     """Интерфейс HTTP клиента."""
 
@@ -44,6 +46,7 @@ class IntegrationClientInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class IntegrationClient(IntegrationClientInterface):
     """Httpx клиент."""
 
@@ -62,6 +65,7 @@ class IntegrationClient(IntegrationClientInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class LoggedIntegrationClient(IntegrationClientInterface):
     """Декоратор логирующий http запрос."""
 

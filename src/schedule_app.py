@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import final
 
 import attrs
@@ -35,6 +36,7 @@ from repository.users.users import UsersRepositoryInterface
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class TypingAction(TgAnswerInterface):
     """Действие с печатью."""
 
@@ -56,6 +58,7 @@ class TypingAction(TgAnswerInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class CheckUsersStatus(Runable):
     """Статусы пользователей."""
 

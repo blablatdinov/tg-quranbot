@@ -20,11 +20,13 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import Protocol, final
 
 import attrs
 
 
+@elegant
 class Stringable(Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
@@ -34,6 +36,7 @@ class Stringable(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class ThroughStringable(Stringable):
     """Обертка для строки."""
 
@@ -49,6 +52,7 @@ class ThroughStringable(Stringable):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UnwrappedString(Stringable):
     """Строки без переноса."""
 

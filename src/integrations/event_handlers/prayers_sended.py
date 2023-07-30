@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import datetime
 from typing import Protocol, final
 
@@ -40,6 +41,7 @@ from repository.users.users import UsersRepositoryInterface
 from services.user_prayer_keyboard import UserPrayersKeyboardByChatId
 
 
+@elegant
 class RecievedEventInterface(Protocol):
     """Интерфейс обрабатываемых событий."""
 
@@ -55,6 +57,7 @@ class RecievedEventInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class SendPrayersEvent(RecievedEventInterface):
     """Событие о рассылки времени намаза."""
 

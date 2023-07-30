@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import httpx
 
 from app_types.stringable import Stringable
@@ -28,6 +29,7 @@ from integrations.tg.tg_answers import TgAnswerInterface
 from services.answers.answer import TelegramFileIdAnswer
 
 
+@elegant
 class FakeAnswer(TgAnswerInterface):
 
     async def build(self, update):
@@ -36,6 +38,7 @@ class FakeAnswer(TgAnswerInterface):
         ]
 
 
+@elegant
 class FakeString(Stringable):
 
     def __str__(self):

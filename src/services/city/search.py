@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import Protocol, final
 
 import attrs
@@ -32,6 +33,7 @@ from integrations.nominatim import GeoServiceIntegrationInterface
 from repository.city import City
 
 
+@elegant
 class SearchCityQueryInterface(Protocol):
     """Интерфейс поискового запроса городов."""
 
@@ -47,6 +49,7 @@ class SearchCityQueryInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class SearchCityQuery(SearchCityQueryInterface):
     """Запрос для поиска города."""
 
@@ -104,6 +107,7 @@ class SearchCityQuery(SearchCityQueryInterface):
         return self._longitude[0]
 
 
+@elegant
 class CitySearchInterface(Protocol):
     """Интерфейс для поиска городов."""
 
@@ -116,6 +120,7 @@ class CitySearchInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class SearchCityByName(CitySearchInterface):
     """Поиск города по названию."""
 
@@ -135,6 +140,7 @@ class SearchCityByName(CitySearchInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class SearchCityByCoordinates(CitySearchInterface):
     """Поиск города по координатам."""
 

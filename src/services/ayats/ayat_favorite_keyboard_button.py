@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import json
 from typing import final
 
@@ -34,6 +35,7 @@ from services.ayats.ayat import Ayat
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class AyatFavoriteKeyboardButton(KeyboardInterface):
     """Кнопка с добавлением аята в избранные."""
 

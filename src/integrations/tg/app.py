@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import asyncio
 from typing import final
 
@@ -36,6 +37,7 @@ from integrations.tg.sendable import SendableInterface
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class PollingApp(Runable):
     """Приложение на long polling."""
 
@@ -54,6 +56,7 @@ class PollingApp(Runable):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class AppWithGetMe(Runable):
     """Объект для запуска с предварительным запросом getMe."""
 
@@ -75,6 +78,7 @@ class AppWithGetMe(Runable):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class DatabaseConnectedApp(Runable):
     """Декоратор для подключения к БД."""
 

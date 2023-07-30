@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import Protocol, final
 
 import httpx
@@ -27,6 +28,7 @@ import httpx
 from app_types.update import Update
 
 
+@elegant
 class TgAnswerInterface(Protocol):
     """Интерфейс ответа пользователю."""
 
@@ -38,6 +40,7 @@ class TgAnswerInterface(Protocol):
 
 
 @final
+@elegant
 class FkAnswer(TgAnswerInterface):
     """Фейковый ответ."""
 

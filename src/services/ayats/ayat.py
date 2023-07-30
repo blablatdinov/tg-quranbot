@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import Protocol, final
 
 import attrs
@@ -33,6 +34,7 @@ from services.ayats.ayat_id_by_sura_ayat_num import AyatIdBySuraAyatNum
 from services.ayats.search.ayat_search_query import SearchQuery, ValidatedSearchQuery
 
 
+@elegant
 class Ayat(Protocol):
     """Интерфейс аята."""
 
@@ -51,6 +53,7 @@ class Ayat(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class QAyat(Ayat):
     """Аят."""
 

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import Protocol, final
 
 import attrs
@@ -28,6 +29,7 @@ from app_types.stringable import Stringable
 from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
 
 
+@elegant
 class SearchQueryInterface(Protocol):
     """Интерфейс объекта с запросом для поиска."""
 
@@ -40,6 +42,7 @@ class SearchQueryInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class SearchQuery(SearchQueryInterface):
     """Запросом для поиска."""
 
@@ -62,6 +65,7 @@ class SearchQuery(SearchQueryInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class ValidatedSearchQuery(SearchQueryInterface):
     """Декоратор, валидирующий запрос для поиска."""
 

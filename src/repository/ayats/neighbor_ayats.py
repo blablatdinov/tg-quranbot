@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import Protocol, final
 
 import attrs
@@ -33,6 +34,7 @@ from repository.ayats.schemas import AyatShort
 from services.ayats.ayat_text_search_query import AyatTextSearchQueryInterface
 
 
+@elegant
 class NeighborAyatsRepositoryInterface(Protocol):
     """Интерфейс для работы с соседними аятами в хранилище."""
 
@@ -48,6 +50,7 @@ class NeighborAyatsRepositoryInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
@@ -102,6 +105,7 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class NeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
@@ -161,6 +165,7 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
     """Класс для работы с сосденими аятами, при текстовом поиске."""
 

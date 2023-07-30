@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import final
 
 import attrs
@@ -34,6 +35,7 @@ from services.ayats.ayat_text_search_query import AyatTextSearchQuery
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class HighlightedSearchAnswer(TgAnswerInterface):
     """Ответ с подсвеченным поисковым текстом."""
 

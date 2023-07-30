@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import Protocol, final
 
 import attrs
@@ -28,12 +29,14 @@ from pydantic import BaseModel, parse_obj_as
 
 
 @final
+@elegant
 class QueryResultItem(BaseModel):
     """Результат запроса."""
 
     chat_id: int
 
 
+@elegant
 class UsersRepositoryInterface(Protocol):
     """Интерфейс для работы с хранилищем множества пользователей."""
 
@@ -59,6 +62,7 @@ class UsersRepositoryInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UsersRepository(UsersRepositoryInterface):
     """Класс для работы с хранилищем множества пользователей."""
 

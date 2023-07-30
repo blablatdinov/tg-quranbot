@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from contextlib import suppress
 from typing import Generic, Iterable, Protocol, TypeVar, final
 
@@ -31,6 +32,7 @@ from app_types.stringable import Stringable
 _ET = TypeVar('_ET', covariant=True)
 
 
+@elegant
 class JsonPath(Protocol[_ET]):
     """Интерфейс объектов, получающих значение по jsonpath."""
 
@@ -40,6 +42,7 @@ class JsonPath(Protocol[_ET]):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class JsonPathValue(JsonPath, Generic[_ET]):
     """Объект, получающий значение по jsonpath.
 
@@ -75,6 +78,7 @@ class JsonPathValue(JsonPath, Generic[_ET]):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class MatchManyJsonPath(JsonPath, Generic[_ET]):
     """Поиск по нескольким jsonpath."""
 
@@ -98,6 +102,7 @@ class MatchManyJsonPath(JsonPath, Generic[_ET]):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class ErrRedirectJsonPath(JsonPath, Generic[_ET]):
     """JsonPath с преобразованием исключений."""
 

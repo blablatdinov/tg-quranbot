@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import final
 
 import attrs
@@ -36,6 +37,7 @@ from services.user_state import LoggedUserState, UserState, UserStep
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserWithoutCitySafeAnswer(TgAnswerInterface):
     """Объект для обработки случаев когда пользователь запрашивает время намаза без установленного города."""
 
@@ -56,6 +58,7 @@ class UserWithoutCitySafeAnswer(TgAnswerInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class InviteSetCityAnswer(TgAnswerInterface):
     """Ответ с приглашением ввести город."""
 

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import time
 from typing import final
 
@@ -35,6 +36,7 @@ from integrations.tg.update_id import UpdateId
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class Millis(Floatable):
     """Миллисекунды."""
 
@@ -59,6 +61,7 @@ class Millis(Floatable):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class RoundedFloat(Floatable):
     """Округленное дробное число."""
 
@@ -75,6 +78,7 @@ class RoundedFloat(Floatable):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class TgMeasureAnswer(TgAnswerInterface):
     """Замеренный ответ."""
 

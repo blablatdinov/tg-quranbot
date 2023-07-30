@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import attrs
 
 from app_types.floatable import Floatable
@@ -27,6 +28,7 @@ from integrations.tg.tg_answers.measure_answer import RoundedFloat
 
 
 @attrs.define(frozen=True)
+@elegant
 class FloatableFake(Floatable):
 
     _origin: float

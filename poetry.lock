@@ -373,6 +373,21 @@ files = [
 ]
 
 [[package]]
+name = "eo-styleguide"
+version = "0.0.1a4"
+description = "Pyeo is an advanced static analysis tool tailored specifically to enforce the principles advocated by Elegant Objects (elegantobjects.org) in Python projects. It serves as a quality control instrument to ensure that your Python code adheres to the core tenets of elegance, simplicity, and maintainability."
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "eo_styleguide-0.0.1a4-py3-none-any.whl", hash = "sha256:9cbcd094174caba22e280d29c6c4c08259c4973450f0595af52cf5fbcc2cdc0c"},
+    {file = "eo_styleguide-0.0.1a4.tar.gz", hash = "sha256:0b32a234d5b202a31dff1e321cee74eda02818493433a5db096117a750357305"},
+]
+
+[package.dependencies]
+attrs = ">=23.0,<24.0"
+mypy = ">=1.0,<2.0"
+
+[[package]]
 name = "eradicate"
 version = "2.1.0"
 description = "Removes commented-out code."
@@ -2028,4 +2043,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "c2c58e2e62386cd48b55a441418d2b9df79792acc004ac52463832db1f420a68"
+content-hash = "e06b2c3dc474dbfcc11c8ef62dc80dbe4e3c2a5cd6679c6672fdad6b159f1c6a"

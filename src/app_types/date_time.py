@@ -20,10 +20,12 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import datetime
 from typing import Protocol
 
 
+@elegant
 class DateTimeInterface(Protocol):
     """Интерфейс даты/времени."""
 
@@ -31,6 +33,7 @@ class DateTimeInterface(Protocol):
         """Дата/время."""
 
 
+@elegant
 class AsyncDateTimeInterface(Protocol):
     """Интерфейс даты/времени для вычисления с возможностью переключения контекста."""
 

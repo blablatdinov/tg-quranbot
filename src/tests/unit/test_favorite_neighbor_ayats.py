@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import pytest
 
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
@@ -27,6 +28,7 @@ from repository.ayats.neighbor_ayats import FavoriteNeighborAyats
 from repository.ayats.schemas import Ayat
 
 
+@elegant
 class FavoriteAyatRepositoryFake(FavoriteAyatRepositoryInterface):
 
     async def get_favorite(self, ayat_id: int) -> Ayat:

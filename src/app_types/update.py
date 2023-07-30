@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import Protocol, final
 
 import attrs
@@ -28,6 +29,7 @@ from app_types.stringable import Stringable
 from integrations.tg.update_struct import UpdateStruct
 
 
+@elegant
 class Update(Stringable, Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
@@ -43,6 +45,7 @@ class Update(Stringable, Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FkUpdate(Update):
     """Подделка обновления."""
 

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import attrs
 import httpx
 
@@ -30,6 +31,7 @@ from services.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 
 
 @attrs.define(frozen=True)
+@elegant
 class ThroughDomainAnswer(TgAnswerInterface):
 
     _domain: str
@@ -38,6 +40,7 @@ class ThroughDomainAnswer(TgAnswerInterface):
         return [httpx.Request('GET', self._domain)]
 
 
+@elegant
 class AyatNotFoundAnswer(TgAnswerInterface):
 
     async def build(self, update):

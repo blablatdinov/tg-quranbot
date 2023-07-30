@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import json
 from typing import final
 
@@ -33,6 +34,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class ResizedKeyboard(KeyboardInterface):
     """Сжатая в высоту клавиатура."""
 
@@ -51,6 +53,7 @@ class ResizedKeyboard(KeyboardInterface):
 
 
 @final
+@elegant
 class DefaultKeyboard(KeyboardInterface):
     """Класс клавиатуры по умолчанию."""
 
@@ -65,6 +68,7 @@ class DefaultKeyboard(KeyboardInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FileAnswer(TgAnswerInterface):
     """Класс ответа с файлом."""
 
@@ -85,6 +89,7 @@ class FileAnswer(TgAnswerInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class TelegramFileIdAnswer(TgAnswerInterface):
     """Класс ответа с файлом."""
 

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import final
 
 import attrs
@@ -40,6 +41,7 @@ from services.regular_expression import IntableRegularExpression
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FavoriteAyatStatus(object):
     """Пользовательский ввод статуса аята в избранном."""
 
@@ -62,6 +64,7 @@ class FavoriteAyatStatus(object):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FavoriteAyatAnswer(TgAnswerInterface):
     """Ответ с избранными аятами."""
 
@@ -100,6 +103,7 @@ class FavoriteAyatAnswer(TgAnswerInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FavoriteAyatEmptySafeAnswer(TgAnswerInterface):
     """Обработка ошибок с пустыми избранными."""
 
@@ -120,6 +124,7 @@ class FavoriteAyatEmptySafeAnswer(TgAnswerInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FavoriteAyatPage(TgAnswerInterface):
     """Страница с избранным аятом."""
 

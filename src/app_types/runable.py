@@ -20,9 +20,11 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import Protocol
 
 
+@elegant
 class Runable(Protocol):
     """Интерфейс запускаемого объекта."""
 
@@ -30,6 +32,7 @@ class Runable(Protocol):
         """Запуск."""
 
 
+@elegant
 class SyncRunable(Protocol):
     """Интерфейс блокирующего запускаемого объекта."""
 

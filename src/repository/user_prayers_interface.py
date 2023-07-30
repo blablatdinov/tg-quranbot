@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import datetime
 from typing import Protocol, final
 
@@ -27,6 +28,7 @@ from pydantic import BaseModel
 
 
 @final
+@elegant
 class UserPrayer(BaseModel):
     """Время намаза пользователя.
 
@@ -41,6 +43,7 @@ class UserPrayer(BaseModel):
     is_readed: bool
 
 
+@elegant
 class UserPrayersInterface(Protocol):
     """Интерфейс времени намаза пользователя."""
 

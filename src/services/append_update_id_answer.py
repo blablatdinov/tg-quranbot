@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import datetime
 from typing import Protocol, final
 
@@ -33,6 +34,7 @@ from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.update_id import UpdateId
 
 
+@elegant
 class DebugParamInterface(Protocol):
     """Интерфейс отладочной информации."""
 
@@ -44,6 +46,7 @@ class DebugParamInterface(Protocol):
 
 
 @final
+@elegant
 class AppendDebugInfoAnswer(TgAnswerInterface):
     """Ответ с отладочной информацией."""
 
@@ -97,6 +100,7 @@ class AppendDebugInfoAnswer(TgAnswerInterface):
 
 
 @final
+@elegant
 class UpdateIdDebugParam(DebugParamInterface):
     """Отладочная информация с идентификатором обновления."""
 
@@ -110,6 +114,7 @@ class UpdateIdDebugParam(DebugParamInterface):
 
 
 @final
+@elegant
 class TimeDebugParam(DebugParamInterface):
     """Отладочная информация с временем."""
 
@@ -123,6 +128,7 @@ class TimeDebugParam(DebugParamInterface):
 
 
 @final
+@elegant
 class ChatIdDebugParam(DebugParamInterface):
     """Отладочная информация с идентификатором чата."""
 
@@ -137,6 +143,7 @@ class ChatIdDebugParam(DebugParamInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class CommitHashDebugParam(DebugParamInterface):
     """Отладочная информация с хэшом коммита."""
 

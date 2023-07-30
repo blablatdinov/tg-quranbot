@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import NamedTuple, Protocol, final
 
 import attrs
@@ -27,6 +28,7 @@ from databases import Database
 
 
 @final
+@elegant
 class AyatStructure(NamedTuple):
     """Структура для передачи данных аята."""
 
@@ -35,6 +37,7 @@ class AyatStructure(NamedTuple):
     ayat_num: str
 
 
+@elegant
 class SuraInterface(Protocol):
     """Интерфейс суры."""
 
@@ -47,6 +50,7 @@ class SuraInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class Sura(SuraInterface):
     """Сура."""
 

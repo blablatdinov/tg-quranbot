@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 from typing import final
 
 from app_types.stringable import Stringable
@@ -33,6 +34,7 @@ PODCAST_BUTTON = '(П|п)одкасты'
 
 
 @final
+@elegant
 class PrayerReadedEmoji(Stringable):
     """Смайлик для прочитанного намаза.
 
@@ -48,6 +50,7 @@ class PrayerReadedEmoji(Stringable):
 
 
 @final
+@elegant
 class PrayerNotReadedEmoji(Stringable):
     """Смайлик для непрочитанного намаза.
 

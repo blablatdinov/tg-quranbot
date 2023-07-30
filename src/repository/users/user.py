@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import uuid
 from typing import Final, Optional, Protocol, final
 
@@ -35,6 +36,7 @@ CHAT_ID_LITERAL: Final = 'chat_id'
 
 
 @final
+@elegant
 class User(BaseModel):
     """Модель пользователя."""
 
@@ -46,6 +48,7 @@ class User(BaseModel):
     city_id: Optional[uuid.UUID]
 
 
+@elegant
 class UserRepositoryInterface(Protocol):
     """Интерфейс репозитория для работы с пользователями."""
 
@@ -91,6 +94,7 @@ class UserRepositoryInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserRepository(UserRepositoryInterface):
     """Репозиторий для работы с пользователями."""
 

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import asyncio
 from typing import final
 
@@ -30,6 +31,7 @@ from app_types.runable import Runable, SyncRunable
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class CliApp(SyncRunable):
     """CLI приложение."""
 
@@ -46,6 +48,7 @@ class CliApp(SyncRunable):
 
 
 @final
+@elegant
 class ForkCliApp(SyncRunable):
     """Маршрутизация для CLI приложения."""
 
@@ -69,6 +72,7 @@ class ForkCliApp(SyncRunable):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class CommandCliApp(SyncRunable):
     """CLI команда."""
 

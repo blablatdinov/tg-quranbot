@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pyeo import elegant
 import json
 from contextlib import suppress
 from unittest.mock import AsyncMock
@@ -32,10 +33,12 @@ from integrations.tg.update import TgUpdate
 from services.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
 
 
+@elegant
 class FakeError(Exception):
     pass
 
 
+@elegant
 class TgAnswerFake(TgAnswerInterface):
 
     async def build(self, update):
