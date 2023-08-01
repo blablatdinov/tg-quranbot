@@ -37,7 +37,7 @@ from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswer
 from repository.admin_message import AdminMessageInterface
 from repository.users.user import UserRepositoryInterface
 from services.ayats.ayat import QAyat
-from services.start.start_message import StartMessage
+from services.start.start_message import SmartReferrerChatId
 from settings import settings
 
 
@@ -98,7 +98,7 @@ class StartAnswer(TgAnswerInterface):
 
     async def _create_with_referrer(self, update, start_message, ayat_message) -> list[httpx.Request]:
         with suppress(StartMessageNotContainReferrer):
-            referrer_id = await StartMessage(str(MessageText(update)), self._user_repo).referrer_chat_id()
+            referrer_id = await SmartReferrerChatId(str(MessageText(update)), self._user_repo).to_int()
             await self._user_repo.update_referrer(int(TgChatId(update)), referrer_id)
             return await TgAnswerList(
                 TgAnswerToSender(
