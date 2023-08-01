@@ -21,13 +21,12 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-from typing import Protocol, final
+from typing import Protocol, SupportsInt, final
 
 import attrs
 import httpx
 from pyeo import elegant
 
-from app_types.intable import Intable
 from app_types.stringable import Stringable
 from app_types.update import Update
 from integrations.tg.update import TgUpdate
@@ -35,7 +34,7 @@ from integrations.tg.update import TgUpdate
 
 @final
 @elegant
-class UpdatesTimeout(Intable):
+class UpdatesTimeout(SupportsInt):
     """Таймаут для обновлений."""
 
     def __int__(self):
@@ -97,7 +96,7 @@ class UpdatesLongPollingURL(UpdatesURLInterface):
     """URL обновлений с таймаутом."""
 
     _origin: UpdatesURLInterface
-    _long_polling_timeout: Intable
+    _long_polling_timeout: SupportsInt
 
     def generate(self, update_id: int):
         """Генерация.
@@ -129,7 +128,7 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
     """Итератор по обновлениям."""
 
     _updates_url: UpdatesURLInterface
-    _updates_timeout: Intable
+    _updates_timeout: SupportsInt
 
     _offset = 0
 

@@ -21,14 +21,13 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from typing import final
+from typing import SupportsInt, final
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
 from app_types.date_time import AsyncDateTimeInterface
-from app_types.intable import Intable
 from exceptions.internal_exceptions import UserHasNotGeneratedPrayersError
 
 
@@ -38,7 +37,7 @@ from exceptions.internal_exceptions import UserHasNotGeneratedPrayersError
 class UserPrayerDate(AsyncDateTimeInterface):
     """Объект времени намаза привязанного к пользователю."""
 
-    _user_prayer_id: Intable
+    _user_prayer_id: SupportsInt
     _database: Database
 
     async def datetime(self) -> datetime.datetime:
