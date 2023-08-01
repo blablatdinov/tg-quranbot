@@ -25,7 +25,6 @@ from typing import final
 import httpx
 from aioredis import Redis
 from databases import Database
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.client import IntegrationClient
@@ -86,7 +85,6 @@ from settings import settings
 
 
 @final
-@elegant
 class QuranbotAnswer(TgAnswerInterface):
     """Ответ бота quranbot."""
 

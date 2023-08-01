@@ -36,7 +36,6 @@ from integrations.tg.update_id import UpdateId
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class Millis(Floatable):
     """Миллисекунды."""
 

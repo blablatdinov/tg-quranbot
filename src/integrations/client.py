@@ -46,7 +46,6 @@ class IntegrationClientInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class IntegrationClient(IntegrationClientInterface):
     """Httpx клиент."""
 
@@ -65,7 +64,6 @@ class IntegrationClient(IntegrationClientInterface):
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class LoggedIntegrationClient(IntegrationClientInterface):
     """Декоратор логирующий http запрос."""
 

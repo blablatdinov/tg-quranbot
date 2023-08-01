@@ -53,7 +53,6 @@ class Ayat(Protocol):
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class QAyat(Ayat):
     """Аят."""
 

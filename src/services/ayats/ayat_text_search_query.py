@@ -41,7 +41,6 @@ class AyatTextSearchQueryInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class AyatTextSearchQuery(AyatTextSearchQueryInterface):
     """Запрос поиска аята."""
 

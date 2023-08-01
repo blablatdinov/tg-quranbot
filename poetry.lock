@@ -2043,10 +2043,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-<<<<<<< HEAD
-content-hash = "e06b2c3dc474dbfcc11c8ef62dc80dbe4e3c2a5cd6679c6672fdad6b159f1c6a"
-||||||| parent of 6db3030 (Update eo-styleguide)
-content-hash = "fb029074643c30de3e463819a71f2943be45519444d97390e02f9dfce991dd4c"
-=======
-content-hash = "a91587cf46c2b2b3c37e8e833bf261817d00b2f84581fec534b20d760240d26a"
->>>>>>> 6db3030 (Update eo-styleguide)
+content-hash = "86c4c8e9682f0e26120356ecf3edcb4bb7f4b01ee4c50cfa0ad231a6f0bedc11"

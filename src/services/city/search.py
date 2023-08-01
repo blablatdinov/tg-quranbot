@@ -49,7 +49,6 @@ class SearchCityQueryInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class SearchCityQuery(SearchCityQueryInterface):
     """Запрос для поиска города."""
 
