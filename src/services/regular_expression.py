@@ -21,19 +21,18 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import re
-from typing import final
+from typing import SupportsInt, final
 
 import attrs
 from pyeo import elegant
 
-from app_types.intable import Intable
 from exceptions.base_exception import BaseAppError
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class IntableRegularExpression(Intable):
+class IntableRegularExpression(SupportsInt):
     """Регулярное выражение, которое можно привести к числу."""
 
     _text_for_searching: str

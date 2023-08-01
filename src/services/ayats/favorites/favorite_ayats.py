@@ -20,13 +20,13 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import SupportsInt, final
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import Intable, ThroughAsyncIntable
+from app_types.intable import ThroughAsyncIntable
 from app_types.listable import AsyncListable
 from services.ayats.ayat import Ayat, QAyat
 
@@ -37,7 +37,7 @@ from services.ayats.ayat import Ayat, QAyat
 class FavoriteAyats(AsyncListable):
     """Избранные аяты."""
 
-    _chat_id: Intable
+    _chat_id: SupportsInt
     _database: Database
 
     async def to_list(self) -> list[Ayat]:
