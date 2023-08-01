@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-FROM python:3.10 as base
+FROM python:3.11 as base
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 WORKDIR /app
 
@@ -36,7 +36,7 @@ RUN cat /tmp/requirements.txt
 RUN python -m venv /app/.venv && \
     /app/.venv/bin/pip install -r /tmp/requirements.txt
 
-FROM python:3.10 as runtime
+FROM python:3.11 as runtime
 
 # Copy only requirements to cache them in docker layer
 WORKDIR /app
