@@ -28,7 +28,7 @@ authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
-pydantic = {extras = ["dotenv"], version = "1.10.2"}
+pydantic = {extras = ["dotenv"], version = "1.10.12"}
 loguru = "0.7.0"
 nats-py = "2.3.1"
 quranbot-schema-registry = "0.0.16"
