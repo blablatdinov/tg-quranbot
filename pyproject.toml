@@ -33,7 +33,7 @@ loguru = "0.7.0"
 aioredis = "2.0.1"
 nats-py = "2.3.0"
 quranbot-schema-registry = "0.0.16"
-sentry-sdk = "1.29.1"
+sentry-sdk = "1.29.2"
 httpx = "0.24.1"
 pytz = "2023.3"
 databases = {extras = ["asyncpg"], version = "0.7.0"}
