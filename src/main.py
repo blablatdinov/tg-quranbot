@@ -25,7 +25,7 @@ from contextlib import suppress
 
 from redis import asyncio as aioredis
 
-from db.base import database
+from db.connection import database
 from event_recieve import RecievedEvents
 from integrations.event_handlers.prayers_sended import SendPrayersEvent
 from integrations.nats_integration import NatsSink
