@@ -26,7 +26,7 @@ run:
 lint:
 	poetry run isort src
 	poetry run flake8 src
-	poetry run mypy src
+	rm -rf .mypy_cache && poetry run mypy src
 
 test:
 	poetry run pytest src/tests/unit
