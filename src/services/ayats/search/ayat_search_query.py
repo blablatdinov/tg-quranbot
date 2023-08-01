@@ -1,8 +1,35 @@
-from typing import Protocol
+"""The MIT License (MIT).
 
+Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+"""
+from typing import Protocol, final
+
+import attrs
+from pyeo import elegant
+
+from app_types.stringable import Stringable
 from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
 
 
+@elegant
 class SearchQueryInterface(Protocol):
     """Интерфейс объекта с запросом для поиска."""
 
@@ -13,32 +40,36 @@ class SearchQueryInterface(Protocol):
         """Номер аята."""
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class SearchQuery(SearchQueryInterface):
     """Запросом для поиска."""
 
-    def __init__(self, query: str):
-        self._query = query
+    _query: Stringable
 
     def sura(self) -> int:
         """Номер суры.
 
         :return: int
         """
-        return int(self._query.split(':')[0])
+        return int(str(self._query).split(':')[0])
 
     def ayat(self) -> str:
         """Номер аята.
 
         :return: str
         """
-        return self._query.split(':')[1]
+        return str(self._query).split(':')[1]
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class ValidatedSearchQuery(SearchQueryInterface):
     """Декоратор, валидирующий запрос для поиска."""
 
-    def __init__(self, query: SearchQueryInterface):
-        self._origin = query
+    _origin: SearchQueryInterface
 
     def sura(self) -> int:
         """Номер суры.

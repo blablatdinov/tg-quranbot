@@ -1,93 +1,73 @@
-import datetime
+"""The MIT License (MIT).
 
+Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+"""
+from typing import final
+
+import attrs
 import httpx
+from pyeo import elegant
 
-from app_types.stringable import Stringable
+from app_types.intable import ThroughIntable
+from db.connection import database
 from integrations.tg.callback_query import CallbackQueryData
-from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_id import MessageId
-from integrations.tg.tg_answers import TgTextAnswer
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.message_id_answer import TgMessageIdAnswer
 from repository.prayer_time import PrayersWithoutSunrise
 from repository.user_prayers_interface import UserPrayersInterface
 from services.prayers.prayer_status import PrayerStatus, UserPrayerStatusInterface
+from services.prayers.user_prayer_date import UserPrayerDate
 from services.user_prayer_keyboard import UserPrayersKeyboard
 
 
-class PrayerForUserAnswer(TgAnswerInterface):
-    """Ответ пользователю с временами намаза."""
-
-    def __init__(
-        self,
-        answer: TgAnswerInterface,
-        user_prayers: UserPrayersInterface,
-    ):
-        self._origin = answer
-        self._user_prayers = user_prayers
-
-    async def build(self, update: Stringable) -> list[httpx.Request]:
-        """Отправить.
-
-        :param update: Stringable
-        :return: list[types.Message]
-        """
-        prayers = await self._user_prayers.prayer_times(
-            int(TgChatId(update)), datetime.date.today(),
-        )
-        time_format = '%H:%M'
-        template = '\n'.join([
-            'Время намаза для г. {city_name} ({date})\n',
-            'Иртәнге: {fajr_prayer_time}',
-            'Восход: {sunrise_prayer_time}',
-            'Өйлә: {dhuhr_prayer_time}',
-            'Икенде: {asr_prayer_time}',
-            'Ахшам: {magrib_prayer_time}',
-            'Ястү: {ishaa_prayer_time}',
-        ])
-        return await TgAnswerMarkup(
-            TgTextAnswer(
-                self._origin,
-                template.format(
-                    city_name=prayers[0].city,
-                    date=prayers[0].day.strftime('%d.%m.%Y'),
-                    fajr_prayer_time=prayers[0].time.strftime(time_format),
-                    sunrise_prayer_time=prayers[1].time.strftime(time_format),
-                    dhuhr_prayer_time=prayers[2].time.strftime(time_format),
-                    asr_prayer_time=prayers[3].time.strftime(time_format),
-                    magrib_prayer_time=prayers[4].time.strftime(time_format),
-                    ishaa_prayer_time=prayers[5].time.strftime(time_format),
-                ),
-            ),
-            UserPrayersKeyboard(PrayersWithoutSunrise(self._user_prayers), datetime.date.today()),
-        ).build(update)
-
-
+@final
+@attrs.define(frozen=True)
+@elegant
 class UserPrayerStatusChangeAnswer(TgAnswerInterface):
     """Ответ с изменением статуса прочитанности намаза."""
 
-    def __init__(
-        self,
-        answer: TgAnswerInterface,
-        prayer_status: UserPrayerStatusInterface,
-        user_prayers: UserPrayersInterface,
-    ):
-        self._origin = answer
-        self._prayer_status = prayer_status
-        self._user_prayers = user_prayers
+    _origin: TgAnswerInterface
+    _prayer_status: UserPrayerStatusInterface
+    _user_prayers: UserPrayersInterface
 
     async def build(self, update) -> list[httpx.Request]:
         """Обработка запроса.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
-        await self._prayer_status.change(PrayerStatus(str(CallbackQueryData(update))))
+        prayer_status = PrayerStatus(str(CallbackQueryData(update)))
+        await self._prayer_status.change(prayer_status)
         return await TgAnswerMarkup(
             TgMessageIdAnswer(
                 self._origin,
                 int(MessageId(update)),
             ),
-            UserPrayersKeyboard(PrayersWithoutSunrise(self._user_prayers), datetime.date.today()),
+            UserPrayersKeyboard(
+                PrayersWithoutSunrise(self._user_prayers),
+                await UserPrayerDate(
+                    ThroughIntable(prayer_status.user_prayer_id()),
+                    database,
+                ).datetime(),
+            ),
         ).build(update)

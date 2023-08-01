@@ -1,11 +1,35 @@
+"""The MIT License (MIT).
+
+Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+"""
 import datetime
-from typing import Protocol
+from typing import Protocol, final
 
+import attrs
 from databases import Database
+from pyeo import elegant
 
+from app_types.update import FkUpdate
 from integrations.tg.sendable import BulkSendableAnswer
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup, TgChatIdAnswer, TgMessageAnswer, TgTextAnswer
-from integrations.tg.tg_answers.update import Update
 from repository.prayer_time import (
     NewUserPrayers,
     PrayersWithoutSunrise,
@@ -17,6 +41,7 @@ from repository.users.users import UsersRepositoryInterface
 from services.user_prayer_keyboard import UserPrayersKeyboardByChatId
 
 
+@elegant
 class RecievedEventInterface(Protocol):
     """Интерфейс обрабатываемых событий."""
 
@@ -30,12 +55,18 @@ class RecievedEventInterface(Protocol):
         """
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class SendPrayersEvent(RecievedEventInterface):
     """Событие о рассылки времени намаза."""
 
+    _users_repo: UsersRepositoryInterface
+    _empty_answer: TgAnswerInterface
+    _database: Database
+
     name = 'Prayers.Sended'
     version = 1
-
     _time_format = '%H:%M'
     _template = '\n'.join([
         'Время намаза для г. {city_name} ({date})\n',
@@ -47,11 +78,6 @@ class SendPrayersEvent(RecievedEventInterface):
         'Ястү: {ishaa_prayer_time}',
     ])
 
-    def __init__(self, users_repo: UsersRepositoryInterface, empty_answer: TgAnswerInterface, database: Database):
-        self._users_repo = users_repo
-        self._empty_answer = empty_answer
-        self._database = database
-
     async def handle_event(self, event_data: dict):
         """Обработать событие.
 
@@ -60,7 +86,7 @@ class SendPrayersEvent(RecievedEventInterface):
         deactivated_users = []
         chat_ids = await self._users_repo.active_users_with_city()
         answers = await self._build_requests(chat_ids)
-        for response_list in await BulkSendableAnswer(answers).send(Update(update_id=0).json()):
+        for response_list in await BulkSendableAnswer(answers).send(FkUpdate()):
             for response_dict in response_list:
                 if not response_dict['ok']:
                     deactivated_users.append(response_dict['chat_id'])

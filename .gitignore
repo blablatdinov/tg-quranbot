@@ -39,3 +39,5 @@ tmp*
 # bin files
 bin/
 
+# Telethon sessions
+*.session

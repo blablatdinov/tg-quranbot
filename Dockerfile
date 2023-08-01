@@ -1,3 +1,25 @@
+# The MIT License (MIT).
+# 
+# Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+# OR OTHER DEALINGS IN THE SOFTWARE.
+
 FROM python:3.11 as base
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 WORKDIR /app
@@ -8,14 +30,13 @@ COPY poetry.lock pyproject.toml /app/
 RUN poetry export --without dev -o requirements.txt
 
 FROM base as build
+RUN apt-get update && apt-get upgrade -y
 COPY --from=poetry /app/requirements.txt /tmp/requirements.txt
-RUN apt-get install gcc libffi-dev
 RUN cat /tmp/requirements.txt
 RUN python -m venv /app/.venv && \
-    /app/.venv/bin/pip install 'wheel==0.36.2' && \
     /app/.venv/bin/pip install -r /tmp/requirements.txt
 
-FROM python:3.11-alpine as runtime
+FROM python:3.11 as runtime
 
 # Copy only requirements to cache them in docker layer
 WORKDIR /app

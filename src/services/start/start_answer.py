@@ -1,38 +1,61 @@
+"""The MIT License (MIT).
+
+Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+"""
 from contextlib import suppress
+from typing import final
 
+import attrs
 import httpx
+from databases import Database
+from pyeo import elegant
 
-from app_types.stringable import Stringable
+from app_types.intable import ThroughAsyncIntable
+from app_types.update import Update
 from exceptions.user import StartMessageNotContainReferrer, UserAlreadyExists
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
 from repository.admin_message import AdminMessageInterface
-from repository.ayats.ayat import AyatRepositoryInterface
 from repository.users.user import UserRepositoryInterface
-from services.start.start_message import StartMessage
+from services.ayats.ayat import QAyat
+from services.start.start_message import SmartReferrerChatId
 from settings import settings
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class StartAnswer(TgAnswerInterface):
     """Обработчик стартового сообщения."""
 
-    def __init__(
-        self,
-        answer: TgAnswerInterface,
-        user_repo: UserRepositoryInterface,
-        admin_message_repo: AdminMessageInterface,
-        ayat_repo: AyatRepositoryInterface,
-    ):
-        self._origin = answer
-        self._user_repo = user_repo
-        self._admin_message_repo = admin_message_repo
-        self._ayat_repo = ayat_repo
+    _origin: TgAnswerInterface
+    _user_repo: UserRepositoryInterface
+    _admin_message: AdminMessageInterface
+    _database: Database
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         await self._check_user_exists(update)
@@ -65,17 +88,17 @@ class StartAnswer(TgAnswerInterface):
 
     async def _start_answers(self) -> tuple[str, str]:
         return (
-            await self._admin_message_repo.text(),
-            str(await self._ayat_repo.first()),
+            await self._admin_message.text(),
+            await QAyat(ThroughAsyncIntable(1), self._database).text(),
         )
 
-    async def _check_user_exists(self, update: Stringable) -> None:
+    async def _check_user_exists(self, update: Update) -> None:
         if await self._user_repo.exists(int(TgChatId(update))):
             raise UserAlreadyExists
 
     async def _create_with_referrer(self, update, start_message, ayat_message) -> list[httpx.Request]:
         with suppress(StartMessageNotContainReferrer):
-            referrer_id = await StartMessage(str(MessageText(update)), self._user_repo).referrer_chat_id()
+            referrer_id = await SmartReferrerChatId(str(MessageText(update)), self._user_repo).to_int()
             await self._user_repo.update_referrer(int(TgChatId(update)), referrer_id)
             return await TgAnswerList(
                 TgAnswerToSender(

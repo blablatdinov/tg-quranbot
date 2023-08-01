@@ -1,7 +1,31 @@
-from typing import Protocol
+"""The MIT License (MIT).
 
+Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+"""
+from typing import Protocol, final
+
+import attrs
 from databases import Database
 from pydantic import parse_obj_as
+from pyeo import elegant
 
 from exceptions.base_exception import BaseAppError
 from exceptions.content_exceptions import AyatNotFoundError
@@ -10,6 +34,7 @@ from repository.ayats.schemas import AyatShort
 from services.ayats.ayat_text_search_query import AyatTextSearchQueryInterface
 
 
+@elegant
 class NeighborAyatsRepositoryInterface(Protocol):
     """Интерфейс для работы с соседними аятами в хранилище."""
 
@@ -23,18 +48,15 @@ class NeighborAyatsRepositoryInterface(Protocol):
         """Информация о странице."""
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
-    def __init__(
-        self,
-        ayat_id: int,
-        chat_id: int,
-        favorite_ayats_repo: FavoriteAyatRepositoryInterface,
-    ) -> None:
-        self._chat_id = chat_id
-        self._ayat_id = ayat_id
-        self._favorite_ayats_repo = favorite_ayats_repo
+    _ayat_id: int
+    _chat_id: int
+    _favorite_ayats_repo: FavoriteAyatRepositoryInterface
 
     async def left_neighbor(self) -> AyatShort:
         """Получить левый аят.
@@ -81,14 +103,16 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
         raise BaseAppError('Page info not generated')
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class NeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
-    def __init__(self, connection: Database, ayat_id: int):
-        self._connection = connection
-        self._ayat_id = ayat_id
+    _connection: Database
+    _ayat_id: int
 
-    async def left_neighbor(self):
+    async def left_neighbor(self) -> AyatShort:
         """Получить левый аят.
 
         :return: AyatShort
@@ -107,7 +131,7 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
             raise AyatNotFoundError
         return parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
 
-    async def right_neighbor(self):
+    async def right_neighbor(self) -> AyatShort:
         """Получить правый аят.
 
         :return: AyatShort
@@ -139,9 +163,15 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
         return 'стр. {0}/{1}'.format(actual_page_num, ayats_count)
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
     """Класс для работы с сосденими аятами, при текстовом поиске."""
 
+    _connection: Database
+    _ayat_id: int
+    _query: AyatTextSearchQueryInterface
     _search_sql_query = """
         SELECT
             ayats.ayat_id as id,
@@ -152,12 +182,7 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
         ORDER BY ayat_id
     """
 
-    def __init__(self, connection: Database, ayat_id, query: AyatTextSearchQueryInterface):
-        self._connection = connection
-        self._ayat_id = ayat_id
-        self._query = query
-
-    async def left_neighbor(self):
+    async def left_neighbor(self) -> AyatShort:
         """Получить левый аят.
 
         :return: AyatShort
@@ -174,7 +199,7 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
                     raise AyatNotFoundError from err
         raise AyatNotFoundError
 
-    async def right_neighbor(self):
+    async def right_neighbor(self) -> AyatShort:
         """Получить правый аят.
 
         :return: AyatShort

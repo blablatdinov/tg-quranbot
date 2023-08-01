@@ -1,8 +1,32 @@
+"""The MIT License (MIT).
+
+Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+"""
+from typing import final
+
 import httpx
 from databases import Database
 from redis.asyncio import Redis
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from integrations.client import IntegrationClient
 from integrations.nats_integration import SinkInterface
 from integrations.nominatim import NominatimIntegration
@@ -23,9 +47,7 @@ from integrations.tg.tg_answers import (
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from repository.admin_message import AdminMessage
-from repository.ayats.ayat import AyatRepository
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
-from repository.ayats.sura import Sura
 from repository.podcast import RandomPodcast
 from repository.prayer_time import NewUserPrayers, SafeNotFoundPrayers, SafeUserPrayers, UserPrayers
 from repository.users.user import UserRepository
@@ -37,11 +59,9 @@ from services.ayats.ayat_by_id import AyatByIdAnswer
 from services.ayats.ayat_by_sura_ayat_num_answer import AyatBySuraAyatNumAnswer
 from services.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 from services.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
-from services.ayats.favorite_ayats import FavoriteAyatAnswer, FavoriteAyatPage
+from services.ayats.favorite_ayats import FavoriteAyatAnswer, FavoriteAyatEmptySafeAnswer, FavoriteAyatPage
 from services.ayats.favorites.change_favorite import ChangeFavoriteAyatAnswer
 from services.ayats.highlited_search_answer import HighlightedSearchAnswer
-from services.ayats.search.ayat_by_id import AyatById
-from services.ayats.search_by_sura_ayat_num import AyatBySuraAyatNum
 from services.ayats.search_by_text import SearchAyatByTextAnswer
 from services.ayats.search_by_text_pagination import SearchAyatByTextCallbackAnswer
 from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
@@ -50,7 +70,7 @@ from services.city.inline_query_answer import InlineQueryAnswer
 from services.city.search import SearchCityByCoordinates, SearchCityByName
 from services.help_answer import HelpAnswer
 from services.podcast_answer import PodcastAnswer
-from services.prayers.invite_set_city_answer import InviteSetCityAnswer
+from services.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
 from services.prayers.prayer_for_user_answer import PrayerForUserAnswer
 from services.prayers.prayer_status import UserPrayerStatus
 from services.prayers.prayer_times import UserPrayerStatusChangeAnswer
@@ -64,6 +84,7 @@ from services.user_state import UserStep
 from settings import settings
 
 
+@final
 class QuranbotAnswer(TgAnswerInterface):
     """Ответ бота quranbot."""
 
@@ -73,15 +94,21 @@ class QuranbotAnswer(TgAnswerInterface):
         redis: Redis,
         event_sink: SinkInterface,
     ):
+        """Конструктор класса.
+
+        :param database: Database
+        :param redis: Redis
+        :param event_sink: SinkInterface
+        """
         self._database = database
         self._redis = redis
         self._event_sink = event_sink
         self._pre_build()
 
-    async def build(self, update: Stringable) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         return await self._answer.build(update)
@@ -95,7 +122,6 @@ class QuranbotAnswer(TgAnswerInterface):
                 TgMessageAnswer(empty_answer),
             ),
         )
-        ayat_repo = AyatRepository(self._database)
         self._answer = SafeFork(
             TgAnswerFork(
                 TgMessageRegexAnswer(
@@ -111,7 +137,7 @@ class QuranbotAnswer(TgAnswerInterface):
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',
-                    InviteSetCityAnswer(
+                    UserWithoutCitySafeAnswer(
                         ResetStateAnswer(
                             PrayerForUserAnswer(
                                 answer_to_sender,
@@ -128,18 +154,29 @@ class QuranbotAnswer(TgAnswerInterface):
                             ),
                             self._redis,
                         ),
-                        TgMessageAnswer(empty_answer),
-                        self._redis,
+                        InviteSetCityAnswer(
+                            TgTextAnswer(
+                                answer_to_sender,
+                                'Вы не указали город, отправьте местоположение или воспользуйтесь поиском',
+                            ),
+                            self._redis,
+                        ),
                     ),
                 ),
                 TgMessageRegexAnswer(
                     'Избранное',
                     ResetStateAnswer(
-                        FavoriteAyatAnswer(
-                            settings.DEBUG,
-                            html_to_sender,
-                            audio_to_sender,
-                            FavoriteAyatsRepository(self._database),
+                        FavoriteAyatEmptySafeAnswer(
+                            FavoriteAyatAnswer(
+                                settings.DEBUG,
+                                html_to_sender,
+                                audio_to_sender,
+                                FavoriteAyatsRepository(self._database),
+                            ),
+                            TgTextAnswer(
+                                answer_to_sender,
+                                'Вы еще не добавляли аятов в избранное',
+                            ),
                         ),
                         self._redis,
                     ),
@@ -187,9 +224,6 @@ class QuranbotAnswer(TgAnswerInterface):
                                     settings.DEBUG,
                                     html_to_sender,
                                     audio_to_sender,
-                                    AyatBySuraAyatNum(
-                                        Sura(self._database),
-                                    ),
                                 ),
                                 answer_to_sender,
                             ),
@@ -210,6 +244,16 @@ class QuranbotAnswer(TgAnswerInterface):
                     ),
                 ),
                 TgMessageRegexAnswer(
+                    'Поменять город',
+                    InviteSetCityAnswer(
+                        TgTextAnswer(
+                            answer_to_sender,
+                            'Отправьте местоположение или воспользуйтесь поиском',
+                        ),
+                        self._redis,
+                    ),
+                ),
+                TgMessageRegexAnswer(
                     '/start',
                     ResetStateAnswer(
                         TgAnswerMarkup(
@@ -222,7 +266,7 @@ class QuranbotAnswer(TgAnswerInterface):
                                             ),
                                             UserRepository(self._database),
                                             AdminMessage('start', self._database),
-                                            ayat_repo,
+                                            self._database,
                                         ),
                                         self._event_sink,
                                         UserRepository(self._database),
@@ -258,7 +302,6 @@ class QuranbotAnswer(TgAnswerInterface):
                                     settings.DEBUG,
                                     html_to_sender,
                                     audio_to_sender,
-                                    ayat_repo,
                                     self._redis,
                                 ),
                                 self._redis,
@@ -282,9 +325,6 @@ class QuranbotAnswer(TgAnswerInterface):
                     'getAyat',
                     AyatByIdAnswer(
                         settings.DEBUG,
-                        AyatById(
-                            ayat_repo,
-                        ),
                         html_to_sender,
                         audio_to_sender,
                     ),
@@ -298,7 +338,6 @@ class QuranbotAnswer(TgAnswerInterface):
                                 settings.DEBUG,
                                 html_to_sender,
                                 audio_to_sender,
-                                ayat_repo,
                                 self._redis,
                             ),
                             self._redis,
@@ -318,9 +357,6 @@ class QuranbotAnswer(TgAnswerInterface):
                 TgCallbackQueryRegexAnswer(
                     '(addToFavor|removeFromFavor)',
                     ChangeFavoriteAyatAnswer(
-                        AyatById(
-                            ayat_repo,
-                        ),
                         self._database,
                         answer_to_sender,
                     ),

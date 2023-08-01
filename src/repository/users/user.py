@@ -1,14 +1,41 @@
-import uuid
-from typing import Optional, Protocol
+"""The MIT License (MIT).
 
+Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+"""
+import uuid
+from typing import Final, Optional, Protocol, final
+
+import attrs
 from databases import Database
 from loguru import logger
 from pydantic import BaseModel
+from pyeo import elegant
 
 from exceptions.base_exception import InternalBotError
 from exceptions.internal_exceptions import UserNotFoundError
 
+CHAT_ID_LITERAL: Final = 'chat_id'
 
+
+@final
 class User(BaseModel):
     """Модель пользователя."""
 
@@ -20,6 +47,7 @@ class User(BaseModel):
     city_id: Optional[uuid.UUID]
 
 
+@elegant
 class UserRepositoryInterface(Protocol):
     """Интерфейс репозитория для работы с пользователями."""
 
@@ -63,11 +91,13 @@ class UserRepositoryInterface(Protocol):
         """
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class UserRepository(UserRepositoryInterface):
     """Репозиторий для работы с пользователями."""
 
-    def __init__(self, connection: Database):
-        self.connection = connection
+    _connection: Database
 
     async def create(self, chat_id: int, referrer_id: Optional[int] = None) -> User:
         """Метод для создания пользователя.
@@ -84,7 +114,10 @@ class UserRepository(UserRepositoryInterface):
             VALUES (:chat_id, :referrer_id, 2)
             RETURNING (chat_id, referrer_id)
         """
-        query_return_value = await self.connection.fetch_one(query, {'chat_id': chat_id, 'referrer_id': referrer_id})
+        query_return_value = await self._connection.fetch_one(
+            query,
+            {CHAT_ID_LITERAL: chat_id, 'referrer_id': referrer_id},
+        )
         if not query_return_value:
             raise InternalBotError
         logger.debug('User <{0}> inserted in DB'.format(chat_id))
@@ -114,7 +147,7 @@ class UserRepository(UserRepositoryInterface):
             FROM users
             WHERE chat_id = :chat_id
         """
-        record = await self.connection.fetch_one(query, {'chat_id': chat_id})
+        record = await self._connection.fetch_one(query, {CHAT_ID_LITERAL: chat_id})
         if not record:
             raise UserNotFoundError('Пользователь с chat_id: {0} не найден'.format(chat_id))
         return User.parse_obj(dict(record._mapping))  # noqa: WPS437
@@ -126,7 +159,7 @@ class UserRepository(UserRepositoryInterface):
         :returns: bool
         """
         query = 'SELECT COUNT(*) FROM users WHERE chat_id = :chat_id'
-        count = await self.connection.fetch_val(query, {'chat_id': chat_id})
+        count = await self._connection.fetch_val(query, {CHAT_ID_LITERAL: chat_id})
         return bool(count)
 
     async def update_city(self, chat_id: int, city_id: uuid.UUID):
@@ -140,7 +173,7 @@ class UserRepository(UserRepositoryInterface):
             SET city_id = :city_id
             WHERE chat_id = :chat_id
         """
-        await self.connection.execute(query, {'city_id': str(city_id), 'chat_id': chat_id})
+        await self._connection.execute(query, {'city_id': str(city_id), CHAT_ID_LITERAL: chat_id})
 
     async def update_referrer(self, chat_id: int, referrer_id: int):
         """Обновить город пользователя.
@@ -153,7 +186,7 @@ class UserRepository(UserRepositoryInterface):
             SET referrer_id = :referrer_id
             WHERE chat_id = :chat_id
         """
-        await self.connection.execute(query, {'referrer_id': referrer_id, 'chat_id': chat_id})
+        await self._connection.execute(query, {'referrer_id': referrer_id, CHAT_ID_LITERAL: chat_id})
 
     async def get_by_id(self, user_id: int) -> User:
         """Метод для получения пользователя.
@@ -171,7 +204,7 @@ class UserRepository(UserRepositoryInterface):
                 city_id
             FROM users WHERE legacy_id = :user_id
         """
-        row = await self.connection.fetch_one(query, {'user_id': user_id})
+        row = await self._connection.fetch_one(query, {'user_id': user_id})
         if not row:
             raise UserNotFoundError('Пользователь с legacy_id: {0} не найден'.format(user_id))
         return User.parse_obj(row._mapping)  # noqa: WPS437

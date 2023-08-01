@@ -1,9 +1,34 @@
+"""The MIT License (MIT).
+
+Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+"""
 import datetime
 import enum
 import uuid
+from typing import final
 
+import attrs
 from databases import Database
 from loguru import logger
+from pyeo import elegant
 
 from exceptions.content_exceptions import UserHasNotCityIdError
 from exceptions.internal_exceptions import UserHasNotGeneratedPrayersError
@@ -11,6 +36,8 @@ from exceptions.prayer_exceptions import PrayersNotFoundError, UserPrayersNotFou
 from repository.user_prayers_interface import UserPrayer, UserPrayersInterface
 
 
+@final
+@elegant
 class PrayerNames(str, enum.Enum):  # noqa: WPS600
     """Имена намазов."""
 
@@ -22,11 +49,13 @@ class PrayerNames(str, enum.Enum):  # noqa: WPS600
     ISHA = "isha'a"
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class UserPrayers(UserPrayersInterface):
     """Времена намазов пользователя."""
 
-    def __init__(self, connection: Database):
-        self._connection = connection
+    _connection: Database
 
     async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
         """Времена намаза.
@@ -61,12 +90,14 @@ class UserPrayers(UserPrayersInterface):
         return prayers
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class SafeUserPrayers(UserPrayersInterface):
     """Времена намазов с защитой от UserHasNotGeneratedPrayersError."""
 
-    def __init__(self, exists_user_prayers: UserPrayersInterface, new_user_prayers: UserPrayersInterface):
-        self._exists_user_prayers = exists_user_prayers
-        self._new_user_prayers = new_user_prayers
+    _exists_user_prayers: UserPrayersInterface
+    _new_user_prayers: UserPrayersInterface
 
     async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
         """Времена намаза.
@@ -81,12 +112,14 @@ class SafeUserPrayers(UserPrayersInterface):
             return await self._new_user_prayers.prayer_times(chat_id, date)
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class SafeNotFoundPrayers(UserPrayersInterface):
     """Времена намазов с защитой от UserPrayersNotFoundError."""
 
-    def __init__(self, connection: Database, user_prayers: UserPrayersInterface):
-        self._connection = connection
-        self._origin = user_prayers
+    _connection: Database
+    _origin: UserPrayersInterface
 
     async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
         """Времена намаза.
@@ -117,11 +150,13 @@ class SafeNotFoundPrayers(UserPrayersInterface):
         return prayer_times
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class PrayersWithoutSunrise(UserPrayersInterface):
     """Времена намазов без восхода."""
 
-    def __init__(self, prayers: UserPrayersInterface):
-        self._origin = prayers
+    _origin: UserPrayersInterface
 
     async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
         """Времена намаза.
@@ -138,12 +173,14 @@ class PrayersWithoutSunrise(UserPrayersInterface):
         ]
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class NewUserPrayers(UserPrayersInterface):
     """Объект генерирующий времена намазов пользователя."""
 
-    def __init__(self, connection: Database, exists_user_prayers):
-        self._connection = connection
-        self._exists_user_prayers = exists_user_prayers
+    _connection: Database
+    _exists_user_prayers: UserPrayersInterface
 
     async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
         """Создать времена намазов для пользователя.

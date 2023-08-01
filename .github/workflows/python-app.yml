@@ -42,4 +42,4 @@ jobs:
     - name: Check types with mypy
       run: .venv/bin/mypy src
     - name: Run tests with pytest
-      run: .venv/bin/pytest src
+      run: .venv/bin/pytest src/tests/unit

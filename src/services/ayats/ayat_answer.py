@@ -1,10 +1,37 @@
+"""The MIT License (MIT).
+
+Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+"""
+from typing import final
+
 import httpx
+from pyeo import elegant
 
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerMarkup, TgTextAnswer
-from repository.ayats.schemas import Ayat
 from services.answers.answer import FileAnswer, KeyboardInterface, TelegramFileIdAnswer
+from services.ayats.ayat import Ayat
 
 
+@final
+@elegant
 class AyatAnswer(TgAnswerInterface):
     """Ответ с аятом."""
 
@@ -15,6 +42,13 @@ class AyatAnswer(TgAnswerInterface):
         ayat: Ayat,
         ayat_answer_keyboard: KeyboardInterface,
     ):
+        """Конструктор класса.
+
+        :param debug: bool
+        :param answers: tuple[TgAnswerInterface, TgAnswerInterface]
+        :param ayat: Ayat
+        :param ayat_answer_keyboard: KeyboardInterface
+        """
         self._debug_mode = debug
         self._message_answer = answers[0]
         self._file_answer = answers[1]
@@ -24,14 +58,14 @@ class AyatAnswer(TgAnswerInterface):
     async def build(self, update) -> list[httpx.Request]:
         """Сборка ответа.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[httpx.Request]
         """
         return await TgAnswerList(
             TgAnswerMarkup(
                 TgTextAnswer(
                     self._message_answer,
-                    str(self._ayat),
+                    await self._ayat.text(),
                 ),
                 self._ayat_answer_keyboard,
             ),
@@ -39,11 +73,11 @@ class AyatAnswer(TgAnswerInterface):
                 self._debug_mode,
                 TelegramFileIdAnswer(
                     self._file_answer,
-                    self._ayat.audio_telegram_id,
+                    await self._ayat.tg_file_id(),
                 ),
                 TgTextAnswer(
                     self._message_answer,
-                    self._ayat.link_to_audio_file,
+                    await self._ayat.file_link(),
                 ),
             ),
         ).build(update)

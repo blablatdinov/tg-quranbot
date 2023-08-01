@@ -1,3 +1,25 @@
+# The MIT License (MIT).
+# 
+# Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+# OR OTHER DEALINGS IN THE SOFTWARE.
+
 [tool.poetry]
 name = "quranbot-aiogram"
 version = "0.1.0"
@@ -11,29 +33,34 @@ loguru = "0.6.0"
 nats-py = "2.2.0"
 quranbot-schema-registry = "0.0.16"
 APScheduler = "3.9.1.post1"
-databases = {version = "0.7.0", extras = ["asyncpg"]}
-sentry-sdk = "1.12.1"
-SQLAlchemy = "1.4.45"
-alembic = "1.9.1"
-httpx = "0.23.1"
-redis = "4.4.0"
-pytz = "2022.7"
+sentry-sdk = "1.29.1"
+httpx = "0.24.1"
+pytz = "2023.3"
+databases = {extras = ["asyncpg"], version = "0.7.0"}
+attrs = "23.1.0"
+jsonpath-ng = "1.5.3"
+eo-styleguide = "0.0.1a8"
+redis = "4.6.0"
 
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = {git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master"}
-ipython = "8.7.0"
-mypy = "0.991"
-asyncpg-stubs = "0.27.0"
-pytest-cov = "4.0.0"
-pytest = "7.2.0"
-pytest-asyncio = "0.20.3"
+ipython = "8.14.0"
+mypy = "1.4.1"
+asyncpg-stubs = "0.28.0"
+pytest-cov = "4.1.0"
+pytest = "7.4.0"
+pytest-asyncio = "0.21.1"
 mixer = "7.2.2"
-black = "22.12.0"
-pytest-mock = "3.10.0"
+pytest-mock = "3.11.1"
 pytest-lazy-fixture = "0.6.3"
-types-pytest-lazy-fixture = "0.6.3.2"
 types-pytz = "2022.7.0.0"
 types-redis = "4.3.21.6"
+types-pytest-lazy-fixture = "0.6.3.4"
+flake8-copyright = "0.2.4"
+SQLAlchemy = "1.4.49"
+alembic = "1.11.1"
+pytest-randomly = "3.13.0"
+telethon = "1.29.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -47,3 +74,9 @@ filterwarnings = [
   "error::DeprecationWarning",
 ]
 asyncio_mode = "auto"
+
+[tool.isort]
+line_length = 119
+skip = ["migrations/*.py", ".venv"]
+multi_line_output = 3
+include_trailing_comma = true

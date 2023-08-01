@@ -1,36 +1,63 @@
+"""The MIT License (MIT).
+
+Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+"""
 import asyncio
 import json
-from typing import Protocol
+from typing import Protocol, final
 from urllib import parse as url_parse
 
+import attrs
 import httpx
 from loguru import logger
+from pyeo import elegant
 
-from app_types.stringable import Stringable
+from app_types.update import Update
 from exceptions.internal_exceptions import TelegramIntegrationsError
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
+@elegant
 class SendableInterface(Protocol):
     """Интерфейс объекта, отправляющего ответы в API."""
 
     async def send(self, update) -> list[dict]:
         """Отправка.
 
-        :param update: Stringable
+        :param update: Update
         """
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class SendableAnswer(SendableInterface):
     """Объект, отправляющий ответы в API."""
 
-    def __init__(self, answer: TgAnswerInterface):
-        self._answer = answer
+    _answer: TgAnswerInterface
 
-    async def send(self, update: Stringable) -> list[dict]:
+    async def send(self, update: Update) -> list[dict]:
         """Отправка.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[str]
         :raises TelegramIntegrationsError: при невалидном ответе от API телеграмма
         """
@@ -46,16 +73,18 @@ class SendableAnswer(SendableInterface):
             return [json.loads(response) for response in responses]
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class UserNotSubscribedSafeSendable(SendableInterface):
     """Декоратор для обработки отписанных пользователей."""
 
-    def __init__(self, sendable: SendableInterface):
-        self._origin = sendable
+    _origin: SendableInterface
 
     async def send(self, update) -> list[dict]:
         """Отправка.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[dict]
         :raises TelegramIntegrationsError: если ошибка не связана с блокировкой бота
         """
@@ -76,12 +105,18 @@ class UserNotSubscribedSafeSendable(SendableInterface):
         return responses
 
 
+@final
 class SliceIterator(object):
     """Итератор по срезам массива."""
 
-    def __init__(self, origin: list, slize_size: int):
+    def __init__(self, origin: list, slice_size: int):
+        """Конструктор класса.
+
+        :param origin: list
+        :param slice_size: int
+        """
         self._origin = origin
-        self._slice_size = slize_size
+        self._slice_size = slice_size
         self._shift = 0
 
     def __iter__(self):
@@ -100,20 +135,22 @@ class SliceIterator(object):
         if len(self._origin) <= self._shift:
             raise StopIteration
         res = self._origin[self._shift:self._shift + self._slice_size]
-        self._shift += self._slice_size
+        self._shift += self._slice_size  # noqa: WPS601
         return res
 
 
+@final
+@attrs.define(frozen=True)
+@elegant
 class BulkSendableAnswer(SendableInterface):
     """Массовая отправка."""
 
-    def __init__(self, answers: list[TgAnswerInterface]):
-        self._answers = answers
+    _answers: list[TgAnswerInterface]
 
-    async def send(self, update) -> list[dict]:
+    async def send(self, update: Update) -> list[dict]:
         """Отправка.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[dict]
         """
         tasks = [

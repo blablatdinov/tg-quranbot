@@ -1,5 +1,27 @@
+"""The MIT License (MIT).
+
+Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+"""
 from pathlib import Path
-from typing import Optional
+from typing import Optional, final
 from urllib.parse import urljoin
 
 import sentry_sdk
@@ -8,6 +30,7 @@ from pydantic import BaseSettings, HttpUrl, RedisDsn
 BASE_DIR = Path(__file__).parent
 
 
+@final
 class Settings(BaseSettings):
     """Класс с настройками."""
 
@@ -27,6 +50,9 @@ class Settings(BaseSettings):
     NATS_HOST: str = 'localhost'
     NATS_PORT: int = 4222
     NATS_TOKEN: str
+
+    TELEGRAM_CLIENT_ID: int = 0
+    TELEGRAM_CLIENT_HASH: str = ''
 
     @property
     def webhook_url(self) -> str:
@@ -53,7 +79,7 @@ class Settings(BaseSettings):
         env_file = '.env'
 
 
-settings = Settings()
+settings = Settings()  # type: ignore[call-arg]
 
 if settings.SENTRY_DSN:
     sentry_sdk.init(
