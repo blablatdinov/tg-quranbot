@@ -1202,12 +1202,12 @@ files = [
 
 [[package]]
 name = "nats-py"
-version = "2.3.0"
+version = "2.3.1"
 description = "NATS client for Python"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "nats-py-2.3.0.tar.gz", hash = "sha256:0375be9fbdeb7c8756a1401f87928d6780e30c36941e85f74ae22e4d3448ca47"},
+    {file = "nats-py-2.3.1.tar.gz", hash = "sha256:3c50a710c8e4753d40db7935ff6a14c797534215267a596cbb64366d1f19d768"},
 ]
 
 [package.extras]
@@ -2219,4 +2219,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "05855842b036a6e1c8b86be53605e19abf2d58638baafaa88b3263fb2e369783"
+content-hash = "6a8305e102e50c3e0e9d009cbd1a8039b38bdb3fe49f54850ec06485be4d17bc"
