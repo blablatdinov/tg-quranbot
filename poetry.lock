@@ -374,13 +374,13 @@ files = [
 
 [[package]]
 name = "eo-styleguide"
-version = "0.0.1a4"
+version = "0.0.1a8"
 description = "Pyeo is an advanced static analysis tool tailored specifically to enforce the principles advocated by Elegant Objects (elegantobjects.org) in Python projects. It serves as a quality control instrument to ensure that your Python code adheres to the core tenets of elegance, simplicity, and maintainability."
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "eo_styleguide-0.0.1a4-py3-none-any.whl", hash = "sha256:9cbcd094174caba22e280d29c6c4c08259c4973450f0595af52cf5fbcc2cdc0c"},
-    {file = "eo_styleguide-0.0.1a4.tar.gz", hash = "sha256:0b32a234d5b202a31dff1e321cee74eda02818493433a5db096117a750357305"},
+    {file = "eo_styleguide-0.0.1a8-py3-none-any.whl", hash = "sha256:4f3868014dafad9bbeb72dc06d9709b1418c88ae2cf9d62756a4a09de88d2def"},
+    {file = "eo_styleguide-0.0.1a8.tar.gz", hash = "sha256:bfe030ff009557c65cacdb138bab78be4ce3aa08963ed00163d6b6a33de79d7f"},
 ]
 
 [package.dependencies]
@@ -2043,4 +2043,10 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
+<<<<<<< HEAD
 content-hash = "e06b2c3dc474dbfcc11c8ef62dc80dbe4e3c2a5cd6679c6672fdad6b159f1c6a"
+||||||| parent of 6db3030 (Update eo-styleguide)
+content-hash = "fb029074643c30de3e463819a71f2943be45519444d97390e02f9dfce991dd4c"
+=======
+content-hash = "a91587cf46c2b2b3c37e8e833bf261817d00b2f84581fec534b20d760240d26a"
+>>>>>>> 6db3030 (Update eo-styleguide)
