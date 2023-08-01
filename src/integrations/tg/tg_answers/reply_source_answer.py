@@ -27,7 +27,6 @@ import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.message_id import MessageId
 from integrations.tg.tg_answers import TgAnswerInterface
 
 
@@ -48,7 +47,7 @@ class TgReplySourceAnswer(TgAnswerInterface):
         return [
             httpx.Request(
                 request.method,
-                request.url.copy_add_param('reply_to_message_id', int(MessageId(update))),
+                request.url.copy_add_param('reply_to_message_id', 4),
             )
             for request in await self._origin.build(update)
         ]

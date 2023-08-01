@@ -23,17 +23,14 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import final
 
 from pydantic import BaseModel
-from pyeo import elegant
 
 
 @final
-@elegant
 class _Address(BaseModel):
     city: str
 
 
 @final
-@elegant
 class NominatimSearchResponse(BaseModel):
     """Модель ответа от сервиса https://nominatim.openstreetmap.org ."""
 

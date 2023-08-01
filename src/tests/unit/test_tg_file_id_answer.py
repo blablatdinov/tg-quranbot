@@ -20,16 +20,18 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import final
+
 import httpx
 from pyeo import elegant
 
-from app_types.stringable import Stringable
 from app_types.update import FkUpdate
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import FkAnswer, TgAnswerInterface
 from services.answers.answer import TelegramFileIdAnswer
 
 
 @elegant
+@final
 class FakeAnswer(TgAnswerInterface):
 
     async def build(self, update):
@@ -38,14 +40,7 @@ class FakeAnswer(TgAnswerInterface):
         ]
 
 
-@elegant
-class FakeString(Stringable):
-
-    def __str__(self):
-        return ''
-
-
 async def test():
-    got = await TelegramFileIdAnswer(FakeAnswer(), 'file_id').build(FkUpdate())
+    got = await TelegramFileIdAnswer(FkAnswer(), 'file_id').build(FkUpdate())
 
     assert got[0].url.query.decode('utf-8') == 'audio=file_id'

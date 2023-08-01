@@ -106,7 +106,6 @@ class UserNotSubscribedSafeSendable(SendableInterface):
 
 
 @final
-@elegant
 class SliceIterator(object):
     """Итератор по срезам массива."""
 

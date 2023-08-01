@@ -24,11 +24,9 @@ import uuid
 from typing import final
 
 from pydantic import BaseModel
-from pyeo import elegant
 
 
 @final
-@elegant
 class City(BaseModel):
     """Модель города."""
 

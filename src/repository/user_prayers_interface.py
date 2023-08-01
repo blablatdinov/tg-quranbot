@@ -28,7 +28,6 @@ from pyeo import elegant
 
 
 @final
-@elegant
 class UserPrayer(BaseModel):
     """Время намаза пользователя.
 

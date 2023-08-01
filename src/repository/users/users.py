@@ -29,7 +29,6 @@ from pyeo import elegant
 
 
 @final
-@elegant
 class QueryResultItem(BaseModel):
     """Результат запроса."""
 

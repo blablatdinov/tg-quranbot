@@ -26,13 +26,11 @@ from urllib.parse import urljoin
 
 import sentry_sdk
 from pydantic import BaseSettings, HttpUrl, RedisDsn
-from pyeo import elegant
 
 BASE_DIR = Path(__file__).parent
 
 
 @final
-@elegant
 class Settings(BaseSettings):
     """Класс с настройками."""
 

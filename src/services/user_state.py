@@ -30,7 +30,6 @@ from pyeo import elegant
 
 
 @final
-@elegant
 class UserStep(enum.Enum):
     """Перечисление возможных состояний пользователя."""
 

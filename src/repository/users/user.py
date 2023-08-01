@@ -36,7 +36,6 @@ CHAT_ID_LITERAL: Final = 'chat_id'
 
 
 @final
-@elegant
 class User(BaseModel):
     """Модель пользователя."""
 

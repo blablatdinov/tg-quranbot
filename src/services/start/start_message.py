@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import Protocol, final
 
 import attrs
 from pyeo import elegant
@@ -30,11 +30,21 @@ from exceptions.user import StartMessageNotContainReferrer
 from repository.users.user import UserRepositoryInterface
 from services.regular_expression import IntableRegularExpression
 
+# TODO: должен быть класс ReferrerChatId
+
+
+@elegant
+class StartMessageInterface(Protocol):
+    """Стартовое сообщение."""
+
+    async def referrer_chat_id(self) -> int:
+        """Получить идентификатор пригласившего."""
+
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class StartMessage(object):
+class StartMessage(StartMessageInterface):
     """Стартовое сообщение."""
 
     _message: str

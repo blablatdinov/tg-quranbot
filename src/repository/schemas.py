@@ -23,11 +23,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import final
 
 from pydantic import BaseModel
-from pyeo import elegant
 
 
 @final
-@elegant
 class CountResult(BaseModel):
     """Результат запроса с кол-вом."""
 

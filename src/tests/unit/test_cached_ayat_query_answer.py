@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
 from contextlib import suppress
+from typing import final
 from unittest.mock import AsyncMock
 
 import pytest
@@ -33,12 +34,12 @@ from integrations.tg.update import TgUpdate
 from services.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
 
 
-@elegant
 class FakeError(Exception):
     pass
 
 
 @elegant
+@final
 class TgAnswerFake(TgAnswerInterface):
 
     async def build(self, update):

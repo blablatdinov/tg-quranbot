@@ -28,7 +28,6 @@ from pyeo import elegant
 
 
 @final
-@elegant
 class AyatStructure(NamedTuple):
     """Структура для передачи данных аята."""
 
