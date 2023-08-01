@@ -23,11 +23,13 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import final
 
 import httpx
+from pyeo import elegant
 
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
+@elegant
 class TgAnswerList(TgAnswerInterface):
     """Список ответов пользователю."""
 

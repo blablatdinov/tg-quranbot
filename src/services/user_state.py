@@ -26,6 +26,7 @@ from typing import Protocol, final
 import attrs
 from aioredis import Redis
 from loguru import logger
+from pyeo import elegant
 
 
 @final
@@ -37,6 +38,7 @@ class UserStep(enum.Enum):
     ayat_search = 'ayat_search'
 
 
+@elegant
 class UserStateInterface(Protocol):
     """Интерфейс для работы с состоянием пользователя."""
 
@@ -52,6 +54,7 @@ class UserStateInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class LoggedUserState(UserStateInterface):
     """Логгирующий декоратор объекта, работающего с состоянием пользователя."""
 
@@ -78,6 +81,7 @@ class LoggedUserState(UserStateInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserState(UserStateInterface):
     """Объект, работающий с состоянием пользователя."""
 

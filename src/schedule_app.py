@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.runable import Runable
 from app_types.update import FkUpdate, Update
@@ -35,6 +36,7 @@ from repository.users.users import UsersRepositoryInterface
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class TypingAction(TgAnswerInterface):
     """Действие с печатью."""
 
@@ -56,6 +58,7 @@ class TypingAction(TgAnswerInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class CheckUsersStatus(Runable):
     """Статусы пользователей."""
 

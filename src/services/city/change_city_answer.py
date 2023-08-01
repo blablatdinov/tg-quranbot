@@ -25,6 +25,7 @@ from typing import final
 import attrs
 import httpx
 from aioredis import Redis
+from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.content_exceptions import CityNotSupportedError
@@ -39,6 +40,7 @@ from services.user_state import LoggedUserState, UserState, UserStep
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class CityNotSupportedAnswer(TgAnswerInterface):
     """Ответ о неподдерживаемом городе."""
 
@@ -62,6 +64,7 @@ class CityNotSupportedAnswer(TgAnswerInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class ChangeCityAnswer(TgAnswerInterface):
     """Ответ со сменой города."""
 

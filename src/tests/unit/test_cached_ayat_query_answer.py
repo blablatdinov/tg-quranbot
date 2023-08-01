@@ -22,10 +22,12 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
 from contextlib import suppress
+from typing import final
 from unittest.mock import AsyncMock
 
 import pytest
 from aioredis import Redis
+from pyeo import elegant
 
 from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.update import TgUpdate
@@ -36,6 +38,8 @@ class FakeError(Exception):
     pass
 
 
+@elegant
+@final
 class TgAnswerFake(TgAnswerInterface):
 
     async def build(self, update):

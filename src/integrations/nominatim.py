@@ -23,11 +23,13 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import Protocol, final
 
 import attrs
+from pyeo import elegant
 
 from integrations.client import IntegrationClientInterface
 from integrations.schemas import NominatimSearchResponse
 
 
+@elegant
 class GeoServiceIntegrationInterface(Protocol):
     """Интерфейс интеграции с геосервисом."""
 
@@ -41,6 +43,7 @@ class GeoServiceIntegrationInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class NominatimIntegration(GeoServiceIntegrationInterface):
     """Интеграция с https://nominatim.openstreetmap.org ."""
 

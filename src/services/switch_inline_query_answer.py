@@ -23,11 +23,14 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import json
 from typing import final
 
+from pyeo import elegant
+
 from app_types.update import Update
 from services.answers.answer import KeyboardInterface
 
 
 @final
+@elegant
 class SwitchInlineQueryKeyboard(KeyboardInterface):
     """Переключение на инлайн поиск."""
 

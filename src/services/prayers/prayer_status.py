@@ -24,13 +24,26 @@ from typing import Protocol, final
 
 import attrs
 from databases import Database
+from pyeo import elegant
 
 from services.regular_expression import IntableRegularExpression
 
 
+@elegant
+class PrayerStatusInterface(Protocol):
+    """Объект, рассчитывающий данные кнопки для изменения статуса прочитанности намаза."""
+
+    def user_prayer_id(self) -> int:
+        """Рассчитать идентификатор времени намаза пользователя."""
+
+    def change_to(self) -> bool:
+        """Рассчитать статус времени намаза пользователя."""
+
+
 @final
 @attrs.define(frozen=True)
-class PrayerStatus(object):
+@elegant
+class PrayerStatus(PrayerStatusInterface):
     """Объект, рассчитывающий данные кнопки для изменения статуса прочитанности намаза."""
 
     _source: str
@@ -50,6 +63,7 @@ class PrayerStatus(object):
         return 'not' not in self._source.split('(')[0]
 
 
+@elegant
 class UserPrayerStatusInterface(Protocol):
     """Интерфейс статуса прочитанности намаза."""
 
@@ -62,6 +76,7 @@ class UserPrayerStatusInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserPrayerStatus(UserPrayerStatusInterface):
     """Статус прочитанности намаза."""
 

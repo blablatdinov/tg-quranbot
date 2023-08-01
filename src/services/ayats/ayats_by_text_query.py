@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 from databases import Database
+from pyeo import elegant
 
 from app_types.intable import ThroughAsyncIntable
 from app_types.listable import AsyncListable
@@ -33,6 +34,7 @@ from services.ayats.ayat import QAyat
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class AyatsByTextQuery(AsyncListable):
     """Список аятов, найденных по текстовому запросу."""
 

@@ -27,6 +27,7 @@ import attrs
 from databases import Database
 from loguru import logger
 from pydantic import BaseModel
+from pyeo import elegant
 
 from exceptions.base_exception import InternalBotError
 from exceptions.internal_exceptions import UserNotFoundError
@@ -46,6 +47,7 @@ class User(BaseModel):
     city_id: Optional[uuid.UUID]
 
 
+@elegant
 class UserRepositoryInterface(Protocol):
     """Интерфейс репозитория для работы с пользователями."""
 
@@ -91,6 +93,7 @@ class UserRepositoryInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserRepository(UserRepositoryInterface):
     """Репозиторий для работы с пользователями."""
 

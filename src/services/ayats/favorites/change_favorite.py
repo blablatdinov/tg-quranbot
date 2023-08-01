@@ -25,6 +25,7 @@ from typing import final
 import attrs
 import httpx
 from databases import Database
+from pyeo import elegant
 
 from app_types.intable import SyncToAsyncIntable
 from app_types.update import Update
@@ -50,6 +51,7 @@ from services.regular_expression import IntableRegularExpression
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class ChangeFavoriteAyatAnswer(TgAnswerInterface):
     """Ответ на запрос о смене аята в избранном."""
 

@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
@@ -32,6 +33,7 @@ from repository.admin_message import AdminMessageInterface
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class HelpAnswer(TgAnswerInterface):
     """Ответ на команду /help."""
 

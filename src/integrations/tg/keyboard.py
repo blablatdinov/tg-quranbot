@@ -22,9 +22,12 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol
 
+from pyeo import elegant
+
 from app_types.update import Update
 
 
+@elegant
 class KeyboardInterface(Protocol):
     """Интерфейс клавиатуры."""
 

@@ -22,6 +22,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+from pyeo import elegant
+
 from app_types.stringable import Stringable
 
 # TODO: delete it
@@ -33,6 +35,7 @@ PODCAST_BUTTON = '(П|п)одкасты'
 
 
 @final
+@elegant
 class PrayerReadedEmoji(Stringable):
     """Смайлик для прочитанного намаза.
 
@@ -48,6 +51,7 @@ class PrayerReadedEmoji(Stringable):
 
 
 @final
+@elegant
 class PrayerNotReadedEmoji(Stringable):
     """Смайлик для непрочитанного намаза.
 

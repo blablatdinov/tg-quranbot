@@ -26,6 +26,7 @@ from typing import Protocol, final
 import attrs
 import httpx
 import pytz
+from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
@@ -33,6 +34,7 @@ from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.update_id import UpdateId
 
 
+@elegant
 class DebugParamInterface(Protocol):
     """Интерфейс отладочной информации."""
 
@@ -44,6 +46,7 @@ class DebugParamInterface(Protocol):
 
 
 @final
+@elegant
 class AppendDebugInfoAnswer(TgAnswerInterface):
     """Ответ с отладочной информацией."""
 
@@ -97,6 +100,7 @@ class AppendDebugInfoAnswer(TgAnswerInterface):
 
 
 @final
+@elegant
 class UpdateIdDebugParam(DebugParamInterface):
     """Отладочная информация с идентификатором обновления."""
 
@@ -110,6 +114,7 @@ class UpdateIdDebugParam(DebugParamInterface):
 
 
 @final
+@elegant
 class TimeDebugParam(DebugParamInterface):
     """Отладочная информация с временем."""
 
@@ -123,6 +128,7 @@ class TimeDebugParam(DebugParamInterface):
 
 
 @final
+@elegant
 class ChatIdDebugParam(DebugParamInterface):
     """Отладочная информация с идентификатором чата."""
 
@@ -137,6 +143,7 @@ class ChatIdDebugParam(DebugParamInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class CommitHashDebugParam(DebugParamInterface):
     """Отладочная информация с хэшом коммита."""
 

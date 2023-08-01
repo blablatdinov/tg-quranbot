@@ -28,6 +28,7 @@ from typing import final
 import attrs
 from databases import Database
 from loguru import logger
+from pyeo import elegant
 
 from exceptions.content_exceptions import UserHasNotCityIdError
 from exceptions.internal_exceptions import UserHasNotGeneratedPrayersError
@@ -36,6 +37,7 @@ from repository.user_prayers_interface import UserPrayer, UserPrayersInterface
 
 
 @final
+@elegant
 class PrayerNames(str, enum.Enum):  # noqa: WPS600
     """Имена намазов."""
 
@@ -49,6 +51,7 @@ class PrayerNames(str, enum.Enum):  # noqa: WPS600
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserPrayers(UserPrayersInterface):
     """Времена намазов пользователя."""
 
@@ -89,6 +92,7 @@ class UserPrayers(UserPrayersInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class SafeUserPrayers(UserPrayersInterface):
     """Времена намазов с защитой от UserHasNotGeneratedPrayersError."""
 
@@ -110,6 +114,7 @@ class SafeUserPrayers(UserPrayersInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class SafeNotFoundPrayers(UserPrayersInterface):
     """Времена намазов с защитой от UserPrayersNotFoundError."""
 
@@ -147,6 +152,7 @@ class SafeNotFoundPrayers(UserPrayersInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class PrayersWithoutSunrise(UserPrayersInterface):
     """Времена намазов без восхода."""
 
@@ -169,6 +175,7 @@ class PrayersWithoutSunrise(UserPrayersInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class NewUserPrayers(UserPrayersInterface):
     """Объект генерирующий времена намазов пользователя."""
 

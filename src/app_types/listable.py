@@ -22,7 +22,10 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol
 
+from pyeo import elegant
 
+
+@elegant
 class AsyncListable(Protocol):
     """Объект, имеющий корутину представляющую его в кач-ве списка."""
 

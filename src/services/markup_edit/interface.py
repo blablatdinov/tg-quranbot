@@ -22,7 +22,10 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol
 
+from pyeo import elegant
 
+
+@elegant
 class MarkupEditInterface(Protocol):
     """Интерфейс для классов, редактирующих клавиатуру."""
 

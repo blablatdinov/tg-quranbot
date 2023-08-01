@@ -26,11 +26,13 @@ import attrs
 from databases import Database
 from loguru import logger
 from pydantic import parse_obj_as
+from pyeo import elegant
 
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.schemas import Ayat
 
 
+@elegant
 class FavoriteAyatRepositoryInterface(Protocol):
     """Интерфейс для работы с хранилищем избранных аятов."""
 
@@ -56,6 +58,7 @@ class FavoriteAyatRepositoryInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
     """Класс для работы с хранилищем избранных аятов."""
 

@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.update import Update
 from db.connection import database
@@ -38,6 +39,7 @@ from services.ayats.enums import AyatCallbackTemplateEnum
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class AyatByIdMessageAnswer(TgAnswerInterface):
     """Текстовый ответ на поиск аята."""
 

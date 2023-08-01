@@ -24,10 +24,12 @@ from typing import Protocol, final
 
 import attrs
 from databases import Database
+from pyeo import elegant
 
 from exceptions.base_exception import InternalBotError
 
 
+@elegant
 class AdminMessageInterface(Protocol):
     """Интерфейс административного сообщения."""
 
@@ -37,6 +39,7 @@ class AdminMessageInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class AdminMessage(AdminMessageInterface):
     """Административное сообщение."""
 

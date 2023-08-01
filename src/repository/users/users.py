@@ -25,6 +25,7 @@ from typing import Protocol, final
 import attrs
 from databases import Database
 from pydantic import BaseModel, parse_obj_as
+from pyeo import elegant
 
 
 @final
@@ -34,6 +35,7 @@ class QueryResultItem(BaseModel):
     chat_id: int
 
 
+@elegant
 class UsersRepositoryInterface(Protocol):
     """Интерфейс для работы с хранилищем множества пользователей."""
 
@@ -59,6 +61,7 @@ class UsersRepositoryInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UsersRepository(UsersRepositoryInterface):
     """Класс для работы с хранилищем множества пользователей."""
 

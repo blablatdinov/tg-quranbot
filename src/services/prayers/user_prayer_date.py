@@ -25,6 +25,7 @@ from typing import final
 
 import attrs
 from databases import Database
+from pyeo import elegant
 
 from app_types.date_time import AsyncDateTimeInterface
 from app_types.intable import Intable
@@ -33,6 +34,7 @@ from exceptions.internal_exceptions import UserHasNotGeneratedPrayersError
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserPrayerDate(AsyncDateTimeInterface):
     """Объект времени намаза привязанного к пользователю."""
 

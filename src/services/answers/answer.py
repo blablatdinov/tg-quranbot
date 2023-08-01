@@ -25,6 +25,7 @@ from typing import final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.keyboard import KeyboardInterface
@@ -33,6 +34,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class ResizedKeyboard(KeyboardInterface):
     """Сжатая в высоту клавиатура."""
 
@@ -51,6 +53,7 @@ class ResizedKeyboard(KeyboardInterface):
 
 
 @final
+@elegant
 class DefaultKeyboard(KeyboardInterface):
     """Класс клавиатуры по умолчанию."""
 
@@ -65,6 +68,7 @@ class DefaultKeyboard(KeyboardInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FileAnswer(TgAnswerInterface):
     """Класс ответа с файлом."""
 
@@ -85,6 +89,7 @@ class FileAnswer(TgAnswerInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class TelegramFileIdAnswer(TgAnswerInterface):
     """Класс ответа с файлом."""
 

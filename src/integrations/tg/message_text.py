@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import final
 
 import attrs
+from pyeo import elegant
 
 from app_types.stringable import Stringable
 from app_types.update import Update
@@ -32,6 +33,7 @@ from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class MessageText(Stringable):
     """Текст сообщения."""
 

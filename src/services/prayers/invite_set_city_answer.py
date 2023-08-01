@@ -25,6 +25,7 @@ from typing import final
 import attrs
 import httpx
 from aioredis import Redis
+from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.content_exceptions import UserHasNotCityIdError
@@ -36,6 +37,7 @@ from services.user_state import LoggedUserState, UserState, UserStep
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserWithoutCitySafeAnswer(TgAnswerInterface):
     """Объект для обработки случаев когда пользователь запрашивает время намаза без установленного города."""
 
@@ -56,6 +58,7 @@ class UserWithoutCitySafeAnswer(TgAnswerInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class InviteSetCityAnswer(TgAnswerInterface):
     """Ответ с приглашением ввести город."""
 

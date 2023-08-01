@@ -25,6 +25,7 @@ from typing import final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
@@ -33,6 +34,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class TgCallbackQueryRegexAnswer(TgAnswerInterface):
     """Маршрутизация ответов по регулярному выражению."""
 

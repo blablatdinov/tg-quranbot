@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswerInterface
@@ -31,6 +32,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class TgChatIdAnswer(TgAnswerInterface):
     """Ответ пользователю на конкретный идентификатор чата."""
 

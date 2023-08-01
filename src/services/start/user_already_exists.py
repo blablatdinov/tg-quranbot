@@ -25,6 +25,7 @@ from typing import final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.user import UserAlreadyActive, UserAlreadyExists
@@ -38,6 +39,7 @@ from repository.users.users import UsersRepositoryInterface
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserAlreadyExistsAnswer(TgAnswerInterface):
     """Декоратор обработчика стартового сообщение с предохранением от UserAlreadyExists."""
 

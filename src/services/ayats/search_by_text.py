@@ -25,6 +25,7 @@ from typing import final
 import attrs
 import httpx
 from aioredis import Redis
+from pyeo import elegant
 
 from app_types.update import Update
 from db.connection import database
@@ -43,6 +44,7 @@ from services.ayats.keyboards import AyatAnswerKeyboard
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class SearchAyatByTextAnswer(TgAnswerInterface):
     """Поиск аята по тексту."""
 

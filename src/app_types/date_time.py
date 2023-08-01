@@ -23,7 +23,10 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import datetime
 from typing import Protocol
 
+from pyeo import elegant
 
+
+@elegant
 class DateTimeInterface(Protocol):
     """Интерфейс даты/времени."""
 
@@ -31,6 +34,7 @@ class DateTimeInterface(Protocol):
         """Дата/время."""
 
 
+@elegant
 class AsyncDateTimeInterface(Protocol):
     """Интерфейс даты/времени для вычисления с возможностью переключения контекста."""
 

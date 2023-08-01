@@ -25,6 +25,7 @@ from typing import final
 import attrs
 import httpx
 from aioredis import Redis
+from pyeo import elegant
 
 from app_types.stringable import ThroughStringable
 from db.connection import database
@@ -44,6 +45,7 @@ from services.regular_expression import IntableRegularExpression
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
     """Поиск аята по тексту для обработки нажатия кнопки."""
 

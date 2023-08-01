@@ -25,6 +25,7 @@ from typing import final
 import attrs
 import httpx
 from aioredis import Redis
+from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
@@ -34,6 +35,7 @@ from services.user_state import LoggedUserState, UserState
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class StepAnswer(TgAnswerInterface):
     """Роутинг ответа по состоянию пользователя."""
 

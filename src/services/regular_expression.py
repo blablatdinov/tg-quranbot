@@ -24,6 +24,7 @@ import re
 from typing import final
 
 import attrs
+from pyeo import elegant
 
 from app_types.intable import Intable
 from exceptions.base_exception import BaseAppError
@@ -31,6 +32,7 @@ from exceptions.base_exception import BaseAppError
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class IntableRegularExpression(Intable):
     """Регулярное выражение, которое можно привести к числу."""
 

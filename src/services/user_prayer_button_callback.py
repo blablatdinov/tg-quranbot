@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import final
 
 import attrs
+from pyeo import elegant
 
 from app_types.stringable import Stringable
 from repository.user_prayers_interface import UserPrayer
@@ -30,6 +31,7 @@ from repository.user_prayers_interface import UserPrayer
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserPrayersButtonCallback(Stringable):
     """Кнопка клавиатуры времен намазов."""
 

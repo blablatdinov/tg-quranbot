@@ -26,6 +26,7 @@ from typing import final
 import attrs
 import httpx
 import pytz
+from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
@@ -37,6 +38,7 @@ from services.user_prayer_keyboard import UserPrayersKeyboard
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class PrayerForUserAnswer(TgAnswerInterface):
     """Ответ пользователю с временами намаза."""
 

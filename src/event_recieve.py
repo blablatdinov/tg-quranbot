@@ -26,6 +26,7 @@ from typing import final
 
 import nats
 from loguru import logger
+from pyeo import elegant
 from quranbot_schema_registry import validate_schema
 
 from app_types.runable import Runable
@@ -34,6 +35,7 @@ from settings import settings
 
 
 @final
+@elegant
 class RecievedEvents(Runable):
     """Обработка событий из очереди."""
 

@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.intable import ThroughAsyncIntable
 from app_types.update import Update
@@ -38,6 +39,7 @@ from services.regular_expression import IntableRegularExpression
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class AyatByIdAnswer(TgAnswerInterface):
     """Ответ на аят по идентификатору."""
 

@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import final
 
 import attrs
+from pyeo import elegant
 
 from app_types.update import Update
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
@@ -36,6 +37,7 @@ from services.ayats.enums import AyatCallbackTemplateEnum
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class AyatAnswerKeyboard(KeyboardInterface):
     """Клавиатура аята."""
 

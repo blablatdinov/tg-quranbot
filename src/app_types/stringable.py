@@ -23,8 +23,10 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import Protocol, final
 
 import attrs
+from pyeo import elegant
 
 
+@elegant
 class Stringable(Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
@@ -34,6 +36,7 @@ class Stringable(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class ThroughStringable(Stringable):
     """Обертка для строки."""
 
@@ -49,6 +52,7 @@ class ThroughStringable(Stringable):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UnwrappedString(Stringable):
     """Строки без переноса."""
 

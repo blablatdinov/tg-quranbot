@@ -25,6 +25,7 @@ from typing import Protocol, final
 
 import attrs
 from databases import Database
+from pyeo import elegant
 
 from app_types.update import FkUpdate
 from integrations.tg.sendable import BulkSendableAnswer
@@ -40,6 +41,7 @@ from repository.users.users import UsersRepositoryInterface
 from services.user_prayer_keyboard import UserPrayersKeyboardByChatId
 
 
+@elegant
 class RecievedEventInterface(Protocol):
     """Интерфейс обрабатываемых событий."""
 
@@ -55,6 +57,7 @@ class RecievedEventInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class SendPrayersEvent(RecievedEventInterface):
     """Событие о рассылки времени намаза."""
 

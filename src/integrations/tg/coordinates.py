@@ -23,12 +23,14 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import Protocol, final
 
 import attrs
+from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import CoordinatesNotFoundError
 from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
+@elegant
 class Coordinates(Protocol):
     """Интерфейс координат."""
 
@@ -41,6 +43,7 @@ class Coordinates(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class TgMessageCoordinates(Coordinates):
     """Координаты, принятые из чата."""
 

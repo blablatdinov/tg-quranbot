@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.intable import ThroughIntable
 from db.connection import database
@@ -41,6 +42,7 @@ from services.user_prayer_keyboard import UserPrayersKeyboard
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserPrayerStatusChangeAnswer(TgAnswerInterface):
     """Ответ с изменением статуса прочитанности намаза."""
 

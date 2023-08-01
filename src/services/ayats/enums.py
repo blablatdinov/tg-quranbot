@@ -23,8 +23,11 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import enum
 from typing import final
 
+from pyeo import elegant
+
 
 @final
+@elegant
 class AyatCallbackTemplateEnum(str, enum.Enum):  # noqa: WPS600
     """Шаблон для метаинформации кнопки."""
 

@@ -24,12 +24,14 @@ from typing import final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class TgKeyboardEditAnswer(TgAnswerInterface):
     """Ответ с отредактированной клавиатурой."""
 

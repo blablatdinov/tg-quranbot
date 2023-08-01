@@ -24,10 +24,12 @@ from typing import Protocol, final
 
 import attrs
 from databases import Database
+from pyeo import elegant
 
 from exceptions.base_exception import InternalBotError
 
 
+@elegant
 class RandomPodcastInterface(Protocol):
     """Интерфейс подкаста.
 
@@ -43,6 +45,7 @@ class RandomPodcastInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class RandomPodcast(RandomPodcastInterface):
     """Объект подкаста."""
 

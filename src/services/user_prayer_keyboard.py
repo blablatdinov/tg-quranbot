@@ -25,6 +25,7 @@ import json
 from typing import final
 
 import attrs
+from pyeo import elegant
 
 from app_types.update import Update
 from constants import PrayerNotReadedEmoji, PrayerReadedEmoji
@@ -36,6 +37,7 @@ from services.user_prayer_button_callback import UserPrayersButtonCallback
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserPrayersKeyboardByChatId(KeyboardInterface):
     """Клавиатура времен намаза с идентификатором чата в конструкторе."""
 
@@ -62,6 +64,7 @@ class UserPrayersKeyboardByChatId(KeyboardInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UserPrayersKeyboard(KeyboardInterface):
     """Клавиатура времен намаза."""
 

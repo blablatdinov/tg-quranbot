@@ -26,6 +26,7 @@ from typing import final
 import attrs
 import httpx
 from loguru import logger
+from pyeo import elegant
 
 from app_types.floatable import Floatable
 from app_types.update import Update
@@ -59,6 +60,7 @@ class Millis(Floatable):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class RoundedFloat(Floatable):
     """Округленное дробное число."""
 
@@ -75,6 +77,7 @@ class RoundedFloat(Floatable):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class TgMeasureAnswer(TgAnswerInterface):
     """Замеренный ответ."""
 

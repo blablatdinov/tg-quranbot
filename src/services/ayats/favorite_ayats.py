@@ -20,10 +20,11 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import Protocol, final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.update import Update
 from db.connection import database
@@ -38,9 +39,20 @@ from services.ayats.keyboards import AyatAnswerKeyboard
 from services.regular_expression import IntableRegularExpression
 
 
+class FavoriteAyatStatusInterface(Protocol):
+    """Пользовательский ввод статуса аята в избранном."""
+
+    def ayat_id(self) -> int:
+        """Идентификатор аята."""
+
+    def change_to(self) -> bool:
+        """Целевое значение."""
+
+
 @final
 @attrs.define(frozen=True)
-class FavoriteAyatStatus(object):
+@elegant
+class FavoriteAyatStatus(FavoriteAyatStatusInterface):
     """Пользовательский ввод статуса аята в избранном."""
 
     _source: str
@@ -62,6 +74,7 @@ class FavoriteAyatStatus(object):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FavoriteAyatAnswer(TgAnswerInterface):
     """Ответ с избранными аятами."""
 
@@ -100,6 +113,7 @@ class FavoriteAyatAnswer(TgAnswerInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FavoriteAyatEmptySafeAnswer(TgAnswerInterface):
     """Обработка ошибок с пустыми избранными."""
 
@@ -120,6 +134,7 @@ class FavoriteAyatEmptySafeAnswer(TgAnswerInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FavoriteAyatPage(TgAnswerInterface):
     """Страница с избранным аятом."""
 

@@ -24,6 +24,7 @@ import json
 from typing import final
 
 import attrs
+from pyeo import elegant
 
 from app_types.stringable import Stringable
 from app_types.update import Update
@@ -33,6 +34,7 @@ from services.weak_cache import weak_lru
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class TgUpdate(Update):
     """Объект обновления от телеграмма.
 
@@ -68,6 +70,7 @@ class TgUpdate(Update):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class CachedTgUpdate(Update):
     """Декоратор, для избежания повторной десериализации.
 

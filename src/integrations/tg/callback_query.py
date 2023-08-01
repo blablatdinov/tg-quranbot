@@ -24,6 +24,7 @@ import json
 from typing import final
 
 import attrs
+from pyeo import elegant
 
 from app_types.stringable import Stringable
 from app_types.update import Update
@@ -32,6 +33,7 @@ from integrations.tg.exceptions.update_parse_exceptions import CallbackQueryNotF
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class CallbackQueryData(Stringable):
     """Информация с кнопки."""
 

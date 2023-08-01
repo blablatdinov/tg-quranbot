@@ -25,6 +25,7 @@ from typing import Protocol, final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.intable import Intable
 from app_types.stringable import Stringable
@@ -33,6 +34,7 @@ from integrations.tg.update import TgUpdate
 
 
 @final
+@elegant
 class UpdatesTimeout(Intable):
     """Таймаут для обновлений."""
 
@@ -44,6 +46,7 @@ class UpdatesTimeout(Intable):
         return 5
 
 
+@elegant
 class UpdatesURLInterface(Protocol):
     """Интерфейс URL запроса для получения уведомлений."""
 
@@ -56,6 +59,7 @@ class UpdatesURLInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UpdatesURL(Stringable):
     """Базовый URL обновлений из телеграма."""
 
@@ -71,6 +75,7 @@ class UpdatesURL(Stringable):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UpdatesWithOffsetURL(UpdatesURLInterface):
     """URL для получения только новых обновлений."""
 
@@ -87,6 +92,7 @@ class UpdatesWithOffsetURL(UpdatesURLInterface):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class UpdatesLongPollingURL(UpdatesURLInterface):
     """URL обновлений с таймаутом."""
 
@@ -105,6 +111,7 @@ class UpdatesLongPollingURL(UpdatesURLInterface):
         )
 
 
+@elegant
 class UpdatesIteratorInterface(Protocol):
     """Интерфейс итератора по обновлениям."""
 
@@ -117,6 +124,7 @@ class UpdatesIteratorInterface(Protocol):
 
 @final
 @attrs.define
+@elegant
 class PollingUpdatesIterator(UpdatesIteratorInterface):
     """Итератор по обновлениям."""
 

@@ -22,7 +22,10 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol
 
+from pyeo import elegant
 
+
+@elegant
 class Runable(Protocol):
     """Интерфейс запускаемого объекта."""
 
@@ -30,6 +33,7 @@ class Runable(Protocol):
         """Запуск."""
 
 
+@elegant
 class SyncRunable(Protocol):
     """Интерфейс блокирующего запускаемого объекта."""
 

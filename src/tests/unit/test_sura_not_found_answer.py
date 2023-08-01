@@ -20,8 +20,11 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import final
+
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.update import FkUpdate, Update
 from exceptions.content_exceptions import SuraNotFoundError
@@ -30,6 +33,8 @@ from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 
 
 @attrs.define(frozen=True)
+@elegant
+@final
 class ThroughDomainAnswer(TgAnswerInterface):
 
     _domain: str
@@ -38,6 +43,8 @@ class ThroughDomainAnswer(TgAnswerInterface):
         return [httpx.Request('GET', self._domain)]
 
 
+@elegant
+@final
 class SuraNotFoundAnswer(TgAnswerInterface):
 
     async def build(self, update):

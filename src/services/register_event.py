@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.user import StartMessageNotContainReferrer
@@ -38,6 +39,7 @@ from services.start.start_message import StartMessage
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class StartWithEventAnswer(TgAnswerInterface):
     """Регистрация с отправкой события."""
 

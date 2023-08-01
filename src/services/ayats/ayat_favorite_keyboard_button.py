@@ -24,6 +24,7 @@ import json
 from typing import final
 
 import attrs
+from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
@@ -34,6 +35,7 @@ from services.ayats.ayat import Ayat
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class AyatFavoriteKeyboardButton(KeyboardInterface):
     """Кнопка с добавлением аята в избранные."""
 

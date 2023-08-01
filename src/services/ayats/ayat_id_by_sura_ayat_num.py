@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 from databases import Database
+from pyeo import elegant
 
 from app_types.intable import AsyncIntable
 from exceptions.content_exceptions import AyatNotFoundError
@@ -33,6 +34,7 @@ from services.ayats.search.ayat_search_query import SearchQueryInterface
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class AyatIdBySuraAyatNum(AsyncIntable):
     """Поиск аятов по номеру суры, аята."""
 

@@ -22,9 +22,12 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol
 
+from pyeo import elegant
+
 from services.answers.interface import AnswerInterface
 
 
+@elegant
 class Answerable(Protocol):
     """Интерфейс, сообщающий, что класс может быть трансформирован в ответ."""
 

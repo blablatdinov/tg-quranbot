@@ -27,6 +27,7 @@ import attrs
 import httpx
 from databases import Database
 from loguru import logger
+from pyeo import elegant
 
 from app_types.runable import Runable
 from exceptions.base_exception import InternalBotError
@@ -36,6 +37,7 @@ from integrations.tg.sendable import SendableInterface
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class PollingApp(Runable):
     """Приложение на long polling."""
 
@@ -54,6 +56,7 @@ class PollingApp(Runable):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class AppWithGetMe(Runable):
     """Объект для запуска с предварительным запросом getMe."""
 
@@ -75,6 +78,7 @@ class AppWithGetMe(Runable):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class DatabaseConnectedApp(Runable):
     """Декоратор для подключения к БД."""
 

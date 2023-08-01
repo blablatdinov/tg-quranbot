@@ -24,6 +24,7 @@ import datetime
 from typing import Protocol, final
 
 from pydantic import BaseModel
+from pyeo import elegant
 
 
 @final
@@ -41,6 +42,7 @@ class UserPrayer(BaseModel):
     is_readed: bool
 
 
+@elegant
 class UserPrayersInterface(Protocol):
     """Интерфейс времени намаза пользователя."""
 

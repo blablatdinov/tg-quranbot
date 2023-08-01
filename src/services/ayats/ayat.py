@@ -24,6 +24,7 @@ from typing import Protocol, final
 
 import attrs
 from databases import Database
+from pyeo import elegant
 
 from app_types.intable import AsyncIntable
 from app_types.stringable import Stringable
@@ -33,6 +34,7 @@ from services.ayats.ayat_id_by_sura_ayat_num import AyatIdBySuraAyatNum
 from services.ayats.search.ayat_search_query import SearchQuery, ValidatedSearchQuery
 
 
+@elegant
 class Ayat(Protocol):
     """Интерфейс аята."""
 

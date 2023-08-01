@@ -24,6 +24,7 @@ from typing import NamedTuple, Protocol, final
 
 import attrs
 from databases import Database
+from pyeo import elegant
 
 
 @final
@@ -35,6 +36,7 @@ class AyatStructure(NamedTuple):
     ayat_num: str
 
 
+@elegant
 class SuraInterface(Protocol):
     """Интерфейс суры."""
 
@@ -47,6 +49,7 @@ class SuraInterface(Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class Sura(SuraInterface):
     """Сура."""
 

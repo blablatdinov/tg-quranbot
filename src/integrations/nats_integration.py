@@ -28,11 +28,13 @@ from typing import Protocol, final
 import nats
 import pytz
 from loguru import logger
+from pyeo import elegant
 from quranbot_schema_registry.validate_schema import validate_schema
 
 from settings import settings
 
 
+@elegant
 class SinkInterface(Protocol):
     """Интерфейс отправщика событий."""
 
@@ -46,6 +48,7 @@ class SinkInterface(Protocol):
 
 
 @final
+@elegant
 class NatsSink(SinkInterface):
     """Отправщик событий в nats."""
 

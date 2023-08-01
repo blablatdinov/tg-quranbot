@@ -24,12 +24,14 @@ import asyncio
 from typing import final
 
 import attrs
+from pyeo import elegant
 
 from app_types.runable import Runable, SyncRunable
 
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class CliApp(SyncRunable):
     """CLI приложение."""
 
@@ -46,6 +48,7 @@ class CliApp(SyncRunable):
 
 
 @final
+@elegant
 class ForkCliApp(SyncRunable):
     """Маршрутизация для CLI приложения."""
 
@@ -69,6 +72,7 @@ class ForkCliApp(SyncRunable):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class CommandCliApp(SyncRunable):
     """CLI команда."""
 

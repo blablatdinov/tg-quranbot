@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 from databases import Database
+from pyeo import elegant
 
 from app_types.intable import Intable, ThroughAsyncIntable
 from app_types.listable import AsyncListable
@@ -32,6 +33,7 @@ from services.ayats.ayat import Ayat, QAyat
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FavoriteAyats(AsyncListable):
     """Избранные аяты."""
 

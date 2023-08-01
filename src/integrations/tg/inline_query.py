@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import final
 
 import attrs
+from pyeo import elegant
 
 from app_types.intable import Intable
 from app_types.stringable import Stringable
@@ -33,6 +34,7 @@ from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class InlineQuery(Stringable):
     """Данные с инлайн поиска."""
 
@@ -56,6 +58,7 @@ class InlineQuery(Stringable):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class InlineQueryId(Intable):
     """Идентификатор инлайн поиска."""
 

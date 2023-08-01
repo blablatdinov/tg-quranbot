@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.content_exceptions import AyatNotFoundError
@@ -32,6 +33,7 @@ from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class AyatNotFoundSafeAnswer(TgAnswerInterface):
     """Объект обрабатывающий ошибку с не найденным аятом."""
 

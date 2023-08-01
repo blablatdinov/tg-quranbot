@@ -25,6 +25,7 @@ from contextlib import suppress
 from typing import final
 
 import attrs
+from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.content_exceptions import AyatNotFoundError
@@ -35,6 +36,7 @@ from services.ayats.enums import AyatCallbackTemplateEnum
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class NeighborAyatKeyboard(KeyboardInterface):
     """Клавиатура с соседними аятами."""
 

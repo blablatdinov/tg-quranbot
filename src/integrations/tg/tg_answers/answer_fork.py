@@ -25,6 +25,7 @@ from typing import final
 
 import httpx
 from loguru import logger
+from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError
@@ -38,6 +39,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 
 @final
+@elegant
 class TgAnswerFork(TgAnswerInterface):
     """Маршрутизация ответов."""
 

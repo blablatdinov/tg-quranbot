@@ -25,6 +25,7 @@ from typing import final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError
@@ -36,6 +37,7 @@ from services.debug_answer import DebugAnswer
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class InlineQueryAnswer(TgAnswerInterface):
     """Ответ на инлайн поиск."""
 

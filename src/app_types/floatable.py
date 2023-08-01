@@ -22,7 +22,10 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol
 
+from pyeo import elegant
 
+
+@elegant
 class Floatable(Protocol):
     """Интерфейс числа с плавающей запятой."""
 

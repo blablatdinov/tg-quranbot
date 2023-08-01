@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from integrations.tg.keyboard import KeyboardInterface
 from integrations.tg.tg_answers.interface import TgAnswerInterface
@@ -31,6 +32,7 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class TgAnswerMarkup(TgAnswerInterface):
     """Ответ с клавиатурой."""
 

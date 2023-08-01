@@ -25,8 +25,10 @@ from typing import Protocol, final
 import attrs
 from aioredis import Redis
 from loguru import logger
+from pyeo import elegant
 
 
+@elegant
 class AyatTextSearchQueryInterface(Protocol):
     """Интерфейс запроса для поиска аятов."""
 

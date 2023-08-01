@@ -23,11 +23,13 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import Protocol, final
 
 import attrs
+from pyeo import elegant
 
 from app_types.stringable import Stringable
 from integrations.tg.update_struct import UpdateStruct
 
 
+@elegant
 class Update(Stringable, Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
@@ -43,6 +45,7 @@ class Update(Stringable, Protocol):
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class FkUpdate(Update):
     """Подделка обновления."""
 

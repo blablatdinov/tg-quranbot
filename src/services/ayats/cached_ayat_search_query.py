@@ -25,6 +25,7 @@ from typing import final
 import attrs
 import httpx
 from aioredis import Redis
+from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
@@ -35,6 +36,7 @@ from services.ayats.ayat_text_search_query import AyatTextSearchQuery
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class CachedAyatSearchQueryAnswer(TgAnswerInterface):
     """Закешированный запрос пользователя на поиск аятов.
 

@@ -23,10 +23,12 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import Protocol, final
 
 import httpx
+from pyeo import elegant
 
 from app_types.update import Update
 
 
+@elegant
 class TgAnswerInterface(Protocol):
     """Интерфейс ответа пользователю."""
 
@@ -38,6 +40,7 @@ class TgAnswerInterface(Protocol):
 
 
 @final
+@elegant
 class FkAnswer(TgAnswerInterface):
     """Фейковый ответ."""
 

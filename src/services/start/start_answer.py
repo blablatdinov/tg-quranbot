@@ -26,6 +26,7 @@ from typing import final
 import attrs
 import httpx
 from databases import Database
+from pyeo import elegant
 
 from app_types.intable import ThroughAsyncIntable
 from app_types.update import Update
@@ -42,6 +43,7 @@ from settings import settings
 
 @final
 @attrs.define(frozen=True)
+@elegant
 class StartAnswer(TgAnswerInterface):
     """Обработчик стартового сообщения."""
 

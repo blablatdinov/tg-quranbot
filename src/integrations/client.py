@@ -27,10 +27,12 @@ import attrs
 import httpx
 from loguru import logger
 from pydantic import BaseModel
+from pyeo import elegant
 
 ParseModel = TypeVar('ParseModel', bound=BaseModel)
 
 
+@elegant
 class IntegrationClientInterface(Protocol):
     """Интерфейс HTTP клиента."""
 
