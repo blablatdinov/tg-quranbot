@@ -34,7 +34,7 @@ from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.tg_datetime import TgDateTime
 from repository.users.user import UserRepositoryInterface
-from services.start.start_message import StartMessage
+from services.start.start_message import SmartReferrerChatId
 
 
 @final
@@ -54,7 +54,7 @@ class StartWithEventAnswer(TgAnswerInterface):
         :return: list[httpx.Request]
         """
         try:
-            referrer_id = await StartMessage(str(MessageText(update)), self._user_repo).referrer_chat_id()
+            referrer_id = await SmartReferrerChatId(str(MessageText(update)), self._user_repo).to_int()
         except StartMessageNotContainReferrer:
             referrer_id = None
         requests = await self._origin.build(update)

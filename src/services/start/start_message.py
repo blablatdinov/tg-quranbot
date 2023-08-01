@@ -25,32 +25,23 @@ from typing import Protocol, final
 import attrs
 from pyeo import elegant
 
+from app_types.intable import AsyncIntable
 from exceptions.base_exception import BaseAppError
 from exceptions.user import StartMessageNotContainReferrer
 from repository.users.user import UserRepositoryInterface
 from services.regular_expression import IntableRegularExpression
 
-# TODO: должен быть класс ReferrerChatId
-
-
-@elegant
-class StartMessageInterface(Protocol):
-    """Стартовое сообщение."""
-
-    async def referrer_chat_id(self) -> int:
-        """Получить идентификатор пригласившего."""
-
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class StartMessage(StartMessageInterface):
-    """Стартовое сообщение."""
+class SmartReferrerChatId(AsyncIntable):
+    """Идентификатор чата пригласившего."""
 
     _message: str
     _user_repo: UserRepositoryInterface
 
-    async def referrer_chat_id(self) -> int:
+    async def to_int(self) -> int:
         """Получить идентификатор пригласившего.
 
         :return: int
