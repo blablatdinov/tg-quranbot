@@ -9,7 +9,7 @@ RUN poetry export --without dev -o requirements.txt
 
 FROM base as build
 COPY --from=poetry /app/requirements.txt /tmp/requirements.txt
-RUN apt-get install gcc=4:10.2.1-1 libffi-dev=3.3-6
+RUN apt-get install gcc=4:12.2.0-3 libffi-dev=3.4.4-1
 RUN cat /tmp/requirements.txt
 RUN python -m venv /app/.venv && \
     /app/.venv/bin/pip install 'wheel==0.36.2' && \

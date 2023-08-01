@@ -17,6 +17,7 @@ pytz = "2023.3"
 databases = {extras = ["asyncpg"], version = "0.7.0"}
 attrs = "23.1.0"
 jsonpath-ng = "1.5.3"
+eo-styleguide = "0.0.1a8"
 
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = {git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master"}
@@ -36,7 +37,6 @@ SQLAlchemy = "1.4.49"
 alembic = "1.11.1"
 pytest-random-order = "1.1.0"
 telethon = "1.29.2"
-eo-styleguide = "0.0.1a8"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
