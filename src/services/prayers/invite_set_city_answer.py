@@ -24,8 +24,8 @@ from typing import final
 
 import attrs
 import httpx
-from aioredis import Redis
 from pyeo import elegant
+from redis.asyncio import Redis
 
 from app_types.update import Update
 from exceptions.content_exceptions import UserHasNotCityIdError

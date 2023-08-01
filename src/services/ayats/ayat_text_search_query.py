@@ -23,9 +23,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import Protocol, final
 
 import attrs
-from aioredis import Redis
 from loguru import logger
 from pyeo import elegant
+from redis.asyncio import Redis
 
 
 @elegant

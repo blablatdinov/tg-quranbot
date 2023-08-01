@@ -23,7 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from unittest.mock import AsyncMock
 
 import pytest
-from aioredis import Redis
+from redis.asyncio import Redis
 
 from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer

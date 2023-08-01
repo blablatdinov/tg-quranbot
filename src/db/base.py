@@ -20,6 +20,11 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from databases import Database
 from sqlalchemy.orm import declarative_base
 
+from settings import settings
+
 Base = declarative_base()
+
+database = Database(settings.DATABASE_URL)

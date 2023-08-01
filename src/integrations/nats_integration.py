@@ -71,7 +71,7 @@ class NatsSink(SinkInterface):
         }
         validate_schema(event, event_name, version)
         ns = await nats.connect(
-            'nats://{0}:{1}'.format(settings.NATS_HOST, settings.NATS_PORT),
+            ['nats://{0}:{1}'.format(settings.NATS_HOST, settings.NATS_PORT)],
             token=settings.NATS_TOKEN,
         )
         jetstream = ns.jetstream()

@@ -23,8 +23,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import final
 
 import httpx
-from aioredis import Redis
 from databases import Database
+from redis.asyncio import Redis
 
 from app_types.update import Update
 from integrations.client import IntegrationClient

@@ -1,5 +1,9 @@
 """The MIT License (MIT).
 
+<<<<<<< HEAD
+||||||| 4250f92
+from redis.asyncio import Redis
+=======
 Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,9 +28,9 @@ import enum
 from typing import Protocol, final
 
 import attrs
-from aioredis import Redis
 from loguru import logger
 from pyeo import elegant
+from redis.asyncio import Redis
 
 
 @final

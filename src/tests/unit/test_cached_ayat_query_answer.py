@@ -26,8 +26,8 @@ from typing import final
 from unittest.mock import AsyncMock
 
 import pytest
-from aioredis import Redis
 from pyeo import elegant
+from redis.asyncio import Redis
 
 from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.update import TgUpdate
@@ -48,7 +48,7 @@ class TgAnswerFake(TgAnswerInterface):
 
 @pytest.fixture()
 def mock_redis():
-    redis = Redis()
+    redis: Redis = Redis()
     redis.set = AsyncMock()  # type: ignore
     return redis
 

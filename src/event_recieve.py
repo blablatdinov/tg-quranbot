@@ -51,7 +51,7 @@ class RecievedEvents(Runable):
     async def run(self):
         """Запуск."""
         nats_client = await nats.connect(
-            'nats://{0}:{1}'.format(settings.NATS_HOST, settings.NATS_PORT),
+            ['nats://{0}:{1}'.format(settings.NATS_HOST, settings.NATS_PORT)],
             token=settings.NATS_TOKEN,
         )
         logger.info('Start handling events...')

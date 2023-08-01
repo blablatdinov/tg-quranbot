@@ -23,7 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import sys
 from contextlib import suppress
 
-import aioredis
+from redis import asyncio as aioredis
 
 from db.connection import database
 from event_recieve import RecievedEvents

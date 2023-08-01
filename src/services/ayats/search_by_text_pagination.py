@@ -24,8 +24,8 @@ from typing import final
 
 import attrs
 import httpx
-from aioredis import Redis
 from pyeo import elegant
+from redis.asyncio import Redis
 
 from app_types.stringable import ThroughStringable
 from db.connection import database
