@@ -12,7 +12,7 @@
 celerybeat*
 
 # pytest and coverage
-.coverage
+.coverage*
 cov.xml
 .pytest_cache
 htmlcov/

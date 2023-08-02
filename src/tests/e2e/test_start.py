@@ -27,26 +27,16 @@ import pytest
 
 @pytest.fixture()
 def expected_message():
-    return '\n'.join([
-        'Этот бот поможет тебе изучить Коран по богословскому переводу Шамиля Аляутдинова. ',
-        '',
-        'Каждое утро, вам будут приходить аяты из Священного Корана.',
-        'При нажатии на кнопку Подкасты, вам будут присылаться проповеди с сайта umma.ru.',
-        '',
-        (
-            'Также вы можете отправите номер суры, аята (например 4:7) и получить: аят в оригинале, '
-            + 'перевод на русский язык, транслитерацию и аудио'
-        ),
-    ])
+    return ''
 
 
-@pytest.mark.usefixtures('bot_process', 'my_admin')
-def test_help(expected_message, tg_client, bot_name):
-    tg_client.send_message(bot_name, '/help')
+@pytest.mark.usefixtures('bot_process')
+def test_start(expected_message, tg_client, bot_name):
+    tg_client.send_message(bot_name, '/start')
     for _ in range(50):
         time.sleep(0.1)
         message = next(tg_client.iter_messages(bot_name))
-        if message.message != '/help':
+        if message.message != '/start':
             break
 
     assert message.message == expected_message

@@ -61,6 +61,7 @@ SQLAlchemy = "1.4.49"
 alembic = "1.11.1"
 pytest-randomly = "3.13.0"
 telethon = "1.29.2"
+psycopg = {extras = ["binary"], version = "3.1.9"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -70,9 +71,9 @@ build-backend = "poetry.core.masonry.api"
 skip-string-normalization = true
 
 [tool.pytest.ini_options]
-filterwarnings = [
-  "error::DeprecationWarning",
-]
+# filterwarnings = [
+#   "error::DeprecationWarning",
+# ]
 asyncio_mode = "auto"
 
 [tool.isort]

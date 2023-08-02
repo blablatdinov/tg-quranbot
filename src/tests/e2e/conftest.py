@@ -21,12 +21,30 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import multiprocessing
+from pathlib import Path
 
 import pytest
 from telethon.sync import TelegramClient
+import psycopg
 
 from main import main
 from settings import settings
+
+
+def generate_fixture(someparam):
+    @pytest.fixture(scope='module')
+    def my_fixture():  # noqa: WPS430
+        print('my fixture is called with someparam={0}'.format(someparam))
+        return someparam
+    return my_fixture
+
+
+def inject_fixture(name, someparam):
+    globals()[name] = generate_fixture(someparam)  # noqa: WPS421
+
+
+inject_fixture('my_user', 100)
+inject_fixture('my_admin', 200)
 
 
 @pytest.fixture(scope='session')
@@ -44,7 +62,22 @@ def bot_process():
 
 @pytest.fixture(scope='session')
 def tg_client(bot_name):
+    conn = psycopg.connect(
+        'postgres://almazilaletdinov@localhost:5432/postgres',
+    )
+    conn.autocommit = True
+    cursor = conn.cursor()
+    cursor.execute('DROP DATABASE quranbot_test')
+    cursor.execute('CREATE DATABASE quranbot_test')
+    qbot_connection = psycopg.connect(
+        'postgres://almazilaletdinov@localhost:5432/quranbot_test',
+    )
+    qbot_cursor = qbot_connection.cursor()
+    qbot_cursor.execute((Path(__file__).parent / 'fixtures' / 'db_schema.sql').read_text())
     with TelegramClient('me', settings.TELEGRAM_CLIENT_ID, settings.TELEGRAM_CLIENT_HASH) as client:
         all_messages = [message.id for message in client.iter_messages('@WokeUpSmiled_bot')]
         client.delete_messages(entity=bot_name, message_ids=all_messages)
         yield client
+    qbot_connection.close()
+    cursor.execute('DROP DATABASE quranbot_test')
+    conn.close()
