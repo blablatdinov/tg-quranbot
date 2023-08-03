@@ -1845,6 +1845,20 @@ attrs = ">=22.2.0"
 rpds-py = ">=0.7.0"
 
 [[package]]
+name = "refurb"
+version = "1.18.0"
+description = "A tool for refurbish and modernize Python codebases"
+optional = false
+python-versions = ">=3.10"
+files = [
+    {file = "refurb-1.18.0-py3-none-any.whl", hash = "sha256:e866bf4e2f66dde4c97b5be6ff274d9d6af8c4c9d978ae101c342289b7bd32b9"},
+    {file = "refurb-1.18.0.tar.gz", hash = "sha256:e8f45bc03d888fed7f5cc2996c1a14437e7715b542fedeb9c7b39a78f0589e6d"},
+]
+
+[package.dependencies]
+mypy = ">=0.981"
+
+[[package]]
 name = "restructuredtext-lint"
 version = "1.4.0"
 description = "reStructuredText linter"
@@ -2405,4 +2419,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.12"
-content-hash = "beadbf7443db7fffdce4072af6cb06591251196541d5a876588598ee10cf6eb9"
+content-hash = "c280c0efc232775a3bc15cdac30c780741cc97befc65e6fd2c98b9b90d461b8b"
