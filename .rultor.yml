@@ -1,0 +1,14 @@
+architect:
+  - blablatdinov
+docker:
+  image:
+    "python:3.11"
+merge:
+  script: |
+    cp .env.example .env
+    pip install poetry==1.3.1
+    export PATH="PATH:/home/r/.local/bin"
+    poetry install
+    poetry run flake8 src
+    poetry run mypy src
+    poetry run pytest src/tests/unit
