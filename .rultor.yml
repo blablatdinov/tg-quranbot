@@ -4,6 +4,7 @@ docker:
   image:
     "python:3.11"
 merge:
+  squash: true
   script: |
     cp .env.example .env
     pip install poetry==1.3.1
