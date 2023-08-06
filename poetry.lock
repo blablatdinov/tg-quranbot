@@ -2386,7 +2386,7 @@ typing_extensions = ">=4.0,<5.0"
 type = "git"
 url = "https://github.com/wemake-services/wemake-python-styleguide"
 reference = "master"
-resolved_reference = "4023a6fc24445c429ba2ba0257d27fc4b3f7f0df"
+resolved_reference = "b6815e03543acf457377ebb2b8d2ee7441fa71d9"
 
 [[package]]
 name = "win32-setctime"
