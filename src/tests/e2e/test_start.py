@@ -30,12 +30,13 @@ def expected_message():
     return ''
 
 
-@pytest.mark.usefixtures('bot_process')
+# @pytest.mark.usefixtures('bot_process')
 def test_start(expected_message, tg_client, bot_name):
     tg_client.send_message(bot_name, '/start')
     for _ in range(50):
         time.sleep(0.1)
         message = next(tg_client.iter_messages(bot_name))
+        print(message.message)
         if message.message != '/start':
             break
 

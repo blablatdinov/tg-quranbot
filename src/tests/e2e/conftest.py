@@ -31,20 +31,25 @@ from main import main
 from settings import settings
 
 
-def generate_fixture(someparam):
+def generate_fixture(dump_path: Path):
     @pytest.fixture(scope='module')
     def my_fixture():  # noqa: WPS430
-        print('my fixture is called with someparam={0}'.format(someparam))
-        return someparam
+        qbot_connection = psycopg.connect(
+            'postgres://almazilaletdinov@localhost:5432/quranbot_test',
+        )
+        qbot_cursor = qbot_connection.cursor()
+        qbot_cursor.execute(dump_path.read_text())
     return my_fixture
 
 
-def inject_fixture(name, someparam):
-    globals()[name] = generate_fixture(someparam)  # noqa: WPS421
+def inject_fixture(dump_name):
+    globals()['{0}_dump'.format(dump_name)] = generate_fixture(
+        Path(__file__).parent / 'fixtures' / '{0}.sql'.format(dump_name),
+    )  # noqa: WPS421
 
 
-inject_fixture('my_user', 100)
-inject_fixture('my_admin', 200)
+# inject_fixture('start_dump')
+# inject_fixture('my_admin', 200)
 
 
 @pytest.fixture(scope='session')
@@ -67,8 +72,8 @@ def tg_client(bot_name):
     )
     conn.autocommit = True
     cursor = conn.cursor()
-    cursor.execute('DROP DATABASE quranbot_test')
-    cursor.execute('CREATE DATABASE quranbot_test')
+    # cursor.execute('DROP DATABASE quranbot_test')
+    # cursor.execute('CREATE DATABASE quranbot_test')
     qbot_connection = psycopg.connect(
         'postgres://almazilaletdinov@localhost:5432/quranbot_test',
     )
@@ -79,5 +84,5 @@ def tg_client(bot_name):
         client.delete_messages(entity=bot_name, message_ids=all_messages)
         yield client
     qbot_connection.close()
-    cursor.execute('DROP DATABASE quranbot_test')
+    # cursor.execute('DROP DATABASE quranbot_test')
     conn.close()
