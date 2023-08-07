@@ -25,6 +25,7 @@ from typing import final
 import attrs
 import httpx
 from pyeo import elegant
+from redis.asyncio import Redis
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
@@ -35,6 +36,7 @@ from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from repository.podcast import RandomPodcastInterface
 from services.answers.answer import FileAnswer, TelegramFileIdAnswer
+from services.reset_state_answer import ResetStateAnswer
 
 
 @final
@@ -46,6 +48,7 @@ class PodcastAnswer(TgAnswerInterface):
     _debug_mode: bool
     _origin: TgAnswerInterface
     _podcast: RandomPodcastInterface
+    _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Трансформация в ответ.
@@ -54,24 +57,27 @@ class PodcastAnswer(TgAnswerInterface):
         :return: AnswerInterface
         """
         chat_id = int(TgChatId(update))
-        return await FileAnswer(
-            self._debug_mode,
-            TelegramFileIdAnswer(
-                TgChatIdAnswer(
-                    TgAudioAnswer(
-                        self._origin,
+        return await ResetStateAnswer(
+            FileAnswer(
+                self._debug_mode,
+                TelegramFileIdAnswer(
+                    TgChatIdAnswer(
+                        TgAudioAnswer(
+                            self._origin,
+                        ),
+                        chat_id,
                     ),
-                    chat_id,
+                    await self._podcast.audio_telegram_id(),
                 ),
-                await self._podcast.audio_telegram_id(),
-            ),
-            TgTextAnswer(
-                TgChatIdAnswer(
-                    TgMessageAnswer(
-                        self._origin,
+                TgTextAnswer(
+                    TgChatIdAnswer(
+                        TgMessageAnswer(
+                            self._origin,
+                        ),
+                        chat_id,
                     ),
-                    chat_id,
+                    await self._podcast.link_to_audio_file(),
                 ),
-                await self._podcast.link_to_audio_file(),
             ),
+            self._redis,
         ).build(update)

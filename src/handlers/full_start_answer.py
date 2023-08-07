@@ -26,15 +26,23 @@ import attrs
 import httpx
 from databases import Database
 from pyeo import elegant
+from redis.asyncio import Redis
 
 from app_types.update import Update
 from integrations.nats_integration import SinkInterface
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup, TgHtmlParseAnswer, TgMessageAnswer
+from integrations.tg.tg_answers import (
+    TgAnswerInterface,
+    TgAnswerMarkup,
+    TgAnswerToSender,
+    TgHtmlParseAnswer,
+    TgMessageAnswer,
+)
 from repository.admin_message import AdminMessage
 from repository.users.user import UserRepository
 from repository.users.users import UsersRepository
 from services.answers.answer import DefaultKeyboard, ResizedKeyboard
 from services.register_event import StartWithEventAnswer
+from services.reset_state_answer import ResetStateAnswer
 from services.start.start_answer import StartAnswer
 from services.start.user_already_active import UserAlreadyActiveSafeAnswer
 from services.start.user_already_exists import UserAlreadyExistsAnswer
@@ -49,7 +57,7 @@ class FullStartAnswer(TgAnswerInterface):
     _database: Database
     _empty_answer: TgAnswerInterface
     _event_sink: SinkInterface
-    _answer_to_sender: TgAnswerInterface
+    _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -57,29 +65,33 @@ class FullStartAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
-        return await TgAnswerMarkup(
-            UserAlreadyActiveSafeAnswer(
-                UserAlreadyExistsAnswer(
-                    StartWithEventAnswer(
-                        StartAnswer(
-                            TgHtmlParseAnswer(
-                                TgMessageAnswer(self._empty_answer),
+        answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
+        return await ResetStateAnswer(
+            TgAnswerMarkup(
+                UserAlreadyActiveSafeAnswer(
+                    UserAlreadyExistsAnswer(
+                        StartWithEventAnswer(
+                            StartAnswer(
+                                TgHtmlParseAnswer(
+                                    TgMessageAnswer(self._empty_answer),
+                                ),
+                                UserRepository(self._database),
+                                AdminMessage('start', self._database),
+                                self._database,
                             ),
+                            self._event_sink,
                             UserRepository(self._database),
-                            AdminMessage('start', self._database),
-                            self._database,
                         ),
-                        self._event_sink,
+                        answer_to_sender,
                         UserRepository(self._database),
+                        UsersRepository(self._database),
+                        self._event_sink,
                     ),
-                    self._answer_to_sender,
-                    UserRepository(self._database),
-                    UsersRepository(self._database),
-                    self._event_sink,
+                    answer_to_sender,
                 ),
-                self._answer_to_sender,
+                ResizedKeyboard(
+                    DefaultKeyboard(),
+                ),
             ),
-            ResizedKeyboard(
-                DefaultKeyboard(),
-            ),
+            self._redis,
         ).build(update)

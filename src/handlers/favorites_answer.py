@@ -29,9 +29,17 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
+from integrations.tg.tg_answers import (
+    TgAnswerInterface,
+    TgAnswerToSender,
+    TgAudioAnswer,
+    TgHtmlParseAnswer,
+    TgMessageAnswer,
+    TgTextAnswer,
+)
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from services.ayats.favorite_ayats import FavoriteAyatAnswer, FavoriteAyatEmptySafeAnswer
+from services.reset_state_answer import ResetStateAnswer
 
 
 @final
@@ -43,9 +51,7 @@ class FavoriteAyatsAnswer(TgAnswerInterface):
     _debug: bool
     _database: Database
     _redis: Redis
-    _answer_to_sender: TgAnswerInterface
-    _html_to_sender: TgAnswerInterface
-    _audio_to_sender: TgAnswerInterface
+    _empty_answer: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -53,15 +59,23 @@ class FavoriteAyatsAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
-        return await FavoriteAyatEmptySafeAnswer(
-            FavoriteAyatAnswer(
-                self._debug,
-                self._html_to_sender,
-                self._audio_to_sender,
-                FavoriteAyatsRepository(self._database),
+        answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
+        return await ResetStateAnswer(
+            FavoriteAyatEmptySafeAnswer(
+                FavoriteAyatAnswer(
+                    self._debug,
+                    TgAnswerToSender(
+                        TgHtmlParseAnswer(
+                            TgMessageAnswer(self._empty_answer),
+                        ),
+                    ),
+                    TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
+                    FavoriteAyatsRepository(self._database),
+                ),
+                TgTextAnswer(
+                    answer_to_sender,
+                    'Вы еще не добавляли аятов в избранное',
+                ),
             ),
-            TgTextAnswer(
-                self._answer_to_sender,
-                'Вы еще не добавляли аятов в избранное',
-            ),
+            self._redis,
         ).build(update)

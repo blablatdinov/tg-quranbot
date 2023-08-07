@@ -22,12 +22,20 @@ from typing import final
 import attrs
 import httpx
 from pyeo import elegant
+from redis.asyncio import Redis
 
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import (
+    TgAnswerInterface,
+    TgAnswerToSender,
+    TgAudioAnswer,
+    TgHtmlParseAnswer,
+    TgMessageAnswer,
+)
 from services.ayats.ayat_by_sura_ayat_num_answer import AyatBySuraAyatNumAnswer
 from services.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
+from services.reset_state_answer import ResetStateAnswer
 
 
 @final
@@ -37,9 +45,8 @@ class SearchAyatByNumbersAnswer(TgAnswerInterface):
     """Поиск аята по номеру суры/аята."""
 
     _debug: bool
-    _html_to_sender: TgAnswerInterface
-    _audio_to_sender: TgAnswerInterface
-    _answer_to_sender: TgAnswerInterface
+    _empty_answer: TgAnswerInterface
+    _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -47,14 +54,22 @@ class SearchAyatByNumbersAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
-        return await SuraNotFoundSafeAnswer(
-            AyatNotFoundSafeAnswer(
-                AyatBySuraAyatNumAnswer(
-                    self._debug,
-                    self._html_to_sender,
-                    self._audio_to_sender,
+        html_to_sender = TgAnswerToSender(
+            TgHtmlParseAnswer(TgMessageAnswer(self._empty_answer)),
+        )
+        audio_to_sender = TgAnswerToSender(TgAudioAnswer(self._empty_answer))
+        answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
+        return await ResetStateAnswer(
+            SuraNotFoundSafeAnswer(
+                AyatNotFoundSafeAnswer(
+                    AyatBySuraAyatNumAnswer(
+                        self._debug,
+                        html_to_sender,
+                        audio_to_sender,
+                    ),
+                    answer_to_sender,
                 ),
-                self._answer_to_sender,
+                answer_to_sender,
             ),
-            self._answer_to_sender,
+            self._redis,
         ).build(update)

@@ -29,7 +29,7 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerToSender, TgTextAnswer, TgMessageAnswer
 from repository.prayer_time import NewUserPrayers, SafeNotFoundPrayers, SafeUserPrayers, UserPrayers
 from services.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
 from services.prayers.prayer_for_user_answer import PrayerForUserAnswer
@@ -44,7 +44,7 @@ class PrayerTimeAnswer(TgAnswerInterface):
 
     _database: Database
     _redis: Redis
-    _answer_to_sender: TgAnswerInterface
+    _empty_answer: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -52,10 +52,11 @@ class PrayerTimeAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
+        answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
         return await UserWithoutCitySafeAnswer(
             ResetStateAnswer(
                 PrayerForUserAnswer(
-                    self._answer_to_sender,
+                    answer_to_sender,
                     SafeNotFoundPrayers(
                         self._database,
                         SafeUserPrayers(
@@ -71,7 +72,7 @@ class PrayerTimeAnswer(TgAnswerInterface):
             ),
             InviteSetCityAnswer(
                 TgTextAnswer(
-                    self._answer_to_sender,
+                    answer_to_sender,
                     'Вы не указали город, отправьте местоположение или воспользуйтесь поиском',
                 ),
                 self._redis,
