@@ -49,7 +49,7 @@ from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from repository.admin_message import AdminMessage
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.podcast import RandomPodcast
-from repository.prayer_time import NewUserPrayers, SafeNotFoundPrayers, SafeUserPrayers, UserPrayers
+from repository.prayer_time import UserPrayers
 from repository.users.user import UserRepository
 from repository.users.users import UsersRepository
 from services.answers.answer import DefaultKeyboard, ResizedKeyboard
@@ -70,9 +70,9 @@ from services.city.inline_query_answer import InlineQueryAnswer
 from services.city.search import SearchCityByCoordinates, SearchCityByName
 from services.help_answer import HelpAnswer
 from services.podcast_answer import PodcastAnswer
-from services.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
-from services.prayers.prayer_for_user_answer import PrayerForUserAnswer
+from services.prayers.invite_set_city_answer import InviteSetCityAnswer
 from services.prayers.prayer_status import UserPrayerStatus
+from services.prayers.prayer_time_answer import PrayerTimeAnswer
 from services.prayers.prayer_times import UserPrayerStatusChangeAnswer
 from services.register_event import StartWithEventAnswer
 from services.reset_state_answer import ResetStateAnswer
@@ -137,30 +137,10 @@ class QuranbotAnswer(TgAnswerInterface):
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',
-                    UserWithoutCitySafeAnswer(
-                        ResetStateAnswer(
-                            PrayerForUserAnswer(
-                                answer_to_sender,
-                                SafeNotFoundPrayers(
-                                    self._database,
-                                    SafeUserPrayers(
-                                        UserPrayers(self._database),
-                                        NewUserPrayers(
-                                            self._database,
-                                            UserPrayers(self._database),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            self._redis,
-                        ),
-                        InviteSetCityAnswer(
-                            TgTextAnswer(
-                                answer_to_sender,
-                                'Вы не указали город, отправьте местоположение или воспользуйтесь поиском',
-                            ),
-                            self._redis,
-                        ),
+                    PrayerTimeAnswer(
+                        self._database,
+                        self._redis,
+                        answer_to_sender,
                     ),
                 ),
                 TgMessageRegexAnswer(
