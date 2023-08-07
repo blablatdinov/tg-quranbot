@@ -55,15 +55,13 @@ from repository.users.user import UserRepository
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
 from services.ayats.ayat_by_id import AyatByIdAnswer
-from services.ayats.ayat_by_sura_ayat_num_answer import AyatBySuraAyatNumAnswer
-from services.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 from services.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
 from services.ayats.favorite_ayats import FavoriteAyatPage
 from services.ayats.favorites.change_favorite import ChangeFavoriteAyatAnswer
 from services.ayats.highlited_search_answer import HighlightedSearchAnswer
+from services.ayats.search_ayat_by_numbers_answer import SearchAyatByNumbersAnswer
 from services.ayats.search_by_text import SearchAyatByTextAnswer
 from services.ayats.search_by_text_pagination import SearchAyatByTextCallbackAnswer
-from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 from services.city.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
 from services.city.inline_query_answer import InlineQueryAnswer
 from services.city.search import SearchCityByCoordinates, SearchCityByName
@@ -146,15 +144,10 @@ class QuranbotAnswer(TgAnswerInterface):
                 TgMessageRegexAnswer(
                     r'\d+:\d+',
                     ResetStateAnswer(
-                        SuraNotFoundSafeAnswer(
-                            AyatNotFoundSafeAnswer(
-                                AyatBySuraAyatNumAnswer(
-                                    settings.DEBUG,
-                                    html_to_sender,
-                                    audio_to_sender,
-                                ),
-                                answer_to_sender,
-                            ),
+                        SearchAyatByNumbersAnswer(
+                            settings.DEBUG,
+                            html_to_sender,
+                            audio_to_sender,
                             answer_to_sender,
                         ),
                         self._redis,
