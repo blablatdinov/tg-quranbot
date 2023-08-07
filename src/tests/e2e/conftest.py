@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import multiprocessing
+import time
 from pathlib import Path
 
 import pytest
@@ -58,31 +59,34 @@ def bot_name():
 
 
 @pytest.fixture(scope='session')
-def bot_process():
+def setup():
+    with psycopg.connect('postgres://almazilaletdinov@localhost:5432/postgres', autocommit=True) as conn:
+        cursor = conn.cursor()
+        cursor.execute('CREATE DATABASE quranbot_test')
+        with psycopg.connect('postgres://almazilaletdinov@localhost:5432/quranbot_test', autocommit=True) as qbot_conn:
+            qbot_cursor = qbot_conn.cursor()
+            qbot_cursor.execute((Path(__file__).parent / 'fixtures' / 'db_schema.sql').read_text())
     bot = multiprocessing.Process(target=main, args=(['src/main.py', 'run_polling'],))
     bot.start()
     yield
     bot.terminate()
+    with psycopg.connect('postgres://almazilaletdinov@localhost:5432/postgres', autocommit=True) as conn:
+        cursor = conn.cursor()
+        cursor.execute('CREATE DATABASE quranbot_test')
+
+
+@pytest.fixture
+def db_session(setup):
+    with psycopg.connect('postgres://almazilaletdinov@localhost:5432/quranbot_test', autocommit=True) as conn:
+        cur = conn.cursor()
+        with conn.transaction() as trx:
+            yield cur
+            psycopg.Rollback(trx)
 
 
 @pytest.fixture(scope='session')
 def tg_client(bot_name):
-    conn = psycopg.connect(
-        'postgres://almazilaletdinov@localhost:5432/postgres',
-    )
-    conn.autocommit = True
-    cursor = conn.cursor()
-    # cursor.execute('DROP DATABASE quranbot_test')
-    # cursor.execute('CREATE DATABASE quranbot_test')
-    qbot_connection = psycopg.connect(
-        'postgres://almazilaletdinov@localhost:5432/quranbot_test',
-    )
-    qbot_cursor = qbot_connection.cursor()
-    qbot_cursor.execute((Path(__file__).parent / 'fixtures' / 'db_schema.sql').read_text())
     with TelegramClient('me', settings.TELEGRAM_CLIENT_ID, settings.TELEGRAM_CLIENT_HASH) as client:
         all_messages = [message.id for message in client.iter_messages('@WokeUpSmiled_bot')]
         client.delete_messages(entity=bot_name, message_ids=all_messages)
         yield client
-    qbot_connection.close()
-    # cursor.execute('DROP DATABASE quranbot_test')
-    conn.close()

@@ -21,12 +21,25 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import time
+from pathlib import Path
 
 import pytest
 
 
-@pytest.mark.usefixtures('bot_process')
-def test_help(tg_client, bot_name):
+@pytest.fixture()
+def load_podcasts(db_session):
+    db_session.execute(
+        (Path(__file__).parent / 'fixtures' / 'files.sql').read_text(),
+    )
+    db_session.execute(
+        (Path(__file__).parent / 'fixtures' / 'podcasts.sql').read_text(),
+    )
+    db_session.execute('SELECT * FROM public.podcasts')
+    yield
+
+
+@pytest.mark.usefixtures('load_podcasts')
+def test_podcast(tg_client, bot_name):
     tg_client.send_message(bot_name, '🎧 Подкасты')
     for _ in range(50):
         time.sleep(0.1)

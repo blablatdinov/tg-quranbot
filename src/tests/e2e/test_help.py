@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import time
+from pathlib import Path
 
 import pytest
 
@@ -40,7 +41,14 @@ def expected_message():
     ])
 
 
-@pytest.mark.usefixtures('bot_process', 'my_admin')
+@pytest.fixture()
+def load_help_message(db_session):
+    db_session.execute(
+        (Path(__file__).parent / 'fixtures' / 'admin_messages.sql').read_text(),
+    )
+
+
+@pytest.mark.usefixtures('load_help_message')
 def test_help(expected_message, tg_client, bot_name):
     tg_client.send_message(bot_name, '/help')
     for _ in range(50):
