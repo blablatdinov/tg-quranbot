@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
@@ -34,8 +35,8 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from repository.users.user import UserRepository
-from services.city.change_city_answer import CityNotSupportedAnswer, ChangeCityAnswer
-from services.city.search import SearchCityByName, SearchCityByCoordinates
+from services.city.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
+from services.city.search import SearchCityByCoordinates, SearchCityByName
 
 
 @final
@@ -44,6 +45,8 @@ from services.city.search import SearchCityByName, SearchCityByCoordinates
 class SearchCityAnswer(TgAnswerInterface):
     """Ответ с изменением статуса прочитанности намаза."""
 
+    _database: Database
+    _answer_to_sender: TgAnswerInterface
     _debug: bool
     _html_to_sender: TgAnswerInterface
     _audio_to_sender: TgAnswerInterface

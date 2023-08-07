@@ -44,6 +44,7 @@ from services.start.user_already_exists import UserAlreadyExistsAnswer
 @final
 @elegant
 class FullStartAnswer(TgAnswerInterface):
+    """Ответ на команду /start."""
 
     _database: Database
     _empty_answer: TgAnswerInterface
@@ -51,6 +52,11 @@ class FullStartAnswer(TgAnswerInterface):
     _answer_to_sender: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
+        """Сборка ответа.
+
+        :param update: Update
+        :return: list[httpx.Request]
+        """
         return await TgAnswerMarkup(
             UserAlreadyActiveSafeAnswer(
                 UserAlreadyExistsAnswer(

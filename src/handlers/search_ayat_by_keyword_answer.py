@@ -1,4 +1,5 @@
 """The MIT License (MIT).
+
 Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,38 +22,45 @@ from typing import final
 import attrs
 import httpx
 from pyeo import elegant
+from redis.asyncio import Redis
 
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswerInterface
-from services.ayats.ayat_by_sura_ayat_num_answer import AyatBySuraAyatNumAnswer
-from services.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
-from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
+from integrations.tg.tg_answers import TgAnswerInterface, TgMessageRegexAnswer
+from services.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
+from services.ayats.highlited_search_answer import HighlightedSearchAnswer
+from services.ayats.search_by_text import SearchAyatByTextAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class SearchAyatByNumbersAnswer(TgAnswerInterface):
+class SearchAyatByKeywordAnswer(TgAnswerInterface):
     """Ответ с временами намаза."""
 
     _debug: bool
     _html_to_sender: TgAnswerInterface
     _audio_to_sender: TgAnswerInterface
     _answer_to_sender: TgAnswerInterface
+    _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
+
         :param update: Update
         :return: list[httpx.Request]
         """
-        return await SuraNotFoundSafeAnswer(
-            AyatNotFoundSafeAnswer(
-                AyatBySuraAyatNumAnswer(
-                    self._debug,
-                    self._html_to_sender,
-                    self._audio_to_sender,
+        return await TgMessageRegexAnswer(
+            '.+',
+            HighlightedSearchAnswer(
+                CachedAyatSearchQueryAnswer(
+                    SearchAyatByTextAnswer(
+                        self._debug,
+                        self._html_to_sender,
+                        self._audio_to_sender,
+                        self._redis,
+                    ),
+                    self._redis,
                 ),
-                self._answer_to_sender,
+                self._redis,
             ),
-            self._answer_to_sender,
         ).build(update)
