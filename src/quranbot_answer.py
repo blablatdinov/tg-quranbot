@@ -33,7 +33,6 @@ from integrations.nominatim import NominatimIntegration
 from integrations.tg.tg_answers import (
     TgAnswerFork,
     TgAnswerInterface,
-    TgAnswerMarkup,
     TgAnswerToSender,
     TgAudioAnswer,
     TgCallbackQueryRegexAnswer,
@@ -51,8 +50,6 @@ from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.podcast import RandomPodcast
 from repository.prayer_time import UserPrayers
 from repository.users.user import UserRepository
-from repository.users.users import UsersRepository
-from services.answers.answer import DefaultKeyboard, ResizedKeyboard
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
 from services.ayats.ayat_by_id import AyatByIdAnswer
@@ -74,11 +71,8 @@ from services.prayers.invite_set_city_answer import InviteSetCityAnswer
 from services.prayers.prayer_status import UserPrayerStatus
 from services.prayers.prayer_time_answer import PrayerTimeAnswer
 from services.prayers.prayer_times import UserPrayerStatusChangeAnswer
-from services.register_event import StartWithEventAnswer
 from services.reset_state_answer import ResetStateAnswer
-from services.start.start_answer import StartAnswer
-from services.start.user_already_active import UserAlreadyActiveSafeAnswer
-from services.start.user_already_exists import UserAlreadyExistsAnswer
+from services.start.full_start_answer import FullStartAnswer
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
 from settings import settings
@@ -236,31 +230,11 @@ class QuranbotAnswer(TgAnswerInterface):
                 TgMessageRegexAnswer(
                     '/start',
                     ResetStateAnswer(
-                        TgAnswerMarkup(
-                            UserAlreadyActiveSafeAnswer(
-                                UserAlreadyExistsAnswer(
-                                    StartWithEventAnswer(
-                                        StartAnswer(
-                                            TgHtmlParseAnswer(
-                                                TgMessageAnswer(empty_answer),
-                                            ),
-                                            UserRepository(self._database),
-                                            AdminMessage('start', self._database),
-                                            self._database,
-                                        ),
-                                        self._event_sink,
-                                        UserRepository(self._database),
-                                    ),
-                                    answer_to_sender,
-                                    UserRepository(self._database),
-                                    UsersRepository(self._database),
-                                    self._event_sink,
-                                ),
-                                answer_to_sender,
-                            ),
-                            ResizedKeyboard(
-                                DefaultKeyboard(),
-                            ),
+                        FullStartAnswer(
+                            self._database,
+                            empty_answer,
+                            self._event_sink,
+                            answer_to_sender,
                         ),
                         self._redis,
                     ),
