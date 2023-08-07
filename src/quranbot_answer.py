@@ -27,6 +27,8 @@ from databases import Database
 from redis.asyncio import Redis
 
 from app_types.update import Update
+from handlers.favorites_answer import FavoriteAyatsAnswer
+from handlers.search_city_answer import SearchCityAnswer
 from integrations.client import IntegrationClient
 from integrations.nats_integration import SinkInterface
 from integrations.nominatim import NominatimIntegration
@@ -56,7 +58,7 @@ from services.ayats.ayat_by_id import AyatByIdAnswer
 from services.ayats.ayat_by_sura_ayat_num_answer import AyatBySuraAyatNumAnswer
 from services.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 from services.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
-from services.ayats.favorite_ayats import FavoriteAyatAnswer, FavoriteAyatEmptySafeAnswer, FavoriteAyatPage
+from services.ayats.favorite_ayats import FavoriteAyatPage
 from services.ayats.favorites.change_favorite import ChangeFavoriteAyatAnswer
 from services.ayats.highlited_search_answer import HighlightedSearchAnswer
 from services.ayats.search_by_text import SearchAyatByTextAnswer
@@ -66,13 +68,13 @@ from services.city.change_city_answer import ChangeCityAnswer, CityNotSupportedA
 from services.city.inline_query_answer import InlineQueryAnswer
 from services.city.search import SearchCityByCoordinates, SearchCityByName
 from services.help_answer import HelpAnswer
-from services.podcast_answer import PodcastAnswer
+from handlers.podcast_answer import PodcastAnswer
 from services.prayers.invite_set_city_answer import InviteSetCityAnswer
 from services.prayers.prayer_status import UserPrayerStatus
-from services.prayers.prayer_time_answer import PrayerTimeAnswer
-from services.prayers.prayer_times import UserPrayerStatusChangeAnswer
+from handlers.prayer_time_answer import PrayerTimeAnswer
+from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
 from services.reset_state_answer import ResetStateAnswer
-from services.start.full_start_answer import FullStartAnswer
+from handlers.full_start_answer import FullStartAnswer
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
 from settings import settings
@@ -121,72 +123,24 @@ class QuranbotAnswer(TgAnswerInterface):
                 TgMessageRegexAnswer(
                     'Подкасты',
                     ResetStateAnswer(
-                        PodcastAnswer(
-                            settings.DEBUG,
-                            empty_answer,
-                            RandomPodcast(self._database),
-                        ),
+                        PodcastAnswer(settings.DEBUG, empty_answer, RandomPodcast(self._database)),
                         self._redis,
                     ),
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',
-                    PrayerTimeAnswer(
-                        self._database,
-                        self._redis,
-                        answer_to_sender,
-                    ),
+                    PrayerTimeAnswer(self._database, self._redis, answer_to_sender),
                 ),
                 TgMessageRegexAnswer(
                     'Избранное',
                     ResetStateAnswer(
-                        FavoriteAyatEmptySafeAnswer(
-                            FavoriteAyatAnswer(
-                                settings.DEBUG,
-                                html_to_sender,
-                                audio_to_sender,
-                                FavoriteAyatsRepository(self._database),
-                            ),
-                            TgTextAnswer(
-                                answer_to_sender,
-                                'Вы еще не добавляли аятов в избранное',
-                            ),
-                        ),
+                        FavoriteAyatsAnswer(self._database, self._redis, answer_to_sender, html_to_sender),
                         self._redis,
                     ),
                 ),
                 StepAnswer(
                     UserStep.city_search.value,
-                    TgSkipNotProcessable(
-                        TgAnswerFork(
-                            TgMessageRegexAnswer(
-                                '.+',
-                                CityNotSupportedAnswer(
-                                    ChangeCityAnswer(
-                                        answer_to_sender,
-                                        SearchCityByName(self._database),
-                                        self._redis,
-                                        UserRepository(self._database),
-                                    ),
-                                    answer_to_sender,
-                                ),
-                            ),
-                            TgLocationAnswer(
-                                CityNotSupportedAnswer(
-                                    ChangeCityAnswer(
-                                        answer_to_sender,
-                                        SearchCityByCoordinates(
-                                            SearchCityByName(self._database),
-                                            NominatimIntegration(IntegrationClient()),
-                                        ),
-                                        self._redis,
-                                        UserRepository(self._database),
-                                    ),
-                                    answer_to_sender,
-                                ),
-                            ),
-                        ),
-                    ),
+                    SearchCityAnswer(settings.DEBUG, html_to_sender, audio_to_sender, self._redis),
                     self._redis,
                 ),
                 TgMessageRegexAnswer(
