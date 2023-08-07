@@ -30,7 +30,7 @@ from redis.asyncio import Redis
 
 from integrations.client import IntegrationClient
 from integrations.nominatim import NominatimIntegration
-from integrations.tg.tg_answers import TgAnswerFork, TgMessageRegexAnswer
+from integrations.tg.tg_answers import TgAnswerFork, TgAnswerToSender, TgMessageAnswer, TgMessageRegexAnswer
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
@@ -46,10 +46,8 @@ class SearchCityAnswer(TgAnswerInterface):
     """Ответ с изменением статуса прочитанности намаза."""
 
     _database: Database
-    _answer_to_sender: TgAnswerInterface
+    _empty_answer: TgAnswerInterface
     _debug: bool
-    _html_to_sender: TgAnswerInterface
-    _audio_to_sender: TgAnswerInterface
     _redis: Redis
 
     async def build(self, update) -> list[httpx.Request]:
@@ -58,24 +56,25 @@ class SearchCityAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
+        answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
         return await TgSkipNotProcessable(
             TgAnswerFork(
                 TgMessageRegexAnswer(
                     '.+',
                     CityNotSupportedAnswer(
                         ChangeCityAnswer(
-                            self._answer_to_sender,
+                            answer_to_sender,
                             SearchCityByName(self._database),
                             self._redis,
                             UserRepository(self._database),
                         ),
-                        self._answer_to_sender,
+                        answer_to_sender,
                     ),
                 ),
                 TgLocationAnswer(
                     CityNotSupportedAnswer(
                         ChangeCityAnswer(
-                            self._answer_to_sender,
+                            answer_to_sender,
                             SearchCityByCoordinates(
                                 SearchCityByName(self._database),
                                 NominatimIntegration(IntegrationClient()),
@@ -83,7 +82,7 @@ class SearchCityAnswer(TgAnswerInterface):
                             self._redis,
                             UserRepository(self._database),
                         ),
-                        self._answer_to_sender,
+                        answer_to_sender,
                     ),
                 ),
             ),

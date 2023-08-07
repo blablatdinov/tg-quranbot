@@ -65,7 +65,6 @@ from services.city.search import SearchCityByName
 from services.help_answer import HelpAnswer
 from services.prayers.invite_set_city_answer import InviteSetCityAnswer
 from services.prayers.prayer_status import UserPrayerStatus
-from services.reset_state_answer import ResetStateAnswer
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
 from settings import settings
@@ -114,42 +113,24 @@ class QuranbotAnswer(TgAnswerInterface):
             TgAnswerFork(
                 TgMessageRegexAnswer(
                     'Подкасты',
-                    ResetStateAnswer(
-                        PodcastAnswer(settings.DEBUG, empty_answer, RandomPodcast(self._database)),
-                        self._redis,
-                    ),
+                    PodcastAnswer(settings.DEBUG, empty_answer, RandomPodcast(self._database), self._redis),
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',
-                    PrayerTimeAnswer(self._database, self._redis, answer_to_sender),
+                    PrayerTimeAnswer(self._database, self._redis, empty_answer),
                 ),
                 TgMessageRegexAnswer(
                     'Избранное',
-                    ResetStateAnswer(
-                        FavoriteAyatsAnswer(
-                            settings.DEBUG,
-                            self._database,
-                            self._redis,
-                            answer_to_sender,
-                            html_to_sender,
-                            audio_to_sender,
-                        ),
-                        self._redis,
-                    ),
+                    FavoriteAyatsAnswer(settings.DEBUG, self._database, self._redis, empty_answer),
                 ),
                 StepAnswer(
                     UserStep.city_search.value,
-                    SearchCityAnswer(
-                        self._database, answer_to_sender, settings.DEBUG, html_to_sender, audio_to_sender, self._redis,
-                    ),
+                    SearchCityAnswer(self._database, empty_answer, settings.DEBUG, self._redis),
                     self._redis,
                 ),
                 TgMessageRegexAnswer(
                     r'\d+:\d+',
-                    ResetStateAnswer(
-                        SearchAyatByNumbersAnswer(settings.DEBUG, html_to_sender, audio_to_sender, answer_to_sender),
-                        self._redis,
-                    ),
+                    SearchAyatByNumbersAnswer(settings.DEBUG, empty_answer, self._redis),
                 ),
                 TgMessageRegexAnswer(
                     'Найти аят',
@@ -168,14 +149,11 @@ class QuranbotAnswer(TgAnswerInterface):
                 ),
                 TgMessageRegexAnswer(
                     '/start',
-                    ResetStateAnswer(
-                        FullStartAnswer(self._database, empty_answer, self._event_sink, answer_to_sender),
-                        self._redis,
-                    ),
+                    FullStartAnswer(self._database, empty_answer, self._event_sink, self._redis),
                 ),
                 TgMessageRegexAnswer(
                     '/help',
-                    HelpAnswer(html_to_sender, AdminMessage('start', self._database)),
+                    HelpAnswer(html_to_sender, AdminMessage('start', self._database), self._redis),
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,
