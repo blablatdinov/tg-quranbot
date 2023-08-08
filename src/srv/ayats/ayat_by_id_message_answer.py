@@ -28,42 +28,41 @@ from pyeo import elegant
 
 from app_types.update import Update
 from db.connection import database
-from integrations.tg.message_text import MessageText
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup, TgTextAnswer
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
-from services.ayats.ayat import QAyat
-from services.ayats.ayat_answer import AyatAnswer
-from services.ayats.enums import AyatCallbackTemplateEnum
-from services.ayats.keyboards import AyatAnswerKeyboard
+from srv.ayats.ayat import Ayat
+from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
+from srv.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
+from srv.ayats.neighbor_ayat_keyboard import NeighborAyatKeyboard
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatBySuraAyatNumAnswer(TgAnswerInterface):
-    """Ответ на поиск аята по номеру суры, аята."""
+class AyatByIdMessageAnswer(TgAnswerInterface):
+    """Текстовый ответ на поиск аята."""
 
-    _debug_mode: bool
+    _result_ayat: Ayat
     _message_answer: TgAnswerInterface
-    _file_answer: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
-        """Собрать ответ.
+        """Сборка ответа.
 
         :param update: Update
         :return: list[httpx.Request]
         """
-        result_ayat = await QAyat.by_sura_ayat_num(MessageText(update), database)
-        answers = (self._message_answer, self._file_answer)
-        return await AyatAnswer(
-            self._debug_mode,
-            answers,
-            result_ayat,
-            AyatAnswerKeyboard(
-                result_ayat,
+        return await TgAnswerMarkup(
+            TgTextAnswer(
+                self._message_answer,
+                await self._result_ayat.text(),
+            ),
+            AyatFavoriteKeyboardButton(
+                self._result_ayat,
+                NeighborAyatKeyboard(
+                    NeighborAyats(database, await self._result_ayat.id()),
+                    AyatCallbackTemplateEnum.get_ayat,
+                ),
                 FavoriteAyatsRepository(database),
-                NeighborAyats(database, await result_ayat.id()),
-                AyatCallbackTemplateEnum.get_ayat,
             ),
         ).build(update)

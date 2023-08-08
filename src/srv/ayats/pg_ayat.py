@@ -20,40 +20,24 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import final
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.intable import AsyncIntable
 from app_types.stringable import Stringable
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.sura import Sura
-from services.ayats.ayat_id_by_sura_ayat_num import AyatIdBySuraAyatNum
-from services.ayats.search.ayat_search_query import SearchQuery, ValidatedSearchQuery
-
-
-@elegant
-class Ayat(Protocol):
-    """Интерфейс аята."""
-
-    async def id(self) -> int:
-        """Идентификатор аята."""
-
-    async def text(self) -> str:
-        """Строковое представление."""
-
-    async def tg_file_id(self) -> str:
-        """Идентификатор файла в телеграм."""
-
-    async def file_link(self) -> str:
-        """Ссылка на файл."""
+from srv.ayats.ayat import Ayat
+from srv.ayats.ayat_id_by_sura_ayat import AyatIdBySuraAyatNum
+from srv.ayats.nums_search_query import NumsSearchQuery
+from srv.ayats.validated_search_query import ValidatedSearchQuery
 
 
 @final
 @attrs.define(frozen=True)
-class QAyat(Ayat):
+class PgAyat(Ayat):
     """Аят."""
 
     _ayat_id: AsyncIntable
@@ -67,11 +51,11 @@ class QAyat(Ayat):
         :param database: Database
         :return: Ayat
         """
-        return QAyat(
+        return PgAyat(
             AyatIdBySuraAyatNum(
                 Sura(database),
                 ValidatedSearchQuery(
-                    SearchQuery(sura_ayat_num),
+                    NumsSearchQuery(sura_ayat_num),
                 ),
                 database,
             ),

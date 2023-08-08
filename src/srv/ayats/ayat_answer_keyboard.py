@@ -20,52 +20,40 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
-from contextlib import suppress
 from typing import final
 
 import attrs
 from pyeo import elegant
 
 from app_types.update import Update
-from exceptions.content_exceptions import AyatNotFoundError
+from integrations.tg.keyboard import KeyboardInterface
+from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
-from services.answers.answer import KeyboardInterface
-from services.ayats.enums import AyatCallbackTemplateEnum
+from srv.ayats.ayat import Ayat
+from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
+from srv.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
+from srv.ayats.neighbor_ayat_keyboard import NeighborAyatKeyboard
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class NeighborAyatKeyboard(KeyboardInterface):
-    """Клавиатура с соседними аятами."""
+class AyatAnswerKeyboard(KeyboardInterface):
+    """Клавиатура аята."""
 
-    _ayats_neighbors: NeighborAyatsRepositoryInterface
-    _callback_template: AyatCallbackTemplateEnum
+    _ayat: Ayat
+    _favorite_ayats_repo: FavoriteAyatRepositoryInterface
+    _neighbor_ayats: NeighborAyatsRepositoryInterface
+    _ayat_callback_template: AyatCallbackTemplateEnum
 
     async def generate(self, update: Update) -> str:
-        """Генерация клавиатуры.
+        """Генерация.
 
         :param update: Update
         :return: str
         """
-        buttons = []
-        with suppress(AyatNotFoundError):
-            left = await self._ayats_neighbors.left_neighbor()
-            buttons.append({
-                'text': '<- {0}:{1}'.format(left.sura_num, left.ayat_num),
-                'callback_data': self._callback_template.format(left.id),
-            })
-        buttons.append({
-            'text': await self._ayats_neighbors.page(),
-            'callback_data': 'fake',
-        })
-        with suppress(AyatNotFoundError):
-            right = await self._ayats_neighbors.right_neighbor()
-            buttons.append({
-                'text': '{0}:{1} ->'.format(right.sura_num, right.ayat_num),
-                'callback_data': self._callback_template.format(right.id),
-            })
-        return json.dumps({
-            'inline_keyboard': [buttons],
-        })
+        return await AyatFavoriteKeyboardButton(
+            self._ayat,
+            NeighborAyatKeyboard(self._neighbor_ayats, self._ayat_callback_template),
+            self._favorite_ayats_repo,
+        ).generate(update)

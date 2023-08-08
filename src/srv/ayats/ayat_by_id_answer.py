@@ -26,25 +26,27 @@ import attrs
 import httpx
 from pyeo import elegant
 
+from app_types.intable import ThroughAsyncIntable
 from app_types.update import Update
 from db.connection import database
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup, TgTextAnswer
-from repository.ayats.favorite_ayats import FavoriteAyatsRepository
-from repository.ayats.neighbor_ayats import NeighborAyats
-from services.ayats.ayat import Ayat
-from services.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
-from services.ayats.ayat_neighbor_keyboard import NeighborAyatKeyboard
-from services.ayats.enums import AyatCallbackTemplateEnum
+from integrations.tg.callback_query import CallbackQueryData
+from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgTextAnswer
+from services.regular_expression import IntableRegularExpression
+from srv.ayats.ayat_by_id_message_answer import AyatByIdMessageAnswer
+from srv.ayats.pg_ayat import PgAyat
+from srv.files.file_answer import FileAnswer
+from srv.files.file_id_answer import TelegramFileIdAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatByIdMessageAnswer(TgAnswerInterface):
-    """Текстовый ответ на поиск аята."""
+class AyatByIdAnswer(TgAnswerInterface):
+    """Ответ на аят по идентификатору."""
 
-    _result_ayat: Ayat
+    _debug_mode: bool
     _message_answer: TgAnswerInterface
+    _file_answer: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -52,17 +54,27 @@ class AyatByIdMessageAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
-        return await TgAnswerMarkup(
-            TgTextAnswer(
-                self._message_answer,
-                await self._result_ayat.text(),
+        result_ayat = PgAyat(
+            ThroughAsyncIntable(
+                int(IntableRegularExpression(
+                    str(CallbackQueryData(update)),
+                )),
             ),
-            AyatFavoriteKeyboardButton(
-                self._result_ayat,
-                NeighborAyatKeyboard(
-                    NeighborAyats(database, await self._result_ayat.id()),
-                    AyatCallbackTemplateEnum.get_ayat,
+            database,
+        )
+        return await TgAnswerList(
+            AyatByIdMessageAnswer(
+                result_ayat, self._message_answer,
+            ),
+            FileAnswer(
+                self._debug_mode,
+                TelegramFileIdAnswer(
+                    self._file_answer,
+                    await result_ayat.tg_file_id(),
                 ),
-                FavoriteAyatsRepository(database),
+                TgTextAnswer(
+                    self._message_answer,
+                    await result_ayat.file_link(),
+                ),
             ),
         ).build(update)

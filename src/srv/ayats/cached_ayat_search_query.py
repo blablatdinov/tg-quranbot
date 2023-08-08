@@ -20,45 +20,41 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import final
 
 import attrs
+import httpx
 from pyeo import elegant
+from redis.asyncio import Redis
 
 from app_types.update import Update
-from integrations.tg.keyboard import KeyboardInterface
+from integrations.tg.chat_id import TgChatId
+from integrations.tg.message_text import MessageText
+from integrations.tg.tg_answers import TgAnswerInterface
+from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class ResizedKeyboard(KeyboardInterface):
-    """Сжатая в высоту клавиатура."""
+class CachedAyatSearchQueryAnswer(TgAnswerInterface):
+    """Закешированный запрос пользователя на поиск аятов.
 
-    _origin: KeyboardInterface
+    TODO: что делать если данные из кэша будут удалены
+    """
 
-    async def generate(self, update):
-        """Генерация.
+    _origin: TgAnswerInterface
+    _redis: Redis
 
-        :param update: Update
-        :return: str
-        """
-        origin_keyboard = await self._origin.generate(update)
-        keyboard_as_dict = json.loads(origin_keyboard)
-        keyboard_as_dict['resize_keyboard'] = True
-        return json.dumps(keyboard_as_dict)
-
-
-@final
-@elegant
-class DefaultKeyboard(KeyboardInterface):
-    """Класс клавиатуры по умолчанию."""
-
-    async def generate(self, update: Update):
-        """Генерация.
+    async def build(self, update: Update) -> list[httpx.Request]:
+        """Собрать ответ.
 
         :param update: Update
-        :return: str
+        :return: list[httpx.Request]
         """
-        return '{"keyboard":[["🎧 Подкасты"],["🕋 Время намаза","🏘️ Поменять город"],["🌟 Избранное","🔍 Найти аят"]]}'
+        await AyatTextSearchQuery.for_write_cs(
+            self._redis,
+            str(MessageText(update)),
+            int(TgChatId(update)),
+        ).write()
+        return await self._origin.build(update)

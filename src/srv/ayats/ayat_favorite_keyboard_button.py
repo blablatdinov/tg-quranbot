@@ -27,38 +27,35 @@ import attrs
 from pyeo import elegant
 
 from app_types.update import Update
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.keyboard import KeyboardInterface
+from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
+from srv.ayats.ayat import Ayat
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class ResizedKeyboard(KeyboardInterface):
-    """Сжатая в высоту клавиатура."""
+class AyatFavoriteKeyboardButton(KeyboardInterface):
+    """Кнопка с добавлением аята в избранные."""
 
+    _ayat: Ayat
     _origin: KeyboardInterface
+    _favorite_ayat_repo: FavoriteAyatRepositoryInterface
 
-    async def generate(self, update):
-        """Генерация.
-
-        :param update: Update
-        :return: str
-        """
-        origin_keyboard = await self._origin.generate(update)
-        keyboard_as_dict = json.loads(origin_keyboard)
-        keyboard_as_dict['resize_keyboard'] = True
-        return json.dumps(keyboard_as_dict)
-
-
-@final
-@elegant
-class DefaultKeyboard(KeyboardInterface):
-    """Класс клавиатуры по умолчанию."""
-
-    async def generate(self, update: Update):
-        """Генерация.
+    async def generate(self, update: Update) -> str:
+        """Генерация клавиатуры.
 
         :param update: Update
         :return: str
         """
-        return '{"keyboard":[["🎧 Подкасты"],["🕋 Время намаза","🏘️ Поменять город"],["🌟 Избранное","🔍 Найти аят"]]}'
+        keyboard = json.loads(await self._origin.generate(update))
+        is_favor = await self._favorite_ayat_repo.check_ayat_is_favorite_for_user(
+            await self._ayat.id(),
+            int(TgChatId(update)),
+        )
+        keyboard['inline_keyboard'].append([{
+            'text': 'Удалить из избранного' if is_favor else 'Добавить в избранное',
+            'callback_data': ('removeFromFavor({0})' if is_favor else 'addToFavor({0})').format(await self._ayat.id()),
+        }])
+        return json.dumps(keyboard)

@@ -25,9 +25,11 @@ from typing import final
 import httpx
 from pyeo import elegant
 
+from integrations.tg.keyboard import KeyboardInterface
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerMarkup, TgTextAnswer
-from services.answers.answer import FileAnswer, KeyboardInterface, TelegramFileIdAnswer
-from services.ayats.ayat import Ayat
+from srv.ayats.ayat import Ayat
+from srv.files.file_answer import FileAnswer
+from srv.files.file_id_answer import TelegramFileIdAnswer
 
 
 @final

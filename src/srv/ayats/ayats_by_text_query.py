@@ -20,45 +20,46 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import final
 
 import attrs
+from databases import Database
 from pyeo import elegant
 
-from app_types.update import Update
-from integrations.tg.keyboard import KeyboardInterface
+from app_types.intable import ThroughAsyncIntable
+from app_types.listable import AsyncListable
+from app_types.stringable import Stringable
+from srv.ayats.pg_ayat import PgAyat
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class ResizedKeyboard(KeyboardInterface):
-    """Сжатая в высоту клавиатура."""
+class AyatsByTextQuery(AsyncListable):
+    """Список аятов, найденных по текстовому запросу."""
 
-    _origin: KeyboardInterface
+    _query: Stringable
+    _database: Database
 
-    async def generate(self, update):
-        """Генерация.
+    async def to_list(self) -> list[PgAyat]:
+        """Список.
 
-        :param update: Update
-        :return: str
+        :return: list[QAyat]
         """
-        origin_keyboard = await self._origin.generate(update)
-        keyboard_as_dict = json.loads(origin_keyboard)
-        keyboard_as_dict['resize_keyboard'] = True
-        return json.dumps(keyboard_as_dict)
-
-
-@final
-@elegant
-class DefaultKeyboard(KeyboardInterface):
-    """Класс клавиатуры по умолчанию."""
-
-    async def generate(self, update: Update):
-        """Генерация.
-
-        :param update: Update
-        :return: str
+        query = """
+            SELECT
+                a.ayat_id as id
+            FROM ayats a
+            WHERE a.content ILIKE :search_query
+            ORDER BY a.ayat_id
         """
-        return '{"keyboard":[["🎧 Подкасты"],["🕋 Время намаза","🏘️ Поменять город"],["🌟 Избранное","🔍 Найти аят"]]}'
+        rows = await self._database.fetch_all(query, {
+            'search_query': '%{0}%'.format(self._query),
+        })
+        return [
+            PgAyat(
+                ThroughAsyncIntable(row['id']),
+                self._database,
+            )
+            for row in rows
+        ]

@@ -29,7 +29,7 @@ from pyeo import elegant
 from app_types.intable import AsyncIntable
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.sura import AyatStructure, SuraInterface
-from services.ayats.search.ayat_search_query import SearchQueryInterface
+from srv.ayats.search_query import SearchQuery
 
 
 @final
@@ -39,7 +39,7 @@ class AyatIdBySuraAyatNum(AsyncIntable):
     """Поиск аятов по номеру суры, аята."""
 
     _sura: SuraInterface
-    _query: SearchQueryInterface
+    _query: SearchQuery
     _database: Database
 
     async def to_int(self) -> int:

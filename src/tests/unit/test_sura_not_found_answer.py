@@ -29,7 +29,7 @@ from pyeo import elegant
 from app_types.update import FkUpdate, Update
 from exceptions.content_exceptions import SuraNotFoundError
 from integrations.tg.tg_answers import TgAnswerInterface
-from services.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
+from srv.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 
 
 @attrs.define(frozen=True)

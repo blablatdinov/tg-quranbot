@@ -25,50 +25,42 @@ from typing import final
 import attrs
 import httpx
 from pyeo import elegant
-from redis.asyncio import Redis
 
 from app_types.update import Update
 from db.connection import database
-from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.chat_id import TgChatId
-from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerInterface
-from repository.ayats.favorite_ayats import FavoriteAyatsRepository
-from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
-from services.ayats.ayat_answer import AyatAnswer
-from services.ayats.ayat_text_search_query import AyatTextSearchQuery
-from services.ayats.ayats_by_text_query import AyatsByTextQuery
-from services.ayats.enums import AyatCallbackTemplateEnum
-from services.ayats.keyboards import AyatAnswerKeyboard
+from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
+from repository.ayats.neighbor_ayats import FavoriteNeighborAyats
+from srv.ayats.ayat_answer import AyatAnswer
+from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
+from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
+from srv.ayats.favorite_ayats import FavoriteAyats
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class SearchAyatByTextAnswer(TgAnswerInterface):
-    """Поиск аята по тексту."""
+class FavoriteAyatPage(TgAnswerInterface):
+    """Страница с избранным аятом."""
 
     _debug_mode: bool
     _message_answer: TgAnswerInterface
     _file_answer: TgAnswerInterface
-    _redis: Redis
+    _favorite_ayats_repo: FavoriteAyatRepositoryInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
-        """Собрать ответ.
+        """Сборка ответа.
 
         :param update: Update
         :return: list[httpx.Request]
-        :raises AyatNotFoundError: if ayat not found
         """
-        try:
-            result_ayat = (
-                await AyatsByTextQuery(
-                    str(MessageText(update)),
-                    database,
-                ).to_list()
-            )[0]
-        except IndexError as err:
-            raise AyatNotFoundError from err
+        result_ayat = (
+            await FavoriteAyats(
+                TgChatId(update),
+                database,
+            ).to_list()
+        )[0]
         answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,
@@ -76,12 +68,12 @@ class SearchAyatByTextAnswer(TgAnswerInterface):
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,
-                FavoriteAyatsRepository(database),
-                TextSearchNeighborAyatsRepository(
-                    database,
+                self._favorite_ayats_repo,
+                FavoriteNeighborAyats(
                     await result_ayat.id(),
-                    AyatTextSearchQuery.for_reading_cs(self._redis, int(TgChatId(update))),
+                    int(TgChatId(update)),
+                    self._favorite_ayats_repo,
                 ),
-                AyatCallbackTemplateEnum.get_search_ayat,
+                AyatCallbackTemplateEnum.get_favorite_ayat,
             ),
         ).build(update)
