@@ -26,9 +26,9 @@ from redis.asyncio import Redis
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswerInterface, TgMessageRegexAnswer
-from services.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
-from services.ayats.highlited_search_answer import HighlightedSearchAnswer
-from services.ayats.search_by_text import SearchAyatByTextAnswer
+from srv.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
+from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer
+from srv.ayats.search_ayat_by_text import SearchAyatByTextAnswer
 
 
 @final

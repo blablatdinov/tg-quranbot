@@ -55,11 +55,6 @@ from repository.podcast import RandomPodcast
 from repository.prayer_time import UserPrayers
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
-from services.ayats.ayat_by_id import AyatByIdAnswer
-from services.ayats.favorite_ayats import FavoriteAyatPage
-from services.ayats.favorites.change_favorite import ChangeFavoriteAyatAnswer
-from services.ayats.highlited_search_answer import HighlightedSearchAnswer
-from services.ayats.search_by_text_pagination import SearchAyatByTextCallbackAnswer
 from services.city.inline_query_answer import InlineQueryAnswer
 from services.city.search import SearchCityByName
 from services.help_answer import HelpAnswer
@@ -68,6 +63,11 @@ from services.prayers.prayer_status import UserPrayerStatus
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
 from settings import settings
+from srv.ayats.ayat_by_id_answer import AyatByIdAnswer
+from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
+from srv.ayats.favorite_ayat_page import FavoriteAyatPage
+from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer
+from srv.ayats.search_ayat_by_text_callback_answer import SearchAyatByTextCallbackAnswer
 
 
 @final

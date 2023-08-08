@@ -31,7 +31,7 @@ from redis.asyncio import Redis
 
 from integrations.tg.tg_answers import TgAnswerInterface
 from integrations.tg.update import TgUpdate
-from services.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
+from srv.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
 
 
 class FakeError(Exception):

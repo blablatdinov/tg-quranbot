@@ -30,7 +30,7 @@ from redis.asyncio import Redis
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswerInterface
-from services.ayats.ayat_text_search_query import AyatTextSearchQuery
+from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 
 
 @final

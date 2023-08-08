@@ -20,45 +20,43 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import final
 
 import attrs
 from pyeo import elegant
 
-from app_types.update import Update
-from integrations.tg.keyboard import KeyboardInterface
+from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
+from srv.ayats.search_query import SearchQuery
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class ResizedKeyboard(KeyboardInterface):
-    """Сжатая в высоту клавиатура."""
+class ValidatedSearchQuery(SearchQuery):
+    """Декоратор, валидирующий запрос для поиска."""
 
-    _origin: KeyboardInterface
+    _origin: SearchQuery
 
-    async def generate(self, update):
-        """Генерация.
+    def sura(self) -> int:
+        """Номер суры.
 
-        :param update: Update
-        :return: str
+        :return: int
+        :raises SuraNotFoundError: if sura not found
         """
-        origin_keyboard = await self._origin.generate(update)
-        keyboard_as_dict = json.loads(origin_keyboard)
-        keyboard_as_dict['resize_keyboard'] = True
-        return json.dumps(keyboard_as_dict)
+        max_sura_num = 114
+        sura_num = self._origin.sura()
+        if not 0 < sura_num <= max_sura_num:  # noqa: WPS508
+            # https://github.com/wemake-services/wemake-python-styleguide/issues/1942
+            raise SuraNotFoundError
+        return sura_num
 
+    def ayat(self) -> str:
+        """Номер аята.
 
-@final
-@elegant
-class DefaultKeyboard(KeyboardInterface):
-    """Класс клавиатуры по умолчанию."""
-
-    async def generate(self, update: Update):
-        """Генерация.
-
-        :param update: Update
         :return: str
+        :raises AyatNotFoundError: if ayat not found
         """
-        return '{"keyboard":[["🎧 Подкасты"],["🕋 Время намаза","🏘️ Поменять город"],["🌟 Избранное","🔍 Найти аят"]]}'
+        ayat_num = self._origin.ayat()
+        if ayat_num == '0' or '-' in ayat_num:
+            raise AyatNotFoundError
+        return ayat_num

@@ -36,9 +36,9 @@ from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
 from repository.admin_message import AdminMessageInterface
 from repository.users.user import UserRepositoryInterface
-from services.ayats.ayat import QAyat
 from services.start.start_message import SmartReferrerChatId
 from settings import settings
+from srv.ayats.pg_ayat import PgAyat
 
 
 @final
@@ -89,7 +89,7 @@ class StartAnswer(TgAnswerInterface):
     async def _start_answers(self) -> tuple[str, str]:
         return (
             await self._admin_message.text(),
-            await QAyat(ThroughAsyncIntable(1), self._database).text(),
+            await PgAyat(ThroughAsyncIntable(1), self._database).text(),
         )
 
     async def _check_user_exists(self, update: Update) -> None:

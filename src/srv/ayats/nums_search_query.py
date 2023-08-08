@@ -20,30 +20,19 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import final
 
 import attrs
 from pyeo import elegant
 
 from app_types.stringable import Stringable
-from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
-
-
-@elegant
-class SearchQueryInterface(Protocol):
-    """Интерфейс объекта с запросом для поиска."""
-
-    def sura(self) -> int:
-        """Номер суры."""
-
-    def ayat(self) -> str:
-        """Номер аята."""
+from srv.ayats.search_query import SearchQuery
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class SearchQuery(SearchQueryInterface):
+class NumsSearchQuery(SearchQuery):
     """Запросом для поиска."""
 
     _query: Stringable
@@ -61,36 +50,3 @@ class SearchQuery(SearchQueryInterface):
         :return: str
         """
         return str(self._query).split(':')[1]
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class ValidatedSearchQuery(SearchQueryInterface):
-    """Декоратор, валидирующий запрос для поиска."""
-
-    _origin: SearchQueryInterface
-
-    def sura(self) -> int:
-        """Номер суры.
-
-        :return: int
-        :raises SuraNotFoundError: if sura not found
-        """
-        max_sura_num = 114
-        sura_num = self._origin.sura()
-        if not 0 < sura_num <= max_sura_num:  # noqa: WPS508
-            # https://github.com/wemake-services/wemake-python-styleguide/issues/1942
-            raise SuraNotFoundError
-        return sura_num
-
-    def ayat(self) -> str:
-        """Номер аята.
-
-        :return: str
-        :raises AyatNotFoundError: if ayat not found
-        """
-        ayat_num = self._origin.ayat()
-        if ayat_num == '0' or '-' in ayat_num:
-            raise AyatNotFoundError
-        return ayat_num

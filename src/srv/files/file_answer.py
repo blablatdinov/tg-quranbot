@@ -20,42 +20,31 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import final
 
 import attrs
+import httpx
 from pyeo import elegant
 
-from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
-from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
-from services.answers.answer import KeyboardInterface
-from services.ayats.ayat import Ayat
+from integrations.tg.tg_answers import TgAnswerInterface
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatFavoriteKeyboardButton(KeyboardInterface):
-    """Кнопка с добавлением аята в избранные."""
+class FileAnswer(TgAnswerInterface):
+    """Класс ответа с файлом."""
 
-    _ayat: Ayat
-    _origin: KeyboardInterface
-    _favorite_ayat_repo: FavoriteAyatRepositoryInterface
+    _debug_mode: bool
+    _telegram_file_id_answer: TgAnswerInterface
+    _file_link_answer: TgAnswerInterface
 
-    async def generate(self, update: Update) -> str:
-        """Генерация клавиатуры.
+    async def build(self, update) -> list[httpx.Request]:
+        """Отправка.
 
         :param update: Update
-        :return: str
+        :return: list[httpx.Request]
         """
-        keyboard = json.loads(await self._origin.generate(update))
-        is_favor = await self._favorite_ayat_repo.check_ayat_is_favorite_for_user(
-            await self._ayat.id(),
-            int(TgChatId(update)),
-        )
-        keyboard['inline_keyboard'].append([{
-            'text': 'Удалить из избранного' if is_favor else 'Добавить в избранное',
-            'callback_data': ('removeFromFavor({0})' if is_favor else 'addToFavor({0})').format(await self._ayat.id()),
-        }])
-        return json.dumps(keyboard)
+        if self._debug_mode:
+            return await self._file_link_answer.build(update)
+        return await self._telegram_file_id_answer.build(update)

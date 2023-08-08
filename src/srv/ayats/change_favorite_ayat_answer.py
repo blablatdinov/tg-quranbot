@@ -42,11 +42,11 @@ from integrations.tg.tg_answers import (
 )
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
-from services.ayats.ayat import QAyat
-from services.ayats.enums import AyatCallbackTemplateEnum
-from services.ayats.favorite_ayats import FavoriteAyatStatus
-from services.ayats.keyboards import AyatAnswerKeyboard
 from services.regular_expression import IntableRegularExpression
+from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
+from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
+from srv.ayats.ayat_favorite_status import AyatFavoriteStatus
+from srv.ayats.pg_ayat import PgAyat
 
 
 @final
@@ -64,8 +64,8 @@ class ChangeFavoriteAyatAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
-        status = FavoriteAyatStatus(str(CallbackQueryData(update)))
-        result_ayat = QAyat(
+        status = AyatFavoriteStatus(str(CallbackQueryData(update)))
+        result_ayat = PgAyat(
             SyncToAsyncIntable(
                 IntableRegularExpression(
                     str(CallbackQueryData(update)),

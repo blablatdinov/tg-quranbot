@@ -20,45 +20,33 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import final
 
 import attrs
 from pyeo import elegant
 
-from app_types.update import Update
-from integrations.tg.keyboard import KeyboardInterface
+from services.regular_expression import IntableRegularExpression
+from srv.ayats.favorite_ayat_status import FavoriteAyatStatus
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class ResizedKeyboard(KeyboardInterface):
-    """Сжатая в высоту клавиатура."""
+class AyatFavoriteStatus(FavoriteAyatStatus):
+    """Пользовательский ввод статуса аята в избранном."""
 
-    _origin: KeyboardInterface
+    _source: str
 
-    async def generate(self, update):
-        """Генерация.
+    def ayat_id(self) -> int:
+        """Идентификатор аята.
 
-        :param update: Update
-        :return: str
+        :return: int
         """
-        origin_keyboard = await self._origin.generate(update)
-        keyboard_as_dict = json.loads(origin_keyboard)
-        keyboard_as_dict['resize_keyboard'] = True
-        return json.dumps(keyboard_as_dict)
+        return int(IntableRegularExpression(self._source))
 
+    def change_to(self) -> bool:
+        """Целевое значение.
 
-@final
-@elegant
-class DefaultKeyboard(KeyboardInterface):
-    """Класс клавиатуры по умолчанию."""
-
-    async def generate(self, update: Update):
-        """Генерация.
-
-        :param update: Update
-        :return: str
+        :return: bool
         """
-        return '{"keyboard":[["🎧 Подкасты"],["🕋 Время намаза","🏘️ Поменять город"],["🌟 Избранное","🔍 Найти аят"]]}'
+        return 'addToFavor' in self._source

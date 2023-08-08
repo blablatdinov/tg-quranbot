@@ -20,41 +20,17 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import Protocol
 
-import attrs
-import httpx
 from pyeo import elegant
-from redis.asyncio import Redis
-
-from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
-from integrations.tg.message_text import MessageText
-from integrations.tg.tg_answers import TgAnswerInterface
-from services.ayats.ayat_text_search_query import AyatTextSearchQuery
 
 
-@final
-@attrs.define(frozen=True)
 @elegant
-class CachedAyatSearchQueryAnswer(TgAnswerInterface):
-    """Закешированный запрос пользователя на поиск аятов.
+class SearchQuery(Protocol):
+    """Интерфейс объекта с запросом для поиска."""
 
-    TODO: что делать если данные из кэша будут удалены
-    """
+    def sura(self) -> int:
+        """Номер суры."""
 
-    _origin: TgAnswerInterface
-    _redis: Redis
-
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Собрать ответ.
-
-        :param update: Update
-        :return: list[httpx.Request]
-        """
-        await AyatTextSearchQuery.for_write_cs(
-            self._redis,
-            str(MessageText(update)),
-            int(TgChatId(update)),
-        ).write()
-        return await self._origin.build(update)
+    def ayat(self) -> str:
+        """Номер аята."""

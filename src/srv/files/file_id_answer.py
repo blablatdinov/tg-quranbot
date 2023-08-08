@@ -23,37 +23,29 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import final
 
 import attrs
+import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
-from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
-from services.answers.answer import KeyboardInterface
-from services.ayats.ayat import Ayat
-from services.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
-from services.ayats.ayat_neighbor_keyboard import NeighborAyatKeyboard
-from services.ayats.enums import AyatCallbackTemplateEnum
+from integrations.tg.tg_answers import TgAnswerInterface
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatAnswerKeyboard(KeyboardInterface):
-    """Клавиатура аята."""
+class TelegramFileIdAnswer(TgAnswerInterface):
+    """Класс ответа с файлом."""
 
-    _ayat: Ayat
-    _favorite_ayats_repo: FavoriteAyatRepositoryInterface
-    _neighbor_ayats: NeighborAyatsRepositoryInterface
-    _ayat_callback_template: AyatCallbackTemplateEnum
+    _origin: TgAnswerInterface
+    _telegram_file_id: str | None
 
-    async def generate(self, update: Update) -> str:
-        """Генерация.
+    async def build(self, update: Update) -> list[httpx.Request]:
+        """Отправка.
 
         :param update: Update
-        :return: str
+        :return: list[httpx.Request]
         """
-        return await AyatFavoriteKeyboardButton(
-            self._ayat,
-            NeighborAyatKeyboard(self._neighbor_ayats, self._ayat_callback_template),
-            self._favorite_ayats_repo,
-        ).generate(update)
+        return [
+            httpx.Request(request.method, request.url.copy_add_param('audio', self._telegram_file_id))
+            for request in await self._origin.build(update)
+        ]

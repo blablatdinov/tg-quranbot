@@ -38,8 +38,9 @@ from integrations.tg.tg_answers import (
     TgTextAnswer,
 )
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
-from services.ayats.favorite_ayats import FavoriteAyatAnswer, FavoriteAyatEmptySafeAnswer
 from services.reset_state_answer import ResetStateAnswer
+from srv.ayats.favorite_ayat_answer import FavoriteAyatAnswer
+from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
 
 
 @final

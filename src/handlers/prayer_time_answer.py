@@ -29,7 +29,7 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerToSender, TgTextAnswer, TgMessageAnswer
+from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
 from repository.prayer_time import NewUserPrayers, SafeNotFoundPrayers, SafeUserPrayers, UserPrayers
 from services.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
 from services.prayers.prayer_for_user_answer import PrayerForUserAnswer

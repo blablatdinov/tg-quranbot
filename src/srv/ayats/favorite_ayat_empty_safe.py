@@ -26,26 +26,18 @@ import attrs
 import httpx
 from pyeo import elegant
 
-from app_types.intable import ThroughAsyncIntable
 from app_types.update import Update
-from db.connection import database
-from integrations.tg.callback_query import CallbackQueryData
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgTextAnswer
-from services.answers.answer import FileAnswer, TelegramFileIdAnswer
-from services.ayats.ayat import QAyat
-from services.ayats.ayat_by_id_message_answer import AyatByIdMessageAnswer
-from services.regular_expression import IntableRegularExpression
+from integrations.tg.tg_answers import TgAnswerInterface
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatByIdAnswer(TgAnswerInterface):
-    """Ответ на аят по идентификатору."""
+class FavoriteAyatEmptySafeAnswer(TgAnswerInterface):
+    """Обработка ошибок с пустыми избранными."""
 
-    _debug_mode: bool
-    _message_answer: TgAnswerInterface
-    _file_answer: TgAnswerInterface
+    _origin: TgAnswerInterface
+    _error_answer: TgAnswerInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -53,27 +45,7 @@ class AyatByIdAnswer(TgAnswerInterface):
         :param update: Update
         :return: list[httpx.Request]
         """
-        result_ayat = QAyat(
-            ThroughAsyncIntable(
-                int(IntableRegularExpression(
-                    str(CallbackQueryData(update)),
-                )),
-            ),
-            database,
-        )
-        return await TgAnswerList(
-            AyatByIdMessageAnswer(
-                result_ayat, self._message_answer,
-            ),
-            FileAnswer(
-                self._debug_mode,
-                TelegramFileIdAnswer(
-                    self._file_answer,
-                    await result_ayat.tg_file_id(),
-                ),
-                TgTextAnswer(
-                    self._message_answer,
-                    await result_ayat.file_link(),
-                ),
-            ),
-        ).build(update)
+        try:
+            return await self._origin.build(update)
+        except IndexError:  # @todo #360:30min
+            return await self._error_answer.build(update)

@@ -20,46 +20,17 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import Protocol
 
-import attrs
-from databases import Database
 from pyeo import elegant
 
-from app_types.intable import ThroughAsyncIntable
-from app_types.listable import AsyncListable
-from app_types.stringable import Stringable
-from services.ayats.ayat import QAyat
 
-
-@final
-@attrs.define(frozen=True)
 @elegant
-class AyatsByTextQuery(AsyncListable):
-    """Список аятов, найденных по текстовому запросу."""
+class TextSearchQuery(Protocol):
+    """Интерфейс запроса для поиска аятов."""
 
-    _query: Stringable
-    _database: Database
+    async def write(self) -> None:
+        """Запись."""
 
-    async def to_list(self) -> list[QAyat]:
-        """Список.
-
-        :return: list[QAyat]
-        """
-        query = """
-            SELECT
-                a.ayat_id as id
-            FROM ayats a
-            WHERE a.content ILIKE :search_query
-            ORDER BY a.ayat_id
-        """
-        rows = await self._database.fetch_all(query, {
-            'search_query': '%{0}%'.format(self._query),
-        })
-        return [
-            QAyat(
-                ThroughAsyncIntable(row['id']),
-                self._database,
-            )
-            for row in rows
-        ]
+    async def read(self) -> str:
+        """Чтение."""

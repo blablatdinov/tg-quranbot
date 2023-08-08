@@ -31,7 +31,7 @@ from exceptions.base_exception import BaseAppError
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.schemas import AyatShort
-from services.ayats.ayat_text_search_query import AyatTextSearchQueryInterface
+from srv.ayats.text_search_query import TextSearchQuery
 
 
 @elegant
@@ -171,7 +171,7 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
 
     _connection: Database
     _ayat_id: int
-    _query: AyatTextSearchQueryInterface
+    _query: TextSearchQuery
     _search_sql_query = """
         SELECT
             ayats.ayat_id as id,

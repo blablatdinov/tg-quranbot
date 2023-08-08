@@ -26,13 +26,6 @@ from pyeo import elegant
 
 from app_types.stringable import Stringable
 
-# TODO: delete it
-# ===============
-AYAT_SEARCH_INPUT_REGEXP = r'\d( |):( |)\d'
-GET_PRAYER_TIMES_REGEXP = '(В|в)ремя намаза'
-PODCAST_BUTTON = '(П|п)одкасты'
-# ===============
-
 
 @final
 @elegant

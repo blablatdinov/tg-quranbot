@@ -35,8 +35,9 @@ from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from repository.podcast import RandomPodcastInterface
-from services.answers.answer import FileAnswer, TelegramFileIdAnswer
 from services.reset_state_answer import ResetStateAnswer
+from srv.files.file_answer import FileAnswer
+from srv.files.file_id_answer import TelegramFileIdAnswer
 
 
 @final

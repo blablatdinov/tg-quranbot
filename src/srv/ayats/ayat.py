@@ -20,45 +20,23 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
-from typing import final
+from typing import Protocol
 
-import attrs
 from pyeo import elegant
 
-from app_types.update import Update
-from integrations.tg.keyboard import KeyboardInterface
 
-
-@final
-@attrs.define(frozen=True)
 @elegant
-class ResizedKeyboard(KeyboardInterface):
-    """Сжатая в высоту клавиатура."""
+class Ayat(Protocol):
+    """Интерфейс аята."""
 
-    _origin: KeyboardInterface
+    async def id(self) -> int:
+        """Идентификатор аята."""
 
-    async def generate(self, update):
-        """Генерация.
+    async def text(self) -> str:
+        """Строковое представление."""
 
-        :param update: Update
-        :return: str
-        """
-        origin_keyboard = await self._origin.generate(update)
-        keyboard_as_dict = json.loads(origin_keyboard)
-        keyboard_as_dict['resize_keyboard'] = True
-        return json.dumps(keyboard_as_dict)
+    async def tg_file_id(self) -> str:
+        """Идентификатор файла в телеграм."""
 
-
-@final
-@elegant
-class DefaultKeyboard(KeyboardInterface):
-    """Класс клавиатуры по умолчанию."""
-
-    async def generate(self, update: Update):
-        """Генерация.
-
-        :param update: Update
-        :return: str
-        """
-        return '{"keyboard":[["🎧 Подкасты"],["🕋 Время намаза","🏘️ Поменять город"],["🌟 Избранное","🔍 Найти аят"]]}'
+    async def file_link(self) -> str:
+        """Ссылка на файл."""

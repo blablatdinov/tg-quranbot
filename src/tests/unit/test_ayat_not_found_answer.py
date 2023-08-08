@@ -29,7 +29,7 @@ from pyeo import elegant
 from app_types.update import FkUpdate, Update
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.tg_answers import TgAnswerInterface
-from services.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
+from srv.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 
 
 @attrs.define(frozen=True)

@@ -20,33 +20,23 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import final
 
 import attrs
 from loguru import logger
-from pyeo import elegant
 from redis.asyncio import Redis
 
-
-@elegant
-class AyatTextSearchQueryInterface(Protocol):
-    """Интерфейс запроса для поиска аятов."""
-
-    async def write(self) -> None:
-        """Запись."""
-
-    async def read(self) -> str:
-        """Чтение."""
+from srv.ayats.text_search_query import TextSearchQuery
 
 
 @final
 @attrs.define(frozen=True)
-class AyatTextSearchQuery(AyatTextSearchQueryInterface):
+class AyatTextSearchQuery(TextSearchQuery):
     """Запрос поиска аята."""
 
     _redis: Redis
     _chat_id: int
-    _query: tuple[str, ...] = ()
+    _query: str | None = None
 
     _key_template = '{0}:ayat_search_query'
 
@@ -59,7 +49,7 @@ class AyatTextSearchQuery(AyatTextSearchQueryInterface):
         :param chat_id: int
         :return: AyatTextSearchQuery
         """
-        return AyatTextSearchQuery(redis, query=(query,), chat_id=chat_id)
+        return AyatTextSearchQuery(redis, query=query, chat_id=chat_id)
 
     @classmethod
     def for_reading_cs(cls, redis: Redis, chat_id: int):
@@ -77,12 +67,10 @@ class AyatTextSearchQuery(AyatTextSearchQueryInterface):
         :raises ValueError: if query not give
         """
         key = self._key_template.format(self._chat_id)
-        logger.info('Try writing key: {0}, value: {1}'.format(key, self._query[0]))
-        try:
-            await self._redis.set(key, self._query[0])
-        except IndexError as err:
-            logger.error('Writing {0} fail query not give'.format(key))
-            raise ValueError('Query not give') from err
+        logger.info('Try writing key: {0}, value: {1}'.format(key, self._query))
+        if not self._query:
+            raise ValueError('Query not give')
+        await self._redis.set(key, self._query)
         logger.info('Key: {0} wrote'.format(self._key_template.format(self._chat_id)))
 
     async def read(self) -> str:

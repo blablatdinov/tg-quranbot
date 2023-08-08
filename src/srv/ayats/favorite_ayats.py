@@ -28,7 +28,8 @@ from pyeo import elegant
 
 from app_types.intable import ThroughAsyncIntable
 from app_types.listable import AsyncListable
-from services.ayats.ayat import Ayat, QAyat
+from srv.ayats.ayat import Ayat
+from srv.ayats.pg_ayat import PgAyat
 
 
 @final
@@ -55,6 +56,6 @@ class FavoriteAyats(AsyncListable):
         """
         rows = await self._database.fetch_all(query, {'chat_id': int(self._chat_id)})
         return [
-            QAyat(ThroughAsyncIntable(row['ayat_id']), self._database)
+            PgAyat(ThroughAsyncIntable(row['ayat_id']), self._database)
             for row in rows
         ]
