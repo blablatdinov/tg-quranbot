@@ -63,7 +63,7 @@ class LoggedAnswer(SendableInterface):
                     {
                         'message_json': json.dumps(answer),
                         'is_unknown': False,
-                        'trigger_message_id': json.loads(update)['update_id'],
+                        'trigger_message_id': json.loads(str(update))['update_id'],
                     }
                     for answer in sent_answers
                 ],
