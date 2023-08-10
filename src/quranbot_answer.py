@@ -34,6 +34,7 @@ from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
 from handlers.search_ayat_by_numbers_answer import SearchAyatByNumbersAnswer
 from handlers.search_city_answer import SearchCityAnswer
+from handlers.status_answer import StatusAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
 from integrations.nats_integration import SinkInterface
 from integrations.tg.tg_answers import (
@@ -150,6 +151,10 @@ class QuranbotAnswer(TgAnswerInterface):
                 TgMessageRegexAnswer(
                     '/start',
                     FullStartAnswer(self._database, empty_answer, self._event_sink, self._redis),
+                ),
+                TgMessageRegexAnswer(
+                    '/status',
+                    StatusAnswer(empty_answer, self._database, self._redis),
                 ),
                 TgMessageRegexAnswer(
                     '/help',

@@ -21,14 +21,13 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import time
-from typing import final
+from typing import SupportsFloat, final
 
 import attrs
 import httpx
 from loguru import logger
 from pyeo import elegant
 
-from app_types.floatable import Floatable
 from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswerInterface
 from integrations.tg.update_id import UpdateId
@@ -36,7 +35,7 @@ from integrations.tg.update_id import UpdateId
 
 @final
 @attrs.define(frozen=True)
-class Millis(Floatable):
+class Millis(SupportsFloat):
     """Миллисекунды."""
 
     _millis: float
@@ -61,10 +60,10 @@ class Millis(Floatable):
 @final
 @attrs.define(frozen=True)
 @elegant
-class RoundedFloat(Floatable):
+class RoundedFloat(SupportsFloat):
     """Округленное дробное число."""
 
-    _origin: Floatable
+    _origin: SupportsFloat
     _shift_comma: int
 
     def __float__(self):
