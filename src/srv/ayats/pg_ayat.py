@@ -31,6 +31,7 @@ from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.sura import Sura
 from srv.ayats.ayat import Ayat
 from srv.ayats.ayat_id_by_sura_ayat import AyatIdBySuraAyatNum
+from srv.ayats.ayat_link import AyatLink
 from srv.ayats.nums_search_query import NumsSearchQuery
 from srv.ayats.validated_search_query import ValidatedSearchQuery
 
@@ -92,10 +93,9 @@ class PgAyat(Ayat):
         row = await self._database.fetch_one(query, {'ayat_id': ayat_id})
         if not row:
             raise AyatNotFoundError('Аят с id={0} не найден'.format(ayat_id))
-        link = 'https://umma.ru{sura_link}'.format(sura_link=row['sura_link'])
         template = '<a href="{link}">{sura}:{ayat})</a>\n{arab_text}\n\n{content}\n\n<i>{transliteration}</i>'
         return template.format(
-            link=link,
+            link=str(AyatLink(row['sura_link'], row['sura_num'], row['ayat_num'])),
             sura=row['sura_num'],
             ayat=row['ayat_num'],
             arab_text=row['arab_text'],
