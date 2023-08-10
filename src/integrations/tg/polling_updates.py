@@ -122,7 +122,7 @@ class UpdatesIteratorInterface(Protocol):
 
 
 @final
-@attrs.define
+@attrs.define(slots=True)
 @elegant
 class PollingUpdatesIterator(UpdatesIteratorInterface):
     """Итератор по обновлениям."""
@@ -130,7 +130,7 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
     _updates_url: UpdatesURLInterface
     _updates_timeout: SupportsInt
 
-    _offset = 0
+    _offset: int = 0
 
     def __aiter__(self) -> 'UpdatesIteratorInterface':
         """Точка входа в итератор.
