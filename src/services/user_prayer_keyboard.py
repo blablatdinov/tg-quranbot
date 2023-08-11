@@ -28,7 +28,6 @@ import attrs
 from pyeo import elegant
 
 from app_types.update import Update
-from constants import PrayerNotReadedEmoji, PrayerReadedEmoji
 from integrations.tg.chat_id import TgChatId
 from repository.user_prayers_interface import UserPrayersInterface
 from services.answers.answer import KeyboardInterface
@@ -54,7 +53,7 @@ class UserPrayersKeyboardByChatId(KeyboardInterface):
         return json.dumps({
             'inline_keyboard': [[
                 {
-                    'text': str(PrayerReadedEmoji()) if user_prayer.is_readed else str(PrayerNotReadedEmoji()),
+                    'text': '✅' if user_prayer.is_readed else '❌',
                     'callback_data': str(UserPrayersButtonCallback(user_prayer)),
                 }
                 for user_prayer in await self._user_prayer_times.prayer_times(self._chat_id, self._date)
