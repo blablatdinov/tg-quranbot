@@ -26,6 +26,7 @@ import attrs
 import httpx
 from pyeo import elegant
 
+from integrations.tg.message_id import MessageId
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
@@ -36,7 +37,7 @@ class TgMessageIdAnswer(TgAnswer):
     """Ответ с идентификатором сообщения."""
 
     _origin: TgAnswer
-    _message_id: int
+    _message_id: MessageId
 
     async def build(self, update) -> list[httpx.Request]:
         """Собрать ответ.
@@ -47,7 +48,7 @@ class TgMessageIdAnswer(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                request.url.copy_add_param('message_id', self._message_id),
+                request.url.copy_add_param('message_id', int(self._message_id)),
                 stream=request.stream,
                 headers=request.headers,
             )

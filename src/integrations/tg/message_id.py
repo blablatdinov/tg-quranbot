@@ -30,10 +30,17 @@ from integrations.tg.exceptions.update_parse_exceptions import MessageIdNotFound
 from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
+class MessageId(SupportsInt):
+    """Идентификатор сообщения."""
+
+    def __int__(self):
+        """Числовое представление."""
+
+
 @final
 @attrs.define(frozen=True)
 @elegant
-class MessageId(SupportsInt):
+class TgMessageId(MessageId):
     """Идентификатор сообщения."""
 
     _update: Update

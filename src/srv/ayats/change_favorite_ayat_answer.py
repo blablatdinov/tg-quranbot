@@ -32,7 +32,7 @@ from app_types.update import Update
 from db.connection import database
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
-from integrations.tg.message_id import MessageId
+from integrations.tg.message_id import TgMessageId
 from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerMarkup,
@@ -101,7 +101,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                         AyatCallbackTemplateEnum.get_favorite_ayat,
                     ),
                 ),
-                int(MessageId(update)),
+                TgMessageId(update),
             ),
             int(TgChatId(update)),
         ).build(update)

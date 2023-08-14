@@ -29,7 +29,7 @@ from pyeo import elegant
 from app_types.intable import ThroughIntable
 from db.connection import database
 from integrations.tg.callback_query import CallbackQueryData
-from integrations.tg.message_id import MessageId
+from integrations.tg.message_id import TgMessageId
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.message_id_answer import TgMessageIdAnswer
@@ -61,7 +61,7 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
         return await TgAnswerMarkup(
             TgMessageIdAnswer(
                 self._origin,
-                int(MessageId(update)),
+                TgMessageId(update),
             ),
             UserPrayersKeyboard(
                 PrayersWithoutSunrise(self._user_prayers),
