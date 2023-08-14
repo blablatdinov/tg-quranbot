@@ -31,7 +31,7 @@ from app_types.update import Update
 from exceptions.user import UserAlreadyActive, UserAlreadyExists
 from integrations.nats_integration import SinkInterface
 from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from integrations.tg.tg_datetime import TgDateTime
 from repository.users.user import UserRepositoryInterface
 from repository.users.users import UsersRepositoryInterface
@@ -40,11 +40,11 @@ from repository.users.users import UsersRepositoryInterface
 @final
 @attrs.define(frozen=True)
 @elegant
-class UserAlreadyExistsAnswer(TgAnswerInterface):
+class UserAlreadyExistsAnswer(TgAnswer):
     """Декоратор обработчика стартового сообщение с предохранением от UserAlreadyExists."""
 
-    _origin: TgAnswerInterface
-    _sender_answer: TgAnswerInterface
+    _origin: TgAnswer
+    _sender_answer: TgAnswer
     _user_repo: UserRepositoryInterface
     _users_repo: UsersRepositoryInterface
     _event_sink: SinkInterface

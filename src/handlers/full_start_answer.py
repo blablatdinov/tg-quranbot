@@ -30,13 +30,7 @@ from redis.asyncio import Redis
 
 from app_types.update import Update
 from integrations.nats_integration import SinkInterface
-from integrations.tg.tg_answers import (
-    TgAnswerInterface,
-    TgAnswerMarkup,
-    TgAnswerToSender,
-    TgHtmlParseAnswer,
-    TgMessageAnswer,
-)
+from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgHtmlParseAnswer, TgMessageAnswer
 from repository.admin_message import AdminMessage
 from repository.users.user import UserRepository
 from repository.users.users import UsersRepository
@@ -51,11 +45,11 @@ from services.start.user_already_exists import UserAlreadyExistsAnswer
 @attrs.define(frozen=True)
 @final
 @elegant
-class FullStartAnswer(TgAnswerInterface):
+class FullStartAnswer(TgAnswer):
     """Ответ на команду /start."""
 
     _database: Database
-    _empty_answer: TgAnswerInterface
+    _empty_answer: TgAnswer
     _event_sink: SinkInterface
     _redis: Redis
 

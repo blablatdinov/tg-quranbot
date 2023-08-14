@@ -32,7 +32,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.internal_exceptions import TelegramIntegrationsError
-from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @elegant
@@ -52,7 +52,7 @@ class SendableInterface(Protocol):
 class SendableAnswer(SendableInterface):
     """Объект, отправляющий ответы в API."""
 
-    _answer: TgAnswerInterface
+    _answer: TgAnswer
 
     async def send(self, update: Update) -> list[dict]:
         """Отправка.
@@ -145,7 +145,7 @@ class SliceIterator(object):
 class BulkSendableAnswer(SendableInterface):
     """Массовая отправка."""
 
-    _answers: list[TgAnswerInterface]
+    _answers: list[TgAnswer]
 
     async def send(self, update: Update) -> list[dict]:
         """Отправка.

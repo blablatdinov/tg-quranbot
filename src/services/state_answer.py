@@ -29,18 +29,18 @@ from redis.asyncio import Redis
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import TgAnswer
 from services.user_state import LoggedUserState, UserState
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class StepAnswer(TgAnswerInterface):
+class StepAnswer(TgAnswer):
     """Роутинг ответа по состоянию пользователя."""
 
     _step: str
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
     _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:

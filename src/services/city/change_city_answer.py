@@ -32,7 +32,7 @@ from exceptions.content_exceptions import CityNotSupportedError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.coordinates import TgMessageCoordinates
 from integrations.tg.message_text import MessageText
-from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from repository.users.user import UserRepositoryInterface
 from services.city.search import CitySearchInterface, SearchCityQuery
 from services.user_state import LoggedUserState, UserState, UserStep
@@ -41,11 +41,11 @@ from services.user_state import LoggedUserState, UserState, UserStep
 @final
 @attrs.define(frozen=True)
 @elegant
-class CityNotSupportedAnswer(TgAnswerInterface):
+class CityNotSupportedAnswer(TgAnswer):
     """Ответ о неподдерживаемом городе."""
 
-    _origin: TgAnswerInterface
-    _error_answer: TgAnswerInterface
+    _origin: TgAnswer
+    _error_answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
@@ -65,10 +65,10 @@ class CityNotSupportedAnswer(TgAnswerInterface):
 @final
 @attrs.define(frozen=True)
 @elegant
-class ChangeCityAnswer(TgAnswerInterface):
+class ChangeCityAnswer(TgAnswer):
     """Ответ со сменой города."""
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
     _city: CitySearchInterface
     _redis: Redis
     _user_repo: UserRepositoryInterface

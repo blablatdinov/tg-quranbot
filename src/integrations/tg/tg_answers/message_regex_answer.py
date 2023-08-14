@@ -31,17 +31,17 @@ from app_types.stringable import Stringable
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 from integrations.tg.message_text import MessageText
-from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class TgMessageRegexAnswer(TgAnswerInterface, Stringable):
+class TgMessageRegexAnswer(TgAnswer, Stringable):
     """Маршрутизация ответов по регулярному выражению."""
 
     _pattern: str
-    _answer: TgAnswerInterface
+    _answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.

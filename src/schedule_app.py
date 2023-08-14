@@ -29,7 +29,7 @@ from pyeo import elegant
 from app_types.runable import Runable
 from app_types.update import FkUpdate, Update
 from integrations.tg.sendable import BulkSendableAnswer
-from integrations.tg.tg_answers import TgAnswerInterface, TgChatIdAnswer
+from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer
 from integrations.tg.tg_answers.chat_action import TgChatAction
 from repository.users.users import UsersRepositoryInterface
 
@@ -37,10 +37,10 @@ from repository.users.users import UsersRepositoryInterface
 @final
 @attrs.define(frozen=True)
 @elegant
-class TypingAction(TgAnswerInterface):
+class TypingAction(TgAnswer):
     """Действие с печатью."""
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -63,13 +63,13 @@ class CheckUsersStatus(Runable):
     """Статусы пользователей."""
 
     _users_repo: UsersRepositoryInterface
-    _empty_answer: TgAnswerInterface
+    _empty_answer: TgAnswer
 
     async def run(self):
         """Запуск."""
         chat_ids = await self._users_repo.get_active_user_chat_ids()
         deactivated_users = []
-        answers: list[TgAnswerInterface] = [
+        answers: list[TgAnswer] = [
             TypingAction(
                 TgChatIdAnswer(
                     TgChatAction(self._empty_answer),

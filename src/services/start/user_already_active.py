@@ -28,17 +28,17 @@ from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.user import UserAlreadyActive
-from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class UserAlreadyActiveSafeAnswer(TgAnswerInterface):
+class UserAlreadyActiveSafeAnswer(TgAnswer):
     """Ответ для случаев когда пользователь уже активен."""
 
-    _origin: TgAnswerInterface
-    _sender_answer: TgAnswerInterface
+    _origin: TgAnswer
+    _sender_answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

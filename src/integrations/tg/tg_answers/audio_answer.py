@@ -27,16 +27,16 @@ import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class TgAudioAnswer(TgAnswerInterface):
+class TgAudioAnswer(TgAnswer):
     """Ответ с аудио файлом."""
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Создание.

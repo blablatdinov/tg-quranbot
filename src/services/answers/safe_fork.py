@@ -28,17 +28,17 @@ from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError
-from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class SafeFork(TgAnswerInterface):
+class SafeFork(TgAnswer):
     """Безопасный Fork."""
 
-    _origin: TgAnswerInterface
-    _message_answer: TgAnswerInterface
+    _origin: TgAnswer
+    _message_answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.

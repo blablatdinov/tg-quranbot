@@ -34,7 +34,7 @@ from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_id import MessageId
 from integrations.tg.tg_answers import (
-    TgAnswerInterface,
+    TgAnswer,
     TgAnswerMarkup,
     TgChatIdAnswer,
     TgKeyboardEditAnswer,
@@ -52,11 +52,11 @@ from srv.ayats.pg_ayat import PgAyat
 @final
 @attrs.define(frozen=True)
 @elegant
-class ChangeFavoriteAyatAnswer(TgAnswerInterface):
+class ChangeFavoriteAyatAnswer(TgAnswer):
     """Ответ на запрос о смене аята в избранном."""
 
     _connection: Database
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

@@ -29,7 +29,7 @@ from pyeo import elegant
 
 from app_types.update import FkUpdate
 from integrations.tg.sendable import BulkSendableAnswer
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup, TgChatIdAnswer, TgMessageAnswer, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgChatIdAnswer, TgMessageAnswer, TgTextAnswer
 from repository.prayer_time import (
     NewUserPrayers,
     PrayersWithoutSunrise,
@@ -62,7 +62,7 @@ class SendPrayersEvent(RecievedEventInterface):
     """Событие о рассылки времени намаза."""
 
     _users_repo: UsersRepositoryInterface
-    _empty_answer: TgAnswerInterface
+    _empty_answer: TgAnswer
     _database: Database
 
     name = 'Prayers.Sended'
@@ -92,8 +92,8 @@ class SendPrayersEvent(RecievedEventInterface):
                     deactivated_users.append(response_dict['chat_id'])
         await self._users_repo.update_status(list(set(deactivated_users)), to=False)
 
-    async def _build_requests(self, chat_ids: list[int]) -> list[TgAnswerInterface]:
-        answers: list[TgAnswerInterface] = []
+    async def _build_requests(self, chat_ids: list[int]) -> list[TgAnswer]:
+        answers: list[TgAnswer] = []
         target_date = datetime.datetime.now() + datetime.timedelta(days=1)
         for chat_id in chat_ids:
             safe_not_found_prayers = SafeNotFoundPrayers(

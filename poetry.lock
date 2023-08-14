@@ -2379,8 +2379,8 @@ typing_extensions = ">=4.0,<5.0"
 [package.source]
 type = "git"
 url = "https://github.com/wemake-services/wemake-python-styleguide"
-reference = "2c03d77f"
-resolved_reference = "2c03d77f3be31e652b3fde33af811111fd7d7aea"
+reference = "master"
+resolved_reference = "f7467ac46ef0b1a1798aad87b30bc3df32f1f759"
 
 [[package]]
 name = "win32-setctime"
@@ -2399,4 +2399,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.12"
-content-hash = "aed8bbc2cc1dd650340682b9809d5e86823f23e0bdd7d18adf6a545d34a4f1ac"
+content-hash = "1f13708ab513094fa724ea0b00cd32f37d2617aedeac069f6f8a1c4414e2a136"

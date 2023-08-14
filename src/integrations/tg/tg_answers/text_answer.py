@@ -26,16 +26,16 @@ import attrs
 import httpx
 from pyeo import elegant
 
-from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class TgTextAnswer(TgAnswerInterface):
+class TgTextAnswer(TgAnswer):
     """Ответ пользователю с текстом."""
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
     _text: str
 
     async def build(self, update) -> list[httpx.Request]:

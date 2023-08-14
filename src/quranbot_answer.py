@@ -38,8 +38,8 @@ from handlers.status_answer import StatusAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
 from integrations.nats_integration import SinkInterface
 from integrations.tg.tg_answers import (
+    TgAnswer,
     TgAnswerFork,
-    TgAnswerInterface,
     TgAnswerToSender,
     TgAudioAnswer,
     TgCallbackQueryRegexAnswer,
@@ -72,7 +72,7 @@ from srv.ayats.search_ayat_by_text_callback_answer import SearchAyatByTextCallba
 
 
 @final
-class QuranbotAnswer(TgAnswerInterface):
+class QuranbotAnswer(TgAnswer):
     """Ответ бота quranbot."""
 
     def __init__(
