@@ -28,16 +28,16 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.coordinates import TgMessageCoordinates
-from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class TgLocationAnswer(TgAnswerInterface):
+class TgLocationAnswer(TgAnswer):
     """Ответ на присланную геопозицию."""
 
-    _answer: TgAnswerInterface
+    _answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.

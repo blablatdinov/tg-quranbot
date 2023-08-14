@@ -31,7 +31,7 @@ from redis.asyncio import Redis
 from integrations.client import IntegrationClient
 from integrations.nominatim import NominatimIntegration
 from integrations.tg.tg_answers import TgAnswerFork, TgAnswerToSender, TgMessageAnswer, TgMessageRegexAnswer
-from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from repository.users.user import UserRepository
@@ -42,11 +42,11 @@ from services.city.search import SearchCityByCoordinates, SearchCityByName
 @final
 @attrs.define(frozen=True)
 @elegant
-class SearchCityAnswer(TgAnswerInterface):
+class SearchCityAnswer(TgAnswer):
     """Ответ с изменением статуса прочитанности намаза."""
 
     _database: Database
-    _empty_answer: TgAnswerInterface
+    _empty_answer: TgAnswer
     _debug: bool
     _redis: Redis
 

@@ -29,7 +29,7 @@ from app_types.update import Update
 
 
 @elegant
-class TgAnswerInterface(Protocol):
+class TgAnswer(Protocol):
     """Интерфейс ответа пользователю."""
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -41,7 +41,7 @@ class TgAnswerInterface(Protocol):
 
 @final
 @elegant
-class FkAnswer(TgAnswerInterface):
+class FkAnswer(TgAnswer):
     """Фейковый ответ."""
 
     async def build(self, update: Update) -> list[httpx.Request]:

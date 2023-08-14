@@ -28,17 +28,17 @@ from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.content_exceptions import SuraNotFoundError
-from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class SuraNotFoundSafeAnswer(TgAnswerInterface):
+class SuraNotFoundSafeAnswer(TgAnswer):
     """Объект обрабатывающий ошибку с не найденной сурой."""
 
-    _origin: TgAnswerInterface
-    _error_answer: TgAnswerInterface
+    _origin: TgAnswer
+    _error_answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.

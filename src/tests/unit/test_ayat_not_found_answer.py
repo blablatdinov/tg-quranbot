@@ -28,14 +28,14 @@ from pyeo import elegant
 
 from app_types.update import FkUpdate, Update
 from exceptions.content_exceptions import AyatNotFoundError
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import TgAnswer
 from srv.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 
 
 @attrs.define(frozen=True)
 @elegant
 @final
-class ThroughDomainAnswer(TgAnswerInterface):
+class ThroughDomainAnswer(TgAnswer):
 
     _domain: str
 
@@ -45,7 +45,7 @@ class ThroughDomainAnswer(TgAnswerInterface):
 
 @elegant
 @final
-class AyatNotFoundAnswer(TgAnswerInterface):
+class AyatNotFoundAnswer(TgAnswer):
 
     async def build(self, update):
         raise AyatNotFoundError

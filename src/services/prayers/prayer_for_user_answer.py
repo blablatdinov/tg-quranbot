@@ -30,7 +30,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgTextAnswer
 from repository.prayer_time import PrayersWithoutSunrise
 from repository.user_prayers_interface import UserPrayersInterface
 from services.user_prayer_keyboard import UserPrayersKeyboard
@@ -39,10 +39,10 @@ from services.user_prayer_keyboard import UserPrayersKeyboard
 @final
 @attrs.define(frozen=True)
 @elegant
-class PrayerForUserAnswer(TgAnswerInterface):
+class PrayerForUserAnswer(TgAnswer):
     """Ответ пользователю с временами намаза."""
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
     _user_prayers: UserPrayersInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:

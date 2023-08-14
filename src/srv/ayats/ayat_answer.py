@@ -26,7 +26,7 @@ import httpx
 from pyeo import elegant
 
 from integrations.tg.keyboard import KeyboardInterface
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerMarkup, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerMarkup, TgTextAnswer
 from srv.ayats.ayat import Ayat
 from srv.files.file_answer import FileAnswer
 from srv.files.file_id_answer import TelegramFileIdAnswer
@@ -34,13 +34,13 @@ from srv.files.file_id_answer import TelegramFileIdAnswer
 
 @final
 @elegant
-class AyatAnswer(TgAnswerInterface):
+class AyatAnswer(TgAnswer):
     """Ответ с аятом."""
 
     def __init__(
         self,
         debug: bool,
-        answers: tuple[TgAnswerInterface, TgAnswerInterface],
+        answers: tuple[TgAnswer, TgAnswer],
         ayat: Ayat,
         ayat_answer_keyboard: KeyboardInterface,
     ):

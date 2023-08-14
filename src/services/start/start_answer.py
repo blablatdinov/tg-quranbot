@@ -33,7 +33,7 @@ from app_types.update import Update
 from exceptions.user import StartMessageNotContainReferrer, UserAlreadyExists
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
 from repository.admin_message import AdminMessageInterface
 from repository.users.user import UserRepositoryInterface
 from services.start.start_message import SmartReferrerChatId
@@ -44,10 +44,10 @@ from srv.ayats.pg_ayat import PgAyat
 @final
 @attrs.define(frozen=True)
 @elegant
-class StartAnswer(TgAnswerInterface):
+class StartAnswer(TgAnswer):
     """Обработчик стартового сообщения."""
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
     _user_repo: UserRepositoryInterface
     _admin_message: AdminMessageInterface
     _database: Database

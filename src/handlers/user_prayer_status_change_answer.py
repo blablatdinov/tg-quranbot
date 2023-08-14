@@ -30,7 +30,7 @@ from app_types.intable import ThroughIntable
 from db.connection import database
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.message_id import MessageId
-from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.message_id_answer import TgMessageIdAnswer
 from repository.prayer_time import PrayersWithoutSunrise
@@ -43,10 +43,10 @@ from services.user_prayer_keyboard import UserPrayersKeyboard
 @final
 @attrs.define(frozen=True)
 @elegant
-class UserPrayerStatusChangeAnswer(TgAnswerInterface):
+class UserPrayerStatusChangeAnswer(TgAnswer):
     """Ответ с изменением статуса прочитанности намаза."""
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
     _prayer_status: UserPrayerStatusInterface
     _user_prayers: UserPrayersInterface
 

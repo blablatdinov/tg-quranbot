@@ -25,15 +25,15 @@ from typing import final
 import httpx
 from pyeo import elegant
 
-from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
 @elegant
-class TgAnswerList(TgAnswerInterface):
+class TgAnswerList(TgAnswer):
     """Список ответов пользователю."""
 
-    def __init__(self, *answers: TgAnswerInterface):
+    def __init__(self, *answers: TgAnswer):
         """Конструктор класса.
 
         :param answers: TgAnswerInterface

@@ -30,7 +30,7 @@ from redis.asyncio import Redis
 
 from app_types.update import Update
 from integrations.tg.tg_answers import (
-    TgAnswerInterface,
+    TgAnswer,
     TgAnswerToSender,
     TgAudioAnswer,
     TgHtmlParseAnswer,
@@ -46,13 +46,13 @@ from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
 @final
 @attrs.define(frozen=True)
 @elegant
-class FavoriteAyatsAnswer(TgAnswerInterface):
+class FavoriteAyatsAnswer(TgAnswer):
     """Ответ с временами намаза."""
 
     _debug: bool
     _database: Database
     _redis: Redis
-    _empty_answer: TgAnswerInterface
+    _empty_answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

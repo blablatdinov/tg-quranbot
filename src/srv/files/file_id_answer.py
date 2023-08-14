@@ -27,16 +27,16 @@ import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class TelegramFileIdAnswer(TgAnswerInterface):
+class TelegramFileIdAnswer(TgAnswer):
     """Класс ответа с файлом."""
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
     _telegram_file_id: str | None
 
     async def build(self, update: Update) -> list[httpx.Request]:

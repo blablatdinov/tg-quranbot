@@ -27,17 +27,17 @@ import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class FavoriteAyatEmptySafeAnswer(TgAnswerInterface):
+class FavoriteAyatEmptySafeAnswer(TgAnswer):
     """Обработка ошибок с пустыми избранными."""
 
-    _origin: TgAnswerInterface
-    _error_answer: TgAnswerInterface
+    _origin: TgAnswer
+    _error_answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
