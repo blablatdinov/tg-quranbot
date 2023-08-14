@@ -27,7 +27,7 @@ from pyeo import elegant
 
 
 @elegant
-class Stringable(Protocol):
+class SupportsStr(Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
     def __str__(self) -> str:
@@ -37,7 +37,7 @@ class Stringable(Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
-class ThroughStringable(Stringable):
+class ThroughString(SupportsStr):
     """Обертка для строки."""
 
     _source: str
@@ -53,10 +53,10 @@ class ThroughStringable(Stringable):
 @final
 @attrs.define(frozen=True)
 @elegant
-class UnwrappedString(Stringable):
+class UnwrappedString(SupportsStr):
     """Строки без переноса."""
 
-    _origin: Stringable
+    _origin: SupportsStr
 
     def __str__(self):
         """Строковое представление.

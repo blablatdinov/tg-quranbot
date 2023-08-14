@@ -24,14 +24,14 @@ from pathlib import Path
 
 import pytest
 
-from app_types.stringable import ThroughStringable
+from app_types.stringable import ThroughString
 from integrations.tg.coordinates import TgMessageCoordinates
 from integrations.tg.update import TgUpdate
 
 
 @pytest.fixture()
 def coordinates_json():
-    return ThroughStringable(
+    return ThroughString(
         (Path(__file__).parent.parent / 'fixtures' / 'coordinates.json').read_text(),
     )
 

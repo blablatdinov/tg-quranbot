@@ -23,7 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import pytest
 from pytest_lazyfixture import lazy_fixture
 
-from app_types.stringable import ThroughStringable
+from app_types.stringable import ThroughString
 from integrations.tg.update import TgUpdate
 from integrations.tg.update_id import UpdateId
 from settings import settings
@@ -31,14 +31,14 @@ from settings import settings
 
 @pytest.fixture()
 def stringable_update():
-    return ThroughStringable(
+    return ThroughString(
         (settings.BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),
     )
 
 
 @pytest.fixture()
 def stringable_callback_update():
-    return ThroughStringable(
+    return ThroughString(
         (settings.BASE_DIR / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
     )
 

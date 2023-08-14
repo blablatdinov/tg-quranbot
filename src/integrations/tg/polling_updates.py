@@ -27,7 +27,7 @@ import attrs
 import httpx
 from pyeo import elegant
 
-from app_types.stringable import Stringable
+from app_types.stringable import SupportsStr
 from app_types.update import Update
 from integrations.tg.update import TgUpdate
 
@@ -59,7 +59,7 @@ class UpdatesURLInterface(Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
-class UpdatesURL(Stringable):
+class UpdatesURL(SupportsStr):
     """Базовый URL обновлений из телеграма."""
 
     _token: str
@@ -78,7 +78,7 @@ class UpdatesURL(Stringable):
 class UpdatesWithOffsetURL(UpdatesURLInterface):
     """URL для получения только новых обновлений."""
 
-    _updates_url: Stringable
+    _updates_url: SupportsStr
 
     def generate(self, update_id: int):
         """Генерация.

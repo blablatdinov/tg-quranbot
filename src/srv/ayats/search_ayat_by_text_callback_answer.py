@@ -27,7 +27,7 @@ import httpx
 from pyeo import elegant
 from redis.asyncio import Redis
 
-from app_types.stringable import ThroughStringable
+from app_types.stringable import ThroughString
 from db.connection import database
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.callback_query import CallbackQueryData
@@ -64,7 +64,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
         target_ayat_id = int(IntableRegularExpression(str(CallbackQueryData(update))))
         try:
             ayats = await AyatsByTextQuery(
-                ThroughStringable(
+                ThroughString(
                     await AyatTextSearchQuery.for_reading_cs(
                         self._redis,
                         int(TgChatId(update)),

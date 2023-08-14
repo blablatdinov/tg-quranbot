@@ -26,7 +26,7 @@ import attrs
 from databases import Database
 
 from app_types.intable import AsyncIntable
-from app_types.stringable import Stringable
+from app_types.stringable import SupportsStr
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.sura import Sura
 from srv.ayats.ayat import Ayat
@@ -45,7 +45,7 @@ class PgAyat(Ayat):
     _database: Database
 
     @classmethod
-    async def by_sura_ayat_num(cls, sura_ayat_num: Stringable, database: Database) -> Ayat:
+    async def by_sura_ayat_num(cls, sura_ayat_num: SupportsStr, database: Database) -> Ayat:
         """Конструктор для поиска по номеру суры, аята.
 
         :param sura_ayat_num: Stringable

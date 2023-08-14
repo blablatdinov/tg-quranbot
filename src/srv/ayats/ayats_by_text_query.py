@@ -28,7 +28,7 @@ from pyeo import elegant
 
 from app_types.intable import ThroughAsyncIntable
 from app_types.listable import AsyncListable
-from app_types.stringable import Stringable
+from app_types.stringable import SupportsStr
 from srv.ayats.pg_ayat import PgAyat
 
 
@@ -38,7 +38,7 @@ from srv.ayats.pg_ayat import PgAyat
 class AyatsByTextQuery(AsyncListable):
     """Список аятов, найденных по текстовому запросу."""
 
-    _query: Stringable
+    _query: SupportsStr
     _database: Database
 
     async def to_list(self) -> list[PgAyat]:

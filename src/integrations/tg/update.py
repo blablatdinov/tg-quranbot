@@ -26,7 +26,7 @@ from typing import final
 import attrs
 from pyeo import elegant
 
-from app_types.stringable import Stringable
+from app_types.stringable import SupportsStr
 from app_types.update import Update
 from integrations.tg.update_struct import UpdateStruct
 from services.weak_cache import weak_lru
@@ -41,7 +41,7 @@ class TgUpdate(Update):
     _raw_udpate: Stringable - сырая json строка
     """
 
-    _raw_update: Stringable
+    _raw_update: SupportsStr
 
     def __str__(self) -> str:
         """Приведение к строке.
