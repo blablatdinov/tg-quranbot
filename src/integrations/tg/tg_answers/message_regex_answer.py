@@ -27,7 +27,7 @@ import attrs
 import httpx
 from pyeo import elegant
 
-from app_types.stringable import Stringable
+from app_types.stringable import SupportsStr
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 from integrations.tg.message_text import MessageText
@@ -37,7 +37,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 @final
 @attrs.define(frozen=True)
 @elegant
-class TgMessageRegexAnswer(TgAnswer, Stringable):
+class TgMessageRegexAnswer(TgAnswer, SupportsStr):
     """Маршрутизация ответов по регулярному выражению."""
 
     _pattern: str

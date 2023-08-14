@@ -25,7 +25,7 @@ from typing import final
 import attrs
 from pyeo import elegant
 
-from app_types.stringable import Stringable
+from app_types.stringable import SupportsStr
 from srv.ayats.search_query import SearchQuery
 
 
@@ -35,7 +35,7 @@ from srv.ayats.search_query import SearchQuery
 class NumsSearchQuery(SearchQuery):
     """Запросом для поиска."""
 
-    _query: Stringable
+    _query: SupportsStr
 
     def sura(self) -> int:
         """Номер суры.

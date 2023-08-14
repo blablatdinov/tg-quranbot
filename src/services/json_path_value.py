@@ -27,7 +27,7 @@ import attrs
 import jsonpath_ng
 from pyeo import elegant
 
-from app_types.stringable import Stringable
+from app_types.stringable import SupportsStr
 
 _ET = TypeVar('_ET', covariant=True)
 
@@ -62,7 +62,7 @@ class JsonPathValue(JsonPath, Generic[_ET]):
     """
 
     _json: dict
-    _json_path: Stringable
+    _json_path: SupportsStr
 
     def evaluate(self) -> _ET:
         """Получить значение.
@@ -83,7 +83,7 @@ class MatchManyJsonPath(JsonPath, Generic[_ET]):
     """Поиск по нескольким jsonpath."""
 
     _json: dict
-    _json_paths: Iterable[Stringable]
+    _json_paths: Iterable[SupportsStr]
 
     def evaluate(self) -> _ET:
         """Получить значение.

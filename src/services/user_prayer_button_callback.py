@@ -25,14 +25,14 @@ from typing import final
 import attrs
 from pyeo import elegant
 
-from app_types.stringable import Stringable
+from app_types.stringable import SupportsStr
 from repository.user_prayers_interface import UserPrayer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class UserPrayersButtonCallback(Stringable):
+class UserPrayersButtonCallback(SupportsStr):
     """Кнопка клавиатуры времен намазов."""
 
     _user_prayer: UserPrayer

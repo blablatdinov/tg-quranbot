@@ -27,21 +27,21 @@ import pytest
 import pytz
 from pytest_lazyfixture import lazy_fixture
 
-from app_types.stringable import ThroughStringable
+from app_types.stringable import ThroughString
 from integrations.tg.tg_datetime import TgDateTime
 from integrations.tg.update import TgUpdate
 
 
 @pytest.fixture()
 def stringable_update():
-    return ThroughStringable(
+    return ThroughString(
         (Path(__file__).parent.parent / 'fixtures' / 'message_update.json').read_text(),
     )
 
 
 @pytest.fixture()
 def stringable_callback_update():
-    return ThroughStringable(
+    return ThroughString(
         (Path(__file__).parent.parent / 'fixtures' / 'button_callback.json').read_text(),
     )
 

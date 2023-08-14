@@ -25,7 +25,7 @@ from typing import TypeAlias, final
 import attrs
 from pyeo import elegant
 
-from app_types.stringable import Stringable
+from app_types.stringable import SupportsStr
 
 _AyatNum: TypeAlias = str
 
@@ -33,7 +33,7 @@ _AyatNum: TypeAlias = str
 @final
 @elegant
 @attrs.define(frozen=True)
-class AyatLink(Stringable):
+class AyatLink(SupportsStr):
     """Ссылка на аят."""
 
     _sura_link: str

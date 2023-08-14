@@ -25,12 +25,12 @@ from typing import Protocol, final
 import attrs
 from pyeo import elegant
 
-from app_types.stringable import Stringable
+from app_types.stringable import SupportsStr
 from integrations.tg.update_struct import UpdateStruct
 
 
 @elegant
-class Update(Stringable, Protocol):
+class Update(SupportsStr, Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
     def __str__(self) -> str:
@@ -49,7 +49,7 @@ class Update(Stringable, Protocol):
 class FkUpdate(Update):
     """Подделка обновления."""
 
-    _raw: Stringable | None = ''
+    _raw: SupportsStr | None = ''
 
     def __str__(self):
         """Приведение к строке.

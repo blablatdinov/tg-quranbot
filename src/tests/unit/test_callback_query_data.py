@@ -24,14 +24,14 @@ from pathlib import Path
 
 import pytest
 
-from app_types.stringable import ThroughStringable
+from app_types.stringable import ThroughString
 from integrations.tg.callback_query import CallbackQueryData
 from settings import settings
 
 
 @pytest.fixture()
 def stringable_callback_update():
-    return ThroughStringable(
+    return ThroughString(
         (Path(settings.BASE_DIR) / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
     )
 
