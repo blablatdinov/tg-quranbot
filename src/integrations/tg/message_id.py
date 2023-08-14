@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import SupportsInt, final
+from typing import Protocol, SupportsInt, final
 
 import attrs
 from pyeo import elegant
@@ -30,7 +30,8 @@ from integrations.tg.exceptions.update_parse_exceptions import MessageIdNotFound
 from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
-class MessageId(SupportsInt):
+@elegant
+class MessageId(SupportsInt, Protocol):
     """Идентификатор сообщения."""
 
     def __int__(self):

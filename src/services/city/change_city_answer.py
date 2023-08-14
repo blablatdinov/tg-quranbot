@@ -92,11 +92,11 @@ class ChangeCityAnswer(TgAnswer):
         if not cities:
             raise CityNotSupportedError
         await self._user_repo.update_city(
-            int(TgChatId(update)),
+            TgChatId(update),
             cities[0].id,
         )
         await LoggedUserState(
-            UserState(self._redis, int(TgChatId(update))),
+            UserState(self._redis, TgChatId(update)),
         ).change_step(UserStep.nothing)
         return await TgTextAnswer(
             self._origin,

@@ -29,6 +29,7 @@ from pyeo import elegant
 
 from exceptions.base_exception import BaseAppError
 from exceptions.content_exceptions import AyatNotFoundError
+from integrations.tg.chat_id import ChatId
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.schemas import AyatShort
 from srv.ayats.text_search_query import TextSearchQuery
@@ -55,7 +56,7 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
     _ayat_id: int
-    _chat_id: int
+    _chat_id: ChatId
     _favorite_ayats_repo: FavoriteAyatRepositoryInterface
 
     async def left_neighbor(self) -> AyatShort:

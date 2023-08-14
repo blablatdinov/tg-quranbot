@@ -57,7 +57,6 @@ class PodcastAnswer(TgAnswer):
         :param update: Update
         :return: AnswerInterface
         """
-        chat_id = int(TgChatId(update))
         return await ResetStateAnswer(
             FileAnswer(
                 self._debug_mode,
@@ -66,7 +65,7 @@ class PodcastAnswer(TgAnswer):
                         TgAudioAnswer(
                             self._origin,
                         ),
-                        chat_id,
+                        TgChatId(update),
                     ),
                     await self._podcast.audio_telegram_id(),
                 ),
@@ -75,7 +74,7 @@ class PodcastAnswer(TgAnswer):
                         TgMessageAnswer(
                             self._origin,
                         ),
-                        chat_id,
+                        TgChatId(update),
                     ),
                     await self._podcast.link_to_audio_file(),
                 ),

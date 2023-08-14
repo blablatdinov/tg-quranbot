@@ -26,6 +26,8 @@ from typing import Protocol, final
 from pydantic import BaseModel
 from pyeo import elegant
 
+from integrations.tg.chat_id import ChatId
+
 
 @final
 class UserPrayer(BaseModel):
@@ -46,9 +48,9 @@ class UserPrayer(BaseModel):
 class UserPrayersInterface(Protocol):
     """Интерфейс времени намаза пользователя."""
 
-    async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
+    async def prayer_times(self, chat_id: ChatId, date: datetime.date) -> list[UserPrayer]:
         """Времена намаза.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :param date: datetime.date
         """

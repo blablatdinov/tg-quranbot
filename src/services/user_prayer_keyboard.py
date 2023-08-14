@@ -28,7 +28,7 @@ import attrs
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
+from integrations.tg.chat_id import ChatId, TgChatId
 from repository.user_prayers_interface import UserPrayersInterface
 from services.answers.answer import KeyboardInterface
 from services.user_prayer_button_callback import UserPrayersButtonCallback
@@ -42,7 +42,7 @@ class UserPrayersKeyboardByChatId(KeyboardInterface):
 
     _user_prayer_times: UserPrayersInterface
     _date: datetime.date
-    _chat_id: int
+    _chat_id: ChatId
 
     async def generate(self, update: Update) -> str:
         """Генерация.
@@ -79,5 +79,5 @@ class UserPrayersKeyboard(KeyboardInterface):
         return await UserPrayersKeyboardByChatId(
             self._user_prayer_times,
             self._date,
-            int(TgChatId(update)),
+            TgChatId(update),
         ).generate(update)

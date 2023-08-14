@@ -59,7 +59,7 @@ class StartAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         await self._check_user_exists(update)
-        await self._user_repo.create(int(TgChatId(update)))
+        await self._user_repo.create(TgChatId(update))
         start_message, ayat_message = await self._start_answers()
         create_with_referrer_answers = await self._create_with_referrer(update, start_message, ayat_message)
         if create_with_referrer_answers:
@@ -93,7 +93,7 @@ class StartAnswer(TgAnswer):
         )
 
     async def _check_user_exists(self, update: Update) -> None:
-        if await self._user_repo.exists(int(TgChatId(update))):
+        if await self._user_repo.exists(TgChatId(update)):
             raise UserAlreadyExists
 
     async def _create_with_referrer(self, update, start_message, ayat_message) -> list[httpx.Request]:

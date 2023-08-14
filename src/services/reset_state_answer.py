@@ -50,6 +50,6 @@ class ResetStateAnswer(TgAnswer):
         """
         requests = await self._origin.build(update)
         await UserState(
-            self._redis, int(TgChatId(update)),
+            self._redis, TgChatId(update),
         ).change_step(UserStep.nothing)
         return requests

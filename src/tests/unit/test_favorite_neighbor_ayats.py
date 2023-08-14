@@ -25,6 +25,7 @@ from typing import final
 import pytest
 from pyeo import elegant
 
+from integrations.tg.chat_id import ChatId
 from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import FavoriteNeighborAyats
 from repository.ayats.schemas import Ayat
@@ -37,10 +38,10 @@ class FavoriteAyatRepositoryFake(FavoriteAyatRepositoryInterface):
     async def get_favorite(self, ayat_id: int) -> Ayat:
         raise NotImplementedError
 
-    async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
+    async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: ChatId) -> bool:
         raise NotImplementedError
 
-    async def get_favorites(self, chat_id: int) -> list[Ayat]:
+    async def get_favorites(self, chat_id: ChatId) -> list[Ayat]:
         return [
             Ayat(
                 id=1,

@@ -26,6 +26,7 @@ import attrs
 from loguru import logger
 from redis.asyncio import Redis
 
+from integrations.tg.chat_id import ChatId
 from srv.ayats.text_search_query import TextSearchQuery
 
 
@@ -35,28 +36,28 @@ class AyatTextSearchQuery(TextSearchQuery):
     """Запрос поиска аята."""
 
     _redis: Redis
-    _chat_id: int
+    _chat_id: ChatId
     _query: str | None = None
 
     _key_template = '{0}:ayat_search_query'
 
     @classmethod
-    def for_write_cs(cls, redis: Redis, query: str, chat_id: int):
+    def for_write_cs(cls, redis: Redis, query: str, chat_id: ChatId):
         """Конструктор для записи.
 
         :param redis: Redis
         :param query: str
-        :param chat_id: int
+        :param chat_id: ChatId
         :return: AyatTextSearchQuery
         """
         return AyatTextSearchQuery(redis, query=query, chat_id=chat_id)
 
     @classmethod
-    def for_reading_cs(cls, redis: Redis, chat_id: int):
+    def for_reading_cs(cls, redis: Redis, chat_id: ChatId):
         """Конструктор для чтения.
 
         :param redis: Redis
-        :param chat_id: int
+        :param chat_id: ChatId
         :return: AyatTextSearchQuery
         """
         return AyatTextSearchQuery(redis, chat_id=chat_id)
@@ -71,7 +72,9 @@ class AyatTextSearchQuery(TextSearchQuery):
         if not self._query:
             raise ValueError('Query not give')
         await self._redis.set(key, self._query)
-        logger.info('Key: {0} wrote'.format(self._key_template.format(self._chat_id)))
+        logger.info('Key: {0} wrote'.format(
+            self._key_template.format(int(self._chat_id)),
+        ))
 
     async def read(self) -> str:
         """Чтение.
@@ -79,7 +82,7 @@ class AyatTextSearchQuery(TextSearchQuery):
         :return: str
         :raises ValueError: user has not search query
         """
-        key = self._key_template.format(self._chat_id)
+        key = self._key_template.format(int(self._chat_id))
         logger.info('Try read {0}'.format(key))
         redis_value = await self._redis.get(key)
         if not redis_value:

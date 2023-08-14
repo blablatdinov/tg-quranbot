@@ -29,6 +29,7 @@ from pydantic import parse_obj_as
 from pyeo import elegant
 
 from exceptions.content_exceptions import AyatNotFoundError
+from integrations.tg.chat_id import ChatId
 from repository.ayats.schemas import Ayat
 
 
@@ -36,10 +37,10 @@ from repository.ayats.schemas import Ayat
 class FavoriteAyatRepositoryInterface(Protocol):
     """Интерфейс для работы с хранилищем избранных аятов."""
 
-    async def get_favorites(self, chat_id: int) -> list[Ayat]:
+    async def get_favorites(self, chat_id: ChatId) -> list[Ayat]:
         """Метод для аятов в избранном для пользователя.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         """
 
     async def get_favorite(self, ayat_id: int) -> Ayat:
@@ -48,11 +49,11 @@ class FavoriteAyatRepositoryInterface(Protocol):
         :param ayat_id: int
         """
 
-    async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
+    async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: ChatId) -> bool:
         """Проверить входит ли аят в избранные.
 
         :param ayat_id: int
-        :param chat_id: int
+        :param chat_id: ChatId
         """
 
 
@@ -64,10 +65,10 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
 
     _connection: Database
 
-    async def get_favorites(self, chat_id: int) -> list[Ayat]:
+    async def get_favorites(self, chat_id: ChatId) -> list[Ayat]:
         """Получить избранные аяты.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :returns: list[Ayat]
         """
         query = """
@@ -89,7 +90,7 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
             WHERE u.chat_id = :chat_id
             ORDER BY a.ayat_id
         """
-        rows = await self._connection.fetch_all(query, {'chat_id': chat_id})
+        rows = await self._connection.fetch_all(query, {'chat_id': int(chat_id)})
         return parse_obj_as(list[Ayat], [row._mapping for row in rows])  # noqa: WPS437
 
     async def get_favorite(self, ayat_id: int) -> Ayat:
@@ -122,14 +123,14 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
             raise AyatNotFoundError
         return Ayat.parse_obj(row._mapping)  # noqa: WPS437
 
-    async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
+    async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: ChatId) -> bool:
         """Получить аят по номеру суры.
 
         :param ayat_id: int
-        :param chat_id: int
+        :param chat_id: ChatId
         :returns: bool
         """
-        logger.debug('Check ayat <{0}> is favorite for user <{1}>...'.format(ayat_id, chat_id))
+        logger.debug('Check ayat <{0}> is favorite for user <{1}>...'.format(ayat_id, int(chat_id)))
         query = """
             SELECT
                 COUNT(*)
@@ -137,6 +138,8 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
             INNER JOIN users u ON u.chat_id = fa.user_id
             WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id
         """
-        count = await self._connection.fetch_val(query, {'ayat_id': ayat_id, 'chat_id': chat_id})
-        logger.debug('Ayat <{0}> is favorite for user <{1}> result: {2}'.format(ayat_id, chat_id, bool(count)))
+        count = await self._connection.fetch_val(
+            query, {'ayat_id': ayat_id, 'chat_id': int(chat_id)},
+        )
+        logger.debug('Ayat <{0}> is favorite for user <{1}> result: {2}'.format(ayat_id, int(chat_id), bool(count)))
         return bool(count)

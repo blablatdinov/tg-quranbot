@@ -58,10 +58,10 @@ class UserAlreadyExistsAnswer(TgAnswer):
         """
         with suppress(UserAlreadyExists):
             return await self._origin.build(update)
-        user = await self._user_repo.get_by_chat_id(int(TgChatId(update)))
+        user = await self._user_repo.get_by_chat_id(TgChatId(update))
         if user.is_active:
             raise UserAlreadyActive
-        await self._users_repo.update_status([int(TgChatId(update))], to=True)
+        await self._users_repo.update_status([TgChatId(update)], to=True)
         await self._event_sink.send(
             {
                 'user_id': int(TgChatId(update)),

@@ -1,9 +1,5 @@
 """The MIT License (MIT).
 
-<<<<<<< HEAD
-||||||| 4250f92
-from redis.asyncio import Redis
-=======
 Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,6 +27,8 @@ import attrs
 from loguru import logger
 from pyeo import elegant
 from redis.asyncio import Redis
+
+from integrations.tg.chat_id import ChatId
 
 
 @final
@@ -90,7 +88,7 @@ class UserState(UserStateInterface):
     """Объект, работающий с состоянием пользователя."""
 
     _redis: Redis
-    _chat_id: int
+    _chat_id: ChatId
 
     async def step(self) -> UserStep:
         """Состояние пользователя.
@@ -98,7 +96,7 @@ class UserState(UserStateInterface):
         :return: UserStep
         """
         redis_state_data = (
-            await self._redis.get('{0}:step'.format(self._chat_id))
+            await self._redis.get('{0}:step'.format(int(self._chat_id)))
         )
         if not redis_state_data:
             return UserStep.nothing
@@ -110,6 +108,6 @@ class UserState(UserStateInterface):
         :param step: UserStep
         """
         await self._redis.set(
-            '{0}:step'.format(self._chat_id),
+            '{0}:step'.format(int(self._chat_id)),
             step.value,
         )

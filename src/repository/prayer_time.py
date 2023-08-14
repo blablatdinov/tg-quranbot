@@ -33,6 +33,7 @@ from pyeo import elegant
 from exceptions.content_exceptions import UserHasNotCityIdError
 from exceptions.internal_exceptions import UserHasNotGeneratedPrayersError
 from exceptions.prayer_exceptions import PrayersNotFoundError, UserPrayersNotFoundError
+from integrations.tg.chat_id import ChatId
 from repository.user_prayers_interface import UserPrayer, UserPrayersInterface
 
 
@@ -57,15 +58,15 @@ class UserPrayers(UserPrayersInterface):
 
     _connection: Database
 
-    async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
+    async def prayer_times(self, chat_id: ChatId, date: datetime.date) -> list[UserPrayer]:
         """Времена намаза.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :param date: datetime.date
         :return: list[UserPrayer]
         :raises UserHasNotGeneratedPrayersError: if user hasn't prayer times
         """
-        logger.info('Getting prayer times for user <{0}>, date={1}'.format(chat_id, date))
+        logger.info('Getting prayer times for user <{0}>, date={1}'.format(int(chat_id), date))
         query = """
             SELECT
                 c.name AS city,
@@ -82,7 +83,9 @@ class UserPrayers(UserPrayersInterface):
             WHERE pd.date = :date AND u.chat_id = :chat_id
             ORDER BY up.prayer_at_user_id
         """
-        rows = await self._connection.fetch_all(query, {'date': date, 'chat_id': chat_id})
+        rows = await self._connection.fetch_all(
+            query, {'date': date, 'chat_id': int(chat_id)},
+        )
         prayers = [UserPrayer.parse_obj(row._mapping) for row in rows]  # noqa: WPS437
         if not prayers:
             raise UserHasNotGeneratedPrayersError
@@ -99,10 +102,10 @@ class SafeUserPrayers(UserPrayersInterface):
     _exists_user_prayers: UserPrayersInterface
     _new_user_prayers: UserPrayersInterface
 
-    async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
+    async def prayer_times(self, chat_id: ChatId, date: datetime.date) -> list[UserPrayer]:
         """Времена намаза.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :param date: datetime.date
         :return: list[UserPrayer]
         """
@@ -121,10 +124,10 @@ class SafeNotFoundPrayers(UserPrayersInterface):
     _connection: Database
     _origin: UserPrayersInterface
 
-    async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
+    async def prayer_times(self, chat_id: ChatId, date: datetime.date) -> list[UserPrayer]:
         """Времена намаза.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :param date: datetime.date
         :return: list[UserPrayer]
         :raises PrayersNotFoundError: у пользователя нет сгенерированных времен намаза
@@ -144,7 +147,7 @@ class SafeNotFoundPrayers(UserPrayersInterface):
             query = """
                 SELECT city_id FROM users WHERE chat_id = :chat_id
             """
-            city_id = await self._connection.fetch_val(query, {'chat_id': chat_id})
+            city_id = await self._connection.fetch_val(query, {'chat_id': int(chat_id)})
             if not city_id:
                 raise UserHasNotCityIdError
         return prayer_times
@@ -158,10 +161,10 @@ class PrayersWithoutSunrise(UserPrayersInterface):
 
     _origin: UserPrayersInterface
 
-    async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
+    async def prayer_times(self, chat_id: ChatId, date: datetime.date) -> list[UserPrayer]:
         """Времена намаза.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :param date: datetime.date
         :return: list[UserPrayer]
         """
@@ -182,10 +185,10 @@ class NewUserPrayers(UserPrayersInterface):
     _connection: Database
     _exists_user_prayers: UserPrayersInterface
 
-    async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
+    async def prayer_times(self, chat_id: ChatId, date: datetime.date) -> list[UserPrayer]:
         """Создать времена намазов для пользователя.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :param date: datetime.date
         :returns: list[UserPrayer]
         :raises UserPrayersNotFoundError: if user hasn't generated prayer times
@@ -198,7 +201,9 @@ class NewUserPrayers(UserPrayersInterface):
             INNER JOIN prayer_days pd on pd.date = p.day_id
             WHERE pd.date = :date AND u.chat_id = :chat_id
         """
-        rows = await self._connection.fetch_all(query, {'date': date, 'chat_id': chat_id})
+        rows = await self._connection.fetch_all(
+            query, {'date': date, 'chat_id': int(chat_id)},
+        )
         if not rows:
             raise UserPrayersNotFoundError
         user_prayer_group_id = uuid.uuid4()
@@ -221,7 +226,7 @@ class NewUserPrayers(UserPrayersInterface):
                     'is_read': False,
                     'prayer_id': prayer_id,
                     'prayer_group_id': str(user_prayer_group_id),
-                    'user_id': chat_id,
+                    'user_id': int(chat_id),
                 }
                 for prayer_id in prayer_ids
             ],

@@ -27,6 +27,8 @@ from databases import Database
 from pydantic import BaseModel, parse_obj_as
 from pyeo import elegant
 
+from integrations.tg.chat_id import ChatId
+
 
 @final
 class QueryResultItem(BaseModel):
@@ -42,7 +44,7 @@ class UsersRepositoryInterface(Protocol):
     async def get_active_user_chat_ids(self) -> list[int]:
         """Получить активных пользователей."""
 
-    async def update_status(self, chat_ids: list[int], to: bool):
+    async def update_status(self, chat_ids: list[ChatId], to: bool):
         """Обнвоить статус пользователей.
 
         :param chat_ids: list[int]
@@ -70,7 +72,7 @@ class UsersRepository(UsersRepositoryInterface):
     async def get_active_user_chat_ids(self) -> list[int]:
         """Получить активных пользователей.
 
-        :returns: list[User]
+        :returns: list[int]
         """
         query = """
             SELECT
@@ -85,15 +87,17 @@ class UsersRepository(UsersRepositoryInterface):
             for parsed_row in parse_obj_as(list[QueryResultItem], rows)
         ]
 
-    async def update_status(self, chat_ids: list[int], to: bool):
+    async def update_status(self, chat_ids: list[ChatId], to: bool):
         """Обнвоить статус пользователей.
 
-        :param chat_ids: list[int]
+        :param chat_ids: list[ChatId]
         :param to: bool
         """
         if not chat_ids:
             return
-        chat_ids_for_query = '({0})'.format(','.join(list(map(str, chat_ids))))
+        chat_ids_for_query = '({0})'.format(','.join(list(
+            map(str, map(int, chat_ids)),
+        )))
         query_template = """
             UPDATE users
             SET is_active = :to

@@ -31,6 +31,7 @@ from pyeo import elegant
 
 from exceptions.base_exception import InternalBotError
 from exceptions.internal_exceptions import UserNotFoundError
+from integrations.tg.chat_id import ChatId
 
 CHAT_ID_LITERAL: Final = 'chat_id'
 
@@ -51,17 +52,17 @@ class User(BaseModel):
 class UserRepositoryInterface(Protocol):
     """Интерфейс репозитория для работы с пользователями."""
 
-    async def create(self, chat_id: int, referrer_id: Optional[int] = None):
+    async def create(self, chat_id: ChatId, referrer_id: Optional[int] = None):
         """Метод для создания пользователя.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :param referrer_id: Optional[int]
         """
 
-    async def get_by_chat_id(self, chat_id: int) -> User:
+    async def get_by_chat_id(self, chat_id: ChatId) -> User:
         """Метод для получения пользователя.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         """
 
     async def get_by_id(self, user_id: int) -> User:
@@ -70,23 +71,23 @@ class UserRepositoryInterface(Protocol):
         :param user_id: int
         """
 
-    async def exists(self, chat_id: int) -> bool:
+    async def exists(self, chat_id: ChatId) -> bool:
         """Метод для проверки наличия пользователя в БД.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         """
 
-    async def update_city(self, chat_id: int, city_id: uuid.UUID):
+    async def update_city(self, chat_id: ChatId, city_id: uuid.UUID):
         """Обновить город пользователя.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :param city_id: int
         """
 
-    async def update_referrer(self, chat_id: int, referrer_id: int):
+    async def update_referrer(self, chat_id: ChatId, referrer_id: int):
         """Обновить город пользователя.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :param referrer_id: [int]
         """
 
@@ -99,10 +100,10 @@ class UserRepository(UserRepositoryInterface):
 
     _connection: Database
 
-    async def create(self, chat_id: int, referrer_id: Optional[int] = None) -> User:
+    async def create(self, chat_id: ChatId, referrer_id: Optional[int] = None) -> User:
         """Метод для создания пользователя.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :param referrer_id: Optional[int]
         :returns: User
         :raises InternalBotError: if connection not return created user values
@@ -130,10 +131,10 @@ class UserRepository(UserRepositoryInterface):
             city_id=None,
         )
 
-    async def get_by_chat_id(self, chat_id: int) -> User:
+    async def get_by_chat_id(self, chat_id: ChatId) -> User:
         """Метод для получения пользователя.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :returns: User
         :raises UserNotFoundError: возбуждается если пользователь с переданным идентификатором не найден
         """
@@ -152,20 +153,20 @@ class UserRepository(UserRepositoryInterface):
             raise UserNotFoundError('Пользователь с chat_id: {0} не найден'.format(chat_id))
         return User.parse_obj(dict(record._mapping))  # noqa: WPS437
 
-    async def exists(self, chat_id: int) -> bool:
+    async def exists(self, chat_id: ChatId) -> bool:
         """Метод для проверки наличия пользователя в БД.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :returns: bool
         """
         query = 'SELECT COUNT(*) FROM users WHERE chat_id = :chat_id'
         count = await self._connection.fetch_val(query, {CHAT_ID_LITERAL: chat_id})
         return bool(count)
 
-    async def update_city(self, chat_id: int, city_id: uuid.UUID):
+    async def update_city(self, chat_id: ChatId, city_id: uuid.UUID):
         """Обновить город пользователя.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :param city_id: uuid.UUID
         """
         query = """
@@ -175,10 +176,10 @@ class UserRepository(UserRepositoryInterface):
         """
         await self._connection.execute(query, {'city_id': str(city_id), CHAT_ID_LITERAL: chat_id})
 
-    async def update_referrer(self, chat_id: int, referrer_id: int):
+    async def update_referrer(self, chat_id: ChatId, referrer_id: int):
         """Обновить город пользователя.
 
-        :param chat_id: int
+        :param chat_id: ChatId
         :param referrer_id: int
         """
         query = """

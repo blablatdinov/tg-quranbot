@@ -52,7 +52,7 @@ class PrayerForUserAnswer(TgAnswer):
         :return: list[types.Message]
         """
         prayers = await self._user_prayers.prayer_times(
-            int(TgChatId(update)),
+            TgChatId(update),
             datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
         )
         time_format = '%H:%M'

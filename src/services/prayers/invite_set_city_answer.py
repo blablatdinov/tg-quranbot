@@ -72,7 +72,7 @@ class InviteSetCityAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         await LoggedUserState(
-            UserState(self._redis, int(TgChatId(update))),
+            UserState(self._redis, TgChatId(update)),
         ).change_step(UserStep.city_search)
         return await TgAnswerMarkup(
             self._message_answer,

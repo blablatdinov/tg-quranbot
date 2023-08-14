@@ -27,6 +27,7 @@ import httpx
 from pyeo import elegant
 
 from app_types.update import Update
+from integrations.tg.chat_id import ChatId
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
@@ -37,7 +38,7 @@ class TgChatIdAnswer(TgAnswer):
     """Ответ пользователю на конкретный идентификатор чата."""
 
     _origin: TgAnswer
-    _chat_id: int
+    _chat_id: ChatId
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
