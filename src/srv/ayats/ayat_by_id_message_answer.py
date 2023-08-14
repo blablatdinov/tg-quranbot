@@ -28,7 +28,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from db.connection import database
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgTextAnswer
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
 from srv.ayats.ayat import Ayat
@@ -40,11 +40,11 @@ from srv.ayats.neighbor_ayat_keyboard import NeighborAyatKeyboard
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatByIdMessageAnswer(TgAnswerInterface):
+class AyatByIdMessageAnswer(TgAnswer):
     """Текстовый ответ на поиск аята."""
 
     _result_ayat: Ayat
-    _message_answer: TgAnswerInterface
+    _message_answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

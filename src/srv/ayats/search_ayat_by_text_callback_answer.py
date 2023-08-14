@@ -32,7 +32,7 @@ from db.connection import database
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import TgAnswer
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
 from services.regular_expression import IntableRegularExpression
@@ -46,12 +46,12 @@ from srv.ayats.ayats_by_text_query import AyatsByTextQuery
 @final
 @attrs.define(frozen=True)
 @elegant
-class SearchAyatByTextCallbackAnswer(TgAnswerInterface):
+class SearchAyatByTextCallbackAnswer(TgAnswer):
     """Поиск аята по тексту для обработки нажатия кнопки."""
 
     _debug_mode: bool
-    _message_answer: TgAnswerInterface
-    _file_answer: TgAnswerInterface
+    _message_answer: TgAnswer
+    _file_answer: TgAnswer
     _redis: Redis
 
     async def build(self, update) -> list[httpx.Request]:

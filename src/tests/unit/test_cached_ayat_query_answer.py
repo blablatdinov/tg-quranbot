@@ -29,7 +29,7 @@ import pytest
 from pyeo import elegant
 from redis.asyncio import Redis
 
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import TgAnswer
 from integrations.tg.update import TgUpdate
 from srv.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
 
@@ -40,7 +40,7 @@ class FakeError(Exception):
 
 @elegant
 @final
-class TgAnswerFake(TgAnswerInterface):
+class TgAnswerFake(TgAnswer):
 
     async def build(self, update):
         raise FakeError

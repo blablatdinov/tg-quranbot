@@ -26,13 +26,13 @@ import attrs
 import httpx
 from pyeo import elegant
 
-from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class TgEmptyAnswer(TgAnswerInterface):
+class TgEmptyAnswer(TgAnswer):
     """Пустой ответ."""
 
     _token: str

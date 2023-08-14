@@ -30,17 +30,17 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
 from integrations.tg.tg_answers.measure_answer import Millis, RoundedFloat
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class StatusAnswer(TgAnswerInterface):
+class StatusAnswer(TgAnswer):
     """Ответ со статусом системы."""
 
-    _empty_answer: TgAnswerInterface
+    _empty_answer: TgAnswer
     _db: Database
     _redis: Redis
 

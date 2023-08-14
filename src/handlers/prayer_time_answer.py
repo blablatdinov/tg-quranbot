@@ -29,7 +29,7 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
 from repository.prayer_time import NewUserPrayers, SafeNotFoundPrayers, SafeUserPrayers, UserPrayers
 from services.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
 from services.prayers.prayer_for_user_answer import PrayerForUserAnswer
@@ -39,12 +39,12 @@ from services.reset_state_answer import ResetStateAnswer
 @final
 @attrs.define(frozen=True)
 @elegant
-class PrayerTimeAnswer(TgAnswerInterface):
+class PrayerTimeAnswer(TgAnswer):
     """Ответ с временами намаза."""
 
     _database: Database
     _redis: Redis
-    _empty_answer: TgAnswerInterface
+    _empty_answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

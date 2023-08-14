@@ -29,7 +29,7 @@ from loguru import logger
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.update_id import UpdateId
 
 
@@ -77,10 +77,10 @@ class RoundedFloat(SupportsFloat):
 @final
 @attrs.define(frozen=True)
 @elegant
-class TgMeasureAnswer(TgAnswerInterface):
+class TgMeasureAnswer(TgAnswer):
     """Замеренный ответ."""
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

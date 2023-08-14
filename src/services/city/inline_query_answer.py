@@ -30,7 +30,7 @@ from pyeo import elegant
 from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.inline_query import InlineQuery, InlineQueryId
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import TgAnswer
 from services.city.search import CitySearchInterface, SearchCityQuery
 from services.debug_answer import DebugAnswer
 
@@ -38,10 +38,10 @@ from services.debug_answer import DebugAnswer
 @final
 @attrs.define(frozen=True)
 @elegant
-class InlineQueryAnswer(TgAnswerInterface):
+class InlineQueryAnswer(TgAnswer):
     """Ответ на инлайн поиск."""
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
     _cities: CitySearchInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:

@@ -27,16 +27,16 @@ import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class TgChatIdAnswer(TgAnswerInterface):
+class TgChatIdAnswer(TgAnswer):
     """Ответ пользователю на конкретный идентификатор чата."""
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
     _chat_id: int
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -48,7 +48,7 @@ class TgChatIdAnswer(TgAnswerInterface):
         return [
             httpx.Request(
                 request.method,
-                request.url.copy_add_param('chat_id', self._chat_id),
+                request.url.copy_add_param('chat_id', int(self._chat_id)),
                 stream=request.stream,
                 headers=request.headers,
             )

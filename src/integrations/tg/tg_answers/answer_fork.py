@@ -35,15 +35,15 @@ from integrations.tg.exceptions.update_parse_exceptions import (
     InlineQueryNotFoundError,
     MessageIdNotFoundError,
 )
-from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
 @elegant
-class TgAnswerFork(TgAnswerInterface):
+class TgAnswerFork(TgAnswer):
     """Маршрутизация ответов."""
 
-    def __init__(self, *answers: TgAnswerInterface):
+    def __init__(self, *answers: TgAnswer):
         """Конструктор класса.
 
         :param answers: TgAnswerInterface

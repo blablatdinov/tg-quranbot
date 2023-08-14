@@ -25,7 +25,7 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswerInterface, TgMessageRegexAnswer
+from integrations.tg.tg_answers import TgAnswer, TgMessageRegexAnswer
 from srv.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
 from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer
 from srv.ayats.search_ayat_by_text import SearchAyatByTextAnswer
@@ -34,13 +34,13 @@ from srv.ayats.search_ayat_by_text import SearchAyatByTextAnswer
 @final
 @attrs.define(frozen=True)
 @elegant
-class SearchAyatByKeywordAnswer(TgAnswerInterface):
+class SearchAyatByKeywordAnswer(TgAnswer):
     """Ответ с временами намаза."""
 
     _debug: bool
-    _html_to_sender: TgAnswerInterface
-    _audio_to_sender: TgAnswerInterface
-    _answer_to_sender: TgAnswerInterface
+    _html_to_sender: TgAnswer
+    _audio_to_sender: TgAnswer
+    _answer_to_sender: TgAnswer
     _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:

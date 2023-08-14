@@ -26,13 +26,13 @@ import httpx
 from pyeo import elegant
 
 from app_types.update import FkUpdate
-from integrations.tg.tg_answers import FkAnswer, TgAnswerInterface
+from integrations.tg.tg_answers import FkAnswer, TgAnswer
 from srv.files.file_id_answer import TelegramFileIdAnswer
 
 
 @elegant
 @final
-class FakeAnswer(TgAnswerInterface):
+class FakeAnswer(TgAnswer):
 
     async def build(self, update):
         return [

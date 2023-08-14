@@ -30,20 +30,20 @@ from redis.asyncio import Redis
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import TgAnswer
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class CachedAyatSearchQueryAnswer(TgAnswerInterface):
+class CachedAyatSearchQueryAnswer(TgAnswer):
     """Закешированный запрос пользователя на поиск аятов.
 
     TODO: что делать если данные из кэша будут удалены
     """
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
     _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:

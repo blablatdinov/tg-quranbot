@@ -28,7 +28,7 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswerInterface, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from repository.admin_message import AdminMessageInterface
 from services.reset_state_answer import ResetStateAnswer
 
@@ -36,10 +36,10 @@ from services.reset_state_answer import ResetStateAnswer
 @final
 @attrs.define(frozen=True)
 @elegant
-class HelpAnswer(TgAnswerInterface):
+class HelpAnswer(TgAnswer):
     """Ответ на команду /help."""
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
     _admin_message: AdminMessageInterface
     _redis: Redis
 

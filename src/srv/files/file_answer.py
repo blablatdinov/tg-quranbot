@@ -26,18 +26,18 @@ import attrs
 import httpx
 from pyeo import elegant
 
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class FileAnswer(TgAnswerInterface):
+class FileAnswer(TgAnswer):
     """Класс ответа с файлом."""
 
     _debug_mode: bool
-    _telegram_file_id_answer: TgAnswerInterface
-    _file_link_answer: TgAnswerInterface
+    _telegram_file_id_answer: TgAnswer
+    _file_link_answer: TgAnswer
 
     async def build(self, update) -> list[httpx.Request]:
         """Отправка.

@@ -30,7 +30,7 @@ from redis.asyncio import Redis
 from app_types.update import Update
 from exceptions.content_exceptions import UserHasNotCityIdError
 from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerMarkup
+from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup
 from services.switch_inline_query_answer import SwitchInlineQueryKeyboard
 from services.user_state import LoggedUserState, UserState, UserStep
 
@@ -38,11 +38,11 @@ from services.user_state import LoggedUserState, UserState, UserStep
 @final
 @attrs.define(frozen=True)
 @elegant
-class UserWithoutCitySafeAnswer(TgAnswerInterface):
+class UserWithoutCitySafeAnswer(TgAnswer):
     """Объект для обработки случаев когда пользователь запрашивает время намаза без установленного города."""
 
-    _origin: TgAnswerInterface
-    _invite_set_city_answer: TgAnswerInterface
+    _origin: TgAnswer
+    _invite_set_city_answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -59,10 +59,10 @@ class UserWithoutCitySafeAnswer(TgAnswerInterface):
 @final
 @attrs.define(frozen=True)
 @elegant
-class InviteSetCityAnswer(TgAnswerInterface):
+class InviteSetCityAnswer(TgAnswer):
     """Ответ с приглашением ввести город."""
 
-    _message_answer: TgAnswerInterface
+    _message_answer: TgAnswer
     _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:

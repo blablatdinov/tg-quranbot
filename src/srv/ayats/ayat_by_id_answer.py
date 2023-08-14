@@ -30,7 +30,7 @@ from app_types.intable import ThroughAsyncIntable
 from app_types.update import Update
 from db.connection import database
 from integrations.tg.callback_query import CallbackQueryData
-from integrations.tg.tg_answers import TgAnswerInterface, TgAnswerList, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgTextAnswer
 from services.regular_expression import IntableRegularExpression
 from srv.ayats.ayat_by_id_message_answer import AyatByIdMessageAnswer
 from srv.ayats.pg_ayat import PgAyat
@@ -41,12 +41,12 @@ from srv.files.file_id_answer import TelegramFileIdAnswer
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatByIdAnswer(TgAnswerInterface):
+class AyatByIdAnswer(TgAnswer):
     """Ответ на аят по идентификатору."""
 
     _debug_mode: bool
-    _message_answer: TgAnswerInterface
-    _file_answer: TgAnswerInterface
+    _message_answer: TgAnswer
+    _file_answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

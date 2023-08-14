@@ -31,7 +31,7 @@ from exceptions.user import StartMessageNotContainReferrer
 from integrations.nats_integration import SinkInterface
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import TgAnswer
 from integrations.tg.tg_datetime import TgDateTime
 from repository.users.user import UserRepositoryInterface
 from services.start.start_message import SmartReferrerChatId
@@ -40,10 +40,10 @@ from services.start.start_message import SmartReferrerChatId
 @final
 @attrs.define(frozen=True)
 @elegant
-class StartWithEventAnswer(TgAnswerInterface):
+class StartWithEventAnswer(TgAnswer):
     """Регистрация с отправкой события."""
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
     _event_sink: SinkInterface
     _user_repo: UserRepositoryInterface
 

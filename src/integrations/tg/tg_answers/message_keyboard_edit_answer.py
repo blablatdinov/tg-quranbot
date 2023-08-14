@@ -26,16 +26,16 @@ import attrs
 import httpx
 from pyeo import elegant
 
-from integrations.tg.tg_answers.interface import TgAnswerInterface
+from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class TgKeyboardEditAnswer(TgAnswerInterface):
+class TgKeyboardEditAnswer(TgAnswer):
     """Ответ с отредактированной клавиатурой."""
 
-    _origin: TgAnswerInterface
+    _origin: TgAnswer
 
     async def build(self, update) -> list[httpx.Request]:
         """Пересобрать запросы к API к телеграмма.

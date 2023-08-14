@@ -29,7 +29,7 @@ from pyeo import elegant
 from app_types.update import Update
 from db.connection import database
 from integrations.tg.message_text import MessageText
-from integrations.tg.tg_answers import TgAnswerInterface
+from integrations.tg.tg_answers import TgAnswer
 from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
 from srv.ayats.ayat_answer import AyatAnswer
@@ -41,12 +41,12 @@ from srv.ayats.pg_ayat import PgAyat
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatBySuraAyatNumAnswer(TgAnswerInterface):
+class AyatBySuraAyatNumAnswer(TgAnswer):
     """Ответ на поиск аята по номеру суры, аята."""
 
     _debug_mode: bool
-    _message_answer: TgAnswerInterface
-    _file_answer: TgAnswerInterface
+    _message_answer: TgAnswer
+    _file_answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
