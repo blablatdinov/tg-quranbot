@@ -73,8 +73,7 @@ class UsersRepository(UsersRepositoryInterface):
         :returns: list[User]
         """
         query = """
-            SELECT
-                chat_id
+            SELECT chat_id
             FROM users
             WHERE is_active = 't'
         """
@@ -121,9 +120,9 @@ class UsersRepository(UsersRepositoryInterface):
         :return: list[int]
         """
         query = """
-            SELECT chat_id as chat_id
-            FROM users s
-            INNER JOIN cities c on s.city_id = c.city_id
+            SELECT chat_id AS chat_id
+            FROM users AS s
+            INNER JOIN cities AS c ON s.city_id = c.city_id
             WHERE s.is_active = 't'
             ORDER BY chat_id
         """

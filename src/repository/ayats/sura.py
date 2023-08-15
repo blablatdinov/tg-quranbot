@@ -63,10 +63,10 @@ class Sura(SuraInterface):
         """
         query = """
             SELECT
-                a.ayat_id as id,
-                a.sura_id as sura_num,
-                a.ayat_number as ayat_num
-            FROM ayats a
+                a.ayat_id AS id,
+                a.sura_id AS sura_num,
+                a.ayat_number AS ayat_num
+            FROM ayats AS a
             WHERE a.sura_id = :sura_num
             ORDER BY a.ayat_id
         """

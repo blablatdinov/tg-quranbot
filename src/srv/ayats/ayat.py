@@ -20,23 +20,28 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol
+from typing import Protocol, TypeAlias
 
 from pyeo import elegant
+
+AyatId: TypeAlias = int
+AyatText: TypeAlias = str
+TgFileId: TypeAlias = str
+AyatAudioFileLink: TypeAlias = str
 
 
 @elegant
 class Ayat(Protocol):
     """Интерфейс аята."""
 
-    async def id(self) -> int:
+    async def id(self) -> AyatId:
         """Идентификатор аята."""
 
-    async def text(self) -> str:
+    async def text(self) -> AyatText:
         """Строковое представление."""
 
-    async def tg_file_id(self) -> str:
+    async def tg_file_id(self) -> TgFileId:
         """Идентификатор файла в телеграм."""
 
-    async def file_link(self) -> str:
+    async def file_link(self) -> AyatAudioFileLink:
         """Ссылка на файл."""

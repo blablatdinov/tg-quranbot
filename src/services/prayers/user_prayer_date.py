@@ -47,10 +47,9 @@ class UserPrayerDate(AsyncDateTimeInterface):
         :raises UserHasNotGeneratedPrayersError: если времня намаза не найдено
         """
         query = """
-            SELECT
-                day_id
-            FROM prayers_at_user pau
-            INNER JOIN prayers p ON pau.prayer_id = p.prayer_id
+            SELECT day_id
+            FROM prayers_at_user AS pau
+            INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id
             WHERE prayer_at_user_id = :user_prayer_id
         """
         row = await self._database.fetch_one(query, {'user_prayer_id': int(self._user_prayer_id)})

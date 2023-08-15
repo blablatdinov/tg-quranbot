@@ -26,10 +26,11 @@ run:
 lint:
 	poetry run isort src
 	poetry run flake8 src
+	poetry run sqlfluff lint migrations --dialect postgres
 	rm -rf .mypy_cache && poetry run mypy src
 
 test:
-	poetry run pytest src/tests/unit
+	poetry run pytest src --ignore=src/tests/e2e --doctest-modules --cov
 
 cov:
 	poetry run pytest src --cov=src

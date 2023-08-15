@@ -142,7 +142,7 @@ class UserRepository(UserRepositoryInterface):
                 chat_id,
                 is_active,
                 day,
-                referrer_id as referrer,
+                referrer_id AS referrer,
                 city_id
             FROM users
             WHERE chat_id = :chat_id
@@ -200,7 +200,7 @@ class UserRepository(UserRepositoryInterface):
                 chat_id,
                 is_active,
                 day,
-                referrer_id as referrer,
+                referrer_id AS referrer,
                 city_id
             FROM users WHERE legacy_id = :user_id
         """

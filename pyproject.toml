@@ -60,6 +60,8 @@ flake8-copyright = "0.2.4"
 pytest-randomly = "3.14.0"
 telethon = "1.29.2"
 yoyo-migrations = "8.2.0"
+sqlfluff = "^2.3.0"
+astpretty = "^3.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -80,3 +82,6 @@ line_length = 119
 skip = ["migrations/*.py", ".venv"]
 multi_line_output = 3
 include_trailing_comma = true
+
+[tool.sqlfluff.core]
+max_line_length = 120

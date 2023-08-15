@@ -29,6 +29,7 @@ from pyeo import elegant
 from app_types.intable import AsyncIntable
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.sura import AyatStructure, SuraInterface
+from srv.ayats.ayat import AyatId
 from srv.ayats.search_query import SearchQuery
 
 
@@ -42,7 +43,7 @@ class AyatIdBySuraAyatNum(AsyncIntable):
     _query: SearchQuery
     _database: Database
 
-    async def to_int(self) -> int:
+    async def to_int(self) -> AyatId:
         """Числовое представление.
 
         :return: int
@@ -56,7 +57,7 @@ class AyatIdBySuraAyatNum(AsyncIntable):
                 return ayat_id
         raise AyatNotFoundError
 
-    def _search_in_sura_ayats(self, ayat: AyatStructure, ayat_num: str) -> int | None:
+    def _search_in_sura_ayats(self, ayat: AyatStructure, ayat_num: str) -> AyatId | None:
         if '-' in ayat.ayat_num:
             return self._service_range_case(ayat, ayat_num)
         elif ',' in ayat.ayat_num:
@@ -65,13 +66,13 @@ class AyatIdBySuraAyatNum(AsyncIntable):
             return ayat.id
         return None
 
-    def _service_range_case(self, ayat: AyatStructure, ayat_num: str) -> int | None:
+    def _service_range_case(self, ayat: AyatStructure, ayat_num: str) -> AyatId | None:
         left, right = map(int, ayat.ayat_num.split('-'))
         if int(ayat_num) in range(left, right + 1):
             return ayat.id
         return None
 
-    def _service_comma_case(self, ayat: AyatStructure, ayat_num: str) -> int | None:
+    def _service_comma_case(self, ayat: AyatStructure, ayat_num: str) -> AyatId | None:
         left, right = map(int, ayat.ayat_num.split(','))
         if int(ayat_num) in range(left, right + 1):
             return ayat.id

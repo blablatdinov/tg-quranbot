@@ -22,11 +22,13 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol
 
+from srv.ayats.ayat import AyatId
+
 
 class FavoriteAyatStatus(Protocol):
     """Пользовательский ввод статуса аята в избранном."""
 
-    def ayat_id(self) -> int:
+    def ayat_id(self) -> AyatId:
         """Идентификатор аята."""
 
     def change_to(self) -> bool:

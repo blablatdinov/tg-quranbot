@@ -34,7 +34,15 @@ _AyatNum: TypeAlias = str
 @elegant
 @attrs.define(frozen=True)
 class AyatLink(SupportsStr):
-    """Ссылка на аят."""
+    """Ссылка на аят.
+
+    >>> str(AyatLink('/sura-2-al-bakara-korova/', 2, '1-5'))
+    'https://umma.ru/sura-2-al-bakara-korova/#2-1'
+    >>> str(AyatLink('/sura-2-al-bakara-korova/', 2, '6, 7'))
+    'https://umma.ru/sura-2-al-bakara-korova/#2-6'
+    >>> str(AyatLink('/sura-2-al-bakara-korova/', 2, '15-18'))
+    'https://umma.ru/sura-2-al-bakara-korova/#2-15'
+    """
 
     _sura_link: str
     _sura_num: int

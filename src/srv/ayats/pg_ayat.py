@@ -29,7 +29,7 @@ from app_types.intable import AsyncIntable
 from app_types.stringable import SupportsStr
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.sura import Sura
-from srv.ayats.ayat import Ayat
+from srv.ayats.ayat import Ayat, AyatId, AyatText, TgFileId
 from srv.ayats.ayat_id_by_sura_ayat import AyatIdBySuraAyatNum
 from srv.ayats.ayat_link import AyatLink
 from srv.ayats.nums_search_query import NumsSearchQuery
@@ -63,14 +63,14 @@ class PgAyat(Ayat):
             database,
         )
 
-    async def id(self) -> int:
+    async def id(self) -> AyatId:
         """Идентификатор аята.
 
         :return: int
         """
         return await self._ayat_id.to_int()
 
-    async def text(self) -> str:
+    async def text(self) -> AyatText:
         """Текст аята.
 
         :return: str
@@ -78,15 +78,15 @@ class PgAyat(Ayat):
         """
         query = """
             SELECT
-                a.ayat_id as id,
-                a.sura_id as sura_num,
-                s.link as sura_link,
-                a.ayat_number as ayat_num,
+                a.ayat_id AS id,
+                a.sura_id AS sura_num,
+                s.link AS sura_link,
+                a.ayat_number AS ayat_num,
                 a.arab_text,
                 a.content,
                 a.transliteration
-            FROM ayats a
-            INNER JOIN suras s on a.sura_id = s.sura_id
+            FROM ayats AS a
+            INNER JOIN suras AS s ON a.sura_id = s.sura_id
             WHERE a.ayat_id = :ayat_id
         """
         ayat_id = await self._ayat_id.to_int()
@@ -103,17 +103,16 @@ class PgAyat(Ayat):
             transliteration=row['transliteration'],
         )
 
-    async def tg_file_id(self) -> str:
+    async def tg_file_id(self) -> TgFileId:
         """Идентификатор файла в телеграм.
 
         :return: str
         :raises AyatNotFoundError: если аят не найден
         """
         query = """
-            SELECT
-                cf.telegram_file_id
-            FROM ayats a
-            INNER JOIN files cf on a.audio_id = cf.file_id
+            SELECT cf.telegram_file_id
+            FROM ayats AS a
+            INNER JOIN files AS cf ON a.audio_id = cf.file_id
             WHERE a.ayat_id = :ayat_id
         """
         ayat_id = await self._ayat_id.to_int()
@@ -129,10 +128,9 @@ class PgAyat(Ayat):
         :raises AyatNotFoundError: если аят не найден
         """
         query = """
-            SELECT
-                cf.link
-            FROM ayats a
-            INNER JOIN files cf on a.audio_id = cf.file_id
+            SELECT cf.link
+            FROM ayats AS a
+            INNER JOIN files AS cf ON a.audio_id = cf.file_id
             WHERE a.ayat_id = :ayat_id
         """
         ayat_id = await self._ayat_id.to_int()

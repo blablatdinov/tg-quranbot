@@ -58,10 +58,9 @@ class RandomPodcast(RandomPodcastInterface):
         :raises InternalBotError: если таблилца с подкастами не заполнена
         """
         query = """
-            SELECT
-                f.telegram_file_id
-            FROM podcasts p
-            INNER JOIN files f ON p.file_id = f.file_id
+            SELECT f.telegram_file_id
+            FROM podcasts AS p
+            INNER JOIN files AS f ON p.file_id = f.file_id
             ORDER BY RANDOM()
             LIMIT 1
         """
@@ -77,10 +76,9 @@ class RandomPodcast(RandomPodcastInterface):
         :raises InternalBotError: если таблилца с подкастами не заполнена
         """
         query = """
-            SELECT
-                f.link
-            FROM podcasts p
-            INNER JOIN files f ON p.file_id = f.file_id
+            SELECT f.link
+            FROM podcasts AS p
+            INNER JOIN files AS f ON p.file_id = f.file_id
             ORDER BY RANDOM()
             LIMIT 1
         """
