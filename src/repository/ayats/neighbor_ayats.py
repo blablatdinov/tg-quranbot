@@ -120,9 +120,9 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
         """
         query = """
             SELECT
-                ayats.ayat_id as id,
-                ayats.ayat_number as ayat_num,
-                ayats.sura_id as sura_num
+                ayats.ayat_id AS id,
+                ayats.ayat_number AS ayat_num,
+                ayats.sura_id AS sura_num
             FROM ayats
             WHERE ayats.ayat_id = :ayat_id
         """
@@ -139,9 +139,9 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
         """
         query = """
             SELECT
-                ayats.ayat_id as id,
-                ayats.ayat_number as ayat_num,
-                ayats.sura_id as sura_num
+                ayats.ayat_id AS id,
+                ayats.ayat_number AS ayat_num,
+                ayats.sura_id AS sura_num
             FROM ayats
             WHERE ayats.ayat_id = :ayat_id
         """
@@ -174,12 +174,12 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
     _query: TextSearchQuery
     _search_sql_query = """
         SELECT
-            ayats.ayat_id as id,
-            ayats.ayat_number as ayat_num,
-            ayats.sura_id as sura_num
+            ayats.ayat_id AS id,
+            ayats.ayat_number AS ayat_num,
+            ayats.sura_id AS sura_num
         FROM ayats
-        WHERE content ILIKE :search_query
-        ORDER BY ayat_id
+        WHERE ayats.content ILIKE :search_query
+        ORDER BY ayats.ayat_id
     """
 
     async def left_neighbor(self) -> AyatShort:

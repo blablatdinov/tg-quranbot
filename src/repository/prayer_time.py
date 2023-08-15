@@ -74,11 +74,11 @@ class UserPrayers(UserPrayersInterface):
                 up.is_read AS is_readed,
                 p.time,
                 p.name
-            FROM prayers_at_user up
-            INNER JOIN prayers p ON up.prayer_id = p.prayer_id
-            INNER JOIN prayer_days pd ON pd.date = p.day_id
-            INNER JOIN users u ON up.user_id = u.chat_id
-            INNER JOIN cities c ON u.city_id = c.city_id
+            FROM prayers_at_user AS up
+            INNER JOIN prayers AS p ON up.prayer_id = p.prayer_id
+            INNER JOIN prayer_days AS pd ON p.day_id = pd.date
+            INNER JOIN users AS u ON up.user_id = u.chat_id
+            INNER JOIN cities AS c ON u.city_id = c.city_id
             WHERE pd.date = :date AND u.chat_id = :chat_id
             ORDER BY up.prayer_at_user_id
         """
@@ -192,10 +192,10 @@ class NewUserPrayers(UserPrayersInterface):
         """
         query = """
             SELECT p.prayer_id
-            FROM prayers p
-            INNER JOIN cities c on p.city_id = c.city_id
-            INNER JOIN users u on c.city_id = u.city_id
-            INNER JOIN prayer_days pd on pd.date = p.day_id
+            FROM prayers AS p
+            INNER JOIN cities AS c ON p.city_id = c.city_id
+            INNER JOIN users AS u ON c.city_id = u.city_id
+            INNER JOIN prayer_days AS pd ON p.day_id = pd.date
             WHERE pd.date = :date AND u.chat_id = :chat_id
         """
         rows = await self._connection.fetch_all(query, {'date': date, 'chat_id': chat_id})

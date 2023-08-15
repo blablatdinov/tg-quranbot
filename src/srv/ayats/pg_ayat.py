@@ -78,15 +78,15 @@ class PgAyat(Ayat):
         """
         query = """
             SELECT
-                a.ayat_id as id,
-                a.sura_id as sura_num,
-                s.link as sura_link,
-                a.ayat_number as ayat_num,
+                a.ayat_id AS id,
+                a.sura_id AS sura_num,
+                s.link AS sura_link,
+                a.ayat_number AS ayat_num,
                 a.arab_text,
                 a.content,
                 a.transliteration
-            FROM ayats a
-            INNER JOIN suras s on a.sura_id = s.sura_id
+            FROM ayats AS a
+            INNER JOIN suras AS s ON a.sura_id = s.sura_id
             WHERE a.ayat_id = :ayat_id
         """
         ayat_id = await self._ayat_id.to_int()
@@ -110,10 +110,9 @@ class PgAyat(Ayat):
         :raises AyatNotFoundError: если аят не найден
         """
         query = """
-            SELECT
-                cf.telegram_file_id
-            FROM ayats a
-            INNER JOIN files cf on a.audio_id = cf.file_id
+            SELECT cf.telegram_file_id
+            FROM ayats AS a
+            INNER JOIN files AS cf ON a.audio_id = cf.file_id
             WHERE a.ayat_id = :ayat_id
         """
         ayat_id = await self._ayat_id.to_int()
@@ -129,10 +128,9 @@ class PgAyat(Ayat):
         :raises AyatNotFoundError: если аят не найден
         """
         query = """
-            SELECT
-                cf.link
-            FROM ayats a
-            INNER JOIN files cf on a.audio_id = cf.file_id
+            SELECT cf.link
+            FROM ayats AS a
+            INNER JOIN files AS cf ON a.audio_id = cf.file_id
             WHERE a.ayat_id = :ayat_id
         """
         ayat_id = await self._ayat_id.to_int()

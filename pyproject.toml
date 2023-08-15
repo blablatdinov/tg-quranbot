@@ -61,6 +61,7 @@ pytest-randomly = "3.14.0"
 telethon = "1.29.2"
 yoyo-migrations = "8.2.0"
 sqlfluff = "^2.3.0"
+astpretty = "^3.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

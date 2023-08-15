@@ -47,10 +47,9 @@ class FavoriteAyats(AsyncListable):
         :returns: list[QAyat]
         """
         query = """
-            SELECT
-                fa.ayat_id
-            FROM favorite_ayats fa
-            INNER JOIN users u ON fa.user_id = u.chat_id
+            SELECT fa.ayat_id
+            FROM favorite_ayats AS fa
+            INNER JOIN users AS u ON fa.user_id = u.chat_id
             WHERE u.chat_id = :chat_id
             ORDER BY fa.ayat_id
         """

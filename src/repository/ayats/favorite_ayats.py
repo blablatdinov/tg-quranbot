@@ -81,11 +81,11 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
                 a.transliteration,
                 f.file_id AS audio_telegram_id,
                 f.link AS link_to_audio_file
-            FROM favorite_ayats fa
-            INNER JOIN ayats a ON fa.ayat_id = a.ayat_id
-            INNER JOIN users u ON fa.user_id = u.chat_id
-            INNER JOIN suras s ON a.sura_id = s.sura_id
-            INNER JOIN files f ON a.audio_id = f.file_id
+            FROM favorite_ayats AS fa
+            INNER JOIN ayats AS a ON fa.ayat_id = a.ayat_id
+            INNER JOIN users AS u ON fa.user_id = u.chat_id
+            INNER JOIN suras AS s ON a.sura_id = s.sura_id
+            INNER JOIN files AS f ON a.audio_id = f.file_id
             WHERE u.chat_id = :chat_id
             ORDER BY a.ayat_id
         """
@@ -110,11 +110,11 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
                 a.transliteration,
                 f.file_id AS audio_telegram_id,
                 f.link AS link_to_audio_file
-            FROM favorite_ayats fa
-            INNER JOIN ayats a ON fa.ayat_id = a.ayat_id
-            INNER JOIN users u ON fa.user_id = u.chat_id
-            INNER JOIN suras s ON a.sura_id = s.sura_id
-            INNER JOIN files f ON a.audio_id = f.file_id
+            FROM favorite_ayats AS fa
+            INNER JOIN ayats AS a ON fa.ayat_id = a.ayat_id
+            INNER JOIN users AS u ON fa.user_id = u.chat_id
+            INNER JOIN suras AS s ON a.sura_id = s.sura_id
+            INNER JOIN files AS f ON a.audio_id = f.file_id
             WHERE a.ayat_id = :ayat_id
         """
         row = await self._connection.fetch_one(query, {'ayat_id': ayat_id})
@@ -131,10 +131,9 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
         """
         logger.debug('Check ayat <{0}> is favorite for user <{1}>...'.format(ayat_id, chat_id))
         query = """
-            SELECT
-                COUNT(*)
-            FROM favorite_ayats fa
-            INNER JOIN users u ON u.chat_id = fa.user_id
+            SELECT COUNT(*)
+            FROM favorite_ayats AS fa
+            INNER JOIN users AS u ON fa.user_id = u.chat_id
             WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id
         """
         count = await self._connection.fetch_val(query, {'ayat_id': ayat_id, 'chat_id': chat_id})
