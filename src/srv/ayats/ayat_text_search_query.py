@@ -35,7 +35,7 @@ class AyatTextSearchQuery(TextSearchQuery):
     """Запрос поиска аята."""
 
     _redis: Redis
-    _chat_id: int
+    _chat_id: int  # TODO #360/30min переделать тип на ChatId
     _query: str | None = None
 
     _key_template = '{0}:ayat_search_query'

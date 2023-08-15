@@ -29,7 +29,7 @@ from app_types.intable import AsyncIntable
 from app_types.stringable import SupportsStr
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.sura import Sura
-from srv.ayats.ayat import Ayat
+from srv.ayats.ayat import Ayat, AyatId, AyatText, TgFileId
 from srv.ayats.ayat_id_by_sura_ayat import AyatIdBySuraAyatNum
 from srv.ayats.ayat_link import AyatLink
 from srv.ayats.nums_search_query import NumsSearchQuery
@@ -63,14 +63,14 @@ class PgAyat(Ayat):
             database,
         )
 
-    async def id(self) -> int:
+    async def id(self) -> AyatId:
         """Идентификатор аята.
 
         :return: int
         """
         return await self._ayat_id.to_int()
 
-    async def text(self) -> str:
+    async def text(self) -> AyatText:
         """Текст аята.
 
         :return: str
@@ -103,7 +103,7 @@ class PgAyat(Ayat):
             transliteration=row['transliteration'],
         )
 
-    async def tg_file_id(self) -> str:
+    async def tg_file_id(self) -> TgFileId:
         """Идентификатор файла в телеграм.
 
         :return: str

@@ -20,24 +20,41 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import TypeAlias, final
 
 import attrs
 from pyeo import elegant
 
 from services.regular_expression import IntableRegularExpression
+from srv.ayats.ayat import AyatId
 from srv.ayats.favorite_ayat_status import FavoriteAyatStatus
+
+# Строка имеющая формат addToFavor(<id аята>) или removeFromFavor(<id аята>)
+_ChangeAyatStatusCommand: TypeAlias = str
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
 class AyatFavoriteStatus(FavoriteAyatStatus):
-    """Пользовательский ввод статуса аята в избранном."""
+    """Пользовательский ввод статуса аята в избранном.
 
-    _source: str
+    >>> ayat_favor_status = AyatFavoriteStatus('addToFavor(14)')
+    >>> ayat_favor_status.ayat_id()
+    14
+    >>> ayat_favor_status.change_to()
+    True
 
-    def ayat_id(self) -> int:
+    >>> ayat_favor_status = AyatFavoriteStatus('removeFromFavor(14)')
+    >>> ayat_favor_status.ayat_id()
+    14
+    >>> ayat_favor_status.change_to()
+    False
+    """
+
+    _source: _ChangeAyatStatusCommand
+
+    def ayat_id(self) -> AyatId:
         """Идентификатор аята.
 
         :return: int

@@ -26,7 +26,7 @@ import attrs
 from pyeo import elegant
 
 from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
-from srv.ayats.search_query import SearchQuery
+from srv.ayats.search_query import AyatNum, SearchQuery, SuraId
 
 
 @final
@@ -37,7 +37,7 @@ class ValidatedSearchQuery(SearchQuery):
 
     _origin: SearchQuery
 
-    def sura(self) -> int:
+    def sura(self) -> SuraId:
         """Номер суры.
 
         :return: int
@@ -50,7 +50,7 @@ class ValidatedSearchQuery(SearchQuery):
             raise SuraNotFoundError
         return sura_num
 
-    def ayat(self) -> str:
+    def ayat(self) -> AyatNum:
         """Номер аята.
 
         :return: str

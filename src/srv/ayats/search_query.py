@@ -20,17 +20,20 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol
+from typing import Protocol, TypeAlias
 
 from pyeo import elegant
+
+SuraId: TypeAlias = int
+AyatNum: TypeAlias = str
 
 
 @elegant
 class SearchQuery(Protocol):
     """Интерфейс объекта с запросом для поиска."""
 
-    def sura(self) -> int:
+    def sura(self) -> SuraId:
         """Номер суры."""
 
-    def ayat(self) -> str:
+    def ayat(self) -> AyatNum:
         """Номер аята."""

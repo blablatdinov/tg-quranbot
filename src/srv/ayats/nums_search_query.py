@@ -26,7 +26,7 @@ import attrs
 from pyeo import elegant
 
 from app_types.stringable import SupportsStr
-from srv.ayats.search_query import SearchQuery
+from srv.ayats.search_query import AyatNum, SearchQuery, SuraId
 
 
 @final
@@ -44,14 +44,14 @@ class NumsSearchQuery(SearchQuery):
 
     _query: SupportsStr
 
-    def sura(self) -> int:
+    def sura(self) -> SuraId:
         """Номер суры.
 
         :return: int
         """
         return int(str(self._query).split(':')[0])
 
-    def ayat(self) -> str:
+    def ayat(self) -> AyatNum:
         """Номер аята.
 
         :return: str
