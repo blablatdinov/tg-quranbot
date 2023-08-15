@@ -20,12 +20,12 @@ CREATE TABLE public.ayats (
 );
 
 CREATE SEQUENCE public.ayats_ayat_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+AS integer
+START WITH 1
+INCREMENT BY 1
+NO MINVALUE
+NO MAXVALUE
+CACHE 1;
 
 ALTER SEQUENCE public.ayats_ayat_id_seq OWNED BY public.ayats.ayat_id;
 
@@ -78,22 +78,22 @@ CREATE TABLE public.prayers_at_user_groups (
 );
 
 CREATE SEQUENCE public.prayers_at_user_prayer_at_user_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+AS integer
+START WITH 1
+INCREMENT BY 1
+NO MINVALUE
+NO MAXVALUE
+CACHE 1;
 
 ALTER SEQUENCE public.prayers_at_user_prayer_at_user_id_seq OWNED BY public.prayers_at_user.prayer_at_user_id;
 
 CREATE SEQUENCE public.prayers_prayer_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+AS integer
+START WITH 1
+INCREMENT BY 1
+NO MINVALUE
+NO MAXVALUE
+CACHE 1;
 
 ALTER SEQUENCE public.prayers_prayer_id_seq OWNED BY public.prayers.prayer_id;
 
@@ -103,12 +103,12 @@ CREATE TABLE public.suras (
 );
 
 CREATE SEQUENCE public.suras_sura_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+AS integer
+START WITH 1
+INCREMENT BY 1
+NO MINVALUE
+NO MAXVALUE
+CACHE 1;
 
 ALTER SEQUENCE public.suras_sura_id_seq OWNED BY public.suras.sura_id;
 
@@ -127,78 +127,82 @@ ALTER TABLE ONLY public.ayats ALTER COLUMN ayat_id SET DEFAULT nextval('public.a
 
 ALTER TABLE ONLY public.prayers ALTER COLUMN prayer_id SET DEFAULT nextval('public.prayers_prayer_id_seq'::regclass);
 
-ALTER TABLE ONLY public.prayers_at_user ALTER COLUMN prayer_at_user_id SET DEFAULT nextval('public.prayers_at_user_prayer_at_user_id_seq'::regclass);
+ALTER TABLE ONLY public.prayers_at_user ALTER COLUMN prayer_at_user_id SET DEFAULT nextval(
+    'public.prayers_at_user_prayer_at_user_id_seq'::regclass
+);
 
 ALTER TABLE ONLY public.suras ALTER COLUMN sura_id SET DEFAULT nextval('public.suras_sura_id_seq'::regclass);
 
 ALTER TABLE ONLY public.admin_messages
-    ADD CONSTRAINT admin_messages_pkey PRIMARY KEY (key);
+ADD CONSTRAINT admin_messages_pkey PRIMARY KEY (key);
 
 ALTER TABLE ONLY public.ayats
-    ADD CONSTRAINT ayats_pkey PRIMARY KEY (ayat_id);
+ADD CONSTRAINT ayats_pkey PRIMARY KEY (ayat_id);
 
 ALTER TABLE ONLY public.cities
-    ADD CONSTRAINT cities_pkey PRIMARY KEY (city_id);
+ADD CONSTRAINT cities_pkey PRIMARY KEY (city_id);
 
 ALTER TABLE ONLY public.favorite_ayats
-    ADD CONSTRAINT favorite_ayats_pkey PRIMARY KEY (ayat_id, user_id);
+ADD CONSTRAINT favorite_ayats_pkey PRIMARY KEY (ayat_id, user_id);
 
 ALTER TABLE ONLY public.files
-    ADD CONSTRAINT files_pkey PRIMARY KEY (file_id);
+ADD CONSTRAINT files_pkey PRIMARY KEY (file_id);
 
 ALTER TABLE ONLY public.podcasts
-    ADD CONSTRAINT podcasts_pkey PRIMARY KEY (podcast_id);
+ADD CONSTRAINT podcasts_pkey PRIMARY KEY (podcast_id);
 
 ALTER TABLE ONLY public.prayer_days
-    ADD CONSTRAINT prayer_days_pkey PRIMARY KEY (date);
+ADD CONSTRAINT prayer_days_pkey PRIMARY KEY (date);
 
 ALTER TABLE ONLY public.prayers_at_user_groups
-    ADD CONSTRAINT prayers_at_user_groups_pkey PRIMARY KEY (prayers_at_user_group_id);
+ADD CONSTRAINT prayers_at_user_groups_pkey PRIMARY KEY (prayers_at_user_group_id);
 
 ALTER TABLE ONLY public.prayers_at_user
-    ADD CONSTRAINT prayers_at_user_pkey PRIMARY KEY (prayer_at_user_id);
+ADD CONSTRAINT prayers_at_user_pkey PRIMARY KEY (prayer_at_user_id);
 
 ALTER TABLE ONLY public.prayers
-    ADD CONSTRAINT prayers_pkey PRIMARY KEY (prayer_id);
+ADD CONSTRAINT prayers_pkey PRIMARY KEY (prayer_id);
 
 ALTER TABLE ONLY public.suras
-    ADD CONSTRAINT suras_pkey PRIMARY KEY (sura_id);
+ADD CONSTRAINT suras_pkey PRIMARY KEY (sura_id);
 
 ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_pkey PRIMARY KEY (chat_id);
+ADD CONSTRAINT users_pkey PRIMARY KEY (chat_id);
 
 ALTER TABLE ONLY public.ayats
-    ADD CONSTRAINT ayats_audio_id_fkey FOREIGN KEY (audio_id) REFERENCES public.files(file_id);
+ADD CONSTRAINT ayats_audio_id_fkey FOREIGN KEY (audio_id) REFERENCES public.files (file_id);
 
 ALTER TABLE ONLY public.ayats
-    ADD CONSTRAINT ayats_sura_id_fkey FOREIGN KEY (sura_id) REFERENCES public.suras(sura_id);
+ADD CONSTRAINT ayats_sura_id_fkey FOREIGN KEY (sura_id) REFERENCES public.suras (sura_id);
 
 ALTER TABLE ONLY public.favorite_ayats
-    ADD CONSTRAINT favorite_ayats_ayat_id_fkey FOREIGN KEY (ayat_id) REFERENCES public.ayats(ayat_id);
+ADD CONSTRAINT favorite_ayats_ayat_id_fkey FOREIGN KEY (ayat_id) REFERENCES public.ayats (ayat_id);
 
 ALTER TABLE ONLY public.favorite_ayats
-    ADD CONSTRAINT favorite_ayats_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(chat_id);
+ADD CONSTRAINT favorite_ayats_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (chat_id);
 
 ALTER TABLE ONLY public.podcasts
-    ADD CONSTRAINT podcasts_file_id_fkey FOREIGN KEY (file_id) REFERENCES public.files(file_id);
+ADD CONSTRAINT podcasts_file_id_fkey FOREIGN KEY (file_id) REFERENCES public.files (file_id);
 
 ALTER TABLE ONLY public.prayers_at_user
-    ADD CONSTRAINT prayers_at_user_prayer_group_id_fkey FOREIGN KEY (prayer_group_id) REFERENCES public.prayers_at_user_groups(prayers_at_user_group_id);
+ADD CONSTRAINT prayers_at_user_prayer_group_id_fkey FOREIGN KEY (
+    prayer_group_id
+) REFERENCES public.prayers_at_user_groups (prayers_at_user_group_id);
 
 ALTER TABLE ONLY public.prayers_at_user
-    ADD CONSTRAINT prayers_at_user_prayer_id_fkey FOREIGN KEY (prayer_id) REFERENCES public.prayers(prayer_id);
+ADD CONSTRAINT prayers_at_user_prayer_id_fkey FOREIGN KEY (prayer_id) REFERENCES public.prayers (prayer_id);
 
 ALTER TABLE ONLY public.prayers_at_user
-    ADD CONSTRAINT prayers_at_user_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(chat_id);
+ADD CONSTRAINT prayers_at_user_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (chat_id);
 
 ALTER TABLE ONLY public.prayers
-    ADD CONSTRAINT prayers_city_id_fkey FOREIGN KEY (city_id) REFERENCES public.cities(city_id);
+ADD CONSTRAINT prayers_city_id_fkey FOREIGN KEY (city_id) REFERENCES public.cities (city_id);
 
 ALTER TABLE ONLY public.prayers
-    ADD CONSTRAINT prayers_day_id_fkey FOREIGN KEY (day_id) REFERENCES public.prayer_days(date);
+ADD CONSTRAINT prayers_day_id_fkey FOREIGN KEY (day_id) REFERENCES public.prayer_days (date);
 
 ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_city_id_fkey FOREIGN KEY (city_id) REFERENCES public.cities(city_id);
+ADD CONSTRAINT users_city_id_fkey FOREIGN KEY (city_id) REFERENCES public.cities (city_id);
 
 ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_referrer_id_fkey FOREIGN KEY (referrer_id) REFERENCES public.users(chat_id);
+ADD CONSTRAINT users_referrer_id_fkey FOREIGN KEY (referrer_id) REFERENCES public.users (chat_id);
