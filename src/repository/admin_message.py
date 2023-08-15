@@ -57,4 +57,4 @@ class AdminMessage(AdminMessageInterface):
         )
         if not record:
             raise InternalBotError('Не найдено административное сообщение с ключом {0}'.format(self._key))
-        return record._mapping['text']  # noqa: WPS437
+        return record['text']

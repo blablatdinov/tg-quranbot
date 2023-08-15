@@ -67,7 +67,7 @@ class RandomPodcast(RandomPodcastInterface):
         row = await self._connection.fetch_one(query)
         if not row:
             raise InternalBotError('Подкасты не найдены')
-        return row._mapping['telegram_file_id']  # noqa: WPS437
+        return row['telegram_file_id']
 
     async def link_to_audio_file(self) -> str:
         """Получить ссылку на файл.
@@ -85,4 +85,4 @@ class RandomPodcast(RandomPodcastInterface):
         row = await self._connection.fetch_one(query)
         if not row:
             raise InternalBotError('Подкасты не найдены')
-        return row._mapping['link']  # noqa: WPS437
+        return row['link']

@@ -139,7 +139,7 @@ class SearchCityByName(CitySearchInterface):
             FROM cities WHERE name ILIKE :search_query
         """
         rows = await self._db.fetch_all(db_query, {'search_query': search_query})
-        return parse_obj_as(list[City], [row._mapping for row in rows])  # noqa: WPS437
+        return parse_obj_as(list[City], rows)
 
 
 @final

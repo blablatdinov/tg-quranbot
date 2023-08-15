@@ -129,7 +129,7 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
         row = await self._connection.fetch_one(query, {'ayat_id': self._ayat_id - 1})
         if not row:
             raise AyatNotFoundError
-        return parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
+        return parse_obj_as(AyatShort, row)
 
     async def right_neighbor(self) -> AyatShort:
         """Получить правый аят.
@@ -148,7 +148,7 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
         row = await self._connection.fetch_one(query, {'ayat_id': self._ayat_id + 1})
         if not row:
             raise AyatNotFoundError
-        return parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
+        return parse_obj_as(AyatShort, row)
 
     async def page(self) -> str:
         """Информация о странице.
@@ -191,10 +191,10 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
         search_query = '%{0}%'.format(await self._query.read())
         rows = await self._connection.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[1:], start=1):
-            ayat = parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
+            ayat = parse_obj_as(AyatShort, row)
             if ayat.id == self._ayat_id:
                 try:
-                    return parse_obj_as(AyatShort, rows[idx - 1]._mapping)  # noqa: WPS437
+                    return parse_obj_as(AyatShort, rows[idx - 1])
                 except IndexError as err:
                     raise AyatNotFoundError from err
         raise AyatNotFoundError
@@ -208,10 +208,10 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
         search_query = '%{0}%'.format(await self._query.read())
         rows = await self._connection.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[:-1]):
-            ayat = parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
+            ayat = parse_obj_as(AyatShort, row)
             if ayat.id == self._ayat_id:
                 try:
-                    return parse_obj_as(AyatShort, rows[idx + 1]._mapping)  # noqa: WPS437
+                    return parse_obj_as(AyatShort, rows[idx + 1])
                 except IndexError as err:
                     raise AyatNotFoundError from err
         raise AyatNotFoundError
@@ -227,7 +227,7 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
             {'search_query': '%{0}%'.format(await self._query.read())},
         )
         for idx, row in enumerate(rows, start=1):
-            ayat = parse_obj_as(AyatShort, row._mapping)  # noqa: WPS437
+            ayat = parse_obj_as(AyatShort, row)
             if ayat.id == self._ayat_id:
                 actual_page_num = idx
         return 'стр. {0}/{1}'.format(actual_page_num, len(rows))
