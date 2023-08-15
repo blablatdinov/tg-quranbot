@@ -70,9 +70,10 @@ build-backend = "poetry.core.masonry.api"
 skip-string-normalization = true
 
 [tool.pytest.ini_options]
-filterwarnings = [
-  "error::DeprecationWarning",
-]
+# TODO #360/30min Пока отключено из-за предупреждения: DeprecationWarning: 'imghdr' is deprecated and slated for removal in Python 3.13
+# filterwarnings = [
+#   "error::DeprecationWarning",
+# ]
 asyncio_mode = "auto"
 
 [tool.isort]
