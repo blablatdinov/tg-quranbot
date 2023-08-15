@@ -33,7 +33,14 @@ from srv.ayats.search_query import SearchQuery
 @attrs.define(frozen=True)
 @elegant
 class NumsSearchQuery(SearchQuery):
-    """Запросом для поиска."""
+    """Запросом для поиска.
+
+    >>> query = NumsSearchQuery('4:5')
+    >>> query.sura()
+    4
+    >>> query.ayat()
+    '5'
+    """
 
     _query: SupportsStr
 

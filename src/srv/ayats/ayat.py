@@ -40,3 +40,6 @@ class Ayat(Protocol):
 
     async def file_link(self) -> str:
         """Ссылка на файл."""
+
+    async def keyboard(self) -> str:
+        """Generate ayat keyboard."""
