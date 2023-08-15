@@ -83,7 +83,7 @@ class UserPrayers(UserPrayersInterface):
             ORDER BY up.prayer_at_user_id
         """
         rows = await self._connection.fetch_all(query, {'date': date, 'chat_id': chat_id})
-        prayers = [UserPrayer.parse_obj(row._mapping) for row in rows]  # noqa: WPS437
+        prayers = [UserPrayer.parse_obj(row) for row in rows]
         if not prayers:
             raise UserHasNotGeneratedPrayersError
         logger.info('Prayer times taked: {0}'.format(prayers))
@@ -207,7 +207,7 @@ class NewUserPrayers(UserPrayersInterface):
             {'prayers_at_user_group_id': str(user_prayer_group_id)},
         )
         logger.info('Creating prayers for user <{0}>, date={1}'.format(chat_id, date))
-        prayer_ids = [row._mapping['prayer_id'] for row in rows]  # noqa: WPS437
+        prayer_ids = [row['prayer_id'] for row in rows]
         query = """
             INSERT INTO prayers_at_user
             (is_read, prayer_id, prayer_group_id, user_id)

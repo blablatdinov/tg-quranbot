@@ -90,7 +90,7 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
             ORDER BY a.ayat_id
         """
         rows = await self._connection.fetch_all(query, {'chat_id': chat_id})
-        return parse_obj_as(list[Ayat], [row._mapping for row in rows])  # noqa: WPS437
+        return parse_obj_as(list[Ayat], rows)
 
     async def get_favorite(self, ayat_id: int) -> Ayat:
         """Метод для аятов в избранном для пользователя.
@@ -120,7 +120,7 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
         row = await self._connection.fetch_one(query, {'ayat_id': ayat_id})
         if not row:
             raise AyatNotFoundError
-        return Ayat.parse_obj(row._mapping)  # noqa: WPS437
+        return Ayat.parse_obj(row)
 
     async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
         """Получить аят по номеру суры.

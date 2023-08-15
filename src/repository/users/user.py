@@ -121,7 +121,7 @@ class UserRepository(UserRepositoryInterface):
         if not query_return_value:
             raise InternalBotError
         logger.debug('User <{0}> inserted in DB'.format(chat_id))
-        row = dict(query_return_value._mapping)['row']  # noqa: WPS437
+        row = dict(query_return_value)['row']
         return User(
             is_active=True,
             day=2,
@@ -150,7 +150,7 @@ class UserRepository(UserRepositoryInterface):
         record = await self._connection.fetch_one(query, {CHAT_ID_LITERAL: chat_id})
         if not record:
             raise UserNotFoundError('Пользователь с chat_id: {0} не найден'.format(chat_id))
-        return User.parse_obj(dict(record._mapping))  # noqa: WPS437
+        return User.parse_obj(dict(record))
 
     async def exists(self, chat_id: int) -> bool:
         """Метод для проверки наличия пользователя в БД.
@@ -207,4 +207,4 @@ class UserRepository(UserRepositoryInterface):
         row = await self._connection.fetch_one(query, {'user_id': user_id})
         if not row:
             raise UserNotFoundError('Пользователь с legacy_id: {0} не найден'.format(user_id))
-        return User.parse_obj(row._mapping)  # noqa: WPS437
+        return User.parse_obj(row)
