@@ -29,7 +29,7 @@ lint:
 	rm -rf .mypy_cache && poetry run mypy src
 
 test:
-	poetry run pytest src --ignore=src/tests/e2e --doctest-modules
+	poetry run pytest src --ignore=src/tests/e2e --doctest-modules --cov
 
 cov:
 	poetry run pytest src --cov=src
