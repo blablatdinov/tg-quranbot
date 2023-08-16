@@ -29,7 +29,7 @@ from pydantic import parse_obj_as
 from pyeo import elegant
 
 from exceptions.content_exceptions import CityNotSupportedError
-from integrations.nominatim import GeoServiceIntegrationInterface
+from integrations.nominatim import CityName
 from repository.city import City
 
 
@@ -149,7 +149,7 @@ class SearchCityByCoordinates(CitySearchInterface):
     """Поиск города по координатам."""
 
     _city_search: CitySearchInterface
-    _geo_service_integration: GeoServiceIntegrationInterface
+    _geo_service_integration: CityName
 
     async def search(self, query: SearchCityQueryInterface) -> list[City]:
         """Осуществить поиск.
@@ -158,10 +158,7 @@ class SearchCityByCoordinates(CitySearchInterface):
         :returns: list[City]
         :raises CityNotSupportedError: если город не найден в БД
         """
-        city_name = await self._geo_service_integration.search(
-            str(query.latitude()),
-            str(query.longitude()),
-        )
+        city_name = await self._geo_service_integration.search()
         logger.info('Search city {0} in DB'.format(city_name))
         cities = await self._city_search.search(
             SearchCityQuery.from_string_cs(city_name),
