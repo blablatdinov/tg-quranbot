@@ -28,8 +28,8 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
-from integrations.client import IntegrationClient
-from integrations.nominatim import NominatimIntegration
+from integrations.nominatim import NominatimCityName
+from integrations.tg.coordinates import TgMessageCoordinates
 from integrations.tg.tg_answers import TgAnswerFork, TgAnswerToSender, TgMessageAnswer, TgMessageRegexAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
@@ -77,7 +77,7 @@ class SearchCityAnswer(TgAnswer):
                             answer_to_sender,
                             SearchCityByCoordinates(
                                 SearchCityByName(self._database),
-                                NominatimIntegration(IntegrationClient()),
+                                NominatimCityName(TgMessageCoordinates(update)),
                             ),
                             self._redis,
                             UserRepository(self._database),

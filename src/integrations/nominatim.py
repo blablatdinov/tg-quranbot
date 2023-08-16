@@ -23,40 +23,40 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import Protocol, final
 
 import attrs
+import httpx
 from pyeo import elegant
 
-from integrations.client import IntegrationClientInterface
-from integrations.schemas import NominatimSearchResponse
+from integrations.tg.coordinates import Coordinates
 
 
 @elegant
-class GeoServiceIntegrationInterface(Protocol):
+class CityName(Protocol):
     """Интерфейс интеграции с геосервисом."""
 
-    async def search(self, latitude: str, longitude: str) -> str:
-        """Поиск по координатам.
-
-        :param latitude: str
-        :param longitude: str
-        """
+    async def search(self) -> str:
+        """Поиск по координатам."""
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class NominatimIntegration(GeoServiceIntegrationInterface):
+class NominatimCityName(CityName):
     """Интеграция с https://nominatim.openstreetmap.org ."""
 
-    _request_client: IntegrationClientInterface
+    _coordinates: Coordinates
 
-    async def search(self, latitude: str, longitude: str) -> str:
+    async def search(self) -> str:
         """Поиск по координатам.
 
-        :param latitude: str
-        :param longitude: str
-        :returns: list[str]
+        curl https://nominatim.openstreetmap.org/reverse.php?lat=55.7887&lon=49.1221&format=jsonv2
+
+        :returns: CityName
         """
         url_template = 'https://nominatim.openstreetmap.org/reverse.php?lat={latitude}&lon={longitude}&format=jsonv2'
-        url = url_template.format(latitude=latitude, longitude=longitude)
-        response: NominatimSearchResponse = await self._request_client.act(url, NominatimSearchResponse)
-        return response.address.city
+        url = url_template.format(
+            latitude=self._coordinates.latitude(),
+            longitude=self._coordinates.longitude(),
+        )
+        async with httpx.AsyncClient() as http_client:
+            response = await http_client.get(url)
+        return response.json()['address']['city']
