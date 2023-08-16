@@ -72,6 +72,7 @@ class FavoriteAyatsAnswer(TgAnswer):
                     ),
                     TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
                     FavoriteAyatsRepository(self._database),
+                    self._database,
                 ),
                 TgTextAnswer(
                     answer_to_sender,

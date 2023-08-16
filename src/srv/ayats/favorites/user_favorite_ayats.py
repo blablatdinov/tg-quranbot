@@ -20,16 +20,40 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol
+from typing import SupportsInt, final
 
-from srv.ayats.ayat_identifier import AyatId
+import attrs
+from databases import Database
+from pyeo import elegant
+
+from app_types.listable import AsyncListable
+from srv.ayats.ayat import Ayat
+from srv.ayats.pg_ayat import PgAyat
 
 
-class FavoriteAyatStatus(Protocol):
-    """Пользовательский ввод статуса аята в избранном."""
+@final
+@attrs.define(frozen=True)
+@elegant
+class UserFavoriteAyats(AsyncListable[Ayat]):
+    """Избранные аяты пользователя."""
 
-    def ayat_id(self) -> AyatId:
-        """Идентификатор аята."""
+    _database: Database
+    _chat_id: SupportsInt
 
-    def change_to(self) -> bool:
-        """Целевое значение."""
+    async def to_list(self) -> list[Ayat]:
+        """Списковое представление.
+
+        :return: list[PgAyat]
+        """
+        query = """
+            SELECT a.ayat_id AS id
+            FROM favorite_ayats AS fa
+            INNER JOIN ayats AS a ON fa.ayat_id = a.ayat_id
+            INNER JOIN users AS u ON fa.user_id = u.chat_id
+            WHERE u.chat_id = :chat_id
+            ORDER BY a.ayat_id
+        """
+        rows = await self._database.fetch_all(query, {'chat_id': int(self._chat_id)})
+        return [
+            PgAyat.from_int(row['id'], self._database) for row in rows
+        ]

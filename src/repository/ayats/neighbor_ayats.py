@@ -20,28 +20,32 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import Final, Protocol, final
 
 import attrs
 from databases import Database
 from pydantic import parse_obj_as
 from pyeo import elegant
 
+from app_types.listable import AsyncListable
 from exceptions.base_exception import BaseAppError
 from exceptions.content_exceptions import AyatNotFoundError
-from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.schemas import AyatShort
+from srv.ayats.ayat import Ayat
+from srv.ayats.pg_ayat import PgAyat
 from srv.ayats.text_search_query import TextSearchQuery
+
+AYAT_ID: Final = 'ayat_id'
 
 
 @elegant
 class NeighborAyatsRepositoryInterface(Protocol):
     """Интерфейс для работы с соседними аятами в хранилище."""
 
-    async def left_neighbor(self) -> AyatShort:
+    async def left_neighbor(self) -> Ayat:
         """Левый аят."""
 
-    async def right_neighbor(self) -> AyatShort:
+    async def right_neighbor(self) -> Ayat:
         """Правый аят."""
 
     async def page(self) -> str:
@@ -55,35 +59,36 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
     """Класс для работы с соседними аятами в хранилище."""
 
     _ayat_id: int
-    _chat_id: int
-    _favorite_ayats_repo: FavoriteAyatRepositoryInterface
+    _favorite_ayats: AsyncListable[Ayat]
 
-    async def left_neighbor(self) -> AyatShort:
+    async def left_neighbor(self) -> Ayat:
         """Получить левый аят.
 
-        :return: AyatShort
+        :return: Ayat
         :raises AyatNotFoundError: if ayat not found
         """
-        fayats = await self._favorite_ayats_repo.get_favorites(self._chat_id)
+        fayats = await self._favorite_ayats.to_list()
         for ayat_index, ayat in enumerate(fayats):
-            if ayat.id == self._ayat_id and ayat_index == 0:
+            ayat_id = await ayat.identifier().id()
+            if ayat_id == self._ayat_id and ayat_index == 0:
                 raise AyatNotFoundError
-            elif ayat.id == self._ayat_id:
-                return fayats[ayat_index - 1].get_short()
+            elif ayat_id == self._ayat_id:
+                return fayats[ayat_index - 1]
         raise AyatNotFoundError
 
-    async def right_neighbor(self) -> AyatShort:
+    async def right_neighbor(self) -> Ayat:
         """Получить правый аят.
 
         :return: AyatShort
         :raises AyatNotFoundError: if ayat not found
         """
-        fayats = await self._favorite_ayats_repo.get_favorites(self._chat_id)
+        fayats = await self._favorite_ayats.to_list()
         for ayat_index, ayat in enumerate(fayats):
-            if ayat.id == self._ayat_id and ayat_index + 1 == len(fayats):
+            ayat_id = await ayat.identifier().id()
+            if ayat_id == self._ayat_id and ayat_index + 1 == len(fayats):
                 raise AyatNotFoundError
-            elif ayat.id == self._ayat_id:
-                return fayats[ayat_index + 1].get_short()
+            elif ayat_id == self._ayat_id:
+                return fayats[ayat_index + 1]
         raise AyatNotFoundError
 
     async def page(self) -> str:
@@ -92,13 +97,13 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
         :return: str
         :raises BaseAppError: if page not generated
         """
-        fayats = await self._favorite_ayats_repo.get_favorites(self._chat_id)
+        fayats = await self._favorite_ayats.to_list()
         for ayat_idx, ayat in enumerate(fayats, start=1):
             if self._ayat_id == 1:
                 return 'стр. 1/{0}'.format(len(fayats))
-            elif ayat.id == len(fayats):
+            elif await ayat.identifier().id() == len(fayats):
                 return 'стр. {0}/{0}'.format(len(fayats))
-            elif self._ayat_id == ayat.id:
+            elif self._ayat_id == await ayat.identifier().id():
                 return 'стр. {0}/{1}'.format(ayat_idx, len(fayats))
         raise BaseAppError('Page info not generated')
 
@@ -112,43 +117,37 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
     _connection: Database
     _ayat_id: int
 
-    async def left_neighbor(self) -> AyatShort:
+    async def left_neighbor(self) -> Ayat:
         """Получить левый аят.
 
         :return: AyatShort
         :raises AyatNotFoundError: if ayat not found
         """
         query = """
-            SELECT
-                ayats.ayat_id AS id,
-                ayats.ayat_number AS ayat_num,
-                ayats.sura_id AS sura_num
+            SELECT ayat_id
             FROM ayats
-            WHERE ayats.ayat_id = :ayat_id
+            WHERE ayat_id = :ayat_id
         """
-        row = await self._connection.fetch_one(query, {'ayat_id': self._ayat_id - 1})
+        row = await self._connection.fetch_one(query, {AYAT_ID: self._ayat_id - 1})
         if not row:
             raise AyatNotFoundError
-        return parse_obj_as(AyatShort, row)
+        return PgAyat.from_int(row[AYAT_ID], self._connection)
 
-    async def right_neighbor(self) -> AyatShort:
+    async def right_neighbor(self) -> Ayat:
         """Получить правый аят.
 
         :return: AyatShort
         :raises AyatNotFoundError: if ayat not found
         """
         query = """
-            SELECT
-                ayats.ayat_id AS id,
-                ayats.ayat_number AS ayat_num,
-                ayats.sura_id AS sura_num
+            SELECT ayats.ayat_id
             FROM ayats
             WHERE ayats.ayat_id = :ayat_id
         """
-        row = await self._connection.fetch_one(query, {'ayat_id': self._ayat_id + 1})
+        row = await self._connection.fetch_one(query, {AYAT_ID: self._ayat_id + 1})
         if not row:
             raise AyatNotFoundError
-        return parse_obj_as(AyatShort, row)
+        return PgAyat.from_int(row[AYAT_ID], self._connection)
 
     async def page(self) -> str:
         """Информация о странице.
@@ -158,7 +157,7 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
         ayats_count = await self._connection.fetch_val('SELECT COUNT(*) FROM ayats')
         actual_page_num = await self._connection.fetch_val(
             'SELECT COUNT(*) FROM ayats WHERE ayat_id <= :ayat_id',
-            {'ayat_id': self._ayat_id},
+            {AYAT_ID: self._ayat_id},
         )
         return 'стр. {0}/{1}'.format(actual_page_num, ayats_count)
 
@@ -173,16 +172,13 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
     _ayat_id: int
     _query: TextSearchQuery
     _search_sql_query = """
-        SELECT
-            ayats.ayat_id AS id,
-            ayats.ayat_number AS ayat_num,
-            ayats.sura_id AS sura_num
+        SELECT ayats.ayat_id
         FROM ayats
         WHERE ayats.content ILIKE :search_query
         ORDER BY ayats.ayat_id
     """
 
-    async def left_neighbor(self) -> AyatShort:
+    async def left_neighbor(self) -> Ayat:
         """Получить левый аят.
 
         :return: AyatShort
@@ -194,12 +190,12 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
             ayat = parse_obj_as(AyatShort, row)
             if ayat.id == self._ayat_id:
                 try:
-                    return parse_obj_as(AyatShort, rows[idx - 1])
+                    return PgAyat.from_int(rows[idx - 1][AYAT_ID], self._connection)
                 except IndexError as err:
                     raise AyatNotFoundError from err
         raise AyatNotFoundError
 
-    async def right_neighbor(self) -> AyatShort:
+    async def right_neighbor(self) -> Ayat:
         """Получить правый аят.
 
         :return: AyatShort
@@ -211,7 +207,7 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
             ayat = parse_obj_as(AyatShort, row)
             if ayat.id == self._ayat_id:
                 try:
-                    return parse_obj_as(AyatShort, rows[idx + 1])
+                    return PgAyat.from_int(rows[idx + 1][AYAT_ID], self._connection)
                 except IndexError as err:
                     raise AyatNotFoundError from err
         raise AyatNotFoundError
@@ -227,7 +223,6 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
             {'search_query': '%{0}%'.format(await self._query.read())},
         )
         for idx, row in enumerate(rows, start=1):
-            ayat = parse_obj_as(AyatShort, row)
-            if ayat.id == self._ayat_id:
+            if row[AYAT_ID] == self._ayat_id:
                 actual_page_num = idx
         return 'стр. {0}/{1}'.format(actual_page_num, len(rows))
