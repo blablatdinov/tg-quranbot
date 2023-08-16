@@ -28,12 +28,13 @@ from pyeo import elegant
 
 from app_types.update import Update
 from db.connection import database
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgTextAnswer
-from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
 from srv.ayats.ayat import Ayat
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
+from srv.ayats.favorites.ayat_is_favor import AyatIsFavor
 from srv.ayats.neighbor_ayat_keyboard import NeighborAyatKeyboard
 
 
@@ -58,11 +59,15 @@ class AyatByIdMessageAnswer(TgAnswer):
                 await self._result_ayat.text(),
             ),
             AyatFavoriteKeyboardButton(
-                self._result_ayat,
                 NeighborAyatKeyboard(
                     NeighborAyats(database, await self._result_ayat.identifier().id()),
                     AyatCallbackTemplateEnum.get_ayat,
                 ),
-                FavoriteAyatsRepository(database),
+                AyatIsFavor(
+                    self._result_ayat,
+                    TgChatId(update),
+                    database,
+                ),
+                self._result_ayat,
             ),
         ).build(update)

@@ -51,7 +51,6 @@ from integrations.tg.tg_answers import (
     TgTextAnswer,
 )
 from repository.admin_message import AdminMessage
-from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.podcast import RandomPodcast
 from repository.prayer_time import UserPrayers
 from services.answers.change_state_answer import ChangeStateAnswer
@@ -207,7 +206,6 @@ class QuranbotAnswer(TgAnswer):
                         settings.DEBUG,
                         html_to_sender,
                         audio_to_sender,
-                        FavoriteAyatsRepository(self._database),
                     ),
                 ),
                 TgCallbackQueryRegexAnswer(

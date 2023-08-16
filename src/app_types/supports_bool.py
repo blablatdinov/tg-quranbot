@@ -20,32 +20,22 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import re
-from typing import SupportsInt, final
+from typing import Protocol
 
-import attrs
 from pyeo import elegant
 
-from app_types.stringable import SupportsStr
-from exceptions.base_exception import BaseAppError
 
-
-@final
-@attrs.define(frozen=True)
 @elegant
-class IntableRegularExpression(SupportsInt):
-    """Регулярное выражение, которое можно привести к числу."""
+class SupportsBool(Protocol):
+    """Интерфейс объектов, которые можно привести к булевому значению."""
 
-    _text_for_searching: SupportsStr
+    def __bool__(self) -> bool:
+        """Приведение к булевому значению."""
 
-    def __int__(self) -> int:
-        """Приведение к числу.
 
-        :returns: int
-        :raises BaseAppError: если не удалось получить результат по регулярному выражению
-        """
-        regex_result = re.search(r'\d+', str(self._text_for_searching))
-        if not regex_result:
-            raise BaseAppError
-        finded = regex_result.group(0)
-        return int(finded)
+@elegant
+class AsyncSupportsBool(Protocol):
+    """Интерфейс объектов, которые можно привести к булевому значению."""
+
+    async def to_bool(self) -> bool:
+        """Приведение к булевому значению."""

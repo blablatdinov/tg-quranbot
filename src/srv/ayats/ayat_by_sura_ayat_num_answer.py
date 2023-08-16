@@ -30,7 +30,6 @@ from app_types.update import Update
 from db.connection import database
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer
-from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import NeighborAyats
 from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
@@ -62,8 +61,8 @@ class AyatBySuraAyatNumAnswer(TgAnswer):
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,
-                FavoriteAyatsRepository(database),
                 NeighborAyats(database, await result_ayat.identifier().id()),
                 AyatCallbackTemplateEnum.get_ayat,
+                database,
             ),
         ).build(update)

@@ -28,10 +28,8 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
-from db.connection import database
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer
-from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import FavoriteNeighborAyats
 from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
@@ -49,7 +47,6 @@ class FavoriteAyatAnswer(TgAnswer):
     _debug_mode: bool
     _message_answer: TgAnswer
     _file_answer: TgAnswer
-    _favorite_ayats_repo: FavoriteAyatRepositoryInterface
     _database: Database
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -61,7 +58,7 @@ class FavoriteAyatAnswer(TgAnswer):
         result_ayat = (
             await FavoriteAyats(
                 TgChatId(update),
-                database,
+                self._database,
             ).to_list()
         )[0]
         answers = (self._message_answer, self._file_answer)
@@ -71,10 +68,10 @@ class FavoriteAyatAnswer(TgAnswer):
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,
-                self._favorite_ayats_repo,
                 FavoriteNeighborAyats(
-                    await result_ayat.identifier().id(), UserFavoriteAyats(database, TgChatId(update)),
+                    await result_ayat.identifier().id(), UserFavoriteAyats(self._database, TgChatId(update)),
                 ),
                 AyatCallbackTemplateEnum.get_favorite_ayat,
+                self._database,
             ),
         ).build(update)

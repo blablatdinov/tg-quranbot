@@ -37,7 +37,6 @@ from integrations.tg.tg_answers import (
     TgMessageAnswer,
     TgTextAnswer,
 )
-from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from services.reset_state_answer import ResetStateAnswer
 from srv.ayats.favorite_ayat_answer import FavoriteAyatAnswer
 from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
@@ -71,7 +70,6 @@ class FavoriteAyatsAnswer(TgAnswer):
                         ),
                     ),
                     TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
-                    FavoriteAyatsRepository(self._database),
                     self._database,
                 ),
                 TgTextAnswer(

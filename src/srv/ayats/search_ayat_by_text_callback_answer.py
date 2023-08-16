@@ -33,7 +33,6 @@ from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer
-from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
 from services.regular_expression import IntableRegularExpression
 from srv.ayats.ayat_answer import AyatAnswer
@@ -87,7 +86,6 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,
-                FavoriteAyatsRepository(database),
                 TextSearchNeighborAyatsRepository(
                     database,
                     await result_ayat.identifier().id(),
@@ -97,5 +95,6 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
                     ),
                 ),
                 AyatCallbackTemplateEnum.get_search_ayat,
+                database,
             ),
         ).build(update)

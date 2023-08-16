@@ -26,10 +26,9 @@ from typing import final
 import attrs
 from pyeo import elegant
 
+from app_types.supports_bool import AsyncSupportsBool
 from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
 from integrations.tg.keyboard import KeyboardInterface
-from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from srv.ayats.ayat import Ayat
 
 
@@ -39,9 +38,9 @@ from srv.ayats.ayat import Ayat
 class AyatFavoriteKeyboardButton(KeyboardInterface):
     """Кнопка с добавлением аята в избранные."""
 
-    _ayat: Ayat
     _origin: KeyboardInterface
-    _favorite_ayat_repo: FavoriteAyatRepositoryInterface
+    _is_favor: AsyncSupportsBool
+    _ayat: Ayat
 
     async def generate(self, update: Update) -> str:
         """Генерация клавиатуры.
@@ -50,10 +49,7 @@ class AyatFavoriteKeyboardButton(KeyboardInterface):
         :return: str
         """
         keyboard = json.loads(await self._origin.generate(update))
-        is_favor = await self._favorite_ayat_repo.check_ayat_is_favorite_for_user(
-            await self._ayat.identifier().id(),
-            int(TgChatId(update)),
-        )
+        is_favor = await self._is_favor.to_bool()
         keyboard['inline_keyboard'].append([{
             'text': 'Удалить из избранного' if is_favor else 'Добавить в избранное',
             'callback_data': ('removeFromFavor({0})' if is_favor else 'addToFavor({0})').format(

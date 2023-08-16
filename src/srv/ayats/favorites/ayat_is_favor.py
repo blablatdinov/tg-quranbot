@@ -20,48 +20,39 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import final
 
 import attrs
 from databases import Database
-from loguru import logger
 from pyeo import elegant
 
-
-@elegant
-class FavoriteAyatRepositoryInterface(Protocol):
-    """Интерфейс для работы с хранилищем избранных аятов."""
-
-    async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
-        """Проверить входит ли аят в избранные.
-
-        :param ayat_id: int
-        :param chat_id: int
-        """
+from app_types.supports_bool import AsyncSupportsBool
+from integrations.tg.chat_id import TgChatId
+from srv.ayats.ayat import Ayat
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
-    """Класс для работы с хранилищем избранных аятов."""
+class AyatIsFavor(AsyncSupportsBool):
+    """Является ли аят избранным."""
 
-    _connection: Database
+    _ayat: Ayat
+    _chat_id: TgChatId
+    _db: Database
 
-    async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
-        """Получить аят по номеру суры.
+    async def to_bool(self) -> bool:
+        """Приведение к булевому значению.
 
-        :param ayat_id: int
-        :param chat_id: int
-        :returns: bool
+        :return: bool
         """
-        logger.debug('Check ayat <{0}> is favorite for user <{1}>...'.format(ayat_id, chat_id))
         query = """
             SELECT COUNT(*)
             FROM favorite_ayats AS fa
             INNER JOIN users AS u ON fa.user_id = u.chat_id
             WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id
         """
-        count = await self._connection.fetch_val(query, {'ayat_id': ayat_id, 'chat_id': chat_id})
-        logger.debug('Ayat <{0}> is favorite for user <{1}> result: {2}'.format(ayat_id, chat_id, bool(count)))
+        count = await self._db.fetch_val(
+            query, {'ayat_id': await self._ayat.identifier().id(), 'chat_id': self._chat_id},
+        )
         return bool(count)
