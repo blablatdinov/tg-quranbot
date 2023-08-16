@@ -24,7 +24,8 @@ from typing import Protocol, TypeAlias
 
 from pyeo import elegant
 
-AyatId: TypeAlias = int
+from srv.ayats.ayat_identifier import AyatIdentifier
+
 AyatText: TypeAlias = str
 TgFileId: TypeAlias = str
 AyatAudioFileLink: TypeAlias = str
@@ -34,7 +35,7 @@ AyatAudioFileLink: TypeAlias = str
 class Ayat(Protocol):
     """Интерфейс аята."""
 
-    async def id(self) -> AyatId:
+    def identifier(self) -> AyatIdentifier:
         """Идентификатор аята."""
 
     async def text(self) -> AyatText:

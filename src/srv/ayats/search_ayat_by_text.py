@@ -79,7 +79,7 @@ class SearchAyatByTextAnswer(TgAnswer):
                 FavoriteAyatsRepository(database),
                 TextSearchNeighborAyatsRepository(
                     database,
-                    await result_ayat.id(),
+                    await result_ayat.identifier().id(),
                     AyatTextSearchQuery.for_reading_cs(self._redis, int(TgChatId(update))),
                 ),
                 AyatCallbackTemplateEnum.get_search_ayat,

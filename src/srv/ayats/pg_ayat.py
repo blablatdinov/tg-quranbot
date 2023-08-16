@@ -25,12 +25,13 @@ from typing import final
 import attrs
 from databases import Database
 
-from app_types.intable import AsyncIntable
+from app_types.intable import AsyncIntable, ThroughAsyncIntable
 from app_types.stringable import SupportsStr
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.sura import Sura
-from srv.ayats.ayat import Ayat, AyatId, AyatText, TgFileId
+from srv.ayats.ayat import Ayat, AyatText, TgFileId
 from srv.ayats.ayat_id_by_sura_ayat import AyatIdBySuraAyatNum
+from srv.ayats.ayat_identifier import PgAyatIdentifier
 from srv.ayats.ayat_link import AyatLink
 from srv.ayats.nums_search_query import NumsSearchQuery
 from srv.ayats.validated_search_query import ValidatedSearchQuery
@@ -63,12 +64,22 @@ class PgAyat(Ayat):
             database,
         )
 
-    async def id(self) -> AyatId:
+    @classmethod
+    def from_int(cls, ayat_id: int, database) -> Ayat:
+        """Конструктор для числа.
+
+        :param ayat_id: int
+        :param database: Database
+        :return: Ayat
+        """
+        return PgAyat(ThroughAsyncIntable(ayat_id), database)
+
+    def identifier(self) -> PgAyatIdentifier:
         """Идентификатор аята.
 
         :return: int
         """
-        return await self._ayat_id.to_int()
+        return PgAyatIdentifier(self._ayat_id, self._database)
 
     async def text(self) -> AyatText:
         """Текст аята.

@@ -20,61 +20,55 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
-
+import attrs
 import pytest
-from pyeo import elegant
 
-from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
+from app_types.listable import AsyncListable
 from repository.ayats.neighbor_ayats import FavoriteNeighborAyats
-from repository.ayats.schemas import Ayat
+from srv.ayats.ayat import Ayat
+from srv.ayats.ayat_identifier import AyatIdentifier
 
 
-@elegant
-@final
-class FavoriteAyatRepositoryFake(FavoriteAyatRepositoryInterface):
+@attrs.define(frozen=True)
+class FkIdentifier(AyatIdentifier):
 
-    async def get_favorite(self, ayat_id: int) -> Ayat:
-        raise NotImplementedError
+    _id: int
 
-    async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
-        raise NotImplementedError
+    async def id(self):
+        return self._id
 
-    async def get_favorites(self, chat_id: int) -> list[Ayat]:
+    async def sura_num(self):
+        return 1
+
+    async def ayat_num(self):
+        return '1-7'
+
+
+@attrs.define(frozen=True)
+class FkAyat(Ayat):
+
+    _id: int
+
+    def identifier(self):
+        return FkIdentifier(self._id)
+
+    async def text(self):
+        return ''
+
+    async def tg_file_id(self):
+        return ''
+
+    async def file_link(self):
+        return ''
+
+
+class FkFavoriteAyats(AsyncListable[Ayat]):
+
+    async def to_list(self) -> list[Ayat]:
         return [
-            Ayat(
-                id=1,
-                sura_num=1,
-                ayat_num='2',
-                arab_text='',
-                content='',
-                transliteration='',
-                sura_link='',
-                audio_telegram_id='',
-                link_to_audio_file='',
-            ),
-            Ayat(
-                id=2,
-                sura_num=1,
-                ayat_num='2',
-                arab_text='',
-                content='',  # noqa: WPS110 wrong variable name
-                transliteration='',
-                sura_link='',
-                audio_telegram_id='',
-                link_to_audio_file='',
-            ),
-            Ayat(
-                id=3,
-                sura_num=1,
-                ayat_num='2',
-                arab_text='',
-                content='',  # noqa: WPS110 wrong variable name
-                transliteration='',
-                sura_link='',
-                audio_telegram_id='',
-                link_to_audio_file='',
-            ),
+            FkAyat(1),
+            FkAyat(2),
+            FkAyat(3),
         ]
 
 
@@ -85,7 +79,7 @@ class FavoriteAyatRepositoryFake(FavoriteAyatRepositoryInterface):
 ])
 async def test_page(ayat_id, expected):
     got = await FavoriteNeighborAyats(
-        ayat_id, 1, FavoriteAyatRepositoryFake(),
+        ayat_id, FkFavoriteAyats(),
     ).page()
 
     assert got == expected

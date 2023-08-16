@@ -63,7 +63,7 @@ class AyatBySuraAyatNumAnswer(TgAnswer):
             AyatAnswerKeyboard(
                 result_ayat,
                 FavoriteAyatsRepository(database),
-                NeighborAyats(database, await result_ayat.id()),
+                NeighborAyats(database, await result_ayat.identifier().id()),
                 AyatCallbackTemplateEnum.get_ayat,
             ),
         ).build(update)

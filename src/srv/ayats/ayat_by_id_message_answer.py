@@ -60,7 +60,7 @@ class AyatByIdMessageAnswer(TgAnswer):
             AyatFavoriteKeyboardButton(
                 self._result_ayat,
                 NeighborAyatKeyboard(
-                    NeighborAyats(database, await self._result_ayat.id()),
+                    NeighborAyats(database, await self._result_ayat.identifier().id()),
                     AyatCallbackTemplateEnum.get_ayat,
                 ),
                 FavoriteAyatsRepository(database),

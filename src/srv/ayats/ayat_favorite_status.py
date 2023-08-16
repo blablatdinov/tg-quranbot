@@ -26,7 +26,7 @@ import attrs
 from pyeo import elegant
 
 from services.regular_expression import IntableRegularExpression
-from srv.ayats.ayat import AyatId
+from srv.ayats.ayat_identifier import AyatId
 from srv.ayats.favorite_ayat_status import FavoriteAyatStatus
 
 # Строка имеющая формат addToFavor(<id аята>) или removeFromFavor(<id аята>)

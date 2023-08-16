@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
@@ -36,6 +37,7 @@ from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.favorite_ayats import FavoriteAyats
+from srv.ayats.favorites.user_favorite_ayats import UserFavoriteAyats
 
 
 @final
@@ -48,6 +50,7 @@ class FavoriteAyatAnswer(TgAnswer):
     _message_answer: TgAnswer
     _file_answer: TgAnswer
     _favorite_ayats_repo: FavoriteAyatRepositoryInterface
+    _database: Database
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -70,7 +73,7 @@ class FavoriteAyatAnswer(TgAnswer):
                 result_ayat,
                 self._favorite_ayats_repo,
                 FavoriteNeighborAyats(
-                    await result_ayat.id(), int(TgChatId(update)), self._favorite_ayats_repo,
+                    await result_ayat.identifier().id(), UserFavoriteAyats(database, TgChatId(update)),
                 ),
                 AyatCallbackTemplateEnum.get_favorite_ayat,
             ),

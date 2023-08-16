@@ -75,7 +75,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
         except IndexError as err:
             raise AyatNotFoundError from err
         for ayat in ayats:
-            if await ayat.id() == target_ayat_id:
+            if await ayat.identifier().id() == target_ayat_id:
                 result_ayat = ayat
                 break
         else:
@@ -90,7 +90,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
                 FavoriteAyatsRepository(database),
                 TextSearchNeighborAyatsRepository(
                     database,
-                    await result_ayat.id(),
+                    await result_ayat.identifier().id(),
                     AyatTextSearchQuery.for_reading_cs(
                         self._redis,
                         int(TgChatId(update)),

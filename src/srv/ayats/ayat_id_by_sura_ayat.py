@@ -29,7 +29,7 @@ from pyeo import elegant
 from app_types.intable import AsyncIntable
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.sura import AyatStructure, SuraInterface
-from srv.ayats.ayat import AyatId
+from srv.ayats.ayat_identifier import AyatId
 from srv.ayats.search_query import SearchQuery
 
 

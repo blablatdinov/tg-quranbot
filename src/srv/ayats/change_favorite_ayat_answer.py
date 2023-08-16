@@ -96,7 +96,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                         result_ayat,
                         FavoriteAyatsRepository(database),
                         NeighborAyats(
-                            database, await result_ayat.id(),
+                            database, await result_ayat.identifier().id(),
                         ),
                         AyatCallbackTemplateEnum.get_favorite_ayat,
                     ),
