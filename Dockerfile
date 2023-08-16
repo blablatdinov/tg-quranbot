@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-FROM python:3.11 as base
+FROM python:3.11.4-slim as base
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 WORKDIR /app
 
@@ -30,13 +30,11 @@ COPY poetry.lock pyproject.toml /app/
 RUN poetry export --without dev -o requirements.txt
 
 FROM base as build
-RUN apt-get update && apt-get upgrade -y
 COPY --from=poetry /app/requirements.txt /tmp/requirements.txt
 RUN cat /tmp/requirements.txt
-RUN python -m venv /app/.venv && \
-    /app/.venv/bin/pip install -r /tmp/requirements.txt
+RUN python -m venv /app/.venv && /app/.venv/bin/pip install -r /tmp/requirements.txt
 
-FROM python:3.11 as runtime
+FROM python:3.11.4-slim as runtime
 
 # Copy only requirements to cache them in docker layer
 WORKDIR /app
