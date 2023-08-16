@@ -27,19 +27,10 @@ from databases import Database
 from loguru import logger
 from pyeo import elegant
 
-from exceptions.content_exceptions import AyatNotFoundError
-from repository.ayats.schemas import Ayat
-
 
 @elegant
 class FavoriteAyatRepositoryInterface(Protocol):
     """Интерфейс для работы с хранилищем избранных аятов."""
-
-    async def get_favorite(self, ayat_id: int) -> Ayat:
-        """Метод для аятов в избранном для пользователя.
-
-        :param ayat_id: int
-        """
 
     async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
         """Проверить входит ли аят в избранные.
@@ -56,36 +47,6 @@ class FavoriteAyatsRepository(FavoriteAyatRepositoryInterface):
     """Класс для работы с хранилищем избранных аятов."""
 
     _connection: Database
-
-    async def get_favorite(self, ayat_id: int) -> Ayat:
-        """Метод для аятов в избранном для пользователя.
-
-        :param ayat_id: int
-        :return: Ayat
-        :raises AyatNotFoundError: if ayat not found
-        """
-        query = """
-            SELECT
-                a.ayat_id AS id,
-                s.sura_id AS sura_num,
-                s.link AS sura_link,
-                a.ayat_number AS ayat_num,
-                a.arab_text,
-                a.content,
-                a.transliteration,
-                f.file_id AS audio_telegram_id,
-                f.link AS link_to_audio_file
-            FROM favorite_ayats AS fa
-            INNER JOIN ayats AS a ON fa.ayat_id = a.ayat_id
-            INNER JOIN users AS u ON fa.user_id = u.chat_id
-            INNER JOIN suras AS s ON a.sura_id = s.sura_id
-            INNER JOIN files AS f ON a.audio_id = f.file_id
-            WHERE a.ayat_id = :ayat_id
-        """
-        row = await self._connection.fetch_one(query, {'ayat_id': ayat_id})
-        if not row:
-            raise AyatNotFoundError
-        return Ayat.parse_obj(row)
 
     async def check_ayat_is_favorite_for_user(self, ayat_id: int, chat_id: int) -> bool:
         """Получить аят по номеру суры.

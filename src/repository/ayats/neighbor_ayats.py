@@ -24,13 +24,11 @@ from typing import Final, Protocol, final
 
 import attrs
 from databases import Database
-from pydantic import parse_obj_as
 from pyeo import elegant
 
 from app_types.listable import AsyncListable
 from exceptions.base_exception import BaseAppError
 from exceptions.content_exceptions import AyatNotFoundError
-from repository.ayats.schemas import AyatShort
 from srv.ayats.ayat import Ayat
 from srv.ayats.pg_ayat import PgAyat
 from srv.ayats.text_search_query import TextSearchQuery
@@ -187,8 +185,7 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
         search_query = '%{0}%'.format(await self._query.read())
         rows = await self._connection.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[1:], start=1):
-            ayat = parse_obj_as(AyatShort, row)
-            if ayat.id == self._ayat_id:
+            if row['ayat_id'] == self._ayat_id:
                 try:
                     return PgAyat.from_int(rows[idx - 1][AYAT_ID], self._connection)
                 except IndexError as err:
@@ -204,8 +201,7 @@ class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
         search_query = '%{0}%'.format(await self._query.read())
         rows = await self._connection.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[:-1]):
-            ayat = parse_obj_as(AyatShort, row)
-            if ayat.id == self._ayat_id:
+            if row['ayat_id'] == self._ayat_id:
                 try:
                     return PgAyat.from_int(rows[idx + 1][AYAT_ID], self._connection)
                 except IndexError as err:
