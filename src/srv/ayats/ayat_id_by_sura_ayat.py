@@ -52,7 +52,7 @@ class AyatIdBySuraAyatNum(AsyncIntable):
             WHERE
                 sura_id = :sura_id
                 AND (
-                    ayat_number like :ayat_num_str
+                    ayat_number LIKE :ayat_num_str
                     OR ayat_number LIKE :ayat_comma_prefix
                     OR ayat_number LIKE :ayat_comma_postfix
                     OR (
