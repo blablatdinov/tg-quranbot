@@ -24,9 +24,9 @@ import attrs
 import pytest
 
 from app_types.listable import AsyncListable
-from repository.ayats.neighbor_ayats import FavoriteNeighborAyats
 from srv.ayats.ayat import Ayat
 from srv.ayats.ayat_identifier import AyatIdentifier
+from srv.ayats.neighbor_ayats import FavoriteNeighborAyats
 
 
 @attrs.define(frozen=True)

@@ -28,7 +28,6 @@ from pyeo import elegant
 
 from app_types.intable import AsyncIntable
 from exceptions.content_exceptions import AyatNotFoundError
-from repository.ayats.sura import AyatStructure, SuraInterface
 from srv.ayats.ayat_identifier import AyatId
 from srv.ayats.search_query import SearchQuery
 
@@ -39,7 +38,6 @@ from srv.ayats.search_query import SearchQuery
 class AyatIdBySuraAyatNum(AsyncIntable):
     """Поиск аятов по номеру суры, аята."""
 
-    _sura: SuraInterface
     _query: SearchQuery
     _database: Database
 
@@ -49,31 +47,27 @@ class AyatIdBySuraAyatNum(AsyncIntable):
         :return: int
         :raises AyatNotFoundError: если аят не найден
         """
-        ayat_num = self._query.ayat()
-        ayats = await self._sura.ayats(self._query.sura())
-        for ayat in ayats:
-            ayat_id = self._search_in_sura_ayats(ayat, ayat_num)
-            if ayat_id:
-                return ayat_id
-        raise AyatNotFoundError
-
-    def _search_in_sura_ayats(self, ayat: AyatStructure, ayat_num: str) -> AyatId | None:
-        if '-' in ayat.ayat_num:
-            return self._service_range_case(ayat, ayat_num)
-        elif ',' in ayat.ayat_num:
-            return self._service_comma_case(ayat, ayat_num)
-        elif ayat.ayat_num == ayat_num:
-            return ayat.id
-        return None
-
-    def _service_range_case(self, ayat: AyatStructure, ayat_num: str) -> AyatId | None:
-        left, right = map(int, ayat.ayat_num.split('-'))
-        if int(ayat_num) in range(left, right + 1):
-            return ayat.id
-        return None
-
-    def _service_comma_case(self, ayat: AyatStructure, ayat_num: str) -> AyatId | None:
-        left, right = map(int, ayat.ayat_num.split(','))
-        if int(ayat_num) in range(left, right + 1):
-            return ayat.id
-        return None
+        query = """
+            SELECT ayat_id FROM ayats
+            WHERE
+                sura_id = :sura_id
+                AND (
+                    ayat_number like :ayat_num_str
+                    OR ayat_number LIKE :ayat_comma_prefix
+                    OR ayat_number LIKE :ayat_comma_postfix
+                    OR (
+                        CAST(SUBSTRING(ayat_number FROM '^[0-9]+') AS INTEGER) <= :ayat_num
+                        AND CAST(SUBSTRING(ayat_number FROM '[0-9]+$') AS INTEGER) >= :ayat_num
+                    )
+                )
+        """
+        row = await self._database.fetch_one(query, {
+            'sura_id': self._query.sura(),
+            'ayat_comma_prefix': '%,{0}'.format(self._query.ayat()),
+            'ayat_comma_postfix': '%{0},'.format(self._query.ayat()),
+            'ayat_num': int(self._query.ayat()),
+            'ayat_num_str': self._query.ayat(),
+        })
+        if not row:
+            raise AyatNotFoundError
+        return row['ayat_id']

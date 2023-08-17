@@ -40,11 +40,11 @@ from integrations.tg.tg_answers import (
     TgKeyboardEditAnswer,
     TgMessageIdAnswer,
 )
-from repository.ayats.neighbor_ayats import NeighborAyats
 from services.regular_expression import IntableRegularExpression
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.ayat_favorite_status import AyatFavoriteStatus
+from srv.ayats.neighbor_ayats import PgNeighborAyats
 from srv.ayats.pg_ayat import PgAyat
 
 
@@ -93,7 +93,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                     TgKeyboardEditAnswer(self._origin),
                     AyatAnswerKeyboard(
                         result_ayat,
-                        NeighborAyats(
+                        PgNeighborAyats(
                             database, await result_ayat.identifier().id(),
                         ),
                         AyatCallbackTemplateEnum.get_favorite_ayat,

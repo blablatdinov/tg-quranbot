@@ -28,7 +28,6 @@ from databases import Database
 from app_types.intable import AsyncIntable, ThroughAsyncIntable
 from app_types.stringable import SupportsStr
 from exceptions.content_exceptions import AyatNotFoundError
-from repository.ayats.sura import Sura
 from services.regular_expression import IntableRegularExpression
 from srv.ayats.ayat import Ayat, AyatText, TgFileId
 from srv.ayats.ayat_id_by_sura_ayat import AyatIdBySuraAyatNum
@@ -56,7 +55,6 @@ class PgAyat(Ayat):
         """
         return PgAyat(
             AyatIdBySuraAyatNum(
-                Sura(database),
                 ValidatedSearchQuery(
                     NumsSearchQuery(sura_ayat_num),
                 ),
