@@ -37,7 +37,7 @@ AYAT_ID: Final = 'ayat_id'
 
 
 @elegant
-class NeighborAyatsRepositoryInterface(Protocol):
+class NeighborAyats(Protocol):
     """Интерфейс для работы с соседними аятами в хранилище."""
 
     async def left_neighbor(self) -> Ayat:
@@ -53,7 +53,7 @@ class NeighborAyatsRepositoryInterface(Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
-class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
+class FavoriteNeighborAyats(NeighborAyats):
     """Класс для работы с соседними аятами в хранилище."""
 
     _ayat_id: int
@@ -109,7 +109,7 @@ class FavoriteNeighborAyats(NeighborAyatsRepositoryInterface):
 @final
 @attrs.define(frozen=True)
 @elegant
-class NeighborAyats(NeighborAyatsRepositoryInterface):
+class PgNeighborAyats(NeighborAyats):
     """Класс для работы с соседними аятами в хранилище."""
 
     _connection: Database
@@ -163,7 +163,7 @@ class NeighborAyats(NeighborAyatsRepositoryInterface):
 @final
 @attrs.define(frozen=True)
 @elegant
-class TextSearchNeighborAyatsRepository(NeighborAyatsRepositoryInterface):
+class TextSearchNeighborAyats(NeighborAyats):
     """Класс для работы с сосденими аятами, при текстовом поиске."""
 
     _connection: Database

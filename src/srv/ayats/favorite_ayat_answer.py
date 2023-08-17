@@ -30,12 +30,12 @@ from pyeo import elegant
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer
-from repository.ayats.neighbor_ayats import FavoriteNeighborAyats
 from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.favorite_ayats import FavoriteAyats
 from srv.ayats.favorites.user_favorite_ayats import UserFavoriteAyats
+from srv.ayats.neighbor_ayats import FavoriteNeighborAyats
 
 
 @final

@@ -30,8 +30,8 @@ from pyeo import elegant
 from app_types.update import Update
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.keyboard import KeyboardInterface
-from repository.ayats.neighbor_ayats import NeighborAyatsRepositoryInterface
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
+from srv.ayats.neighbor_ayats import NeighborAyats
 
 
 @final
@@ -40,7 +40,7 @@ from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 class NeighborAyatKeyboard(KeyboardInterface):
     """Клавиатура с соседними аятами."""
 
-    _ayats_neighbors: NeighborAyatsRepositoryInterface
+    _ayats_neighbors: NeighborAyats
     _callback_template: AyatCallbackTemplateEnum
 
     async def generate(self, update: Update) -> str:
