@@ -29,6 +29,7 @@ from app_types.intable import AsyncIntable, ThroughAsyncIntable
 from app_types.stringable import SupportsStr
 from exceptions.content_exceptions import AyatNotFoundError
 from repository.ayats.sura import Sura
+from services.regular_expression import IntableRegularExpression
 from srv.ayats.ayat import Ayat, AyatText, TgFileId
 from srv.ayats.ayat_id_by_sura_ayat import AyatIdBySuraAyatNum
 from srv.ayats.ayat_identifier import PgAyatIdentifier
@@ -73,6 +74,21 @@ class PgAyat(Ayat):
         :return: Ayat
         """
         return PgAyat(ThroughAsyncIntable(ayat_id), database)
+
+    @classmethod
+    def from_callback_query(cls, callback_query: SupportsStr, database: Database):
+        """Создать аят из данных нажатой inline кнопки.
+
+        :param callback_query: SupportsStr
+        :param database: Database
+        :return: Ayat
+        """
+        return PgAyat(
+            ThroughAsyncIntable(
+                int(IntableRegularExpression(callback_query)),
+            ),
+            database,
+        )
 
     def identifier(self) -> PgAyatIdentifier:
         """Идентификатор аята.

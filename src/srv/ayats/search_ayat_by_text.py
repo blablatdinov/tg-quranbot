@@ -33,7 +33,6 @@ from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer
-from repository.ayats.favorite_ayats import FavoriteAyatsRepository
 from repository.ayats.neighbor_ayats import TextSearchNeighborAyatsRepository
 from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
@@ -76,12 +75,12 @@ class SearchAyatByTextAnswer(TgAnswer):
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,
-                FavoriteAyatsRepository(database),
                 TextSearchNeighborAyatsRepository(
                     database,
                     await result_ayat.identifier().id(),
                     AyatTextSearchQuery.for_reading_cs(self._redis, int(TgChatId(update))),
                 ),
                 AyatCallbackTemplateEnum.get_search_ayat,
+                database,
             ),
         ).build(update)

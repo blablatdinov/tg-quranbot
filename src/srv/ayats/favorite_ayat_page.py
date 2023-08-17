@@ -30,7 +30,6 @@ from app_types.update import Update
 from db.connection import database
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer
-from repository.ayats.favorite_ayats import FavoriteAyatRepositoryInterface
 from repository.ayats.neighbor_ayats import FavoriteNeighborAyats
 from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
@@ -48,7 +47,6 @@ class FavoriteAyatPage(TgAnswer):
     _debug_mode: bool
     _message_answer: TgAnswer
     _file_answer: TgAnswer
-    _favorite_ayats_repo: FavoriteAyatRepositoryInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -69,11 +67,11 @@ class FavoriteAyatPage(TgAnswer):
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,
-                self._favorite_ayats_repo,
                 FavoriteNeighborAyats(
                     await result_ayat.identifier().id(),
                     UserFavoriteAyats(database, TgChatId(update)),
                 ),
                 AyatCallbackTemplateEnum.get_favorite_ayat,
+                database,
             ),
         ).build(update)
