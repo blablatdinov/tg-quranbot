@@ -65,11 +65,11 @@ def rec(ast_elem, file_path):
             ))
             if fixed_query == normalized_query:
                 return
-            print('--------------------')
+            print('-' * 19)
             print(file_path)
             print(ast_elem.lineno)
             print(diff, end='')
-            print('--------------------')
+            print('-' * 19)
             # print(normalize_query(ast_elem.value.value))
             # pprint(errors)
     if isinstance(ast_elem, ast.ClassDef | ast.AsyncFunctionDef):
