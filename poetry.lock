@@ -1873,18 +1873,17 @@ files = [
 
 [[package]]
 name = "quranbot-schema-registry"
-version = "0.0.16"
+version = "0.0.17"
 description = "quranbot-schema-registry"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "quranbot_schema_registry-0.0.16-py3-none-any.whl", hash = "sha256:2c39fae20467048aacd2c436854eea4b0c5a5f95f692983acfc98f5cd5829578"},
-    {file = "quranbot_schema_registry-0.0.16.tar.gz", hash = "sha256:bd5d45ae3fd1b0168ef10188e6980f13841c34faf6ed5da3938fed281a424a2f"},
+    {file = "quranbot_schema_registry-0.0.17-py3-none-any.whl", hash = "sha256:adaa4b081ea19d4f61f64d6781d07816f2afee822b5197abbb218be73abaacb2"},
+    {file = "quranbot_schema_registry-0.0.17.tar.gz", hash = "sha256:83af6c9a83d01b36b4e7765f2e10c7ea86d9b5de1ea8c09099c7b6e7080940c3"},
 ]
 
 [package.dependencies]
 jsonschema = ">=4.7.2,<5.0.0"
-pydantic = ">=1.9.0,<2.0.0"
 
 [[package]]
 name = "redis"
@@ -2714,4 +2713,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.12"
-content-hash = "ce9261154db82c88a9b931bb9812caf0f00189cbaa4519ec90704120d9f9836e"
+content-hash = "e7a4dfeb47751ceac86f43c071acf91a040bd01c9182274da34344f2c7b6346a"
