@@ -65,7 +65,7 @@ class UsersRepositoryInterface(Protocol):
 class UsersRepository(UsersRepositoryInterface):
     """Класс для работы с хранилищем множества пользователей."""
 
-    _connection: Database
+    _pgsql: Database
 
     async def get_active_user_chat_ids(self) -> list[int]:
         """Получить активных пользователей.
@@ -77,7 +77,7 @@ class UsersRepository(UsersRepositoryInterface):
             FROM users
             WHERE is_active = 't'
         """
-        db_rows = await self._connection.fetch_all(query)
+        db_rows = await self._pgsql.fetch_all(query)
         rows = [dict(row) for row in db_rows]
         return [
             parsed_row.chat_id
@@ -99,7 +99,7 @@ class UsersRepository(UsersRepositoryInterface):
             WHERE chat_id in {0}
         """
         query = query_template.format(chat_ids_for_query)
-        await self._connection.execute(query, {'to': to})
+        await self._pgsql.execute(query, {'to': to})
 
     async def increment_user_days(self, chat_ids: list[int]):
         """Обнвоить статус пользователей.
@@ -112,7 +112,7 @@ class UsersRepository(UsersRepositoryInterface):
             WHERE chat_id in ({0})
         """
         query = query_template.format(','.join(map(str, chat_ids)))
-        await self._connection.execute(query)
+        await self._pgsql.execute(query)
 
     async def active_users_with_city(self) -> list[int]:
         """Вернуть активных пользователей, у которых есть город.
@@ -126,7 +126,7 @@ class UsersRepository(UsersRepositoryInterface):
             WHERE s.is_active = 't'
             ORDER BY chat_id
         """
-        db_rows = await self._connection.fetch_all(query)
+        db_rows = await self._pgsql.fetch_all(query)
         rows = [dict(row) for row in db_rows]
         return [
             parsed_row.chat_id

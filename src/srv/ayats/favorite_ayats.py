@@ -39,7 +39,7 @@ class FavoriteAyats(AsyncListable):
     """Избранные аяты."""
 
     _chat_id: SupportsInt
-    _database: Database
+    _pgsql: Database
 
     async def to_list(self) -> list[Ayat]:
         """Получить избранные аяты.
@@ -53,8 +53,8 @@ class FavoriteAyats(AsyncListable):
             WHERE u.chat_id = :chat_id
             ORDER BY fa.ayat_id
         """
-        rows = await self._database.fetch_all(query, {'chat_id': int(self._chat_id)})
+        rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
         return [
-            PgAyat(ThroughAsyncIntable(row['ayat_id']), self._database)
+            PgAyat(ThroughAsyncIntable(row['ayat_id']), self._pgsql)
             for row in rows
         ]

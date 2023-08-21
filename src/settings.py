@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     COMMIT_HASH: str = 'unknown'
     DATABASE_URL: str
     TEST_DATABASE_URL: str = ''
-    SENTRY_DSN: HttpUrl | None = None
+    SENTRY_DSN: HttpUrl | str = ''
     DEBUG: bool
     REDIS_DSN: RedisDsn
     ADMIN_CHAT_IDS: list[int] = [358610865]

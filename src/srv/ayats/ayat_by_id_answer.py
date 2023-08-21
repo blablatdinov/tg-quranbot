@@ -27,7 +27,7 @@ import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from db.connection import database
+from db.connection import pgsql
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgTextAnswer
 from srv.ayats.ayat_by_id_message_answer import AyatByIdMessageAnswer
@@ -52,7 +52,7 @@ class AyatByIdAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        result_ayat = PgAyat.from_callback_query(CallbackQueryData(update), database)
+        result_ayat = PgAyat.from_callback_query(CallbackQueryData(update), pgsql)
         return await TgAnswerList(
             AyatByIdMessageAnswer(
                 result_ayat, self._message_answer,

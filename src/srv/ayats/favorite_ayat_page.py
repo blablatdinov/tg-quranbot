@@ -27,7 +27,7 @@ import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from db.connection import database
+from db.connection import pgsql
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer
 from srv.ayats.ayat_answer import AyatAnswer
@@ -57,7 +57,7 @@ class FavoriteAyatPage(TgAnswer):
         result_ayat = (
             await FavoriteAyats(
                 TgChatId(update),
-                database,
+                pgsql,
             ).to_list()
         )[0]
         answers = (self._message_answer, self._file_answer)
@@ -69,9 +69,9 @@ class FavoriteAyatPage(TgAnswer):
                 result_ayat,
                 FavoriteNeighborAyats(
                     await result_ayat.identifier().id(),
-                    UserFavoriteAyats(database, TgChatId(update)),
+                    UserFavoriteAyats(pgsql, TgChatId(update)),
                 ),
                 AyatCallbackTemplateEnum.get_favorite_ayat,
-                database,
+                pgsql,
             ),
         ).build(update)

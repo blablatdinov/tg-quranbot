@@ -39,7 +39,7 @@ class AyatIsFavor(AsyncSupportsBool):
 
     _ayat: Ayat
     _chat_id: TgChatId
-    _db: Database
+    _pgsql: Database
 
     async def to_bool(self) -> bool:
         """Приведение к булевому значению.
@@ -52,7 +52,7 @@ class AyatIsFavor(AsyncSupportsBool):
             INNER JOIN users AS u ON fa.user_id = u.chat_id
             WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id
         """
-        count = await self._db.fetch_val(
+        count = await self._pgsql.fetch_val(
             query, {'ayat_id': await self._ayat.identifier().id(), 'chat_id': self._chat_id},
         )
         return bool(count)

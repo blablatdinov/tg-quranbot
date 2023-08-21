@@ -48,7 +48,7 @@ from services.start.user_already_exists import UserAlreadyExistsAnswer
 class FullStartAnswer(TgAnswer):
     """Ответ на команду /start."""
 
-    _database: Database
+    _pgsql: Database
     _empty_answer: TgAnswer
     _event_sink: SinkInterface
     _redis: Redis
@@ -69,16 +69,16 @@ class FullStartAnswer(TgAnswer):
                                 TgHtmlParseAnswer(
                                     TgMessageAnswer(self._empty_answer),
                                 ),
-                                UserRepository(self._database),
-                                AdminMessage('start', self._database),
-                                self._database,
+                                UserRepository(self._pgsql),
+                                AdminMessage('start', self._pgsql),
+                                self._pgsql,
                             ),
                             self._event_sink,
-                            UserRepository(self._database),
+                            UserRepository(self._pgsql),
                         ),
                         answer_to_sender,
-                        UserRepository(self._database),
-                        UsersRepository(self._database),
+                        UserRepository(self._pgsql),
+                        UsersRepository(self._pgsql),
                         self._event_sink,
                     ),
                     answer_to_sender,

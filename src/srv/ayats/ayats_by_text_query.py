@@ -39,7 +39,7 @@ class AyatsByTextQuery(AsyncListable):
     """Список аятов, найденных по текстовому запросу."""
 
     _query: SupportsStr
-    _database: Database
+    _pgsql: Database
 
     async def to_list(self) -> list[PgAyat]:
         """Список.
@@ -52,13 +52,13 @@ class AyatsByTextQuery(AsyncListable):
             WHERE a.content ILIKE :search_query
             ORDER BY a.ayat_id
         """
-        rows = await self._database.fetch_all(query, {
+        rows = await self._pgsql.fetch_all(query, {
             'search_query': '%{0}%'.format(self._query),
         })
         return [
             PgAyat(
                 ThroughAsyncIntable(row['id']),
-                self._database,
+                self._pgsql,
             )
             for row in rows
         ]

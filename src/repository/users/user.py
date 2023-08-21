@@ -97,7 +97,7 @@ class UserRepositoryInterface(Protocol):
 class UserRepository(UserRepositoryInterface):
     """Репозиторий для работы с пользователями."""
 
-    _connection: Database
+    _pgsql: Database
 
     async def create(self, chat_id: int, referrer_id: Optional[int] = None) -> User:
         """Метод для создания пользователя.
@@ -114,7 +114,7 @@ class UserRepository(UserRepositoryInterface):
             VALUES (:chat_id, :referrer_id, 2)
             RETURNING (chat_id, referrer_id)
         """
-        query_return_value = await self._connection.fetch_one(
+        query_return_value = await self._pgsql.fetch_one(
             query,
             {CHAT_ID_LITERAL: chat_id, 'referrer_id': referrer_id},
         )
@@ -147,7 +147,7 @@ class UserRepository(UserRepositoryInterface):
             FROM users
             WHERE chat_id = :chat_id
         """
-        record = await self._connection.fetch_one(query, {CHAT_ID_LITERAL: chat_id})
+        record = await self._pgsql.fetch_one(query, {CHAT_ID_LITERAL: chat_id})
         if not record:
             raise UserNotFoundError('Пользователь с chat_id: {0} не найден'.format(chat_id))
         return User.parse_obj(dict(record))
@@ -159,7 +159,7 @@ class UserRepository(UserRepositoryInterface):
         :returns: bool
         """
         query = 'SELECT COUNT(*) FROM users WHERE chat_id = :chat_id'
-        count = await self._connection.fetch_val(query, {CHAT_ID_LITERAL: chat_id})
+        count = await self._pgsql.fetch_val(query, {CHAT_ID_LITERAL: chat_id})
         return bool(count)
 
     async def update_city(self, chat_id: int, city_id: uuid.UUID):
@@ -173,7 +173,7 @@ class UserRepository(UserRepositoryInterface):
             SET city_id = :city_id
             WHERE chat_id = :chat_id
         """
-        await self._connection.execute(query, {'city_id': str(city_id), CHAT_ID_LITERAL: chat_id})
+        await self._pgsql.execute(query, {'city_id': str(city_id), CHAT_ID_LITERAL: chat_id})
 
     async def update_referrer(self, chat_id: int, referrer_id: int):
         """Обновить город пользователя.
@@ -186,7 +186,7 @@ class UserRepository(UserRepositoryInterface):
             SET referrer_id = :referrer_id
             WHERE chat_id = :chat_id
         """
-        await self._connection.execute(query, {'referrer_id': referrer_id, CHAT_ID_LITERAL: chat_id})
+        await self._pgsql.execute(query, {'referrer_id': referrer_id, CHAT_ID_LITERAL: chat_id})
 
     async def get_by_id(self, user_id: int) -> User:
         """Метод для получения пользователя.
@@ -204,7 +204,7 @@ class UserRepository(UserRepositoryInterface):
                 city_id
             FROM users WHERE legacy_id = :user_id
         """
-        row = await self._connection.fetch_one(query, {'user_id': user_id})
+        row = await self._pgsql.fetch_one(query, {'user_id': user_id})
         if not row:
             raise UserNotFoundError('Пользователь с legacy_id: {0} не найден'.format(user_id))
         return User.parse_obj(row)
