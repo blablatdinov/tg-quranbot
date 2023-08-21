@@ -25,7 +25,7 @@ from contextlib import suppress
 
 from redis import asyncio as aioredis
 
-from db.connection import database
+from db.connection import pgsql
 from event_recieve import RecievedEvents
 from integrations.event_handlers.prayers_sended import SendPrayersEvent
 from integrations.nats_integration import NatsSink
@@ -55,7 +55,7 @@ def main(sys_args) -> None:
     nats_sink = NatsSink()
     quranbot_polling_app = CliApp(
         DatabaseConnectedApp(
-            database,
+            pgsql,
             AppWithGetMe(
                 PollingApp(
                     PollingUpdatesIterator(
@@ -71,7 +71,7 @@ def main(sys_args) -> None:
                         SendableAnswer(
                             TgMeasureAnswer(
                                 QuranbotAnswer(
-                                    database,
+                                    pgsql,
                                     aioredis.from_url(str(settings.REDIS_DSN)),  # type: ignore
                                     nats_sink,
                                 ),
@@ -93,9 +93,9 @@ def main(sys_args) -> None:
             'check_user_status',
             CliApp(
                 DatabaseConnectedApp(
-                    database,
+                    pgsql,
                     CheckUsersStatus(
-                        UsersRepository(database),
+                        UsersRepository(pgsql),
                         TgEmptyAnswer(settings.API_TOKEN),
                     ),
                 ),
@@ -105,12 +105,12 @@ def main(sys_args) -> None:
             'recieve_events',
             CliApp(
                 DatabaseConnectedApp(
-                    database,
+                    pgsql,
                     RecievedEvents(
                         SendPrayersEvent(
-                            UsersRepository(database),
+                            UsersRepository(pgsql),
                             TgEmptyAnswer(settings.API_TOKEN),
-                            database,
+                            pgsql,
                         ),
                     ),
                 ),

@@ -63,7 +63,7 @@ class SendPrayersEvent(RecievedEventInterface):
 
     _users_repo: UsersRepositoryInterface
     _empty_answer: TgAnswer
-    _database: Database
+    _pgsql: Database
 
     name = 'Prayers.Sended'
     version = 1
@@ -97,12 +97,12 @@ class SendPrayersEvent(RecievedEventInterface):
         target_date = datetime.datetime.now() + datetime.timedelta(days=1)
         for chat_id in chat_ids:
             safe_not_found_prayers = SafeNotFoundPrayers(
-                self._database,
+                self._pgsql,
                 SafeUserPrayers(
-                    UserPrayers(self._database),
+                    UserPrayers(self._pgsql),
                     NewUserPrayers(
-                        self._database,
-                        UserPrayers(self._database),
+                        self._pgsql,
+                        UserPrayers(self._pgsql),
                     ),
                 ),
             )

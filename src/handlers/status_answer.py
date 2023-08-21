@@ -41,7 +41,7 @@ class StatusAnswer(TgAnswer):
     """Ответ со статусом системы."""
 
     _empty_answer: TgAnswer
-    _db: Database
+    _pgsql: Database
     _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -55,14 +55,14 @@ class StatusAnswer(TgAnswer):
                 TgMessageAnswer(self._empty_answer),
             ),
             '{0}\n{1}'.format(
-                await self._measure_db(),
+                await self._measure_pgsql(),
                 await self._measure_redis(),
             ),
         ).build(update)
 
-    async def _measure_db(self) -> str:
+    async def _measure_pgsql(self) -> str:
         db_start = time.time()
-        await self._db.execute('SELECT 1')
+        await self._pgsql.execute('SELECT 1')
         return 'DB: {0} ms'.format(float(
             RoundedFloat(
                 Millis.seconds_ctor(time.time() - db_start),

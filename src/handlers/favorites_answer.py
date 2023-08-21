@@ -49,7 +49,7 @@ class FavoriteAyatsAnswer(TgAnswer):
     """Ответ с временами намаза."""
 
     _debug: bool
-    _database: Database
+    _pgsql: Database
     _redis: Redis
     _empty_answer: TgAnswer
 
@@ -70,7 +70,7 @@ class FavoriteAyatsAnswer(TgAnswer):
                         ),
                     ),
                     TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
-                    self._database,
+                    self._pgsql,
                 ),
                 TgTextAnswer(
                     answer_to_sender,

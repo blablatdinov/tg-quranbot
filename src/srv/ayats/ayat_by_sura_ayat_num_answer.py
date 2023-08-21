@@ -27,7 +27,7 @@ import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from db.connection import database
+from db.connection import pgsql
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer
 from srv.ayats.ayat_answer import AyatAnswer
@@ -53,7 +53,7 @@ class AyatBySuraAyatNumAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        result_ayat = await PgAyat.by_sura_ayat_num(MessageText(update), database)
+        result_ayat = await PgAyat.by_sura_ayat_num(MessageText(update), pgsql)
         answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,
@@ -61,8 +61,8 @@ class AyatBySuraAyatNumAnswer(TgAnswer):
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,
-                PgNeighborAyats(database, await result_ayat.identifier().id()),
+                PgNeighborAyats(pgsql, await result_ayat.identifier().id()),
                 AyatCallbackTemplateEnum.get_ayat,
-                database,
+                pgsql,
             ),
         ).build(update)

@@ -43,7 +43,7 @@ class PgAyat(Ayat):
     """Аят."""
 
     _ayat_id: AsyncIntable
-    _database: Database
+    _pgsql: Database
 
     @classmethod
     async def by_sura_ayat_num(cls, sura_ayat_num: SupportsStr, database: Database) -> Ayat:
@@ -93,7 +93,7 @@ class PgAyat(Ayat):
 
         :return: int
         """
-        return PgAyatIdentifier(self._ayat_id, self._database)
+        return PgAyatIdentifier(self._ayat_id, self._pgsql)
 
     async def text(self) -> AyatText:
         """Текст аята.
@@ -115,7 +115,7 @@ class PgAyat(Ayat):
             WHERE a.ayat_id = :ayat_id
         """
         ayat_id = await self._ayat_id.to_int()
-        row = await self._database.fetch_one(query, {'ayat_id': ayat_id})
+        row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
         if not row:
             raise AyatNotFoundError('Аят с id={0} не найден'.format(ayat_id))
         template = '<a href="{link}">{sura}:{ayat})</a>\n{arab_text}\n\n{content}\n\n<i>{transliteration}</i>'
@@ -141,7 +141,7 @@ class PgAyat(Ayat):
             WHERE a.ayat_id = :ayat_id
         """
         ayat_id = await self._ayat_id.to_int()
-        row = await self._database.fetch_one(query, {'ayat_id': ayat_id})
+        row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
         if not row:
             raise AyatNotFoundError('Аят с id={0} не найден'.format(ayat_id))
         return row['telegram_file_id']
@@ -159,7 +159,7 @@ class PgAyat(Ayat):
             WHERE a.ayat_id = :ayat_id
         """
         ayat_id = await self._ayat_id.to_int()
-        row = await self._database.fetch_one(query, {'ayat_id': ayat_id})
+        row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
         if not row:
             raise AyatNotFoundError('Аят с id={0} не найден'.format(ayat_id))
         return row['link']

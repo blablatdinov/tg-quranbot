@@ -42,7 +42,7 @@ from services.reset_state_answer import ResetStateAnswer
 class PrayerTimeAnswer(TgAnswer):
     """Ответ с временами намаза."""
 
-    _database: Database
+    _pgsql: Database
     _redis: Redis
     _empty_answer: TgAnswer
 
@@ -58,12 +58,12 @@ class PrayerTimeAnswer(TgAnswer):
                 PrayerForUserAnswer(
                     answer_to_sender,
                     SafeNotFoundPrayers(
-                        self._database,
+                        self._pgsql,
                         SafeUserPrayers(
-                            UserPrayers(self._database),
+                            UserPrayers(self._pgsql),
                             NewUserPrayers(
-                                self._database,
-                                UserPrayers(self._database),
+                                self._pgsql,
+                                UserPrayers(self._pgsql),
                             ),
                         ),
                     ),

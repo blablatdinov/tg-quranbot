@@ -50,7 +50,7 @@ class StartAnswer(TgAnswer):
     _origin: TgAnswer
     _user_repo: UserRepositoryInterface
     _admin_message: AdminMessageInterface
-    _database: Database
+    _pgsql: Database
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
@@ -89,7 +89,7 @@ class StartAnswer(TgAnswer):
     async def _start_answers(self) -> tuple[str, str]:
         return (
             await self._admin_message.text(),
-            await PgAyat(ThroughAsyncIntable(1), self._database).text(),
+            await PgAyat(ThroughAsyncIntable(1), self._pgsql).text(),
         )
 
     async def _check_user_exists(self, update: Update) -> None:

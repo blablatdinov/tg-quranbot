@@ -29,7 +29,7 @@ from pyeo import elegant
 
 from app_types.intable import SyncToAsyncIntable
 from app_types.update import Update
-from db.connection import database
+from db.connection import pgsql
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_id import MessageId
@@ -54,7 +54,7 @@ from srv.ayats.pg_ayat import PgAyat
 class ChangeFavoriteAyatAnswer(TgAnswer):
     """Ответ на запрос о смене аята в избранном."""
 
-    _connection: Database
+    _pgsql: Database
     _origin: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -70,7 +70,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                     str(CallbackQueryData(update)),
                 ),
             ),
-            database,
+            pgsql,
         )
         if status.change_to():
             query = """
@@ -84,7 +84,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                 DELETE FROM favorite_ayats
                 WHERE ayat_id = :ayat_id AND user_id = :user_id
             """
-        await self._connection.execute(
+        await self._pgsql.execute(
             query, {'ayat_id': status.ayat_id(), 'user_id': int(TgChatId(update))},
         )
         return await TgChatIdAnswer(
@@ -94,10 +94,10 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                     AyatAnswerKeyboard(
                         result_ayat,
                         PgNeighborAyats(
-                            database, await result_ayat.identifier().id(),
+                            pgsql, await result_ayat.identifier().id(),
                         ),
                         AyatCallbackTemplateEnum.get_favorite_ayat,
-                        database,
+                        pgsql,
                     ),
                 ),
                 int(MessageId(update)),

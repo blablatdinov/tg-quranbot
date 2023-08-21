@@ -50,7 +50,7 @@ class PgAyatIdentifier(AyatIdentifier):
     """Информация для идентификации аята."""
 
     _ayat_id: AsyncIntable
-    _database: Database
+    _pgsql: Database
 
     async def id(self) -> AyatId:
         """Идентификатор в хранилище.
@@ -71,7 +71,7 @@ class PgAyatIdentifier(AyatIdentifier):
             WHERE a.ayat_id = :ayat_id
         """
         ayat_id = await self.id()
-        row = await self._database.fetch_one(query, {'ayat_id': ayat_id})
+        row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
         if not row:
             raise AyatNotFoundError
         return row['sura_id']
@@ -88,7 +88,7 @@ class PgAyatIdentifier(AyatIdentifier):
             WHERE ayat_id = :ayat_id
         """
         ayat_id = await self.id()
-        row = await self._database.fetch_one(query, {'ayat_id': ayat_id})
+        row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
         if not row:
             raise AyatNotFoundError
         return row['ayat_number']

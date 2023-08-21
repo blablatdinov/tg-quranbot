@@ -37,7 +37,7 @@ from srv.ayats.pg_ayat import PgAyat
 class UserFavoriteAyats(AsyncListable[Ayat]):
     """Избранные аяты пользователя."""
 
-    _database: Database
+    _pgsql: Database
     _chat_id: SupportsInt
 
     async def to_list(self) -> list[Ayat]:
@@ -53,7 +53,7 @@ class UserFavoriteAyats(AsyncListable[Ayat]):
             WHERE u.chat_id = :chat_id
             ORDER BY a.ayat_id
         """
-        rows = await self._database.fetch_all(query, {'chat_id': int(self._chat_id)})
+        rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
         return [
-            PgAyat.from_int(row['id'], self._database) for row in rows
+            PgAyat.from_int(row['id'], self._pgsql) for row in rows
         ]

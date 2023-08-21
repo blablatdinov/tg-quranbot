@@ -38,7 +38,7 @@ class UserPrayerDate(AsyncDateTimeInterface):
     """Объект времени намаза привязанного к пользователю."""
 
     _user_prayer_id: SupportsInt
-    _database: Database
+    _pgsql: Database
 
     async def datetime(self) -> datetime.datetime:
         """Дата.
@@ -52,7 +52,7 @@ class UserPrayerDate(AsyncDateTimeInterface):
             INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id
             WHERE prayer_at_user_id = :user_prayer_id
         """
-        row = await self._database.fetch_one(query, {'user_prayer_id': int(self._user_prayer_id)})
+        row = await self._pgsql.fetch_one(query, {'user_prayer_id': int(self._user_prayer_id)})
         if not row:
             raise UserHasNotGeneratedPrayersError
         return row['day_id']

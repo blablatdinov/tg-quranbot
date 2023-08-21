@@ -82,10 +82,10 @@ class AppWithGetMe(Runable):
 class DatabaseConnectedApp(Runable):
     """Декоратор для подключения к БД."""
 
-    _database: Database
+    _pgsql: Database
     _app: Runable
 
     async def run(self):
         """Запуск."""
-        await self._database.connect()
+        await self._pgsql.connect()
         await self._app.run()

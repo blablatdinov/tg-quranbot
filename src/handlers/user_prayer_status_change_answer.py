@@ -27,7 +27,7 @@ import httpx
 from pyeo import elegant
 
 from app_types.intable import ThroughIntable
-from db.connection import database
+from db.connection import pgsql
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.message_id import MessageId
 from integrations.tg.tg_answers.interface import TgAnswer
@@ -67,7 +67,7 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
                 PrayersWithoutSunrise(self._user_prayers),
                 await UserPrayerDate(
                     ThroughIntable(prayer_status.user_prayer_id()),
-                    database,
+                    pgsql,
                 ).datetime(),
             ),
         ).build(update)

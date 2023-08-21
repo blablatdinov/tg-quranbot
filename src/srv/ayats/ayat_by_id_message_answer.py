@@ -27,7 +27,7 @@ import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from db.connection import database
+from db.connection import pgsql
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgTextAnswer
 from srv.ayats.ayat import Ayat
@@ -60,13 +60,13 @@ class AyatByIdMessageAnswer(TgAnswer):
             ),
             AyatFavoriteKeyboardButton(
                 NeighborAyatKeyboard(
-                    PgNeighborAyats(database, await self._result_ayat.identifier().id()),
+                    PgNeighborAyats(pgsql, await self._result_ayat.identifier().id()),
                     AyatCallbackTemplateEnum.get_ayat,
                 ),
                 AyatIsFavor(
                     self._result_ayat,
                     TgChatId(update),
-                    database,
+                    pgsql,
                 ),
                 self._result_ayat,
             ),
