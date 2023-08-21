@@ -130,7 +130,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgMessageRegexAnswer(
                     r'\d+:\d+',
-                    SearchAyatByNumbersAnswer(settings.DEBUG, empty_answer, self._redis),
+                    SearchAyatByNumbersAnswer(settings.DEBUG, empty_answer, self._redis, self._pgsql),
                 ),
                 TgMessageRegexAnswer(
                     'Найти аят',
@@ -162,7 +162,7 @@ class QuranbotAnswer(TgAnswer):
                 StepAnswer(
                     UserStep.ayat_search.value,
                     SearchAyatByKeywordAnswer(
-                        settings.DEBUG, html_to_sender, audio_to_sender, answer_to_sender, self._redis,
+                        settings.DEBUG, html_to_sender, audio_to_sender, answer_to_sender, self._redis, self._pgsql,
                     ),
                     self._redis,
                 ),
@@ -174,6 +174,7 @@ class QuranbotAnswer(TgAnswer):
                         ),
                         UserPrayerStatus(self._pgsql),
                         UserPrayers(self._pgsql),
+                        self._pgsql,
                     ),
                 ),
                 TgCallbackQueryRegexAnswer(
@@ -182,6 +183,7 @@ class QuranbotAnswer(TgAnswer):
                         settings.DEBUG,
                         html_to_sender,
                         audio_to_sender,
+                        self._pgsql,
                     ),
                 ),
                 StepAnswer(
@@ -194,6 +196,7 @@ class QuranbotAnswer(TgAnswer):
                                 html_to_sender,
                                 audio_to_sender,
                                 self._redis,
+                                self._pgsql,
                             ),
                             self._redis,
                         ),
@@ -206,6 +209,7 @@ class QuranbotAnswer(TgAnswer):
                         settings.DEBUG,
                         html_to_sender,
                         audio_to_sender,
+                        self._pgsql,
                     ),
                 ),
                 TgCallbackQueryRegexAnswer(
