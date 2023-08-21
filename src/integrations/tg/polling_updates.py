@@ -152,7 +152,7 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
                     self._updates_url.generate(self._offset),
                     timeout=int(self._updates_timeout),
                 )
-            except httpx.ReadTimeout:
+            except (httpx.ReadTimeout, httpx.ConnectTimeout):
                 return []
             resp_content = resp.text
             try:
