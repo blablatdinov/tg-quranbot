@@ -21,11 +21,12 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from pathlib import Path
-from typing import Optional, final
+from typing import final
 from urllib.parse import urljoin
 
 import sentry_sdk
-from pydantic import BaseSettings, HttpUrl, RedisDsn
+from pydantic import HttpUrl, RedisDsn
+from pydantic_settings import BaseSettings
 
 BASE_DIR = Path(__file__).parent
 
@@ -39,7 +40,7 @@ class Settings(BaseSettings):
     COMMIT_HASH: str = 'unknown'
     DATABASE_URL: str
     TEST_DATABASE_URL: str = ''
-    SENTRY_DSN: Optional[HttpUrl] = None
+    SENTRY_DSN: HttpUrl | None = None
     DEBUG: bool
     REDIS_DSN: RedisDsn
     ADMIN_CHAT_IDS: list[int] = [358610865]
@@ -83,6 +84,6 @@ settings = Settings()  # type: ignore[call-arg]
 
 if settings.SENTRY_DSN:
     sentry_sdk.init(
-        dsn=settings.SENTRY_DSN,
+        dsn=str(settings.SENTRY_DSN),
         traces_sample_rate=1.0,
     )
