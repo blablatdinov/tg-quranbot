@@ -38,9 +38,7 @@ class SearchAyatByKeywordAnswer(TgAnswer):
     """Ответ с временами намаза."""
 
     _debug: bool
-    _html_to_sender: TgAnswer
-    _audio_to_sender: TgAnswer
-    _answer_to_sender: TgAnswer
+    _empty_answer: TgAnswer
     _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -55,8 +53,7 @@ class SearchAyatByKeywordAnswer(TgAnswer):
                 CachedAyatSearchQueryAnswer(
                     SearchAyatByTextAnswer(
                         self._debug,
-                        self._html_to_sender,
-                        self._audio_to_sender,
+                        self._empty_answer,
                         self._redis,
                     ),
                     self._redis,

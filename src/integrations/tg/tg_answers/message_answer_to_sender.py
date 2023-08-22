@@ -24,46 +24,31 @@ from typing import final
 
 import attrs
 import httpx
-from databases import Database
-from pyeo import elegant
-from redis.asyncio import Redis
+from furl import furl
 
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
-from services.reset_state_answer import ResetStateAnswer
-from srv.ayats.favorite_ayat_answer import FavoriteAyatAnswer
-from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
+from integrations.tg.chat_id import TgChatId
+from integrations.tg.tg_answers import TgHtmlParseAnswer, TgMessageAnswer
+from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
-class FavoriteAyatsAnswer(TgAnswer):
-    """Ответ с временами намаза."""
+class TgHtmlMessageAnswerToSender(TgAnswer):
+    """Ответ пользователю, от которого пришло сообщение."""
 
-    _debug: bool
-    _pgsql: Database
-    _redis: Redis
-    _empty_answer: TgAnswer
+    _origin: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
+        """Собрать ответ.
 
         :param update: Update
         :return: list[httpx.Request]
         """
-        answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
-        return await ResetStateAnswer(
-            FavoriteAyatEmptySafeAnswer(
-                FavoriteAyatAnswer(
-                    self._debug,
-                    self._empty_answer,
-                    self._pgsql,
-                ),
-                TgTextAnswer(
-                    answer_to_sender,
-                    'Вы еще не добавляли аятов в избранное',
-                ),
-            ),
-            self._redis,
-        ).build(update)
+        return [
+            httpx.Request(
+                request.method,
+                furl(request.url).add({'chat_id': int(TgChatId(update))}).url,
+            )
+            for request in await TgHtmlParseAnswer(TgMessageAnswer(self._origin)).build(update)
+        ]

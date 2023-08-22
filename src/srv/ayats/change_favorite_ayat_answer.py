@@ -36,6 +36,7 @@ from integrations.tg.message_id import MessageId
 from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerMarkup,
+    TgAnswerToSender,
     TgChatIdAnswer,
     TgKeyboardEditAnswer,
     TgMessageIdAnswer,
@@ -90,7 +91,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
         return await TgChatIdAnswer(
             TgMessageIdAnswer(
                 TgAnswerMarkup(
-                    TgKeyboardEditAnswer(self._origin),
+                    TgKeyboardEditAnswer(TgAnswerToSender(self._origin)),
                     AyatAnswerKeyboard(
                         result_ayat,
                         PgNeighborAyats(

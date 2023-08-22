@@ -45,8 +45,7 @@ class FavoriteAyatPage(TgAnswer):
     """Страница с избранным аятом."""
 
     _debug_mode: bool
-    _message_answer: TgAnswer
-    _file_answer: TgAnswer
+    _empty_answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -60,10 +59,9 @@ class FavoriteAyatPage(TgAnswer):
                 pgsql,
             ).to_list()
         )[0]
-        answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,
-            answers,
+            self._empty_answer,
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,

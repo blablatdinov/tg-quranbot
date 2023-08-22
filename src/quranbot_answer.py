@@ -41,15 +41,14 @@ from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerFork,
     TgAnswerToSender,
-    TgAudioAnswer,
     TgCallbackQueryRegexAnswer,
     TgEmptyAnswer,
-    TgHtmlParseAnswer,
     TgKeyboardEditAnswer,
     TgMessageAnswer,
     TgMessageRegexAnswer,
     TgTextAnswer,
 )
+from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from repository.admin_message import AdminMessage
 from repository.podcast import RandomPodcast
 from repository.prayer_time import UserPrayers
@@ -101,14 +100,6 @@ class QuranbotAnswer(TgAnswer):
 
     def _pre_build(self) -> None:
         empty_answer = TgEmptyAnswer(settings.API_TOKEN)
-        # TODO: перенести сборку этих классов в хендлеры
-        answer_to_sender = TgAnswerToSender(TgMessageAnswer(empty_answer))
-        audio_to_sender = TgAnswerToSender(TgAudioAnswer(empty_answer))
-        html_to_sender = TgAnswerToSender(
-            TgHtmlParseAnswer(
-                TgMessageAnswer(empty_answer),
-            ),
-        )
         self._answer = SafeFork(
             TgAnswerFork(
                 TgMessageRegexAnswer(
@@ -135,7 +126,7 @@ class QuranbotAnswer(TgAnswer):
                 TgMessageRegexAnswer(
                     'Найти аят',
                     ChangeStateAnswer(
-                        TgTextAnswer(answer_to_sender, 'Введите слово для поиска:'),
+                        TgTextAnswer(TgHtmlMessageAnswerToSender(empty_answer), 'Введите слово для поиска:'),
                         self._redis,
                         UserStep.ayat_search,
                     ),
@@ -143,7 +134,10 @@ class QuranbotAnswer(TgAnswer):
                 TgMessageRegexAnswer(
                     'Поменять город',
                     InviteSetCityAnswer(
-                        TgTextAnswer(answer_to_sender, 'Отправьте местоположение или воспользуйтесь поиском'),
+                        TgTextAnswer(
+                            TgHtmlMessageAnswerToSender(empty_answer),
+                            'Отправьте местоположение или воспользуйтесь поиском',
+                        ),
                         self._redis,
                     ),
                 ),
@@ -157,13 +151,11 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgMessageRegexAnswer(
                     '/help',
-                    HelpAnswer(html_to_sender, AdminMessage('start', self._pgsql), self._redis),
+                    HelpAnswer(empty_answer, AdminMessage('start', self._pgsql), self._redis),
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,
-                    SearchAyatByKeywordAnswer(
-                        settings.DEBUG, html_to_sender, audio_to_sender, answer_to_sender, self._redis,
-                    ),
+                    SearchAyatByKeywordAnswer(settings.DEBUG, empty_answer, self._redis),
                     self._redis,
                 ),
                 TgCallbackQueryRegexAnswer(
@@ -178,23 +170,14 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getAyat',
-                    AyatByIdAnswer(
-                        settings.DEBUG,
-                        html_to_sender,
-                        audio_to_sender,
-                    ),
+                    AyatByIdAnswer(settings.DEBUG, empty_answer),
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,
                     TgCallbackQueryRegexAnswer(
                         'getSAyat',
                         HighlightedSearchAnswer(
-                            SearchAyatByTextCallbackAnswer(
-                                settings.DEBUG,
-                                html_to_sender,
-                                audio_to_sender,
-                                self._redis,
-                            ),
+                            SearchAyatByTextCallbackAnswer(settings.DEBUG, empty_answer, self._redis),
                             self._redis,
                         ),
                     ),
@@ -202,18 +185,11 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getFAyat',
-                    FavoriteAyatPage(
-                        settings.DEBUG,
-                        html_to_sender,
-                        audio_to_sender,
-                    ),
+                    FavoriteAyatPage(settings.DEBUG, empty_answer),
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(addToFavor|removeFromFavor)',
-                    ChangeFavoriteAyatAnswer(
-                        self._pgsql,
-                        answer_to_sender,
-                    ),
+                    ChangeFavoriteAyatAnswer(self._pgsql, empty_answer),
                 ),
                 InlineQueryAnswer(
                     empty_answer,
