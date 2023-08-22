@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from furl import furl
 from pyeo import elegant
 
 from integrations.tg.tg_answers.interface import TgAnswer
@@ -45,6 +46,9 @@ class TgTextAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         return [
-            httpx.Request(request.method, request.url.copy_add_param('text', self._text))
+            httpx.Request(
+                request.method,
+                furl(request.url).add({'text': self._text}).url,
+            )
             for request in await self._origin.build(update)
         ]

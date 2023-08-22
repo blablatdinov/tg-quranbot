@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from furl import furl
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
@@ -46,7 +47,7 @@ class TgAnswerToSender(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                request.url.copy_add_param('chat_id', int(TgChatId(update))),
+                furl(request.url).add({'chat_id'}, int(TgChatId(update))).url,
             )
             for request in await self._origin.build(update)
         ]

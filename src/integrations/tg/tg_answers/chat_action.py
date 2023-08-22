@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from furl import furl
 from pyeo import elegant
 
 from integrations.tg.tg_answers.interface import TgAnswer
@@ -47,6 +48,10 @@ class TgChatAction(TgAnswer):
         :return: list[httpx.Request]
         """
         return [
-            httpx.Request(request.method, request.url.join('sendChatAction'), headers=request.headers)
+            httpx.Request(
+                request.method,
+                (furl(request.url) / 'sendChatAction').url,
+                headers=request.headers
+            )
             for request in await self._origin.build(update)
         ]

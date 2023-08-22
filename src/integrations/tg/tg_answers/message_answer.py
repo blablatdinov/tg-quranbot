@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from furl import furl
 from pyeo import elegant
 
 from integrations.tg.tg_answers.interface import TgAnswer
@@ -44,6 +45,9 @@ class TgMessageAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         return [
-            httpx.Request(request.method, request.url.join('sendMessage'))
+            httpx.Request(
+                request.method,
+                (furl(request.url) / 'sendMessage').url,
+            )
             for request in await self._origin.build(update)
         ]

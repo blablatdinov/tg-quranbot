@@ -25,6 +25,7 @@ from typing import final
 import attrs
 import httpx
 from pyeo import elegant
+from furl import furl
 
 from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer
@@ -45,6 +46,6 @@ class TgAudioAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         return [
-            httpx.Request(request.method, request.url.join('sendAudio'))
+            httpx.Request(request.method, (furl(request.url) / 'sendAudio').url)
             for request in await self._origin.build(update)
         ]

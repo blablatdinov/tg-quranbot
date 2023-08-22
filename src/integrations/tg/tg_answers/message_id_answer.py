@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from furl import furl
 from pyeo import elegant
 
 from integrations.tg.tg_answers.interface import TgAnswer
@@ -47,7 +48,7 @@ class TgMessageIdAnswer(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                request.url.copy_add_param('message_id', self._message_id),
+                furl(request.url).add({'message_id': self._message_id}),
                 stream=request.stream,
                 headers=request.headers,
             )

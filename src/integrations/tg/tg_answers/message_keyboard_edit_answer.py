@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from furl import furl
 from pyeo import elegant
 
 from integrations.tg.tg_answers.interface import TgAnswer
@@ -46,7 +47,7 @@ class TgKeyboardEditAnswer(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                request.url.join('editMessageReplyMarkup'),
+                (furl(request.url) / 'editMessageReplyMarkup').url,
                 stream=request.stream,
                 headers=request.headers,
             )
