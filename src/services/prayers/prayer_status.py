@@ -80,7 +80,7 @@ class UserPrayerStatusInterface(Protocol):
 class UserPrayerStatus(UserPrayerStatusInterface):
     """Статус прочитанности намаза."""
 
-    _connection: Database
+    _pgsql: Database
 
     async def change(self, prayer_status: PrayerStatus):
         """Изменить статус прочитанности.
@@ -92,7 +92,7 @@ class UserPrayerStatus(UserPrayerStatusInterface):
             SET is_read = :is_read
             WHERE prayer_at_user_id = :prayer_id
         """
-        await self._connection.execute(query, {
+        await self._pgsql.execute(query, {
             'is_read': prayer_status.change_to(),
             'prayer_id': prayer_status.user_prayer_id(),
         })

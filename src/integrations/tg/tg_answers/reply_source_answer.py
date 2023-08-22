@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from furl import furl
 from pyeo import elegant
 
 from app_types.update import Update
@@ -47,7 +48,7 @@ class TgReplySourceAnswer(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                request.url.copy_add_param('reply_to_message_id', 4),
+                (furl(request.url).add({'reply_to_message_id': 4})).url,
             )
             for request in await self._origin.build(update)
         ]

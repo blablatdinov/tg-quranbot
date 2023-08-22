@@ -112,7 +112,7 @@ class FavoriteNeighborAyats(NeighborAyats):
 class PgNeighborAyats(NeighborAyats):
     """Класс для работы с соседними аятами в хранилище."""
 
-    _connection: Database
+    _pgsql: Database
     _ayat_id: int
 
     async def left_neighbor(self) -> Ayat:
@@ -126,10 +126,10 @@ class PgNeighborAyats(NeighborAyats):
             FROM ayats
             WHERE ayat_id = :ayat_id
         """
-        row = await self._connection.fetch_one(query, {AYAT_ID: self._ayat_id - 1})
+        row = await self._pgsql.fetch_one(query, {AYAT_ID: self._ayat_id - 1})
         if not row:
             raise AyatNotFoundError
-        return PgAyat.from_int(row[AYAT_ID], self._connection)
+        return PgAyat.from_int(row[AYAT_ID], self._pgsql)
 
     async def right_neighbor(self) -> Ayat:
         """Получить правый аят.
@@ -142,18 +142,18 @@ class PgNeighborAyats(NeighborAyats):
             FROM ayats
             WHERE ayats.ayat_id = :ayat_id
         """
-        row = await self._connection.fetch_one(query, {AYAT_ID: self._ayat_id + 1})
+        row = await self._pgsql.fetch_one(query, {AYAT_ID: self._ayat_id + 1})
         if not row:
             raise AyatNotFoundError
-        return PgAyat.from_int(row[AYAT_ID], self._connection)
+        return PgAyat.from_int(row[AYAT_ID], self._pgsql)
 
     async def page(self) -> str:
         """Информация о странице.
 
         :return: str
         """
-        ayats_count = await self._connection.fetch_val('SELECT COUNT(*) FROM ayats')
-        actual_page_num = await self._connection.fetch_val(
+        ayats_count = await self._pgsql.fetch_val('SELECT COUNT(*) FROM ayats')
+        actual_page_num = await self._pgsql.fetch_val(
             'SELECT COUNT(*) FROM ayats WHERE ayat_id <= :ayat_id',
             {AYAT_ID: self._ayat_id},
         )
@@ -166,7 +166,7 @@ class PgNeighborAyats(NeighborAyats):
 class TextSearchNeighborAyats(NeighborAyats):
     """Класс для работы с сосденими аятами, при текстовом поиске."""
 
-    _connection: Database
+    _pgsql: Database
     _ayat_id: int
     _query: TextSearchQuery
     _search_sql_query = """
@@ -183,11 +183,11 @@ class TextSearchNeighborAyats(NeighborAyats):
         :raises AyatNotFoundError: if ayat not found
         """
         search_query = '%{0}%'.format(await self._query.read())
-        rows = await self._connection.fetch_all(self._search_sql_query, {'search_query': search_query})
+        rows = await self._pgsql.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[1:], start=1):
             if row['ayat_id'] == self._ayat_id:
                 try:
-                    return PgAyat.from_int(rows[idx - 1][AYAT_ID], self._connection)
+                    return PgAyat.from_int(rows[idx - 1][AYAT_ID], self._pgsql)
                 except IndexError as err:
                     raise AyatNotFoundError from err
         raise AyatNotFoundError
@@ -199,11 +199,11 @@ class TextSearchNeighborAyats(NeighborAyats):
         :raises AyatNotFoundError: if ayat not found
         """
         search_query = '%{0}%'.format(await self._query.read())
-        rows = await self._connection.fetch_all(self._search_sql_query, {'search_query': search_query})
+        rows = await self._pgsql.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[:-1]):
             if row['ayat_id'] == self._ayat_id:
                 try:
-                    return PgAyat.from_int(rows[idx + 1][AYAT_ID], self._connection)
+                    return PgAyat.from_int(rows[idx + 1][AYAT_ID], self._pgsql)
                 except IndexError as err:
                     raise AyatNotFoundError from err
         raise AyatNotFoundError
@@ -214,7 +214,7 @@ class TextSearchNeighborAyats(NeighborAyats):
         :return: str
         """
         actual_page_num = 0
-        rows = await self._connection.fetch_all(
+        rows = await self._pgsql.fetch_all(
             self._search_sql_query,
             {'search_query': '%{0}%'.format(await self._query.read())},
         )

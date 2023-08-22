@@ -24,10 +24,10 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
-from db.connection import database
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgTextAnswer
 from srv.ayats.ayat import Ayat
@@ -46,6 +46,7 @@ class AyatByIdMessageAnswer(TgAnswer):
 
     _result_ayat: Ayat
     _message_answer: TgAnswer
+    _pgsql: Database
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -60,13 +61,13 @@ class AyatByIdMessageAnswer(TgAnswer):
             ),
             AyatFavoriteKeyboardButton(
                 NeighborAyatKeyboard(
-                    PgNeighborAyats(database, await self._result_ayat.identifier().id()),
+                    PgNeighborAyats(self._pgsql, await self._result_ayat.identifier().id()),
                     AyatCallbackTemplateEnum.get_ayat,
                 ),
                 AyatIsFavor(
                     self._result_ayat,
                     TgChatId(update),
-                    database,
+                    self._pgsql,
                 ),
                 self._result_ayat,
             ),

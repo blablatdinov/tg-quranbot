@@ -45,7 +45,7 @@ from services.city.search import SearchCityByCoordinates, SearchCityByName
 class SearchCityAnswer(TgAnswer):
     """Ответ с изменением статуса прочитанности намаза."""
 
-    _database: Database
+    _pgsql: Database
     _empty_answer: TgAnswer
     _debug: bool
     _redis: Redis
@@ -64,9 +64,9 @@ class SearchCityAnswer(TgAnswer):
                     CityNotSupportedAnswer(
                         ChangeCityAnswer(
                             answer_to_sender,
-                            SearchCityByName(self._database),
+                            SearchCityByName(self._pgsql),
                             self._redis,
-                            UserRepository(self._database),
+                            UserRepository(self._pgsql),
                         ),
                         answer_to_sender,
                     ),
@@ -76,11 +76,11 @@ class SearchCityAnswer(TgAnswer):
                         ChangeCityAnswer(
                             answer_to_sender,
                             SearchCityByCoordinates(
-                                SearchCityByName(self._database),
+                                SearchCityByName(self._pgsql),
                                 NominatimCityName(TgMessageCoordinates(update)),
                             ),
                             self._redis,
-                            UserRepository(self._database),
+                            UserRepository(self._pgsql),
                         ),
                         answer_to_sender,
                     ),

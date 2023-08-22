@@ -29,6 +29,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
+from integrations.tg.exceptions.update_parse_exceptions import CallbackQueryNotFoundError
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
@@ -49,7 +50,7 @@ class TgCallbackQueryRegexAnswer(TgAnswer):
         """
         try:
             regex_result = re.search(self._pattern, str(CallbackQueryData(update)))
-        except AttributeError:
+        except CallbackQueryNotFoundError:
             return []
         if not regex_result:
             return []

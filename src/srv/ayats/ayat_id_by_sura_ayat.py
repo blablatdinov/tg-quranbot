@@ -39,7 +39,7 @@ class AyatIdBySuraAyatNum(AsyncIntable):
     """Поиск аятов по номеру суры, аята."""
 
     _query: SearchQuery
-    _database: Database
+    _pgsql: Database
 
     async def to_int(self) -> AyatId:
         """Числовое представление.
@@ -61,7 +61,7 @@ class AyatIdBySuraAyatNum(AsyncIntable):
                     )
                 )
         """
-        row = await self._database.fetch_one(query, {
+        row = await self._pgsql.fetch_one(query, {
             'sura_id': self._query.sura(),
             'ayat_comma_prefix': '%,{0}'.format(self._query.ayat()),
             'ayat_comma_postfix': '%{0},'.format(self._query.ayat()),

@@ -24,10 +24,10 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
-from db.connection import database
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer
 from srv.ayats.ayat_answer import AyatAnswer
@@ -45,8 +45,8 @@ class FavoriteAyatPage(TgAnswer):
     """Страница с избранным аятом."""
 
     _debug_mode: bool
-    _message_answer: TgAnswer
-    _file_answer: TgAnswer
+    _empty_answer: TgAnswer
+    _pgsql: Database
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -57,21 +57,20 @@ class FavoriteAyatPage(TgAnswer):
         result_ayat = (
             await FavoriteAyats(
                 TgChatId(update),
-                database,
+                self._pgsql,
             ).to_list()
         )[0]
-        answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,
-            answers,
+            self._empty_answer,
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,
                 FavoriteNeighborAyats(
                     await result_ayat.identifier().id(),
-                    UserFavoriteAyats(database, TgChatId(update)),
+                    UserFavoriteAyats(self._pgsql, TgChatId(update)),
                 ),
                 AyatCallbackTemplateEnum.get_favorite_ayat,
-                database,
+                self._pgsql,
             ),
         ).build(update)

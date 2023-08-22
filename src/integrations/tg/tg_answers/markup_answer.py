@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from furl import furl
 from pyeo import elegant
 
 from integrations.tg.keyboard import KeyboardInterface
@@ -48,7 +49,9 @@ class TgAnswerMarkup(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                request.url.copy_add_param('reply_markup', await self._keyboard.generate(update)),
+                furl(request.url).add(
+                    {'reply_markup': await self._keyboard.generate(update)},
+                ).url,
                 stream=request.stream,
                 headers=request.headers,
             )

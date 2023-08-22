@@ -24,11 +24,11 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.stringable import ThroughString
-from db.connection import database
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
@@ -49,9 +49,9 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
     """Поиск аята по тексту для обработки нажатия кнопки."""
 
     _debug_mode: bool
-    _message_answer: TgAnswer
-    _file_answer: TgAnswer
+    _empty_answer: TgAnswer
     _redis: Redis
+    _pgsql: Database
 
     async def build(self, update) -> list[httpx.Request]:
         """Собрать ответ.
@@ -69,7 +69,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
                         int(TgChatId(update)),
                     ).read(),
                 ),
-                database,
+                self._pgsql,
             ).to_list()
         except IndexError as err:
             raise AyatNotFoundError from err
@@ -79,15 +79,14 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
                 break
         else:
             raise AyatNotFoundError
-        answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,
-            answers,
+            self._empty_answer,
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,
                 TextSearchNeighborAyats(
-                    database,
+                    self._pgsql,
                     await result_ayat.identifier().id(),
                     AyatTextSearchQuery.for_reading_cs(
                         self._redis,
@@ -95,6 +94,6 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
                     ),
                 ),
                 AyatCallbackTemplateEnum.get_search_ayat,
-                database,
+                self._pgsql,
             ),
         ).build(update)

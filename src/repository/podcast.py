@@ -49,7 +49,7 @@ class RandomPodcastInterface(Protocol):
 class RandomPodcast(RandomPodcastInterface):
     """Объект подкаста."""
 
-    _connection: Database
+    _pgsql: Database
 
     async def audio_telegram_id(self) -> str:
         """Получить идентификатор файла.
@@ -64,7 +64,7 @@ class RandomPodcast(RandomPodcastInterface):
             ORDER BY RANDOM()
             LIMIT 1
         """
-        row = await self._connection.fetch_one(query)
+        row = await self._pgsql.fetch_one(query)
         if not row:
             raise InternalBotError('Подкасты не найдены')
         return row['telegram_file_id']
@@ -82,7 +82,7 @@ class RandomPodcast(RandomPodcastInterface):
             ORDER BY RANDOM()
             LIMIT 1
         """
-        row = await self._connection.fetch_one(query)
+        row = await self._pgsql.fetch_one(query)
         if not row:
             raise InternalBotError('Подкасты не найдены')
         return row['link']

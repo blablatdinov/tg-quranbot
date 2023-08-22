@@ -55,7 +55,7 @@ class PrayerNames(str, enum.Enum):  # noqa: WPS600
 class UserPrayers(UserPrayersInterface):
     """Времена намазов пользователя."""
 
-    _connection: Database
+    _pgsql: Database
 
     async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
         """Времена намаза.
@@ -82,7 +82,7 @@ class UserPrayers(UserPrayersInterface):
             WHERE pd.date = :date AND u.chat_id = :chat_id
             ORDER BY up.prayer_at_user_id
         """
-        rows = await self._connection.fetch_all(query, {'date': date, 'chat_id': chat_id})
+        rows = await self._pgsql.fetch_all(query, {'date': date, 'chat_id': chat_id})
         prayers = [UserPrayer.parse_obj(row) for row in rows]
         if not prayers:
             raise UserHasNotGeneratedPrayersError
@@ -118,7 +118,7 @@ class SafeUserPrayers(UserPrayersInterface):
 class SafeNotFoundPrayers(UserPrayersInterface):
     """Времена намазов с защитой от UserPrayersNotFoundError."""
 
-    _connection: Database
+    _pgsql: Database
     _origin: UserPrayersInterface
 
     async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
@@ -138,13 +138,13 @@ class SafeNotFoundPrayers(UserPrayersInterface):
                 INNER JOIN prayer_days pd ON pd.date = p.day_id
                 WHERE pd.date = :date
             """
-            prayers_count = await self._connection.fetch_val(query, {'date': date})
+            prayers_count = await self._pgsql.fetch_val(query, {'date': date})
             if not prayers_count:
                 raise PrayersNotFoundError
             query = """
                 SELECT city_id FROM users WHERE chat_id = :chat_id
             """
-            city_id = await self._connection.fetch_val(query, {'chat_id': chat_id})
+            city_id = await self._pgsql.fetch_val(query, {'chat_id': chat_id})
             if not city_id:
                 raise UserHasNotCityIdError
         return prayer_times
@@ -179,7 +179,7 @@ class PrayersWithoutSunrise(UserPrayersInterface):
 class NewUserPrayers(UserPrayersInterface):
     """Объект генерирующий времена намазов пользователя."""
 
-    _connection: Database
+    _pgsql: Database
     _exists_user_prayers: UserPrayersInterface
 
     async def prayer_times(self, chat_id: int, date: datetime.date) -> list[UserPrayer]:
@@ -198,11 +198,11 @@ class NewUserPrayers(UserPrayersInterface):
             INNER JOIN prayer_days AS pd ON p.day_id = pd.date
             WHERE pd.date = :date AND u.chat_id = :chat_id
         """
-        rows = await self._connection.fetch_all(query, {'date': date, 'chat_id': chat_id})
+        rows = await self._pgsql.fetch_all(query, {'date': date, 'chat_id': chat_id})
         if not rows:
             raise UserPrayersNotFoundError
         user_prayer_group_id = uuid.uuid4()
-        await self._connection.execute(
+        await self._pgsql.execute(
             'INSERT INTO prayers_at_user_groups (prayers_at_user_group_id) VALUES (:prayers_at_user_group_id)',
             {'prayers_at_user_group_id': str(user_prayer_group_id)},
         )
@@ -214,7 +214,7 @@ class NewUserPrayers(UserPrayersInterface):
             VALUES
             (:is_read, :prayer_id, :prayer_group_id, :user_id)
         """
-        await self._connection.execute_many(
+        await self._pgsql.execute_many(
             query,
             [
                 {

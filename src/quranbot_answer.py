@@ -41,15 +41,14 @@ from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerFork,
     TgAnswerToSender,
-    TgAudioAnswer,
     TgCallbackQueryRegexAnswer,
     TgEmptyAnswer,
-    TgHtmlParseAnswer,
     TgKeyboardEditAnswer,
     TgMessageAnswer,
     TgMessageRegexAnswer,
     TgTextAnswer,
 )
+from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from repository.admin_message import AdminMessage
 from repository.podcast import RandomPodcast
 from repository.prayer_time import UserPrayers
@@ -86,7 +85,7 @@ class QuranbotAnswer(TgAnswer):
         :param redis: Redis
         :param event_sink: SinkInterface
         """
-        self._database = database
+        self._pgsql = database
         self._redis = redis
         self._event_sink = event_sink
         self._pre_build()
@@ -101,41 +100,33 @@ class QuranbotAnswer(TgAnswer):
 
     def _pre_build(self) -> None:
         empty_answer = TgEmptyAnswer(settings.API_TOKEN)
-        # TODO: перенести сборку этих классов в хендлеры
-        answer_to_sender = TgAnswerToSender(TgMessageAnswer(empty_answer))
-        audio_to_sender = TgAnswerToSender(TgAudioAnswer(empty_answer))
-        html_to_sender = TgAnswerToSender(
-            TgHtmlParseAnswer(
-                TgMessageAnswer(empty_answer),
-            ),
-        )
         self._answer = SafeFork(
             TgAnswerFork(
                 TgMessageRegexAnswer(
                     'Подкасты',
-                    PodcastAnswer(settings.DEBUG, empty_answer, RandomPodcast(self._database), self._redis),
+                    PodcastAnswer(settings.DEBUG, empty_answer, RandomPodcast(self._pgsql), self._redis),
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',
-                    PrayerTimeAnswer(self._database, self._redis, empty_answer),
+                    PrayerTimeAnswer(self._pgsql, self._redis, empty_answer),
                 ),
                 TgMessageRegexAnswer(
                     'Избранное',
-                    FavoriteAyatsAnswer(settings.DEBUG, self._database, self._redis, empty_answer),
+                    FavoriteAyatsAnswer(settings.DEBUG, self._pgsql, self._redis, empty_answer),
                 ),
                 StepAnswer(
                     UserStep.city_search.value,
-                    SearchCityAnswer(self._database, empty_answer, settings.DEBUG, self._redis),
+                    SearchCityAnswer(self._pgsql, empty_answer, settings.DEBUG, self._redis),
                     self._redis,
                 ),
                 TgMessageRegexAnswer(
                     r'\d+:\d+',
-                    SearchAyatByNumbersAnswer(settings.DEBUG, empty_answer, self._redis),
+                    SearchAyatByNumbersAnswer(settings.DEBUG, empty_answer, self._redis, self._pgsql),
                 ),
                 TgMessageRegexAnswer(
                     'Найти аят',
                     ChangeStateAnswer(
-                        TgTextAnswer(answer_to_sender, 'Введите слово для поиска:'),
+                        TgTextAnswer(TgHtmlMessageAnswerToSender(empty_answer), 'Введите слово для поиска:'),
                         self._redis,
                         UserStep.ayat_search,
                     ),
@@ -143,27 +134,28 @@ class QuranbotAnswer(TgAnswer):
                 TgMessageRegexAnswer(
                     'Поменять город',
                     InviteSetCityAnswer(
-                        TgTextAnswer(answer_to_sender, 'Отправьте местоположение или воспользуйтесь поиском'),
+                        TgTextAnswer(
+                            TgHtmlMessageAnswerToSender(empty_answer),
+                            'Отправьте местоположение или воспользуйтесь поиском',
+                        ),
                         self._redis,
                     ),
                 ),
                 TgMessageRegexAnswer(
                     '/start',
-                    FullStartAnswer(self._database, empty_answer, self._event_sink, self._redis),
+                    FullStartAnswer(self._pgsql, empty_answer, self._event_sink, self._redis),
                 ),
                 TgMessageRegexAnswer(
                     '/status',
-                    StatusAnswer(empty_answer, self._database, self._redis),
+                    StatusAnswer(empty_answer, self._pgsql, self._redis),
                 ),
                 TgMessageRegexAnswer(
                     '/help',
-                    HelpAnswer(html_to_sender, AdminMessage('start', self._database), self._redis),
+                    HelpAnswer(empty_answer, AdminMessage('start', self._pgsql), self._redis),
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,
-                    SearchAyatByKeywordAnswer(
-                        settings.DEBUG, html_to_sender, audio_to_sender, answer_to_sender, self._redis,
-                    ),
+                    SearchAyatByKeywordAnswer(settings.DEBUG, empty_answer, self._redis, self._pgsql),
                     self._redis,
                 ),
                 TgCallbackQueryRegexAnswer(
@@ -172,29 +164,21 @@ class QuranbotAnswer(TgAnswer):
                         TgAnswerToSender(
                             TgKeyboardEditAnswer(empty_answer),
                         ),
-                        UserPrayerStatus(self._database),
-                        UserPrayers(self._database),
+                        UserPrayerStatus(self._pgsql),
+                        UserPrayers(self._pgsql),
+                        self._pgsql,
                     ),
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getAyat',
-                    AyatByIdAnswer(
-                        settings.DEBUG,
-                        html_to_sender,
-                        audio_to_sender,
-                    ),
+                    AyatByIdAnswer(settings.DEBUG, empty_answer, self._pgsql),
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,
                     TgCallbackQueryRegexAnswer(
                         'getSAyat',
                         HighlightedSearchAnswer(
-                            SearchAyatByTextCallbackAnswer(
-                                settings.DEBUG,
-                                html_to_sender,
-                                audio_to_sender,
-                                self._redis,
-                            ),
+                            SearchAyatByTextCallbackAnswer(settings.DEBUG, empty_answer, self._redis, self._pgsql),
                             self._redis,
                         ),
                     ),
@@ -202,22 +186,15 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getFAyat',
-                    FavoriteAyatPage(
-                        settings.DEBUG,
-                        html_to_sender,
-                        audio_to_sender,
-                    ),
+                    FavoriteAyatPage(settings.DEBUG, empty_answer, self._pgsql),
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(addToFavor|removeFromFavor)',
-                    ChangeFavoriteAyatAnswer(
-                        self._database,
-                        answer_to_sender,
-                    ),
+                    ChangeFavoriteAyatAnswer(self._pgsql, empty_answer),
                 ),
                 InlineQueryAnswer(
                     empty_answer,
-                    SearchCityByName(self._database),
+                    SearchCityByName(self._pgsql),
                 ),
             ),
             TgAnswerToSender(

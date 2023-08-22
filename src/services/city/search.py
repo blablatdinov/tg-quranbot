@@ -123,7 +123,7 @@ class CitySearchInterface(Protocol):
 class SearchCityByName(CitySearchInterface):
     """Поиск города по названию."""
 
-    _db: Database
+    _pgsql: Database
 
     async def search(self, query: SearchCityQueryInterface) -> list[City]:
         """Осуществить поиск.
@@ -138,7 +138,7 @@ class SearchCityByName(CitySearchInterface):
                 name
             FROM cities WHERE name ILIKE :search_query
         """
-        rows = await self._db.fetch_all(db_query, {'search_query': search_query})
+        rows = await self._pgsql.fetch_all(db_query, {'search_query': search_query})
         return parse_obj_as(list[City], rows)
 
 

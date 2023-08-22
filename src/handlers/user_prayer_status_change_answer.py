@@ -24,10 +24,10 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 
 from app_types.intable import ThroughIntable
-from db.connection import database
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.message_id import MessageId
 from integrations.tg.tg_answers.interface import TgAnswer
@@ -49,6 +49,7 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
     _origin: TgAnswer
     _prayer_status: UserPrayerStatusInterface
     _user_prayers: UserPrayersInterface
+    _pgsql: Database
 
     async def build(self, update) -> list[httpx.Request]:
         """Обработка запроса.
@@ -67,7 +68,7 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
                 PrayersWithoutSunrise(self._user_prayers),
                 await UserPrayerDate(
                     ThroughIntable(prayer_status.user_prayer_id()),
-                    database,
+                    self._pgsql,
                 ).datetime(),
             ),
         ).build(update)

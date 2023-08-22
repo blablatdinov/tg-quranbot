@@ -45,9 +45,8 @@ class FavoriteAyatAnswer(TgAnswer):
     """Ответ с избранными аятами."""
 
     _debug_mode: bool
-    _message_answer: TgAnswer
-    _file_answer: TgAnswer
-    _database: Database
+    _empty_answer: TgAnswer
+    _pgsql: Database
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -58,20 +57,19 @@ class FavoriteAyatAnswer(TgAnswer):
         result_ayat = (
             await FavoriteAyats(
                 TgChatId(update),
-                self._database,
+                self._pgsql,
             ).to_list()
         )[0]
-        answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,
-            answers,
+            self._empty_answer,
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,
                 FavoriteNeighborAyats(
-                    await result_ayat.identifier().id(), UserFavoriteAyats(self._database, TgChatId(update)),
+                    await result_ayat.identifier().id(), UserFavoriteAyats(self._pgsql, TgChatId(update)),
                 ),
                 AyatCallbackTemplateEnum.get_favorite_ayat,
-                self._database,
+                self._pgsql,
             ),
         ).build(update)

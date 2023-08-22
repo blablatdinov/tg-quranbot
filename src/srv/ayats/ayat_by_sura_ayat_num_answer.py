@@ -24,10 +24,10 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
-from db.connection import database
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer
 from srv.ayats.ayat_answer import AyatAnswer
@@ -44,8 +44,9 @@ class AyatBySuraAyatNumAnswer(TgAnswer):
     """Ответ на поиск аята по номеру суры, аята."""
 
     _debug_mode: bool
-    _message_answer: TgAnswer
+    _empty_answer: TgAnswer
     _file_answer: TgAnswer
+    _pgsql: Database
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
@@ -53,16 +54,15 @@ class AyatBySuraAyatNumAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        result_ayat = await PgAyat.by_sura_ayat_num(MessageText(update), database)
-        answers = (self._message_answer, self._file_answer)
+        result_ayat = await PgAyat.by_sura_ayat_num(MessageText(update), self._pgsql)
         return await AyatAnswer(
             self._debug_mode,
-            answers,
+            self._empty_answer,
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,
-                PgNeighborAyats(database, await result_ayat.identifier().id()),
+                PgNeighborAyats(self._pgsql, await result_ayat.identifier().id()),
                 AyatCallbackTemplateEnum.get_ayat,
-                database,
+                self._pgsql,
             ),
         ).build(update)

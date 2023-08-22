@@ -24,12 +24,13 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
-from db.connection import database
 from integrations.tg.callback_query import CallbackQueryData
-from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgAudioAnswer, TgTextAnswer
+from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from srv.ayats.ayat_by_id_message_answer import AyatByIdMessageAnswer
 from srv.ayats.pg_ayat import PgAyat
 from srv.files.file_answer import FileAnswer
@@ -43,8 +44,8 @@ class AyatByIdAnswer(TgAnswer):
     """Ответ на аят по идентификатору."""
 
     _debug_mode: bool
-    _message_answer: TgAnswer
-    _file_answer: TgAnswer
+    _empty_answer: TgAnswer
+    _pgsql: Database
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -52,19 +53,19 @@ class AyatByIdAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        result_ayat = PgAyat.from_callback_query(CallbackQueryData(update), database)
+        result_ayat = PgAyat.from_callback_query(CallbackQueryData(update), self._pgsql)
         return await TgAnswerList(
             AyatByIdMessageAnswer(
-                result_ayat, self._message_answer,
+                result_ayat, TgHtmlMessageAnswerToSender(self._empty_answer), self._pgsql,
             ),
             FileAnswer(
                 self._debug_mode,
                 TelegramFileIdAnswer(
-                    self._file_answer,
+                    TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
                     await result_ayat.tg_file_id(),
                 ),
                 TgTextAnswer(
-                    self._message_answer,
+                    TgHtmlMessageAnswerToSender(self._empty_answer),
                     await result_ayat.file_link(),
                 ),
             ),

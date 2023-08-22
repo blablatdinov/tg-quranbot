@@ -46,7 +46,7 @@ class AyatAnswerKeyboard(KeyboardInterface):
     _ayat: Ayat
     _neighbor_ayats: NeighborAyats
     _ayat_callback_template: AyatCallbackTemplateEnum
-    _database: Database
+    _pgsql: Database
 
     async def generate(self, update: Update) -> str:
         """Генерация.
@@ -59,7 +59,7 @@ class AyatAnswerKeyboard(KeyboardInterface):
             AyatIsFavor(
                 self._ayat,
                 TgChatId(update),
-                self._database,
+                self._pgsql,
             ),
             self._ayat,
         ).generate(update)

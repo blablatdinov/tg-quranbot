@@ -44,7 +44,7 @@ class AdminMessage(AdminMessageInterface):
     """Административное сообщение."""
 
     _key: str
-    _connection: Database
+    _pgsql: Database
 
     async def text(self) -> str:
         """Текст административного сообщения.
@@ -52,7 +52,7 @@ class AdminMessage(AdminMessageInterface):
         :raises InternalBotError: возбуждается если административное сообщение с переданным ключом не найдено
         :return: str
         """
-        record = await self._connection.fetch_one(
+        record = await self._pgsql.fetch_one(
             'SELECT text FROM admin_messages m WHERE m.key = :key', {'key': self._key},
         )
         if not record:

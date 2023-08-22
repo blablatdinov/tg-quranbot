@@ -22,11 +22,20 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
 
+import attrs
 import httpx
 from pyeo import elegant
 
 from integrations.tg.keyboard import KeyboardInterface
-from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerMarkup, TgTextAnswer
+from integrations.tg.tg_answers import (
+    TgAnswer,
+    TgAnswerList,
+    TgAnswerMarkup,
+    TgAnswerToSender,
+    TgAudioAnswer,
+    TgTextAnswer,
+)
+from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from srv.ayats.ayat import Ayat
 from srv.files.file_answer import FileAnswer
 from srv.files.file_id_answer import TelegramFileIdAnswer
@@ -34,28 +43,14 @@ from srv.files.file_id_answer import TelegramFileIdAnswer
 
 @final
 @elegant
+@attrs.define(frozen=True)
 class AyatAnswer(TgAnswer):
     """Ответ с аятом."""
 
-    def __init__(
-        self,
-        debug: bool,
-        answers: tuple[TgAnswer, TgAnswer],
-        ayat: Ayat,
-        ayat_answer_keyboard: KeyboardInterface,
-    ):
-        """Конструктор класса.
-
-        :param debug: bool
-        :param answers: tuple[TgAnswerInterface, TgAnswerInterface]
-        :param ayat: Ayat
-        :param ayat_answer_keyboard: KeyboardInterface
-        """
-        self._debug_mode = debug
-        self._message_answer = answers[0]
-        self._file_answer = answers[1]
-        self._ayat = ayat
-        self._ayat_answer_keyboard = ayat_answer_keyboard
+    _debug: bool
+    _empty_answer: TgAnswer
+    _ayat: Ayat
+    _ayat_answer_keyboard: KeyboardInterface
 
     async def build(self, update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -66,19 +61,19 @@ class AyatAnswer(TgAnswer):
         return await TgAnswerList(
             TgAnswerMarkup(
                 TgTextAnswer(
-                    self._message_answer,
+                    TgHtmlMessageAnswerToSender(self._empty_answer),
                     await self._ayat.text(),
                 ),
                 self._ayat_answer_keyboard,
             ),
             FileAnswer(
-                self._debug_mode,
+                self._debug,
                 TelegramFileIdAnswer(
-                    self._file_answer,
+                    TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
                     await self._ayat.tg_file_id(),
                 ),
                 TgTextAnswer(
-                    self._message_answer,
+                    TgHtmlMessageAnswerToSender(self._empty_answer),
                     await self._ayat.file_link(),
                 ),
             ),
