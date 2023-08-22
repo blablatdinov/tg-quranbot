@@ -29,7 +29,6 @@ from pyeo import elegant
 
 from app_types.intable import SyncToAsyncIntable
 from app_types.update import Update
-from db.connection import pgsql
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_id import MessageId
@@ -71,7 +70,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                     str(CallbackQueryData(update)),
                 ),
             ),
-            pgsql,
+            self._pgsql,
         )
         if status.change_to():
             query = """
@@ -95,10 +94,10 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                     AyatAnswerKeyboard(
                         result_ayat,
                         PgNeighborAyats(
-                            pgsql, await result_ayat.identifier().id(),
+                            self._pgsql, await result_ayat.identifier().id(),
                         ),
                         AyatCallbackTemplateEnum.get_favorite_ayat,
-                        pgsql,
+                        self._pgsql,
                     ),
                 ),
                 int(MessageId(update)),

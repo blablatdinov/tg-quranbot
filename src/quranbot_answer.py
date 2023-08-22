@@ -121,7 +121,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgMessageRegexAnswer(
                     r'\d+:\d+',
-                    SearchAyatByNumbersAnswer(settings.DEBUG, empty_answer, self._redis),
+                    SearchAyatByNumbersAnswer(settings.DEBUG, empty_answer, self._redis, self._pgsql),
                 ),
                 TgMessageRegexAnswer(
                     'Найти аят',
@@ -155,7 +155,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,
-                    SearchAyatByKeywordAnswer(settings.DEBUG, empty_answer, self._redis),
+                    SearchAyatByKeywordAnswer(settings.DEBUG, empty_answer, self._redis, self._pgsql),
                     self._redis,
                 ),
                 TgCallbackQueryRegexAnswer(
@@ -166,18 +166,19 @@ class QuranbotAnswer(TgAnswer):
                         ),
                         UserPrayerStatus(self._pgsql),
                         UserPrayers(self._pgsql),
+                        self._pgsql,
                     ),
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getAyat',
-                    AyatByIdAnswer(settings.DEBUG, empty_answer),
+                    AyatByIdAnswer(settings.DEBUG, empty_answer, self._pgsql),
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,
                     TgCallbackQueryRegexAnswer(
                         'getSAyat',
                         HighlightedSearchAnswer(
-                            SearchAyatByTextCallbackAnswer(settings.DEBUG, empty_answer, self._redis),
+                            SearchAyatByTextCallbackAnswer(settings.DEBUG, empty_answer, self._redis, self._pgsql),
                             self._redis,
                         ),
                     ),
@@ -185,7 +186,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getFAyat',
-                    FavoriteAyatPage(settings.DEBUG, empty_answer),
+                    FavoriteAyatPage(settings.DEBUG, empty_answer, self._pgsql),
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(addToFavor|removeFromFavor)',

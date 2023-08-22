@@ -21,6 +21,7 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
@@ -40,6 +41,7 @@ class SearchAyatByKeywordAnswer(TgAnswer):
     _debug: bool
     _empty_answer: TgAnswer
     _redis: Redis
+    _pgsql: Database
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -55,6 +57,7 @@ class SearchAyatByKeywordAnswer(TgAnswer):
                         self._debug,
                         self._empty_answer,
                         self._redis,
+                        self._pgsql,
                     ),
                     self._redis,
                 ),
