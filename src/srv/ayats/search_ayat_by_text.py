@@ -24,11 +24,11 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.update import Update
-from db.connection import pgsql
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
@@ -51,6 +51,7 @@ class SearchAyatByTextAnswer(TgAnswer):
     _message_answer: TgAnswer
     _file_answer: TgAnswer
     _redis: Redis
+    _pgsql: Database
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
@@ -63,7 +64,7 @@ class SearchAyatByTextAnswer(TgAnswer):
             result_ayat = (
                 await AyatsByTextQuery(
                     str(MessageText(update)),
-                    pgsql,
+                    self._pgsql,
                 ).to_list()
             )[0]
         except IndexError as err:
@@ -76,11 +77,11 @@ class SearchAyatByTextAnswer(TgAnswer):
             AyatAnswerKeyboard(
                 result_ayat,
                 TextSearchNeighborAyats(
-                    pgsql,
+                    self._pgsql,
                     await result_ayat.identifier().id(),
                     AyatTextSearchQuery.for_reading_cs(self._redis, int(TgChatId(update))),
                 ),
                 AyatCallbackTemplateEnum.get_search_ayat,
-                pgsql,
+                self._pgsql,
             ),
         ).build(update)

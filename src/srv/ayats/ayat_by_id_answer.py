@@ -24,10 +24,10 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
-from db.connection import pgsql
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgTextAnswer
 from srv.ayats.ayat_by_id_message_answer import AyatByIdMessageAnswer
@@ -45,6 +45,7 @@ class AyatByIdAnswer(TgAnswer):
     _debug_mode: bool
     _message_answer: TgAnswer
     _file_answer: TgAnswer
+    _pgsql: Database
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -52,10 +53,10 @@ class AyatByIdAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        result_ayat = PgAyat.from_callback_query(CallbackQueryData(update), pgsql)
+        result_ayat = PgAyat.from_callback_query(CallbackQueryData(update), self._pgsql)
         return await TgAnswerList(
             AyatByIdMessageAnswer(
-                result_ayat, self._message_answer,
+                result_ayat, self._message_answer, self._pgsql,
             ),
             FileAnswer(
                 self._debug_mode,
