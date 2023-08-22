@@ -51,7 +51,7 @@ class TgChatAction(TgAnswer):
             httpx.Request(
                 request.method,
                 (furl(request.url) / 'sendChatAction').url,
-                headers=request.headers
+                headers=request.headers,
             )
             for request in await self._origin.build(update)
         ]

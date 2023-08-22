@@ -20,7 +20,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import final
 
 import attrs
@@ -29,6 +28,7 @@ from pyeo import elegant
 from app_types.stringable import SupportsStr
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import CallbackQueryNotFoundError
+from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
 @final
@@ -43,10 +43,13 @@ class CallbackQueryData(SupportsStr):
         """Строковое представление.
 
         :return: str
-        :raises CallbackQueryNotFoundError: если не удалось получить данные с кнопки
         """
-        parsed_json = json.loads(str(self._update))
-        try:
-            return parsed_json['callback_query']['data']
-        except KeyError as err:
-            raise CallbackQueryNotFoundError from err
+        return str(
+            ErrRedirectJsonPath(
+                JsonPathValue(
+                    self._update.dict(),
+                    '$..callback_query.data',
+                ),
+                CallbackQueryNotFoundError(),
+            ).evaluate(),
+        )

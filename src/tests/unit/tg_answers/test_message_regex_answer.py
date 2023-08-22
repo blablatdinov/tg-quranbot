@@ -20,34 +20,33 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
-
-import attrs
-import httpx
-from furl import furl
-
-from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers.interface import TgAnswer
+from app_types.update import FkUpdate
+from integrations.tg.tg_answers import FkAnswer, TgMessageRegexAnswer
 
 
-@final
-@attrs.define(frozen=True)
-class TgAnswerToSender(TgAnswer):
-    """Ответ пользователю, от которого пришло сообщение."""
+async def test():
+    got = await TgMessageRegexAnswer('target', FkAnswer()).build(
+        FkUpdate('{"message":{"text":"target"}}'),
+    )
 
-    _origin: TgAnswer
+    assert got[0].url == 'https://some.domain'
 
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Собрать ответ.
 
-        :param update: Update
-        :return: list[httpx.Request]
-        """
-        return [
-            httpx.Request(
-                request.method,
-                furl(request.url).add({'chat_id': int(TgChatId(update))}).url,
-            )
-            for request in await self._origin.build(update)
-        ]
+async def test_not_message_text():
+    got = await TgMessageRegexAnswer('target', FkAnswer()).build(FkUpdate('{}'))  # noqa: P103 it is empty jsno
+
+    assert got == []
+
+
+async def test_not_match():
+    got = await TgMessageRegexAnswer('target', FkAnswer()).build(
+        FkUpdate('{"message":{"text":"other_value"}}'),
+    )
+
+    assert got == []
+
+
+async def test_str():
+    got = str(TgMessageRegexAnswer('target', FkAnswer()))
+
+    assert got == 'TgMessageRegexAnswer. pattern: target'

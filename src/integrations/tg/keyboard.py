@@ -20,8 +20,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol
+from typing import Protocol, final
 
+import attrs
 from pyeo import elegant
 
 from app_types.update import Update
@@ -36,3 +37,18 @@ class KeyboardInterface(Protocol):
 
         :param update: Update
         """
+
+
+@elegant
+@final
+@attrs.define(frozen=True)
+class FkKeyboard(KeyboardInterface):
+    """Фейковая клавиатура."""
+
+    async def generate(self, update: Update) -> str:
+        """Генерация.
+
+        :param update: Update
+        :return: str
+        """
+        return '{}'  # noqa: P103 it is empty json

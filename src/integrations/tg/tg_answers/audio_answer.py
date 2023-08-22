@@ -24,8 +24,8 @@ from typing import final
 
 import attrs
 import httpx
-from pyeo import elegant
 from furl import furl
+from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer

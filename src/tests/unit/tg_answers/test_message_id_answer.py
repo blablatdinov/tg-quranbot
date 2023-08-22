@@ -20,34 +20,11 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
-
-import attrs
-import httpx
-from furl import furl
-
-from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers.interface import TgAnswer
+from app_types.update import FkUpdate
+from integrations.tg.tg_answers import FkAnswer, TgMessageIdAnswer
 
 
-@final
-@attrs.define(frozen=True)
-class TgAnswerToSender(TgAnswer):
-    """Ответ пользователю, от которого пришло сообщение."""
+async def test():
+    got = await TgMessageIdAnswer(FkAnswer(), 1).build(FkUpdate())
 
-    _origin: TgAnswer
-
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Собрать ответ.
-
-        :param update: Update
-        :return: list[httpx.Request]
-        """
-        return [
-            httpx.Request(
-                request.method,
-                furl(request.url).add({'chat_id': int(TgChatId(update))}).url,
-            )
-            for request in await self._origin.build(update)
-        ]
+    assert got[0].url == 'https://some.domain?message_id=1'

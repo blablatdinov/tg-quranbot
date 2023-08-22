@@ -25,6 +25,7 @@ from pathlib import Path
 import pytest
 
 from app_types.stringable import ThroughString
+from app_types.update import FkUpdate
 from integrations.tg.callback_query import CallbackQueryData
 from settings import settings
 
@@ -37,6 +38,6 @@ def stringable_callback_update():
 
 
 def test(stringable_callback_update):
-    cb_query_data = CallbackQueryData(stringable_callback_update)
+    cb_query_data = CallbackQueryData(FkUpdate(stringable_callback_update))
 
     assert str(cb_query_data) == 'mark_readed(2362)'

@@ -49,7 +49,9 @@ class TgAnswerMarkup(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                furl(request.url).add({'reply_markup': await self._keyboard.generate(update)}).url,
+                furl(request.url).add(
+                    {'reply_markup': await self._keyboard.generate(update)},
+                ).url,
                 stream=request.stream,
                 headers=request.headers,
             )
