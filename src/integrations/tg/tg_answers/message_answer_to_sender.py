@@ -28,12 +28,13 @@ from furl import furl
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
+from integrations.tg.tg_answers import TgHtmlParseAnswer, TgMessageAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
-class TgAnswerToSender(TgAnswer):
+class TgHtmlMessageAnswerToSender(TgAnswer):
     """Ответ пользователю, от которого пришло сообщение."""
 
     _origin: TgAnswer
@@ -49,5 +50,5 @@ class TgAnswerToSender(TgAnswer):
                 request.method,
                 furl(request.url).add({'chat_id': int(TgChatId(update))}).url,
             )
-            for request in await self._origin.build(update)
+            for request in await TgHtmlParseAnswer(TgMessageAnswer(self._origin)).build(update)
         ]

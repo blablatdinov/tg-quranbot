@@ -26,7 +26,7 @@ from urllib.parse import urljoin
 
 import sentry_sdk
 from pydantic import HttpUrl, RedisDsn
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).parent
 
@@ -34,6 +34,8 @@ BASE_DIR = Path(__file__).parent
 @final
 class Settings(BaseSettings):
     """Класс с настройками."""
+
+    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8')
 
     BASE_DIR: Path = BASE_DIR
     API_TOKEN: str
@@ -73,11 +75,6 @@ class Settings(BaseSettings):
         if self.DATABASE_URL and self.DATABASE_URL.startswith('postgres://'):
             uri = self.DATABASE_URL.replace('postgres://', 'postgresql://', 1)
         return uri.replace('postgresql', 'postgresql+asyncpg')
-
-    class Config(object):
-        """Конфигурация настроек."""
-
-        env_file = '.env'
 
 
 settings = Settings()  # type: ignore[call-arg]

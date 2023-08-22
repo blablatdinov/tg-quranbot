@@ -48,8 +48,7 @@ class SearchAyatByTextAnswer(TgAnswer):
     """Поиск аята по тексту."""
 
     _debug_mode: bool
-    _message_answer: TgAnswer
-    _file_answer: TgAnswer
+    _empty_answer: TgAnswer
     _redis: Redis
     _pgsql: Database
 
@@ -69,10 +68,9 @@ class SearchAyatByTextAnswer(TgAnswer):
             )[0]
         except IndexError as err:
             raise AyatNotFoundError from err
-        answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,
-            answers,
+            self._empty_answer,
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,

@@ -29,6 +29,7 @@ from redis.asyncio import Redis
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
+from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from repository.admin_message import AdminMessageInterface
 from services.reset_state_answer import ResetStateAnswer
 
@@ -51,7 +52,7 @@ class HelpAnswer(TgAnswer):
         """
         return await ResetStateAnswer(
             TgTextAnswer(
-                self._origin,
+                TgHtmlMessageAnswerToSender(self._origin),
                 await self._admin_message.text(),
             ),
             self._redis,

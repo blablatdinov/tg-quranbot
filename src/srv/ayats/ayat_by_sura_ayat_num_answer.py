@@ -44,7 +44,7 @@ class AyatBySuraAyatNumAnswer(TgAnswer):
     """Ответ на поиск аята по номеру суры, аята."""
 
     _debug_mode: bool
-    _message_answer: TgAnswer
+    _empty_answer: TgAnswer
     _file_answer: TgAnswer
     _pgsql: Database
 
@@ -55,10 +55,9 @@ class AyatBySuraAyatNumAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         result_ayat = await PgAyat.by_sura_ayat_num(MessageText(update), self._pgsql)
-        answers = (self._message_answer, self._file_answer)
         return await AyatAnswer(
             self._debug_mode,
-            answers,
+            self._empty_answer,
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,

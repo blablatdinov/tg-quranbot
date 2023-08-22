@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from furl import furl
 from pyeo import elegant
 
 from app_types.update import Update
@@ -48,7 +49,7 @@ class TgChatIdAnswer(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                request.url.copy_add_param('chat_id', int(self._chat_id)),
+                furl(request.url).add({'chat_id': int(self._chat_id)}).url,
                 stream=request.stream,
                 headers=request.headers,
             )

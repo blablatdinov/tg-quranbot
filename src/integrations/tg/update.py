@@ -55,7 +55,7 @@ class TgUpdate(Update):
 
         :return: UpdateStruct
         """
-        return UpdateStruct.parse_raw(str(self))
+        return UpdateStruct.model_validate_json(str(self))
 
     def dict(self) -> dict:
         """Словарь.

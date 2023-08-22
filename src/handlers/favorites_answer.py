@@ -29,14 +29,7 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.update import Update
-from integrations.tg.tg_answers import (
-    TgAnswer,
-    TgAnswerToSender,
-    TgAudioAnswer,
-    TgHtmlParseAnswer,
-    TgMessageAnswer,
-    TgTextAnswer,
-)
+from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
 from services.reset_state_answer import ResetStateAnswer
 from srv.ayats.favorite_ayat_answer import FavoriteAyatAnswer
 from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
@@ -64,12 +57,7 @@ class FavoriteAyatsAnswer(TgAnswer):
             FavoriteAyatEmptySafeAnswer(
                 FavoriteAyatAnswer(
                     self._debug,
-                    TgAnswerToSender(
-                        TgHtmlParseAnswer(
-                            TgMessageAnswer(self._empty_answer),
-                        ),
-                    ),
-                    TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
+                    self._empty_answer,
                     self._pgsql,
                 ),
                 TgTextAnswer(

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import json
 from typing import Protocol, final
 
 import attrs
@@ -70,4 +71,4 @@ class FkUpdate(Update):
 
         :return: dict
         """
-        return {}
+        return json.loads(str(self._raw))

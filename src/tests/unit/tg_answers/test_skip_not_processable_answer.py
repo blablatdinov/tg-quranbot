@@ -20,34 +20,21 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
-
-import attrs
 import httpx
-from furl import furl
 
-from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers.interface import TgAnswer
+from app_types.update import FkUpdate, Update
+from exceptions.internal_exceptions import NotProcessableUpdateError
+from integrations.tg.tg_answers import TgAnswer
+from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 
 
-@final
-@attrs.define(frozen=True)
-class TgAnswerToSender(TgAnswer):
-    """Ответ пользователю, от которого пришло сообщение."""
-
-    _origin: TgAnswer
+class _NotProcessableAnswer(TgAnswer):
 
     async def build(self, update: Update) -> list[httpx.Request]:
-        """Собрать ответ.
+        raise NotProcessableUpdateError
 
-        :param update: Update
-        :return: list[httpx.Request]
-        """
-        return [
-            httpx.Request(
-                request.method,
-                furl(request.url).add({'chat_id': int(TgChatId(update))}).url,
-            )
-            for request in await self._origin.build(update)
-        ]
+
+async def test():
+    got = await TgSkipNotProcessable(_NotProcessableAnswer()).build(FkUpdate())
+
+    assert got == []
