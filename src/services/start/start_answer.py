@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from collections.abc import Sequence
 from contextlib import suppress
 from typing import final
 
@@ -50,7 +51,7 @@ class StartAnswer(TgAnswer):
     _user_repo: UserRepositoryInterface
     _admin_message: AdminMessageInterface
     _pgsql: Database
-    _admin_chat_ids: list[int]
+    _admin_chat_ids: Sequence[int]
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
