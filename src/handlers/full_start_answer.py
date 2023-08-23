@@ -40,7 +40,7 @@ from services.reset_state_answer import ResetStateAnswer
 from services.start.start_answer import StartAnswer
 from services.start.user_already_active import UserAlreadyActiveSafeAnswer
 from services.start.user_already_exists import UserAlreadyExistsAnswer
-from settings import Settings
+from settings import AdminChatIds, Settings
 
 
 @attrs.define(frozen=True)
@@ -74,7 +74,7 @@ class FullStartAnswer(TgAnswer):
                                 UserRepository(self._pgsql),
                                 AdminMessage('start', self._pgsql),
                                 self._pgsql,
-                                [int(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS.split(',')],
+                                AdminChatIds(self._settings),
                             ),
                             self._event_sink,
                             UserRepository(self._pgsql),

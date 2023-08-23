@@ -21,8 +21,9 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import os
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Protocol, final
+from typing import Protocol, final, overload
 
 import attrs
 from pyeo import elegant
@@ -133,3 +134,52 @@ class DebugMode(SupportsBool):
         :return: bool
         """
         return self._settings.DEBUG == 'on'
+
+
+@final
+@attrs.define(frozen=True)
+class AdminChatIds(Sequence[int]):
+    """Список идентификаторов администраторов."""
+
+    _settings: Settings
+
+    @overload
+    def __getitem__(self, idx: int) -> int:
+        """Тип для индекса.
+
+        :param idx: int
+        """
+
+    @overload
+    def __getitem__(self, idx: slice) -> Sequence[int]:
+        """Тип для среза.
+
+        :param idx: slice
+        """
+
+    def __getitem__(self, idx: int | slice) -> int | Sequence[int]:
+        """Получить элемент.
+
+        :param idx: int
+        :return: int
+        """
+        return [
+            int(chat_id.strip()) for chat_id in self._settings.ADMIN_CHAT_IDS.split(',')
+        ][idx]
+
+    def __len__(self) -> int:
+        """Кол-во администраторов.
+
+        :return: int
+        """
+        return len(self._settings.ADMIN_CHAT_IDS.split(','))
+
+    def count(self, search_value: int) -> int:
+        """Кол-во элементов.
+
+        :param search_value: int
+        :return: int
+        """
+        return [
+            int(chat_id.strip()) for chat_id in self._settings.ADMIN_CHAT_IDS.split(',')
+        ].count(search_value)
