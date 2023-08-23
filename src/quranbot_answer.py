@@ -61,7 +61,7 @@ from services.prayers.invite_set_city_answer import InviteSetCityAnswer
 from services.prayers.prayer_status import UserPrayerStatus
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
-from settings import settings
+from settings import DebugMode, Settings
 from srv.ayats.ayat_by_id_answer import AyatByIdAnswer
 from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
 from srv.ayats.favorite_ayat_page import FavoriteAyatPage
@@ -78,17 +78,20 @@ class QuranbotAnswer(TgAnswer):
         database: Database,
         redis: Redis,
         event_sink: SinkInterface,
+        settings: Settings,
     ):
         """Конструктор класса.
 
         :param database: Database
         :param redis: Redis
         :param event_sink: SinkInterface
+        :param settings: Settings
         """
         self._pgsql = database
         self._redis = redis
         self._event_sink = event_sink
         self._pre_build()
+        self._settings = settings
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -99,12 +102,12 @@ class QuranbotAnswer(TgAnswer):
         return await self._answer.build(update)
 
     def _pre_build(self) -> None:
-        empty_answer = TgEmptyAnswer(settings.API_TOKEN)
+        empty_answer = TgEmptyAnswer(self._settings.API_TOKEN)
         self._answer = SafeFork(
             TgAnswerFork(
                 TgMessageRegexAnswer(
                     'Подкасты',
-                    PodcastAnswer(settings.DEBUG, empty_answer, RandomPodcast(self._pgsql), self._redis),
+                    PodcastAnswer(DebugMode(self._settings), empty_answer, RandomPodcast(self._pgsql), self._redis),
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',
@@ -112,16 +115,16 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgMessageRegexAnswer(
                     'Избранное',
-                    FavoriteAyatsAnswer(settings.DEBUG, self._pgsql, self._redis, empty_answer),
+                    FavoriteAyatsAnswer(DebugMode(self._settings), self._pgsql, self._redis, empty_answer),
                 ),
                 StepAnswer(
                     UserStep.city_search.value,
-                    SearchCityAnswer(self._pgsql, empty_answer, settings.DEBUG, self._redis),
+                    SearchCityAnswer(self._pgsql, empty_answer, DebugMode(self._settings), self._redis),
                     self._redis,
                 ),
                 TgMessageRegexAnswer(
                     r'\d+:\d+',
-                    SearchAyatByNumbersAnswer(settings.DEBUG, empty_answer, self._redis, self._pgsql),
+                    SearchAyatByNumbersAnswer(DebugMode(self._settings), empty_answer, self._redis, self._pgsql),
                 ),
                 TgMessageRegexAnswer(
                     'Найти аят',
@@ -143,7 +146,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgMessageRegexAnswer(
                     '/start',
-                    FullStartAnswer(self._pgsql, empty_answer, self._event_sink, self._redis),
+                    FullStartAnswer(self._pgsql, empty_answer, self._event_sink, self._redis, self._settings),
                 ),
                 TgMessageRegexAnswer(
                     '/status',
@@ -155,7 +158,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,
-                    SearchAyatByKeywordAnswer(settings.DEBUG, empty_answer, self._redis, self._pgsql),
+                    SearchAyatByKeywordAnswer(DebugMode(self._settings), empty_answer, self._redis, self._pgsql),
                     self._redis,
                 ),
                 TgCallbackQueryRegexAnswer(
@@ -171,14 +174,16 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getAyat',
-                    AyatByIdAnswer(settings.DEBUG, empty_answer, self._pgsql),
+                    AyatByIdAnswer(DebugMode(self._settings), empty_answer, self._pgsql),
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,
                     TgCallbackQueryRegexAnswer(
                         'getSAyat',
                         HighlightedSearchAnswer(
-                            SearchAyatByTextCallbackAnswer(settings.DEBUG, empty_answer, self._redis, self._pgsql),
+                            SearchAyatByTextCallbackAnswer(
+                                DebugMode(self._settings), empty_answer, self._redis, self._pgsql,
+                            ),
                             self._redis,
                         ),
                     ),
@@ -186,7 +191,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getFAyat',
-                    FavoriteAyatPage(settings.DEBUG, empty_answer, self._pgsql),
+                    FavoriteAyatPage(DebugMode(self._settings), empty_answer, self._pgsql),
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(addToFavor|removeFromFavor)',

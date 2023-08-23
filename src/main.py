@@ -44,7 +44,7 @@ from repository.users.users import UsersRepository
 from schedule_app import CheckUsersStatus
 from services.cli_app import CliApp, CommandCliApp, ForkCliApp
 from services.logged_answer import LoggedAnswer
-from settings import settings
+from settings import CachedSettings, EnvFileSettings
 
 
 def main(sys_args) -> None:
@@ -53,6 +53,7 @@ def main(sys_args) -> None:
     :param sys_args: list[str]
     """
     nats_sink = NatsSink()
+    settings = CachedSettings(EnvFileSettings.from_filename('.env'))
     quranbot_polling_app = CliApp(
         DatabaseConnectedApp(
             pgsql,

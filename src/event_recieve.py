@@ -31,7 +31,7 @@ from quranbot_schema_registry import validate_schema
 
 from app_types.runable import Runable
 from integrations.event_handlers.prayers_sended import RecievedEventInterface
-from settings import settings
+from settings import EnvFileSettings, Settings
 
 
 @final
@@ -40,6 +40,7 @@ class RecievedEvents(Runable):
     """Обработка событий из очереди."""
 
     _queue_name = 'quranbot'
+    _settings: Settings
 
     def __init__(self, *events: RecievedEventInterface):
         """Конструктор класса.
@@ -50,6 +51,7 @@ class RecievedEvents(Runable):
 
     async def run(self):
         """Запуск."""
+        settings = EnvFileSettings.from_filename('.env')
         nats_client = await nats.connect(
             ['nats://{0}:{1}'.format(settings.NATS_HOST, settings.NATS_PORT)],
             token=settings.NATS_TOKEN,

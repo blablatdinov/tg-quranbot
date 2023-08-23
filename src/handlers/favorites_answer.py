@@ -28,6 +28,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
 from services.reset_state_answer import ResetStateAnswer
@@ -41,7 +42,7 @@ from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
 class FavoriteAyatsAnswer(TgAnswer):
     """Ответ с временами намаза."""
 
-    _debug: bool
+    _debug_mode: SupportsBool
     _pgsql: Database
     _redis: Redis
     _empty_answer: TgAnswer
@@ -56,7 +57,7 @@ class FavoriteAyatsAnswer(TgAnswer):
         return await ResetStateAnswer(
             FavoriteAyatEmptySafeAnswer(
                 FavoriteAyatAnswer(
-                    self._debug,
+                    self._debug_mode,
                     self._empty_answer,
                     self._pgsql,
                 ),

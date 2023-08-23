@@ -31,7 +31,7 @@ from loguru import logger
 from pyeo import elegant
 from quranbot_schema_registry.validate_schema import validate_schema
 
-from settings import settings
+from settings import EnvFileSettings
 
 
 @elegant
@@ -70,6 +70,7 @@ class NatsSink(SinkInterface):
             'data': event_data,
         }
         validate_schema(event, event_name, version)
+        settings = EnvFileSettings.from_filename('.env')
         ns = await nats.connect(
             ['nats://{0}:{1}'.format(settings.NATS_HOST, settings.NATS_PORT)],
             token=settings.NATS_TOKEN,
