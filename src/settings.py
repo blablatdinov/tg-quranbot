@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import os
 from pathlib import Path
 from typing import Protocol, final
 
@@ -95,6 +96,27 @@ class EnvFileSettings(Settings):
             if var_name == attr_name:
                 return var_value
         raise ValueError
+
+
+@final
+@elegant
+@attrs.define(frozen=True)
+class OsEnvSettings(Settings):
+    """Настройки из переменных окружения."""
+
+    def __getattr__(self, attr_name):
+        """Получить аттрибут.
+
+        :param attr_name: str
+        :return: str
+        :raises ValueError: имя не найдено
+        """
+        if attr_name == 'BASE_DIR':
+            return BASE_DIR
+        env_value = os.getenv(attr_name)
+        if not env_value:
+            raise ValueError
+        return env_value
 
 
 @final
