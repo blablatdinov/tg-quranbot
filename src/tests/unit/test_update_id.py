@@ -26,20 +26,20 @@ from pytest_lazyfixture import lazy_fixture
 from app_types.stringable import ThroughString
 from integrations.tg.update import TgUpdate
 from integrations.tg.update_id import UpdateId
-from settings import settings
+from settings import BASE_DIR
 
 
 @pytest.fixture()
 def stringable_update():
     return ThroughString(
-        (settings.BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),
+        (BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),
     )
 
 
 @pytest.fixture()
 def stringable_callback_update():
     return ThroughString(
-        (settings.BASE_DIR / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
+        (BASE_DIR / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
     )
 
 

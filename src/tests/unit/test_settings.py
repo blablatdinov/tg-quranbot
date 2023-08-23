@@ -20,21 +20,35 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import shutil
+from pathlib import Path
 
-from integrations.tg.update import CachedTgUpdate, TgUpdate
-from integrations.tg.update_struct import UpdateStruct
-from settings import BASE_DIR
+import pytest
 
-
-def test():
-    update = TgUpdate((BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text())
-
-    assert update.parsed() == UpdateStruct(ok=True)
+from settings import CachedSettings, EnvFileSettings
 
 
-def test_cached():
-    update = CachedTgUpdate(
-        TgUpdate((BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text()),
-    )
+@pytest.fixture()
+def env_file(tmp_path):
+    env_file_path = Path(tmp_path / '.env')
+    with open(env_file_path, 'w') as env_file:
+        env_file.write('\n'.join([
+            'FOO=bar',
+        ]))
+    return env_file_path
 
-    assert update.parsed() == UpdateStruct(ok=True)
+
+def test(env_file):
+    assert EnvFileSettings(env_file).FOO == 'bar'
+
+
+def test_cached(env_file):
+    cached_settings = CachedSettings(EnvFileSettings(env_file))
+    value_from_file = cached_settings.FOO
+    shutil.rmtree(env_file.parent)
+    assert cached_settings.FOO == 'bar' == value_from_file
+
+
+def test_not_found(env_file):
+    with pytest.raises(ValueError):
+        assert EnvFileSettings(env_file).unknown == 'bar'

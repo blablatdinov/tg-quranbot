@@ -28,6 +28,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.supports_bool import SupportsBool
 from integrations.nominatim import NominatimCityName
 from integrations.tg.coordinates import TgMessageCoordinates
 from integrations.tg.tg_answers import TgAnswerFork, TgAnswerToSender, TgMessageAnswer, TgMessageRegexAnswer
@@ -47,7 +48,7 @@ class SearchCityAnswer(TgAnswer):
 
     _pgsql: Database
     _empty_answer: TgAnswer
-    _debug: bool
+    _debug_mode: SupportsBool
     _redis: Redis
 
     async def build(self, update) -> list[httpx.Request]:

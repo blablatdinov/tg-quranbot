@@ -25,6 +25,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer, TgMessageRegexAnswer
 from srv.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
@@ -38,7 +39,7 @@ from srv.ayats.search_ayat_by_text import SearchAyatByTextAnswer
 class SearchAyatByKeywordAnswer(TgAnswer):
     """Ответ с временами намаза."""
 
-    _debug: bool
+    _debug_mode: SupportsBool
     _empty_answer: TgAnswer
     _redis: Redis
     _pgsql: Database
@@ -54,7 +55,7 @@ class SearchAyatByKeywordAnswer(TgAnswer):
             HighlightedSearchAnswer(
                 CachedAyatSearchQueryAnswer(
                     SearchAyatByTextAnswer(
-                        self._debug,
+                        self._debug_mode,
                         self._empty_answer,
                         self._redis,
                         self._pgsql,

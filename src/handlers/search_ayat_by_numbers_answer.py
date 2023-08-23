@@ -25,6 +25,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgAudioAnswer, TgHtmlParseAnswer, TgMessageAnswer
 from services.reset_state_answer import ResetStateAnswer
@@ -39,7 +40,7 @@ from srv.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 class SearchAyatByNumbersAnswer(TgAnswer):
     """Поиск аята по номеру суры/аята."""
 
-    _debug: bool
+    _debug_mode: SupportsBool
     _empty_answer: TgAnswer
     _redis: Redis
     _pgsql: Database
@@ -59,7 +60,7 @@ class SearchAyatByNumbersAnswer(TgAnswer):
             SuraNotFoundSafeAnswer(
                 AyatNotFoundSafeAnswer(
                     AyatBySuraAyatNumAnswer(
-                        self._debug,
+                        self._debug_mode,
                         html_to_sender,
                         audio_to_sender,
                         self._pgsql,

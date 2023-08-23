@@ -27,13 +27,13 @@ import pytest
 from app_types.stringable import ThroughString
 from app_types.update import FkUpdate
 from integrations.tg.callback_query import CallbackQueryData
-from settings import settings
+from settings import BASE_DIR
 
 
 @pytest.fixture()
 def stringable_callback_update():
     return ThroughString(
-        (Path(settings.BASE_DIR) / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
+        (Path(BASE_DIR) / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
     )
 
 

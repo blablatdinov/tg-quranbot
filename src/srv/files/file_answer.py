@@ -26,6 +26,7 @@ import attrs
 import httpx
 from pyeo import elegant
 
+from app_types.supports_bool import SupportsBool
 from integrations.tg.tg_answers import TgAnswer
 
 
@@ -35,7 +36,7 @@ from integrations.tg.tg_answers import TgAnswer
 class FileAnswer(TgAnswer):
     """Класс ответа с файлом."""
 
-    _debug_mode: bool
+    _debug_mode: SupportsBool
     _telegram_file_id_answer: TgAnswer
     _file_link_answer: TgAnswer
 
