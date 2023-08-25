@@ -90,8 +90,8 @@ class QuranbotAnswer(TgAnswer):
         self._pgsql = database
         self._redis = redis
         self._event_sink = event_sink
-        self._pre_build()
         self._settings = settings
+        self._pre_build()
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.

@@ -53,7 +53,7 @@ def main(sys_args) -> None:
     :param sys_args: list[str]
     """
     nats_sink = NatsSink()
-    settings = CachedSettings(EnvFileSettings.from_filename('.env'))
+    settings = CachedSettings(EnvFileSettings.from_filename('../.env'))
     quranbot_polling_app = CliApp(
         DatabaseConnectedApp(
             pgsql,
@@ -75,6 +75,7 @@ def main(sys_args) -> None:
                                     pgsql,
                                     aioredis.from_url(str(settings.REDIS_DSN)),  # type: ignore
                                     nats_sink,
+                                    settings,
                                 ),
                             ),
                         ),
