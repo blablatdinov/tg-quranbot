@@ -28,7 +28,7 @@ from redis import asyncio as aioredis
 from db.connection import pgsql
 from event_recieve import RecievedEvents
 from integrations.event_handlers.prayers_sended import SendPrayersEvent
-from integrations.nats_integration import NatsSink
+from integrations.nats_integration import FkSink
 from integrations.tg.app import AppWithGetMe, DatabaseConnectedApp, PollingApp
 from integrations.tg.polling_updates import (
     PollingUpdatesIterator,
@@ -52,7 +52,7 @@ def main(sys_args) -> None:
 
     :param sys_args: list[str]
     """
-    nats_sink = NatsSink()
+    nats_sink = FkSink()
     settings = CachedSettings(EnvFileSettings.from_filename('../.env'))
     quranbot_polling_app = CliApp(
         DatabaseConnectedApp(

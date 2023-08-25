@@ -25,6 +25,7 @@ import json
 import uuid
 from typing import Protocol, final
 
+import attrs
 import nats
 import pytz
 from loguru import logger
@@ -45,6 +46,15 @@ class SinkInterface(Protocol):
         :param event_name: str
         :param version: int
         """
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class FkSink(SinkInterface):
+
+    async def send(self, event_data: dict, event_name: str, version: int) -> None:
+        pass
 
 
 @final
@@ -70,7 +80,7 @@ class NatsSink(SinkInterface):
             'data': event_data,
         }
         validate_schema(event, event_name, version)
-        settings = EnvFileSettings.from_filename('.env')
+        settings = EnvFileSettings.from_filename('../.env')
         ns = await nats.connect(
             ['nats://{0}:{1}'.format(settings.NATS_HOST, settings.NATS_PORT)],
             token=settings.NATS_TOKEN,

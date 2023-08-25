@@ -21,18 +21,23 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import time
+from pathlib import Path
 
 import pytest
 
 
+@pytest.mark.parametrize('query,expected', [
+    ('8:7', 'src/tests/e2e/fixtures/8_7_ayat.txt'),
+    ('2:1', 'src/tests/e2e/fixtures/2_1_ayat.txt'),
+    ('2:3', 'src/tests/e2e/fixtures/2_1_ayat.txt'),
+])
 @pytest.mark.usefixtures('bot_process', 'clear_db')
-def test_help(tg_client, bot_name):
-    tg_client.send_message(bot_name, '🎧 Подкасты')
+def test_search_by_sura_ayat(tg_client, bot_name, query, expected):
+    tg_client.send_message(bot_name, query)
     for _ in range(50):
         time.sleep(0.1)
-        message = next(tg_client.iter_messages(bot_name))
-        if 'http' in message.message:
+        last_messages = [x for x in tg_client.iter_messages(bot_name)][::-1][1:]
+        if len(last_messages) == 3:
             break
 
-    assert message.message.startswith('http')
-    assert message.message.endswith('.mp3')
+    assert last_messages[1].message == Path(expected).read_text()

@@ -92,11 +92,13 @@ class EnvFileSettings(Settings):
         """
         if attr_name == 'BASE_DIR':
             return BASE_DIR
-        for line in self._path.read_text().split('\n'):
+        for line in self._path.read_text().strip().split('\n'):
+            if '=' not in line:
+                continue
             var_name, var_value = line.split('=')
             if var_name == attr_name:
                 return var_value
-        raise ValueError
+        raise ValueError('{0} not defined'.format(attr_name))
 
 
 @final
