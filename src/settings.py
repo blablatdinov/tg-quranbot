@@ -20,67 +20,166 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import os
+from collections.abc import Sequence
 from pathlib import Path
-from typing import final
-from urllib.parse import urljoin
+from typing import Protocol, final, overload
 
-import sentry_sdk
-from pydantic import HttpUrl, RedisDsn
-from pydantic_settings import BaseSettings, SettingsConfigDict
+import attrs
+from pyeo import elegant
+
+from app_types.supports_bool import SupportsBool
 
 BASE_DIR = Path(__file__).parent
 
 
+@elegant
+class Settings(Protocol):
+    """Настройки."""
+
+    def __getattr__(self, attr_name: str) -> str:
+        """Получить аттрибут.
+
+        :param attr_name: str
+        """
+
+
 @final
-class Settings(BaseSettings):
-    """Класс с настройками."""
+@attrs.define(frozen=True)
+class CachedSettings(Settings):
+    """Кеширующиеся настройки."""
 
-    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8')
+    _origin: Settings
+    _cached_values: dict[str, str] = {}
 
-    BASE_DIR: Path = BASE_DIR
-    API_TOKEN: str
-    COMMIT_HASH: str = 'unknown'
-    DATABASE_URL: str
-    TEST_DATABASE_URL: str = ''
-    SENTRY_DSN: HttpUrl | str = ''
-    DEBUG: bool
-    REDIS_DSN: RedisDsn
-    ADMIN_CHAT_IDS: list[int] = [358610865]
-    WEBHOOK_HOST: str = 'https://quranbot.ilaletdinov.ru'
-    WEBHOOK_PATH: str = '/bot'
-    WEBAPP_HOST: str = 'localhost'
-    WEBAPP_PORT: int = 8010
-    NATS_HOST: str = 'localhost'
-    NATS_PORT: int = 4222
-    NATS_TOKEN: str
+    def __getattr__(self, attr_name) -> str:
+        """Получить аттрибут.
 
-    TELEGRAM_CLIENT_ID: int = 0
-    TELEGRAM_CLIENT_HASH: str = ''
-
-    @property
-    def webhook_url(self) -> str:
-        """Путь для приема пакетов от телеграма.
-
+        :param attr_name: str
         :return: str
         """
-        return urljoin(self.WEBHOOK_HOST, self.WEBHOOK_PATH)
+        cached_value = self._cached_values.get(attr_name)
+        if not cached_value:
+            origin_value = getattr(self._origin, attr_name)
+            self._cached_values[attr_name] = origin_value
+            return origin_value
+        return cached_value
 
-    @property
-    def alembic_db_url(self) -> str:
-        """Формирование адреса подключения к БД для алембика.
 
-        :return: str
+@final
+@elegant
+@attrs.define(frozen=True)
+class EnvFileSettings(Settings):
+    """Настройки из .env файла."""
+
+    _path: Path
+
+    @classmethod
+    def from_filename(cls, file_path: str) -> Settings:
+        """Конструктор для имени файла.
+
+        :param file_path: str
+        :return: Settings
         """
-        uri = self.DATABASE_URL
-        if self.DATABASE_URL and self.DATABASE_URL.startswith('postgres://'):
-            uri = self.DATABASE_URL.replace('postgres://', 'postgresql://', 1)
-        return uri.replace('postgresql', 'postgresql+asyncpg')
+        return cls(Path(BASE_DIR / file_path))
+
+    def __getattr__(self, attr_name):
+        """Получить аттрибут.
+
+        :param attr_name: str
+        :return: str
+        :raises ValueError: имя не найдено
+        """
+        if attr_name == 'BASE_DIR':
+            return BASE_DIR
+        for line in self._path.read_text().split('\n'):
+            var_name, var_value = line.split('=')
+            if var_name == attr_name:
+                return var_value
+        raise ValueError
 
 
-settings = Settings()  # type: ignore[call-arg]
+@final
+@elegant
+@attrs.define(frozen=True)
+class OsEnvSettings(Settings):
+    """Настройки из переменных окружения."""
 
-if settings.SENTRY_DSN:
-    sentry_sdk.init(
-        dsn=str(settings.SENTRY_DSN),
-        traces_sample_rate=1.0,
-    )
+    def __getattr__(self, attr_name):
+        """Получить аттрибут.
+
+        :param attr_name: str
+        :return: str
+        :raises ValueError: имя не найдено
+        """
+        if attr_name == 'BASE_DIR':
+            return BASE_DIR
+        env_value = os.getenv(attr_name)
+        if not env_value:
+            raise ValueError
+        return env_value
+
+
+@final
+@elegant
+@attrs.define(frozen=True)
+class DebugMode(SupportsBool):
+    """Режим отладки."""
+
+    _settings: Settings
+
+    def __bool__(self) -> bool:
+        """Приведение к булевому значению.
+
+        :return: bool
+        """
+        return self._settings.DEBUG == 'on'
+
+
+@final
+@attrs.define(frozen=True)
+class AdminChatIds(Sequence[int]):
+    """Список идентификаторов администраторов."""
+
+    _settings: Settings
+
+    @overload
+    def __getitem__(self, idx: int) -> int:
+        """Тип для индекса.
+
+        :param idx: int
+        """
+
+    @overload
+    def __getitem__(self, idx: slice) -> Sequence[int]:
+        """Тип для среза.
+
+        :param idx: slice
+        """
+
+    def __getitem__(self, idx: int | slice) -> int | Sequence[int]:
+        """Получить элемент.
+
+        :param idx: int
+        :return: int
+        """
+        return [
+            int(chat_id.strip()) for chat_id in self._settings.ADMIN_CHAT_IDS.split(',')
+        ][idx]
+
+    def __len__(self) -> int:
+        """Кол-во администраторов.
+
+        :return: int
+        """
+        return len(self._settings.ADMIN_CHAT_IDS.split(','))
+
+    def count(self, search_value: int) -> int:
+        """Кол-во элементов.
+
+        :param search_value: int
+        :return: int
+        """
+        return [
+            int(chat_id.strip()) for chat_id in self._settings.ADMIN_CHAT_IDS.split(',')
+        ].count(search_value)

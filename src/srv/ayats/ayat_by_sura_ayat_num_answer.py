@@ -27,6 +27,7 @@ import httpx
 from databases import Database
 from pyeo import elegant
 
+from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer
@@ -43,7 +44,7 @@ from srv.ayats.pg_ayat import PgAyat
 class AyatBySuraAyatNumAnswer(TgAnswer):
     """Ответ на поиск аята по номеру суры, аята."""
 
-    _debug_mode: bool
+    _debug_mode: SupportsBool
     _empty_answer: TgAnswer
     _file_answer: TgAnswer
     _pgsql: Database

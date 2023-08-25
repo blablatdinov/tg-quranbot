@@ -20,21 +20,20 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from settings import AdminChatIds, Settings
 
-from integrations.tg.update import CachedTgUpdate, TgUpdate
-from integrations.tg.update_struct import UpdateStruct
-from settings import BASE_DIR
+
+class FkSettings(Settings):
+
+    def __getattr__(self, attr_name):
+        return '1, 2, 3'
 
 
 def test():
-    update = TgUpdate((BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text())
+    admin_chat_ids = AdminChatIds(FkSettings())
 
-    assert update.parsed() == UpdateStruct(ok=True)
-
-
-def test_cached():
-    update = CachedTgUpdate(
-        TgUpdate((BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text()),
-    )
-
-    assert update.parsed() == UpdateStruct(ok=True)
+    assert admin_chat_ids[0] == 1
+    assert admin_chat_ids[1:] == [2, 3]
+    assert admin_chat_ids[-1] == 3
+    assert len(admin_chat_ids) == 3
+    assert admin_chat_ids.count(2) == 1

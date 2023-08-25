@@ -29,6 +29,7 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.stringable import ThroughString
+from app_types.supports_bool import SupportsBool
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
@@ -48,7 +49,7 @@ from srv.ayats.neighbor_ayats import TextSearchNeighborAyats
 class SearchAyatByTextCallbackAnswer(TgAnswer):
     """Поиск аята по тексту для обработки нажатия кнопки."""
 
-    _debug_mode: bool
+    _debug_mode: SupportsBool
     _empty_answer: TgAnswer
     _redis: Redis
     _pgsql: Database

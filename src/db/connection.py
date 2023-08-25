@@ -19,6 +19,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from databases import Database
 
-from settings import settings
+from settings import EnvFileSettings
 
-pgsql = Database(settings.DATABASE_URL)
+pgsql = Database(EnvFileSettings.from_filename('.env').DATABASE_URL)

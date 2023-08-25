@@ -27,6 +27,7 @@ import httpx
 from databases import Database
 from pyeo import elegant
 
+from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer
@@ -44,7 +45,7 @@ from srv.ayats.neighbor_ayats import FavoriteNeighborAyats
 class FavoriteAyatPage(TgAnswer):
     """Страница с избранным аятом."""
 
-    _debug_mode: bool
+    _debug_mode: SupportsBool
     _empty_answer: TgAnswer
     _pgsql: Database
 

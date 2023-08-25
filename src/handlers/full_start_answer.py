@@ -40,6 +40,7 @@ from services.reset_state_answer import ResetStateAnswer
 from services.start.start_answer import StartAnswer
 from services.start.user_already_active import UserAlreadyActiveSafeAnswer
 from services.start.user_already_exists import UserAlreadyExistsAnswer
+from settings import AdminChatIds, Settings
 
 
 @attrs.define(frozen=True)
@@ -52,6 +53,7 @@ class FullStartAnswer(TgAnswer):
     _empty_answer: TgAnswer
     _event_sink: SinkInterface
     _redis: Redis
+    _settings: Settings
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -72,6 +74,7 @@ class FullStartAnswer(TgAnswer):
                                 UserRepository(self._pgsql),
                                 AdminMessage('start', self._pgsql),
                                 self._pgsql,
+                                AdminChatIds(self._settings),
                             ),
                             self._event_sink,
                             UserRepository(self._pgsql),

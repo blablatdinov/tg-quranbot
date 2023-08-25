@@ -28,6 +28,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.chat_id import TgChatId
@@ -47,7 +48,7 @@ from srv.ayats.neighbor_ayats import TextSearchNeighborAyats
 class SearchAyatByTextAnswer(TgAnswer):
     """Поиск аята по тексту."""
 
-    _debug_mode: bool
+    _debug_mode: SupportsBool
     _empty_answer: TgAnswer
     _redis: Redis
     _pgsql: Database

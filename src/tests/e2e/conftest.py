@@ -26,7 +26,7 @@ import pytest
 from telethon.sync import TelegramClient
 
 from main import main
-from settings import settings
+from settings import EnvFileSettings
 
 
 @pytest.fixture(scope='session')
@@ -44,6 +44,7 @@ def bot_process():
 
 @pytest.fixture(scope='session')
 def tg_client(bot_name):
+    settings = EnvFileSettings.from_filename('.env')
     with TelegramClient('me', settings.TELEGRAM_CLIENT_ID, settings.TELEGRAM_CLIENT_HASH) as client:
         all_messages = [message.id for message in client.iter_messages('@WokeUpSmiled_bot')]
         client.delete_messages(entity=bot_name, message_ids=all_messages)

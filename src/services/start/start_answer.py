@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from collections.abc import Sequence
 from contextlib import suppress
 from typing import final
 
@@ -37,7 +38,6 @@ from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender,
 from repository.admin_message import AdminMessageInterface
 from repository.users.user import UserRepositoryInterface
 from services.start.start_message import SmartReferrerChatId
-from settings import settings
 from srv.ayats.pg_ayat import PgAyat
 
 
@@ -51,6 +51,7 @@ class StartAnswer(TgAnswer):
     _user_repo: UserRepositoryInterface
     _admin_message: AdminMessageInterface
     _pgsql: Database
+    _admin_chat_ids: Sequence[int]
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
@@ -82,7 +83,7 @@ class StartAnswer(TgAnswer):
                     self._origin,
                     'Зарегистрировался новый пользователь',
                 ),
-                settings.ADMIN_CHAT_IDS[0],
+                self._admin_chat_ids[0],
             ),
         ).build(update)
 
@@ -125,7 +126,7 @@ class StartAnswer(TgAnswer):
                         self._origin,
                         'Зарегистрировался новый пользователь',
                     ),
-                    settings.ADMIN_CHAT_IDS[0],
+                    self._admin_chat_ids[0],
                 ),
             ).build(update)
         return []

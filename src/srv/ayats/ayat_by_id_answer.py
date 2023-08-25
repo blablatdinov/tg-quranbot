@@ -27,6 +27,7 @@ import httpx
 from databases import Database
 from pyeo import elegant
 
+from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgAudioAnswer, TgTextAnswer
@@ -43,7 +44,7 @@ from srv.files.file_id_answer import TelegramFileIdAnswer
 class AyatByIdAnswer(TgAnswer):
     """Ответ на аят по идентификатору."""
 
-    _debug_mode: bool
+    _debug_mode: SupportsBool
     _empty_answer: TgAnswer
     _pgsql: Database
 

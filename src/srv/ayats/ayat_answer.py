@@ -26,6 +26,7 @@ import attrs
 import httpx
 from pyeo import elegant
 
+from app_types.supports_bool import SupportsBool
 from integrations.tg.keyboard import KeyboardInterface
 from integrations.tg.tg_answers import (
     TgAnswer,
@@ -47,7 +48,7 @@ from srv.files.file_id_answer import TelegramFileIdAnswer
 class AyatAnswer(TgAnswer):
     """Ответ с аятом."""
 
-    _debug: bool
+    _debug_mode: SupportsBool
     _empty_answer: TgAnswer
     _ayat: Ayat
     _ayat_answer_keyboard: KeyboardInterface
@@ -67,7 +68,7 @@ class AyatAnswer(TgAnswer):
                 self._ayat_answer_keyboard,
             ),
             FileAnswer(
-                self._debug,
+                self._debug_mode,
                 TelegramFileIdAnswer(
                     TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
                     await self._ayat.tg_file_id(),
