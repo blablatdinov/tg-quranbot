@@ -21,64 +21,19 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import multiprocessing
-from pathlib import Path
 
 import psycopg2
-from redis import Redis
 import pytest
 from telethon.sync import TelegramClient
 
 from main import main
 from settings import EnvFileSettings
+from tests.e2e.creating_test_db import create_db, drop_db, fill_test_db
 
 
 @pytest.fixture(scope='session')
 def bot_name():
     return '@WokeUpSmiled_bot'
-
-
-def create_db() -> None:
-    connection = psycopg2.connect(
-        EnvFileSettings.from_filename('../.env').DATABASE_URL.replace('quranbot_test', 'postgres'),
-    )
-    connection.autocommit = True
-    cursor = connection.cursor()
-    try:
-        cursor.execute('CREATE DATABASE quranbot_test')
-    except psycopg2.errors.DuplicateDatabase:
-        drop_db()
-        cursor.execute('CREATE DATABASE quranbot_test')
-    connection.close()
-
-
-def fill_test_db() -> None:
-    qbot_connection = psycopg2.connect(EnvFileSettings.from_filename('../.env').DATABASE_URL)
-    qbot_connection.autocommit = True
-    qbot_cursor = qbot_connection.cursor()
-    for item in sorted([path for path in Path('migrations').iterdir() if path.name.endswith('.sql')], key=lambda x: x.name):
-        qbot_cursor.execute(item.read_text())
-    fixtures = (
-        'src/tests/e2e/db-fixtures/files.sql',
-        'src/tests/e2e/db-fixtures/suras.sql',
-        'src/tests/e2e/db-fixtures/ayats.sql',
-        'src/tests/e2e/db-fixtures/podcasts.sql',
-        'src/tests/e2e/db-fixtures/prayer_days.sql',
-        'src/tests/e2e/db-fixtures/cities.sql',
-        'src/tests/e2e/db-fixtures/prayers.sql',
-        'src/tests/e2e/db-fixtures/admin_messages.sql',
-    )
-    for fixture in fixtures:
-        qbot_cursor.execute(Path(fixture).read_text())
-    qbot_connection.close()
-
-
-def drop_db() -> None:
-    connection = psycopg2.connect(
-        EnvFileSettings.from_filename('../.env').DATABASE_URL.replace('quranbot_test', 'postgres'),
-    )
-    connection.autocommit = True
-    cursor = connection.cursor()
-    cursor.execute('DROP DATABASE quranbot_test')
 
 
 @pytest.fixture()
