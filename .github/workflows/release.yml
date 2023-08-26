@@ -25,13 +25,6 @@ name: Test and release
 on:
   push:
     tags: "*"
-#    branches: [ "411/e2e-tests-github-action" ]
-
-# ======== Temporary =========
-#on:
-#  pull_request:
-#    branches: [ "master" ]
-# ===========================
 
 permissions:
   contents: read
@@ -134,8 +127,8 @@ jobs:
               image: blablatdinov/quranbot-aiogram:${{ steps.tag_name.outputs.TAG_NAME }}
               command: .venv/bin/python main.py run_polling
               restart: always
-              env_file:
-                - .env
+              volumes:
+                - .env:/.env
           ' > docker-compose.yml
           cat docker-compose.yml
       - name: Deploy with docker-compose on remote server
