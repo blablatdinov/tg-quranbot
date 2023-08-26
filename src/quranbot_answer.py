@@ -117,11 +117,6 @@ class QuranbotAnswer(TgAnswer):
                     'Избранное',
                     FavoriteAyatsAnswer(DebugMode(self._settings), self._pgsql, self._redis, empty_answer),
                 ),
-                StepAnswer(
-                    UserStep.city_search.value,
-                    SearchCityAnswer(self._pgsql, empty_answer, DebugMode(self._settings), self._redis),
-                    self._redis,
-                ),
                 TgMessageRegexAnswer(
                     r'\d+:\d+',
                     SearchAyatByNumbersAnswer(DebugMode(self._settings), empty_answer, self._redis, self._pgsql),
@@ -187,6 +182,11 @@ class QuranbotAnswer(TgAnswer):
                             self._redis,
                         ),
                     ),
+                    self._redis,
+                ),
+                StepAnswer(
+                    UserStep.city_search.value,
+                    SearchCityAnswer(self._pgsql, empty_answer, DebugMode(self._settings), self._redis),
                     self._redis,
                 ),
                 TgCallbackQueryRegexAnswer(
