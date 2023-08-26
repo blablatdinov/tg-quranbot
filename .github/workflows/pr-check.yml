@@ -20,10 +20,10 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-name: Test and release
+name: Python application
 
 on:
-  push:
+  pull_request:
     branches: [ "master" ]
 
 permissions:
@@ -61,13 +61,4 @@ jobs:
     - name: Check types with mypy
       run: .venv/bin/mypy src
     - name: Run tests with pytest
-      run: .venv/bin/pytest src
-    - name: Install SSH Key
-      uses: shimataro/ssh-key-action@v2
-      with:
-        key: ${{ secrets.SSH_KEY }}
-        known_hosts: unnecessary
-    - name: Adding Known Hosts
-      run: touch ~/.ssh/known_hosts && ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-    - name: Deploy
-      run: ssh www@${{ secrets.SSH_HOST }} '/home/www/code/quranbot-aiogram/deploy/restart.sh'
+      run: .venv/bin/pytest src --ignore=src/tests/e2e --doctest-modules --cov
