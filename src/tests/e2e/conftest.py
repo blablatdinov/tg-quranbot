@@ -24,6 +24,7 @@ import multiprocessing
 from pathlib import Path
 
 import psycopg2
+from redis import Redis
 import pytest
 from telethon.sync import TelegramClient
 
@@ -54,7 +55,8 @@ def fill_test_db() -> None:
     qbot_connection = psycopg2.connect(EnvFileSettings.from_filename('../.env').DATABASE_URL)
     qbot_connection.autocommit = True
     qbot_cursor = qbot_connection.cursor()
-    qbot_cursor.execute(Path('migrations/20230815_01_7ALQG.sql').read_text())
+    for item in sorted([path for path in Path('migrations').iterdir() if path.name.endswith('.sql')], key=lambda x: x.name):
+        qbot_cursor.execute(item.read_text())
     fixtures = (
         'src/tests/e2e/db-fixtures/files.sql',
         'src/tests/e2e/db-fixtures/suras.sql',
@@ -91,6 +93,14 @@ def clear_db():
     )
     for table in tables:
         cursor.execute('DELETE FROM {0}'.format(table))  # noqa: S608
+
+
+@pytest.fixture()
+def db_conn():
+    connection = psycopg2.connect(EnvFileSettings.from_filename('../.env').DATABASE_URL)
+    connection.autocommit = True
+    yield connection
+    connection.close()
 
 
 @pytest.fixture(scope='session')

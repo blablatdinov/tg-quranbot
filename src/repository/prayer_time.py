@@ -83,7 +83,7 @@ class UserPrayers(UserPrayersInterface):
             ORDER BY up.prayer_at_user_id
         """
         rows = await self._pgsql.fetch_all(query, {'date': date, 'chat_id': chat_id})
-        prayers = [UserPrayer.parse_obj(row) for row in rows]
+        prayers = [UserPrayer.model_validate(dict(row._mapping)) for row in rows]
         if not prayers:
             raise UserHasNotGeneratedPrayersError
         logger.info('Prayer times taked: {0}'.format(prayers))
