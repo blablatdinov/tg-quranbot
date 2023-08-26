@@ -24,17 +24,41 @@ name: Test and release
 
 on:
   push:
-    branches: [ "master" ]
+    tags: "*"
+#    branches: [ "411/e2e-tests-github-action" ]
+
+# ======== Temporary =========
+#on:
+#  pull_request:
+#    branches: [ "master" ]
+# ===========================
 
 permissions:
   contents: read
 
 jobs:
-  build:
+  checks:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: almazilaletdinov
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        submodules: 'true'
     - name: Set up Python 3.11
       uses: actions/setup-python@v4
       with:
@@ -55,19 +79,67 @@ jobs:
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       run: poetry install --no-interaction --no-root
     - name: create .env file
-      run: cp .env.example .env
+      run: echo '${{ secrets.E2E_ENV_SETUP }}' > .env
+    - name: Create telethon session
+      run: echo "${{ secrets.TELETHON_SESSION }}" | base64 --decode > me.session
     - name: Lint with flake8
       run: .venv/bin/flake8 src
     - name: Check types with mypy
       run: .venv/bin/mypy src
-    - name: Run tests with pytest
-      run: .venv/bin/pytest src
-    - name: Install SSH Key
-      uses: shimataro/ssh-key-action@v2
-      with:
-        key: ${{ secrets.SSH_KEY }}
-        known_hosts: unnecessary
-    - name: Adding Known Hosts
-      run: touch ~/.ssh/known_hosts && ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-    - name: Deploy
-      run: ssh www@${{ secrets.SSH_HOST }} '/home/www/code/quranbot-aiogram/deploy/restart.sh'
+    - name: Run unit tests
+      run: .venv/bin/pytest src --ignore=src/tests/e2e --doctest-modules --cov
+    - name: Run e2e tests
+      run: .venv/bin/pytest src/tests/e2e
+
+  build-and-push:
+    needs: checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Get tag name
+        id: tag_name
+        run: echo "::set-output name=TAG_NAME::$(echo ${GITHUB_REF#refs/tags/})"
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: blablatdinov/quranbot-aiogram:${{ steps.tag_name.outputs.TAG_NAME }}
+
+  update-remote-container:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY}}
+          known_hosts: '87.249.49.217 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXsftBFh0RQ0pupvfT8zZp7HEIT8cWD9ziL7glOEtCqVWu8mMqgmYH+GzA7xsWHkAGgQ0BHHQinVMg2sQzDyyHdSVuMvsi04WsgAaOdD0mQa5LwauXpaw/X5nyOKAtiVzzUSi6I8leTS+o4/5nnNz+wxGEZSItESEYYbLWIhE9p30Mt1cSB+F8iUXsAO/I1DqwqXsOUET5ocVOfeRd7/3P7ZT8KGjG6DP8D4aCvxnc1NIAVnW9sfj7hsR84kTWNFFfihMZkmFrDuQfS30mFBlb9sAahHmQfeYfVUexU0ntkiSyE7jsnvfKJIKb3uyfbP1TjJ5EwTt7lDgNdZst3aAkK/JHiEJaIyod1AHt5gG8OFC75+Cy7fbwawPJUuRysxz2O35KFGcbZyN42kdHYZoVLpe5GvcziUSkQLW/KRBrbK7Uw4X6Q6h1QOhUL1ifbqACEIZXeuqkje0c6nL9M5lFeYITn1Ikc3N+c50hAmnX6F4rnifbFUnqiELBk0sn7zM='
+      - name: Get tag name
+        id: tag_name
+        run: echo "::set-output name=TAG_NAME::$(echo ${GITHUB_REF#refs/tags/})"
+      - name: Generate docker-compose.yml
+        run: |
+          echo 'version: "3.3"
+          services:
+            qbot:
+              image: blablatdinov/quranbot-aiogram:${{ steps.tag_name.outputs.TAG_NAME }}
+              command: .venv/bin/python main.py run_polling
+              restart: always
+              env_file:
+                - .env
+          ' > docker-compose.yml
+          cat docker-compose.yml
+      - name: Deploy with docker-compose on remote server
+        run: |
+          ssh www@87.249.49.217 'echo "Connected!"'
+          scp docker-compose.yml www@87.249.49.217:/home/www/code/quranbot-aiogram/docker-compose.yml
+          ssh www@87.249.49.217 'cd /home/www/code/quranbot-aiogram/ && docker-compose up -d'

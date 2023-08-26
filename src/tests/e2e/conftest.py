@@ -37,7 +37,9 @@ def bot_name():
 
 
 def create_db() -> None:
-    connection = psycopg2.connect('postgres://almazilaletdinov@localhost:5432/postgres')
+    connection = psycopg2.connect(
+        EnvFileSettings.from_filename('../.env').DATABASE_URL.replace('quranbot_test', 'postgres'),
+    )
     connection.autocommit = True
     cursor = connection.cursor()
     try:
@@ -45,10 +47,11 @@ def create_db() -> None:
     except psycopg2.errors.DuplicateDatabase:
         drop_db()
         cursor.execute('CREATE DATABASE quranbot_test')
+    connection.close()
 
 
 def fill_test_db() -> None:
-    qbot_connection = psycopg2.connect('postgres://almazilaletdinov@localhost:5432/quranbot_test')
+    qbot_connection = psycopg2.connect(EnvFileSettings.from_filename('../.env').DATABASE_URL)
     qbot_connection.autocommit = True
     qbot_cursor = qbot_connection.cursor()
     qbot_cursor.execute(Path('migrations/20230815_01_7ALQG.sql').read_text())
@@ -64,10 +67,13 @@ def fill_test_db() -> None:
     )
     for fixture in fixtures:
         qbot_cursor.execute(Path(fixture).read_text())
+    qbot_connection.close()
 
 
 def drop_db() -> None:
-    connection = psycopg2.connect('postgres://almazilaletdinov@localhost:5432/postgres')
+    connection = psycopg2.connect(
+        EnvFileSettings.from_filename('../.env').DATABASE_URL.replace('quranbot_test', 'postgres'),
+    )
     connection.autocommit = True
     cursor = connection.cursor()
     cursor.execute('DROP DATABASE quranbot_test')
@@ -75,7 +81,7 @@ def drop_db() -> None:
 
 @pytest.fixture()
 def clear_db():
-    qbot_connection = psycopg2.connect('postgres://almazilaletdinov@localhost:5432/quranbot_test')
+    qbot_connection = psycopg2.connect(EnvFileSettings.from_filename('../.env').DATABASE_URL)
     qbot_connection.autocommit = True
     cursor = qbot_connection.cursor()
     tables = (
@@ -89,10 +95,10 @@ def clear_db():
 
 @pytest.fixture(scope='session')
 def bot_process():
-    bot = multiprocessing.Process(target=main, args=(['src/main.py', 'run_polling'],))
-    bot.start()
     create_db()
     fill_test_db()
+    bot = multiprocessing.Process(target=main, args=(['src/main.py', 'run_polling'],))
+    bot.start()
     yield
     bot.terminate()
     drop_db()

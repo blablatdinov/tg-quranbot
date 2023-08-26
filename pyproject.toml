@@ -65,6 +65,7 @@ yoyo-migrations = "8.2.0"
 sqlfluff = "2.3.0"
 astpretty = "3.0.0"
 respx = "0.20.2"
+psycopg2-binary = "^2.9.7"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

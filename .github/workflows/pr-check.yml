@@ -24,13 +24,14 @@ name: Python application
 
 on:
   pull_request:
-    branches: [ "master" ]
+#    branches: [ "master" ]
+    branches: [ "dev" ]
 
 permissions:
   contents: read
 
 jobs:
-  build:
+  unit-tests-and-static-analyze:
     runs-on: ubuntu-latest
 
     steps:
