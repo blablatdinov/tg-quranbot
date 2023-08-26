@@ -31,6 +31,8 @@ permissions:
 
 jobs:
   checks:
+    env:
+      TZ: "Europe/Moscow"
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -105,6 +107,30 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: blablatdinov/quranbot-aiogram:${{ steps.tag_name.outputs.TAG_NAME }}
+
+  apply-migrations:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - name: Install Dependencies
+        run: |
+          pip install yoyo-migrations psycopg2-binary
+      - name: Fill yoyo.ini
+        run: |
+          echo '[DEFAULT]
+          sources = migrations
+          database = ${{ secrets.POSTGRES_URL }}
+          batch_mode = on
+          verbosity = 3' > yoyo.ini
+      - name: Apply Migrations
+        run: |
+          yoyo apply
 
   update-remote-container:
     needs: build-and-push

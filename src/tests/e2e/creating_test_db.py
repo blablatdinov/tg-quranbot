@@ -43,7 +43,11 @@ def create_db() -> None:
 
 def apply_migrations(cursor) -> None:
     migrations = sorted(
-        [path for path in Path('migrations').iterdir() if path.name.endswith('.sql')],
+        [
+            path
+            for path in Path('migrations').iterdir()
+            if path.name.endswith('.sql') and not path.name.endswith('rollback.sql')
+        ],
         key=lambda file_path: file_path.name,
     )
     for migration in migrations:
