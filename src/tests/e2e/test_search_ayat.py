@@ -21,32 +21,23 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import time
+from pathlib import Path
 
 import pytest
 
 
-@pytest.fixture()
-def expected_message():
-    return '\n'.join([
-        'Этот бот поможет тебе изучить Коран по богословскому переводу Шамиля Аляутдинова. ',
-        '',
-        'Каждое утро, вам будут приходить аяты из Священного Корана.',
-        'При нажатии на кнопку Подкасты, вам будут присылаться проповеди с сайта umma.ru.',
-        '',
-        (
-            'Также вы можете отправите номер суры, аята (например 4:7) и получить: аят в оригинале, '
-            + 'перевод на русский язык, транслитерацию и аудио'
-        ),
-    ])
-
-
+@pytest.mark.parametrize('query,expected', [
+    ('8:7', 'src/tests/e2e/fixtures/8_7_ayat.txt'),
+    ('2:1', 'src/tests/e2e/fixtures/2_1_ayat.txt'),
+    ('2:3', 'src/tests/e2e/fixtures/2_1_ayat.txt'),
+])
 @pytest.mark.usefixtures('bot_process', 'clear_db')
-def test_help(expected_message, tg_client, bot_name):
-    tg_client.send_message(bot_name, '/help')
-    for _ in range(10):
+def test_search_by_sura_ayat(tg_client, bot_name, query, expected):
+    tg_client.send_message(bot_name, query)
+    for _ in range(50):
         time.sleep(1)
-        message = next(tg_client.iter_messages(bot_name))
-        if message.message != '/help':
+        last_messages = [mess.message for mess in tg_client.iter_messages(bot_name)]
+        if len(last_messages) == 4:
             break
 
-    assert message.message == expected_message
+    assert last_messages[1] == Path(expected).read_text()

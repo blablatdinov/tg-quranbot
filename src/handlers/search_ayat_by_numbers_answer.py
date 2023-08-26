@@ -27,7 +27,8 @@ from redis.asyncio import Redis
 
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgAudioAnswer, TgHtmlParseAnswer, TgMessageAnswer
+from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgAudioAnswer
+from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from services.reset_state_answer import ResetStateAnswer
 from srv.ayats.ayat_by_sura_ayat_num_answer import AyatBySuraAyatNumAnswer
 from srv.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
@@ -51,23 +52,18 @@ class SearchAyatByNumbersAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        html_to_sender = TgAnswerToSender(
-            TgHtmlParseAnswer(TgMessageAnswer(self._empty_answer)),
-        )
-        audio_to_sender = TgAnswerToSender(TgAudioAnswer(self._empty_answer))
-        answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
         return await ResetStateAnswer(
             SuraNotFoundSafeAnswer(
                 AyatNotFoundSafeAnswer(
                     AyatBySuraAyatNumAnswer(
                         self._debug_mode,
-                        html_to_sender,
-                        audio_to_sender,
+                        self._empty_answer,
+                        TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
                         self._pgsql,
                     ),
-                    answer_to_sender,
+                    TgHtmlMessageAnswerToSender(self._empty_answer),
                 ),
-                answer_to_sender,
+                TgHtmlMessageAnswerToSender(self._empty_answer),
             ),
             self._redis,
         ).build(update)

@@ -21,7 +21,9 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import multiprocessing
+from pathlib import Path
 
+import psycopg2
 import pytest
 from telethon.sync import TelegramClient
 
@@ -34,17 +36,71 @@ def bot_name():
     return '@WokeUpSmiled_bot'
 
 
+def create_db() -> None:
+    connection = psycopg2.connect('postgres://almazilaletdinov@localhost:5432/postgres')
+    connection.autocommit = True
+    cursor = connection.cursor()
+    try:
+        cursor.execute('CREATE DATABASE quranbot_test')
+    except psycopg2.errors.DuplicateDatabase:
+        drop_db()
+        cursor.execute('CREATE DATABASE quranbot_test')
+
+
+def fill_test_db() -> None:
+    qbot_connection = psycopg2.connect('postgres://almazilaletdinov@localhost:5432/quranbot_test')
+    qbot_connection.autocommit = True
+    qbot_cursor = qbot_connection.cursor()
+    qbot_cursor.execute(Path('migrations/20230815_01_7ALQG.sql').read_text())
+    fixtures = (
+        'src/tests/e2e/db-fixtures/files.sql',
+        'src/tests/e2e/db-fixtures/suras.sql',
+        'src/tests/e2e/db-fixtures/ayats.sql',
+        'src/tests/e2e/db-fixtures/podcasts.sql',
+        'src/tests/e2e/db-fixtures/prayer_days.sql',
+        'src/tests/e2e/db-fixtures/cities.sql',
+        'src/tests/e2e/db-fixtures/prayers.sql',
+        'src/tests/e2e/db-fixtures/admin_messages.sql',
+    )
+    for fixture in fixtures:
+        qbot_cursor.execute(Path(fixture).read_text())
+
+
+def drop_db() -> None:
+    connection = psycopg2.connect('postgres://almazilaletdinov@localhost:5432/postgres')
+    connection.autocommit = True
+    cursor = connection.cursor()
+    cursor.execute('DROP DATABASE quranbot_test')
+
+
+@pytest.fixture()
+def clear_db():
+    qbot_connection = psycopg2.connect('postgres://almazilaletdinov@localhost:5432/quranbot_test')
+    qbot_connection.autocommit = True
+    cursor = qbot_connection.cursor()
+    tables = (
+        'prayers_at_user',
+        'favorite_ayats',
+        'users',
+    )
+    for table in tables:
+        cursor.execute('DELETE FROM {0}'.format(table))  # noqa: S608
+
+
 @pytest.fixture(scope='session')
 def bot_process():
     bot = multiprocessing.Process(target=main, args=(['src/main.py', 'run_polling'],))
     bot.start()
+    create_db()
+    fill_test_db()
     yield
     bot.terminate()
+    drop_db()
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture()
 def tg_client(bot_name):
-    settings = EnvFileSettings.from_filename('.env')
+    settings = EnvFileSettings.from_filename('../.env')
     with TelegramClient('me', settings.TELEGRAM_CLIENT_ID, settings.TELEGRAM_CLIENT_HASH) as client:
         all_messages = [message.id for message in client.iter_messages('@WokeUpSmiled_bot')]
         client.delete_messages(entity=bot_name, message_ids=all_messages)

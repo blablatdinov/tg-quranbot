@@ -21,32 +21,19 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import time
+from pathlib import Path
 
 import pytest
 
 
-@pytest.fixture()
-def expected_message():
-    return '\n'.join([
-        'Этот бот поможет тебе изучить Коран по богословскому переводу Шамиля Аляутдинова. ',
-        '',
-        'Каждое утро, вам будут приходить аяты из Священного Корана.',
-        'При нажатии на кнопку Подкасты, вам будут присылаться проповеди с сайта umma.ru.',
-        '',
-        (
-            'Также вы можете отправите номер суры, аята (например 4:7) и получить: аят в оригинале, '
-            + 'перевод на русский язык, транслитерацию и аудио'
-        ),
-    ])
-
-
 @pytest.mark.usefixtures('bot_process', 'clear_db')
-def test_help(expected_message, tg_client, bot_name):
-    tg_client.send_message(bot_name, '/help')
+def test_start(tg_client, bot_name):
+    tg_client.send_message(bot_name, '/start')
     for _ in range(10):
         time.sleep(1)
-        message = next(tg_client.iter_messages(bot_name))
-        if message.message != '/help':
+        last_messages = [mess.message for mess in tg_client.iter_messages(bot_name)]
+        if len(last_messages) == 3:
             break
 
-    assert message.message == expected_message
+    assert last_messages[1] == Path('src/tests/e2e/fixtures/start.txt').read_text()
+    assert last_messages[0] == Path('src/tests/e2e/fixtures/1_1_ayat.txt').read_text()

@@ -25,7 +25,7 @@ import time
 import pytest
 
 
-@pytest.mark.usefixtures('bot_process')
+@pytest.mark.usefixtures('bot_process', 'clear_db')
 def test_help(tg_client, bot_name):
     tg_client.send_message(bot_name, '🎧 Подкасты')
     for _ in range(50):

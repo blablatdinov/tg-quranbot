@@ -35,12 +35,15 @@ def env_file(tmp_path):
     with open(env_file_path, 'w') as env_file:
         env_file.write('\n'.join([
             'FOO=bar',
+            '',
+            'FIZ=foo',
         ]))
     return env_file_path
 
 
 def test(env_file):
     assert EnvFileSettings(env_file).FOO == 'bar'
+    assert EnvFileSettings(env_file).FIZ == 'foo'
 
 
 def test_os_env():
