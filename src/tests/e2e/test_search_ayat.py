@@ -35,9 +35,9 @@ import pytest
 def test_search_by_sura_ayat(tg_client, bot_name, query, expected):
     tg_client.send_message(bot_name, query)
     for _ in range(50):
-        time.sleep(0.1)
-        last_messages = [x for x in tg_client.iter_messages(bot_name)][::-1][1:]
-        if len(last_messages) == 3:
+        time.sleep(1)
+        last_messages = [mess.message for mess in tg_client.iter_messages(bot_name)]
+        if len(last_messages) == 4:
             break
 
-    assert last_messages[1].message == Path(expected).read_text()
+    assert last_messages[1] == Path(expected).read_text()

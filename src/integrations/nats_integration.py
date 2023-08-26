@@ -52,9 +52,15 @@ class SinkInterface(Protocol):
 @attrs.define(frozen=True)
 @elegant
 class FkSink(SinkInterface):
+    """Фейковый слив для событий."""
 
     async def send(self, event_data: dict, event_name: str, version: int) -> None:
-        pass
+        """Отправить событие.
+
+        :param event_data: dict
+        :param event_name: str
+        :param version: int
+        """
 
 
 @final

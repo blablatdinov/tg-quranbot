@@ -36,7 +36,7 @@ def env_file(tmp_path):
         env_file.write('\n'.join([
             'FOO=bar',
             '',
-            'FIZ=foo'
+            'FIZ=foo',
         ]))
     return env_file_path
 

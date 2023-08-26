@@ -43,10 +43,9 @@ def expected_message():
 @pytest.mark.usefixtures('bot_process', 'clear_db')
 def test_help(expected_message, tg_client, bot_name):
     tg_client.send_message(bot_name, '/help')
-    for _ in range(50):
-        time.sleep(0.1)
+    for _ in range(10):
+        time.sleep(1)
         message = next(tg_client.iter_messages(bot_name))
-        print(message.message)
         if message.message != '/help':
             break
 

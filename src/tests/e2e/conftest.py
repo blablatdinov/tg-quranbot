@@ -36,7 +36,7 @@ def bot_name():
     return '@WokeUpSmiled_bot'
 
 
-def create_db():
+def create_db() -> None:
     connection = psycopg2.connect('postgres://almazilaletdinov@localhost:5432/postgres')
     connection.autocommit = True
     cursor = connection.cursor()
@@ -45,6 +45,9 @@ def create_db():
     except psycopg2.errors.DuplicateDatabase:
         drop_db()
         cursor.execute('CREATE DATABASE quranbot_test')
+
+
+def fill_test_db() -> None:
     qbot_connection = psycopg2.connect('postgres://almazilaletdinov@localhost:5432/quranbot_test')
     qbot_connection.autocommit = True
     qbot_cursor = qbot_connection.cursor()
@@ -60,12 +63,10 @@ def create_db():
         'src/tests/e2e/db-fixtures/admin_messages.sql',
     )
     for fixture in fixtures:
-        print('load {0}'.format(fixture))
         qbot_cursor.execute(Path(fixture).read_text())
-        print('{0} loaded'.format(fixture))
 
 
-def drop_db():
+def drop_db() -> None:
     connection = psycopg2.connect('postgres://almazilaletdinov@localhost:5432/postgres')
     connection.autocommit = True
     cursor = connection.cursor()
@@ -83,7 +84,7 @@ def clear_db():
         'users',
     )
     for table in tables:
-        cursor.execute('DELETE FROM {0}'.format(table))
+        cursor.execute('DELETE FROM {0}'.format(table))  # noqa: S608
 
 
 @pytest.fixture(scope='session')
@@ -91,6 +92,7 @@ def bot_process():
     bot = multiprocessing.Process(target=main, args=(['src/main.py', 'run_polling'],))
     bot.start()
     create_db()
+    fill_test_db()
     yield
     bot.terminate()
     drop_db()
