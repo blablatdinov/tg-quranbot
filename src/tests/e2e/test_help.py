@@ -20,8 +20,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import time
-
 import pytest
 
 
@@ -41,12 +39,8 @@ def expected_message():
 
 
 @pytest.mark.usefixtures('bot_process', 'clear_db')
-def test_help(expected_message, tg_client, bot_name):
+def test_help(expected_message, tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/help')
-    for _ in range(10):
-        time.sleep(1)
-        message = next(tg_client.iter_messages(bot_name))
-        if message.message != '/help':
-            break
+    messages = wait_until(tg_client, 2)
 
-    assert message.message == expected_message
+    assert messages[0].message == expected_message

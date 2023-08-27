@@ -20,19 +20,13 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import time
-
 import pytest
 
 
 @pytest.mark.usefixtures('bot_process', 'clear_db')
-def test_help(tg_client, bot_name):
+def test_help(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '🎧 Подкасты')
-    for _ in range(50):
-        time.sleep(0.1)
-        message = next(tg_client.iter_messages(bot_name))
-        if 'http' in message.message:
-            break
+    messages = wait_until(tg_client, 2)
 
-    assert message.message.startswith('http')
-    assert message.message.endswith('.mp3')
+    assert messages[0].message.startswith('http')
+    assert messages[0].message.endswith('.mp3')

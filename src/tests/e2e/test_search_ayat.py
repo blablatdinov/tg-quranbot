@@ -20,7 +20,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import time
 from pathlib import Path
 
 import pytest
@@ -32,12 +31,68 @@ import pytest
     ('2:3', 'src/tests/e2e/fixtures/2_1_ayat.txt'),
 ])
 @pytest.mark.usefixtures('bot_process', 'clear_db')
-def test_search_by_sura_ayat(tg_client, bot_name, query, expected):
+def test_search_by_sura_ayat(tg_client, bot_name, query, expected, wait_until):
     tg_client.send_message(bot_name, query)
-    for _ in range(50):
-        time.sleep(1)
-        last_messages = [mess.message for mess in tg_client.iter_messages(bot_name)]
-        if len(last_messages) == 4:
-            break
+    last_messages = wait_until(tg_client, 3)
 
-    assert last_messages[1] == Path(expected).read_text()
+    assert last_messages[1].message == Path(expected).read_text()
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db')
+def test_by_word(tg_client, bot_name, wait_until):
+    tg_client.send_message(bot_name, 'Найти аят')
+    wait_until(tg_client, 2)
+    tg_client.send_message(bot_name, 'камни')
+    last_messages = wait_until(tg_client, 5)
+
+    assert last_messages[1].message == Path('src/tests/e2e/fixtures/2_24_ayat.txt').read_text()
+    assert [
+        (button.text, button.data)
+        for button_row in last_messages[1].get_buttons()
+        for button in button_row
+    ] == [
+        ('стр. 1/5', b'fake'),
+        ('11:83 ->', b'getSAyat(1533)'),
+        ('Добавить в избранное', b'addToFavor(17)'),
+    ]
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db')
+def test_search_pagination_forward(tg_client, bot_name, wait_until):
+    tg_client.send_message(bot_name, 'Найти аят')
+    wait_until(tg_client, 2)
+    tg_client.send_message(bot_name, 'камни')
+    last_messages = wait_until(tg_client, 5)
+    next(
+        button
+        for button_row in last_messages[1].get_buttons()
+        for button in button_row
+        if button.text == '11:83 ->'
+    ).click()
+    last_messages = wait_until(tg_client, 7)
+
+    assert last_messages[1].message == Path('src/tests/e2e/fixtures/11_83_ayat.txt').read_text()
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db')
+def test_search_pagination_backward(tg_client, bot_name, wait_until):
+    tg_client.send_message(bot_name, 'Найти аят')
+    wait_until(tg_client, 2)
+    tg_client.send_message(bot_name, 'камни')
+    last_messages = wait_until(tg_client, 5)
+    next(
+        button
+        for button_row in last_messages[1].get_buttons()
+        for button in button_row
+        if button.text == '11:83 ->'
+    ).click()
+    last_messages = wait_until(tg_client, 7)
+    next(
+        button
+        for button_row in last_messages[1].get_buttons()
+        for button in button_row
+        if button.text == '<- 2:24'
+    ).click()
+    last_messages = wait_until(tg_client, 9)
+
+    assert last_messages[1].message == Path('src/tests/e2e/fixtures/2_24_ayat.txt').read_text()
