@@ -6,8 +6,6 @@
 [![Hits-of-Code](https://hitsofcode.com/github/blablatdinov/quranbot-aiogram)](https://hitsofcode.com/github/blablatdinov/quranbot-aiogram/view)
 ![Custom badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fquranbot.ilaletdinov.ru%2Fapi%2Fv1%2Fusers%2Fcount-github-badge%2F)
 
-(Пока находится в тестовом режиме)
-
 [Документация](docs)
 
 Функционал:
@@ -30,10 +28,10 @@
 
 ## Используемые технологии:
 
- - aiogram
+ - ~~aiogram~~
  - nats
  - postgres
- - pydantic
+ - ~~pydantic~~
  - pytest
  - flake8
  - mypy
@@ -41,7 +39,7 @@
 
 ## Смежные проекты:
 
-[django-version](https://github.com/blablatdinov/quranbot) - предыдущая версия бота, сейчас используется для управления миграциями
+[django-version](https://github.com/blablatdinov/quranbot) - предыдущая версия бота
 
 [API](https://github.com/blablatdinov/quranbot-admin) - для административной панели. Доступен по [ссылке](https://quranbot.ilaletdinov.ru/docs)
 
