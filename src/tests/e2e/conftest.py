@@ -49,6 +49,7 @@ def clear_db():
     )
     for table in tables:
         cursor.execute('DELETE FROM {0}'.format(table))  # noqa: S608
+    cursor.execute("SELECT setval('prayers_at_user_prayer_at_user_id_seq', 1, false)")
 
 
 @pytest.fixture()

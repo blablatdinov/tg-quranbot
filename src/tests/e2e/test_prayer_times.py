@@ -21,16 +21,15 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import time
 
 import httpx
 import pytest
 
 
 @pytest.fixture()
-def user_city(tg_client, db_conn, bot_name):
+def user_city(tg_client, db_conn, bot_name, wait_until):
     tg_client.send_message(bot_name, '/start')
-    time.sleep(10)
+    wait_until(tg_client, 3)
     db_cursor = db_conn.cursor()
     db_cursor.execute(
         'UPDATE users SET city_id = %s WHERE chat_id = %s',
@@ -65,3 +64,57 @@ def test_prayer_times(tg_client, bot_name, expected_message, wait_until):
     messages = wait_until(tg_client, 5)
 
     assert messages[0].message == expected_message
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db', 'user_city')
+def test_mark_as_readed(tg_client, bot_name, expected_message, wait_until, clear_db):
+    tg_client.send_message(bot_name, 'Время намаза')
+    messages = wait_until(tg_client, 5)
+    [
+        button
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+    ][1].click()
+    messages = wait_until(tg_client, 5)
+
+    assert [
+        (button.text, button.data)
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+    ] == [
+        ('❌', b'mark_readed(1)'),
+        ('✅', b'mark_not_readed(3)'),
+        ('❌', b'mark_readed(4)'),
+        ('❌', b'mark_readed(5)'),
+        ('❌', b'mark_readed(6)'),
+    ]
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db', 'user_city')
+def test_mark_not_readed(tg_client, bot_name, expected_message, wait_until, clear_db):
+    tg_client.send_message(bot_name, 'Время намаза')
+    messages = wait_until(tg_client, 5)
+    [
+        button
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+    ][1].click()
+    messages = wait_until(tg_client, 5)
+    [
+        button
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+    ][1].click()
+    messages = wait_until(tg_client, 5)
+
+    assert [
+        (button.text, button.data)
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+    ] == [
+        ('❌', b'mark_readed(1)'),
+        ('❌', b'mark_readed(3)'),
+        ('❌', b'mark_readed(4)'),
+        ('❌', b'mark_readed(5)'),
+        ('❌', b'mark_readed(6)'),
+    ]
