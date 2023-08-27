@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import multiprocessing
+import time
 
 import psycopg2
 import pytest
@@ -67,6 +68,18 @@ def bot_process():
     yield
     bot.terminate()
     drop_db()
+
+
+@pytest.fixture()
+def wait_until(bot_name):
+    def _wait_until(tg_client, messages_count, retry=50, delay=0.1):  # noqa: WPS430
+        for _ in range(retry):
+            time.sleep(delay)
+            last_messages = [mess for mess in tg_client.iter_messages(bot_name) if mess.message]
+            if len(last_messages) == messages_count:
+                return last_messages
+        raise TimeoutError
+    return _wait_until
 
 
 @pytest.fixture()

@@ -20,20 +20,15 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import time
 from pathlib import Path
 
 import pytest
 
 
 @pytest.mark.usefixtures('bot_process', 'clear_db')
-def test_start(tg_client, bot_name):
+def test_start(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/start')
-    for _ in range(10):
-        time.sleep(1)
-        last_messages = [mess.message for mess in tg_client.iter_messages(bot_name)]
-        if len(last_messages) == 3:
-            break
+    last_messages = wait_until(tg_client, 3)
 
     assert last_messages[1] == Path('src/tests/e2e/fixtures/start.txt').read_text()
     assert last_messages[0] == Path('src/tests/e2e/fixtures/1_1_ayat.txt').read_text()

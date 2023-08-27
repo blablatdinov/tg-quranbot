@@ -60,12 +60,8 @@ def expected_message():
 
 
 @pytest.mark.usefixtures('bot_process', 'clear_db', 'user_city')
-def test_prayer_times(tg_client, bot_name, expected_message):
+def test_prayer_times(tg_client, bot_name, expected_message, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
-    for _ in range(50):
-        time.sleep(0.1)
-        messages = [mess.message for mess in tg_client.iter_messages(bot_name) if mess.message]
-        if len(messages) == 5:
-            break
+    messages = wait_until(tg_client, 4)
 
     assert messages[0] == expected_message
