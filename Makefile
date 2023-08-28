@@ -29,9 +29,11 @@ lint:
 	poetry run sqlfluff lint migrations --dialect postgres
 	rm -rf .mypy_cache && poetry run mypy src
 
-test:
-	poetry run pytest src --ignore=src/tests/e2e --doctest-modules --cov
+unit:
+	poetry run pytest src --ignore=src/tests/e2e
+
+e2e:
+	poetry run pytest src/tests/e2e
 
 cov:
-	poetry run pytest src --cov=src
 	poetry run coverage html
