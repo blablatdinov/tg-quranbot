@@ -28,6 +28,7 @@ from urllib import parse as url_parse
 import attrs
 import httpx
 from loguru import logger
+from more_itertools import chunked
 from pyeo import elegant
 
 from app_types.update import Update
@@ -106,40 +107,6 @@ class UserNotSubscribedSafeSendable(SendableInterface):
 
 
 @final
-class SliceIterator(object):
-    """Итератор по срезам массива."""
-
-    def __init__(self, origin: list, slice_size: int):
-        """Конструктор класса.
-
-        :param origin: list
-        :param slice_size: int
-        """
-        self._origin = origin
-        self._slice_size = slice_size
-        self._shift = 0
-
-    def __iter__(self):
-        """Точка входа в итератор.
-
-        :return: SliceIterator
-        """
-        return self
-
-    def __next__(self):
-        """Вернуть следующий элемент итерации.
-
-        :return: list
-        :raises StopIteration: при конце итерации
-        """
-        if len(self._origin) <= self._shift:
-            raise StopIteration
-        res = self._origin[self._shift:self._shift + self._slice_size]
-        self._shift += self._slice_size  # noqa: WPS601
-        return res
-
-
-@final
 @attrs.define(frozen=True)
 @elegant
 class BulkSendableAnswer(SendableInterface):
@@ -160,7 +127,7 @@ class BulkSendableAnswer(SendableInterface):
             for answer in self._answers
         ]
         responses = []
-        for sendable_slice in SliceIterator(tasks, 10):
+        for sendable_slice in chunked(tasks, 10):
             res_list = await asyncio.gather(*sendable_slice)
             for res in res_list:
                 responses.append(res)
