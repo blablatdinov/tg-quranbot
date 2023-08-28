@@ -81,6 +81,10 @@ skip-string-normalization = true
 #   "error::DeprecationWarning",
 # ]
 asyncio_mode = "auto"
+addopts = [
+  "--doctest-modules",
+  "--cov=src",
+]
 
 [tool.isort]
 line_length = 119

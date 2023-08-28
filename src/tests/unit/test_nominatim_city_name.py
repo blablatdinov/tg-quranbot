@@ -24,7 +24,6 @@ import json
 
 import httpx
 import pytest
-import respx
 
 from integrations.nominatim import NominatimCityName
 from integrations.tg.coordinates import Coordinates
@@ -40,8 +39,8 @@ class FkCoordinates(Coordinates):
 
 
 @pytest.fixture()
-def mock_nominatim():
-    respx.get(
+def mock_nominatim(respx_mock):
+    respx_mock.get(
         'https://nominatim.openstreetmap.org/reverse.php?lat=55.7887&lon=49.1221&format=jsonv2',
     ).mock(return_value=httpx.Response(
         200,
