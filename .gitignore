@@ -41,3 +41,4 @@ bin/
 
 # Telethon sessions
 *.session
+me.session-journal

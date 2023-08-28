@@ -25,7 +25,6 @@ from typing import Protocol, final
 import attrs
 from databases import Database
 from loguru import logger
-from pydantic import parse_obj_as
 from pyeo import elegant
 
 from exceptions.content_exceptions import CityNotSupportedError
@@ -139,7 +138,10 @@ class SearchCityByName(CitySearchInterface):
             FROM cities WHERE name ILIKE :search_query
         """
         rows = await self._pgsql.fetch_all(db_query, {'search_query': search_query})
-        return parse_obj_as(list[City], rows)
+        return [
+            City(id=row['id'], name=row['name'])
+            for row in rows
+        ]
 
 
 @final
