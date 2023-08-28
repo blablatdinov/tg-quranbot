@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import multiprocessing
 import time
 
+import coverage
 import psycopg2
 import pytest
 from telethon.sync import TelegramClient
@@ -61,7 +62,17 @@ def db_conn():
 
 
 @pytest.fixture(scope='session')
-def bot_process():
+def coverage_fixture():
+    cov = coverage.Coverage()
+    cov.start()
+    yield
+    cov.stop()
+    cov.save()
+    cov.report()
+
+
+@pytest.fixture(scope='session')
+def bot_process(coverage_fixture):
     create_db()
     fill_test_db()
     bot = multiprocessing.Process(target=main, args=(['src/main.py', 'run_polling'],))
