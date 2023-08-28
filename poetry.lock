@@ -504,13 +504,13 @@ files = [
 
 [[package]]
 name = "databases"
-version = "0.7.0"
+version = "0.8.0"
 description = "Async database support for Python."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "databases-0.7.0-py3-none-any.whl", hash = "sha256:cf5da4b8a3e3cd038c459529725ebb64931cbbb7a091102664f20ef8f6cefd0d"},
-    {file = "databases-0.7.0.tar.gz", hash = "sha256:ea2d419d3d2eb80595b7ceb8f282056f080af62efe2fb9bcd83562f93ec4b674"},
+    {file = "databases-0.8.0-py3-none-any.whl", hash = "sha256:0ceb7fd5c740d846e1f4f58c0256d780a6786841ec8e624a21f1eb1b51a9093d"},
+    {file = "databases-0.8.0.tar.gz", hash = "sha256:6544d82e9926f233d694ec29cd018403444c7fb6e863af881a8304d1ff5cfb90"},
 ]
 
 [package.dependencies]
@@ -2921,4 +2921,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.12"
-content-hash = "c9e98d9c1984b6b4916a6e00a6dff222565c67ad8a65b624ca80cac01aab3858"
+content-hash = "0ef01e8f3e47dc2e693bd94ff9b3370f0e2b633a87c5d22391932aa90de3e66b"
