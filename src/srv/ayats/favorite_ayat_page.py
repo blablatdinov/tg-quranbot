@@ -29,8 +29,10 @@ from pyeo import elegant
 
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
+from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer
+from services.regular_expression import IntableRegularExpression
 from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
@@ -55,12 +57,12 @@ class FavoriteAyatPage(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        result_ayat = (
-            await FavoriteAyats(
-                TgChatId(update),
-                self._pgsql,
-            ).to_list()
-        )[0]
+        favorite_ayats = await FavoriteAyats(TgChatId(update), self._pgsql).to_list()
+        for ayat in favorite_ayats:
+            expect_ayat_id = IntableRegularExpression(CallbackQueryData(update))
+            if await ayat.identifier().id() == int(expect_ayat_id):
+                result_ayat = ayat
+                break
         return await AyatAnswer(
             self._debug_mode,
             self._empty_answer,
