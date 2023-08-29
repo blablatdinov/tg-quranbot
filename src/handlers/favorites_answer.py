@@ -31,7 +31,8 @@ from redis.asyncio import Redis
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
-from services.reset_state_answer import ResetStateAnswer
+from services.answers.change_state_answer import ChangeStateAnswer
+from services.user_state import UserStep
 from srv.ayats.favorite_ayat_answer import FavoriteAyatAnswer
 from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
 
@@ -54,7 +55,7 @@ class FavoriteAyatsAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
-        return await ResetStateAnswer(
+        return await ChangeStateAnswer(
             FavoriteAyatEmptySafeAnswer(
                 FavoriteAyatAnswer(
                     self._debug_mode,
@@ -67,4 +68,5 @@ class FavoriteAyatsAnswer(TgAnswer):
                 ),
             ),
             self._redis,
+            UserStep.ayat_favor,
         ).build(update)

@@ -26,6 +26,7 @@ import attrs
 import httpx
 from databases import Database
 from pyeo import elegant
+from redis.asyncio import Redis
 
 from app_types.intable import SyncToAsyncIntable
 from app_types.update import Update
@@ -34,6 +35,7 @@ from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_id import MessageId
 from integrations.tg.tg_answers import (
     TgAnswer,
+    TgAnswerFork,
     TgAnswerMarkup,
     TgAnswerToSender,
     TgChatIdAnswer,
@@ -41,10 +43,13 @@ from integrations.tg.tg_answers import (
     TgMessageIdAnswer,
 )
 from services.regular_expression import IntableRegularExpression
+from services.state_answer import StepAnswer
+from services.user_state import UserStep
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.ayat_favorite_status import AyatFavoriteStatus
-from srv.ayats.neighbor_ayats import PgNeighborAyats
+from srv.ayats.favorite_ayats_after_remove import FavoriteAyatsAfterRemove
+from srv.ayats.neighbor_ayats import FavoriteNeighborAyats, PgNeighborAyats
 from srv.ayats.pg_ayat import PgAyat
 
 
@@ -56,6 +61,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
 
     _pgsql: Database
     _origin: TgAnswer
+    _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -87,20 +93,44 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
         await self._pgsql.execute(
             query, {'ayat_id': status.ayat_id(), 'user_id': int(TgChatId(update))},
         )
-        return await TgChatIdAnswer(
-            TgMessageIdAnswer(
-                TgAnswerMarkup(
-                    TgKeyboardEditAnswer(TgAnswerToSender(self._origin)),
-                    AyatAnswerKeyboard(
-                        result_ayat,
-                        PgNeighborAyats(
-                            self._pgsql, await result_ayat.identifier().id(),
+        return await TgAnswerFork(
+            StepAnswer(
+                UserStep.ayat_favor.value,
+                TgChatIdAnswer(
+                    TgMessageIdAnswer(
+                        TgAnswerMarkup(
+                            TgKeyboardEditAnswer(TgAnswerToSender(self._origin)),
+                            AyatAnswerKeyboard(
+                                result_ayat,
+                                FavoriteNeighborAyats(
+                                    status.ayat_id(),
+                                    FavoriteAyatsAfterRemove(int(TgChatId(update)), status.ayat_id(), self._pgsql),
+                                ),
+                                AyatCallbackTemplateEnum.get_favorite_ayat,
+                                self._pgsql,
+                            ),
                         ),
-                        AyatCallbackTemplateEnum.get_ayat,
-                        self._pgsql,
+                        int(MessageId(update)),
                     ),
+                    int(TgChatId(update)),
                 ),
-                int(MessageId(update)),
+                self._redis,
             ),
-            int(TgChatId(update)),
+            TgChatIdAnswer(
+                TgMessageIdAnswer(
+                    TgAnswerMarkup(
+                        TgKeyboardEditAnswer(TgAnswerToSender(self._origin)),
+                        AyatAnswerKeyboard(
+                            result_ayat,
+                            PgNeighborAyats(
+                                self._pgsql, await result_ayat.identifier().id(),
+                            ),
+                            AyatCallbackTemplateEnum.get_ayat,
+                            self._pgsql,
+                        ),
+                    ),
+                    int(MessageId(update)),
+                ),
+                int(TgChatId(update)),
+            ),
         ).build(update)
