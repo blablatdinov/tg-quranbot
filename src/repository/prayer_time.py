@@ -69,7 +69,7 @@ class UserPrayers(UserPrayersInterface):
         query = """
             SELECT
                 c.name AS city,
-                pd.date AS day,
+                p.day,
                 up.prayer_at_user_id AS id,
                 up.is_read AS is_readed,
                 p.time,
@@ -144,7 +144,7 @@ class SafeNotFoundPrayers(UserPrayersInterface):
         except UserPrayersNotFoundError:
             query = """
                 SELECT COUNT(*) FROM prayers p
-                WHERE pd.day = :date
+                WHERE p.day = :date
             """
             prayers_count = await self._pgsql.fetch_val(query, {'date': date})
             if not prayers_count:
