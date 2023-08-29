@@ -21,7 +21,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import sys
-from contextlib import suppress
 
 from redis import asyncio as aioredis
 
@@ -42,7 +41,7 @@ from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer
 from quranbot_answer import QuranbotAnswer
 from repository.users.users import UsersRepository
 from schedule_app import CheckUsersStatus
-from services.cli_app import CliApp, CommandCliApp, ForkCliApp
+from services.cli_app import CliApp, CommandCliApp, CoveredApp, ForkCliApp
 from services.logged_answer import LoggedAnswer
 from settings import BASE_DIR, CachedSettings, EnvFileSettings
 
@@ -89,7 +88,7 @@ def main(sys_args) -> None:
     ForkCliApp(
         CommandCliApp(
             'run_polling',
-            quranbot_polling_app,
+            CoveredApp(quranbot_polling_app),
         ),
         CommandCliApp(
             'check_user_status',
@@ -122,5 +121,4 @@ def main(sys_args) -> None:
 
 
 if __name__ == '__main__':
-    with suppress(KeyboardInterrupt):
-        main(sys.argv)
+    main(sys.argv)

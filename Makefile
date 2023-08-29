@@ -30,7 +30,7 @@ lint:
 	rm -rf .mypy_cache && poetry run mypy src
 
 unit:
-	poetry run pytest src --ignore=src/tests/e2e
+	poetry run pytest src --ignore=src/tests/e2e --cov=src
 
 e2e:
 	poetry run pytest src/tests/e2e

@@ -68,6 +68,7 @@ def bot_process():
     bot.start()
     yield
     bot.terminate()
+    bot.join()
     drop_db()
 
 
