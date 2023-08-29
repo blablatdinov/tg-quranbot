@@ -76,10 +76,9 @@ class UserPrayers(UserPrayersInterface):
                 p.name
             FROM prayers_at_user AS up
             INNER JOIN prayers AS p ON up.prayer_id = p.prayer_id
-            INNER JOIN prayer_days AS pd ON p.day_id = pd.date
             INNER JOIN users AS u ON up.user_id = u.chat_id
             INNER JOIN cities AS c ON u.city_id = c.city_id
-            WHERE pd.date = :date AND u.chat_id = :chat_id
+            WHERE p.day = :date AND u.chat_id = :chat_id
             ORDER BY up.prayer_at_user_id
         """
         rows = await self._pgsql.fetch_all(query, {'date': date, 'chat_id': chat_id})
@@ -145,8 +144,7 @@ class SafeNotFoundPrayers(UserPrayersInterface):
         except UserPrayersNotFoundError:
             query = """
                 SELECT COUNT(*) FROM prayers p
-                INNER JOIN prayer_days pd ON pd.date = p.day_id
-                WHERE pd.date = :date
+                WHERE pd.day = :date
             """
             prayers_count = await self._pgsql.fetch_val(query, {'date': date})
             if not prayers_count:
@@ -205,8 +203,7 @@ class NewUserPrayers(UserPrayersInterface):
             FROM prayers AS p
             INNER JOIN cities AS c ON p.city_id = c.city_id
             INNER JOIN users AS u ON c.city_id = u.city_id
-            INNER JOIN prayer_days AS pd ON p.day_id = pd.date
-            WHERE pd.date = :date AND u.chat_id = :chat_id
+            WHERE p.day = :date AND u.chat_id = :chat_id
         """
         rows = await self._pgsql.fetch_all(query, {'date': date, 'chat_id': chat_id})
         if not rows:
