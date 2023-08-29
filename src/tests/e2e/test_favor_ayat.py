@@ -26,23 +26,93 @@ import pytest
 
 
 @pytest.fixture()
-def user(tg_client, db_conn, bot_name, wait_until):
+def user(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/start')
     wait_until(tg_client, 3)
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db')
+@pytest.fixture()
+def favor_ayats(db_conn):
+    cursor = db_conn.cursor()
+    for ayat_id in (671, 3383, 1829, 409):
+        cursor.execute(
+            'INSERT INTO favorite_ayats (ayat_id, user_id) VALUES (%s, %s)',
+            (ayat_id, 5354079702),
+        )
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db', 'user', 'favor_ayats')
 def test_get_favors(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Избранное')
-    last_messages = wait_until(tg_client, 3)
-    print([
+    last_messages = wait_until(tg_client, 6)
+
+    assert (
+        last_messages[1].message.strip()
+        == Path('src/tests/e2e/fixtures/3_133_ayat.txt').read_text().strip()
+    )
+    assert [
         (button.text, button.data)
         for button_row in last_messages[1].get_buttons()
         for button in button_row
-    ])
-    assert false
+    ] == [
+        ('стр. 1/4', b'fake'),
+        ('5:19 ->', b'getFAyat(671)'),
+        ('Удалить из избранного', b'removeFromFavor(409)'),
+    ]
 
-    assert last_messages[1].message == path(expected).read_text()
+
+@pytest.mark.usefixtures('bot_process', 'clear_db', 'user', 'favor_ayats')
+def test_paginate_forward(tg_client, bot_name, wait_until):
+    tg_client.send_message(bot_name, 'Избранное')
+    last_messages = wait_until(tg_client, 6)
+    next(
+        button
+        for button_row in last_messages[1].get_buttons()
+        for button in button_row
+        if button.text == '5:19 ->'
+    ).click()
+    last_messages = wait_until(tg_client, 8)
+
+    assert [
+        (button.text, button.data)
+        for button_row in last_messages[1].get_buttons()
+        for button in button_row
+    ] == [
+        ('<- 3:133', b'getFAyat(409)'),
+        ('стр. 2/4', b'fake'),
+        ('15:85 ->', b'getFAyat(1829)'),
+        ('Удалить из избранного', b'removeFromFavor(671)'),
+    ]
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db', 'user', 'favor_ayats')
+def test_paginate_backward(tg_client, bot_name, wait_until):
+    tg_client.send_message(bot_name, 'Избранное')
+    last_messages = wait_until(tg_client, 6)
+    next(
+        button
+        for button_row in last_messages[1].get_buttons()
+        for button in button_row
+        if button.text == '5:19 ->'
+    ).click()
+    last_messages = wait_until(tg_client, 8)
+    next(
+        button
+        for button_row in last_messages[1].get_buttons()
+        for button in button_row
+        if button.text == '<- 3:133'
+    ).click()
+    last_messages = wait_until(tg_client, 10)
+
+    assert [
+        (button.text, button.data)
+        for button_row in last_messages[1].get_buttons()
+        for button in button_row
+    ] == [
+        ('стр. 1/4', b'fake'),
+        ('5:19 ->', b'getFAyat(671)'),
+        ('Удалить из избранного', b'removeFromFavor(409)'),
+    ]
 
 
 @pytest.mark.usefixtures('bot_process', 'clear_db', 'user')
@@ -57,7 +127,29 @@ def test_add_to_favor(tg_client, bot_name, wait_until, db_query_vals):
         for button_row in last_messages[1].get_buttons()
         for button in button_row
     ] == [
-        ('<- 8:6', b'getAyat(1144)'), ('стр. 1145/5737', b'fake'), ('8:8 ->', b'getAyat(1146)'),
+        ('<- 8:6', b'getAyat(1144)'),
+        ('стр. 1145/5737', b'fake'),
+        ('8:8 ->', b'getAyat(1146)'),
         ('Удалить из избранного', b'removeFromFavor(1145)'),
     ]
     assert db_query_vals('SELECT * FROM favorite_ayats') == [(1145, 5354079702)]
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db', 'user', 'favor_ayats')
+def test_remove_from_favor(tg_client, bot_name, wait_until, db_query_vals):
+    tg_client.send_message(bot_name, '3:133')
+    last_messages = wait_until(tg_client, 6)
+    last_messages[1].get_buttons()[1][0].click()
+    last_messages = wait_until(tg_client, 6)
+
+    assert [
+        (button.text, button.data)
+        for button_row in last_messages[1].get_buttons()
+        for button in button_row
+    ] == [
+        ('<- 3:132', b'getAyat(408)'),
+        ('стр. 409/5737', b'fake'),
+        ('3:134 ->', b'getAyat(410)'),
+        ('Добавить в избранное', b'addToFavor(409)'),
+    ]
+    assert len(db_query_vals('SELECT * FROM favorite_ayats')) == 3

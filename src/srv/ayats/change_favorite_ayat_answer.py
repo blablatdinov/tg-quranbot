@@ -96,7 +96,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                         PgNeighborAyats(
                             self._pgsql, await result_ayat.identifier().id(),
                         ),
-                        AyatCallbackTemplateEnum.get_favorite_ayat,
+                        AyatCallbackTemplateEnum.get_ayat,
                         self._pgsql,
                     ),
                 ),

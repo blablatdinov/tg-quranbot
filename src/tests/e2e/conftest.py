@@ -26,8 +26,8 @@ from pprint import pformat
 
 import psycopg2
 import pytest
-from telethon.sync import TelegramClient
 from loguru import logger
+from telethon.sync import TelegramClient
 
 from main import main
 from settings import EnvFileSettings
@@ -64,7 +64,7 @@ def db_conn():
 
 @pytest.fixture()
 def db_query_vals(db_conn):
-    def _db_query_vals(query):
+    def _db_query_vals(query):  # noqa: WPS430
         cursor = db_conn.cursor()
         cursor.execute(query)
         returned_values = cursor.fetchall()
@@ -91,8 +91,8 @@ def wait_until(bot_name):
         for _ in range(retry):
             time.sleep(delay)
             last_messages = [mess for mess in tg_client.iter_messages(bot_name) if mess.message]
-            logger.debug('Messages: {0}'.format(
-                pformat([mess.message for mess in last_messages]),
+            logger.debug('Taked messages: {0}'.format(
+                pformat([mess.message for mess in last_messages], width=99999),
             ))
             if len(last_messages) == messages_count:
                 return last_messages
