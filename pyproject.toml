@@ -83,7 +83,6 @@ skip-string-normalization = true
 asyncio_mode = "auto"
 addopts = [
   "--doctest-modules",
-  "--cov=src",
 ]
 
 [tool.isort]

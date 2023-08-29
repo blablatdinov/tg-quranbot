@@ -63,7 +63,7 @@ def db_conn():
 
 @pytest.fixture(scope='session')
 def coverage_fixture():
-    cov = coverage.Coverage()
+    cov = coverage.Coverage(branch=True)
     cov.start()
     yield
     cov.stop()
