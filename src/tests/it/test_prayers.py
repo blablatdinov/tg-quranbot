@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import urllib3
+import urllib
 
 from app_types.update import FkUpdate
 from handlers.prayer_time_answer import PrayerTimeAnswer
@@ -29,18 +29,20 @@ from integrations.tg.tg_answers import FkAnswer
 
 async def test_not_found_prayer(pgsql, rds, freezer):
     freezer.move_to('2023-08-30')
-    expected_answer = ''.join([
-        'https://some.domain/sendMessage',
-        '?chat_id=123&text=Время намаза на 30.08.2023 для города  не найдено',
-    ])
     got = await PrayerTimeAnswer(
         pgsql, rds, FkAnswer(), [321],
     ).build(FkUpdate('{"chat":{"id":123}}'))
 
     assert len(got) == 2
-    assert urllib3.parse.unquote(
+    assert urllib.parse.unquote(
         str(got[0].url),
-    ).replace('+', ' ') == expected_answer
-    assert urllib3.parse.unquote(
+    ).replace('+', ' ') == ''.join([
+        'https://some.domain/sendMessage',
+        '?chat_id=123&text=Время намаза на 30.08.2023 для города  не найдено',
+    ])
+    assert urllib.parse.unquote(
         str(got[1].url),
-    ).replace('+', ' ') == expected_answer
+    ).replace('+', ' ') == ''.join([
+        'https://some.domain/sendMessage',
+        '?chat_id=321&text=Время намаза на 30.08.2023 для города  не найдено',
+    ])

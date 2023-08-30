@@ -41,4 +41,4 @@ class PrayersNotFoundError(BaseAppError):
     """Не найдены времена намазов."""
 
     city_name: str
-    date: datetime.datetime.date
+    date: datetime.date
