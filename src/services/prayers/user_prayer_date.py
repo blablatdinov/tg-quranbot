@@ -47,7 +47,7 @@ class UserPrayerDate(AsyncDateTimeInterface):
         :raises UserHasNotGeneratedPrayersError: если времня намаза не найдено
         """
         query = """
-            SELECT day_id
+            SELECT day
             FROM prayers_at_user AS pau
             INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id
             WHERE prayer_at_user_id = :user_prayer_id
@@ -55,4 +55,4 @@ class UserPrayerDate(AsyncDateTimeInterface):
         row = await self._pgsql.fetch_one(query, {'user_prayer_id': int(self._user_prayer_id)})
         if not row:
             raise UserHasNotGeneratedPrayersError
-        return row['day_id']
+        return row['day']
