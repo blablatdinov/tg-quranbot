@@ -12,7 +12,6 @@ classDiagram
     users <|-- prayers_at_user
     prayers_at_user_groups <|-- prayers_at_user
     cities <|-- prayers
-    prayer_days <|-- prayers
     users <|-- favorite_ayats
     ayats <|-- favorite_ayats
     class ayats{
@@ -62,7 +61,7 @@ classDiagram
         time time
         varchar name
         int city_id
-        int day_id
+        date date
     }
     class prayers_at_user{
         uuid prayer_at_user_id
@@ -73,9 +72,6 @@ classDiagram
     }
     class prayers_at_user_groups{
         uuid prayers_at_user_group_id
-    }
-    class prayer_days{
-        date date
     }
     class admin_messages{
         date date

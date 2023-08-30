@@ -64,7 +64,6 @@ def fill_test_db() -> None:
         'src/tests/e2e/db-fixtures/suras.sql',
         'src/tests/e2e/db-fixtures/ayats.sql',
         'src/tests/e2e/db-fixtures/podcasts.sql',
-        'src/tests/e2e/db-fixtures/prayer_days.sql',
         'src/tests/e2e/db-fixtures/cities.sql',
         'src/tests/e2e/db-fixtures/prayers.sql',
         'src/tests/e2e/db-fixtures/admin_messages.sql',
