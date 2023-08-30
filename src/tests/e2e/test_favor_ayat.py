@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+# flake8: noqa: WPS202
 from pathlib import Path
 
 import pytest
@@ -153,3 +154,31 @@ def test_remove_from_favor(tg_client, bot_name, wait_until, db_query_vals):
         ('Добавить в избранное', b'addToFavor(409)'),
     ]
     assert len(db_query_vals('SELECT * FROM favorite_ayats')) == 3
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db', 'user', 'favor_ayats')
+def test_remove_from_favor_in_favor_pagination(tg_client, bot_name, wait_until, db_query_vals):
+    tg_client.send_message(bot_name, 'Избранное')
+    last_messages = wait_until(tg_client, 6)
+    assert [
+        (button.text, button.data)
+        for button_row in last_messages[1].get_buttons()
+        for button in button_row
+    ] == [
+        ('стр. 1/4', b'fake'),
+        ('5:19 ->', b'getFAyat(671)'),
+        ('Удалить из избранного', b'removeFromFavor(409)'),
+    ]
+    last_messages[1].get_buttons()[1][0].click()
+    last_messages = wait_until(tg_client, 6)
+
+    assert len(db_query_vals('SELECT * FROM favorite_ayats')) == 3
+    assert [
+        (button.text, button.data)
+        for button_row in last_messages[1].get_buttons()
+        for button in button_row
+    ] == [
+        ('стр. 1/4', b'fake'),
+        ('5:19 ->', b'getFAyat(671)'),
+        ('Добавить в избранное', b'addToFavor(409)'),
+    ]

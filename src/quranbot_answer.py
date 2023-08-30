@@ -195,7 +195,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(addToFavor|removeFromFavor)',
-                    ChangeFavoriteAyatAnswer(self._pgsql, empty_answer),
+                    ChangeFavoriteAyatAnswer(self._pgsql, empty_answer, self._redis),
                 ),
                 InlineQueryAnswer(
                     empty_answer,
