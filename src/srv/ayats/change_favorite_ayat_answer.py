@@ -48,8 +48,9 @@ from services.user_state import UserStep
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.ayat_favorite_status import AyatFavoriteStatus
+from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.favorite_ayats_after_remove import FavoriteAyatsAfterRemove
-from srv.ayats.neighbor_ayats import FavoriteNeighborAyats, PgNeighborAyats
+from srv.ayats.neighbor_ayats import FavoriteNeighborAyats, PgNeighborAyats, TextSearchNeighborAyats
 from srv.ayats.pg_ayat import PgAyat
 
 
@@ -93,6 +94,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
         await self._pgsql.execute(
             query, {'ayat_id': status.ayat_id(), 'user_id': int(TgChatId(update))},
         )
+        chat_id = int(TgChatId(update))
         return await TgAnswerFork(
             StepAnswer(
                 UserStep.ayat_favor.value,
@@ -104,7 +106,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                                 result_ayat,
                                 FavoriteNeighborAyats(
                                     status.ayat_id(),
-                                    FavoriteAyatsAfterRemove(int(TgChatId(update)), status.ayat_id(), self._pgsql),
+                                    FavoriteAyatsAfterRemove(chat_id, status.ayat_id(), self._pgsql),
                                 ),
                                 AyatCallbackTemplateEnum.get_favorite_ayat,
                                 self._pgsql,
@@ -112,7 +114,30 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                         ),
                         int(MessageId(update)),
                     ),
-                    int(TgChatId(update)),
+                    chat_id,
+                ),
+                self._redis,
+            ),
+            StepAnswer(
+                UserStep.ayat_search.value,
+                TgChatIdAnswer(
+                    TgMessageIdAnswer(
+                        TgAnswerMarkup(
+                            TgKeyboardEditAnswer(TgAnswerToSender(self._origin)),
+                            AyatAnswerKeyboard(
+                                result_ayat,
+                                TextSearchNeighborAyats(
+                                    self._pgsql,
+                                    status.ayat_id(),
+                                    AyatTextSearchQuery.for_reading_cs(self._redis, chat_id),
+                                ),
+                                AyatCallbackTemplateEnum.get_search_ayat,
+                                self._pgsql,
+                            ),
+                        ),
+                        int(MessageId(update)),
+                    ),
+                    chat_id,
                 ),
                 self._redis,
             ),
@@ -131,6 +156,6 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                     ),
                     int(MessageId(update)),
                 ),
-                int(TgChatId(update)),
+                chat_id,
             ),
         ).build(update)
