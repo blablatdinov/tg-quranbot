@@ -35,7 +35,6 @@ from repository.admin_message import AdminMessage
 from repository.users.user import UserRepository
 from repository.users.users import UsersRepository
 from services.answers.answer import DefaultKeyboard, ResizedKeyboard
-from services.register_event import StartWithEventAnswer
 from services.reset_state_answer import ResetStateAnswer
 from services.start.start_answer import StartAnswer
 from services.start.user_already_active import UserAlreadyActiveSafeAnswer
@@ -66,18 +65,14 @@ class FullStartAnswer(TgAnswer):
             TgAnswerMarkup(
                 UserAlreadyActiveSafeAnswer(
                     UserAlreadyExistsAnswer(
-                        StartWithEventAnswer(
-                            StartAnswer(
-                                TgHtmlParseAnswer(
-                                    TgMessageAnswer(self._empty_answer),
-                                ),
-                                UserRepository(self._pgsql),
-                                AdminMessage('start', self._pgsql),
-                                self._pgsql,
-                                AdminChatIds(self._settings),
+                        StartAnswer(
+                            TgHtmlParseAnswer(
+                                TgMessageAnswer(self._empty_answer),
                             ),
-                            self._event_sink,
                             UserRepository(self._pgsql),
+                            AdminMessage('start', self._pgsql),
+                            self._pgsql,
+                            AdminChatIds(self._settings),
                         ),
                         answer_to_sender,
                         UserRepository(self._pgsql),

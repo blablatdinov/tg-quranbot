@@ -38,6 +38,7 @@ from integrations.tg.tg_answers import (
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from srv.ayats.ayat import Ayat
+from srv.files.file import FileLink, TgFileId
 from srv.files.file_answer import FileAnswer
 from srv.files.file_id_answer import TelegramFileIdAnswer
 
@@ -71,11 +72,17 @@ class AyatAnswer(TgAnswer):
                 self._debug_mode,
                 TelegramFileIdAnswer(
                     TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
-                    await self._ayat.tg_file_id(),
+                    await self._file_id(),
                 ),
                 TgTextAnswer(
                     TgHtmlMessageAnswerToSender(self._empty_answer),
-                    await self._ayat.file_link(),
+                    await self._file_link(),
                 ),
             ),
         ).build(update)
+
+    async def _file_id(self) -> TgFileId:
+        return await (await self._ayat.audio()).tg_file_id()
+
+    async def _file_link(self) -> FileLink:
+        return await (await self._ayat.audio()).file_link()

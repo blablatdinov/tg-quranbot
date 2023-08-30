@@ -22,23 +22,33 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, TypeAlias
 
-from pyeo import elegant
-
-from srv.ayats.ayat_identifier import AyatIdentifier
-from srv.files.file import TgFile
-
-AyatText: TypeAlias = str
+TgFileId: TypeAlias = str
+FileLink: TypeAlias = str
 
 
-@elegant
-class Ayat(Protocol):
-    """Интерфейс аята."""
+class TgFile(Protocol):
+    """Тип файла."""
 
-    def identifier(self) -> AyatIdentifier:
-        """Идентификатор аята."""
+    async def tg_file_id(self) -> TgFileId:
+        """Идентификатор файла в телеграм."""
 
-    async def text(self) -> AyatText:
-        """Строковое представление."""
+    async def file_link(self) -> FileLink:
+        """Ссылка на файл."""
 
-    async def audio(self) -> TgFile:
-        """Аудио файл."""
+
+class FkFile(TgFile):
+    """Фейковый файл."""
+
+    async def tg_file_id(self) -> TgFileId:
+        """Идентификатор файла в телеграм.
+
+        :return: TgFileId
+        """
+        return ''
+
+    async def file_link(self) -> FileLink:
+        """Идентификатор файла в телеграм.
+
+        :return: FileLink
+        """
+        return ''

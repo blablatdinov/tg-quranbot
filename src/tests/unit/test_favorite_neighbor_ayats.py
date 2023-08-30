@@ -27,6 +27,7 @@ from app_types.listable import AsyncListable
 from srv.ayats.ayat import Ayat
 from srv.ayats.ayat_identifier import AyatIdentifier
 from srv.ayats.neighbor_ayats import FavoriteNeighborAyats
+from srv.files.file import FkFile
 
 
 @attrs.define(frozen=True)
@@ -55,11 +56,8 @@ class FkAyat(Ayat):
     async def text(self):
         return ''
 
-    async def tg_file_id(self):
-        return ''
-
-    async def file_link(self):
-        return ''
+    async def audio(self):
+        return FkFile()
 
 
 class FkFavoriteAyats(AsyncListable[Ayat]):

@@ -20,25 +20,30 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, TypeAlias
+from typing import TypeAlias, final
 
+import attrs
+from eljson.json import Json
 from pyeo import elegant
 
-from srv.ayats.ayat_identifier import AyatIdentifier
-from srv.files.file import TgFile
+from srv.events.recieved_event import ReceivedEvent
 
-AyatText: TypeAlias = str
+JsonPathQuery: TypeAlias = str
+AyatChangedEvent: TypeAlias = ReceivedEvent
 
 
+@final
+@attrs.define(frozen=True)
 @elegant
-class Ayat(Protocol):
-    """Интерфейс аята."""
+class RbmqAyatChangedEvent(AyatChangedEvent):
+    """Событие изменения аята из rabbitmq."""
 
-    def identifier(self) -> AyatIdentifier:
-        """Идентификатор аята."""
+    _json: Json
 
-    async def text(self) -> AyatText:
-        """Строковое представление."""
+    def value_of(self, query: JsonPathQuery):
+        """Значение.
 
-    async def audio(self) -> TgFile:
-        """Аудио файл."""
+        :param query: JsonPathQuery
+        :return: value
+        """
+        return self._json.path(query)[0]

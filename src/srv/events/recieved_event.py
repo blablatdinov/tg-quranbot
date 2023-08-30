@@ -20,25 +20,20 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, TypeAlias
+from typing import Protocol, TypeAlias, TypeVar
 
 from pyeo import elegant
 
-from srv.ayats.ayat_identifier import AyatIdentifier
-from srv.files.file import TgFile
-
-AyatText: TypeAlias = str
+JsonPathQuery: TypeAlias = str
+JsonPathReturnType = TypeVar('JsonPathReturnType', covariant=True)
 
 
 @elegant
-class Ayat(Protocol):
-    """Интерфейс аята."""
+class ReceivedEvent(Protocol[JsonPathReturnType]):
+    """Событие."""
 
-    def identifier(self) -> AyatIdentifier:
-        """Идентификатор аята."""
+    def value_of(self, query: JsonPathQuery) -> JsonPathReturnType:
+        """Значение.
 
-    async def text(self) -> AyatText:
-        """Строковое представление."""
-
-    async def audio(self) -> TgFile:
-        """Аудио файл."""
+        :param query: JsonPathQuery
+        """
