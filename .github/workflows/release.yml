@@ -82,7 +82,9 @@ jobs:
     - name: Check types with mypy
       run: .venv/bin/mypy src
     - name: Run unit tests
-      run: .venv/bin/pytest src --ignore=src/tests/e2e --doctest-modules --cov
+      run: .venv/bin/pytest src --ignore=src/tests/{e2e,it} --doctest-modules --cov
+    - name: Run integration tests
+      run: .venv/bin/pytest src/tests/it
     - name: Run e2e tests
       run: .venv/bin/pytest src/tests/e2e
 

@@ -31,7 +31,7 @@ from telethon.sync import TelegramClient
 
 from main import main
 from settings import EnvFileSettings
-from tests.e2e.creating_test_db import create_db, drop_db, fill_test_db
+from tests.creating_test_db import create_db, drop_db, fill_test_db
 
 
 @pytest.fixture(scope='session')

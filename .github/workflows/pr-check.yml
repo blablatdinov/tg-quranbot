@@ -61,4 +61,50 @@ jobs:
     - name: Check types with mypy
       run: .venv/bin/mypy src
     - name: Run tests with pytest
-      run: .venv/bin/pytest src --ignore=src/tests/e2e --doctest-modules --cov
+      run: .venv/bin/pytest src --ignore=src/tests/{e2e,it} --doctest-modules --cov
+
+  integration-tests:
+    env:
+      TZ: "Europe/Moscow"
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: almazilaletdinov
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install Poetry
+        uses: snok/install-poetry@v1.3.4
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+      - name: create .env file
+        run: echo '${{ secrets.E2E_ENV_SETUP }}' > .env
+      - name: Run integration tests
+        run: .venv/bin/pytest src/tests/it
