@@ -61,7 +61,7 @@ from services.prayers.invite_set_city_answer import InviteSetCityAnswer
 from services.prayers.prayer_status import UserPrayerStatus
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
-from settings import DebugMode, Settings
+from settings import DebugMode, Settings, AdminChatIds
 from srv.ayats.ayat_by_id_answer import AyatByIdAnswer
 from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
 from srv.ayats.favorite_ayat_page import FavoriteAyatPage
@@ -111,7 +111,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',
-                    PrayerTimeAnswer(self._pgsql, self._redis, empty_answer),
+                    PrayerTimeAnswer(self._pgsql, self._redis, empty_answer, AdminChatIds(self._settings)),
                 ),
                 TgMessageRegexAnswer(
                     'Избранное',

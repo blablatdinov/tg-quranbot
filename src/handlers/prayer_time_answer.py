@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import final, Sequence
 
 import attrs
 import httpx
@@ -34,6 +34,7 @@ from repository.prayer_time import NewUserPrayers, SafeNotFoundPrayers, SafeUser
 from services.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
 from services.prayers.prayer_for_user_answer import PrayerForUserAnswer
 from services.reset_state_answer import ResetStateAnswer
+from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 
 
 @final
@@ -45,6 +46,7 @@ class PrayerTimeAnswer(TgAnswer):
     _pgsql: Database
     _redis: Redis
     _empty_answer: TgAnswer
+    _admin_chat_ids: Sequence[int]
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -53,28 +55,32 @@ class PrayerTimeAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
-        return await UserWithoutCitySafeAnswer(
-            ResetStateAnswer(
-                PrayerForUserAnswer(
-                    answer_to_sender,
-                    SafeNotFoundPrayers(
-                        self._pgsql,
-                        SafeUserPrayers(
-                            UserPrayers(self._pgsql),
-                            NewUserPrayers(
-                                self._pgsql,
+        return await PrayersExpiredAnswer(
+            UserWithoutCitySafeAnswer(
+                ResetStateAnswer(
+                    PrayerForUserAnswer(
+                        answer_to_sender,
+                        SafeNotFoundPrayers(
+                            self._pgsql,
+                            SafeUserPrayers(
                                 UserPrayers(self._pgsql),
+                                NewUserPrayers(
+                                    self._pgsql,
+                                    UserPrayers(self._pgsql),
+                                ),
                             ),
                         ),
                     ),
+                    self._redis,
                 ),
-                self._redis,
-            ),
-            InviteSetCityAnswer(
-                TgTextAnswer(
-                    answer_to_sender,
-                    'Вы не указали город, отправьте местоположение или воспользуйтесь поиском',
+                InviteSetCityAnswer(
+                    TgTextAnswer(
+                        answer_to_sender,
+                        'Вы не указали город, отправьте местоположение или воспользуйтесь поиском',
+                    ),
+                    self._redis,
                 ),
-                self._redis,
             ),
+            self._empty_answer,
+            self._admin_chat_ids,
         ).build(update)
