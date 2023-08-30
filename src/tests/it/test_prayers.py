@@ -53,7 +53,10 @@ async def db_podcast(pgsql):
 
 @pytest.mark.parametrize('debug_mode,expected', [
     (False, httpx.URL('https://some.domain/sendAudio?chat_id=123&audio=aoiejf298jr9p23u8qr3')),
-    (True, httpx.URL('https://some.domain/sendMessage?chat_id=123&text=https%3A%2F%2Flink-to-file.domain')),
+    (
+        True,
+        httpx.URL('https://some.domain/sendMessage?chat_id=123&text=https%3A%2F%2Flink-to-file.domain'),  # noqa: WPS323
+    ),
 ])
 async def test(db_podcast, pgsql, rds, debug_mode, expected):
     got = await PodcastAnswer(
