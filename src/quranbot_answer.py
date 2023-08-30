@@ -61,7 +61,7 @@ from services.prayers.invite_set_city_answer import InviteSetCityAnswer
 from services.prayers.prayer_status import UserPrayerStatus
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
-from settings import DebugMode, Settings, AdminChatIds
+from settings import AdminChatIds, DebugMode, Settings
 from srv.ayats.ayat_by_id_answer import AyatByIdAnswer
 from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
 from srv.ayats.favorite_ayat_page import FavoriteAyatPage
