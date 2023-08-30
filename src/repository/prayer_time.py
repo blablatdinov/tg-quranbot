@@ -148,7 +148,7 @@ class SafeNotFoundPrayers(UserPrayersInterface):
             """
             prayers_count = await self._pgsql.fetch_val(query, {'date': date})
             if not prayers_count:
-                raise PrayersNotFoundError
+                raise PrayersNotFoundError('', date)
             query = """
                 SELECT city_id FROM users WHERE chat_id = :chat_id
             """

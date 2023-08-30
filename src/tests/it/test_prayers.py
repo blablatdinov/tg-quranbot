@@ -20,50 +20,29 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import datetime
-import uuid
-
-import httpx
-import pytest
+import urllib
 
 from app_types.update import FkUpdate
-from handlers.podcast_answer import PodcastAnswer
+from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.tg_answers import FkAnswer
-from repository.podcast import RandomPodcast
 
 
-@pytest.fixture()
-async def db_podcast(pgsql):
-    file_id = str(uuid.uuid4())
-    await pgsql.execute(
-        '\n'.join([
-            'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
-            "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
-        ]),
-        {'file_id': file_id, 'created_at': datetime.datetime.now()},
-    )
-    await pgsql.execute(
-        '\n'.join([
-            'INSERT INTO podcasts (podcast_id, file_id)',
-            'VALUES (:podcast_id, :file_id)',
-        ]),
-        {'podcast_id': str(uuid.uuid4()), 'file_id': file_id},
-    )
-
-
-@pytest.mark.parametrize('debug_mode,expected', [
-    (False, httpx.URL('https://some.domain/sendAudio?chat_id=123&audio=aoiejf298jr9p23u8qr3')),
-    (
-        True,
-        httpx.URL('https://some.domain/sendMessage?chat_id=123&text=https%3A%2F%2Flink-to-file.domain'),  # noqa: WPS323
-    ),
-])
-async def test(db_podcast, pgsql, rds, debug_mode, expected):
-    got = await PodcastAnswer(
-        debug_mode,
-        FkAnswer(),
-        RandomPodcast(pgsql),
-        rds,
+async def test_not_found_prayer(pgsql, rds, freezer):
+    freezer.move_to('2023-08-30')
+    got = await PrayerTimeAnswer(
+        pgsql, rds, FkAnswer(), [321],
     ).build(FkUpdate('{"chat":{"id":123}}'))
 
-    assert got[0].url == expected
+    assert len(got) == 2
+    assert urllib.parse.unquote(
+        str(got[0].url),
+    ).replace('+', ' ') == ''.join([
+        'https://some.domain/sendMessage',
+        '?chat_id=123&text=Время намаза на 30.08.2023 для города  не найдено',
+    ])
+    assert urllib.parse.unquote(
+        str(got[1].url),
+    ).replace('+', ' ') == ''.join([
+        'https://some.domain/sendMessage',
+        '?chat_id=321&text=Время намаза на 30.08.2023 для города  не найдено',
+    ])
