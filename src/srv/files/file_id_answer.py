@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from furl import furl
 from pyeo import elegant
 
 from app_types.update import Update
@@ -38,7 +39,7 @@ class TelegramFileIdAnswer(TgAnswer):
     """Класс ответа с файлом."""
 
     _origin: TgAnswer
-    _file: TgFile
+    _tg_file: TgFile
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Отправка.
@@ -47,6 +48,9 @@ class TelegramFileIdAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         return [
-            httpx.Request(request.method, request.url.copy_add_param('audio', await self._file.tg_file_id()))
+            httpx.Request(
+                request.method,
+                furl(request.url).add({'audio': await self._tg_file.tg_file_id()}).url,
+            )
             for request in await self._origin.build(update)
         ]

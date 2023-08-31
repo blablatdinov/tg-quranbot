@@ -29,7 +29,7 @@ import pytest
 from app_types.update import FkUpdate
 from handlers.podcast_answer import PodcastAnswer
 from integrations.tg.tg_answers import FkAnswer
-from repository.podcast import RandomPodcast
+from srv.podcasts.podcast import RandomPodcast
 
 
 @pytest.fixture()

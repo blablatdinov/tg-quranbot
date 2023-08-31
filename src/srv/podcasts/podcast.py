@@ -20,38 +20,25 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import final
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
 from exceptions.base_exception import InternalBotError
-
-
-@elegant
-class RandomPodcastInterface(Protocol):
-    """Интерфейс подкаста.
-
-    https://www.yegor256.com/2014/12/01/orm-offensive-anti-pattern.html
-    """
-
-    async def audio_telegram_id(self) -> str:
-        """Получить идентификатор файла."""
-
-    async def link_to_audio_file(self) -> str:
-        """Получить ссылку на файл."""
+from srv.files.file import FileLink, TgFile, TgFileId
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class RandomPodcast(RandomPodcastInterface):
+class RandomPodcast(TgFile):
     """Объект подкаста."""
 
     _pgsql: Database
 
-    async def audio_telegram_id(self) -> str:
+    async def tg_file_id(self) -> TgFileId:
         """Получить идентификатор файла.
 
         :returns: str
@@ -69,7 +56,7 @@ class RandomPodcast(RandomPodcastInterface):
             raise InternalBotError('Подкасты не найдены')
         return row['telegram_file_id']
 
-    async def link_to_audio_file(self) -> str:
+    async def file_link(self) -> FileLink:
         """Получить ссылку на файл.
 
         :returns: str

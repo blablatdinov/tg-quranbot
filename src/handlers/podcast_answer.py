@@ -35,8 +35,8 @@ from integrations.tg.tg_answers.chat_id_answer import TgChatIdAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from integrations.tg.tg_answers.text_answer import TgTextAnswer
-from repository.podcast import RandomPodcastInterface
 from services.reset_state_answer import ResetStateAnswer
+from srv.files.file import TgFile
 from srv.files.file_answer import FileAnswer
 from srv.files.file_id_answer import TelegramFileIdAnswer
 
@@ -49,7 +49,7 @@ class PodcastAnswer(TgAnswer):
 
     _debug_mode: SupportsBool
     _origin: TgAnswer
-    _podcast: RandomPodcastInterface
+    _podcast: TgFile
     _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -69,7 +69,7 @@ class PodcastAnswer(TgAnswer):
                         ),
                         chat_id,
                     ),
-                    await self._podcast.audio_telegram_id(),
+                    self._podcast,
                 ),
                 TgTextAnswer(
                     TgChatIdAnswer(
@@ -78,7 +78,7 @@ class PodcastAnswer(TgAnswer):
                         ),
                         chat_id,
                     ),
-                    await self._podcast.link_to_audio_file(),
+                    await self._podcast.file_link(),
                 ),
             ),
             self._redis,

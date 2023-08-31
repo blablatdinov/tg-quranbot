@@ -50,7 +50,6 @@ from integrations.tg.tg_answers import (
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from repository.admin_message import AdminMessage
-from repository.podcast import RandomPodcast
 from repository.prayer_time import UserPrayers
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
@@ -67,6 +66,7 @@ from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
 from srv.ayats.favorite_ayat_page import FavoriteAyatPage
 from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer
 from srv.ayats.search_ayat_by_text_callback_answer import SearchAyatByTextCallbackAnswer
+from srv.podcasts.podcast import RandomPodcast
 
 
 @final

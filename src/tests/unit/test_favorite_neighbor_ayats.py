@@ -57,7 +57,7 @@ class FkAyat(Ayat):
         return ''
 
     async def audio(self):
-        return FkFile()
+        return FkFile('', '')
 
 
 class FkFavoriteAyats(AsyncListable[Ayat]):
