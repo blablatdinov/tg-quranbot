@@ -25,10 +25,9 @@ from typing import Protocol, TypeAlias
 from pyeo import elegant
 
 from srv.ayats.ayat_identifier import AyatIdentifier
+from srv.files.file import TgFile
 
 AyatText: TypeAlias = str
-TgFileId: TypeAlias = str
-AyatAudioFileLink: TypeAlias = str
 
 
 @elegant
@@ -41,8 +40,5 @@ class Ayat(Protocol):
     async def text(self) -> AyatText:
         """Строковое представление."""
 
-    async def tg_file_id(self) -> TgFileId:
-        """Идентификатор файла в телеграм."""
-
-    async def file_link(self) -> AyatAudioFileLink:
-        """Ссылка на файл."""
+    async def audio(self) -> TgFile:
+        """Аудио файл."""

@@ -29,17 +29,20 @@ from app_types.intable import AsyncIntable, ThroughAsyncIntable
 from app_types.stringable import SupportsStr
 from exceptions.content_exceptions import AyatNotFoundError
 from services.regular_expression import IntableRegularExpression
-from srv.ayats.ayat import Ayat, AyatText, TgFileId
-from srv.ayats.ayat_id_by_sura_ayat import AyatIdBySuraAyatNum
+from srv.ayats.ayat import Ayat, AyatText
+from srv.ayats.ayat_id_by_sura_ayat import AyatIdByPublicId, AyatIdBySuraAyatNum
 from srv.ayats.ayat_identifier import PgAyatIdentifier
 from srv.ayats.ayat_link import AyatLink
 from srv.ayats.nums_search_query import NumsSearchQuery
 from srv.ayats.validated_search_query import ValidatedSearchQuery
+from srv.events.ayat_changed_event import AyatChangedEvent
+from srv.files.file import TgFile
+from srv.files.pg_file import PgFile
 
 
 @final
 @attrs.define(frozen=True)
-class PgAyat(Ayat):
+class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 method
     """Аят."""
 
     _ayat_id: AsyncIntable
@@ -88,6 +91,19 @@ class PgAyat(Ayat):
             database,
         )
 
+    @classmethod
+    def ayat_changed_event_ctor(cls, event: AyatChangedEvent, pgsql):
+        """Конструктор для события изменения аята.
+
+        :param event: AyatChangedEvent
+        :param pgsql: Database
+        :return: Ayat
+        """
+        return cls(
+            AyatIdByPublicId(event.value_of('$.data.public_id'), pgsql),
+            pgsql,
+        )
+
     def identifier(self) -> PgAyatIdentifier:
         """Идентификатор аята.
 
@@ -128,14 +144,14 @@ class PgAyat(Ayat):
             transliteration=row['transliteration'],
         )
 
-    async def tg_file_id(self) -> TgFileId:
-        """Идентификатор файла в телеграм.
+    async def audio(self) -> TgFile:
+        """Получить аудио аята.
 
-        :return: str
+        :return: File
         :raises AyatNotFoundError: если аят не найден
         """
         query = """
-            SELECT cf.telegram_file_id
+            SELECT cf.file_id
             FROM ayats AS a
             INNER JOIN files AS cf ON a.audio_id = cf.file_id
             WHERE a.ayat_id = :ayat_id
@@ -144,22 +160,30 @@ class PgAyat(Ayat):
         row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
         if not row:
             raise AyatNotFoundError('Аят с id={0} не найден'.format(ayat_id))
-        return row['telegram_file_id']
+        return PgFile(row['file_id'], self._pgsql)
 
-    async def file_link(self) -> str:
-        """Ссылка на файл.
+    async def change(self, event: AyatChangedEvent) -> None:
+        """Изменить содержимое аята.
 
-        :return: str
-        :raises AyatNotFoundError: если аят не найден
+        :param event: AyatChangedEvent
         """
         query = """
-            SELECT cf.link
-            FROM ayats AS a
-            INNER JOIN files AS cf ON a.audio_id = cf.file_id
-            WHERE a.ayat_id = :ayat_id
+            UPDATE ayats
+            SET
+                day = :day,
+                audio_id = :audio_id,
+                ayat_number = :ayat_number,
+                content = :content,
+                arab_text = :arab_text,
+                transliteration = :transliteration
+            WHERE ayat_id = :ayat_id
         """
-        ayat_id = await self._ayat_id.to_int()
-        row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
-        if not row:
-            raise AyatNotFoundError('Аят с id={0} не найден'.format(ayat_id))
-        return row['link']
+        await self._pgsql.execute(query, {
+            'ayat_id': await self._ayat_id.to_int(),
+            'day': event.value_of('$.data.day'),
+            'audio_id': event.value_of('$.data.audio_id'),
+            'ayat_number': event.value_of('$.data.ayat_number'),
+            'content': event.value_of('$.data.content'),
+            'arab_text': event.value_of('$.data.arab_text'),
+            'transliteration': event.value_of('$.data.transliteration'),
+        })

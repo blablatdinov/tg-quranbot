@@ -20,37 +20,44 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import Protocol, TypeAlias, final
 
 import attrs
-import httpx
-from furl import furl
 from pyeo import elegant
 
-from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswer
-from srv.files.file import TgFile
+TgFileId: TypeAlias = str
+FileLink: TypeAlias = str
+
+
+class TgFile(Protocol):
+    """Тип файла."""
+
+    async def tg_file_id(self) -> TgFileId:
+        """Идентификатор файла в телеграм."""
+
+    async def file_link(self) -> FileLink:
+        """Ссылка на файл."""
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class TelegramFileIdAnswer(TgAnswer):
-    """Класс ответа с файлом."""
+class FkFile(TgFile):
+    """Фейковый файл."""
 
-    _origin: TgAnswer
-    _tg_file: TgFile
+    _file_id: str
+    _link: str
 
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Отправка.
+    async def tg_file_id(self) -> TgFileId:
+        """Идентификатор файла в телеграм.
 
-        :param update: Update
-        :return: list[httpx.Request]
+        :return: TgFileId
         """
-        return [
-            httpx.Request(
-                request.method,
-                furl(request.url).add({'audio': await self._tg_file.tg_file_id()}).url,
-            )
-            for request in await self._origin.build(update)
-        ]
+        return self._file_id
+
+    async def file_link(self) -> FileLink:
+        """Идентификатор файла в телеграм.
+
+        :return: FileLink
+        """
+        return self._link

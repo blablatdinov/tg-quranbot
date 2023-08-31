@@ -20,37 +20,30 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import TypeAlias, final
 
 import attrs
-import httpx
-from furl import furl
+from eljson.json import Json
 from pyeo import elegant
 
-from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswer
-from srv.files.file import TgFile
+from srv.events.recieved_event import ReceivedEvent
+
+JsonPathQuery: TypeAlias = str
+AyatChangedEvent: TypeAlias = ReceivedEvent
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class TelegramFileIdAnswer(TgAnswer):
-    """Класс ответа с файлом."""
+class RbmqAyatChangedEvent(AyatChangedEvent):
+    """Событие изменения аята из rabbitmq."""
 
-    _origin: TgAnswer
-    _tg_file: TgFile
+    _json: Json
 
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Отправка.
+    def value_of(self, query: JsonPathQuery):
+        """Значение.
 
-        :param update: Update
-        :return: list[httpx.Request]
+        :param query: JsonPathQuery
+        :return: value
         """
-        return [
-            httpx.Request(
-                request.method,
-                furl(request.url).add({'audio': await self._tg_file.tg_file_id()}).url,
-            )
-            for request in await self._origin.build(update)
-        ]
+        return self._json.path(query)[0]

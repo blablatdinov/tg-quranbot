@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import uuid
 from typing import final
 
 import attrs
@@ -67,6 +68,33 @@ class AyatIdBySuraAyatNum(AsyncIntable):
             'ayat_comma_postfix': '%{0},'.format(self._query.ayat()),
             'ayat_num': int(self._query.ayat()),
             'ayat_num_str': self._query.ayat(),
+        })
+        if not row:
+            raise AyatNotFoundError
+        return row['ayat_id']
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class AyatIdByPublicId(AsyncIntable):
+    """Поиск аятов по номеру суры, аята."""
+
+    _public_id: uuid.UUID
+    _pgsql: Database
+
+    async def to_int(self) -> AyatId:
+        """Числовое представление.
+
+        :return: int
+        :raises AyatNotFoundError: если аят не найден
+        """
+        query = """
+            SELECT ayat_id FROM ayats
+            WHERE public_id = :public_id
+        """
+        row = await self._pgsql.fetch_one(query, {
+            'public_id': self._public_id,
         })
         if not row:
             raise AyatNotFoundError

@@ -20,37 +20,54 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import uuid
 from typing import final
 
 import attrs
-import httpx
-from furl import furl
+from databases import Database
 from pyeo import elegant
 
-from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswer
-from srv.files.file import TgFile
+from exceptions.content_exceptions import BotFileNotFoundError
+from srv.files.file import FileLink, TgFile, TgFileId
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class TelegramFileIdAnswer(TgAnswer):
-    """Класс ответа с файлом."""
+class PgFile(TgFile):
+    """Объект файла в postgres."""
 
-    _origin: TgAnswer
-    _tg_file: TgFile
+    _file_id: uuid.UUID
+    _pgsql: Database
 
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Отправка.
+    async def tg_file_id(self) -> TgFileId:
+        """Идентификатор файла в телеграм.
 
-        :param update: Update
-        :return: list[httpx.Request]
+        :return: str
+        :raises BotFileNotFoundError: файл не найден
         """
-        return [
-            httpx.Request(
-                request.method,
-                furl(request.url).add({'audio': await self._tg_file.tg_file_id()}).url,
-            )
-            for request in await self._origin.build(update)
-        ]
+        query = """
+            SELECT telegram_file_id
+            FROM files
+            WHERE file_id = :file_id
+        """
+        row = await self._pgsql.fetch_one(query, {'file_id': str(self._file_id)})
+        if not row:
+            raise BotFileNotFoundError()
+        return row['telegram_file_id']
+
+    async def file_link(self) -> FileLink:
+        """Ссылка на файл.
+
+        :return: str
+        :raises BotFileNotFoundError: файл не найден
+        """
+        query = """
+            SELECT link
+            FROM files
+            WHERE file_id = :file_id
+        """
+        row = await self._pgsql.fetch_one(query, {'file_id': self._file_id})
+        if not row:
+            raise BotFileNotFoundError()
+        return row['link']

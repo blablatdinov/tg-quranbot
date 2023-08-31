@@ -27,6 +27,7 @@ from pyeo import elegant
 
 from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer, TgAnswer
+from srv.files.file import FkFile
 from srv.files.file_id_answer import TelegramFileIdAnswer
 
 
@@ -41,6 +42,8 @@ class FakeAnswer(TgAnswer):
 
 
 async def test():
-    got = await TelegramFileIdAnswer(FkAnswer(), 'file_id').build(FkUpdate())
+    got = await TelegramFileIdAnswer(
+        FkAnswer(), FkFile('file_id', ''),
+    ).build(FkUpdate())
 
     assert got[0].url.query.decode('utf-8') == 'audio=file_id'

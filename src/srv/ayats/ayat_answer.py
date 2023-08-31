@@ -71,11 +71,11 @@ class AyatAnswer(TgAnswer):
                 self._debug_mode,
                 TelegramFileIdAnswer(
                     TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
-                    await self._ayat.tg_file_id(),
+                    await self._ayat.audio(),
                 ),
                 TgTextAnswer(
                     TgHtmlMessageAnswerToSender(self._empty_answer),
-                    await self._ayat.file_link(),
+                    await (await self._ayat.audio()).file_link(),
                 ),
             ),
         ).build(update)

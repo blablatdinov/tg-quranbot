@@ -40,6 +40,11 @@ class AyatNotFoundError(BaseAppError):
 
 
 @final
+class BotFileNotFoundError(BaseAppError):
+    """Файл не найден."""
+
+
+@final
 class CityNotSupportedError(BaseAppError):
     """Исключение, вызываемое если при поиске города, он не нашелся в БД."""
 

@@ -25,8 +25,6 @@ import sys
 from redis import asyncio as aioredis
 
 from db.connection import pgsql
-from event_recieve import RecievedEvents
-from integrations.event_handlers.prayers_sended import SendPrayersEvent
 from integrations.nats_integration import FkSink
 from integrations.tg.app import AppWithGetMe, DatabaseConnectedApp, PollingApp
 from integrations.tg.polling_updates import (
@@ -98,21 +96,6 @@ def main(sys_args) -> None:
                     CheckUsersStatus(
                         UsersRepository(pgsql),
                         TgEmptyAnswer(settings.API_TOKEN),
-                    ),
-                ),
-            ),
-        ),
-        CommandCliApp(
-            'recieve_events',
-            CliApp(
-                DatabaseConnectedApp(
-                    pgsql,
-                    RecievedEvents(
-                        SendPrayersEvent(
-                            UsersRepository(pgsql),
-                            TgEmptyAnswer(settings.API_TOKEN),
-                            pgsql,
-                        ),
                     ),
                 ),
             ),
