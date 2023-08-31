@@ -79,8 +79,11 @@ def bot_process():
     create_db()
     fill_test_db()
     bot = multiprocessing.Process(target=main, args=(['src/main.py', 'run_polling'],))
+    event_handler = multiprocessing.Process(target=main, args=(['src/main.py', 'receive_events'],))
     bot.start()
+    event_handler.start()
     yield
+    event_handler.terminate()
     bot.terminate()
     bot.join()
     drop_db()

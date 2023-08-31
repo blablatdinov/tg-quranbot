@@ -37,3 +37,6 @@ class ReceivedEvent(Protocol[JsonPathReturnType]):
 
         :param query: JsonPathQuery
         """
+
+    async def process(self):
+        """Обработать событие."""

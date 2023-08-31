@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import sys
 
+import aioamqp
 from redis import asyncio as aioredis
 
 from db.connection import pgsql
@@ -42,6 +43,8 @@ from schedule_app import CheckUsersStatus
 from services.cli_app import CliApp, CommandCliApp, CoveredApp, ForkCliApp
 from services.logged_answer import LoggedAnswer
 from settings import BASE_DIR, CachedSettings, EnvFileSettings
+from srv.events.ayat_changed_event import RbmqAyatChangedEvent
+from srv.events.event_hook import EventHookApp, RbmqEventHook
 
 
 def main(sys_args) -> None:
@@ -97,6 +100,22 @@ def main(sys_args) -> None:
                         UsersRepository(pgsql),
                         TgEmptyAnswer(settings.API_TOKEN),
                     ),
+                ),
+            ),
+        ),
+        CommandCliApp(
+            'receive_events',
+            EventHookApp(
+                RbmqEventHook(
+                    settings,
+                    pgsql,
+                    (
+                        (
+                            'Ayat.Changed',
+                            1,
+                            RbmqAyatChangedEvent,
+                        )
+                    )
                 ),
             ),
         ),

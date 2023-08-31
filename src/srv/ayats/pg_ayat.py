@@ -35,7 +35,7 @@ from srv.ayats.ayat_identifier import PgAyatIdentifier
 from srv.ayats.ayat_link import AyatLink
 from srv.ayats.nums_search_query import NumsSearchQuery
 from srv.ayats.validated_search_query import ValidatedSearchQuery
-from srv.events.ayat_changed_event import AyatChangedEvent
+from srv.events.recieved_event import ReceivedEvent
 from srv.files.file import TgFile
 from srv.files.pg_file import PgFile
 
@@ -92,10 +92,10 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         )
 
     @classmethod
-    def ayat_changed_event_ctor(cls, event: AyatChangedEvent, pgsql):
+    def ayat_changed_event_ctor(cls, event: ReceivedEvent, pgsql):
         """Конструктор для события изменения аята.
 
-        :param event: AyatChangedEvent
+        :param event: ReceivedEvent
         :param pgsql: Database
         :return: Ayat
         """
@@ -162,10 +162,10 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
             raise AyatNotFoundError('Аят с id={0} не найден'.format(ayat_id))
         return PgFile(row['file_id'], self._pgsql)
 
-    async def change(self, event: AyatChangedEvent) -> None:
+    async def change(self, event: ReceivedEvent) -> None:
         """Изменить содержимое аята.
 
-        :param event: AyatChangedEvent
+        :param event: ReceivedEvent
         """
         query = """
             UPDATE ayats
@@ -187,3 +187,4 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
             'arab_text': event.value_of('$.data.arab_text'),
             'transliteration': event.value_of('$.data.transliteration'),
         })
+        print(dict(await self._pgsql.fetch_one('SELECT * FROM ayats WHERE ayat_id = 1')))
