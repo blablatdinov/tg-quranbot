@@ -72,17 +72,11 @@ class AyatAnswer(TgAnswer):
                 self._debug_mode,
                 TelegramFileIdAnswer(
                     TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
-                    await self._file_id(),
+                    await self._ayat.file(),
                 ),
                 TgTextAnswer(
                     TgHtmlMessageAnswerToSender(self._empty_answer),
-                    await self._file_link(),
+                    await (await self._ayat.file()).file_link(),
                 ),
             ),
         ).build(update)
-
-    async def _file_id(self) -> TgFileId:
-        return await (await self._ayat.audio()).tg_file_id()
-
-    async def _file_link(self) -> FileLink:
-        return await (await self._ayat.audio()).file_link()

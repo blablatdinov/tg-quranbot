@@ -28,6 +28,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer
+from srv.files.file import TgFile
 
 
 @final
@@ -37,7 +38,7 @@ class TelegramFileIdAnswer(TgAnswer):
     """Класс ответа с файлом."""
 
     _origin: TgAnswer
-    _telegram_file_id: str | None
+    _file: TgFile
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Отправка.
@@ -46,6 +47,6 @@ class TelegramFileIdAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         return [
-            httpx.Request(request.method, request.url.copy_add_param('audio', self._telegram_file_id))
+            httpx.Request(request.method, request.url.copy_add_param('audio', await self._file.tg_file_id()))
             for request in await self._origin.build(update)
         ]

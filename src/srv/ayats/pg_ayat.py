@@ -169,12 +169,13 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         """
         query = """
             UPDATE ayats
-            SET day = :day,
-            audio_id = :audio_id,
-            ayat_number = :ayat_number,
-            content = :content,
-            arab_text = :arab_text,
-            transliteration = :transliteration
+            SET
+                day = :day,
+                audio_id = :audio_id,
+                ayat_number = :ayat_number,
+                content = :content,
+                arab_text = :arab_text,
+                transliteration = :transliteration
             WHERE ayat_id = :ayat_id
         """
         await self._pgsql.execute(query, {
