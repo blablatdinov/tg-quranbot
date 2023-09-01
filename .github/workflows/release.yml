@@ -24,7 +24,7 @@ name: Test and release
 
 on:
   push:
-    tags: "*"
+    branches: [ "test-ci" ]
 
 permissions:
   contents: read

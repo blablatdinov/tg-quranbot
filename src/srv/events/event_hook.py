@@ -89,7 +89,7 @@ class RbmqEventHook(EventHook):
         transport, protocol = await aioamqp.connect(
             host=self._settings.RABBITMQ_HOST,
             login=self._settings.RABBITMQ_USER,
-            password=self._settings.RABBITMQ_PASSWORD,
+            password=self._settings.RABBITMQ_PASS,
         )
         channel = await protocol.channel()
         await channel.queue_declare(queue_name='my_queue')
