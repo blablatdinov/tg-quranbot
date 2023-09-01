@@ -23,11 +23,8 @@
 name: Test and release
 
 on:
-  pull_request:
-    branches: [ "master" ]
-# on:
-#   push:
-#     tags: "*"
+  push:
+    tags: "*"
 
 permissions:
   contents: read
