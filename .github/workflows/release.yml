@@ -49,6 +49,15 @@ jobs:
         ports:
           - 6379:6379
         options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+      rabbitmq:
+        image: rabbitmq:latest
+        ports:
+          - 5672:5672
+          - 15672:15672
+        environment:
+          RABBITMQ_DEFAULT_USER: your_rabbitmq_user
+          RABBITMQ_DEFAULT_PASS: your_rabbitmq_password
+        options: --health-cmd "rabbitmqctl status" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
     - uses: actions/checkout@v3
