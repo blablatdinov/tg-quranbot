@@ -22,12 +22,12 @@
 
 name: Test and release
 
-# on:
-#   push:
-#     branches: ["fix-ci-cd"]
 on:
   pull_request:
     branches: [ "master" ]
+# on:
+#   push:
+#     tags: "*"
 
 permissions:
   contents: read
@@ -57,9 +57,6 @@ jobs:
         ports:
           - 5672:5672
           - 15672:15672
-        env:
-          RABBITMQ_DEFAULT_USER: your_rabbitmq_user
-          RABBITMQ_DEFAULT_PASS: your_rabbitmq_password
         options: --health-cmd "rabbitmqctl status" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
