@@ -95,9 +95,15 @@ class RbmqEventHook(EventHook):
         logger.info('Taked event {0}'.format(json.loads(body.decode('utf-8'))))
         body_json = JsonDoc.from_string(body.decode('utf-8'))  # type: ignore [no-untyped-call]
         try:
-            validate_schema(json.loads(body.decode('utf-8')), body_json.path('$.event_name')[0], body_json.path('$.event_version')[0])
+            validate_schema(
+                json.loads(body.decode('utf-8')),
+                body_json.path('$.event_name')[0],
+                body_json.path('$.event_version')[0],
+            )
         except TypeError as err:
-            logger.error('Schema of event: {0} invalid'.format(body_json.path('$.event_id')[0]))
+            logger.error('Schema of event: {0} invalid. {1}'.format(
+                body_json.path('$.event_id')[0], str(err),
+            ))
             return
         await self._event.process(body_json)
         await channel.basic_client_ack(envelope.delivery_tag)
