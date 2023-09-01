@@ -86,7 +86,11 @@ class RbmqEventHook(EventHook):
 
     async def _pre_build(self) -> tuple:
         await self._pgsql.connect()
-        transport, protocol = await aioamqp.connect()
+        transport, protocol = await aioamqp.connect(
+            host=self._settings.RABBITMQ_HOST,
+            login=self._settings.RABBITMQ_USER,
+            password=self._settings.RABBITMQ_PASSWORD,
+        )
         channel = await protocol.channel()
         await channel.queue_declare(queue_name='my_queue')
         return channel, transport, protocol

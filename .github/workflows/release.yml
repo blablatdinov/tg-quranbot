@@ -54,6 +54,9 @@ jobs:
         ports:
           - 5672:5672
           - 15672:15672
+        env:
+          RABBITMQ_DEFAULT_USER: user
+          RABBITMQ_DEFAULT_PASS: pass
         options: --health-cmd "rabbitmqctl status" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
@@ -154,7 +157,7 @@ jobs:
       - name:
         run: |
           scp deploy/quranbot_nginx.conf www@87.249.49.217:/etc/nginx/sites-enabled/
-          ssh www@87.249.49.217 'sudo nginx -t && sudo nginx reload'
+          ssh www@87.249.49.217 'sudo nginx -t && sudo service nginx reload'
 
   update-remote-container:
     needs: build-and-push
@@ -185,6 +188,8 @@ jobs:
               restart: always
               volumes:
                 - .env:/.env
+              networks:
+                - rabbitmq_go_net
           
             rabbitmq:
               image: rabbitmq:3-management-alpine
@@ -201,9 +206,9 @@ jobs:
               networks:
                 - rabbitmq_go_net
 
-            networks:
-              rabbitmq_go_net:
-                driver: bridge
+          networks:
+            rabbitmq_go_net:
+              driver: bridge
           ' > docker-compose.yml
           cat docker-compose.yml
       - name: Deploy with docker-compose on remote server
