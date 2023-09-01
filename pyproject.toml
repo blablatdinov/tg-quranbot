@@ -30,7 +30,7 @@ authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 python = ">=3.11,<3.12"
 pydantic = {extras = ["dotenv"], version = "2.3.0"}
 loguru = "0.7.0"
-quranbot-schema-registry = "0.0.17"
+quranbot-schema-registry = "0.0.18"
 APScheduler = "3.10.4"
 sentry-sdk = "1.30.0"
 httpx = "0.24.1"
