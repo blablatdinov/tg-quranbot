@@ -26,10 +26,17 @@ import time
 import pika
 import pytest
 
+from settings import EnvFileSettings
+
 
 @pytest.mark.usefixtures('bot_process', 'clear_db')
 def test_change_ayat(db_query_vals):
-    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    settings = EnvFileSettings.from_filename('../.env')
+    connection = pika.BlockingConnection(pika.ConnectionParameters(
+        host='localhost',
+        port=5672,
+        credentials=pika.PlainCredentials(settings.RABBITMQ_USER, settings.RABBITMQ_PASS)
+    ))
     channel = connection.channel()
     channel.queue_declare(queue='my_queue')
     channel.basic_publish(
