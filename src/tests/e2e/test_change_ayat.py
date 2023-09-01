@@ -22,14 +22,31 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
 import time
+from pathlib import Path
 
 import pika
+import psycopg2
 import pytest
 
 from settings import EnvFileSettings
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db')
+@pytest.fixture()
+def revert_changes():
+    yield
+    qbot_connection = psycopg2.connect(EnvFileSettings.from_filename('../.env').DATABASE_URL)
+    qbot_connection.autocommit = True
+    cursor = qbot_connection.cursor()
+    cursor.execute('DELETE FROM ayats WHERE ayat_id = 1')
+    for line in Path('src/tests/e2e/db-fixtures/ayats.sql').read_text().strip().split('\n'):
+        if '0acec6b6-4b3c-4ce9-8d11-3985f52a1c03' in line:
+            cursor.execute(line)
+            break
+    cursor.close()
+    qbot_connection.close()
+
+
+@pytest.mark.usefixtures('bot_process', 'revert_changes', 'clear_db')
 def test_change_ayat(db_query_vals):
     settings = EnvFileSettings.from_filename('../.env')
     connection = pika.BlockingConnection(pika.ConnectionParameters(
