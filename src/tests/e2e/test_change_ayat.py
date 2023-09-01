@@ -35,7 +35,7 @@ def test_change_ayat(db_query_vals):
     connection = pika.BlockingConnection(pika.ConnectionParameters(
         host='localhost',
         port=5672,
-        credentials=pika.PlainCredentials(settings.RABBITMQ_USER, settings.RABBITMQ_PASS)
+        credentials=pika.PlainCredentials(settings.RABBITMQ_USER, settings.RABBITMQ_PASS),
     ))
     channel = connection.channel()
     channel.queue_declare(queue='my_queue')
