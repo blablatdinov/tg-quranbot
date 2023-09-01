@@ -26,7 +26,6 @@ import pytest
 from eljson.json_doc import JsonDoc
 
 from srv.ayats.pg_ayat import PgAyat
-from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 
 
 @pytest.fixture()
@@ -85,12 +84,7 @@ async def test_change(db_ayat, pgsql):
             'transliteration': 'Updated arab transliteration',
         },
     }
-    await PgAyat.ayat_changed_event_ctor(
-        RbmqAyatChangedEvent(
-            JsonDoc(event),
-        ),
-        pgsql,
-    ).change(RbmqAyatChangedEvent(JsonDoc(event)))
+    await PgAyat.ayat_changed_event_ctor(JsonDoc(event), pgsql).change(JsonDoc(event))
 
     changed_record = await pgsql.fetch_one('SELECT * FROM ayats WHERE ayat_id = 1')
 

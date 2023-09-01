@@ -22,7 +22,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import sys
 
-import aioamqp
 from redis import asyncio as aioredis
 
 from db.connection import pgsql
@@ -45,6 +44,7 @@ from services.logged_answer import LoggedAnswer
 from settings import BASE_DIR, CachedSettings, EnvFileSettings
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.event_hook import EventHookApp, RbmqEventHook
+from srv.events.recieved_event import EventFork
 
 
 def main(sys_args) -> None:
@@ -109,13 +109,7 @@ def main(sys_args) -> None:
                 RbmqEventHook(
                     settings,
                     pgsql,
-                    (
-                        (
-                            'Ayat.Changed',
-                            1,
-                            RbmqAyatChangedEvent,
-                        )
-                    )
+                    EventFork('Ayat.Changed', 1, RbmqAyatChangedEvent(pgsql)),
                 ),
             ),
         ),

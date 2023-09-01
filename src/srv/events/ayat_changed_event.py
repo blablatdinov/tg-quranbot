@@ -40,16 +40,11 @@ AyatChangedEvent: TypeAlias = ReceivedEvent
 class RbmqAyatChangedEvent(AyatChangedEvent):
     """Событие изменения аята из rabbitmq."""
 
-    _json: Json
     _pgsql: Database
 
-    def value_of(self, query: JsonPathQuery):
-        """Значение.
+    async def process(self, json: Json):
+        """Обработка события.
 
-        :param query: JsonPathQuery
-        :return: value
+        :param json: Json
         """
-        return self._json.path(query)[0]
-
-    async def process(self):
-        await PgAyat.ayat_changed_event_ctor(self, self._pgsql).change(self)
+        await PgAyat.ayat_changed_event_ctor(json, self._pgsql).change(json)

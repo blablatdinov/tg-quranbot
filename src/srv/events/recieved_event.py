@@ -20,8 +20,10 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, TypeAlias, TypeVar
+from typing import Protocol, TypeAlias, TypeVar, final
 
+import attrs
+from eljson.json import Json
 from pyeo import elegant
 
 JsonPathQuery: TypeAlias = str
@@ -32,11 +34,32 @@ JsonPathReturnType = TypeVar('JsonPathReturnType', covariant=True)
 class ReceivedEvent(Protocol[JsonPathReturnType]):
     """Событие."""
 
-    def value_of(self, query: JsonPathQuery) -> JsonPathReturnType:
-        """Значение.
+    async def process(self, json: Json) -> int:
+        """Обработать событие.
 
-        :param query: JsonPathQuery
+        :param json: Json
         """
 
-    async def process(self):
-        """Обработать событие."""
+
+@elegant
+@attrs.define(frozen=True)
+@final
+class EventFork(ReceivedEvent):
+    """Событие."""
+
+    _name: str
+    _version: int
+    _origin: ReceivedEvent
+
+    async def process(self, json: Json) -> int:
+        """Обработать событие.
+
+        :param json: Json
+        :return: int
+        """
+        name_match = json.path('$.event_name')[0] == self._name
+        version_match = json.path('$.event_version')[0] == self._version
+        if name_match and version_match:
+            await self._origin.process(json)
+            return 1
+        return 0

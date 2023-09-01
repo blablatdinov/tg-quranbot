@@ -26,7 +26,7 @@ import pytest
 
 
 @pytest.mark.usefixtures('bot_process', 'clear_db')
-def test_start(tg_client, bot_name, wait_until):
+def test_start(tg_client, bot_name, wait_until, clear_db):
     tg_client.send_message(bot_name, '/start')
     last_messages = wait_until(tg_client, 3)
 
