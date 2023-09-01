@@ -21,13 +21,16 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
+import json
 from typing import Protocol, final
 
 import aioamqp
 import attrs
 from databases import Database
 from eljson.json_doc import JsonDoc
+from loguru import logger
 from pyeo import elegant
+from quranbot_schema_registry import validate_schema
 
 from app_types.runable import SyncRunable
 from settings import Settings
@@ -89,6 +92,18 @@ class RbmqEventHook(EventHook):
         return channel, transport, protocol
 
     async def _callback(self, channel, body: bytes, envelope, properties):
+        logger.info('Taked event {0}'.format(json.loads(body.decode('utf-8'))))
         body_json = JsonDoc.from_string(body.decode('utf-8'))  # type: ignore [no-untyped-call]
+        try:
+            validate_schema(
+                json.loads(body.decode('utf-8')),
+                body_json.path('$.event_name')[0],
+                body_json.path('$.event_version')[0],
+            )
+        except TypeError as err:
+            logger.error('Schema of event: {0} invalid. {1}'.format(
+                body_json.path('$.event_id')[0], str(err),
+            ))
+            return
         await self._event.process(body_json)
         await channel.basic_client_ack(envelope.delivery_tag)

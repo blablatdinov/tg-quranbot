@@ -134,10 +134,25 @@ jobs:
         run: |
           yoyo apply
 
+  apply-nginx-conf:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY}}
+          known_hosts: '87.249.49.217 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXsftBFh0RQ0pupvfT8zZp7HEIT8cWD9ziL7glOEtCqVWu8mMqgmYH+GzA7xsWHkAGgQ0BHHQinVMg2sQzDyyHdSVuMvsi04WsgAaOdD0mQa5LwauXpaw/X5nyOKAtiVzzUSi6I8leTS+o4/5nnNz+wxGEZSItESEYYbLWIhE9p30Mt1cSB+F8iUXsAO/I1DqwqXsOUET5ocVOfeRd7/3P7ZT8KGjG6DP8D4aCvxnc1NIAVnW9sfj7hsR84kTWNFFfihMZkmFrDuQfS30mFBlb9sAahHmQfeYfVUexU0ntkiSyE7jsnvfKJIKb3uyfbP1TjJ5EwTt7lDgNdZst3aAkK/JHiEJaIyod1AHt5gG8OFC75+Cy7fbwawPJUuRysxz2O35KFGcbZyN42kdHYZoVLpe5GvcziUSkQLW/KRBrbK7Uw4X6Q6h1QOhUL1ifbqACEIZXeuqkje0c6nL9M5lFeYITn1Ikc3N+c50hAmnX6F4rnifbFUnqiELBk0sn7zM='
+      - name:
+        run: |
+          scp deploy/quranbot_nginx.conf www@87.249.49.217:/etc/nginx/sites-enabled
+          ssh www@87.249.49.217 'sudo nginx -t && sudo nginx reload'
+
   update-remote-container:
     needs: build-and-push
     runs-on: ubuntu-latest
-
     steps:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
@@ -157,6 +172,32 @@ jobs:
               restart: always
               volumes:
                 - .env:/.env
+          
+            event_receiver:
+              image: blablatdinov/quranbot-aiogram:${{ steps.tag_name.outputs.TAG_NAME }}
+              command: .venv/bin/python main.py receive_events
+              restart: always
+              volumes:
+                - .env:/.env
+          
+            rabbitmq:
+              image: rabbitmq:3-management-alpine
+              container_name: 'rabbitmq'
+              environment:
+                - RABBITMQ_DEFAULT_USER=${{ secrets.RABBITMQ_USER }}
+                - RABBITMQ_DEFAULT_PASS=${{ secrets.RABBITMQ_PASSWORD }}
+              ports:
+                - 5672:5672
+                - 15672:15672
+              volumes:
+                - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+                - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+              networks:
+                - rabbitmq_go_net
+
+            networks:
+              rabbitmq_go_net:
+                driver: bridge
           ' > docker-compose.yml
           cat docker-compose.yml
       - name: Deploy with docker-compose on remote server
