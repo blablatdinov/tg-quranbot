@@ -25,7 +25,6 @@ import sys
 from redis import asyncio as aioredis
 
 from db.connection import pgsql
-from integrations.nats_integration import FkSink
 from integrations.tg.app import AppWithGetMe, DatabaseConnectedApp, PollingApp
 from integrations.tg.polling_updates import (
     PollingUpdatesIterator,
@@ -45,6 +44,7 @@ from settings import BASE_DIR, CachedSettings, EnvFileSettings
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.event_hook import EventHookApp, RbmqEventHook
 from srv.events.recieved_event import EventFork
+from srv.events.sink import FkSink
 
 
 def main(sys_args) -> None:

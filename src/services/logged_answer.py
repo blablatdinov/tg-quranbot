@@ -26,8 +26,8 @@ from typing import final
 import attrs
 from pyeo import elegant
 
-from integrations.nats_integration import SinkInterface
 from integrations.tg.sendable import SendableInterface
+from srv.events.sink import SinkInterface
 
 
 @final

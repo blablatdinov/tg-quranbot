@@ -20,19 +20,10 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import datetime
-import json
-import uuid
 from typing import Protocol, final
 
 import attrs
-import nats
-import pytz
-from loguru import logger
 from pyeo import elegant
-from quranbot_schema_registry.validate_schema import validate_schema
-
-from settings import EnvFileSettings
 
 
 @elegant
@@ -61,43 +52,3 @@ class FkSink(SinkInterface):
         :param event_name: str
         :param version: int
         """
-
-
-@final
-@elegant
-class NatsSink(SinkInterface):
-    """Отправщик событий в nats."""
-
-    _queue_name = 'quranbot'
-
-    async def send(self, event_data, event_name, version) -> None:
-        """Отправить событие.
-
-        :param event_data: dict
-        :param event_name: str
-        :param version: int
-        """
-        event = {
-            'event_id': str(uuid.uuid4()),
-            'event_version': version,
-            'event_name': event_name,
-            'event_time': str(datetime.datetime.now(pytz.timezone('Europe/Moscow'))),
-            'producer': 'quranbot-aiogram',
-            'data': event_data,
-        }
-        validate_schema(event, event_name, version)
-        settings = EnvFileSettings.from_filename('../.env')
-        ns = await nats.connect(
-            ['nats://{0}:{1}'.format(settings.NATS_HOST, settings.NATS_PORT)],
-            token=settings.NATS_TOKEN,
-        )
-        jetstream = ns.jetstream()
-        await jetstream.add_stream(name=self._queue_name)
-        logger.info('Publishing to queue: {0}, event_id: {1}, event_name: {2}'.format(
-            self._queue_name, event['event_id'], event['event_name'],
-        ))
-        await jetstream.publish(self._queue_name, json.dumps(event).encode('utf-8'))
-        logger.info('Event: id={0} name={1} to queue: {2} successful published'.format(
-            event['event_id'], event['event_name'], self._queue_name,
-        ))
-        await ns.close()

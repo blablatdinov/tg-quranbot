@@ -29,7 +29,6 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.update import Update
-from integrations.nats_integration import SinkInterface
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgHtmlParseAnswer, TgMessageAnswer
 from repository.admin_message import AdminMessage
 from repository.users.user import UserRepository
@@ -40,6 +39,7 @@ from services.start.start_answer import StartAnswer
 from services.start.user_already_active import UserAlreadyActiveSafeAnswer
 from services.start.user_already_exists import UserAlreadyExistsAnswer
 from settings import AdminChatIds, Settings
+from srv.events.sink import SinkInterface
 
 
 @attrs.define(frozen=True)
