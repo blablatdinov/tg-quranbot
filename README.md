@@ -29,7 +29,7 @@
 ## Используемые технологии:
 
  - ~~aiogram~~
- - nats
+ - rabbitmq
  - postgres
  - ~~pydantic~~
  - pytest

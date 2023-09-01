@@ -23,9 +23,11 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import TypeAlias, final
 
 import attrs
+from databases import Database
 from eljson.json import Json
 from pyeo import elegant
 
+from srv.ayats.pg_ayat import PgAyat
 from srv.events.recieved_event import ReceivedEvent
 
 JsonPathQuery: TypeAlias = str
@@ -38,12 +40,11 @@ AyatChangedEvent: TypeAlias = ReceivedEvent
 class RbmqAyatChangedEvent(AyatChangedEvent):
     """Событие изменения аята из rabbitmq."""
 
-    _json: Json
+    _pgsql: Database
 
-    def value_of(self, query: JsonPathQuery):
-        """Значение.
+    async def process(self, json: Json):
+        """Обработка события.
 
-        :param query: JsonPathQuery
-        :return: value
+        :param json: Json
         """
-        return self._json.path(query)[0]
+        await PgAyat.ayat_changed_event_ctor(json, self._pgsql).change(json)

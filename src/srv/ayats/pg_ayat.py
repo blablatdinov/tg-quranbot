@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 from databases import Database
+from eljson.json import Json
 
 from app_types.intable import AsyncIntable, ThroughAsyncIntable
 from app_types.stringable import SupportsStr
@@ -35,7 +36,6 @@ from srv.ayats.ayat_identifier import PgAyatIdentifier
 from srv.ayats.ayat_link import AyatLink
 from srv.ayats.nums_search_query import NumsSearchQuery
 from srv.ayats.validated_search_query import ValidatedSearchQuery
-from srv.events.ayat_changed_event import AyatChangedEvent
 from srv.files.file import TgFile
 from srv.files.pg_file import PgFile
 
@@ -92,15 +92,15 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         )
 
     @classmethod
-    def ayat_changed_event_ctor(cls, event: AyatChangedEvent, pgsql):
+    def ayat_changed_event_ctor(cls, event_body: Json, pgsql):
         """Конструктор для события изменения аята.
 
-        :param event: AyatChangedEvent
+        :param event_body: Json
         :param pgsql: Database
         :return: Ayat
         """
         return cls(
-            AyatIdByPublicId(event.value_of('$.data.public_id'), pgsql),
+            AyatIdByPublicId(event_body.path('$.data.public_id')[0], pgsql),
             pgsql,
         )
 
@@ -162,10 +162,10 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
             raise AyatNotFoundError('Аят с id={0} не найден'.format(ayat_id))
         return PgFile(row['file_id'], self._pgsql)
 
-    async def change(self, event: AyatChangedEvent) -> None:
+    async def change(self, event_body: Json) -> None:
         """Изменить содержимое аята.
 
-        :param event: AyatChangedEvent
+        :param event_body: Json
         """
         query = """
             UPDATE ayats
@@ -180,10 +180,10 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         """
         await self._pgsql.execute(query, {
             'ayat_id': await self._ayat_id.to_int(),
-            'day': event.value_of('$.data.day'),
-            'audio_id': event.value_of('$.data.audio_id'),
-            'ayat_number': event.value_of('$.data.ayat_number'),
-            'content': event.value_of('$.data.content'),
-            'arab_text': event.value_of('$.data.arab_text'),
-            'transliteration': event.value_of('$.data.transliteration'),
+            'day': event_body.path('$.data.day')[0],
+            'audio_id': event_body.path('$.data.audio_id')[0],
+            'ayat_number': event_body.path('$.data.ayat_number')[0],
+            'content': event_body.path('$.data.content')[0],
+            'arab_text': event_body.path('$.data.arab_text')[0],
+            'transliteration': event_body.path('$.data.transliteration')[0],
         })
