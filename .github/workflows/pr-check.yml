@@ -24,7 +24,7 @@ name: Python application
 
 on:
   pull_request:
-    branches: [ "master" ]
+    branches: [ "dev" ]
 
 permissions:
   contents: read
