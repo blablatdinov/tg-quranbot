@@ -48,7 +48,6 @@ from integrations.tg.tg_answers import (
     TgTextAnswer,
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
-from repository.admin_message import AdminMessage
 from repository.prayer_time import UserPrayers
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
@@ -60,6 +59,7 @@ from services.prayers.prayer_status import UserPrayerStatus
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
 from settings import AdminChatIds, DebugMode, Settings
+from srv.admin_messages.pg_admin_message import PgAdminMessage
 from srv.ayats.ayat_by_id_answer import AyatByIdAnswer
 from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
 from srv.ayats.favorite_ayat_page import FavoriteAyatPage
@@ -149,7 +149,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgMessageRegexAnswer(
                     '/help',
-                    HelpAnswer(empty_answer, AdminMessage('start', self._pgsql), self._redis),
+                    HelpAnswer(empty_answer, PgAdminMessage('start', self._pgsql), self._redis),
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,

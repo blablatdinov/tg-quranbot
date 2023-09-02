@@ -35,9 +35,9 @@ from exceptions.user import StartMessageNotContainReferrer, UserAlreadyExists
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
-from repository.admin_message import AdminMessageInterface
 from repository.users.user import UserRepositoryInterface
 from services.start.start_message import SmartReferrerChatId
+from srv.admin_messages.admin_message import AdminMessage
 from srv.ayats.pg_ayat import PgAyat
 
 
@@ -49,7 +49,7 @@ class StartAnswer(TgAnswer):
 
     _origin: TgAnswer
     _user_repo: UserRepositoryInterface
-    _admin_message: AdminMessageInterface
+    _admin_message: AdminMessage
     _pgsql: Database
     _admin_chat_ids: Sequence[int]
 

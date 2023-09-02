@@ -20,27 +20,20 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import final
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
 from exceptions.base_exception import InternalBotError
-
-
-@elegant
-class AdminMessageInterface(Protocol):
-    """Интерфейс административного сообщения."""
-
-    async def text(self) -> str:
-        """Чтение содержимого административного сообщения."""
+from srv.admin_messages.admin_message import AdminMessage
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class AdminMessage(AdminMessageInterface):
+class PgAdminMessage(AdminMessage):
     """Административное сообщение."""
 
     _key: str

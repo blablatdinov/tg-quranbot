@@ -20,13 +20,14 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import Protocol
 
-from pydantic import BaseModel
+from pyeo import elegant
 
 
-@final
-class CountResult(BaseModel):
-    """Результат запроса с кол-вом."""
+@elegant
+class AdminMessage(Protocol):
+    """Интерфейс административного сообщения."""
 
-    count: int
+    async def text(self) -> str:
+        """Чтение содержимого административного сообщения."""
