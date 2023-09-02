@@ -46,6 +46,7 @@ def test_by_word(tg_client, bot_name, wait_until):
     last_messages = wait_until(tg_client, 5)
 
     assert last_messages[1].message == Path('src/tests/e2e/fixtures/2_24_ayat.txt').read_text()
+    assert last_messages[0].message == 'https://umma.ru/audio/Ozvucjka-statei/Quran/audio/Husary_64/2/002024.mp3'
     assert [
         (button.text, button.data)
         for button_row in last_messages[1].get_buttons()
@@ -72,6 +73,7 @@ def test_search_pagination_forward(tg_client, bot_name, wait_until):
     last_messages = wait_until(tg_client, 7)
 
     assert last_messages[1].message == Path('src/tests/e2e/fixtures/11_83_ayat.txt').read_text()
+    assert last_messages[0].message == 'https://umma.ru/audio/Ozvucjka-statei/Quran/audio/Husary_64/11/011083.mp3'
 
 
 @pytest.mark.usefixtures('bot_process', 'clear_db')
