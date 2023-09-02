@@ -30,8 +30,8 @@ from redis.asyncio import Redis
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
-from repository.admin_message import AdminMessageInterface
 from services.reset_state_answer import ResetStateAnswer
+from srv.admin_messages.admin_message import AdminMessage
 
 
 @final
@@ -41,7 +41,7 @@ class HelpAnswer(TgAnswer):
     """Ответ на команду /help."""
 
     _origin: TgAnswer
-    _admin_message: AdminMessageInterface
+    _admin_message: AdminMessage
     _redis: Redis
 
     async def build(self, update: Update) -> list[httpx.Request]:
