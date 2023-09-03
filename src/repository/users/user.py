@@ -167,6 +167,7 @@ class UserRepository(UserRepositoryInterface):
 
         :param chat_id: int
         :param city_id: uuid.UUID
+        :raises UserNotFoundError: if user not found
         """
         query = """
             UPDATE users
@@ -174,6 +175,12 @@ class UserRepository(UserRepositoryInterface):
             WHERE chat_id = :chat_id
         """
         await self._pgsql.execute(query, {'city_id': str(city_id), CHAT_ID_LITERAL: chat_id})
+        new_city_id = await self._pgsql.fetch_val(
+            'SELECT city_id FROM users WHERE chat_id = :chat_id',
+            {'chat_id': chat_id},
+        )
+        if not new_city_id:
+            raise UserNotFoundError
 
     async def update_referrer(self, chat_id: int, referrer_id: int):
         """Обновить город пользователя.
