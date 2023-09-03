@@ -30,6 +30,7 @@ from redis.asyncio import Redis
 
 from app_types.supports_bool import SupportsBool
 from integrations.nominatim import NominatimCityName
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.coordinates import TgMessageCoordinates
 from integrations.tg.tg_answers import TgAnswerFork, TgAnswerToSender, TgMessageAnswer, TgMessageRegexAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
@@ -58,6 +59,9 @@ class SearchCityAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
+        user_repo = UserRepository(self._pgsql)
+        if not await user_repo.exists(int(TgChatId(update))):
+            await UserRepository(self._pgsql).create(int(TgChatId(update)))
         return await TgSkipNotProcessable(
             TgAnswerFork(
                 TgMessageRegexAnswer(
