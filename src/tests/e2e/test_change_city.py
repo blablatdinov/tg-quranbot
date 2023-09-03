@@ -36,10 +36,26 @@ def user_city(tg_client, db_conn, bot_name, wait_until):
 
 
 @pytest.mark.usefixtures('bot_process', 'clear_db', 'user_city')
-def test_prayer_times(tg_client, bot_name, wait_until):
+def test_prayer_times(tg_client, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, 'Поменять город')
     messages = wait_until(tg_client, 5)
     tg_client.send_message(bot_name, 'Набережные Челны')
     messages = wait_until(tg_client, 7)
 
     assert messages[0].message == 'Вам будет приходить время намаза для города Набережные Челны'
+    assert db_query_vals('SELECT city_id FROM users WHERE chat_id = 5354079702') == [
+        ('bd92bb55-10ba-4095-9a3e-c7c5737a354b',),
+    ]
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db')
+def test_not_registred(tg_client, bot_name, wait_until, db_query_vals):
+    tg_client.send_message(bot_name, 'Поменять город')
+    messages = wait_until(tg_client, 2)
+    tg_client.send_message(bot_name, 'Набережные Челны')
+    messages = wait_until(tg_client, 4)
+
+    assert messages[0].message == 'Вам будет приходить время намаза для города Набережные Челны'
+    assert db_query_vals('SELECT city_id FROM users WHERE chat_id = 5354079702') == [
+        ('bd92bb55-10ba-4095-9a3e-c7c5737a354b',),
+    ]
