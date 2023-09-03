@@ -30,7 +30,6 @@ from redis.asyncio import Redis
 
 from app_types.supports_bool import SupportsBool
 from integrations.nominatim import NominatimCityName
-from integrations.tg.chat_id import TgChatId
 from integrations.tg.coordinates import TgMessageCoordinates
 from integrations.tg.tg_answers import TgAnswerFork, TgAnswerToSender, TgMessageAnswer, TgMessageRegexAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
@@ -39,6 +38,7 @@ from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from repository.users.user import UserRepository
 from services.city.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
 from services.city.search import SearchCityByCoordinates, SearchCityByName
+from srv.prayers.user_not_registered_safe_answer import UserNotRegisteredSafeAnswer
 
 
 @final
@@ -59,35 +59,35 @@ class SearchCityAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
-        user_repo = UserRepository(self._pgsql)
-        if not await user_repo.exists(int(TgChatId(update))):
-            await UserRepository(self._pgsql).create(int(TgChatId(update)))
-        return await TgSkipNotProcessable(
-            TgAnswerFork(
-                TgMessageRegexAnswer(
-                    '.+',
-                    CityNotSupportedAnswer(
-                        ChangeCityAnswer(
-                            answer_to_sender,
-                            SearchCityByName(self._pgsql),
-                            self._redis,
-                            UserRepository(self._pgsql),
-                        ),
-                        answer_to_sender,
-                    ),
-                ),
-                TgLocationAnswer(
-                    CityNotSupportedAnswer(
-                        ChangeCityAnswer(
-                            answer_to_sender,
-                            SearchCityByCoordinates(
+        return await UserNotRegisteredSafeAnswer(
+            self._pgsql,
+            TgSkipNotProcessable(
+                TgAnswerFork(
+                    TgMessageRegexAnswer(
+                        '.+',
+                        CityNotSupportedAnswer(
+                            ChangeCityAnswer(
+                                answer_to_sender,
                                 SearchCityByName(self._pgsql),
-                                NominatimCityName(TgMessageCoordinates(update)),
+                                self._redis,
+                                UserRepository(self._pgsql),
                             ),
-                            self._redis,
-                            UserRepository(self._pgsql),
+                            answer_to_sender,
                         ),
-                        answer_to_sender,
+                    ),
+                    TgLocationAnswer(
+                        CityNotSupportedAnswer(
+                            ChangeCityAnswer(
+                                answer_to_sender,
+                                SearchCityByCoordinates(
+                                    SearchCityByName(self._pgsql),
+                                    NominatimCityName(TgMessageCoordinates(update)),
+                                ),
+                                self._redis,
+                                UserRepository(self._pgsql),
+                            ),
+                            answer_to_sender,
+                        ),
                     ),
                 ),
             ),
