@@ -29,6 +29,7 @@ from redis.asyncio import Redis
 from app_types.update import Update
 from handlers.favorites_answer import FavoriteAyatsAnswer
 from handlers.full_start_answer import FullStartAnswer
+from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.podcast_answer import PodcastAnswer
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
@@ -63,8 +64,6 @@ from srv.admin_messages.pg_admin_message import PgAdminMessage
 from srv.ayats.ayat_by_id_answer import AyatByIdAnswer
 from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
 from srv.ayats.favorite_ayat_page import FavoriteAyatPage
-from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer
-from srv.ayats.search_ayat_by_text_callback_answer import SearchAyatByTextCallbackAnswer
 from srv.events.sink import SinkInterface
 from srv.podcasts.podcast import RandomPodcast
 
@@ -175,12 +174,7 @@ class QuranbotAnswer(TgAnswer):
                     UserStep.ayat_search.value,
                     TgCallbackQueryRegexAnswer(
                         'getSAyat',
-                        HighlightedSearchAnswer(
-                            SearchAyatByTextCallbackAnswer(
-                                DebugMode(self._settings), empty_answer, self._redis, self._pgsql,
-                            ),
-                            self._redis,
-                        ),
+                        PaginateBySearchAyat(empty_answer, self._redis, self._pgsql, self._settings),
                     ),
                     self._redis,
                 ),
