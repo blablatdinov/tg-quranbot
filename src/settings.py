@@ -88,10 +88,12 @@ class EnvFileSettings(Settings):
 
         :param attr_name: str
         :return: str
-        :raises ValueError: имя не найдено
         """
         if attr_name == 'BASE_DIR':
             return BASE_DIR
+        return self._search_in_file(attr_name)
+
+    def _search_in_file(self, attr_name) -> str:
         for line in self._path.read_text().strip().split('\n'):
             if '=' not in line:
                 continue
