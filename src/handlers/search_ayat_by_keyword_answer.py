@@ -27,7 +27,9 @@ from redis.asyncio import Redis
 
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgMessageRegexAnswer
+from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
 from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer
 from srv.ayats.search_ayat_by_text import SearchAyatByTextAnswer
@@ -62,6 +64,9 @@ class SearchAyatByKeywordAnswer(TgAnswer):
                     ),
                     self._redis,
                 ),
-                self._redis,
+                AyatTextSearchQuery.for_reading_cs(
+                    self._redis,
+                    int(TgChatId(update)),
+                ),
             ),
         ).build(update)

@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
+import attrs
 import httpx
 from pyeo import elegant
 
@@ -40,14 +41,20 @@ class TgAnswer(Protocol):
 
 
 @final
+@attrs.define(frozen=True)
 @elegant
 class FkAnswer(TgAnswer):
     """Фейковый ответ."""
+
+    _url: str | None = 'https://some.domain'
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
         :param update: Update
         :return: list[httpx.Request]
+        :raises ValueError: if self._url is None
         """
-        return [httpx.Request('GET', url='https://some.domain')]
+        if self._url is None:
+            raise ValueError
+        return [httpx.Request('GET', self._url)]

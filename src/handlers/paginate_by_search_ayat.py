@@ -1,17 +1,14 @@
 """The MIT License (MIT).
 
 Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -24,46 +21,39 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
+from redis.asyncio import Redis
 
 from app_types.update import Update
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer
-from srv.ayats.text_search_query import TextSearchQuery
+from settings import DebugMode, Settings
+from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
+from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer
+from srv.ayats.search_ayat_by_text_callback_answer import SearchAyatByTextCallbackAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class HighlightedSearchAnswer(TgAnswer):
-    """Ответ с подсвеченным поисковым текстом."""
+class PaginateBySearchAyat(TgAnswer):
+    """Пагинация по поиску аятов."""
 
-    _origin: TgAnswer
-    _search_query: TextSearchQuery
+    _empty_answer: TgAnswer
+    _redis: Redis
+    _pgsql: Database
+    _settings: Settings
 
     async def build(self, update: Update) -> list[httpx.Request]:
-        """Собрать ответ.
+        """Сборка ответа.
 
         :param update: Update
         :return: list[httpx.Request]
         """
-        new_requests = []
-        requests = await self._origin.build(update)
-        search_query = await self._search_query.read()
-        for request in requests:
-            try:
-                text = request.url.params['text']
-            except KeyError:
-                new_requests.append(request)
-                continue
-            if search_query in text:
-                new_requests.append(httpx.Request(
-                    method=request.method,
-                    url=request.url.copy_set_param(
-                        'text',
-                        text.replace('+', ' ') .replace(search_query, '<b>{0}</b>'.format(search_query)),
-                    ),
-                    headers=request.headers,
-                ))
-            else:
-                new_requests.append(request)
-        return new_requests
+        return await HighlightedSearchAnswer(
+            SearchAyatByTextCallbackAnswer(
+                DebugMode(self._settings), self._empty_answer, self._redis, self._pgsql,
+            ),
+            AyatTextSearchQuery.for_reading_cs(self._redis, int(TgChatId(update))),
+        ).build(update)
