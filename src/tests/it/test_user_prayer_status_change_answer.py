@@ -20,25 +20,23 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import datetime
 import json
 
 import pytest
 
+from app_types.stringable import FkAsyncStr
 from app_types.update import FkUpdate
+from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
 from integrations.tg.tg_answers import FkAnswer
+from srv.prayers.prayers_text import PrayersText
 
 
 @pytest.fixture()
-async def generated_prayers(pgsql):
-    query = """
-        INSERT INTO cities (city_id, name) VALUES ('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')
-    """
-    await pgsql.execute(query)
-    query = """
-        INSERT INTO users (chat_id, city_id) VALUES (905, '080fd3f4-678e-4a1c-97d2-4460700fe7ac')
-    """
-    await pgsql.execute(query)
+async def prayers(pgsql):
+    await pgsql.execute("INSERT INTO cities (city_id, name) VALUES ('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')")
+    await pgsql.execute("INSERT INTO users (chat_id, city_id) VALUES (905, '080fd3f4-678e-4a1c-97d2-4460700fe7ac')")
     query = """
         INSERT INTO prayers (prayer_id, name, "time", city_id, day) VALUES
         (1, 'fajr', '05:43:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '2023-12-19'),
@@ -49,6 +47,10 @@ async def generated_prayers(pgsql):
         (6, 'isha''a', '17:04:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '2023-12-19')
     """
     await pgsql.execute(query)
+
+
+@pytest.fixture()
+async def generated_prayers(pgsql, prayers):
     query = """
         INSERT INTO prayers_at_user (user_id, prayer_id, is_read) VALUES
         (905, 1, false),
@@ -59,6 +61,47 @@ async def generated_prayers(pgsql):
         (905, 6, false)
     """
     await pgsql.execute(query)
+
+
+async def test_new_prayer_times(pgsql, rds, prayers, freezer):
+    freezer.move_to('2023-12-19')
+    got = await PrayerTimeAnswer.new_prayers_ctor(pgsql, FkAnswer(), [123]).build(
+        FkUpdate('{"callback_query": {"data": "mark_readed(3)"}, "message": {"message_id": 17}, "chat": {"id": 905}}'),
+    )
+
+    assert json.loads(got[0].url.params.get('reply_markup')) == {
+        'inline_keyboard': [
+            [
+                {'callback_data': 'mark_readed(1)', 'text': '❌'},
+                {'callback_data': 'mark_readed(2)', 'text': '❌'},
+                {'callback_data': 'mark_readed(3)', 'text': '❌'},
+                {'callback_data': 'mark_readed(4)', 'text': '❌'},
+                {'callback_data': 'mark_readed(5)', 'text': '❌'},
+                {'callback_data': 'mark_readed(6)', 'text': '❌'},
+            ],
+        ],
+    }
+    assert got[0].url.path == '/sendMessage'
+
+
+async def test_today(pgsql, rds, generated_prayers, freezer):
+    freezer.move_to('2023-12-19')
+    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql).build(
+        FkUpdate('{"callback_query": {"data": "mark_readed(3)"}, "message": {"message_id": 17}, "chat": {"id": 905}}'),
+    )
+
+    assert json.loads(got[0].url.params.get('reply_markup')) == {
+        'inline_keyboard': [
+            [
+                {'callback_data': 'mark_readed(1)', 'text': '❌'},
+                {'callback_data': 'mark_not_readed(3)', 'text': '✅'},
+                {'callback_data': 'mark_readed(4)', 'text': '❌'},
+                {'callback_data': 'mark_readed(5)', 'text': '❌'},
+                {'callback_data': 'mark_readed(6)', 'text': '❌'},
+            ],
+        ],
+    }
+    assert got[0].url.path == '/editMessageReplyMarkup'
 
 
 async def test_before(pgsql, rds, generated_prayers, freezer):
@@ -79,3 +122,21 @@ async def test_before(pgsql, rds, generated_prayers, freezer):
         ],
     }
     assert got[0].url.path == '/editMessageReplyMarkup'
+
+
+async def test_prayers_text(pgsql, generated_prayers):
+    got = await PrayersText(
+        pgsql,
+        datetime.date(2023, 12, 19),
+        FkAsyncStr('080fd3f4-678e-4a1c-97d2-4460700fe7ac'),
+    ).to_str()
+
+    assert got == '\n'.join([
+        'Время намаза для г. Kazan (19.12.2023)\n',
+        'Иртәнге: 13:21',
+        'Восход: 12:00',
+        'Өйлә: 05:43',
+        'Икенде: 17:04',
+        'Ахшам: 15:07',
+        'Ястү: 08:02',
+    ])

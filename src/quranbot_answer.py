@@ -107,7 +107,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',
-                    PrayerTimeAnswer(self._pgsql, self._redis, empty_answer, AdminChatIds(self._settings)),
+                    PrayerTimeAnswer.new_prayers_ctor(self._pgsql, empty_answer, AdminChatIds(self._settings)),
                 ),
                 TgMessageRegexAnswer(
                     'Избранное',
