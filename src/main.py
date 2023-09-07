@@ -38,7 +38,7 @@ from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer
 from quranbot_answer import QuranbotAnswer
 from repository.users.users import UsersRepository
 from schedule_app import CheckUsersStatus
-from services.cli_app import CliApp, CommandCliApp, CoveredApp, ForkCliApp
+from services.cli_app import CliApp, CommandCliApp, ForkCliApp
 from services.logged_answer import LoggedAnswer
 from settings import BASE_DIR, CachedSettings, EnvFileSettings
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
@@ -89,7 +89,7 @@ def main(sys_args) -> None:
     ForkCliApp(
         CommandCliApp(
             'run_polling',
-            CoveredApp(quranbot_polling_app),
+            quranbot_polling_app,
         ),
         CommandCliApp(
             'check_user_status',
