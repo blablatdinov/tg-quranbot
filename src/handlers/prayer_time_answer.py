@@ -40,6 +40,7 @@ from integrations.tg.tg_answers import (
     TgTextAnswer,
 )
 from services.user_prayer_keyboard import UserPrayersKeyboard
+from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 from srv.prayers.prayers_text import PrayersText, UserCityId
 
 
@@ -57,35 +58,38 @@ class PrayerTimeAnswer(TgAnswer):
     _pgsql: Database
     _origin: TgAnswer
     _admin_chat_ids: Sequence[int]
+    _empty_answer: TgAnswer
 
     @classmethod
-    def new_prayers_ctor(cls, pgsql: Database, origin: TgAnswer, admin_chat_ids: Sequence[int]) -> TgAnswer:
+    def new_prayers_ctor(cls, pgsql: Database, empty_answer: TgAnswer, admin_chat_ids: Sequence[int]) -> TgAnswer:
         """Конструктор для генерации времени намаза.
 
         :param pgsql: Database
-        :param origin: TgAnswer
+        :param empty_answer: TgAnswer
         :param admin_chat_ids: Sequence[int]
         :return: TgAnswer
         """
         return cls(
             pgsql,
-            TgAnswerToSender(TgMessageAnswer(origin)),
+            TgAnswerToSender(TgMessageAnswer(empty_answer)),
             admin_chat_ids,
+            empty_answer,
         )
 
     @classmethod
-    def edited_markup_ctor(cls, pgsql: Database, origin: TgAnswer, admin_chat_ids: Sequence[int]) -> TgAnswer:
+    def edited_markup_ctor(cls, pgsql: Database, empty_answer: TgAnswer, admin_chat_ids: Sequence[int]) -> TgAnswer:
         """Конструктор для времен намаза при смене статуса прочитанности.
 
         :param pgsql: Database
-        :param origin: TgAnswer
+        :param empty_answer: TgAnswer
         :param admin_chat_ids: Sequence[int]
         :return: TgAnswer
         """
         return cls(
             pgsql,
-            TgAnswerToSender(TgKeyboardEditAnswer(origin)),
+            TgAnswerToSender(TgKeyboardEditAnswer(empty_answer)),
             admin_chat_ids,
+            empty_answer,
         )
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -94,18 +98,22 @@ class PrayerTimeAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        return await TgAnswerMarkup(
-            TgTextAnswer(
-                self._origin,
-                await PrayersText(
+        return await PrayersExpiredAnswer(
+            TgAnswerMarkup(
+                TgTextAnswer(
+                    self._origin,
+                    await PrayersText(
+                        self._pgsql,
+                        datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
+                        UserCityId(self._pgsql, TgChatId(update)),
+                    ).to_str(),
+                ),
+                UserPrayersKeyboard(
                     self._pgsql,
                     datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
-                    UserCityId(self._pgsql, TgChatId(update)),
-                ).to_str(),
+                    TgChatId(update),
+                ),
             ),
-            UserPrayersKeyboard(
-                self._pgsql,
-                datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
-                TgChatId(update),
-            ),
+            self._empty_answer,
+            self._admin_chat_ids,
         ).build(update)

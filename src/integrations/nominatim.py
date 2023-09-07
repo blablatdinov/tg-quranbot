@@ -24,8 +24,10 @@ from typing import Protocol, final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 
+from app_types.stringable import AsyncSupportsStr
 from integrations.tg.coordinates import Coordinates
 
 
@@ -35,6 +37,22 @@ class CityName(Protocol):
 
     async def search(self) -> str:
         """Поиск по координатам."""
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class CityNameById(CityName):
+    """Имя города по id."""
+
+    _pgsql: Database
+    _city_id: AsyncSupportsStr
+
+    async def search(self) -> str:
+        """Поиск."""
+        return await self._pgsql.fetch_val('SELECT name FROM cities WHERE city_id = :city_id', {
+            'city_id': await self._city_id.to_str(),
+        })
 
 
 @final

@@ -28,7 +28,8 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.stringable import AsyncSupportsStr
-from exceptions.base_exception import BaseAppError
+from exceptions.prayer_exceptions import PrayersNotFoundError
+from integrations.nominatim import CityNameById
 from integrations.tg.chat_id import TgChatId
 
 TIME_LITERAL: Final = 'time'
@@ -71,7 +72,7 @@ class PrayersText(AsyncSupportsStr):
         """Строковое представление.
 
         :return: str
-        :raises BaseAppError: намазы не найдены
+        :raises PrayersNotFoundError: намазы не найдены
         """
         query = """
             SELECT
@@ -89,7 +90,7 @@ class PrayersText(AsyncSupportsStr):
             'city_id': await self._city_id.to_str(),
         })
         if not rows:
-            raise BaseAppError
+            raise PrayersNotFoundError(await CityNameById(self._pgsql, self._city_id).search(), self._date)
         template = '\n'.join([
             'Время намаза для г. {city_name} ({date})\n',
             'Иртәнге: {fajr_prayer_time}',

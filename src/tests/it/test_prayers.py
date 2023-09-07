@@ -30,7 +30,7 @@ from integrations.tg.tg_answers import FkAnswer
 async def test_not_found_prayer(pgsql, rds, freezer):
     freezer.move_to('2023-08-30')
     got = await PrayerTimeAnswer(
-        pgsql, FkAnswer(), [321],
+        pgsql, FkAnswer(), [321], FkAnswer(),
     ).build(FkUpdate('{"chat":{"id":123}}'))
 
     assert len(got) == 2
