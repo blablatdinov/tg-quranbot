@@ -53,13 +53,5 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
         return await PrayerTimeAnswer.edited_markup_ctor(
             self._pgsql,
             self._empty_answer,
-            # TgMessageIdAnswer(
-            #     TgAnswerToSender(
-            #         TgKeyboardEditAnswer(
-            #             self._empty_answer,
-            #         ),
-            #     ),
-            #     int(MessageId(update)),
-            # ),
             [123],
         ).build(update)

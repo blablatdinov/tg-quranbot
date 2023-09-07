@@ -27,6 +27,7 @@ from typing import final
 
 import attrs
 from databases import Database
+from databases.interfaces import Record
 from pyeo import elegant
 
 from app_types.update import Update
@@ -79,7 +80,6 @@ class UserPrayersKeyboard(KeyboardInterface):
         :param update: Update
         :return: str
         """
-        print('!!!', self._date, type(self._date))
         prayers = await self._exists_prayers()
         if not prayers:
             prayer_group_id = str(uuid.uuid4())
@@ -106,21 +106,7 @@ class UserPrayersKeyboard(KeyboardInterface):
                 'date': self._date,
             })
             prayers = await self._exists_prayers()
-        print('!!!', [
-            dict(row._mapping)
-            for row in await self._pgsql.fetch_all("""
-                SELECT
-                    p.day
-                FROM prayers AS p
-                INNER JOIN cities AS c ON p.city_id = c.city_id
-                WHERE p.city_id = '080fd3f4-678e-4a1c-97d2-4460700fe7ac' AND p.day = :date
-                ORDER BY p.name
-            """, {'date': self._date})
-        ])
-        print('!!!', [
-            dict(row._mapping)
-            for row in await self._pgsql.fetch_all('SELECT * FROM prayers_at_user')
-        ])
+        print(len(prayers))
         return json.dumps({
             'inline_keyboard': [[
                 {
@@ -133,7 +119,7 @@ class UserPrayersKeyboard(KeyboardInterface):
             ]],
         })
 
-    async def _exists_prayers(self):
+    async def _exists_prayers(self) -> list[Record]:
         select_query = """
             SELECT
                 pau.prayer_at_user_id,
@@ -143,8 +129,7 @@ class UserPrayersKeyboard(KeyboardInterface):
             WHERE p.day = :date AND pau.user_id = :chat_id AND p.name <> 'sunrise'
             ORDER BY pau.prayer_at_user_id
         """
-        prayers = await self._pgsql.fetch_all(select_query, {
+        return await self._pgsql.fetch_all(select_query, {
             'date': self._date,
             'chat_id': int(self._chat_id),
         })
-        return prayers

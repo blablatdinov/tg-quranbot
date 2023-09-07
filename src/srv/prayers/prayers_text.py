@@ -21,8 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import uuid
-from typing import final
+from typing import Final, final
 
 import attrs
 from databases import Database
@@ -32,16 +31,23 @@ from app_types.stringable import AsyncSupportsStr
 from exceptions.base_exception import BaseAppError
 from integrations.tg.chat_id import TgChatId
 
+TIME_LITERAL: Final = 'time'
+
 
 @final
 @attrs.define(frozen=True)
 @elegant
 class UserCityId(AsyncSupportsStr):
+    """Идентификатор города."""
 
     _pgsql: Database
     _chat_id: TgChatId
 
     async def to_str(self) -> str:
+        """Строковое представление.
+
+        :return: str
+        """
         query = """
             SELECT c.city_id
             FROM cities AS c
@@ -55,13 +61,18 @@ class UserCityId(AsyncSupportsStr):
 @attrs.define(frozen=True)
 @elegant
 class PrayersText(AsyncSupportsStr):
+    """Текст сообщения с намазами."""
 
     _pgsql: Database
     _date: datetime.date
     _city_id: AsyncSupportsStr
 
     async def to_str(self) -> str:
-        print(self._date)
+        """Строковое представление.
+
+        :return: str
+        :raises BaseAppError: намазы не найдены
+        """
         query = """
             SELECT
                 c.name AS city_name,
@@ -70,7 +81,7 @@ class PrayersText(AsyncSupportsStr):
                 p.name
             FROM prayers AS p
             INNER JOIN cities AS c ON p.city_id = c.city_id
-            WHERE p.day = :date AND c.city_id =:city_id
+            WHERE p.day = :date AND c.city_id = :city_id
             ORDER BY p.name
         """
         rows = await self._pgsql.fetch_all(query, {
@@ -92,10 +103,10 @@ class PrayersText(AsyncSupportsStr):
         return template.format(
             city_name=rows[0]['city_name'],
             date=rows[0]['day'].strftime('%d.%m.%Y'),
-            fajr_prayer_time=rows[0]['time'].strftime(time_format),
-            sunrise_prayer_time=rows[1]['time'].strftime(time_format),
-            dhuhr_prayer_time=rows[2]['time'].strftime(time_format),
-            asr_prayer_time=rows[3]['time'].strftime(time_format),
-            magrib_prayer_time=rows[4]['time'].strftime(time_format),
-            ishaa_prayer_time=rows[5]['time'].strftime(time_format),
+            fajr_prayer_time=rows[0][TIME_LITERAL].strftime(time_format),
+            sunrise_prayer_time=rows[1][TIME_LITERAL].strftime(time_format),
+            dhuhr_prayer_time=rows[2][TIME_LITERAL].strftime(time_format),
+            asr_prayer_time=rows[3][TIME_LITERAL].strftime(time_format),
+            magrib_prayer_time=rows[4][TIME_LITERAL].strftime(time_format),
+            ishaa_prayer_time=rows[5][TIME_LITERAL].strftime(time_format),
         )

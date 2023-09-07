@@ -26,12 +26,12 @@ from typing import final
 import attrs
 import httpx
 import pytz
+from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgTextAnswer
-from repository.prayer_time import PrayersWithoutSunrise
 from repository.user_prayers_interface import UserPrayersInterface
 from services.user_prayer_keyboard import UserPrayersKeyboard
 
@@ -42,6 +42,7 @@ from services.user_prayer_keyboard import UserPrayersKeyboard
 class PrayerForUserAnswer(TgAnswer):
     """Ответ пользователю с временами намаза."""
 
+    _pgsql: Database
     _origin: TgAnswer
     _user_prayers: UserPrayersInterface
 
@@ -80,7 +81,8 @@ class PrayerForUserAnswer(TgAnswer):
                 ),
             ),
             UserPrayersKeyboard(
-                PrayersWithoutSunrise(self._user_prayers),
+                self._pgsql,
                 datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
+                TgChatId(update),
             ),
         ).build(update)

@@ -35,7 +35,7 @@ from srv.prayers.prayers_text import PrayersText
 
 @pytest.fixture()
 async def prayers(pgsql):
-    await pgsql.execute("INSERT INTO cities (city_id, name) VALUES ('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')")
+    await pgsql.execute(f"INSERT INTO cities (city_id, name) VALUES ('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')")
     await pgsql.execute("INSERT INTO users (chat_id, city_id) VALUES (905, '080fd3f4-678e-4a1c-97d2-4460700fe7ac')")
     query = """
         INSERT INTO prayers (prayer_id, name, "time", city_id, day) VALUES
@@ -47,6 +47,11 @@ async def prayers(pgsql):
         (6, 'isha''a', '17:04:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '2023-12-19')
     """
     await pgsql.execute(query)
+    yield
+    await pgsql.execute('DELETE FROM prayers_at_user')
+    await pgsql.execute('DELETE FROM users')
+    await pgsql.execute('DELETE FROM prayers')
+    await pgsql.execute('DELETE FROM cities')
 
 
 @pytest.fixture()
@@ -61,9 +66,14 @@ async def generated_prayers(pgsql, prayers):
         (905, 6, false)
     """
     await pgsql.execute(query)
+    yield
+    await pgsql.execute('DELETE FROM prayers_at_user')
+    await pgsql.execute('DELETE FROM users')
+    await pgsql.execute('DELETE FROM prayers')
+    await pgsql.execute('DELETE FROM cities')
 
 
-async def test_new_prayer_times(pgsql, rds, prayers, freezer):
+async def test_new_prayer_times(clear_db, pgsql, rds, prayers, freezer):
     freezer.move_to('2023-12-19')
     got = await PrayerTimeAnswer.new_prayers_ctor(pgsql, FkAnswer(), [123]).build(
         FkUpdate('{"callback_query": {"data": "mark_readed(3)"}, "message": {"message_id": 17}, "chat": {"id": 905}}'),
@@ -77,7 +87,6 @@ async def test_new_prayer_times(pgsql, rds, prayers, freezer):
                 {'callback_data': 'mark_readed(3)', 'text': '❌'},
                 {'callback_data': 'mark_readed(4)', 'text': '❌'},
                 {'callback_data': 'mark_readed(5)', 'text': '❌'},
-                {'callback_data': 'mark_readed(6)', 'text': '❌'},
             ],
         ],
     }
@@ -104,7 +113,7 @@ async def test_today(pgsql, rds, generated_prayers, freezer):
     assert got[0].url.path == '/editMessageReplyMarkup'
 
 
-async def test_before(pgsql, rds, generated_prayers, freezer):
+async def test_before(clear_db, pgsql, rds, generated_prayers, freezer):
     freezer.move_to('2023-09-07')
     got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql).build(
         FkUpdate('{"callback_query": {"data": "mark_readed(3)"}, "message": {"message_id": 17}, "chat": {"id": 905}}'),
@@ -124,7 +133,7 @@ async def test_before(pgsql, rds, generated_prayers, freezer):
     assert got[0].url.path == '/editMessageReplyMarkup'
 
 
-async def test_prayers_text(pgsql, generated_prayers):
+async def test_prayers_text(clear_db, pgsql, generated_prayers):
     got = await PrayersText(
         pgsql,
         datetime.date(2023, 12, 19),

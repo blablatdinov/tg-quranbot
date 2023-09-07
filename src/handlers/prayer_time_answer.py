@@ -107,5 +107,5 @@ class PrayerTimeAnswer(TgAnswer):
                 self._pgsql,
                 datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
                 TgChatId(update),
-            )
+            ),
         ).build(update)
