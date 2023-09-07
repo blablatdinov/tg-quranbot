@@ -30,12 +30,12 @@ from pyeo import elegant
 from app_types.intable import ThroughIntable
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.message_id import MessageId
+from integrations.tg.tg_answers import TgAnswerToSender, TgKeyboardEditAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.message_id_answer import TgMessageIdAnswer
-from repository.prayer_time import PrayersWithoutSunrise
-from repository.user_prayers_interface import UserPrayersInterface
-from services.prayers.prayer_status import PrayerStatus, UserPrayerStatusInterface
+from repository.prayer_time import PrayersWithoutSunrise, UserPrayers
+from services.prayers.prayer_status import PrayerStatus, UserPrayerStatus
 from services.prayers.user_prayer_date import UserPrayerDate
 from services.user_prayer_keyboard import UserPrayersKeyboard
 
@@ -46,9 +46,7 @@ from services.user_prayer_keyboard import UserPrayersKeyboard
 class UserPrayerStatusChangeAnswer(TgAnswer):
     """Ответ с изменением статуса прочитанности намаза."""
 
-    _origin: TgAnswer
-    _prayer_status: UserPrayerStatusInterface
-    _user_prayers: UserPrayersInterface
+    _empty_answer: TgAnswer
     _pgsql: Database
 
     async def build(self, update) -> list[httpx.Request]:
@@ -58,14 +56,16 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         prayer_status = PrayerStatus(str(CallbackQueryData(update)))
-        await self._prayer_status.change(prayer_status)
+        await UserPrayerStatus(self._pgsql).change(prayer_status)
         return await TgAnswerMarkup(
             TgMessageIdAnswer(
-                self._origin,
+                TgAnswerToSender(
+                    TgKeyboardEditAnswer(self._empty_answer),
+                ),
                 int(MessageId(update)),
             ),
             UserPrayersKeyboard(
-                PrayersWithoutSunrise(self._user_prayers),
+                PrayersWithoutSunrise(UserPrayers(self._pgsql)),
                 await UserPrayerDate(
                     ThroughIntable(prayer_status.user_prayer_id()),
                     self._pgsql,

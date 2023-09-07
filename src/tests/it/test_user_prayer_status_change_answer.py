@@ -27,8 +27,6 @@ import pytest
 from app_types.update import FkUpdate
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
 from integrations.tg.tg_answers import FkAnswer
-from repository.prayer_time import UserPrayers
-from services.prayers.prayer_status import UserPrayerStatus
 
 
 @pytest.fixture()
@@ -65,12 +63,7 @@ async def generated_prayers(pgsql):
 
 async def test_before(pgsql, rds, generated_prayers, freezer):
     freezer.move_to('2023-09-07')
-    got = await UserPrayerStatusChangeAnswer(
-        FkAnswer(),
-        UserPrayerStatus(pgsql),
-        UserPrayers(pgsql),
-        pgsql,
-    ).build(
+    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql).build(
         FkUpdate('{"callback_query": {"data": "mark_readed(3)"}, "message": {"message_id": 17}, "chat": {"id": 905}}'),
     )
 
@@ -85,4 +78,4 @@ async def test_before(pgsql, rds, generated_prayers, freezer):
             ],
         ],
     }
-    assert got[0].url.path == '/'
+    assert got[0].url.path == '/editMessageReplyMarkup'
