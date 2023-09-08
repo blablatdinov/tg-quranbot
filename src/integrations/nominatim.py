@@ -49,7 +49,10 @@ class CityNameById(CityName):
     _city_id: AsyncSupportsStr
 
     async def search(self) -> str:
-        """Поиск."""
+        """Поиск.
+
+        :return: str
+        """
         return await self._pgsql.fetch_val('SELECT name FROM cities WHERE city_id = :city_id', {
             'city_id': await self._city_id.to_str(),
         })

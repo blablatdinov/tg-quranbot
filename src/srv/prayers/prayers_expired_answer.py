@@ -58,19 +58,19 @@ class PrayersExpiredAnswer(TgAnswer):
             return await self._origin.build(update)
         except PrayersNotFoundError as err:
             return await TgAnswerList(
-                TgTextAnswer(
+                TgTextAnswer.str_ctor(
                     TgAnswerToSender(TgMessageAnswer(self._empty_answer)),
                     'Время намаза на {0} для города {1} не найдено'.format(
-                        err.date.strftime('%d.%m.%Y'), err.city_name,
+                        err.date.strftime('%d.%m.%Y'), err.city_name or '',
                     ),
                 ),
-                TgTextAnswer(
+                TgTextAnswer.str_ctor(
                     TgChatIdAnswer(
                         TgMessageAnswer(self._empty_answer),
                         self._admin_chat_ids[0],
                     ),
                     'Время намаза на {0} для города {1} не найдено'.format(
-                        err.date.strftime('%d.%m.%Y'), err.city_name,
+                        err.date.strftime('%d.%m.%Y'), err.city_name or '',
                     ),
                 ),
             ).build(update)

@@ -65,7 +65,7 @@ class AyatByIdAnswer(TgAnswer):
                     TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
                     await result_ayat.tg_file_id(),
                 ),
-                TgTextAnswer(
+                TgTextAnswer.str_ctor(
                     TgHtmlMessageAnswerToSender(self._empty_answer),
                     await result_ayat.file_link(),
                 ),

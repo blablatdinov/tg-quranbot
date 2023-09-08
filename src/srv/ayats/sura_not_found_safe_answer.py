@@ -49,7 +49,7 @@ class SuraNotFoundSafeAnswer(TgAnswer):
         try:
             return await self._origin.build(update)
         except SuraNotFoundError:
-            return await TgTextAnswer(
+            return await TgTextAnswer.str_ctor(
                 self._error_answer,
                 'Сура не найдена',
             ).build(update)

@@ -120,7 +120,7 @@ class QuranbotAnswer(TgAnswer):
                 TgMessageRegexAnswer(
                     'Найти аят',
                     ChangeStateAnswer(
-                        TgTextAnswer(TgHtmlMessageAnswerToSender(empty_answer), 'Введите слово для поиска:'),
+                        TgTextAnswer.str_ctor(TgHtmlMessageAnswerToSender(empty_answer), 'Введите слово для поиска:'),
                         self._redis,
                         UserStep.ayat_search,
                     ),
@@ -128,7 +128,7 @@ class QuranbotAnswer(TgAnswer):
                 TgMessageRegexAnswer(
                     'Поменять город',
                     InviteSetCityAnswer(
-                        TgTextAnswer(
+                        TgTextAnswer.str_ctor(
                             TgHtmlMessageAnswerToSender(empty_answer),
                             'Отправьте местоположение или воспользуйтесь поиском',
                         ),

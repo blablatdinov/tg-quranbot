@@ -67,7 +67,7 @@ class PrayerForUserAnswer(TgAnswer):
             'Ястү: {ishaa_prayer_time}',
         ])
         return await TgAnswerMarkup(
-            TgTextAnswer(
+            TgTextAnswer.str_ctor(
                 self._origin,
                 template.format(
                     city_name=prayers[0].city,

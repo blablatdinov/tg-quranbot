@@ -70,7 +70,7 @@ class UserAlreadyExistsAnswer(TgAnswer):
             'User.Reactivated',
             1,
         )
-        return await TgTextAnswer(
+        return await TgTextAnswer.str_ctor(
             self._sender_answer,
             'Рады видеть вас снова, вы продолжите с дня {0}'.format(user.day),
         ).build(update)

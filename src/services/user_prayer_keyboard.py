@@ -106,7 +106,6 @@ class UserPrayersKeyboard(KeyboardInterface):
                 'date': self._date,
             })
             prayers = await self._exists_prayers()
-        print(len(prayers))
         return json.dumps({
             'inline_keyboard': [[
                 {

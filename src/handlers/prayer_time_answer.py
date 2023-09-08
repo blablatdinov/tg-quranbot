@@ -102,11 +102,11 @@ class PrayerTimeAnswer(TgAnswer):
             TgAnswerMarkup(
                 TgTextAnswer(
                     self._origin,
-                    await PrayersText(
+                    PrayersText(
                         self._pgsql,
                         datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
                         UserCityId(self._pgsql, TgChatId(update)),
-                    ).to_str(),
+                    ),
                 ),
                 UserPrayersKeyboard(
                     self._pgsql,

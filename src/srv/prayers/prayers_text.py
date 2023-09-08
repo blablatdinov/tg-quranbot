@@ -90,7 +90,10 @@ class PrayersText(AsyncSupportsStr):
             'city_id': await self._city_id.to_str(),
         })
         if not rows:
-            raise PrayersNotFoundError(await CityNameById(self._pgsql, self._city_id).search(), self._date)
+            raise PrayersNotFoundError(
+                await CityNameById(self._pgsql, self._city_id).search(),
+                self._date,
+            )
         template = '\n'.join([
             'Время намаза для г. {city_name} ({date})\n',
             'Иртәнге: {fajr_prayer_time}',

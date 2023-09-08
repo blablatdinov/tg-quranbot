@@ -49,7 +49,7 @@ class UserAlreadyActiveSafeAnswer(TgAnswer):
         try:
             return await self._origin.build(update)
         except UserAlreadyActive:
-            return await TgTextAnswer(
+            return await TgTextAnswer.str_ctor(
                 self._sender_answer,
                 'Вы уже зарегистрированы!',
             ).build(update)

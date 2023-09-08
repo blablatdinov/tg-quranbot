@@ -67,19 +67,19 @@ class StartAnswer(TgAnswer):
             return create_with_referrer_answers
         return await TgAnswerList(
             TgAnswerToSender(
-                TgTextAnswer(
+                TgTextAnswer.str_ctor(
                     self._origin,
                     start_message,
                 ),
             ),
             TgAnswerToSender(
-                TgTextAnswer(
+                TgTextAnswer.str_ctor(
                     self._origin,
                     ayat_message,
                 ),
             ),
             TgChatIdAnswer(
-                TgTextAnswer(
+                TgTextAnswer.str_ctor(
                     self._origin,
                     'Зарегистрировался новый пользователь',
                 ),
@@ -103,26 +103,26 @@ class StartAnswer(TgAnswer):
             await self._user_repo.update_referrer(int(TgChatId(update)), referrer_id)
             return await TgAnswerList(
                 TgAnswerToSender(
-                    TgTextAnswer(
+                    TgTextAnswer.str_ctor(
                         self._origin,
                         start_message,
                     ),
                 ),
                 TgAnswerToSender(
-                    TgTextAnswer(
+                    TgTextAnswer.str_ctor(
                         self._origin,
                         ayat_message,
                     ),
                 ),
                 TgChatIdAnswer(
-                    TgTextAnswer(
+                    TgTextAnswer.str_ctor(
                         self._origin,
                         'По вашей реферальной ссылке произошла регистрация',
                     ),
                     referrer_id,
                 ),
                 TgChatIdAnswer(
-                    TgTextAnswer(
+                    TgTextAnswer.str_ctor(
                         self._origin,
                         'Зарегистрировался новый пользователь',
                     ),

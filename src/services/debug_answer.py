@@ -48,7 +48,7 @@ class DebugAnswer(TgAnswer):
         :param update: Update
         :returns: list[httpx.Request]
         """
-        return await TgTextAnswer(
+        return await TgTextAnswer.str_ctor(
             TgAnswerToSender(
                 TgMessageAnswer(self._origin),
             ),

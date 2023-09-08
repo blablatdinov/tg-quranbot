@@ -55,7 +55,7 @@ class AyatByIdMessageAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         return await TgAnswerMarkup(
-            TgTextAnswer(
+            TgTextAnswer.str_ctor(
                 self._message_answer,
                 await self._result_ayat.text(),
             ),

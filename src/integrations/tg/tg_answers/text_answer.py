@@ -27,6 +27,7 @@ import httpx
 from furl import furl
 from pyeo import elegant
 
+from app_types.stringable import AsyncSupportsStr, FkAsyncStr
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
@@ -37,7 +38,19 @@ class TgTextAnswer(TgAnswer):
     """Ответ пользователю с текстом."""
 
     _origin: TgAnswer
-    _text: str
+    _text: AsyncSupportsStr
+
+    @classmethod
+    def str_ctor(cls, origin: TgAnswer, text: str):
+        """Конструктор для строки.
+
+        :param origin: TgAnswer
+        :param text: str
+        :return: TgAnswer
+        """
+        return cls(
+            origin, FkAsyncStr(text),
+        )
 
     async def build(self, update) -> list[httpx.Request]:
         """Собрать ответ.
@@ -48,7 +61,7 @@ class TgTextAnswer(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                furl(request.url).add({'text': self._text}).url,
+                furl(request.url).add({'text': await self._text.to_str()}).url,
             )
             for request in await self._origin.build(update)
         ]
