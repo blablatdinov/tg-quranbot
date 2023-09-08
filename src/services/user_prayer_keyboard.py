@@ -32,36 +32,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
-from repository.user_prayers_interface import UserPrayersInterface
 from services.answers.answer import KeyboardInterface
-from services.user_prayer_button_callback import UserPrayersButtonCallback
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class UserPrayersKeyboardByChatId(KeyboardInterface):
-    """Клавиатура времен намаза с идентификатором чата в конструкторе."""
-
-    _user_prayer_times: UserPrayersInterface
-    _date: datetime.date
-    _chat_id: int
-
-    async def generate(self, update: Update) -> str:
-        """Генерация.
-
-        :param update: Update
-        :return: str
-        """
-        return json.dumps({
-            'inline_keyboard': [[
-                {
-                    'text': '✅' if user_prayer.is_readed else '❌',
-                    'callback_data': str(UserPrayersButtonCallback(user_prayer)),
-                }
-                for user_prayer in await self._user_prayer_times.prayer_times(self._chat_id, self._date)
-            ]],
-        })
 
 
 @final

@@ -31,7 +31,7 @@ from redis.asyncio import Redis
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers.interface import TgAnswer
-from services.prayers.prayer_status import PrayerStatus, UserPrayerStatus
+from srv.prayers.prayer_status import PrayerStatus, UserPrayerStatus
 
 
 @final

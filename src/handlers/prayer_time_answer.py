@@ -41,8 +41,8 @@ from integrations.tg.tg_answers import (
     TgTextAnswer,
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
-from services.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
 from services.user_prayer_keyboard import UserPrayersKeyboard
+from srv.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 from srv.prayers.prayers_text import PrayersText, UserCityId
 
