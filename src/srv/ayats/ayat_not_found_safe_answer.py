@@ -49,7 +49,7 @@ class AyatNotFoundSafeAnswer(TgAnswer):
         try:
             return await self._origin.build(update)
         except AyatNotFoundError:
-            return await TgTextAnswer(
+            return await TgTextAnswer.str_ctor(
                 self._error_answer,
                 'Аят не найден',
             ).build(update)

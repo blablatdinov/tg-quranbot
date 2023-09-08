@@ -34,6 +34,30 @@ class SupportsStr(Protocol):
         """Приведение к строке."""
 
 
+@elegant
+class AsyncSupportsStr(Protocol):
+    """Интерфейс объектов, которые можно привести к строке."""
+
+    async def to_str(self) -> str:
+        """Приведение к строке."""
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class FkAsyncStr(AsyncSupportsStr):
+    """Обертка для строки."""
+
+    _source: str
+
+    async def to_str(self) -> str:
+        """Строковое представление.
+
+        :return: str
+        """
+        return self._source
+
+
 @final
 @attrs.define(frozen=True)
 @elegant

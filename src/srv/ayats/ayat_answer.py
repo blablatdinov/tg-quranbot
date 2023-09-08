@@ -61,7 +61,7 @@ class AyatAnswer(TgAnswer):
         """
         return await TgAnswerList(
             TgAnswerMarkup(
-                TgTextAnswer(
+                TgTextAnswer.str_ctor(
                     TgHtmlMessageAnswerToSender(self._empty_answer),
                     await self._ayat.text(),
                 ),
@@ -73,7 +73,7 @@ class AyatAnswer(TgAnswer):
                     TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
                     await self._ayat.audio(),
                 ),
-                TgTextAnswer(
+                TgTextAnswer.str_ctor(
                     TgHtmlMessageAnswerToSender(self._empty_answer),
                     await (await self._ayat.audio()).file_link(),
                 ),

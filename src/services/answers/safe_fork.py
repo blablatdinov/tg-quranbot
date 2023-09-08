@@ -49,4 +49,6 @@ class SafeFork(TgAnswer):
         try:
             return await self._origin.build(update)
         except NotProcessableUpdateError:
-            return await TgTextAnswer(self._message_answer, 'Я не знаю как отвечать на такое сообщение').build(update)
+            return await TgTextAnswer.str_ctor(
+                self._message_answer, 'Я не знаю как отвечать на такое сообщение',
+            ).build(update)

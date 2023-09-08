@@ -71,7 +71,7 @@ class PodcastAnswer(TgAnswer):
                     ),
                     self._podcast,
                 ),
-                TgTextAnswer(
+                TgTextAnswer.str_ctor(
                     TgChatIdAnswer(
                         TgMessageAnswer(
                             self._origin,

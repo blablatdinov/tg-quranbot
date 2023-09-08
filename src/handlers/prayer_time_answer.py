@@ -20,33 +20,77 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import datetime
 from typing import Sequence, final
 
 import attrs
 import httpx
+import pytz
 from databases import Database
 from pyeo import elegant
-from redis.asyncio import Redis
 
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
-from repository.prayer_time import NewUserPrayers, SafeNotFoundPrayers, SafeUserPrayers, UserPrayers
-from services.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
-from services.prayers.prayer_for_user_answer import PrayerForUserAnswer
-from services.reset_state_answer import ResetStateAnswer
+from integrations.tg.chat_id import TgChatId
+from integrations.tg.tg_answers import (
+    TgAnswer,
+    TgAnswerMarkup,
+    TgAnswerToSender,
+    TgKeyboardEditAnswer,
+    TgMessageAnswer,
+    TgTextAnswer,
+)
+from services.user_prayer_keyboard import UserPrayersKeyboard
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
+from srv.prayers.prayers_text import PrayersText, UserCityId
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
 class PrayerTimeAnswer(TgAnswer):
-    """Ответ с временами намаза."""
+    """Ответ с временами намаза.
+
+    _pgsql: Database - соединение с БД postgres
+    _origin: TgAnswer - возможно редактирование сообщения при смене статуса или отправка нового сообщения
+    _admin_chat_ids: Sequence[int] - список идентификаторов админов
+    """
 
     _pgsql: Database
-    _redis: Redis
-    _empty_answer: TgAnswer
+    _origin: TgAnswer
     _admin_chat_ids: Sequence[int]
+    _empty_answer: TgAnswer
+
+    @classmethod
+    def new_prayers_ctor(cls, pgsql: Database, empty_answer: TgAnswer, admin_chat_ids: Sequence[int]) -> TgAnswer:
+        """Конструктор для генерации времени намаза.
+
+        :param pgsql: Database
+        :param empty_answer: TgAnswer
+        :param admin_chat_ids: Sequence[int]
+        :return: TgAnswer
+        """
+        return cls(
+            pgsql,
+            TgAnswerToSender(TgMessageAnswer(empty_answer)),
+            admin_chat_ids,
+            empty_answer,
+        )
+
+    @classmethod
+    def edited_markup_ctor(cls, pgsql: Database, empty_answer: TgAnswer, admin_chat_ids: Sequence[int]) -> TgAnswer:
+        """Конструктор для времен намаза при смене статуса прочитанности.
+
+        :param pgsql: Database
+        :param empty_answer: TgAnswer
+        :param admin_chat_ids: Sequence[int]
+        :return: TgAnswer
+        """
+        return cls(
+            pgsql,
+            TgAnswerToSender(TgKeyboardEditAnswer(empty_answer)),
+            admin_chat_ids,
+            empty_answer,
+        )
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
@@ -54,31 +98,20 @@ class PrayerTimeAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
         return await PrayersExpiredAnswer(
-            UserWithoutCitySafeAnswer(
-                ResetStateAnswer(
-                    PrayerForUserAnswer(
-                        answer_to_sender,
-                        SafeNotFoundPrayers(
-                            self._pgsql,
-                            SafeUserPrayers(
-                                UserPrayers(self._pgsql),
-                                NewUserPrayers(
-                                    self._pgsql,
-                                    UserPrayers(self._pgsql),
-                                ),
-                            ),
-                        ),
+            TgAnswerMarkup(
+                TgTextAnswer(
+                    self._origin,
+                    PrayersText(
+                        self._pgsql,
+                        datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
+                        UserCityId(self._pgsql, TgChatId(update)),
                     ),
-                    self._redis,
                 ),
-                InviteSetCityAnswer(
-                    TgTextAnswer(
-                        answer_to_sender,
-                        'Вы не указали город, отправьте местоположение или воспользуйтесь поиском',
-                    ),
-                    self._redis,
+                UserPrayersKeyboard(
+                    self._pgsql,
+                    datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
+                    TgChatId(update),
                 ),
             ),
             self._empty_answer,

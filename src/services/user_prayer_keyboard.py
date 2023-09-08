@@ -22,9 +22,12 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
 import json
+import uuid
 from typing import final
 
 import attrs
+from databases import Database
+from databases.interfaces import Record
 from pyeo import elegant
 
 from app_types.update import Update
@@ -67,8 +70,9 @@ class UserPrayersKeyboardByChatId(KeyboardInterface):
 class UserPrayersKeyboard(KeyboardInterface):
     """Клавиатура времен намаза."""
 
-    _user_prayer_times: UserPrayersInterface
+    _pgsql: Database
     _date: datetime.date
+    _chat_id: TgChatId
 
     async def generate(self, update: Update) -> str:
         """Генерация.
@@ -76,8 +80,55 @@ class UserPrayersKeyboard(KeyboardInterface):
         :param update: Update
         :return: str
         """
-        return await UserPrayersKeyboardByChatId(
-            self._user_prayer_times,
-            self._date,
-            int(TgChatId(update)),
-        ).generate(update)
+        prayers = await self._exists_prayers()
+        if not prayers:
+            prayer_group_id = str(uuid.uuid4())
+            await self._pgsql.fetch_val(
+                'INSERT INTO prayers_at_user_groups VALUES (:prayer_group_id)', {'prayer_group_id': prayer_group_id},
+            )
+            query = """
+                INSERT INTO prayers_at_user
+                (user_id, prayer_id, is_read, prayer_group_id)
+                SELECT
+                    :chat_id,
+                    p.prayer_id,
+                    false,
+                    :prayer_group_id
+                FROM prayers AS p
+                INNER JOIN cities AS c ON p.city_id = c.city_id
+                INNER JOIN users AS u ON u.city_id = c.city_id
+                WHERE p.day = :date AND u.chat_id = :chat_id AND p.name <> 'sunrise'
+                ORDER BY p.name
+            """
+            await self._pgsql.execute(query, {
+                'chat_id': int(self._chat_id),
+                'prayer_group_id': prayer_group_id,
+                'date': self._date,
+            })
+            prayers = await self._exists_prayers()
+        return json.dumps({
+            'inline_keyboard': [[
+                {
+                    'text': '✅' if user_prayer['is_read'] else '❌',
+                    'callback_data': ('mark_not_readed({0})' if user_prayer['is_read'] else 'mark_readed({0})').format(
+                        user_prayer['prayer_at_user_id'],
+                    ),
+                }
+                for user_prayer in prayers
+            ]],
+        })
+
+    async def _exists_prayers(self) -> list[Record]:
+        select_query = """
+            SELECT
+                pau.prayer_at_user_id,
+                pau.is_read
+            FROM prayers_at_user AS pau
+            INNER JOIN prayers AS p on pau.prayer_id = p.prayer_id
+            WHERE p.day = :date AND pau.user_id = :chat_id AND p.name <> 'sunrise'
+            ORDER BY pau.prayer_at_user_id
+        """
+        return await self._pgsql.fetch_all(select_query, {
+            'date': self._date,
+            'chat_id': int(self._chat_id),
+        })

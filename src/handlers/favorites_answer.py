@@ -62,7 +62,7 @@ class FavoriteAyatsAnswer(TgAnswer):
                     self._empty_answer,
                     self._pgsql,
                 ),
-                TgTextAnswer(
+                TgTextAnswer.str_ctor(
                     answer_to_sender,
                     'Вы еще не добавляли аятов в избранное',
                 ),

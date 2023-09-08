@@ -50,7 +50,7 @@ class StatusAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        return await TgTextAnswer(
+        return await TgTextAnswer.str_ctor(
             TgAnswerToSender(
                 TgMessageAnswer(self._empty_answer),
             ),

@@ -56,7 +56,7 @@ class CityNotSupportedAnswer(TgAnswer):
         try:
             return await self._origin.build(update)
         except CityNotSupportedError:
-            return await TgTextAnswer(
+            return await TgTextAnswer.str_ctor(
                 self._error_answer,
                 'Этот город не поддерживается',
             ).build(update)
@@ -98,7 +98,7 @@ class ChangeCityAnswer(TgAnswer):
         await LoggedUserState(
             UserState(self._redis, int(TgChatId(update))),
         ).change_step(UserStep.nothing)
-        return await TgTextAnswer(
+        return await TgTextAnswer.str_ctor(
             self._origin,
             'Вам будет приходить время намаза для города {0}'.format(cities[0].name),
         ).build(update)

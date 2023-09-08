@@ -51,7 +51,7 @@ class HelpAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         return await ResetStateAnswer(
-            TgTextAnswer(
+            TgTextAnswer.str_ctor(
                 TgHtmlMessageAnswerToSender(self._origin),
                 await self._admin_message.text(),
             ),

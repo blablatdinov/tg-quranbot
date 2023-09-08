@@ -51,34 +51,6 @@ class CliApp(SyncRunable):
 
 
 @final
-@attrs.define(frozen=True)
-@elegant
-class CoveredApp(SyncRunable):
-    """Декоратор для измерения покрытия."""
-
-    _origin: SyncRunable
-
-    def run(self, args: list[str]) -> int:
-        """Запуск с измерением покрытия.
-
-        :param args: list[str]
-        :return: int
-        """
-        try:
-            import coverage  # noqa: WPS433, F401
-        except ImportError:
-            self._origin.run(args)
-            return 0
-        cov = coverage.Coverage('.coverage-e2e', branch=True)
-        cov.start()
-        self._origin.run(args)
-        cov.stop()
-        cov.save()
-        cov.report()
-        return 0
-
-
-@final
 @elegant
 class ForkCliApp(SyncRunable):
     """Маршрутизация для CLI приложения."""

@@ -43,20 +43,17 @@ from integrations.tg.tg_answers import (
     TgAnswerToSender,
     TgCallbackQueryRegexAnswer,
     TgEmptyAnswer,
-    TgKeyboardEditAnswer,
     TgMessageAnswer,
     TgMessageRegexAnswer,
     TgTextAnswer,
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
-from repository.prayer_time import UserPrayers
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
 from services.city.inline_query_answer import InlineQueryAnswer
 from services.city.search import SearchCityByName
 from services.help_answer import HelpAnswer
 from services.prayers.invite_set_city_answer import InviteSetCityAnswer
-from services.prayers.prayer_status import UserPrayerStatus
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
 from settings import AdminChatIds, DebugMode, Settings
@@ -110,7 +107,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',
-                    PrayerTimeAnswer(self._pgsql, self._redis, empty_answer, AdminChatIds(self._settings)),
+                    PrayerTimeAnswer.new_prayers_ctor(self._pgsql, empty_answer, AdminChatIds(self._settings)),
                 ),
                 TgMessageRegexAnswer(
                     'Избранное',
@@ -123,7 +120,7 @@ class QuranbotAnswer(TgAnswer):
                 TgMessageRegexAnswer(
                     'Найти аят',
                     ChangeStateAnswer(
-                        TgTextAnswer(TgHtmlMessageAnswerToSender(empty_answer), 'Введите слово для поиска:'),
+                        TgTextAnswer.str_ctor(TgHtmlMessageAnswerToSender(empty_answer), 'Введите слово для поиска:'),
                         self._redis,
                         UserStep.ayat_search,
                     ),
@@ -131,7 +128,7 @@ class QuranbotAnswer(TgAnswer):
                 TgMessageRegexAnswer(
                     'Поменять город',
                     InviteSetCityAnswer(
-                        TgTextAnswer(
+                        TgTextAnswer.str_ctor(
                             TgHtmlMessageAnswerToSender(empty_answer),
                             'Отправьте местоположение или воспользуйтесь поиском',
                         ),
@@ -158,11 +155,7 @@ class QuranbotAnswer(TgAnswer):
                 TgCallbackQueryRegexAnswer(
                     '(mark_readed|mark_not_readed)',
                     UserPrayerStatusChangeAnswer(
-                        TgAnswerToSender(
-                            TgKeyboardEditAnswer(empty_answer),
-                        ),
-                        UserPrayerStatus(self._pgsql),
-                        UserPrayers(self._pgsql),
+                        empty_answer,
                         self._pgsql,
                     ),
                 ),

@@ -27,17 +27,10 @@ import httpx
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import ThroughIntable
+from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.callback_query import CallbackQueryData
-from integrations.tg.message_id import MessageId
 from integrations.tg.tg_answers.interface import TgAnswer
-from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
-from integrations.tg.tg_answers.message_id_answer import TgMessageIdAnswer
-from repository.prayer_time import PrayersWithoutSunrise
-from repository.user_prayers_interface import UserPrayersInterface
-from services.prayers.prayer_status import PrayerStatus, UserPrayerStatusInterface
-from services.prayers.user_prayer_date import UserPrayerDate
-from services.user_prayer_keyboard import UserPrayersKeyboard
+from services.prayers.prayer_status import PrayerStatus, UserPrayerStatus
 
 
 @final
@@ -46,9 +39,7 @@ from services.user_prayer_keyboard import UserPrayersKeyboard
 class UserPrayerStatusChangeAnswer(TgAnswer):
     """Ответ с изменением статуса прочитанности намаза."""
 
-    _origin: TgAnswer
-    _prayer_status: UserPrayerStatusInterface
-    _user_prayers: UserPrayersInterface
+    _empty_answer: TgAnswer
     _pgsql: Database
 
     async def build(self, update) -> list[httpx.Request]:
@@ -58,17 +49,9 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         prayer_status = PrayerStatus(str(CallbackQueryData(update)))
-        await self._prayer_status.change(prayer_status)
-        return await TgAnswerMarkup(
-            TgMessageIdAnswer(
-                self._origin,
-                int(MessageId(update)),
-            ),
-            UserPrayersKeyboard(
-                PrayersWithoutSunrise(self._user_prayers),
-                await UserPrayerDate(
-                    ThroughIntable(prayer_status.user_prayer_id()),
-                    self._pgsql,
-                ).datetime(),
-            ),
+        await UserPrayerStatus(self._pgsql).change(prayer_status)
+        return await PrayerTimeAnswer.edited_markup_ctor(
+            self._pgsql,
+            self._empty_answer,
+            [123],
         ).build(update)
