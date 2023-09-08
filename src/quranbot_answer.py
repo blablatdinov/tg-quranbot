@@ -53,7 +53,6 @@ from services.answers.safe_fork import SafeFork
 from services.city.inline_query_answer import InlineQueryAnswer
 from services.city.search import SearchCityByName
 from services.help_answer import HelpAnswer
-from services.prayers.invite_set_city_answer import InviteSetCityAnswer
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
 from settings import AdminChatIds, DebugMode, Settings
@@ -63,6 +62,7 @@ from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
 from srv.ayats.favorite_ayat_page import FavoriteAyatPage
 from srv.events.sink import SinkInterface
 from srv.podcasts.podcast import RandomPodcast
+from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 
 
 @final
@@ -107,7 +107,9 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',
-                    PrayerTimeAnswer.new_prayers_ctor(self._pgsql, empty_answer, AdminChatIds(self._settings)),
+                    PrayerTimeAnswer.new_prayers_ctor(
+                        self._pgsql, empty_answer, AdminChatIds(self._settings), self._redis,
+                    ),
                 ),
                 TgMessageRegexAnswer(
                     'Избранное',
@@ -154,10 +156,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(mark_readed|mark_not_readed)',
-                    UserPrayerStatusChangeAnswer(
-                        empty_answer,
-                        self._pgsql,
-                    ),
+                    UserPrayerStatusChangeAnswer(empty_answer, self._pgsql, self._redis),
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getAyat',

@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import pytest
 
-from services.prayers.prayer_status import PrayerStatus
+from srv.prayers.prayer_status import PrayerStatus
 
 
 @pytest.mark.parametrize('input_,prayer_id,change_to', [

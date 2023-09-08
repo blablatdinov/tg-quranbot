@@ -28,6 +28,7 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.stringable import AsyncSupportsStr
+from exceptions.content_exceptions import UserHasNotCityIdError
 from exceptions.prayer_exceptions import PrayersNotFoundError
 from integrations.nominatim import CityNameById
 from integrations.tg.chat_id import TgChatId
@@ -48,6 +49,7 @@ class UserCityId(AsyncSupportsStr):
         """Строковое представление.
 
         :return: str
+        :raises UserHasNotCityIdError: user has not set city
         """
         query = """
             SELECT c.city_id
@@ -55,7 +57,10 @@ class UserCityId(AsyncSupportsStr):
             INNER JOIN users AS u ON u.city_id = c.city_id
             WHERE u.chat_id = :chat_id
         """
-        return await self._pgsql.fetch_val(query, {'chat_id': int(self._chat_id)})
+        city_name = await self._pgsql.fetch_val(query, {'chat_id': int(self._chat_id)})
+        if not city_name:
+            raise UserHasNotCityIdError
+        return city_name
 
 
 @final

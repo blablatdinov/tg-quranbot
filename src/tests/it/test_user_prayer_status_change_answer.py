@@ -69,7 +69,7 @@ async def generated_prayers(pgsql, prayers):
 
 async def test_new_prayer_times(pgsql, rds, prayers, freezer):
     freezer.move_to('2023-12-19')
-    got = await PrayerTimeAnswer.new_prayers_ctor(pgsql, FkAnswer(), [123]).build(
+    got = await PrayerTimeAnswer.new_prayers_ctor(pgsql, FkAnswer(), [123], rds).build(
         FkUpdate('{"callback_query": {"data": "mark_readed(3)"}, "message": {"message_id": 17}, "chat": {"id": 905}}'),
     )
 
@@ -89,7 +89,7 @@ async def test_new_prayer_times(pgsql, rds, prayers, freezer):
 
 async def test_today(pgsql, rds, generated_prayers, freezer):
     freezer.move_to('2023-12-19')
-    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql).build(
+    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds).build(
         FkUpdate('{"callback_query": {"data": "mark_readed(3)"}, "message": {"message_id": 17}, "chat": {"id": 905}}'),
     )
 
@@ -109,7 +109,7 @@ async def test_today(pgsql, rds, generated_prayers, freezer):
 
 async def test_before(pgsql, rds, generated_prayers, freezer):
     freezer.move_to('2023-09-07')
-    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql).build(
+    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds).build(
         FkUpdate('{"callback_query": {"data": "mark_readed(3)"}, "message": {"message_id": 17}, "chat": {"id": 905}}'),
     )
 

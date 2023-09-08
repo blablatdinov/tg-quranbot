@@ -26,11 +26,12 @@ import attrs
 import httpx
 from databases import Database
 from pyeo import elegant
+from redis.asyncio import Redis
 
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers.interface import TgAnswer
-from services.prayers.prayer_status import PrayerStatus, UserPrayerStatus
+from srv.prayers.prayer_status import PrayerStatus, UserPrayerStatus
 
 
 @final
@@ -41,6 +42,7 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
 
     _empty_answer: TgAnswer
     _pgsql: Database
+    _redis: Redis
 
     async def build(self, update) -> list[httpx.Request]:
         """Обработка запроса.
@@ -54,4 +56,5 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
             self._pgsql,
             self._empty_answer,
             [123],
+            self._redis,
         ).build(update)

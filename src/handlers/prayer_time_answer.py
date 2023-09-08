@@ -28,6 +28,7 @@ import httpx
 import pytz
 from databases import Database
 from pyeo import elegant
+from redis.asyncio import Redis
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
@@ -39,7 +40,9 @@ from integrations.tg.tg_answers import (
     TgMessageAnswer,
     TgTextAnswer,
 )
+from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from services.user_prayer_keyboard import UserPrayersKeyboard
+from srv.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 from srv.prayers.prayers_text import PrayersText, UserCityId
 
@@ -59,14 +62,18 @@ class PrayerTimeAnswer(TgAnswer):
     _origin: TgAnswer
     _admin_chat_ids: Sequence[int]
     _empty_answer: TgAnswer
+    _redis: Redis
 
     @classmethod
-    def new_prayers_ctor(cls, pgsql: Database, empty_answer: TgAnswer, admin_chat_ids: Sequence[int]) -> TgAnswer:
+    def new_prayers_ctor(
+        cls, pgsql: Database, empty_answer: TgAnswer, admin_chat_ids: Sequence[int], redis: Redis,
+    ) -> TgAnswer:
         """Конструктор для генерации времени намаза.
 
         :param pgsql: Database
         :param empty_answer: TgAnswer
         :param admin_chat_ids: Sequence[int]
+        :param redis: Redis
         :return: TgAnswer
         """
         return cls(
@@ -74,15 +81,19 @@ class PrayerTimeAnswer(TgAnswer):
             TgAnswerToSender(TgMessageAnswer(empty_answer)),
             admin_chat_ids,
             empty_answer,
+            redis,
         )
 
     @classmethod
-    def edited_markup_ctor(cls, pgsql: Database, empty_answer: TgAnswer, admin_chat_ids: Sequence[int]) -> TgAnswer:
+    def edited_markup_ctor(
+        cls, pgsql: Database, empty_answer: TgAnswer, admin_chat_ids: Sequence[int], redis: Redis,
+    ) -> TgAnswer:
         """Конструктор для времен намаза при смене статуса прочитанности.
 
         :param pgsql: Database
         :param empty_answer: TgAnswer
         :param admin_chat_ids: Sequence[int]
+        :param redis: Redis
         :return: TgAnswer
         """
         return cls(
@@ -90,6 +101,7 @@ class PrayerTimeAnswer(TgAnswer):
             TgAnswerToSender(TgKeyboardEditAnswer(empty_answer)),
             admin_chat_ids,
             empty_answer,
+            redis,
         )
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -98,22 +110,31 @@ class PrayerTimeAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        return await PrayersExpiredAnswer(
-            TgAnswerMarkup(
-                TgTextAnswer(
-                    self._origin,
-                    PrayersText(
+        return await UserWithoutCitySafeAnswer(
+            PrayersExpiredAnswer(
+                TgAnswerMarkup(
+                    TgTextAnswer(
+                        self._origin,
+                        PrayersText(
+                            self._pgsql,
+                            datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
+                            UserCityId(self._pgsql, TgChatId(update)),
+                        ),
+                    ),
+                    UserPrayersKeyboard(
                         self._pgsql,
                         datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
-                        UserCityId(self._pgsql, TgChatId(update)),
+                        TgChatId(update),
                     ),
                 ),
-                UserPrayersKeyboard(
-                    self._pgsql,
-                    datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
-                    TgChatId(update),
-                ),
+                self._empty_answer,
+                self._admin_chat_ids,
             ),
-            self._empty_answer,
-            self._admin_chat_ids,
+            InviteSetCityAnswer(
+                TgTextAnswer.str_ctor(
+                    TgHtmlMessageAnswerToSender(self._empty_answer),
+                    'Отправьте местоположение или воспользуйтесь поиском',
+                ),
+                self._redis,
+            ),
         ).build(update)

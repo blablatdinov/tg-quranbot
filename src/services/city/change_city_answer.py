@@ -31,6 +31,7 @@ from app_types.update import Update
 from exceptions.content_exceptions import CityNotSupportedError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.coordinates import TgMessageCoordinates
+from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from repository.users.user import UserRepositoryInterface
@@ -82,7 +83,7 @@ class ChangeCityAnswer(TgAnswer):
         """
         try:
             query = SearchCityQuery.from_string_cs(str(MessageText(update)))
-        except AttributeError:
+        except MessageTextNotFoundError:
             coordinates = TgMessageCoordinates(update)
             query = SearchCityQuery.from_coordinates_cs(
                 coordinates.latitude(),
