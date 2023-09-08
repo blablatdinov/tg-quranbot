@@ -107,7 +107,9 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',
-                    PrayerTimeAnswer.new_prayers_ctor(self._pgsql, empty_answer, AdminChatIds(self._settings)),
+                    PrayerTimeAnswer.new_prayers_ctor(
+                        self._pgsql, empty_answer, AdminChatIds(self._settings), self._redis,
+                    ),
                 ),
                 TgMessageRegexAnswer(
                     'Избранное',
@@ -154,10 +156,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(mark_readed|mark_not_readed)',
-                    UserPrayerStatusChangeAnswer(
-                        empty_answer,
-                        self._pgsql,
-                    ),
+                    UserPrayerStatusChangeAnswer(empty_answer, self._pgsql, self._redis),
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getAyat',

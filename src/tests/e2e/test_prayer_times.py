@@ -24,6 +24,7 @@ import datetime
 
 import httpx
 import pytest
+from telethon import functions, types
 
 
 @pytest.fixture()
@@ -118,3 +119,31 @@ def test_mark_not_readed(tg_client, bot_name, expected_message, wait_until, clea
         ('❌', b'mark_readed(4)'),
         ('❌', b'mark_readed(5)'),
     ]
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db')
+def test_with_set_city_by_name(tg_client, bot_name, expected_message, wait_until, clear_db):
+    tg_client.send_message(bot_name, 'Время намаза')
+    wait_until(tg_client, 2)
+    tg_client.send_message(bot_name, 'Казань')
+    messages = wait_until(tg_client, 4)
+
+    assert messages[0].message == 'Вам будет приходить время намаза для города Казань'
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db')
+def test_with_set_city_by_location(tg_client, bot_name, expected_message, wait_until, clear_db):
+    tg_client.send_message(bot_name, 'Время намаза')
+    wait_until(tg_client, 2)
+    tg_client(
+        functions.messages.SendMediaRequest(
+            bot_name,
+            types.InputMediaGeoPoint(
+                types.InputGeoPoint(55.7887, 49.1221),
+            ),
+            '',
+        ),
+    )
+    messages = wait_until(tg_client, 3)
+
+    assert messages[0].message == 'Вам будет приходить время намаза для города Казань'
