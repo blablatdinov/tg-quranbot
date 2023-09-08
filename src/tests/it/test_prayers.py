@@ -21,28 +21,41 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import urllib
+import uuid
+
+import pytest
 
 from app_types.update import FkUpdate
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.tg_answers import FkAnswer
 
 
-async def test_not_found_prayer(pgsql, rds, freezer):
+@pytest.fixture()
+async def user(pgsql):
+    city_id = str(uuid.uuid4())
+    await pgsql.execute("INSERT INTO cities (city_id, name) VALUES (:city_id, 'Казань')", {'city_id': city_id})
+    await pgsql.execute(
+        'INSERT INTO users (chat_id, city_id) VALUES (:chat_id, :city_id)',
+        {'chat_id': 123, 'city_id': city_id},
+    )
+
+
+async def test_not_found_prayer(pgsql, rds, freezer, user):
     freezer.move_to('2023-08-30')
     got = await PrayerTimeAnswer.new_prayers_ctor(
         pgsql, FkAnswer(), [321], rds,
     ).build(FkUpdate('{"chat":{"id":123}}'))
 
-    # assert len(got) == 2
+    assert len(got) == 2
     assert urllib.parse.unquote(
         str(got[0].url),
     ).replace('+', ' ') == ''.join([
         'https://some.domain/sendMessage',
-        '?chat_id=123&text=Время намаза на 30.08.2023 для города  не найдено',
+        '?chat_id=123&text=Время намаза на 30.08.2023 для города Казань не найдено',
     ])
     assert urllib.parse.unquote(
         str(got[1].url),
     ).replace('+', ' ') == ''.join([
         'https://some.domain/sendMessage',
-        '?chat_id=321&text=Время намаза на 30.08.2023 для города  не найдено',
+        '?chat_id=321&text=Время намаза на 30.08.2023 для города Казань не найдено',
     ])
