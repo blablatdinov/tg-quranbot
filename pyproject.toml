@@ -29,7 +29,7 @@ authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
 pydantic = {extras = ["dotenv"], version = "2.3.0"}
-loguru = "0.7.1"
+loguru = "0.7.2"
 quranbot-schema-registry = "0.0.20"
 APScheduler = "3.10.4"
 sentry-sdk = "1.30.0"
