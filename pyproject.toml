@@ -37,7 +37,7 @@ httpx = "0.25.0"
 pytz = "2023.3.post1"
 databases = {extras = ["asyncpg"], version = "0.8.0"}
 attrs = "23.1.0"
-jsonpath-ng = "1.5.3"
+jsonpath-ng = "1.6.0"
 eo-styleguide = "0.0.1a8"
 redis = "5.0.0"
 pydantic-settings = "2.0.3"
