@@ -85,9 +85,9 @@ def test_mark_as_readed(tg_client, bot_name, expected_message, wait_until, clear
     ] == [
         ('❌', b'mark_readed(1)'),
         ('✅', b'mark_not_readed(2)'),
+        ('❌', b'mark_readed(3)'),
         ('❌', b'mark_readed(4)'),
         ('❌', b'mark_readed(5)'),
-        ('❌', b'mark_readed(6)'),
     ]
 
 

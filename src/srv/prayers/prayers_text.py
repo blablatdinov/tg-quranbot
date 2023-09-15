@@ -88,7 +88,8 @@ class PrayersText(AsyncSupportsStr):
             FROM prayers AS p
             INNER JOIN cities AS c ON p.city_id = c.city_id
             WHERE p.day = :date AND c.city_id = :city_id
-            ORDER BY p.name
+            ORDER BY
+                ARRAY_POSITION(ARRAY['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
         """
         rows = await self._pgsql.fetch_all(query, {
             'date': self._date,

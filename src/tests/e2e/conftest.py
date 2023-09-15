@@ -95,11 +95,11 @@ def wait_until(bot_name):
         for _ in range(retry):
             time.sleep(delay)
             last_messages = [mess for mess in tg_client.iter_messages(bot_name) if mess.message]
-            logger.debug('Taked messages: {0}'.format(
-                pformat([mess.message for mess in last_messages], width=99999),
-            ))
             if len(last_messages) == messages_count:
                 return last_messages
+        logger.debug('Taked messages: {0}'.format(
+            pformat([mess.message for mess in last_messages], width=99999),
+        ))
         raise TimeoutError
     return _wait_until
 
