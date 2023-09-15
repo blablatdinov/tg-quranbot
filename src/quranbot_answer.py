@@ -61,7 +61,6 @@ from srv.ayats.ayat_by_id_answer import AyatByIdAnswer
 from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
 from srv.ayats.favorite_ayat_page import FavoriteAyatPage
 from srv.events.sink import SinkInterface
-from srv.podcasts.podcast import RandomPodcast
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 
 
@@ -103,7 +102,12 @@ class QuranbotAnswer(TgAnswer):
             TgAnswerFork(
                 TgMessageRegexAnswer(
                     'Подкасты',
-                    PodcastAnswer(DebugMode(self._settings), empty_answer, RandomPodcast(self._pgsql), self._redis),
+                    PodcastAnswer(
+                        DebugMode(self._settings),
+                        empty_answer,
+                        self._redis,
+                        self._pgsql,
+                    ),
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',

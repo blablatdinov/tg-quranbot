@@ -20,25 +20,30 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import random
 from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.intable import SyncToAsyncIntable
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers.audio_answer import TgAudioAnswer
 from integrations.tg.tg_answers.chat_id_answer import TgChatIdAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
+from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from services.reset_state_answer import ResetStateAnswer
-from srv.files.file import TgFile
 from srv.files.file_answer import FileAnswer
 from srv.files.file_id_answer import TelegramFileIdAnswer
+from srv.podcasts.podcast import RandomPodcast
+from srv.podcasts.podcast_keyboard import PodcastKeyboard
 
 
 @final
@@ -49,8 +54,8 @@ class PodcastAnswer(TgAnswer):
 
     _debug_mode: SupportsBool
     _origin: TgAnswer
-    _podcast: TgFile
     _redis: Redis
+    _pgsql: Database
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Трансформация в ответ.
@@ -58,28 +63,36 @@ class PodcastAnswer(TgAnswer):
         :param update: Update
         :return: AnswerInterface
         """
+        podcasts_count = (await self._pgsql.fetch_val('SELECT COUNT(*) FROM podcasts')) or 100
+        podcast = RandomPodcast(
+            SyncToAsyncIntable(random.randrange(1, podcasts_count + 1)),  # noqa: S311 not secure issue
+            self._pgsql,
+        )
         chat_id = int(TgChatId(update))
         return await ResetStateAnswer(
-            FileAnswer(
-                self._debug_mode,
-                TelegramFileIdAnswer(
-                    TgChatIdAnswer(
-                        TgAudioAnswer(
-                            self._origin,
+            TgAnswerMarkup(
+                FileAnswer(
+                    self._debug_mode,
+                    TelegramFileIdAnswer(
+                        TgChatIdAnswer(
+                            TgAudioAnswer(
+                                self._origin,
+                            ),
+                            chat_id,
                         ),
-                        chat_id,
+                        podcast,
                     ),
-                    self._podcast,
-                ),
-                TgTextAnswer.str_ctor(
-                    TgChatIdAnswer(
-                        TgMessageAnswer(
-                            self._origin,
+                    TgTextAnswer.str_ctor(
+                        TgChatIdAnswer(
+                            TgMessageAnswer(
+                                self._origin,
+                            ),
+                            chat_id,
                         ),
-                        chat_id,
+                        await podcast.file_link(),
                     ),
-                    await self._podcast.file_link(),
                 ),
+                PodcastKeyboard(self._pgsql, podcast),
             ),
             self._redis,
         ).build(update)

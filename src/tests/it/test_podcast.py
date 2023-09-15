@@ -29,7 +29,6 @@ import pytest
 from app_types.update import FkUpdate
 from handlers.podcast_answer import PodcastAnswer
 from integrations.tg.tg_answers import FkAnswer
-from srv.podcasts.podcast import RandomPodcast
 
 
 @pytest.fixture()
@@ -62,8 +61,8 @@ async def test(db_podcast, pgsql, rds, debug_mode, expected):
     got = await PodcastAnswer(
         debug_mode,
         FkAnswer(),
-        RandomPodcast(pgsql),
         rds,
+        pgsql,
     ).build(FkUpdate('{"chat":{"id":123}}'))
 
     assert got[0].url == expected
