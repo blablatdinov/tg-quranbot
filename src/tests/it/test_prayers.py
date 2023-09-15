@@ -44,7 +44,7 @@ async def test_not_found_prayer(pgsql, rds, freezer, user):
     freezer.move_to('2023-08-30')
     got = await PrayerTimeAnswer.new_prayers_ctor(
         pgsql, FkAnswer(), [321], rds,
-    ).build(FkUpdate('{"chat":{"id":123}}'))
+    ).build(FkUpdate('{"chat":{"id":123},"message":{"message_id":1}}'))
 
     assert len(got) == 2
     assert urllib.parse.unquote(

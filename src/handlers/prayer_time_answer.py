@@ -32,12 +32,14 @@ from redis.asyncio import Redis
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
+from integrations.tg.message_id import MessageId
 from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerMarkup,
     TgAnswerToSender,
     TgKeyboardEditAnswer,
     TgMessageAnswer,
+    TgMessageIdAnswer,
     TgTextAnswer,
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
@@ -112,20 +114,23 @@ class PrayerTimeAnswer(TgAnswer):
         """
         return await UserWithoutCitySafeAnswer(
             PrayersExpiredAnswer(
-                TgAnswerMarkup(
-                    TgTextAnswer(
-                        self._origin,
-                        PrayersText(
+                TgMessageIdAnswer(
+                    TgAnswerMarkup(
+                        TgTextAnswer(
+                            self._origin,
+                            PrayersText(
+                                self._pgsql,
+                                datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
+                                UserCityId(self._pgsql, TgChatId(update)),
+                            ),
+                        ),
+                        UserPrayersKeyboard(
                             self._pgsql,
                             datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
-                            UserCityId(self._pgsql, TgChatId(update)),
+                            TgChatId(update),
                         ),
                     ),
-                    UserPrayersKeyboard(
-                        self._pgsql,
-                        datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
-                        TgChatId(update),
-                    ),
+                    int(MessageId(update)),
                 ),
                 self._empty_answer,
                 self._admin_chat_ids,

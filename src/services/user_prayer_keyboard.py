@@ -69,7 +69,8 @@ class UserPrayersKeyboard(KeyboardInterface):
                 INNER JOIN cities AS c ON p.city_id = c.city_id
                 INNER JOIN users AS u ON u.city_id = c.city_id
                 WHERE p.day = :date AND u.chat_id = :chat_id AND p.name <> 'sunrise'
-                ORDER BY p.name
+                ORDER BY
+                    ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
             """
             await self._pgsql.execute(query, {
                 'chat_id': int(self._chat_id),
