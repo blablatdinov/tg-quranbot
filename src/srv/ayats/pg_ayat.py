@@ -77,7 +77,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         return PgAyat(ThroughAsyncIntable(ayat_id), database)
 
     @classmethod
-    def from_callback_query(cls, callback_query: SupportsStr, database: Database):
+    def from_callback_query(cls, callback_query: SupportsStr, database: Database) -> Ayat:
         """Создать аят из данных нажатой inline кнопки.
 
         :param callback_query: SupportsStr
