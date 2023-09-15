@@ -63,11 +63,11 @@ class AyatByIdAnswer(TgAnswer):
                 self._debug_mode,
                 TelegramFileIdAnswer(
                     TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
-                    await result_ayat.tg_file_id(),
+                    await result_ayat.audio(),
                 ),
                 TgTextAnswer.str_ctor(
                     TgHtmlMessageAnswerToSender(self._empty_answer),
-                    await result_ayat.file_link(),
+                    await (await result_ayat.audio()).file_link(),
                 ),
             ),
         ).build(update)

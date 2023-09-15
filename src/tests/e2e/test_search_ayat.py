@@ -39,6 +39,21 @@ def test_search_by_sura_ayat(tg_client, bot_name, query, expected, wait_until):
 
 
 @pytest.mark.usefixtures('bot_process', 'clear_db')
+def test_paginate_in_search_by_sura_ayat(tg_client, bot_name, wait_until):
+    tg_client.send_message(bot_name, '8:7')
+    last_messages = wait_until(tg_client, 3)
+    next(
+        button
+        for button_row in last_messages[1].get_buttons()
+        for button in button_row
+        if button.text == '8:8 ->'
+    ).click()
+    last_messages = wait_until(tg_client, 5)
+
+    assert last_messages[1].message == Path('src/tests/e2e/fixtures/8_8_ayat.txt').read_text()
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db')
 def test_by_word(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Найти аят')
     wait_until(tg_client, 2)
