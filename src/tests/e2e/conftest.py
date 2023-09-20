@@ -95,6 +95,7 @@ def wait_until(bot_name):
         for _ in range(retry):
             time.sleep(delay)
             last_messages = [mess for mess in tg_client.iter_messages(bot_name) if mess.message]
+            print(len(last_messages))
             if len(last_messages) == messages_count:
                 return last_messages
         logger.debug('Taked messages: {0}'.format(

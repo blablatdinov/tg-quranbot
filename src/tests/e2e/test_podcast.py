@@ -23,6 +23,12 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import pytest
 
 
+@pytest.fixture()
+def user(tg_client, bot_name, wait_until):
+    tg_client.send_message(bot_name, '/start')
+    wait_until(tg_client, 3)
+
+
 @pytest.mark.usefixtures('bot_process', 'clear_db')
 def test(tg_client, bot_name, wait_until):
     """Тест просмотра подкаста.
@@ -60,3 +66,30 @@ def test_random(tg_client, bot_name, wait_until):
     messages = wait_until(tg_client, 4)
 
     assert messages[0].message != messages[2].message
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db', 'user')
+def test_like(tg_client, bot_name, wait_until):
+    tg_client.send_message(bot_name, '🎧 Подкасты')
+    messages = wait_until(tg_client, 5)
+    next(
+        button
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+        if '👍' in button.text
+    ).click()
+    messages = wait_until(tg_client, 6)  # TODO: must be 2
+
+    assert messages[0].message == messages[1].message
+    assert [
+        button.text
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+    ] == ['👍 1', '👎 0']
+
+
+def test_like_for_disliked_podcast(): pass
+def test_undo_like(): pass
+def test_dislike(): pass
+def test_dislike_for_liked_podcast(): pass
+def test_undo_dislike(): pass

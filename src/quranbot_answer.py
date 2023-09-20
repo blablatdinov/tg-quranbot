@@ -34,6 +34,7 @@ from handlers.podcast_answer import PodcastAnswer
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
 from handlers.search_ayat_by_numbers_answer import SearchAyatByNumbersAnswer
+from handlers.prayer_reaction_change_answer import PrayerReactionChangeAnswer
 from handlers.search_city_answer import SearchCityAnswer
 from handlers.status_answer import StatusAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
@@ -161,6 +162,10 @@ class QuranbotAnswer(TgAnswer):
                 TgCallbackQueryRegexAnswer(
                     '(mark_readed|mark_not_readed)',
                     UserPrayerStatusChangeAnswer(empty_answer, self._pgsql, self._redis),
+                ),
+                TgCallbackQueryRegexAnswer(
+                    '(like|dislike)',
+                    PrayerReactionChangeAnswer(DebugMode(self._settings), empty_answer, self._redis, self._pgsql),
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getAyat',

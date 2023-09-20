@@ -3,7 +3,7 @@
 
 CREATE TABLE public.podcast_reactions (
     podcast_id character varying NOT NULL,
-    user_id integer NOT NULL,
+    user_id bigint NOT NULL,
     reaction character varying(10) NOT NULL
 );
 
