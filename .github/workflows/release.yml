@@ -86,8 +86,8 @@ jobs:
       run: echo '${{ secrets.E2E_ENV_SETUP }}' > .env
     - name: Create telethon session
       run: echo "${{ secrets.TELETHON_SESSION }}" | base64 --decode > me.session
-    - name: Lint with flake8
-      run: .venv/bin/flake8 src
+    - name: Lint with ruff and flake8
+      run: .venv/bin/ruff check src && .venv/bin/flake8 src
     - name: Check types with mypy
       run: .venv/bin/mypy src
     - name: Run unit tests
