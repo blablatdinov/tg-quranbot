@@ -56,8 +56,8 @@ jobs:
       run: poetry install --no-interaction --no-root
     - name: create .env file
       run: cp .env.example .env
-    - name: Lint with flake8
-      run: .venv/bin/flake8 src
+    - name: Lint with ruff and flake8
+      run: .venv/bin/ruff check src && .venv/bin/flake8 src
     - name: Check types with mypy
       run: .venv/bin/mypy src
     - name: Run tests with pytest
