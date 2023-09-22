@@ -20,12 +20,12 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-FROM python:3.11.5-slim as base
+FROM python:3.12-rc-bookworm as base
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 WORKDIR /app
 
 FROM base as poetry
-RUN pip install poetry==1.3.1
+RUN pip install poetry==1.5.1
 COPY poetry.lock pyproject.toml /app/
 RUN poetry export --without dev -o requirements.txt
 
@@ -34,7 +34,7 @@ COPY --from=poetry /app/requirements.txt /tmp/requirements.txt
 RUN cat /tmp/requirements.txt
 RUN python -m venv /app/.venv && /app/.venv/bin/pip install -r /tmp/requirements.txt
 
-FROM python:3.11.5-slim as runtime
+FROM python:3.12-rc-bookworm as runtime
 
 # Copy only requirements to cache them in docker layer
 WORKDIR /app
