@@ -47,6 +47,7 @@ def clear_db():
     tables = (
         'prayers_at_user',
         'favorite_ayats',
+        'podcast_reactions',
         'users',
     )
     for table in tables:
@@ -95,6 +96,8 @@ def wait_until(bot_name):
         for _ in range(retry):
             time.sleep(delay)
             last_messages = [mess for mess in tg_client.iter_messages(bot_name) if mess.message]
+            if len(last_messages) > messages_count:
+                break
             if len(last_messages) == messages_count:
                 return last_messages
         logger.debug('Taked messages: {0}'.format(

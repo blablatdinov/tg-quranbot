@@ -20,23 +20,40 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import Protocol, final
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
+from app_types.intable import AsyncIntable
 from exceptions.base_exception import InternalBotError
 from srv.files.file import FileLink, TgFile, TgFileId
+
+
+@elegant
+class Podcast(TgFile, Protocol):
+    """Интерфейс подкаста."""
+
+    async def id(self) -> int:
+        """Идентификатор аята."""
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class RandomPodcast(TgFile):
+class RandomPodcast(Podcast):
     """Объект подкаста."""
 
+    _podcast_id: AsyncIntable
     _pgsql: Database
+
+    async def id(self) -> int:
+        """Идентификатор подкаста.
+
+        :return: int
+        """
+        return await self._podcast_id.to_int()
 
     async def tg_file_id(self) -> TgFileId:
         """Получить идентификатор файла.
@@ -48,10 +65,12 @@ class RandomPodcast(TgFile):
             SELECT f.telegram_file_id
             FROM podcasts AS p
             INNER JOIN files AS f ON p.file_id = f.file_id
-            ORDER BY RANDOM()
-            LIMIT 1
+            WHERE p.podcast_id = :podcast_id
         """
-        row = await self._pgsql.fetch_one(query)
+        row = await self._pgsql.fetch_one(
+            query,
+            {'podcast_id': await self._podcast_id.to_int()},
+        )
         if not row:
             raise InternalBotError('Подкасты не найдены')
         return row['telegram_file_id']
@@ -66,10 +85,12 @@ class RandomPodcast(TgFile):
             SELECT f.link
             FROM podcasts AS p
             INNER JOIN files AS f ON p.file_id = f.file_id
-            ORDER BY RANDOM()
-            LIMIT 1
+            WHERE p.podcast_id = :podcast_id
         """
-        row = await self._pgsql.fetch_one(query)
+        row = await self._pgsql.fetch_one(
+            query,
+            {'podcast_id': await self._podcast_id.to_int()},
+        )
         if not row:
             raise InternalBotError('Подкасты не найдены')
         return row['link']

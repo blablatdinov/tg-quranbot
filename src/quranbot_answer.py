@@ -31,6 +31,7 @@ from handlers.favorites_answer import FavoriteAyatsAnswer
 from handlers.full_start_answer import FullStartAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.podcast_answer import PodcastAnswer
+from handlers.prayer_reaction_change_answer import PrayerReactionChangeAnswer
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
 from handlers.search_ayat_by_numbers_answer import SearchAyatByNumbersAnswer
@@ -61,7 +62,6 @@ from srv.ayats.ayat_by_id_answer import AyatByIdAnswer
 from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
 from srv.ayats.favorite_ayat_page import FavoriteAyatPage
 from srv.events.sink import SinkInterface
-from srv.podcasts.podcast import RandomPodcast
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 
 
@@ -103,7 +103,12 @@ class QuranbotAnswer(TgAnswer):
             TgAnswerFork(
                 TgMessageRegexAnswer(
                     'Подкасты',
-                    PodcastAnswer(DebugMode(self._settings), empty_answer, RandomPodcast(self._pgsql), self._redis),
+                    PodcastAnswer(
+                        DebugMode(self._settings),
+                        empty_answer,
+                        self._redis,
+                        self._pgsql,
+                    ),
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',
@@ -157,6 +162,10 @@ class QuranbotAnswer(TgAnswer):
                 TgCallbackQueryRegexAnswer(
                     '(mark_readed|mark_not_readed)',
                     UserPrayerStatusChangeAnswer(empty_answer, self._pgsql, self._redis),
+                ),
+                TgCallbackQueryRegexAnswer(
+                    '(like|dislike)',
+                    PrayerReactionChangeAnswer(DebugMode(self._settings), empty_answer, self._redis, self._pgsql),
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getAyat',
