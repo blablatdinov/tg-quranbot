@@ -60,13 +60,13 @@ def fill_test_db() -> None:
     qbot_cursor = qbot_connection.cursor()
     apply_migrations(qbot_cursor)
     fixtures = (
-        'src/tests/e2e/db-fixtures/files.sql',
-        'src/tests/e2e/db-fixtures/suras.sql',
-        'src/tests/e2e/db-fixtures/ayats.sql',
-        'src/tests/e2e/db-fixtures/podcasts.sql',
-        'src/tests/e2e/db-fixtures/cities.sql',
-        'src/tests/e2e/db-fixtures/prayers.sql',
-        'src/tests/e2e/db-fixtures/admin_messages.sql',
+        'src/tests/e2e/db-fixtures/bot/files.sql',
+        'src/tests/e2e/db-fixtures/bot/suras.sql',
+        'src/tests/e2e/db-fixtures/bot/ayats.sql',
+        'src/tests/e2e/db-fixtures/bot/podcasts.sql',
+        'src/tests/e2e/db-fixtures/bot/cities.sql',
+        'src/tests/e2e/db-fixtures/bot/prayers.sql',
+        'src/tests/e2e/db-fixtures/bot/admin_messages.sql',
     )
     for fixture in fixtures:
         qbot_cursor.execute(Path(fixture).read_text())
