@@ -27,7 +27,7 @@ import pytest
 
 @pytest.fixture()
 def unquote():
-    def _unquote(url):
+    def _unquote(url):  # noqa: WPS430
         return urllib.parse.unquote(
             str(url),
         ).replace('+', ' ')
