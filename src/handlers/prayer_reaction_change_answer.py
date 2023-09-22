@@ -35,15 +35,11 @@ from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers.audio_answer import TgAudioAnswer
-from integrations.tg.tg_answers.chat_id_answer import TgChatIdAnswer
+from integrations.tg.message_id import MessageId
+from integrations.tg.tg_answers import TgKeyboardEditAnswer, TgAnswerToSender, TgMessageIdAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
-from integrations.tg.tg_answers.message_answer import TgMessageAnswer
-from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from services.reset_state_answer import ResetStateAnswer
-from srv.files.file_answer import FileAnswer
-from srv.files.file_id_answer import TelegramFileIdAnswer
 from srv.podcasts.podcast import RandomPodcast
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
 
@@ -104,31 +100,17 @@ class PrayerReactionChangeAnswer(TgAnswer):
             SyncToAsyncIntable(reaction.podcast_id()),
             self._pgsql,
         )
-        chat_id = int(TgChatId(update))
         return await ResetStateAnswer(
-            TgAnswerMarkup(
-                FileAnswer(
-                    self._debug_mode,
-                    TelegramFileIdAnswer(
-                        TgChatIdAnswer(
-                            TgAudioAnswer(
-                                self._origin,
-                            ),
-                            chat_id,
+            TgAnswerToSender(
+                TgMessageIdAnswer(
+                    TgKeyboardEditAnswer(
+                        TgAnswerMarkup(
+                            self._origin,
+                            PodcastKeyboard(self._pgsql, podcast),
                         ),
-                        podcast,
                     ),
-                    TgTextAnswer.str_ctor(
-                        TgChatIdAnswer(
-                            TgMessageAnswer(
-                                self._origin,
-                            ),
-                            chat_id,
-                        ),
-                        await podcast.file_link(),
-                    ),
+                    int(MessageId(update)),
                 ),
-                PodcastKeyboard(self._pgsql, podcast),
             ),
             self._redis,
         ).build(update)

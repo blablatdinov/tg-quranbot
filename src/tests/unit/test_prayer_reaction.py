@@ -26,9 +26,8 @@ from handlers.prayer_reaction_change_answer import PrayerReaction
 
 
 @pytest.mark.parametrize('callback_data,prayer_id,status', [
-    ('like(efb9c858-1528-4359-95cd-40dee306777c)', 'efb9c858-1528-4359-95cd-40dee306777c', 'like'),
-    ('dislike(efb9c858-1528-4359-95cd-40dee306777c)', 'efb9c858-1528-4359-95cd-40dee306777c', 'dislike'),
-    ('like(adsf)', 'adsf', 'like'),
+    ('like(123)', 123, 'like'),
+    ('dislike(7854)', 7854, 'dislike'),
 ])
 def test(callback_data, prayer_id, status):
     reaction = PrayerReaction(callback_data)

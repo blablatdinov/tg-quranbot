@@ -78,9 +78,8 @@ def test_like(tg_client, bot_name, wait_until):
         for button in button_row
         if '👍' in button.text
     ).click()
-    messages = wait_until(tg_client, 6)  # TODO: must be 5
+    messages = wait_until(tg_client, 5)
 
-    assert messages[0].message == messages[1].message
     assert [
         button.text
         for button_row in messages[0].get_buttons()
