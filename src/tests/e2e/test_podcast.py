@@ -69,14 +69,75 @@ def test_random(tg_client, bot_name, wait_until):
 
 
 @pytest.mark.usefixtures('bot_process', 'clear_db', 'user')
-def test_like(tg_client, bot_name, wait_until):
+@pytest.mark.parametrize('target_button,expected', [
+    ('👍', ['👍 1', '👎 0']),
+    ('👎', ['👍 0', '👎 1']),
+])
+def test_reaction(tg_client, bot_name, wait_until, target_button, expected):
     tg_client.send_message(bot_name, '🎧 Подкасты')
     messages = wait_until(tg_client, 5)
     next(
         button
         for button_row in messages[0].get_buttons()
         for button in button_row
-        if '👍' in button.text
+        if target_button in button.text
+    ).click()
+    messages = wait_until(tg_client, 5)
+
+    assert expected == [
+        button.text
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+    ]
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db', 'user')
+@pytest.mark.parametrize('first_reaction,second_reaction,expected', [
+    ('👎', '👍', ['👍 1', '👎 0']),
+    ('👍', '👎', ['👍 0', '👎 1']),
+])
+def test_reverse_reaction(tg_client, bot_name, wait_until, first_reaction, second_reaction, expected):
+    tg_client.send_message(bot_name, '🎧 Подкасты')
+    messages = wait_until(tg_client, 5)
+    next(
+        button
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+        if first_reaction in button.text
+    ).click()
+    messages = wait_until(tg_client, 5)
+    next(
+        button
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+        if second_reaction in button.text
+    ).click()
+    messages = wait_until(tg_client, 5)
+
+    assert expected == [
+        button.text
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+    ]
+
+
+@pytest.mark.usefixtures('bot_process', 'clear_db', 'user')
+@pytest.mark.parametrize('reaction', ['👎', '👍'])
+def test_undo_reaction(tg_client, bot_name, wait_until, reaction):
+    tg_client.send_message(bot_name, '🎧 Подкасты')
+    messages = wait_until(tg_client, 5)
+    next(
+        button
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+        if reaction in button.text
+    ).click()
+    messages = wait_until(tg_client, 5)
+    next(
+        button
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+        if reaction in button.text
     ).click()
     messages = wait_until(tg_client, 5)
 
@@ -84,11 +145,4 @@ def test_like(tg_client, bot_name, wait_until):
         button.text
         for button_row in messages[0].get_buttons()
         for button in button_row
-    ] == ['👍 1', '👎 0']
-
-
-# def test_like_for_disliked_podcast(): pass
-# def test_undo_like(): pass
-# def test_dislike(): pass
-# def test_dislike_for_liked_podcast(): pass
-# def test_undo_dislike(): pass
+    ] == ['👍 0', '👎 0']

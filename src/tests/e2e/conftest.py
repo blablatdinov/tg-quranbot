@@ -47,6 +47,7 @@ def clear_db():
     tables = (
         'prayers_at_user',
         'favorite_ayats',
+        'podcast_reactions',
         'users',
     )
     for table in tables:
