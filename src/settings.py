@@ -69,6 +69,27 @@ class CachedSettings(Settings):
 @final
 @elegant
 @attrs.define(frozen=True)
+class OsOrFileSettings(Settings):
+    """Объект, который достает настройки из переменных окружения или файла."""
+
+    _os_envs: Settings
+    _env_file: Settings
+
+    def __getattr__(self, attr_name):
+        """Получить аттрибут.
+
+        :param attr_name: str
+        :return: str
+        """
+        try:
+            return getattr(self._os_envs, attr_name)
+        except ValueError:
+            return getattr(self._os_envs, attr_name)
+
+
+@final
+@elegant
+@attrs.define(frozen=True)
 class EnvFileSettings(Settings):
     """Настройки из .env файла."""
 
