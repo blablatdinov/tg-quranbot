@@ -23,11 +23,10 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import json
 from contextlib import suppress
 from typing import final
-from unittest.mock import AsyncMock
 
 import pytest
+from fakeredis import aioredis
 from pyeo import elegant
-from redis.asyncio import Redis
 
 from integrations.tg.tg_answers import TgAnswer
 from integrations.tg.update import TgUpdate
@@ -47,10 +46,8 @@ class TgAnswerFake(TgAnswer):
 
 
 @pytest.fixture()
-def mock_redis():
-    redis: Redis = Redis()
-    redis.set = AsyncMock()  # type: ignore
-    return redis
+def fake_redis():
+    return aioredis.FakeRedis()
 
 
 @pytest.fixture()
@@ -74,8 +71,8 @@ def update():
     )
 
 
-async def test(update, mock_redis):
+async def test(update, fake_redis):
     with suppress(FakeError):
-        await CachedAyatSearchQueryAnswer(TgAnswerFake(), mock_redis).build(TgUpdate(update))
+        await CachedAyatSearchQueryAnswer(TgAnswerFake(), fake_redis).build(TgUpdate(update))
 
-    mock_redis.set.assert_called_with('358610865:ayat_search_query', 'камни')
+    assert await fake_redis.get('358610865:ayat_search_query') == 'камни'.encode('utf-8')
