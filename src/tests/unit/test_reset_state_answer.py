@@ -20,9 +20,8 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from unittest.mock import AsyncMock
-
 import pytest
+from fakeredis import aioredis
 from redis.asyncio import Redis
 
 from app_types.update import FkUpdate
@@ -32,19 +31,17 @@ from services.reset_state_answer import ResetStateAnswer
 
 
 @pytest.fixture()
-def mock_redis(mocker):
-    mock = AsyncMock()
-    Redis.set = mock  # type: ignore
-    return mock
+def fake_redis():
+    return aioredis.FakeRedis()
 
 
-async def test_redis_query(mock_redis):
+async def test_redis_query(fake_redis):
     await ResetStateAnswer(FkAnswer(), Redis()).build(TgUpdate('{"from":{"id":123}}'))
 
-    mock_redis.assert_called_with('123:step', 'nothing')
+    assert await fake_redis.get('123:step') is None
 
 
-async def test_origin_answer_not_modificated(mock_redis):
+async def test_origin_answer_not_modificated(fake_redis):
     got = await ResetStateAnswer(FkAnswer(), Redis()).build(TgUpdate('{"from":{"id":123}}'))
     origin = (await FkAnswer().build(FkUpdate()))[0].url
 

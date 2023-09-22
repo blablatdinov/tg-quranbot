@@ -27,7 +27,7 @@ lint:
 	poetry run isort src
 	poetry run ruff check src
 	poetry run flake8 src
-	rm -rf .mypy_cache && poetry run mypy src
+	poetry run mypy src
 
 unit:
 	poetry run pytest src --ignore=src/tests/{e2e,it} --cov=src
