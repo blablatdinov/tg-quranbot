@@ -22,7 +22,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import pytest
 from fakeredis import aioredis
-from redis.asyncio import Redis
 
 from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer
@@ -36,13 +35,13 @@ def fake_redis():
 
 
 async def test_redis_query(fake_redis):
-    await ResetStateAnswer(FkAnswer(), Redis()).build(TgUpdate('{"from":{"id":123}}'))
+    await ResetStateAnswer(FkAnswer(), fake_redis).build(TgUpdate('{"from":{"id":123}}'))
 
-    assert await fake_redis.get('123:step') is None
+    assert await fake_redis.get('123:step') == b'nothing'
 
 
 async def test_origin_answer_not_modificated(fake_redis):
-    got = await ResetStateAnswer(FkAnswer(), Redis()).build(TgUpdate('{"from":{"id":123}}'))
+    got = await ResetStateAnswer(FkAnswer(), fake_redis).build(TgUpdate('{"from":{"id":123}}'))
     origin = (await FkAnswer().build(FkUpdate()))[0].url
 
     assert got[0].url == origin
