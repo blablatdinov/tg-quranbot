@@ -31,10 +31,10 @@ from handlers.favorites_answer import FavoriteAyatsAnswer
 from handlers.full_start_answer import FullStartAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.podcast_answer import PodcastAnswer
+from handlers.prayer_reaction_change_answer import PrayerReactionChangeAnswer
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
 from handlers.search_ayat_by_numbers_answer import SearchAyatByNumbersAnswer
-from handlers.prayer_reaction_change_answer import PrayerReactionChangeAnswer
 from handlers.search_city_answer import SearchCityAnswer
 from handlers.status_answer import StatusAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer

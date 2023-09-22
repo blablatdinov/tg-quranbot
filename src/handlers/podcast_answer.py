@@ -20,7 +20,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import random
 from typing import final
 
 import attrs
@@ -63,9 +62,9 @@ class PodcastAnswer(TgAnswer):
         :param update: Update
         :return: AnswerInterface
         """
-        podcasts_count = (await self._pgsql.fetch_val('SELECT COUNT(*) FROM podcasts')) or 100
+        podcasts_id = await self._pgsql.fetch_val('SELECT podcast_id FROM podcasts ORDER BY RANDOM()')
         podcast = RandomPodcast(
-            SyncToAsyncIntable(random.randrange(1, podcasts_count + 1)),  # noqa: S311 not secure issue
+            SyncToAsyncIntable(podcasts_id),
             self._pgsql,
         )
         chat_id = int(TgChatId(update))

@@ -36,7 +36,7 @@ from srv.files.file import FileLink, TgFile, TgFileId
 class Podcast(TgFile, Protocol):
     """Интерфейс подкаста."""
 
-    async def id(self) -> uuid.UUID:
+    async def id(self) -> int:
         """Идентификатор аята."""
 
 
@@ -46,29 +46,15 @@ class Podcast(TgFile, Protocol):
 class RandomPodcast(Podcast):
     """Объект подкаста."""
 
-    _number: AsyncIntable
+    _podcast_id: AsyncIntable
     _pgsql: Database
 
-    async def id(self) -> uuid.UUID:
+    async def id(self) -> int:
         """Идентификатор подкаста.
 
-        :return: uuid.UUID
-        :raises InternalBotError: если таблилца с подкастами не заполнена
+        :return: int
         """
-        query = """
-            SELECT podcast_id
-            FROM podcasts
-            ORDER BY podcast_id
-            OFFSET :offset
-            LIMIT 1
-        """
-        podcast_id = await self._pgsql.fetch_val(
-            query,
-            {'offset': await self._number.to_int()},
-        )
-        if not podcast_id:
-            raise InternalBotError('Подкасты не найдены')
-        return podcast_id
+        return await self._podcast_id.to_int()
 
     async def tg_file_id(self) -> TgFileId:
         """Получить идентификатор файла.
@@ -80,13 +66,11 @@ class RandomPodcast(Podcast):
             SELECT f.telegram_file_id
             FROM podcasts AS p
             INNER JOIN files AS f ON p.file_id = f.file_id
-            ORDER BY podcast_id
-            OFFSET :offset
-            LIMIT 1
+            WHERE p.podcast_id = :podcast_id
         """
         row = await self._pgsql.fetch_one(
             query,
-            {'offset': await self._number.to_int()},
+            {'podcast_id': await self._podcast_id.to_int()},
         )
         if not row:
             raise InternalBotError('Подкасты не найдены')
@@ -102,13 +86,11 @@ class RandomPodcast(Podcast):
             SELECT f.link
             FROM podcasts AS p
             INNER JOIN files AS f ON p.file_id = f.file_id
-            ORDER BY podcast_id
-            OFFSET :offset
-            LIMIT 1
+            WHERE p.podcast_id = :podcast_id
         """
         row = await self._pgsql.fetch_one(
             query,
-            {'offset': await self._number.to_int()},
+            {'podcast_id': await self._podcast_id.to_int()},
         )
         if not row:
             raise InternalBotError('Подкасты не найдены')

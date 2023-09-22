@@ -61,7 +61,7 @@ def test(tg_client, bot_name, wait_until):
 @pytest.mark.usefixtures('bot_process', 'clear_db')
 def test_random(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '🎧 Подкасты')
-    messages = wait_until(tg_client, 2)
+    wait_until(tg_client, 2)
     tg_client.send_message(bot_name, '🎧 Подкасты')
     messages = wait_until(tg_client, 4)
 
@@ -78,7 +78,7 @@ def test_like(tg_client, bot_name, wait_until):
         for button in button_row
         if '👍' in button.text
     ).click()
-    messages = wait_until(tg_client, 6)  # TODO: must be 2
+    messages = wait_until(tg_client, 6)  # TODO: must be 5
 
     assert messages[0].message == messages[1].message
     assert [
@@ -88,8 +88,8 @@ def test_like(tg_client, bot_name, wait_until):
     ] == ['👍 1', '👎 0']
 
 
-def test_like_for_disliked_podcast(): pass
-def test_undo_like(): pass
-def test_dislike(): pass
-def test_dislike_for_liked_podcast(): pass
-def test_undo_dislike(): pass
+# def test_like_for_disliked_podcast(): pass
+# def test_undo_like(): pass
+# def test_dislike(): pass
+# def test_dislike_for_liked_podcast(): pass
+# def test_undo_dislike(): pass

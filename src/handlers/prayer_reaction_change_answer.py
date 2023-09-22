@@ -21,9 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import re
-import uuid
-import random
-from typing import final, Literal
+from typing import Literal, final
 
 import attrs
 import httpx
@@ -33,9 +31,9 @@ from redis.asyncio import Redis
 
 from app_types.intable import SyncToAsyncIntable
 from app_types.stringable import SupportsStr
-from integrations.tg.callback_query import CallbackQueryData
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
+from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers.audio_answer import TgAudioAnswer
 from integrations.tg.tg_answers.chat_id_answer import TgChatIdAnswer
@@ -54,13 +52,22 @@ from srv.podcasts.podcast_keyboard import PodcastKeyboard
 @attrs.define(frozen=True)
 @elegant
 class PrayerReaction(object):
+    """Реакция на подкаст."""
 
     _callback_query: SupportsStr
 
-    def podcast_id(self) -> uuid.UUID:
-        return re.findall(r'\((.+)\)', str(self._callback_query))[0]
+    def podcast_id(self) -> int:
+        """Идентификатор подкаста.
+
+        :return: int
+        """
+        return int(re.findall(r'\((.+)\)', str(self._callback_query))[0])
 
     def status(self) -> Literal['like'] | Literal['dislike']:
+        """Реакция.
+
+        :return: Literal['like'] | Literal['dislike']
+        """
         if 'dislike' in str(self._callback_query):
             return 'dislike'
         return 'like'
@@ -93,16 +100,8 @@ class PrayerReactionChangeAnswer(TgAnswer):
             'user_id': int(TgChatId(update)),
             'reaction': reaction.status(),
         })
-        podcast_number = await self._pgsql.fetch_val(
-            """
-            SELECT ROW_NUMBER() OVER (ORDER BY podcast_id) AS row_num
-            FROM public.podcasts
-            WHERE podcast_id = :podcast_id
-            """,
-            {'podcast_id': reaction.podcast_id()},
-        )
         podcast = RandomPodcast(
-            SyncToAsyncIntable(podcast_number),
+            SyncToAsyncIntable(reaction.podcast_id()),
             self._pgsql,
         )
         chat_id = int(TgChatId(update))
