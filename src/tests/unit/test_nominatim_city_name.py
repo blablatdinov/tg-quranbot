@@ -84,6 +84,6 @@ def mock_nominatim(respx_mock):
 
 @pytest.mark.usefixtures('mock_nominatim')
 async def test():
-    got = await NominatimCityName(FkCoordinates()).search()
+    got = await NominatimCityName(FkCoordinates()).to_str()
 
     assert got == 'Казань'

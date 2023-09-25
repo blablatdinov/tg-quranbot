@@ -25,18 +25,12 @@ from typing import final
 import attrs
 import httpx
 from pyeo import elegant
-from redis.asyncio import Redis
 
 from app_types.update import Update
 from exceptions.content_exceptions import CityNotSupportedError
-from integrations.tg.chat_id import TgChatId
-from integrations.tg.coordinates import TgMessageCoordinates
-from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
-from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
-from repository.users.user import UserRepositoryInterface
-from services.city.search import CitySearchInterface, SearchCityQuery
-from services.user_state import LoggedUserState, UserState, UserStep
+from srv.prayers.city import City
+from srv.prayers.search_cities import UpdatedUserCity
 
 
 @final
@@ -70,36 +64,17 @@ class ChangeCityAnswer(TgAnswer):
     """Ответ со сменой города."""
 
     _origin: TgAnswer
-    _city: CitySearchInterface
-    _redis: Redis
-    _user_repo: UserRepositoryInterface
+    _user_city: UpdatedUserCity
+    _city: City
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
         :param update: Update
         :return: list[httpx.Request]
-        :raises CityNotSupportedError: если город не поддерживается
         """
-        try:
-            query = SearchCityQuery.from_string_cs(str(MessageText(update)))
-        except MessageTextNotFoundError:
-            coordinates = TgMessageCoordinates(update)
-            query = SearchCityQuery.from_coordinates_cs(
-                coordinates.latitude(),
-                coordinates.longitude(),
-            )
-        cities = await self._city.search(query)
-        if not cities:
-            raise CityNotSupportedError
-        await self._user_repo.update_city(
-            int(TgChatId(update)),
-            cities[0].id,
-        )
-        await LoggedUserState(
-            UserState(self._redis, int(TgChatId(update))),
-        ).change_step(UserStep.nothing)
+        await self._user_city.update()
         return await TgTextAnswer.str_ctor(
             self._origin,
-            'Вам будет приходить время намаза для города {0}'.format(cities[0].name),
+            'Вам будет приходить время намаза для города {0}'.format(await self._city.name()),
         ).build(update)

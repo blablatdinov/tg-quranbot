@@ -29,15 +29,18 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.supports_bool import SupportsBool
-from integrations.nominatim import NominatimCityName
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.coordinates import TgMessageCoordinates
+from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
+from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerFork, TgAnswerToSender, TgMessageAnswer, TgMessageRegexAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
-from repository.users.user import UserRepository
-from services.city.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
-from services.city.search import SearchCityByCoordinates, SearchCityByName
+from services.reset_state_answer import ResetStateAnswer
+from srv.prayers.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
+from srv.prayers.city import PgCity
+from srv.prayers.search_cities import PgUpdatedUserCity
 from srv.prayers.user_not_registered_safe_answer import UserNotRegisteredSafeAnswer
 
 
@@ -45,7 +48,7 @@ from srv.prayers.user_not_registered_safe_answer import UserNotRegisteredSafeAns
 @attrs.define(frozen=True)
 @elegant
 class SearchCityAnswer(TgAnswer):
-    """Ответ с изменением статуса прочитанности намаза."""
+    """Ответ со списком городов для выбора."""
 
     _pgsql: Database
     _empty_answer: TgAnswer
@@ -59,6 +62,10 @@ class SearchCityAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
+        try:
+            city = PgCity.name_ctor(str(MessageText(update)), self._pgsql)
+        except MessageTextNotFoundError:
+            city = PgCity.location_ctor(TgMessageCoordinates(update), self._pgsql)
         return await UserNotRegisteredSafeAnswer(
             self._pgsql,
             TgSkipNotProcessable(
@@ -66,11 +73,13 @@ class SearchCityAnswer(TgAnswer):
                     TgMessageRegexAnswer(
                         '.+',
                         CityNotSupportedAnswer(
-                            ChangeCityAnswer(
-                                answer_to_sender,
-                                SearchCityByName(self._pgsql),
+                            ResetStateAnswer(
+                                ChangeCityAnswer(
+                                    answer_to_sender,
+                                    PgUpdatedUserCity(city, TgChatId(update), self._pgsql),
+                                    city,
+                                ),
                                 self._redis,
-                                UserRepository(self._pgsql),
                             ),
                             answer_to_sender,
                         ),
@@ -79,12 +88,8 @@ class SearchCityAnswer(TgAnswer):
                         CityNotSupportedAnswer(
                             ChangeCityAnswer(
                                 answer_to_sender,
-                                SearchCityByCoordinates(
-                                    SearchCityByName(self._pgsql),
-                                    NominatimCityName(TgMessageCoordinates(update)),
-                                ),
-                                self._redis,
-                                UserRepository(self._pgsql),
+                                PgUpdatedUserCity(city, TgChatId(update), self._pgsql),
+                                city,
                             ),
                             answer_to_sender,
                         ),
