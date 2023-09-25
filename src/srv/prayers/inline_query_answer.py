@@ -25,14 +25,15 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.inline_query import InlineQuery, InlineQueryId
 from integrations.tg.tg_answers import TgAnswer
-from services.city.search import CitySearchInterface, SearchCityQuery
 from services.debug_answer import DebugAnswer
+from srv.prayers.city_names import CityNames
 
 
 @final
@@ -42,7 +43,7 @@ class InlineQueryAnswer(TgAnswer):
     """Ответ на инлайн поиск."""
 
     _origin: TgAnswer
-    _cities: CitySearchInterface
+    _pgsql: Database
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
@@ -56,9 +57,7 @@ class InlineQueryAnswer(TgAnswer):
         except AttributeError as err:
             raise NotProcessableUpdateError from err
         origin_requests = await DebugAnswer(self._origin).build(update)
-        cities = await self._cities.search(
-            SearchCityQuery.from_string_cs(inline_query_data),
-        )
+        city_names = await CityNames(self._pgsql, inline_query_data).to_list()
         return [
             httpx.Request(
                 origin_requests[0].method,
@@ -73,10 +72,10 @@ class InlineQueryAnswer(TgAnswer):
                             {
                                 'id': str(idx),
                                 'type': 'article',
-                                'title': city.name,
-                                'input_message_content': {'message_text': city.name},
+                                'title': city_name,
+                                'input_message_content': {'message_text': city_name},
                             }
-                            for idx, city in enumerate(cities)
+                            for idx, city_name in enumerate(city_names)
                         ]),
                     )
                 ),

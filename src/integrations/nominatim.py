@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import final
 
 import attrs
 import httpx
@@ -30,13 +30,7 @@ from pyeo import elegant
 from app_types.stringable import AsyncSupportsStr
 from integrations.tg.coordinates import Coordinates
 
-
-@elegant
-class CityName(Protocol):
-    """Интерфейс интеграции с геосервисом."""
-
-    async def search(self) -> str:
-        """Поиск по координатам."""
+CityName = AsyncSupportsStr
 
 
 @final
@@ -48,7 +42,7 @@ class CityNameById(CityName):
     _pgsql: Database
     _city_id: AsyncSupportsStr
 
-    async def search(self) -> str:
+    async def to_str(self) -> str:
         """Поиск.
 
         :return: str
@@ -66,7 +60,7 @@ class NominatimCityName(CityName):
 
     _coordinates: Coordinates
 
-    async def search(self) -> str:
+    async def to_str(self) -> str:
         """Поиск по координатам.
 
         curl https://nominatim.openstreetmap.org/reverse.php?lat=55.7887&lon=49.1221&format=jsonv2

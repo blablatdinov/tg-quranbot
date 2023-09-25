@@ -51,8 +51,6 @@ from integrations.tg.tg_answers import (
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
-from services.city.inline_query_answer import InlineQueryAnswer
-from services.city.search import SearchCityByName
 from services.help_answer import HelpAnswer
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
@@ -62,6 +60,7 @@ from srv.ayats.ayat_by_id_answer import AyatByIdAnswer
 from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
 from srv.ayats.favorite_ayat_page import FavoriteAyatPage
 from srv.events.sink import SinkInterface
+from srv.prayers.inline_query_answer import InlineQueryAnswer
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 
 
@@ -192,10 +191,7 @@ class QuranbotAnswer(TgAnswer):
                     '(addToFavor|removeFromFavor)',
                     ChangeFavoriteAyatAnswer(self._pgsql, empty_answer, self._redis),
                 ),
-                InlineQueryAnswer(
-                    empty_answer,
-                    SearchCityByName(self._pgsql),
-                ),
+                InlineQueryAnswer(empty_answer, self._pgsql),
             ),
             TgAnswerToSender(
                 TgMessageAnswer(empty_answer),

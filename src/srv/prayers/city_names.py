@@ -20,15 +20,37 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import uuid
 from typing import final
 
-from pydantic import BaseModel
+import attrs
+from databases import Database
+from pyeo import elegant
+
+from app_types.listable import AsyncListable
 
 
 @final
-class City(BaseModel):
-    """Модель города."""
+@attrs.define(frozen=True)
+@elegant
+class CityNames(AsyncListable):
+    """Имена городов."""
 
-    id: uuid.UUID
-    name: str
+    _pgsql: Database
+    _query: str
+
+    async def to_list(self) -> list[str]:
+        """Список строк.
+
+        :returns: list[str]
+        """
+        search_query = '%{0}%'.format(self._query)
+        db_query = """
+            SELECT
+                name
+            FROM cities
+            WHERE name ILIKE :search_query
+        """
+        return [
+            row['name']
+            for row in await self._pgsql.fetch_all(db_query, {'search_query': search_query})
+        ]

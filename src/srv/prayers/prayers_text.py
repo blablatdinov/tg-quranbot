@@ -97,7 +97,7 @@ class PrayersText(AsyncSupportsStr):
         })
         if not rows:
             raise PrayersNotFoundError(
-                await CityNameById(self._pgsql, self._city_id).search(),
+                await CityNameById(self._pgsql, self._city_id).to_str(),
                 self._date,
             )
         template = '\n'.join([

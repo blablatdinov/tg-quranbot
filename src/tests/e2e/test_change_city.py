@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import pytest
+from telethon.sync import TelegramClient
 
 
 @pytest.fixture()
@@ -36,9 +37,9 @@ def user_city(tg_client, db_conn, bot_name, wait_until):
 
 
 @pytest.mark.usefixtures('bot_process', 'clear_db', 'user_city')
-def test_prayer_times(tg_client, bot_name, wait_until, db_query_vals):
+def test_change_city_by_name(tg_client, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, 'Поменять город')
-    messages = wait_until(tg_client, 5)
+    wait_until(tg_client, 5)
     tg_client.send_message(bot_name, 'Набережные Челны')
     messages = wait_until(tg_client, 7)
 
@@ -48,10 +49,30 @@ def test_prayer_times(tg_client, bot_name, wait_until, db_query_vals):
     ]
 
 
+@pytest.mark.usefixtures('bot_process', 'clear_db', 'user_city')
+def test_change_city_by_search(tg_client: TelegramClient, bot_name, wait_until, db_query_vals):
+    tg_client.send_message(bot_name, 'Поменять город')
+    messages = wait_until(tg_client, 5)
+    buttons = [
+        button.text
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+    ]
+    cities = tg_client.inline_query(bot_name, 'Набережные')
+    cities[0].click(bot_name)
+    messages = wait_until(tg_client, 7)
+
+    assert buttons == ['Поиск города']
+    assert messages[0].message == 'Вам будет приходить время намаза для города Набережные Челны'
+    assert db_query_vals('SELECT city_id FROM users WHERE chat_id = 5354079702') == [
+        ('bd92bb55-10ba-4095-9a3e-c7c5737a354b',),
+    ]
+
+
 @pytest.mark.usefixtures('bot_process', 'clear_db')
 def test_not_registred(tg_client, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, 'Поменять город')
-    messages = wait_until(tg_client, 2)
+    wait_until(tg_client, 2)
     tg_client.send_message(bot_name, 'Набережные Челны')
     messages = wait_until(tg_client, 4)
 
