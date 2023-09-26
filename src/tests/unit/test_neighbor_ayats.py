@@ -70,7 +70,7 @@ async def test_first(neighbor):
     with pytest.raises(AyatNotFoundError):
         await neighbor_ayats.left_neighbor()
     right_neighbor = await neighbor_ayats.right_neighbor()
-    assert await right_neighbor.identifier().id() == 2
+    assert await right_neighbor.identifier().ayat_id() == 2
     assert await neighbor_ayats.page() == 'стр. 1/3'
 
 
@@ -96,7 +96,7 @@ async def test_last(neighbor):
     with pytest.raises(AyatNotFoundError):
         await neighbor_ayats.right_neighbor()
     right_neighbor = await neighbor_ayats.left_neighbor()
-    assert await right_neighbor.identifier().id() == 2
+    assert await right_neighbor.identifier().ayat_id() == 2
     assert await neighbor_ayats.page() == 'стр. 3/3'
 
 
@@ -111,7 +111,7 @@ async def test_empty(neighbor):
         await neighbor_ayats.page()
 
 
-@pytest.mark.parametrize('ayat_id,expected', [
+@pytest.mark.parametrize(('ayat_id', 'expected'), [
     (
         1,
         json.dumps({

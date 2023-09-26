@@ -72,7 +72,7 @@ class NeighborAyatKeyboard(KeyboardInterface):
                     await left.identifier().sura_num(),
                     await left.identifier().ayat_num(),
                 ),
-                'callback_data': self._callback_template.format(await left.identifier().id()),
+                'callback_data': self._callback_template.format(await left.identifier().ayat_id()),
             }
         return None
 
@@ -84,6 +84,6 @@ class NeighborAyatKeyboard(KeyboardInterface):
                     await right.identifier().sura_num(),
                     await right.identifier().ayat_num(),
                 ),
-                'callback_data': self._callback_template.format(await right.identifier().id()),
+                'callback_data': self._callback_template.format(await right.identifier().ayat_id()),
             }
         return None

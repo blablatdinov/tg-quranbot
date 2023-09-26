@@ -61,7 +61,7 @@ class AyatByIdMessageAnswer(TgAnswer):
             ),
             AyatFavoriteKeyboardButton(
                 NeighborAyatKeyboard(
-                    PgNeighborAyats(self._pgsql, await self._result_ayat.identifier().id()),
+                    PgNeighborAyats(self._pgsql, await self._result_ayat.identifier().ayat_id()),
                     AyatCallbackTemplateEnum.get_ayat,
                 ),
                 AyatIsFavor(

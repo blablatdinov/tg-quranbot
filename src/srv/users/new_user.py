@@ -28,29 +28,34 @@ from databases import Database
 from loguru import logger
 from pyeo import elegant
 
-from app_types.intable import AsyncIntable
-from exceptions.base_exception import InternalBotError
-from exceptions.user import UserAlreadyExists
+from exceptions.user import UserAlreadyExistsError
 from integrations.tg.chat_id import TgChatId
 from services.start.start_message import AsyncIntOrNone
 
 
 @elegant
 class NewUser(Protocol):
+    """Новый пользователь."""
 
-    async def create(self): ...
+    async def create(self):
+        """Создание."""
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
 class PgNewUser(NewUser):
+    """Новый пользователь в БД postgres."""
 
     _referrer_chat_id: AsyncIntOrNone
     _new_user_chat_id: TgChatId
     _pgsql: Database
 
     async def create(self) -> None:
+        """Создание.
+
+        :raises UserAlreadyExistsError: пользователь уже зарегистрирован
+        """
         chat_id = int(self._new_user_chat_id)
         logger.debug('Insert in DB User <{0}>...'.format(chat_id))
         query = """
@@ -64,6 +69,6 @@ class PgNewUser(NewUser):
                 query,
                 {'chat_id': chat_id, 'referrer_id': await self._referrer_chat_id.to_int()},
             )
-        except UniqueViolationError:
-            raise UserAlreadyExists
+        except UniqueViolationError as err:
+            raise UserAlreadyExistsError from err
         logger.debug('User <{0}> inserted in DB'.format(chat_id))

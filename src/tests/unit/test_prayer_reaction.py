@@ -25,7 +25,7 @@ import pytest
 from handlers.prayer_reaction_change_answer import PrayerReaction
 
 
-@pytest.mark.parametrize('callback_data,prayer_id,status', [
+@pytest.mark.parametrize(('callback_data', 'prayer_id', 'status'), [
     ('like(123)', 123, 'like'),
     ('dislike(7854)', 7854, 'dislike'),
 ])

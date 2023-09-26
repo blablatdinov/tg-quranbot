@@ -40,7 +40,7 @@ class Update(SupportsStr, Protocol):
     def parsed(self) -> UpdateStruct:
         """Десериализованный объект."""
 
-    def dict(self) -> dict:
+    def asdict(self) -> dict:
         """Словарь."""
 
 
@@ -66,7 +66,7 @@ class FkUpdate(Update):
         """
         return UpdateStruct(ok=True)
 
-    def dict(self):
+    def asdict(self):
         """Словарь.
 
         :return: dict

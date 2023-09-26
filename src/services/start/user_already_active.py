@@ -27,7 +27,7 @@ import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from exceptions.user import UserAlreadyActive
+from exceptions.user import UserAlreadyActiveError
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 
 
@@ -48,7 +48,7 @@ class UserAlreadyActiveSafeAnswer(TgAnswer):
         """
         try:
             return await self._origin.build(update)
-        except UserAlreadyActive:
+        except UserAlreadyActiveError:
             return await TgTextAnswer.str_ctor(
                 self._sender_answer,
                 'Вы уже зарегистрированы!',

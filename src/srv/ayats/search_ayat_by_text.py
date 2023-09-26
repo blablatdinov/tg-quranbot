@@ -77,7 +77,7 @@ class SearchAyatByTextAnswer(TgAnswer):
                 result_ayat,
                 TextSearchNeighborAyats(
                     self._pgsql,
-                    await result_ayat.identifier().id(),
+                    await result_ayat.identifier().ayat_id(),
                     AyatTextSearchQuery.for_reading_cs(self._redis, int(TgChatId(update))),
                 ),
                 AyatCallbackTemplateEnum.get_search_ayat,

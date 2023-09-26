@@ -62,11 +62,11 @@ def mock_nominatim(respx_mock):
             'addresstype': 'building',
             'boundingbox': ['55.7886681', '55.7889864', '49.1218618', '49.1223806'],
             'category': 'building',
-            'display_name': (
-                '12, Университетская улица, Старо-Татарская слобода, '
-                + 'Вахитовский район, Казань, городской округ Казань, '
-                + 'Татарстан, Приволжский федеральный округ, 420111, Россия'
-            ),
+            'display_name': ' '.join([
+                '12, Университетская улица, Старо-Татарская слобода,',
+                'Вахитовский район, Казань, городской округ Казань,',
+                'Татарстан, Приволжский федеральный округ, 420111, Россия',
+            ]),
             'importance': 9.9,
             'lat': '55.7888272',
             'licence': 'Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright',
@@ -79,7 +79,6 @@ def mock_nominatim(respx_mock):
             'type': 'apartments',
         }),
     ))
-    yield
 
 
 @pytest.mark.usefixtures('mock_nominatim')

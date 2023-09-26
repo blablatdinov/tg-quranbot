@@ -61,7 +61,7 @@ class PgUpdatedUserCity(UpdatedUserCity):
             RETURNING *
         """
         updated_rows = await self._pgsql.fetch_all(query, {
-            'city_id': str(await self._city.id()),
+            'city_id': str(await self._city.city_id()),
             'chat_id': int(self._chat_id),
         })
         if not updated_rows:

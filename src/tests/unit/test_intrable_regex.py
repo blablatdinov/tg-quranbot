@@ -25,7 +25,7 @@ import pytest
 from services.regular_expression import IntableRegularExpression
 
 
-@pytest.mark.parametrize('input_,expected', [
+@pytest.mark.parametrize(('input_', 'expected'), [
     ('8923749', 8923749),
     ('around483759text', 483759),
     ('5347split832457', 5347),

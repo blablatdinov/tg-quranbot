@@ -44,7 +44,7 @@ def stringable_callback_update():
     )
 
 
-@pytest.mark.parametrize('input_,expected', [
+@pytest.mark.parametrize(('input_', 'expected'), [
     (lazy_fixture('stringable_update'), 22628),
     (lazy_fixture('stringable_callback_update'), 22627),
 ])

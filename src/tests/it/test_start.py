@@ -35,27 +35,22 @@ from tests.unit.test_amdin_chat_ids import FkSettings
 
 @pytest.fixture()
 async def db_ayat(pgsql):
+    created_at = datetime.datetime.now()
     await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
             "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
         ]),
         [
-            {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': datetime.datetime.now()},
-            {'file_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba', 'created_at': datetime.datetime.now()},
+            {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at},
+            {'file_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba', 'created_at': created_at},
         ],
     )
     await pgsql.execute(
-        '\n'.join([
-            'INSERT INTO suras (sura_id, link)',
-            "VALUES (1, '/link-to-sura.domain')",
-        ]),
+        "INSERT INTO suras (sura_id, link)\nVALUES (1, '/link-to-sura.domain')",
     )
     await pgsql.execute(
-        '\n'.join([
-            'INSERT INTO admin_messages (key, text)',
-            "VALUES ('start', 'start admin message')",
-        ]),
+        "INSERT INTO admin_messages (key, text)\nVALUES ('start', 'start admin message')",
     )
     await pgsql.execute(
         '\n'.join([
@@ -81,7 +76,7 @@ async def db_ayat(pgsql):
 @pytest.fixture()
 async def existed_user(pgsql):
     await pgsql.execute(
-        'INSERT INTO users (chat_id, day, legacy_id) VALUES (321, 2, 1)'
+        'INSERT INTO users (chat_id, day, legacy_id) VALUES (321, 2, 1)',
     )
 
 
@@ -98,14 +93,14 @@ async def test(pgsql, rds, db_ayat, unquote):
             'text': 'start admin message',
             'chat_id': 321,
             'reply_markup': json.dumps({
-                "keyboard": [
-                    ["🎧 Подкасты"],
-                    ["🕋 Время намаза", "🏘️ Поменять город"],
-                    ["🌟 Избранное", "🔍 Найти аят"],
+                'keyboard': [
+                    ['🎧 Подкасты'],
+                    ['🕋 Время намаза', '🏘️ Поменять город'],
+                    ['🌟 Избранное', '🔍 Найти аят'],
                 ],
                 'resize_keyboard': True,
             }),
-        })
+        }),
     )
     assert unquote(got[1].url) == unquote(
         furl('https://some.domain/sendMessage')
@@ -119,14 +114,14 @@ async def test(pgsql, rds, db_ayat, unquote):
             ]),
             'chat_id': 321,
             'reply_markup': json.dumps({
-                "keyboard": [
-                    ["🎧 Подкасты"],
-                    ["🕋 Время намаза", "🏘️ Поменять город"],
-                    ["🌟 Избранное", "🔍 Найти аят"],
+                'keyboard': [
+                    ['🎧 Подкасты'],
+                    ['🕋 Время намаза', '🏘️ Поменять город'],
+                    ['🌟 Избранное', '🔍 Найти аят'],
                 ],
                 'resize_keyboard': True,
             }),
-        })
+        }),
     )
 
 
@@ -142,14 +137,14 @@ async def test_exists_user(pgsql, rds, db_ayat, unquote, existed_user):
             'chat_id': 321,
             'text': 'Вы уже зарегистрированы!',
             'reply_markup': json.dumps({
-                "keyboard": [
-                    ["🎧 Подкасты"],
-                    ["🕋 Время намаза", "🏘️ Поменять город"],
-                    ["🌟 Избранное", "🔍 Найти аят"],
+                'keyboard': [
+                    ['🎧 Подкасты'],
+                    ['🕋 Время намаза', '🏘️ Поменять город'],
+                    ['🌟 Избранное', '🔍 Найти аят'],
                 ],
                 'resize_keyboard': True,
             }),
-        })
+        }),
     )
 
 
@@ -166,14 +161,14 @@ async def test_with_referrer(pgsql, rds, db_ayat, unquote, existed_user):
             'text': 'start admin message',
             'chat_id': 1,
             'reply_markup': json.dumps({
-                "keyboard": [
-                    ["🎧 Подкасты"],
-                    ["🕋 Время намаза", "🏘️ Поменять город"],
-                    ["🌟 Избранное", "🔍 Найти аят"],
+                'keyboard': [
+                    ['🎧 Подкасты'],
+                    ['🕋 Время намаза', '🏘️ Поменять город'],
+                    ['🌟 Избранное', '🔍 Найти аят'],
                 ],
                 'resize_keyboard': True,
             }),
-        })
+        }),
     )
     assert unquote(got[2].url) == unquote(
         furl('https://some.domain/sendMessage')
@@ -182,14 +177,14 @@ async def test_with_referrer(pgsql, rds, db_ayat, unquote, existed_user):
             'text': 'По вашей реферальной ссылке произошла регистрация',
             'chat_id': 321,
             'reply_markup': json.dumps({
-                "keyboard": [
-                    ["🎧 Подкасты"],
-                    ["🕋 Время намаза", "🏘️ Поменять город"],
-                    ["🌟 Избранное", "🔍 Найти аят"],
+                'keyboard': [
+                    ['🎧 Подкасты'],
+                    ['🕋 Время намаза', '🏘️ Поменять город'],
+                    ['🌟 Избранное', '🔍 Найти аят'],
                 ],
                 'resize_keyboard': True,
             }),
-        })
+        }),
     )
 
 

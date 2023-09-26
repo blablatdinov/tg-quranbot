@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from contextlib import suppress
-from typing import final, Protocol
+from typing import Protocol, final
 
 import attrs
 from pyeo import elegant
@@ -29,15 +29,17 @@ from pyeo import elegant
 from app_types.intable import AsyncIntable
 from exceptions.base_exception import BaseAppError
 from exceptions.internal_exceptions import UserNotFoundError
-from exceptions.user import StartMessageNotContainReferrer
+from exceptions.user import StartMessageNotContainReferrerError
 from repository.users.user import UserRepositoryInterface
 from services.regular_expression import IntableRegularExpression
 
 
 @elegant
 class AsyncIntOrNone(Protocol):
+    """AsyncIntOrNone."""
 
-    async def to_int(self) -> int | None: ...
+    async def to_int(self) -> int | None:
+        """Числовое представление."""
 
 
 @final
@@ -53,12 +55,12 @@ class ReferrerChatId(AsyncIntable):
         """Получить идентификатор пригласившего.
 
         :return: int
-        :raises StartMessageNotContainReferrer: if message not contain referrer id
+        :raises StartMessageNotContainReferrerError: if message not contain referrer id
         """
         try:
             message_meta = int(IntableRegularExpression(self._message))
         except BaseAppError as err:
-            raise StartMessageNotContainReferrer from err
+            raise StartMessageNotContainReferrerError from err
         max_legacy_id = 3000
         if message_meta < max_legacy_id:
             return (await self._user_repo.get_by_id(message_meta)).chat_id
@@ -77,7 +79,7 @@ class ReferrerIdOrNone(AsyncIntOrNone):
         """Получить идентификатор пригласившего.
 
         :return: int
-        :raises StartMessageNotContainReferrer: if message not contain referrer id
         """
-        with suppress(StartMessageNotContainReferrer, UserNotFoundError):
+        with suppress(StartMessageNotContainReferrerError, UserNotFoundError):
             return await self._origin.to_int()
+        return None

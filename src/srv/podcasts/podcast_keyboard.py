@@ -61,7 +61,7 @@ class PodcastKeyboard(KeyboardInterface):
             WHERE podcast_id = :podcast_id
             GROUP BY podcast_id
         """
-        podcast_id = await self._podcast.id()
+        podcast_id = await self._podcast.podcast_id()
         row = await self._pgsql.fetch_one(query, {'podcast_id': podcast_id})
         if row:
             likes_count_map = _Row(

@@ -21,7 +21,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from collections.abc import Sequence
-from contextlib import suppress
 from typing import final
 
 import attrs
@@ -29,9 +28,9 @@ import httpx
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import ThroughAsyncIntable, AsyncIntable
+from app_types.intable import ThroughAsyncIntable
 from app_types.update import Update
-from exceptions.user import StartMessageNotContainReferrer, UserAlreadyExists
+from exceptions.user import UserAlreadyExistsError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
@@ -60,8 +59,6 @@ class StartAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        # await self._check_user_exists(update)
-        # await self._user_repo.create(int(TgChatId(update)))
         referrer_chat_id = ReferrerIdOrNone(
             ReferrerChatId(
                 str(MessageText(update)),
@@ -73,13 +70,16 @@ class StartAnswer(TgAnswer):
             TgChatId(update),
             self._pgsql,
         ).create()
+        return await (await self._answer(update, referrer_chat_id)).build(update)
+
+    async def _answer(self, update, referrer_chat_id) -> TgAnswer:
         start_message, ayat_message = await self._start_answers()
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
         if referrer_chat_id_calculated:
             return await self._create_with_referrer(
                 update, start_message, ayat_message, await referrer_chat_id.to_int(),
             )
-        return await TgAnswerList(
+        return TgAnswerList(
             TgAnswerToSender(
                 TgTextAnswer.str_ctor(
                     self._origin,
@@ -99,7 +99,7 @@ class StartAnswer(TgAnswer):
                 ),
                 self._admin_chat_ids[0],
             ),
-        ).build(update)
+        )
 
     async def _start_answers(self) -> tuple[str, str]:
         return (
@@ -109,11 +109,10 @@ class StartAnswer(TgAnswer):
 
     async def _check_user_exists(self, update: Update) -> None:
         if await self._user_repo.exists(int(TgChatId(update))):
-            raise UserAlreadyExists
+            raise UserAlreadyExistsError
 
-    async def _create_with_referrer(self, update, start_message, ayat_message, referrer_id) -> list[httpx.Request]:
-        # await self._user_repo.update_referrer(int(TgChatId(update)), referrer_id)
-        return await TgAnswerList(
+    async def _create_with_referrer(self, update, start_message, ayat_message, referrer_id) -> TgAnswer:
+        return TgAnswerList(
             TgAnswerToSender(
                 TgTextAnswer.str_ctor(
                     self._origin,
@@ -140,4 +139,4 @@ class StartAnswer(TgAnswer):
                 ),
                 self._admin_chat_ids[0],
             ),
-        ).build(update)
+        )

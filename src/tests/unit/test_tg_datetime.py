@@ -46,7 +46,7 @@ def stringable_callback_update():
     )
 
 
-@pytest.mark.parametrize('input_,expected', [
+@pytest.mark.parametrize(('input_', 'expected'), [
     (
         lazy_fixture('stringable_update'),
         datetime.datetime(2022, 12, 9, 10, 20, 13, tzinfo=pytz.timezone('UTC')),

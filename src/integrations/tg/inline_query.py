@@ -47,7 +47,7 @@ class InlineQuery(SupportsStr):
         return str(
             ErrRedirectJsonPath(
                 JsonPathValue(
-                    self._update.dict(),
+                    self._update.asdict(),
                     '$..query',
                 ),
                 InlineQueryNotFoundError(),
@@ -71,7 +71,7 @@ class InlineQueryId(SupportsInt):
         return int(
             ErrRedirectJsonPath(
                 JsonPathValue(
-                    self._update.dict(),
+                    self._update.asdict(),
                     '$..inline_query.id',
                 ),
                 InlineQueryNotFoundError(),

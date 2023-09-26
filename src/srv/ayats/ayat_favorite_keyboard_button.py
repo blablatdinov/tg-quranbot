@@ -53,7 +53,7 @@ class AyatFavoriteKeyboardButton(KeyboardInterface):
         keyboard['inline_keyboard'].append([{
             'text': 'Удалить из избранного' if is_favor else 'Добавить в избранное',
             'callback_data': ('removeFromFavor({0})' if is_favor else 'addToFavor({0})').format(
-                await self._ayat.identifier().id(),
+                await self._ayat.identifier().ayat_id(),
             ),
         }])
         return json.dumps(keyboard)

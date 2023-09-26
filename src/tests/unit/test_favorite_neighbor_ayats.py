@@ -35,7 +35,7 @@ class FkIdentifier(AyatIdentifier):
 
     _id: int
 
-    async def id(self):
+    async def ayat_id(self):
         return self._id
 
     async def sura_num(self):
@@ -70,7 +70,7 @@ class FkFavoriteAyats(AsyncListable[Ayat]):
         ]
 
 
-@pytest.mark.parametrize('ayat_id,expected', [
+@pytest.mark.parametrize(('ayat_id', 'expected'), [
     (1, 'стр. 1/3'),
     (2, 'стр. 2/3'),
     (3, 'стр. 3/3'),

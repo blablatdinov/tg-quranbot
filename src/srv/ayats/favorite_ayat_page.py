@@ -60,7 +60,7 @@ class FavoriteAyatPage(TgAnswer):
         favorite_ayats = await FavoriteAyats(TgChatId(update), self._pgsql).to_list()
         for ayat in favorite_ayats:
             expect_ayat_id = IntableRegularExpression(CallbackQueryData(update))
-            if await ayat.identifier().id() == int(expect_ayat_id):
+            if await ayat.identifier().ayat_id() == int(expect_ayat_id):
                 result_ayat = ayat
                 break
         return await AyatAnswer(
@@ -70,7 +70,7 @@ class FavoriteAyatPage(TgAnswer):
             AyatAnswerKeyboard(
                 result_ayat,
                 FavoriteNeighborAyats(
-                    await result_ayat.identifier().id(),
+                    await result_ayat.identifier().ayat_id(),
                     UserFavoriteAyats(self._pgsql, TgChatId(update)),
                 ),
                 AyatCallbackTemplateEnum.get_favorite_ayat,

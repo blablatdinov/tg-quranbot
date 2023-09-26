@@ -41,7 +41,7 @@ def migrate():
     drop_db()
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture()
 async def pgsql(migrate):
     db_url = EnvFileSettings.from_filename('../.env').DATABASE_URL
     database = Database(db_url)
