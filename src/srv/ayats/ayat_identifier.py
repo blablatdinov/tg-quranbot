@@ -92,3 +92,33 @@ class PgAyatIdentifier(AyatIdentifier):
         if not row:
             raise AyatNotFoundError
         return row['ayat_number']
+
+
+@attrs.define(frozen=True)
+class FkIdentifier(AyatIdentifier):
+    """Identifier stub."""
+
+    _id: int
+    _sura_num: int
+    _ayat_num: str
+
+    async def id(self):
+        """Идентификатор.
+
+        :return: int
+        """
+        return self._id
+
+    async def sura_num(self):
+        """Номер суры.
+
+        :return: int
+        """
+        return self._sura_num
+
+    async def ayat_num(self):
+        """Номер аята.
+
+        :return: str
+        """
+        return self._ayat_num

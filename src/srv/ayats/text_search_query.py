@@ -41,11 +41,16 @@ class TextSearchQuery(Protocol):
 @attrs.define(frozen=True)
 @elegant
 class FkTextSearchQuery(TextSearchQuery):
+    """Фейковый запрос для поиска аятов."""
 
     _query: str
 
-    async def write(self) -> None: ...
+    async def write(self) -> None:
+        """Запись."""
 
     async def read(self) -> str:
-        """Чтение."""
+        """Чтение.
+
+        :return: str
+        """
         return self._query
