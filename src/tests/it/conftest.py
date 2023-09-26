@@ -20,6 +20,8 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import asyncio
+
 import psycopg2
 import pytest
 import redis
@@ -41,11 +43,33 @@ def migrate():
     drop_db()
 
 
-@pytest.fixture()
+@pytest.fixture(scope='session')
+def event_loop():
+    loop = asyncio.new_event_loop()
+    loop.slow_callback_duration = float('inf')
+    yield loop
+    loop.close()
+
+
+@pytest.fixture(scope='function')
 async def pgsql(migrate):
-    database = Database(EnvFileSettings.from_filename('../.env').DATABASE_URL)
+    db_url = EnvFileSettings.from_filename('../.env').DATABASE_URL
+    database = Database(db_url)
     await database.connect()
     yield database
+    tables = (
+        'prayers_at_user',
+        'favorite_ayats',
+        'podcast_reactions',
+        'podcasts',
+        'users',
+        'prayers',
+        'cities',
+    )
+    for table in tables:
+        await database.execute('DELETE FROM {0}'.format(table))  # noqa: S608
+    await database.execute("SELECT setval('podcasts_podcast_id_seq', 1, false)")
+    await database.execute("SELECT setval('prayers_at_user_prayer_at_user_id_seq', 1, false)")
     await database.disconnect()
 
 

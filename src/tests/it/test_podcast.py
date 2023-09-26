@@ -72,7 +72,7 @@ async def db_podcast(pgsql):
     (
         True,
         (
-            truediv(furl('https://some.domain'), 'sendAudio')
+            truediv(furl('https://some.domain'), 'sendMessage')
             .add({
                 'chat_id': '123',
                 'text': 'https://link-to-file.domain',
@@ -86,7 +86,6 @@ async def db_podcast(pgsql):
         ),
     ),
 ])
-@pytest.mark.skip
 async def test(db_podcast, pgsql, rds, debug_mode, expected, unquote):
     got = await PodcastAnswer(
         debug_mode,
