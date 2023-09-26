@@ -23,46 +23,52 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import Protocol, final
 
 import attrs
+from asyncpg import UniqueViolationError
 from databases import Database
+from loguru import logger
 from pyeo import elegant
 
-from exceptions.internal_exceptions import UserNotFoundError
+from exceptions.user import UserAlreadyExistsError
 from integrations.tg.chat_id import TgChatId
-from srv.prayers.city import City
+from services.start.start_message import AsyncIntOrNone
 
 
 @elegant
-class UpdatedUserCity(Protocol):
-    """Обновленный город у пользователя."""
+class NewUser(Protocol):
+    """Новый пользователь."""
 
-    async def update(self) -> None:
-        """Обновление."""
+    async def create(self):
+        """Создание."""
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class PgUpdatedUserCity(UpdatedUserCity):
-    """Обновленный город у пользователя в БД postgres."""
+class PgNewUser(NewUser):
+    """Новый пользователь в БД postgres."""
 
-    _city: City
-    _chat_id: TgChatId
+    _referrer_chat_id: AsyncIntOrNone
+    _new_user_chat_id: TgChatId
     _pgsql: Database
 
-    async def update(self) -> None:
-        """Обновление.
+    async def create(self) -> None:
+        """Создание.
 
-        :raises UserNotFoundError: незарегистрированный пользователь меняет город
+        :raises UserAlreadyExistsError: пользователь уже зарегистрирован
         """
+        chat_id = int(self._new_user_chat_id)
+        logger.debug('Insert in DB User <{0}>...'.format(chat_id))
         query = """
-            UPDATE users
-            SET city_id = :city_id
-            WHERE chat_id = :chat_id
-            RETURNING *
+            INSERT INTO
+            users (chat_id, referrer_id, day)
+            VALUES (:chat_id, :referrer_id, 2)
+            RETURNING (chat_id, referrer_id)
         """
-        updated_rows = await self._pgsql.fetch_all(query, {
-            'city_id': str(await self._city.city_id()),
-            'chat_id': int(self._chat_id),
-        })
-        if not updated_rows:
-            raise UserNotFoundError
+        try:
+            await self._pgsql.fetch_one(
+                query,
+                {'chat_id': chat_id, 'referrer_id': await self._referrer_chat_id.to_int()},
+            )
+        except UniqueViolationError as err:
+            raise UserAlreadyExistsError from err
+        logger.debug('User <{0}> inserted in DB'.format(chat_id))

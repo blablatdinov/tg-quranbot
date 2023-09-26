@@ -36,7 +36,7 @@ from integrations.tg.coordinates import Coordinates
 class City(Protocol):
     """Интерфейс города."""
 
-    async def id(self) -> uuid.UUID:
+    async def city_id(self) -> uuid.UUID:
         """Идентификатор города."""
 
     async def name(self) -> str:
@@ -97,7 +97,7 @@ class PgCity(City):
         """
         return cls(CityIdByName(NominatimCityName(location), pgsql), pgsql)
 
-    async def id(self) -> uuid.UUID:
+    async def city_id(self) -> uuid.UUID:
         """Идентификатор города.
 
         :return: uuid.UUID

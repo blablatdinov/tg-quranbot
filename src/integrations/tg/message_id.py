@@ -46,7 +46,7 @@ class MessageId(SupportsInt):
         return int(
             ErrRedirectJsonPath(
                 JsonPathValue(
-                    self._update.dict(),
+                    self._update.asdict(),
                     '$..message.message_id',
                 ),
                 MessageIdNotFoundError(),

@@ -35,8 +35,9 @@ AyatId: TypeAlias = int
 class AyatIdentifier(Protocol):
     """Информация для идентификации аята."""
 
-    async def id(self) -> AyatId:
+    async def ayat_id(self) -> AyatId:
         """Идентификатор в хранилище."""
+
     async def sura_num(self) -> SuraId:
         """Номер суры."""
 
@@ -52,7 +53,7 @@ class PgAyatIdentifier(AyatIdentifier):
     _ayat_id: AsyncIntable
     _pgsql: Database
 
-    async def id(self) -> AyatId:
+    async def ayat_id(self) -> AyatId:
         """Идентификатор в хранилище.
 
         :return: AyatId
@@ -70,7 +71,7 @@ class PgAyatIdentifier(AyatIdentifier):
             FROM ayats AS a
             WHERE a.ayat_id = :ayat_id
         """
-        ayat_id = await self.id()
+        ayat_id = await self.ayat_id()
         row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
         if not row:
             raise AyatNotFoundError
@@ -87,7 +88,7 @@ class PgAyatIdentifier(AyatIdentifier):
             FROM ayats
             WHERE ayat_id = :ayat_id
         """
-        ayat_id = await self.id()
+        ayat_id = await self.ayat_id()
         row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
         if not row:
             raise AyatNotFoundError
@@ -102,7 +103,7 @@ class FkIdentifier(AyatIdentifier):
     _sura_num: int
     _ayat_num: str
 
-    async def id(self):
+    async def ayat_id(self):
         """Идентификатор.
 
         :return: int

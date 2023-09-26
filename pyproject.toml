@@ -92,7 +92,6 @@ addopts = [
 
 [tool.isort]
 line_length = 119
-skip = ["migrations/*.py", ".venv"]
 multi_line_output = 3
 include_trailing_comma = true
 
@@ -100,7 +99,58 @@ include_trailing_comma = true
 max_line_length = 120
 
 [tool.ruff]
+select = ["ALL"]
+ignore = [
+  "PT004",   # TODO
+  "FA102",   # TODO
+  "DTZ005",  # TODO
+  "DTZ007",  # TODO
+  "EM101",   # TODO. Exception must not use a string literal, assign to variable first
+  "TRY003",  # TODO. Avoid specifying long messages outside the exception class
+  "ANN201",  # TODO
+  "ANN",     # TODO
+  "PLC0105", # TODO
+  "FA100",   # TODO Missing `from __future__ import annotations`, but uses `typing.Optional`
+  "INP001",  # TODO File `src/settings.py` is part of an implicit namespace package. Add an `__init__.py`.
+  "TRY201",  # TODO Use `raise` without specifying exception name
+  "PGH003",  # TODO: Use specific rule codes when ignoring type issues Found 1 error.
+  # ----------------------------------
+  "Q002",    # We use single quotes
+  "I001",    # Conflict with isort
+  "Q000",    # We use single quotes
+  "RUF100",  # WPS primary linter
+  "UP030",   # We use explicit references
+  "FLY002",  # We not use f-strings
+  "RUF001",  # Project contain cyrillic symbols
+  "RUF002",  # Project contain cyrillic symbols
+  "UP032",   # We not use f-strings
+  "D203",    # no-blank-line-before-class
+  "D213",    # multi-line-summary-first-line
+  "ANN101",  # Missing type annotation for `self` in method
+  "ANN102",  # Missing type annotation for `cls` in classmethod
+  "ARG002",  # Unused method argument
+  "EM103",   # Exception must not use a `.format()` string directly, assign to variable first
+  "RET505",  # Unnecessary `elif` after `return` statement
+  "TD",      # "todo" formats
+  "FIX002",  # Line contains TODO, consider resolving the issue
+  "RET506",  # Unnecessary `elif` after `raise` statement
+  "D418",    # Function decorated with `@overload` shouldn't contain a docstring
+  "FBT001",  # Boolean-typed positional argument in function definition
+  "FBT002",  # Boolean-typed positional argument in function definition
+  "UP004",   # Class `PrayerReaction` inherits from `object`
+]
 line-length = 120
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "single"
 
 [tool.ruff.per-file-ignores]
 "src/integrations/tg/tg_answers/__init__.py" = ["F401"]
+"src/tests/*" = [
+  "S101",
+  "D",
+  "ANN",
+  "ARG",
+  "PLR2004",
+  "PLR0913",
+]

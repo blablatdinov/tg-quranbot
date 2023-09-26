@@ -44,15 +44,12 @@ async def db_podcast(pgsql):
         {'file_id': file_id, 'created_at': datetime.datetime.now()},
     )
     await pgsql.execute(
-        '\n'.join([
-            'INSERT INTO podcasts (public_id, file_id)',
-            'VALUES (:public_id, :file_id)',
-        ]),
+        'INSERT INTO podcasts (public_id, file_id)\nVALUES (:public_id, :file_id)',
         {'public_id': str(uuid.uuid4()), 'file_id': file_id},
     )
 
 
-@pytest.mark.parametrize('debug_mode,expected', [
+@pytest.mark.parametrize(('debug_mode', 'expected'), [
     (
         False,
         (
@@ -86,7 +83,8 @@ async def db_podcast(pgsql):
         ),
     ),
 ])
-async def test(db_podcast, pgsql, rds, debug_mode, expected, unquote):
+@pytest.mark.usefixtures('db_podcast')
+async def test(pgsql, rds, debug_mode, expected, unquote):
     got = await PodcastAnswer(
         debug_mode,
         FkAnswer(),

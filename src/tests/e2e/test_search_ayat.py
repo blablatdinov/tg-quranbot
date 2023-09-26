@@ -25,7 +25,7 @@ from pathlib import Path
 import pytest
 
 
-@pytest.mark.parametrize('query,expected', [
+@pytest.mark.parametrize(('query', 'expected'), [
     ('8:7', 'src/tests/e2e/fixtures/8_7_ayat.txt'),
     ('2:1', 'src/tests/e2e/fixtures/2_1_ayat.txt'),
     ('2:3', 'src/tests/e2e/fixtures/2_1_ayat.txt'),

@@ -28,7 +28,7 @@ import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from exceptions.user import UserAlreadyActive, UserAlreadyExists
+from exceptions.user import UserAlreadyActiveError, UserAlreadyExistsError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from integrations.tg.tg_datetime import TgDateTime
@@ -54,13 +54,13 @@ class UserAlreadyExistsAnswer(TgAnswer):
 
         :param update: Update
         :return: list[httpx.Request]
-        :raises UserAlreadyActive: if user already active
+        :raises UserAlreadyActiveError: if user already active
         """
-        with suppress(UserAlreadyExists):
+        with suppress(UserAlreadyExistsError):
             return await self._origin.build(update)
         user = await self._user_repo.get_by_chat_id(int(TgChatId(update)))
         if user.is_active:
-            raise UserAlreadyActive
+            raise UserAlreadyActiveError
         await self._users_repo.update_status([int(TgChatId(update))], to=True)
         await self._event_sink.send(
             {

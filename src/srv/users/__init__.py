@@ -20,36 +20,3 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
-
-import attrs
-import httpx
-from pyeo import elegant
-
-from app_types.update import Update
-from exceptions.user import UserAlreadyActiveError
-from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class UserAlreadyActiveSafeAnswer(TgAnswer):
-    """Ответ для случаев когда пользователь уже активен."""
-
-    _origin: TgAnswer
-    _sender_answer: TgAnswer
-
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
-
-        :param update: Update
-        :return: list[httpx.Request]
-        """
-        try:
-            return await self._origin.build(update)
-        except UserAlreadyActiveError:
-            return await TgTextAnswer.str_ctor(
-                self._sender_answer,
-                'Вы уже зарегистрированы!',
-            ).build(update)

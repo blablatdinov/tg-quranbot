@@ -68,7 +68,7 @@ class FavoriteAyatAnswer(TgAnswer):
             AyatAnswerKeyboard(
                 result_ayat,
                 FavoriteNeighborAyats(
-                    await result_ayat.identifier().id(), UserFavoriteAyats(self._pgsql, TgChatId(update)),
+                    await result_ayat.identifier().ayat_id(), UserFavoriteAyats(self._pgsql, TgChatId(update)),
                 ),
                 AyatCallbackTemplateEnum.get_favorite_ayat,
                 self._pgsql,

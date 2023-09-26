@@ -35,7 +35,7 @@ from srv.files.file import FileLink, TgFile, TgFileId
 class Podcast(TgFile, Protocol):
     """Интерфейс подкаста."""
 
-    async def id(self) -> int:
+    async def podcast_id(self) -> int:
         """Идентификатор аята."""
 
 
@@ -48,7 +48,7 @@ class RandomPodcast(Podcast):
     _podcast_id: AsyncIntable
     _pgsql: Database
 
-    async def id(self) -> int:
+    async def podcast_id(self) -> int:
         """Идентификатор подкаста.
 
         :return: int

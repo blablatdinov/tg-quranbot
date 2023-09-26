@@ -53,7 +53,7 @@ class JsonPathValue(JsonPath, Generic[_ET]):
         int(
             SafeJsonPathValue(
                 MatchManyJsonPath(
-                    self._update.dict(),
+                    self._update.asdict(),
                     ('$..chat.id', '$..from.id'),
                 ),
                 InternalBotError(),

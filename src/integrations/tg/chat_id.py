@@ -46,7 +46,7 @@ class TgChatId(SupportsInt):
         return int(
             ErrRedirectJsonPath(
                 MatchManyJsonPath(
-                    self._update.dict(),
+                    self._update.asdict(),
                     ('$..chat.id', '$..from.id'),
                 ),
                 InternalBotError(),

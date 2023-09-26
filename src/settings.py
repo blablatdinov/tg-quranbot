@@ -23,7 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import os
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Protocol, final, overload
+from typing import ClassVar, Protocol, final, overload
 
 import attrs
 from pyeo import elegant
@@ -50,7 +50,7 @@ class CachedSettings(Settings):
     """Кеширующиеся настройки."""
 
     _origin: Settings
-    _cached_values: dict[str, str] = {}
+    _cached_values: ClassVar[dict[str, str]] = {}
 
     def __getattr__(self, attr_name) -> str:
         """Получить аттрибут.

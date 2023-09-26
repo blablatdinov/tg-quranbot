@@ -27,6 +27,7 @@ import httpx
 from databases import Database
 from pyeo import elegant
 
+from app_types.update import Update
 from exceptions.internal_exceptions import UserNotFoundError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers.interface import TgAnswer
@@ -42,7 +43,7 @@ class UserNotRegisteredSafeAnswer(TgAnswer):
     _pgsql: Database
     _origin: TgAnswer
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Обработка запроса.
 
         :param update: Update

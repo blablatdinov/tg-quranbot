@@ -53,6 +53,6 @@ class AyatIsFavor(AsyncSupportsBool):
             WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id
         """
         count = await self._pgsql.fetch_val(
-            query, {'ayat_id': await self._ayat.identifier().id(), 'chat_id': self._chat_id},
+            query, {'ayat_id': await self._ayat.identifier().ayat_id(), 'chat_id': self._chat_id},
         )
         return bool(count)

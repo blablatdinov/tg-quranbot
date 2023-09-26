@@ -130,5 +130,5 @@ class BulkSendableAnswer(SendableInterface):
         for sendable_slice in chunked(tasks, 10):
             res_list = await asyncio.gather(*sendable_slice)
             for res in res_list:
-                responses.append(res)
+                responses.append(res)  # noqa: PERF402
         return responses

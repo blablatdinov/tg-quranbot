@@ -41,7 +41,7 @@ def migrate():
     drop_db()
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture()
 async def pgsql(migrate):
     db_url = EnvFileSettings.from_filename('../.env').DATABASE_URL
     database = Database(db_url)
@@ -58,6 +58,7 @@ async def pgsql(migrate):
         'ayats',
         'suras',
         'files',
+        'admin_messages',
     )
     for table in tables:
         await database.execute('DELETE FROM {0}'.format(table))  # noqa: S608

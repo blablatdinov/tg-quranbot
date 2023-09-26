@@ -26,19 +26,19 @@ from exceptions.base_exception import BaseAppError
 
 
 @final
-class UserAlreadyExists(BaseAppError):
+class UserAlreadyExistsError(BaseAppError):
     """Пользователь уже зарегистрирован."""
 
     admin_message = ''
 
 
 @final
-class StartMessageNotContainReferrer(BaseAppError):
+class StartMessageNotContainReferrerError(BaseAppError):
     """Стартовое сообщение не содержит информации о пригласившем."""
 
     admin_message = ''
 
 
 @final
-class UserAlreadyActive(BaseAppError):
+class UserAlreadyActiveError(BaseAppError):
     """Пользователь уже активен."""

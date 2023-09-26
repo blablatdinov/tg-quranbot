@@ -57,7 +57,7 @@ class TgMessageCoordinates(Coordinates):
         return float(
             ErrRedirectJsonPath(
                 JsonPathValue(
-                    self._update.dict(),
+                    self._update.asdict(),
                     '$..[latitude]',
                 ),
                 CoordinatesNotFoundError(),
@@ -72,7 +72,7 @@ class TgMessageCoordinates(Coordinates):
         return float(
             ErrRedirectJsonPath(
                 JsonPathValue(
-                    self._update.dict(),
+                    self._update.asdict(),
                     '$..[longitude]',
                 ),
                 CoordinatesNotFoundError(),

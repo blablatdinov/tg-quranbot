@@ -20,22 +20,32 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from contextlib import suppress
+from typing import Protocol, final
 
 import attrs
 from pyeo import elegant
 
 from app_types.intable import AsyncIntable
 from exceptions.base_exception import BaseAppError
-from exceptions.user import StartMessageNotContainReferrer
+from exceptions.internal_exceptions import UserNotFoundError
+from exceptions.user import StartMessageNotContainReferrerError
 from repository.users.user import UserRepositoryInterface
 from services.regular_expression import IntableRegularExpression
+
+
+@elegant
+class AsyncIntOrNone(Protocol):
+    """AsyncIntOrNone."""
+
+    async def to_int(self) -> int | None:
+        """Числовое представление."""
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class SmartReferrerChatId(AsyncIntable):
+class ReferrerChatId(AsyncIntable):
     """Идентификатор чата пригласившего."""
 
     _message: str
@@ -45,13 +55,31 @@ class SmartReferrerChatId(AsyncIntable):
         """Получить идентификатор пригласившего.
 
         :return: int
-        :raises StartMessageNotContainReferrer: if message not contain referrer id
+        :raises StartMessageNotContainReferrerError: if message not contain referrer id
         """
         try:
             message_meta = int(IntableRegularExpression(self._message))
         except BaseAppError as err:
-            raise StartMessageNotContainReferrer from err
+            raise StartMessageNotContainReferrerError from err
         max_legacy_id = 3000
         if message_meta < max_legacy_id:
             return (await self._user_repo.get_by_id(message_meta)).chat_id
-        return message_meta
+        return (await self._user_repo.get_by_chat_id(message_meta)).chat_id
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class ReferrerIdOrNone(AsyncIntOrNone):
+    """Идентификатор чата пригласившего."""
+
+    _origin: AsyncIntable
+
+    async def to_int(self) -> int | None:
+        """Получить идентификатор пригласившего.
+
+        :return: int
+        """
+        with suppress(StartMessageNotContainReferrerError, UserNotFoundError):
+            return await self._origin.to_int()
+        return None

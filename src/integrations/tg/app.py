@@ -47,10 +47,13 @@ class PollingApp(Runable):
     async def run(self) -> None:
         """Запуск."""
         logger.info('Start app on polling')
+        background_tasks = set()
         async for update_list in self._updates:
             for update in update_list:
                 logger.debug('Update: {update}', update=update)
-                asyncio.ensure_future(self._sendable.send(update))
+                task = asyncio.create_task(self._sendable.send(update))
+                background_tasks.add(task)
+                task.add_done_callback(background_tasks.discard)
                 await asyncio.sleep(0.1)
 
 

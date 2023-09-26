@@ -57,7 +57,7 @@ class TgUpdate(Update):
         """
         return UpdateStruct.model_validate_json(str(self))
 
-    def dict(self) -> dict:
+    def asdict(self) -> dict:
         """Словарь.
 
         TODO: возможно стоит возвращать валидированный dict:
@@ -96,9 +96,9 @@ class CachedTgUpdate(Update):
         return self._origin.parsed()
 
     @weak_lru()
-    def dict(self) -> dict:
+    def asdict(self) -> dict:
         """Словарь.
 
         :return: dict
         """
-        return self._origin.dict()
+        return self._origin.asdict()

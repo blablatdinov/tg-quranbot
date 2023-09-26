@@ -31,23 +31,22 @@ from srv.ayats.text_search_query import FkTextSearchQuery
 
 @pytest.fixture()
 async def db_ayat(pgsql):
+    created_at = datetime.datetime.now()
     await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
             "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
         ]),
         [
-            {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': datetime.datetime.now()},
-            {'file_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba', 'created_at': datetime.datetime.now()},
+            {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at},
+            {'file_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba', 'created_at': created_at},
         ],
     )
-    await pgsql.execute(
-        '\n'.join([
-            'INSERT INTO suras (sura_id, link) VALUES',
-            "(1, 'https://link-to-sura.domain'),",
-            "(2, 'https://link-to-sura.domain')",
-        ]),
-    )
+    await pgsql.execute('\n'.join([
+        'INSERT INTO suras (sura_id, link) VALUES',
+        "(1, 'https://link-to-sura.domain'),",
+        "(2, 'https://link-to-sura.domain')",
+    ]))
     await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO ayats',
@@ -98,7 +97,7 @@ async def test_first(db_ayat, pgsql):
 
     with pytest.raises(AyatNotFoundError):
         await neighbor.left_neighbor()
-    assert await (await neighbor.right_neighbor()).identifier().id() == 2
+    assert await (await neighbor.right_neighbor()).identifier().ayat_id() == 2
     assert await neighbor.page() == 'стр. 1/3'
 
 
@@ -107,7 +106,7 @@ async def test_last(db_ayat, pgsql):
 
     with pytest.raises(AyatNotFoundError):
         await neighbor.right_neighbor()
-    assert await (await neighbor.left_neighbor()).identifier().id() == 2
+    assert await (await neighbor.left_neighbor()).identifier().ayat_id() == 2
     assert await neighbor.page() == 'стр. 3/3'
 
 
@@ -116,7 +115,7 @@ async def test_search_first(db_ayat, pgsql):
 
     with pytest.raises(AyatNotFoundError):
         await neighbor.left_neighbor()
-    assert await (await neighbor.right_neighbor()).identifier().id() == 2
+    assert await (await neighbor.right_neighbor()).identifier().ayat_id() == 2
     assert await neighbor.page() == 'стр. 1/3'
 
 
@@ -125,5 +124,5 @@ async def test_search_last(db_ayat, pgsql):
 
     with pytest.raises(AyatNotFoundError):
         await neighbor.right_neighbor()
-    assert await (await neighbor.left_neighbor()).identifier().id() == 2
+    assert await (await neighbor.left_neighbor()).identifier().ayat_id() == 2
     assert await neighbor.page() == 'стр. 3/3'

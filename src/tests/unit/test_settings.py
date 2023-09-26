@@ -32,12 +32,7 @@ from settings import CachedSettings, EnvFileSettings, OsEnvSettings
 @pytest.fixture()
 def env_file(tmp_path):
     env_file_path = Path(tmp_path / '.env')
-    with open(env_file_path, 'w') as env_file:
-        env_file.write('\n'.join([
-            'FOO=bar',
-            '',
-            'FIZ=foo',
-        ]))
+    env_file_path.write_text('FOO=bar\n\nFIZ=foo')
     return env_file_path
 
 
@@ -60,5 +55,5 @@ def test_cached(env_file):
 
 
 def test_not_found(env_file):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='unknown not defined'):
         assert EnvFileSettings(env_file).unknown == 'bar'

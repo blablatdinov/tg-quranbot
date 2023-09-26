@@ -148,7 +148,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                         AyatAnswerKeyboard(
                             result_ayat,
                             PgNeighborAyats(
-                                self._pgsql, await result_ayat.identifier().id(),
+                                self._pgsql, await result_ayat.identifier().ayat_id(),
                             ),
                             AyatCallbackTemplateEnum.get_ayat,
                             self._pgsql,

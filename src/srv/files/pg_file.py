@@ -53,7 +53,7 @@ class PgFile(TgFile):
         """
         row = await self._pgsql.fetch_one(query, {'file_id': str(self._file_id)})
         if not row:
-            raise BotFileNotFoundError()
+            raise BotFileNotFoundError
         return row['telegram_file_id']
 
     async def file_link(self) -> FileLink:
@@ -69,5 +69,5 @@ class PgFile(TgFile):
         """
         row = await self._pgsql.fetch_one(query, {'file_id': self._file_id})
         if not row:
-            raise BotFileNotFoundError()
+            raise BotFileNotFoundError
         return row['link']

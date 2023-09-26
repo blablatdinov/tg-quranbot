@@ -24,6 +24,7 @@ import datetime
 
 import httpx
 import pytest
+import pytz
 from telethon import functions, types
 
 
@@ -41,14 +42,15 @@ def user_city(tg_client, db_conn, bot_name, wait_until):
 
 @pytest.fixture()
 def expected_message():
+    date = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
     dumrt_response = httpx.get(
-        'http://dumrt.ru/netcat_files/482/640/Kazan.csv?t={0}'.format(datetime.datetime.now().strftime('%d%m%y')),
+        'http://dumrt.ru/netcat_files/482/640/Kazan.csv?t={0}'.format(date.strftime('%d%m%y')),
     ).text
     for line in dumrt_response.strip().split('\n'):
         elems = line.strip().split(';')
-        if datetime.datetime.now().strftime('%d.%m.%Y') == elems[0]:
+        if date.strftime('%d.%m.%Y') == elems[0]:
             return '\n'.join([
-                'Время намаза для г. Казань ({0})'.format(datetime.datetime.now().strftime('%d.%m.%Y')),
+                'Время намаза для г. Казань ({0})'.format(date.strftime('%d.%m.%Y')),
                 '',
                 'Иртәнге: {0}'.format(datetime.datetime.strptime(elems[1], '%H:%M').strftime('%H:%M')),
                 'Восход: {0}'.format(datetime.datetime.strptime(elems[3], '%H:%M').strftime('%H:%M')),
@@ -57,6 +59,7 @@ def expected_message():
                 'Ахшам: {0}'.format(datetime.datetime.strptime(elems[7], '%H:%M').strftime('%H:%M')),
                 'Ястү: {0}'.format(datetime.datetime.strptime(elems[8], '%H:%M').strftime('%H:%M')),
             ])
+    raise ValueError('Prayers on dumrt not found')
 
 
 @pytest.mark.usefixtures('bot_process', 'clear_db', 'user_city')

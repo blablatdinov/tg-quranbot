@@ -69,7 +69,7 @@ def test_random(tg_client, bot_name, wait_until):
 
 
 @pytest.mark.usefixtures('bot_process', 'clear_db', 'user')
-@pytest.mark.parametrize('target_button,expected', [
+@pytest.mark.parametrize(('target_button', 'expected'), [
     ('👍', ['👍 1', '👎 0']),
     ('👎', ['👍 0', '👎 1']),
 ])
@@ -92,7 +92,7 @@ def test_reaction(tg_client, bot_name, wait_until, target_button, expected):
 
 
 @pytest.mark.usefixtures('bot_process', 'clear_db', 'user')
-@pytest.mark.parametrize('first_reaction,second_reaction,expected', [
+@pytest.mark.parametrize(('first_reaction', 'second_reaction', 'expected'), [
     ('👎', '👍', ['👍 1', '👎 0']),
     ('👍', '👎', ['👍 0', '👎 1']),
 ])

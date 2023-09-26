@@ -68,7 +68,6 @@ class CheckUsersStatus(Runable):
     async def run(self):
         """Запуск."""
         chat_ids = await self._users_repo.get_active_user_chat_ids()
-        deactivated_users = []
         answers: list[TgAnswer] = [
             TypingAction(
                 TgChatIdAnswer(
@@ -78,8 +77,10 @@ class CheckUsersStatus(Runable):
             )
             for chat_id in chat_ids
         ]
-        for response_list in await BulkSendableAnswer(answers).send(FkUpdate()):
-            for response_dict in response_list:
-                if not response_dict['ok']:
-                    deactivated_users.append(response_dict['chat_id'])
+        deactivated_users = [
+            response_dict['chat_id']
+            for response_list in await BulkSendableAnswer(answers).send(FkUpdate())
+            for response_dict in response_list
+            if not response_dict['ok']
+        ]
         await self._users_repo.update_status(list(set(deactivated_users)), to=False)

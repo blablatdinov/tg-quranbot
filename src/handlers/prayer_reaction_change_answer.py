@@ -62,7 +62,7 @@ class PrayerReaction(object):
         """
         return int(re.findall(r'\((.+)\)', str(self._callback_query))[0])
 
-    def status(self) -> Literal['like'] | Literal['dislike']:
+    def status(self) -> Literal['like', 'dislike']:
         """Реакция.
 
         :return: Literal['like'] | Literal['dislike']
