@@ -34,7 +34,7 @@ from tests.unit.test_amdin_chat_ids import FkSettings
 
 
 @pytest.fixture()
-async def db_ayat(pgsql):
+async def _db_ayat(pgsql):
     created_at = datetime.datetime.now()
     await pgsql.execute_many(
         '\n'.join([
@@ -74,13 +74,13 @@ async def db_ayat(pgsql):
 
 
 @pytest.fixture()
-async def existed_user(pgsql):
+async def _existed_user(pgsql):
     await pgsql.execute(
         'INSERT INTO users (chat_id, day, legacy_id) VALUES (321, 2, 1)',
     )
 
 
-async def test(pgsql, rds, db_ayat, unquote):
+async def test(pgsql, rds, _db_ayat, unquote):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), rds, FkSettings(),
     ).build(FkUpdate('{"message":{"text":"/start"},"chat":{"id":321}}'))
@@ -125,7 +125,8 @@ async def test(pgsql, rds, db_ayat, unquote):
     )
 
 
-async def test_exists_user(pgsql, rds, db_ayat, unquote, existed_user):
+@pytest.mark.usefixtures('_db_ayat', '_existed_user')
+async def test_exists_user(pgsql, rds, unquote):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), rds, FkSettings(),
     ).build(FkUpdate('{"message":{"text":"/start"},"chat":{"id":321}}'))
@@ -148,7 +149,8 @@ async def test_exists_user(pgsql, rds, db_ayat, unquote, existed_user):
     )
 
 
-async def test_with_referrer(pgsql, rds, db_ayat, unquote, existed_user):
+@pytest.mark.usefixtures('_db_ayat', '_existed_user')
+async def test_with_referrer(pgsql, rds, unquote):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), rds, FkSettings(),
     ).build(FkUpdate('{"message":{"text":"/start 1"},"chat":{"id":1}}'))
@@ -188,7 +190,7 @@ async def test_with_referrer(pgsql, rds, db_ayat, unquote, existed_user):
     )
 
 
-@pytest.mark.usefixtures('db_ayat', 'existed_user')
+@pytest.mark.usefixtures('_db_ayat', '_existed_user')
 @pytest.mark.parametrize('referrer_id', [85, 3001])
 async def test_fake_referrer(pgsql, rds, unquote, referrer_id):
     got = await FullStartAnswer(

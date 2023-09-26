@@ -32,7 +32,7 @@ from settings import EnvFileSettings
 
 
 @pytest.fixture()
-def revert_changes():
+def _revert_changes():
     yield
     qbot_connection = psycopg2.connect(EnvFileSettings.from_filename('../.env').DATABASE_URL)
     qbot_connection.autocommit = True
@@ -46,7 +46,7 @@ def revert_changes():
     qbot_connection.close()
 
 
-@pytest.mark.usefixtures('bot_process', 'revert_changes', 'clear_db')
+@pytest.mark.usefixtures('_bot_process', '_revert_changes', '_clear_db')
 def test_change_ayat(db_query_vals):
     settings = EnvFileSettings.from_filename('../.env')
     connection = pika.BlockingConnection(pika.ConnectionParameters(

@@ -40,7 +40,7 @@ def bot_name():
 
 
 @pytest.fixture()
-def clear_db():
+def _clear_db():
     qbot_connection = psycopg2.connect(EnvFileSettings.from_filename('../.env').DATABASE_URL)
     qbot_connection.autocommit = True
     cursor = qbot_connection.cursor()
@@ -76,7 +76,7 @@ def db_query_vals(db_conn):
 
 
 @pytest.fixture(scope='session')
-def bot_process():
+def _bot_process():
     create_db()
     fill_test_db()
     bot = multiprocessing.Process(target=main, args=(['src/main.py', 'run_polling'],))

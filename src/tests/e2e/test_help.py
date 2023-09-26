@@ -38,7 +38,7 @@ def expected_message():
     ])
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db')
+@pytest.mark.usefixtures('_bot_process', '_clear_db')
 def test_help(expected_message, tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/help')
     messages = wait_until(tg_client, 2)

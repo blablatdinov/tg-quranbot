@@ -24,12 +24,12 @@ import pytest
 
 
 @pytest.fixture()
-def user(tg_client, bot_name, wait_until):
+def _user(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/start')
     wait_until(tg_client, 3)
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db')
+@pytest.mark.usefixtures('_bot_process', '_clear_db')
 def test(tg_client, bot_name, wait_until):
     """Тест просмотра подкаста.
 
@@ -58,7 +58,7 @@ def test(tg_client, bot_name, wait_until):
     assert buttons[1][1].decode('utf-8').startswith('dislike(')
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db')
+@pytest.mark.usefixtures('_bot_process', '_clear_db')
 def test_random(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '🎧 Подкасты')
     wait_until(tg_client, 2)
@@ -68,7 +68,7 @@ def test_random(tg_client, bot_name, wait_until):
     assert messages[0].message != messages[2].message
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db', 'user')
+@pytest.mark.usefixtures('_bot_process', '_clear_db', '_user')
 @pytest.mark.parametrize(('target_button', 'expected'), [
     ('👍', ['👍 1', '👎 0']),
     ('👎', ['👍 0', '👎 1']),
@@ -91,7 +91,7 @@ def test_reaction(tg_client, bot_name, wait_until, target_button, expected):
     ]
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db', 'user')
+@pytest.mark.usefixtures('_bot_process', '_clear_db', '_user')
 @pytest.mark.parametrize(('first_reaction', 'second_reaction', 'expected'), [
     ('👎', '👍', ['👍 1', '👎 0']),
     ('👍', '👎', ['👍 0', '👎 1']),
@@ -121,7 +121,7 @@ def test_reverse_reaction(tg_client, bot_name, wait_until, first_reaction, secon
     ]
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db', 'user')
+@pytest.mark.usefixtures('_bot_process', '_clear_db', '_user')
 @pytest.mark.parametrize('reaction', ['👎', '👍'])
 def test_undo_reaction(tg_client, bot_name, wait_until, reaction):
     tg_client.send_message(bot_name, '🎧 Подкасты')
