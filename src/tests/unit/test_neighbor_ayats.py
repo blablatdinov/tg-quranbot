@@ -20,14 +20,19 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import json
+
 import attrs
 import pytest
 
 from app_types.listable import AsyncListable
+from app_types.update import FkUpdate
 from exceptions.base_exception import BaseAppError
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat import Ayat
+from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.ayat_identifier import AyatIdentifier
+from srv.ayats.neighbor_ayat_keyboard import NeighborAyatKeyboard
 from srv.ayats.neighbor_ayats import FavoriteNeighborAyats
 from srv.files.file import FkFile, TgFile
 
@@ -138,3 +143,39 @@ async def test_empty(neighbor):
         await neighbor_ayats.left_neighbor()
     with pytest.raises(BaseAppError):
         await neighbor_ayats.page()
+
+
+async def test_keyboard_first(neighbor):
+    keyboard = NeighborAyatKeyboard(
+        neighbor(
+            1,
+            (FkIdentifier(1, 1, '1-7'), '', FkFile('', '')),
+            (FkIdentifier(2, 2, '1-5'), '', FkFile('', '')),
+            (FkIdentifier(3, 2, '6, 7'), '', FkFile('', '')),
+        ),
+        AyatCallbackTemplateEnum.get_ayat,
+    )
+
+    assert await keyboard.generate(FkUpdate('')) == json.dumps({
+        'inline_keyboard': [
+            [{'text': 'стр. 1/3', 'callback_data': 'fake'}, {"text": "2:1-5 ->", "callback_data": "getAyat(2)"}]
+        ]
+    })
+
+
+async def test_keyboard_last(neighbor):
+    keyboard = NeighborAyatKeyboard(
+        neighbor(
+            3,
+            (FkIdentifier(1, 1, '1-7'), '', FkFile('', '')),
+            (FkIdentifier(2, 2, '1-5'), '', FkFile('', '')),
+            (FkIdentifier(3, 2, '6, 7'), '', FkFile('', '')),
+        ),
+        AyatCallbackTemplateEnum.get_ayat,
+    )
+
+    assert await keyboard.generate(FkUpdate('')) == json.dumps({
+        'inline_keyboard': [
+            [{"text": "<- 2:1-5", "callback_data": "getAyat(2)"}, {'text': 'стр. 3/3', 'callback_data': 'fake'}]
+        ]
+    })
