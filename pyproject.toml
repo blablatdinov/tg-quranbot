@@ -100,8 +100,8 @@ max_line_length = 120
 
 [tool.ruff]
 select = ["ALL"]
+target-version = "py311"  # TODO: up to 3.12
 ignore = [
-  "FA102",   # TODO
   "DTZ005",  # TODO
   "DTZ007",  # TODO
   "EM101",   # TODO. Exception must not use a string literal, assign to variable first

@@ -21,7 +21,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from typing import Sequence, final
+from collections.abc import Sequence
+from typing import final
 
 import attrs
 import httpx
