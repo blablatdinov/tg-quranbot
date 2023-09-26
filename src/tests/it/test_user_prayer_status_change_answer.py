@@ -32,10 +32,6 @@ from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnsw
 from integrations.tg.tg_answers import FkAnswer
 from srv.prayers.prayers_text import PrayersText
 
-pytestmark = [
-    pytest.mark.skip,
-]
-
 
 @pytest.fixture()
 async def prayers(pgsql):
@@ -107,8 +103,8 @@ async def test_today(pgsql, rds, generated_prayers, freezer):
     assert got[0].url.path == '/editMessageReplyMarkup'
 
 
-async def test_before(pgsql, rds, generated_prayers, freezer):
-    freezer.move_to('2023-09-07')
+async def test_before(pgsql, rds, generated_prayers, freezer, unquote):
+    freezer.move_to('2023-12-19')
     got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds).build(
         FkUpdate('{"callback_query": {"data": "mark_readed(3)"}, "message": {"message_id": 17}, "chat": {"id": 905}}'),
     )
@@ -136,10 +132,10 @@ async def test_prayers_text(pgsql, generated_prayers):
 
     assert got == '\n'.join([
         'Время намаза для г. Kazan (19.12.2023)\n',
-        'Иртәнге: 13:21',
-        'Восход: 12:00',
-        'Өйлә: 05:43',
-        'Икенде: 17:04',
+        'Иртәнге: 05:43',
+        'Восход: 08:02',
+        'Өйлә: 12:00',
+        'Икенде: 13:21',
         'Ахшам: 15:07',
-        'Ястү: 08:02',
+        'Ястү: 17:04',
     ])
