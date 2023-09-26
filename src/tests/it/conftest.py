@@ -58,6 +58,7 @@ async def pgsql(migrate):
         'ayats',
         'suras',
         'files',
+        'admin_messages',
     )
     for table in tables:
         await database.execute('DELETE FROM {0}'.format(table))  # noqa: S608

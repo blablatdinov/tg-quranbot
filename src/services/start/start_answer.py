@@ -29,16 +29,17 @@ import httpx
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import ThroughAsyncIntable
+from app_types.intable import ThroughAsyncIntable, AsyncIntable
 from app_types.update import Update
 from exceptions.user import StartMessageNotContainReferrer, UserAlreadyExists
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
 from repository.users.user import UserRepositoryInterface
-from services.start.start_message import SmartReferrerChatId
+from services.start.start_message import ReferrerChatId, ReferrerIdOrNone
 from srv.admin_messages.admin_message import AdminMessage
 from srv.ayats.pg_ayat import PgAyat
+from srv.users.new_user import PgNewUser
 
 
 @final
@@ -59,12 +60,25 @@ class StartAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        await self._check_user_exists(update)
-        await self._user_repo.create(int(TgChatId(update)))
+        # await self._check_user_exists(update)
+        # await self._user_repo.create(int(TgChatId(update)))
+        referrer_chat_id = ReferrerIdOrNone(
+            ReferrerChatId(
+                str(MessageText(update)),
+                self._user_repo,
+            ),
+        )
+        await PgNewUser(
+            referrer_chat_id,
+            TgChatId(update),
+            self._pgsql,
+        ).create()
         start_message, ayat_message = await self._start_answers()
-        create_with_referrer_answers = await self._create_with_referrer(update, start_message, ayat_message)
-        if create_with_referrer_answers:
-            return create_with_referrer_answers
+        referrer_chat_id_calculated = await referrer_chat_id.to_int()
+        if referrer_chat_id_calculated:
+            return await self._create_with_referrer(
+                update, start_message, ayat_message, await referrer_chat_id.to_int(),
+            )
         return await TgAnswerList(
             TgAnswerToSender(
                 TgTextAnswer.str_ctor(
@@ -97,36 +111,33 @@ class StartAnswer(TgAnswer):
         if await self._user_repo.exists(int(TgChatId(update))):
             raise UserAlreadyExists
 
-    async def _create_with_referrer(self, update, start_message, ayat_message) -> list[httpx.Request]:
-        with suppress(StartMessageNotContainReferrer):
-            referrer_id = await SmartReferrerChatId(str(MessageText(update)), self._user_repo).to_int()
-            await self._user_repo.update_referrer(int(TgChatId(update)), referrer_id)
-            return await TgAnswerList(
-                TgAnswerToSender(
-                    TgTextAnswer.str_ctor(
-                        self._origin,
-                        start_message,
-                    ),
+    async def _create_with_referrer(self, update, start_message, ayat_message, referrer_id) -> list[httpx.Request]:
+        # await self._user_repo.update_referrer(int(TgChatId(update)), referrer_id)
+        return await TgAnswerList(
+            TgAnswerToSender(
+                TgTextAnswer.str_ctor(
+                    self._origin,
+                    start_message,
                 ),
-                TgAnswerToSender(
-                    TgTextAnswer.str_ctor(
-                        self._origin,
-                        ayat_message,
-                    ),
+            ),
+            TgAnswerToSender(
+                TgTextAnswer.str_ctor(
+                    self._origin,
+                    ayat_message,
                 ),
-                TgChatIdAnswer(
-                    TgTextAnswer.str_ctor(
-                        self._origin,
-                        'По вашей реферальной ссылке произошла регистрация',
-                    ),
-                    referrer_id,
+            ),
+            TgChatIdAnswer(
+                TgTextAnswer.str_ctor(
+                    self._origin,
+                    'По вашей реферальной ссылке произошла регистрация',
                 ),
-                TgChatIdAnswer(
-                    TgTextAnswer.str_ctor(
-                        self._origin,
-                        'Зарегистрировался новый пользователь',
-                    ),
-                    self._admin_chat_ids[0],
+                referrer_id,
+            ),
+            TgChatIdAnswer(
+                TgTextAnswer.str_ctor(
+                    self._origin,
+                    'Зарегистрировался новый пользователь',
                 ),
-            ).build(update)
-        return []
+                self._admin_chat_ids[0],
+            ),
+        ).build(update)

@@ -51,13 +51,6 @@ class User(BaseModel):
 class UserRepositoryInterface(Protocol):
     """Интерфейс репозитория для работы с пользователями."""
 
-    async def create(self, chat_id: int, referrer_id: Optional[int] = None):
-        """Метод для создания пользователя.
-
-        :param chat_id: int
-        :param referrer_id: Optional[int]
-        """
-
     async def get_by_chat_id(self, chat_id: int) -> User:
         """Метод для получения пользователя.
 
@@ -74,13 +67,6 @@ class UserRepositoryInterface(Protocol):
         """Метод для проверки наличия пользователя в БД.
 
         :param chat_id: int
-        """
-
-    async def update_city(self, chat_id: int, city_id: uuid.UUID):
-        """Обновить город пользователя.
-
-        :param chat_id: int
-        :param city_id: int
         """
 
     async def update_referrer(self, chat_id: int, referrer_id: int):
@@ -162,26 +148,6 @@ class UserRepository(UserRepositoryInterface):
         count = await self._pgsql.fetch_val(query, {CHAT_ID_LITERAL: chat_id})
         return bool(count)
 
-    async def update_city(self, chat_id: int, city_id: uuid.UUID):
-        """Обновить город пользователя.
-
-        :param chat_id: int
-        :param city_id: uuid.UUID
-        :raises UserNotFoundError: if user not found
-        """
-        query = """
-            UPDATE users
-            SET city_id = :city_id
-            WHERE chat_id = :chat_id
-        """
-        await self._pgsql.execute(query, {'city_id': str(city_id), CHAT_ID_LITERAL: chat_id})
-        new_city_id = await self._pgsql.fetch_val(
-            'SELECT city_id FROM users WHERE chat_id = :chat_id',
-            {'chat_id': chat_id},
-        )
-        if not new_city_id:
-            raise UserNotFoundError
-
     async def update_referrer(self, chat_id: int, referrer_id: int):
         """Обновить город пользователя.
 
@@ -214,4 +180,10 @@ class UserRepository(UserRepositoryInterface):
         row = await self._pgsql.fetch_one(query, {'user_id': user_id})
         if not row:
             raise UserNotFoundError('Пользователь с legacy_id: {0} не найден'.format(user_id))
-        return User.parse_obj(row)
+        return User(
+            chat_id=row['chat_id'],
+            is_active=row['is_active'],
+            day=row['day'],
+            referrer=row['referrer'],
+            city_id=row['city_id'],
+        )
