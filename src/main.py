@@ -73,7 +73,7 @@ def main(sys_args) -> None:
                             TgMeasureAnswer(
                                 QuranbotAnswer(
                                     pgsql,
-                                    aioredis.from_url(str(settings.REDIS_DSN)),  # type: ignore
+                                    aioredis.from_url(str(settings.REDIS_DSN)),
                                     nats_sink,
                                     settings,
                                 ),

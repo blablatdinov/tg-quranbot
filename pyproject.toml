@@ -112,7 +112,6 @@ ignore = [
   "FA100",   # TODO Missing `from __future__ import annotations`, but uses `typing.Optional`
   "INP001",  # TODO File `src/settings.py` is part of an implicit namespace package. Add an `__init__.py`.
   "TRY201",  # TODO Use `raise` without specifying exception name
-  "PGH003",  # TODO: Use specific rule codes when ignoring type issues Found 1 error.
   # ----------------------------------
   "Q002",    # We use single quotes
   "I001",    # Conflict with isort
