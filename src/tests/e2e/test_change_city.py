@@ -25,7 +25,7 @@ from telethon.sync import TelegramClient
 
 
 @pytest.fixture()
-def user_city(tg_client, db_conn, bot_name, wait_until):
+def _user_city(tg_client, db_conn, bot_name, wait_until):
     tg_client.send_message(bot_name, '/start')
     wait_until(tg_client, 3)
     db_cursor = db_conn.cursor()
@@ -36,7 +36,7 @@ def user_city(tg_client, db_conn, bot_name, wait_until):
     db_conn.commit()
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db', 'user_city')
+@pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')
 def test_change_city_by_name(tg_client, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, 'Поменять город')
     wait_until(tg_client, 5)
@@ -49,7 +49,7 @@ def test_change_city_by_name(tg_client, bot_name, wait_until, db_query_vals):
     ]
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db', 'user_city')
+@pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')
 def test_change_city_by_search(tg_client: TelegramClient, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, 'Поменять город')
     messages = wait_until(tg_client, 5)
@@ -69,7 +69,7 @@ def test_change_city_by_search(tg_client: TelegramClient, bot_name, wait_until, 
     ]
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db')
+@pytest.mark.usefixtures('_bot_process', '_clear_db')
 def test_not_registred(tg_client, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, 'Поменять город')
     wait_until(tg_client, 2)

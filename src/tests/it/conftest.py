@@ -30,7 +30,7 @@ from tests.creating_test_db import apply_migrations, create_db, drop_db
 
 
 @pytest.fixture(scope='session')
-def migrate():
+def _migrate():
     create_db()
     connection = psycopg2.connect(EnvFileSettings.from_filename('../.env').DATABASE_URL)
     connection.autocommit = True
@@ -42,7 +42,7 @@ def migrate():
 
 
 @pytest.fixture()
-async def pgsql(migrate):
+async def pgsql(_migrate):
     db_url = EnvFileSettings.from_filename('../.env').DATABASE_URL
     database = Database(db_url)
     await database.connect()

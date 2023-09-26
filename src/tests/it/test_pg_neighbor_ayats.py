@@ -30,7 +30,7 @@ from srv.ayats.text_search_query import FkTextSearchQuery
 
 
 @pytest.fixture()
-async def db_ayat(pgsql):
+async def _db_ayat(pgsql):
     created_at = datetime.datetime.now()
     await pgsql.execute_many(
         '\n'.join([
@@ -92,7 +92,8 @@ async def db_ayat(pgsql):
     )
 
 
-async def test_first(db_ayat, pgsql):
+@pytest.mark.usefixtures('_db_ayat')
+async def test_first(pgsql):
     neighbor = PgNeighborAyats(pgsql, 1)
 
     with pytest.raises(AyatNotFoundError):
@@ -101,7 +102,8 @@ async def test_first(db_ayat, pgsql):
     assert await neighbor.page() == 'стр. 1/3'
 
 
-async def test_last(db_ayat, pgsql):
+@pytest.mark.usefixtures('_db_ayat')
+async def test_last(pgsql):
     neighbor = PgNeighborAyats(pgsql, 3)
 
     with pytest.raises(AyatNotFoundError):
@@ -110,7 +112,8 @@ async def test_last(db_ayat, pgsql):
     assert await neighbor.page() == 'стр. 3/3'
 
 
-async def test_search_first(db_ayat, pgsql):
+@pytest.mark.usefixtures('_db_ayat')
+async def test_search_first(pgsql):
     neighbor = TextSearchNeighborAyats(pgsql, 1, FkTextSearchQuery('Content'))
 
     with pytest.raises(AyatNotFoundError):
@@ -119,7 +122,8 @@ async def test_search_first(db_ayat, pgsql):
     assert await neighbor.page() == 'стр. 1/3'
 
 
-async def test_search_last(db_ayat, pgsql):
+@pytest.mark.usefixtures('_db_ayat')
+async def test_search_last(pgsql):
     neighbor = TextSearchNeighborAyats(pgsql, 3, FkTextSearchQuery('Content'))
 
     with pytest.raises(AyatNotFoundError):

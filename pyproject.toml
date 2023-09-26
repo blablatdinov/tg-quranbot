@@ -101,7 +101,6 @@ max_line_length = 120
 [tool.ruff]
 select = ["ALL"]
 ignore = [
-  "PT004",   # TODO
   "FA102",   # TODO
   "DTZ005",  # TODO
   "DTZ007",  # TODO

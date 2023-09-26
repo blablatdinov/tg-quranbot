@@ -34,7 +34,7 @@ from integrations.tg.tg_answers import FkAnswer
 
 
 @pytest.fixture()
-async def db_podcast(pgsql):
+async def _db_podcast(pgsql):
     file_id = str(uuid.uuid4())
     await pgsql.execute(
         '\n'.join([
@@ -83,7 +83,7 @@ async def db_podcast(pgsql):
         ),
     ),
 ])
-@pytest.mark.usefixtures('db_podcast')
+@pytest.mark.usefixtures('_db_podcast')
 async def test(pgsql, rds, debug_mode, expected, unquote):
     got = await PodcastAnswer(
         debug_mode,

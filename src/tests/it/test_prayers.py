@@ -31,7 +31,7 @@ from integrations.tg.tg_answers import FkAnswer
 
 
 @pytest.fixture()
-async def user(pgsql):
+async def _user(pgsql):
     city_id = str(uuid.uuid4())
     await pgsql.execute("INSERT INTO cities (city_id, name) VALUES (:city_id, 'Казань')", {'city_id': city_id})
     await pgsql.execute(
@@ -40,7 +40,8 @@ async def user(pgsql):
     )
 
 
-async def test_not_found_prayer(pgsql, rds, freezer, user):
+@pytest.mark.usefixtures('_user')
+async def test_not_found_prayer(pgsql, rds, freezer):
     freezer.move_to('2023-08-30')
     got = await PrayerTimeAnswer.new_prayers_ctor(
         pgsql, FkAnswer(), [321], rds,

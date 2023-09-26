@@ -25,7 +25,7 @@ from pathlib import Path
 import pytest
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db')
+@pytest.mark.usefixtures('_bot_process', '_clear_db')
 def test_start(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/start')
     last_messages = wait_until(tg_client, 3)

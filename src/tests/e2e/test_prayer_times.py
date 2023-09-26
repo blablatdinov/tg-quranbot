@@ -29,7 +29,7 @@ from telethon import functions, types
 
 
 @pytest.fixture()
-def user_city(tg_client, db_conn, bot_name, wait_until):
+def _user_city(tg_client, db_conn, bot_name, wait_until):
     tg_client.send_message(bot_name, '/start')
     wait_until(tg_client, 3)
     db_cursor = db_conn.cursor()
@@ -62,7 +62,7 @@ def expected_message():
     raise ValueError('Prayers on dumrt not found')
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db', 'user_city')
+@pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')
 def test_prayer_times(tg_client, bot_name, expected_message, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     messages = wait_until(tg_client, 5)
@@ -70,8 +70,8 @@ def test_prayer_times(tg_client, bot_name, expected_message, wait_until):
     assert messages[0].message == expected_message
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db', 'user_city')
-def test_mark_as_readed(tg_client, bot_name, expected_message, wait_until, clear_db):
+@pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')
+def test_mark_as_readed(tg_client, bot_name, expected_message, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     messages = wait_until(tg_client, 5)
     [
@@ -94,8 +94,8 @@ def test_mark_as_readed(tg_client, bot_name, expected_message, wait_until, clear
     ]
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db', 'user_city')
-def test_mark_not_readed(tg_client, bot_name, expected_message, wait_until, clear_db):
+@pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')
+def test_mark_not_readed(tg_client, bot_name, expected_message, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     messages = wait_until(tg_client, 5)
     [
@@ -124,8 +124,8 @@ def test_mark_not_readed(tg_client, bot_name, expected_message, wait_until, clea
     ]
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db')
-def test_with_set_city_by_name(tg_client, bot_name, expected_message, wait_until, clear_db):
+@pytest.mark.usefixtures('_bot_process', '_clear_db')
+def test_with_set_city_by_name(tg_client, bot_name, expected_message, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     wait_until(tg_client, 2)
     tg_client.send_message(bot_name, 'Казань')
@@ -134,8 +134,8 @@ def test_with_set_city_by_name(tg_client, bot_name, expected_message, wait_until
     assert messages[0].message == 'Вам будет приходить время намаза для города Казань'
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db')
-def test_with_set_city_by_location(tg_client, bot_name, expected_message, wait_until, clear_db):
+@pytest.mark.usefixtures('_bot_process', '_clear_db')
+def test_with_set_city_by_location(tg_client, bot_name, expected_message, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     wait_until(tg_client, 2)
     tg_client(

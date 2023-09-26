@@ -30,7 +30,7 @@ import pytest
     ('2:1', 'src/tests/e2e/fixtures/2_1_ayat.txt'),
     ('2:3', 'src/tests/e2e/fixtures/2_1_ayat.txt'),
 ])
-@pytest.mark.usefixtures('bot_process', 'clear_db')
+@pytest.mark.usefixtures('_bot_process', '_clear_db')
 def test_search_by_sura_ayat(tg_client, bot_name, query, expected, wait_until):
     tg_client.send_message(bot_name, query)
     last_messages = wait_until(tg_client, 3)
@@ -38,7 +38,7 @@ def test_search_by_sura_ayat(tg_client, bot_name, query, expected, wait_until):
     assert last_messages[1].message == Path(expected).read_text()
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db')
+@pytest.mark.usefixtures('_bot_process', '_clear_db')
 def test_paginate_in_search_by_sura_ayat(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '8:7')
     last_messages = wait_until(tg_client, 3)
@@ -53,7 +53,7 @@ def test_paginate_in_search_by_sura_ayat(tg_client, bot_name, wait_until):
     assert last_messages[1].message == Path('src/tests/e2e/fixtures/8_8_ayat.txt').read_text()
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db')
+@pytest.mark.usefixtures('_bot_process', '_clear_db')
 def test_by_word(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Найти аят')
     wait_until(tg_client, 2)
@@ -73,7 +73,7 @@ def test_by_word(tg_client, bot_name, wait_until):
     ]
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db')
+@pytest.mark.usefixtures('_bot_process', '_clear_db')
 def test_search_pagination_forward(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Найти аят')
     wait_until(tg_client, 2)
@@ -91,7 +91,7 @@ def test_search_pagination_forward(tg_client, bot_name, wait_until):
     assert last_messages[0].message == 'https://umma.ru/audio/Ozvucjka-statei/Quran/audio/Husary_64/11/011083.mp3'
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db')
+@pytest.mark.usefixtures('_bot_process', '_clear_db')
 def test_search_pagination_backward(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Найти аят')
     wait_until(tg_client, 2)
@@ -115,7 +115,7 @@ def test_search_pagination_backward(tg_client, bot_name, wait_until):
     assert last_messages[1].message == Path('src/tests/e2e/fixtures/2_24_ayat.txt').read_text()
 
 
-@pytest.mark.usefixtures('bot_process', 'clear_db')
+@pytest.mark.usefixtures('_bot_process', '_clear_db')
 def test_add_to_favor_from_search(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/start')
     wait_until(tg_client, 3)

@@ -29,7 +29,7 @@ from srv.ayats.pg_ayat import PgAyat
 
 
 @pytest.fixture()
-async def db_ayat(pgsql):
+async def _db_ayat(pgsql):
     created_at = datetime.datetime.now()
     await pgsql.execute_many(
         '\n'.join([
@@ -65,7 +65,8 @@ async def db_ayat(pgsql):
     )
 
 
-async def test_change(db_ayat, pgsql):
+@pytest.mark.usefixtures('_db_ayat')
+async def test_change(pgsql):
     event = {
         'event_id': 'some_id',
         'event_version': 1,

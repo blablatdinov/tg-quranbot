@@ -39,7 +39,7 @@ class FkCoordinates(Coordinates):
 
 
 @pytest.fixture()
-def mock_nominatim(respx_mock):
+def _mock_nominatim(respx_mock):
     respx_mock.get(
         'https://nominatim.openstreetmap.org/reverse.php?lat=55.7887&lon=49.1221&format=jsonv2',
     ).mock(return_value=httpx.Response(
@@ -81,7 +81,7 @@ def mock_nominatim(respx_mock):
     ))
 
 
-@pytest.mark.usefixtures('mock_nominatim')
+@pytest.mark.usefixtures('_mock_nominatim')
 async def test():
     got = await NominatimCityName(FkCoordinates()).to_str()
 
