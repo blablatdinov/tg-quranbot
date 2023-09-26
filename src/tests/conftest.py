@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import asyncio
 import urllib
 
 import pytest
@@ -32,3 +33,11 @@ def unquote():
             str(url),
         ).replace('+', ' ')
     return _unquote
+
+
+@pytest.fixture(scope='session')
+def event_loop():
+    loop = asyncio.new_event_loop()
+    loop.slow_callback_duration = float('inf')
+    yield loop
+    loop.close()

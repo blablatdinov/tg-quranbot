@@ -186,10 +186,7 @@ class TextSearchNeighborAyats(NeighborAyats):
         rows = await self._pgsql.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[1:], start=1):
             if row['ayat_id'] == self._ayat_id:
-                try:
-                    return PgAyat.from_int(rows[idx - 1][AYAT_ID], self._pgsql)
-                except IndexError as err:
-                    raise AyatNotFoundError from err
+                return PgAyat.from_int(rows[idx - 1][AYAT_ID], self._pgsql)
         raise AyatNotFoundError
 
     async def right_neighbor(self) -> Ayat:
@@ -202,10 +199,7 @@ class TextSearchNeighborAyats(NeighborAyats):
         rows = await self._pgsql.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[:-1]):
             if row['ayat_id'] == self._ayat_id:
-                try:
-                    return PgAyat.from_int(rows[idx + 1][AYAT_ID], self._pgsql)
-                except IndexError as err:
-                    raise AyatNotFoundError from err
+                return PgAyat.from_int(rows[idx + 1][AYAT_ID], self._pgsql)
         raise AyatNotFoundError
 
     async def page(self) -> str:
