@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, TypeAlias
 
+import attrs
 from pyeo import elegant
 
 from srv.ayats.ayat_identifier import AyatIdentifier
@@ -42,3 +43,33 @@ class Ayat(Protocol):
 
     async def audio(self) -> TgFile:
         """Аудио файл."""
+
+
+@attrs.define(frozen=True)
+class FkAyat(Ayat):
+    """Ayat stub."""
+
+    _id: AyatIdentifier
+    _text: str
+    _audio: TgFile
+
+    def identifier(self):
+        """Идентификатор.
+
+        :return: AyatIdentifier
+        """
+        return self._id
+
+    async def text(self):
+        """Текст.
+
+        :return: str
+        """
+        return self._text
+
+    async def audio(self):
+        """Аудио.
+
+        :return: TgFile
+        """
+        return self._audio
