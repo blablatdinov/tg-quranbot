@@ -27,11 +27,11 @@ from eljson.json import Json
 from pyeo import elegant
 
 JsonPathQuery: TypeAlias = str
-JsonPathReturnType = TypeVar('JsonPathReturnType', covariant=True)
+JsonPathReturnType_co = TypeVar('JsonPathReturnType_co', covariant=True)
 
 
 @elegant
-class ReceivedEvent(Protocol[JsonPathReturnType]):
+class ReceivedEvent(Protocol[JsonPathReturnType_co]):
     """Событие."""
 
     async def process(self, json: Json) -> None:

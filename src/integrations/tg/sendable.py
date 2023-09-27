@@ -102,7 +102,7 @@ class UserNotSubscribedSafeSendable(SendableInterface):
                     continue
                 dict_response = json.loads(str(err))
                 return [dict_response]
-            raise err
+            raise TelegramIntegrationsError(str(err)) from err
         return responses
 
 

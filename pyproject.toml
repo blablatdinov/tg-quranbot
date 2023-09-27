@@ -104,12 +104,7 @@ target-version = "py311"  # TODO: up to 3.12
 ignore = [
   "DTZ005",  # TODO
   "DTZ007",  # TODO
-  "EM101",   # TODO. Exception must not use a string literal, assign to variable first
-  "TRY003",  # TODO. Avoid specifying long messages outside the exception class
-  "PLC0105", # TODO
-  "FA100",   # TODO Missing `from __future__ import annotations`, but uses `typing.Optional`
-  "INP001",  # TODO File `src/settings.py` is part of an implicit namespace package. Add an `__init__.py`.
-  "TRY201",  # TODO Use `raise` without specifying exception name
+  "INP001",  # TODO
   # ----------------------------------
   "ANN101",  # Missing type annotation for `self` in method
   "ANN102",  # Missing type annotation for `cls` in classmethod
