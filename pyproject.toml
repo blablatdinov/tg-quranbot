@@ -111,29 +111,29 @@ ignore = [
   "INP001",  # TODO File `src/settings.py` is part of an implicit namespace package. Add an `__init__.py`.
   "TRY201",  # TODO Use `raise` without specifying exception name
   # ----------------------------------
-  "Q002",    # We use single quotes
-  "I001",    # Conflict with isort
-  "Q000",    # We use single quotes
-  "RUF100",  # WPS primary linter
-  "UP030",   # We use explicit references
-  "FLY002",  # We not use f-strings
-  "RUF001",  # Project contain cyrillic symbols
-  "RUF002",  # Project contain cyrillic symbols
-  "UP032",   # We not use f-strings
-  "D203",    # no-blank-line-before-class
-  "D213",    # multi-line-summary-first-line
   "ANN101",  # Missing type annotation for `self` in method
   "ANN102",  # Missing type annotation for `cls` in classmethod
   "ARG002",  # Unused method argument
-  "EM103",   # Exception must not use a `.format()` string directly, assign to variable first
-  "RET505",  # Unnecessary `elif` after `return` statement
-  "TD",      # "todo" formats
-  "FIX002",  # Line contains TODO, consider resolving the issue
-  "RET506",  # Unnecessary `elif` after `raise` statement
+  "D203",    # no-blank-line-before-class
+  "D213",    # multi-line-summary-first-line
   "D418",    # Function decorated with `@overload` shouldn't contain a docstring
+  "EM103",   # Exception must not use a `.format()` string directly, assign to variable first
   "FBT001",  # Boolean-typed positional argument in function definition
   "FBT002",  # Boolean-typed positional argument in function definition
+  "FIX002",  # Line contains TODO, consider resolving the issue
+  "FLY002",  # We not use f-strings
+  "I001",    # Conflict with isort
+  "Q000",    # We use single quotes
+  "Q002",    # We use single quotes
+  "RUF100",  # WPS primary linter
+  "RUF001",  # Project contain cyrillic symbols
+  "RUF002",  # Project contain cyrillic symbols
+  "RET505",  # Unnecessary `elif` after `return` statement
+  "RET506",  # Unnecessary `elif` after `raise` statement
+  "UP030",   # We use explicit references
+  "UP032",   # We not use f-strings
   "UP004",   # Class `PrayerReaction` inherits from `object`
+  "TD",      # "todo" formats
 ]
 line-length = 120
 
