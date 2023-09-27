@@ -30,7 +30,6 @@ from redis.asyncio import Redis
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgHtmlParseAnswer, TgMessageAnswer
-from repository.users.user import UserRepository
 from repository.users.users import UsersRepository
 from services.answers.answer import DefaultKeyboard, ResizedKeyboard
 from services.reset_state_answer import ResetStateAnswer
@@ -69,13 +68,12 @@ class FullStartAnswer(TgAnswer):
                             TgHtmlParseAnswer(
                                 TgMessageAnswer(self._empty_answer),
                             ),
-                            UserRepository(self._pgsql),
                             PgAdminMessage('start', self._pgsql),
                             self._pgsql,
                             AdminChatIds(self._settings),
                         ),
                         answer_to_sender,
-                        UserRepository(self._pgsql),
+                        self._pgsql,
                         UsersRepository(self._pgsql),
                         self._event_sink,
                     ),

@@ -30,12 +30,11 @@ from pyeo import elegant
 
 from app_types.intable import ThroughAsyncIntable
 from app_types.update import Update
-from exceptions.user import UserAlreadyExistsError
+from exceptions.internal_exceptions import UserNotFoundError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
-from repository.users.user import UserRepositoryInterface
-from services.start.start_message import AsyncIntOrNone, ReferrerChatId, ReferrerIdOrNone
+from services.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone, ReferrerChatId, ReferrerIdOrNone
 from srv.admin_messages.admin_message import AdminMessage
 from srv.ayats.pg_ayat import PgAyat
 from srv.users.new_user import PgNewUser
@@ -48,7 +47,6 @@ class StartAnswer(TgAnswer):
     """Обработчик стартового сообщения."""
 
     _origin: TgAnswer
-    _user_repo: UserRepositoryInterface
     _admin_message: AdminMessage
     _pgsql: Database
     _admin_chat_ids: Sequence[int]
@@ -59,17 +57,25 @@ class StartAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        referrer_chat_id = ReferrerIdOrNone(
+        referrer_chat_id: AsyncIntOrNone = ReferrerIdOrNone(
             ReferrerChatId(
                 str(MessageText(update)),
-                self._user_repo,
+                self._pgsql,
             ),
         )
-        await PgNewUser(
-            referrer_chat_id,
-            TgChatId(update),
-            self._pgsql,
-        ).create()
+        try:
+            await PgNewUser(
+                referrer_chat_id,
+                TgChatId(update),
+                self._pgsql,
+            ).create()
+        except UserNotFoundError:
+            referrer_chat_id = FkAsyncIntOrNone(None)
+            await PgNewUser(
+                referrer_chat_id,
+                TgChatId(update),
+                self._pgsql,
+            ).create()
         answer = await self._answer(update, referrer_chat_id)
         return await answer.build(update)
 
@@ -107,10 +113,6 @@ class StartAnswer(TgAnswer):
             await self._admin_message.text(),
             await PgAyat(ThroughAsyncIntable(1), self._pgsql).text(),
         )
-
-    async def _check_user_exists(self, update: Update) -> None:
-        if await self._user_repo.exists(int(TgChatId(update))):
-            raise UserAlreadyExistsError
 
     async def _create_with_referrer(
         self, update: Update, start_message: str, ayat_message: str, referrer_id: int,

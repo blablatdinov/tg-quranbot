@@ -24,14 +24,15 @@ from contextlib import suppress
 from typing import Protocol, final
 
 import attrs
+from databases import Database
 from pyeo import elegant
 
-from app_types.intable import AsyncIntable
+from app_types.intable import AsyncIntable, SyncToAsyncIntable
 from exceptions.base_exception import BaseAppError
 from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import StartMessageNotContainReferrerError
-from repository.users.user import UserRepositoryInterface
 from services.regular_expression import IntableRegularExpression
+from srv.users.pg_user import PgUser
 
 
 @elegant
@@ -45,11 +46,27 @@ class AsyncIntOrNone(Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
+class FkAsyncIntOrNone(AsyncIntOrNone):
+    """FkAsyncIntOrNone."""
+
+    _origin_value: int | None
+
+    async def to_int(self) -> int | None:
+        """Числовое представление.
+
+        :return: int | None
+        """
+        return self._origin_value
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
 class ReferrerChatId(AsyncIntable):
     """Идентификатор чата пригласившего."""
 
     _message: str
-    _user_repo: UserRepositoryInterface
+    _pgsql: Database
 
     async def to_int(self) -> int:
         """Получить идентификатор пригласившего.
@@ -58,13 +75,14 @@ class ReferrerChatId(AsyncIntable):
         :raises StartMessageNotContainReferrerError: if message not contain referrer id
         """
         try:
+            # TODO: можно передавать это значение в PgUser без int(...)
             message_meta = int(IntableRegularExpression(self._message))
         except BaseAppError as err:
             raise StartMessageNotContainReferrerError from err
         max_legacy_id = 3000
         if message_meta < max_legacy_id:
-            return (await self._user_repo.get_by_id(message_meta)).chat_id
-        return (await self._user_repo.get_by_chat_id(message_meta)).chat_id
+            return await PgUser.legacy_id_ctor(message_meta, self._pgsql).chat_id()
+        return await PgUser(SyncToAsyncIntable(message_meta), self._pgsql).chat_id()
 
 
 @final

@@ -31,7 +31,8 @@ from app_types.update import Update
 from exceptions.internal_exceptions import UserNotFoundError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers.interface import TgAnswer
-from repository.users.user import UserRepository
+from services.start.start_message import FkAsyncIntOrNone
+from srv.users.new_user import PgNewUser
 
 
 @final
@@ -52,5 +53,9 @@ class UserNotRegisteredSafeAnswer(TgAnswer):
         try:
             return await self._origin.build(update)
         except UserNotFoundError:
-            await UserRepository(self._pgsql).create(int(TgChatId(update)))
+            await PgNewUser(
+                FkAsyncIntOrNone(None),
+                TgChatId(update),
+                self._pgsql,
+            ).create()
         return await self._origin.build(update)
