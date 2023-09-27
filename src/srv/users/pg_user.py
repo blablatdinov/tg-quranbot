@@ -26,7 +26,7 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import AsyncIntable
+from app_types.intable import AsyncIntable, SyncToAsyncIntable
 
 
 @elegant
@@ -86,6 +86,16 @@ class PgUser(User):
         :return: User
         """
         return cls(ChatIdByLegacyId(pgsql, legacy_id), pgsql)
+
+    @classmethod
+    def int_ctor(cls, chat_id: int, pgsql: Database) -> User:
+        """Конструктор по идентификатору чата.
+
+        :param chat_id: int
+        :param pgsql: Database
+        :return: User
+        """
+        return cls(SyncToAsyncIntable(chat_id), pgsql)
 
     async def chat_id(self) -> int:
         """Идентификатор чата.

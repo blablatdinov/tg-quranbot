@@ -27,12 +27,14 @@ import httpx
 from databases import Database
 from pyeo import elegant
 
+from app_types.listable import AsyncListable
 from app_types.runable import Runable
 from app_types.update import FkUpdate, Update
 from integrations.tg.sendable import BulkSendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer
 from integrations.tg.tg_answers.chat_action import TgChatAction
 from srv.users.active_users import ActiveUsers, PgUsers, UpdatedUsersStatus
+from srv.users.pg_user import User
 
 
 @final
@@ -69,7 +71,24 @@ class CheckUsersStatus(Runable):
     async def run(self) -> None:
         """Запуск."""
         users = ActiveUsers(self._pgsql)
-        answers: list[TgAnswer] = [
+        zipped_user_responses = zip(
+            await users.to_list(),
+            await BulkSendableAnswer(await self._answers(users)).send(FkUpdate()),
+            strict=True,
+        )
+        deactivated_user_chat_ids = [
+            await user.chat_id()
+            for user, response_list in zipped_user_responses
+            for response_dict in response_list
+            if not response_dict['ok']
+        ]
+        await UpdatedUsersStatus(
+            self._pgsql,
+            PgUsers(self._pgsql, deactivated_user_chat_ids),
+        ).update(to=False)
+
+    async def _answers(self, users: AsyncListable[User]) -> list[TgAnswer]:
+        return [
             TypingAction(
                 TgChatIdAnswer(
                     TgChatAction(self._empty_answer),
@@ -78,13 +97,3 @@ class CheckUsersStatus(Runable):
             )
             for user in await users.to_list()
         ]
-        deactivated_user_chat_ids = [
-            response_dict['chat_id']
-            for response_list in await BulkSendableAnswer(answers).send(FkUpdate())
-            for response_dict in response_list
-            if not response_dict['ok']
-        ]
-        await UpdatedUsersStatus(
-            self._pgsql,
-            PgUsers(self._pgsql, deactivated_user_chat_ids),
-        ).update(to=False)

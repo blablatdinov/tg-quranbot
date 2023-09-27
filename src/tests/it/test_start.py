@@ -129,7 +129,7 @@ async def test(pgsql, rds, _db_ayat, unquote):
 async def test_exists_user(pgsql, rds, unquote):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), rds, FkSettings(),
-    ).build(FkUpdate('{"message":{"text":"/start"},"chat":{"id":321}}'))
+    ).build(FkUpdate('{"message":{"text":"/start"},"chat":{"id":321},"date":0}'))
 
     assert len(got) == 1
     assert unquote(got[0].url) == unquote(
