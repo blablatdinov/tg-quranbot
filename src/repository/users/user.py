@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import uuid
-from typing import Final, Optional, Protocol, final
+from typing import Final, Protocol, final
 
 import attrs
 from databases import Database
@@ -41,10 +41,10 @@ class User(BaseModel):
 
     is_active: bool
     day: int
-    referrer: Optional[int] = None
+    referrer: int | None = None
     chat_id: int
-    legacy_id: Optional[int] = None
-    city_id: Optional[uuid.UUID]
+    legacy_id: int | None = None
+    city_id: uuid.UUID | None
 
 
 @elegant
@@ -85,7 +85,7 @@ class UserRepository(UserRepositoryInterface):
 
     _pgsql: Database
 
-    async def create(self, chat_id: int, referrer_id: Optional[int] = None) -> User:
+    async def create(self, chat_id: int, referrer_id: int | None = None) -> User:
         """Метод для создания пользователя.
 
         :param chat_id: int
