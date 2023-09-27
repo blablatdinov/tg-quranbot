@@ -27,6 +27,7 @@ import httpx
 from pyeo import elegant
 
 from app_types.supports_bool import SupportsBool
+from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer
 
 
@@ -40,7 +41,7 @@ class FileAnswer(TgAnswer):
     _telegram_file_id_answer: TgAnswer
     _file_link_answer: TgAnswer
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Отправка.
 
         :param update: Update

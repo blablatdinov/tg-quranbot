@@ -38,7 +38,7 @@ class UpdateId(SupportsInt):
 
     _update: Update
 
-    def __int__(self):
+    def __int__(self) -> int:
         """Числовое представление.
 
         :return: int

@@ -41,7 +41,7 @@ class AyatTextSearchQuery(TextSearchQuery):
     _key_template = '{0}:ayat_search_query'
 
     @classmethod
-    def for_write_cs(cls, redis: Redis, query: str, chat_id: int):
+    def for_write_cs(cls, redis: Redis, query: str, chat_id: int) -> TextSearchQuery:
         """Конструктор для записи.
 
         :param redis: Redis
@@ -52,7 +52,7 @@ class AyatTextSearchQuery(TextSearchQuery):
         return AyatTextSearchQuery(redis, query=query, chat_id=chat_id)
 
     @classmethod
-    def for_reading_cs(cls, redis: Redis, chat_id: int):
+    def for_reading_cs(cls, redis: Redis, chat_id: int) -> TextSearchQuery:
         """Конструктор для чтения.
 
         :param redis: Redis

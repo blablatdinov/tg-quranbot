@@ -59,6 +59,9 @@ class FkAyat(Ayat):
     async def audio(self):
         return FkFile('', '')
 
+    async def change(self, event_body) -> None:
+        """Изменить содержимое аята."""
+
 
 class FkFavoriteAyats(AsyncListable[Ayat]):
 

@@ -65,7 +65,7 @@ class CheckUsersStatus(Runable):
     _users_repo: UsersRepositoryInterface
     _empty_answer: TgAnswer
 
-    async def run(self):
+    async def run(self) -> None:
         """Запуск."""
         chat_ids = await self._users_repo.get_active_user_chat_ids()
         answers: list[TgAnswer] = [

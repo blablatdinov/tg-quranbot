@@ -42,9 +42,10 @@ class RbmqAyatChangedEvent(AyatChangedEvent):
 
     _pgsql: Database
 
-    async def process(self, json: Json):
+    async def process(self, json: Json) -> None:
         """Обработка события.
 
         :param json: Json
         """
-        await PgAyat.ayat_changed_event_ctor(json, self._pgsql).change(json)
+        pg_ayat = PgAyat.ayat_changed_event_ctor(json, self._pgsql)
+        await pg_ayat.change(json)

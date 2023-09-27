@@ -26,6 +26,7 @@ from typing import final
 import attrs
 from pyeo import elegant
 
+from app_types.update import Update
 from integrations.tg.sendable import SendableInterface
 from srv.events.sink import SinkInterface
 
@@ -39,7 +40,7 @@ class LoggedAnswer(SendableInterface):
     _origin: SendableInterface
     _event_sink: SinkInterface
 
-    async def send(self, update: str) -> list[dict]:
+    async def send(self, update: Update) -> list[dict]:
         """Отправка.
 
         :param update: str

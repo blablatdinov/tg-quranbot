@@ -40,7 +40,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 class SendableInterface(Protocol):
     """Интерфейс объекта, отправляющего ответы в API."""
 
-    async def send(self, update) -> list[dict]:
+    async def send(self, update: Update) -> list[dict]:
         """Отправка.
 
         :param update: Update
@@ -82,7 +82,7 @@ class UserNotSubscribedSafeSendable(SendableInterface):
 
     _origin: SendableInterface
 
-    async def send(self, update) -> list[dict]:
+    async def send(self, update: Update) -> list[dict]:
         """Отправка.
 
         :param update: Update

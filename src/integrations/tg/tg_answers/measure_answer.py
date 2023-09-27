@@ -41,7 +41,7 @@ class Millis(SupportsFloat):
     _millis: float
 
     @classmethod
-    def seconds_ctor(cls, seconds: float):
+    def seconds_ctor(cls, seconds: float) -> SupportsFloat:
         """Конструктор для секунд.
 
         :param seconds: float
@@ -49,7 +49,7 @@ class Millis(SupportsFloat):
         """
         return Millis(seconds * 1000)
 
-    def __float__(self):
+    def __float__(self) -> float:
         """Представление в форме числа с плавающей запятой.
 
         :return: float
@@ -66,7 +66,7 @@ class RoundedFloat(SupportsFloat):
     _origin: SupportsFloat
     _shift_comma: int
 
-    def __float__(self):
+    def __float__(self) -> float:
         """Представление в форме числа с плавающей запятой.
 
         :return: float

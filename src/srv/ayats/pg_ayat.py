@@ -67,7 +67,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         )
 
     @classmethod
-    def from_int(cls, ayat_id: int, database) -> Ayat:
+    def from_int(cls, ayat_id: int, database: Database) -> Ayat:
         """Конструктор для числа.
 
         :param ayat_id: int
@@ -92,7 +92,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         )
 
     @classmethod
-    def ayat_changed_event_ctor(cls, event_body: Json, pgsql):
+    def ayat_changed_event_ctor(cls, event_body: Json, pgsql: Database) -> Ayat:
         """Конструктор для события изменения аята.
 
         :param event_body: Json

@@ -38,7 +38,7 @@ class ResizedKeyboard(KeyboardInterface):
 
     _origin: KeyboardInterface
 
-    async def generate(self, update):
+    async def generate(self, update: Update) -> str:
         """Генерация.
 
         :param update: Update
@@ -55,7 +55,7 @@ class ResizedKeyboard(KeyboardInterface):
 class DefaultKeyboard(KeyboardInterface):
     """Класс клавиатуры по умолчанию."""
 
-    async def generate(self, update: Update):
+    async def generate(self, update: Update) -> str:
         """Генерация.
 
         :param update: Update

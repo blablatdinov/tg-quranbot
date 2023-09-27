@@ -67,7 +67,7 @@ class PrayerStatus(PrayerStatusInterface):
 class UserPrayerStatusInterface(Protocol):
     """Интерфейс статуса прочитанности намаза."""
 
-    async def change(self, prayer_status: PrayerStatus):
+    async def change(self, prayer_status: PrayerStatus) -> None:
         """Изменить статус прочитанности.
 
         :param prayer_status: PrayerStatus
@@ -82,7 +82,7 @@ class UserPrayerStatus(UserPrayerStatusInterface):
 
     _pgsql: Database
 
-    async def change(self, prayer_status: PrayerStatus):
+    async def change(self, prayer_status: PrayerStatus) -> None:
         """Изменить статус прочитанности.
 
         :param prayer_status: PrayerStatus

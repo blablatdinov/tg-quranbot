@@ -38,7 +38,7 @@ from integrations.tg.update_id import UpdateId
 class DebugParamInterface(Protocol):
     """Интерфейс отладочной информации."""
 
-    async def debug_value(self, update) -> str:
+    async def debug_value(self, update: Update) -> str:
         """Значение отладочной информации.
 
         :param update: Update
@@ -50,7 +50,7 @@ class DebugParamInterface(Protocol):
 class AppendDebugInfoAnswer(TgAnswer):
     """Ответ с отладочной информацией."""
 
-    def __init__(self, debug_mode: bool, answer: TgAnswer, *debug_params: DebugParamInterface):
+    def __init__(self, debug_mode: bool, answer: TgAnswer, *debug_params: DebugParamInterface) -> None:
         """Конструктор класса.
 
         :param debug_mode: bool
@@ -78,7 +78,7 @@ class AppendDebugInfoAnswer(TgAnswer):
             ],
         )
 
-    def _build_new_requests(self, origin_requests: list[httpx.Request], debug_params: list[str]):
+    def _build_new_requests(self, origin_requests: list[httpx.Request], debug_params: list[str]) -> list[httpx.Request]:
         debug_str = '\n\n!----- DEBUG INFO -----!\n\n{0}\n\n!----- END DEBUG INFO -----!'.format(
             '\n'.join(debug_params),
         )

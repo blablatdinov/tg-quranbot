@@ -50,7 +50,7 @@ class UserStateInterface(Protocol):
     async def step(self) -> UserStep:
         """Состояние пользователя."""
 
-    async def change_step(self, step: UserStep):
+    async def change_step(self, step: UserStep) -> None:
         """Изменение, состояние пользователя.
 
         :param step: UserStep
@@ -74,7 +74,7 @@ class LoggedUserState(UserStateInterface):
         logger.info('User state: {0}'.format(res))
         return res
 
-    async def change_step(self, step: UserStep):
+    async def change_step(self, step: UserStep) -> None:
         """Изменение, состояние пользователя.
 
         :param step: UserStep
@@ -105,7 +105,7 @@ class UserState(UserStateInterface):
             return UserStep.nothing
         return UserStep[redis_state_data.decode('utf-8')]
 
-    async def change_step(self, step: UserStep):
+    async def change_step(self, step: UserStep) -> None:
         """Изменение, состояние пользователя.
 
         :param step: UserStep

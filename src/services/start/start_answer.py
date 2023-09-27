@@ -35,7 +35,7 @@ from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
 from repository.users.user import UserRepositoryInterface
-from services.start.start_message import ReferrerChatId, ReferrerIdOrNone
+from services.start.start_message import AsyncIntOrNone, ReferrerChatId, ReferrerIdOrNone
 from srv.admin_messages.admin_message import AdminMessage
 from srv.ayats.pg_ayat import PgAyat
 from srv.users.new_user import PgNewUser
@@ -70,14 +70,15 @@ class StartAnswer(TgAnswer):
             TgChatId(update),
             self._pgsql,
         ).create()
-        return await (await self._answer(update, referrer_chat_id)).build(update)
+        answer = await self._answer(update, referrer_chat_id)
+        return await answer.build(update)
 
-    async def _answer(self, update, referrer_chat_id) -> TgAnswer:
+    async def _answer(self, update: Update, referrer_chat_id: AsyncIntOrNone) -> TgAnswer:
         start_message, ayat_message = await self._start_answers()
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
         if referrer_chat_id_calculated:
             return await self._create_with_referrer(
-                update, start_message, ayat_message, await referrer_chat_id.to_int(),
+                update, start_message, ayat_message, referrer_chat_id_calculated,
             )
         return TgAnswerList(
             TgAnswerToSender(
@@ -111,7 +112,9 @@ class StartAnswer(TgAnswer):
         if await self._user_repo.exists(int(TgChatId(update))):
             raise UserAlreadyExistsError
 
-    async def _create_with_referrer(self, update, start_message, ayat_message, referrer_id) -> TgAnswer:
+    async def _create_with_referrer(
+        self, update: Update, start_message: str, ayat_message: str, referrer_id: int,
+    ) -> TgAnswer:
         return TgAnswerList(
             TgAnswerToSender(
                 TgTextAnswer.str_ctor(

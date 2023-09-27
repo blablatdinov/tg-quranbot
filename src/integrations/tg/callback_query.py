@@ -39,7 +39,7 @@ class CallbackQueryData(SupportsStr):
 
     _update: Update
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление.
 
         :return: str

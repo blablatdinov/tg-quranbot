@@ -27,6 +27,7 @@ import httpx
 from furl import furl
 from pyeo import elegant
 
+from app_types.update import Update
 from integrations.tg.keyboard import KeyboardInterface
 from integrations.tg.tg_answers.interface import TgAnswer
 
@@ -40,7 +41,7 @@ class TgAnswerMarkup(TgAnswer):
     _origin: TgAnswer
     _keyboard: KeyboardInterface
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ для пользователя.
 
         :param update: Update

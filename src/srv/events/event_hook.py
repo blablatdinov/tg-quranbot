@@ -73,7 +73,7 @@ class RbmqEventHook(EventHook):
     _pgsql: Database
     _event: ReceivedEvent
 
-    async def catch(self):
+    async def catch(self) -> None:
         """Запуск обработки."""
         channel, transport, protocol = await self._pre_build()
         await channel.basic_consume(self._callback, queue_name='my_queue')
@@ -95,7 +95,13 @@ class RbmqEventHook(EventHook):
         await channel.queue_declare(queue_name='my_queue')
         return channel, transport, protocol
 
-    async def _callback(self, channel, body: bytes, envelope, properties):
+    async def _callback(
+        self,
+        channel: aioamqp.channel.Channel,
+        body: bytes,
+        envelope: aioamqp.envelope.Envelope,
+        properties: aioamqp.properties.Properties,
+    ) -> None:
         logger.info('Taked event {0}'.format(json.loads(body.decode('utf-8'))))
         body_json = JsonDoc.from_string(body.decode('utf-8'))  # type: ignore [no-untyped-call]
         try:

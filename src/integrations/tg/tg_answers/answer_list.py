@@ -25,6 +25,7 @@ from typing import final
 import httpx
 from pyeo import elegant
 
+from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
@@ -33,14 +34,14 @@ from integrations.tg.tg_answers.interface import TgAnswer
 class TgAnswerList(TgAnswer):
     """Список ответов пользователю."""
 
-    def __init__(self, *answers: TgAnswer):
+    def __init__(self, *answers: TgAnswer) -> None:
         """Конструктор класса.
 
         :param answers: TgAnswerInterface
         """
         self._answers = answers
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
         :param update: Update

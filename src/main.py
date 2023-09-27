@@ -47,7 +47,7 @@ from srv.events.recieved_event import EventFork
 from srv.events.sink import FkSink
 
 
-def main(sys_args) -> None:
+def main(sys_args: list[str]) -> None:
     """Точка входа в приложение.
 
     :param sys_args: list[str]

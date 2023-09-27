@@ -103,21 +103,21 @@ class FkIdentifier(AyatIdentifier):
     _sura_num: int
     _ayat_num: str
 
-    async def ayat_id(self):
+    async def ayat_id(self) -> int:
         """Идентификатор.
 
         :return: int
         """
         return self._id
 
-    async def sura_num(self):
+    async def sura_num(self) -> int:
         """Номер суры.
 
         :return: int
         """
         return self._sura_num
 
-    async def ayat_num(self):
+    async def ayat_num(self) -> str:
         """Номер аята.
 
         :return: str

@@ -52,12 +52,12 @@ class FkUpdate(Update):
 
     _raw: SupportsStr | None = ''
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Приведение к строке.
 
         :return: str
         """
-        return self._raw
+        return str(self._raw)
 
     def parsed(self) -> UpdateStruct:
         """Десериализованный объект.
@@ -66,7 +66,7 @@ class FkUpdate(Update):
         """
         return UpdateStruct(ok=True)
 
-    def asdict(self):
+    def asdict(self) -> dict:
         """Словарь.
 
         :return: dict

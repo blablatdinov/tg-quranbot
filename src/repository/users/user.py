@@ -69,7 +69,7 @@ class UserRepositoryInterface(Protocol):
         :param chat_id: int
         """
 
-    async def update_referrer(self, chat_id: int, referrer_id: int):
+    async def update_referrer(self, chat_id: int, referrer_id: int) -> None:
         """Обновить город пользователя.
 
         :param chat_id: int
@@ -148,7 +148,7 @@ class UserRepository(UserRepositoryInterface):
         count = await self._pgsql.fetch_val(query, {CHAT_ID_LITERAL: chat_id})
         return bool(count)
 
-    async def update_referrer(self, chat_id: int, referrer_id: int):
+    async def update_referrer(self, chat_id: int, referrer_id: int) -> None:
         """Обновить город пользователя.
 
         :param chat_id: int

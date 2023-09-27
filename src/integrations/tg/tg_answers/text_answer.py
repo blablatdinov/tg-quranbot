@@ -28,6 +28,7 @@ from furl import furl
 from pyeo import elegant
 
 from app_types.stringable import AsyncSupportsStr, FkAsyncStr
+from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
@@ -41,7 +42,7 @@ class TgTextAnswer(TgAnswer):
     _text: AsyncSupportsStr
 
     @classmethod
-    def str_ctor(cls, origin: TgAnswer, text: str):
+    def str_ctor(cls, origin: TgAnswer, text: str) -> TgAnswer:
         """Конструктор для строки.
 
         :param origin: TgAnswer
@@ -52,7 +53,7 @@ class TgTextAnswer(TgAnswer):
             origin, FkAsyncStr(text),
         )
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
         :param update: Update

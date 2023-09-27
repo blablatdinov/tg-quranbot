@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-from typing import final
+from typing import ClassVar, final
 
 import attrs
 from pyeo import elegant
@@ -29,7 +29,6 @@ from pyeo import elegant
 from app_types.stringable import SupportsStr
 from app_types.update import Update
 from integrations.tg.update_struct import UpdateStruct
-from services.weak_cache import weak_lru
 
 
 @final
@@ -69,7 +68,7 @@ class TgUpdate(Update):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define()
 @elegant
 class CachedTgUpdate(Update):
     """Декоратор, для избежания повторной десериализации.
@@ -78,27 +77,38 @@ class CachedTgUpdate(Update):
     """
 
     _origin: Update
+    _cache: ClassVar = {
+        'str': None,
+        'parsed': None,
+        'asdict': None,
+    }
 
-    @weak_lru()
-    def __str__(self):
+    def __str__(self) -> str:
         """Приведение к строке.
 
         :return: str
         """
-        return self._origin.__str__()
+        str_cache_key = 'str'
+        if not self._cache[str_cache_key]:
+            self._cache[str_cache_key] = self._origin.__str__()
+        return self._cache[str_cache_key]
 
-    @weak_lru()
     def parsed(self) -> UpdateStruct:
         """Десериализованный объект.
 
         :return: UpdateStruct
         """
-        return self._origin.parsed()
+        parsed_cache_key = 'parsed'
+        if not self._cache[parsed_cache_key]:
+            self._cache[parsed_cache_key] = self._origin.parsed()
+        return self._cache[parsed_cache_key]
 
-    @weak_lru()
     def asdict(self) -> dict:
         """Словарь.
 
         :return: dict
         """
-        return self._origin.asdict()
+        dict_cache_key = 'asdict'
+        if not self._cache[dict_cache_key]:
+            self._cache[dict_cache_key] = self._origin.asdict()
+        return self._cache[dict_cache_key]
