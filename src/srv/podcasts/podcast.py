@@ -72,7 +72,8 @@ class RandomPodcast(Podcast):
             {'podcast_id': await self._podcast_id.to_int()},
         )
         if not row:
-            raise InternalBotError('Подкасты не найдены')
+            msg = 'Подкасты не найдены'
+            raise InternalBotError(msg)
         return row['telegram_file_id']
 
     async def file_link(self) -> FileLink:
@@ -92,5 +93,6 @@ class RandomPodcast(Podcast):
             {'podcast_id': await self._podcast_id.to_int()},
         )
         if not row:
-            raise InternalBotError('Подкасты не найдены')
+            msg = 'Подкасты не найдены'
+            raise InternalBotError(msg)
         return row['link']

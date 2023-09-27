@@ -59,7 +59,8 @@ def expected_message():
                 'Ахшам: {0}'.format(datetime.datetime.strptime(elems[7], '%H:%M').strftime('%H:%M')),
                 'Ястү: {0}'.format(datetime.datetime.strptime(elems[8], '%H:%M').strftime('%H:%M')),
             ])
-    raise ValueError('Prayers on dumrt not found')
+    msg = 'Prayers on dumrt not found'
+    raise ValueError(msg)
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')

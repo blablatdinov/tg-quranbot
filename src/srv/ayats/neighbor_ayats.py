@@ -103,7 +103,8 @@ class FavoriteNeighborAyats(NeighborAyats):
                 return 'стр. {0}/{0}'.format(len(fayats))
             elif self._ayat_id == await ayat.identifier().ayat_id():
                 return 'стр. {0}/{1}'.format(ayat_idx, len(fayats))
-        raise BaseAppError('Page info not generated')
+        msg = 'Page info not generated'
+        raise BaseAppError(msg)
 
 
 @final

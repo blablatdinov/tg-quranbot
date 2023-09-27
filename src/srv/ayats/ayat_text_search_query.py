@@ -69,7 +69,8 @@ class AyatTextSearchQuery(TextSearchQuery):
         key = self._key_template.format(self._chat_id)
         logger.info('Try writing key: {0}, value: {1}'.format(key, self._query))
         if not self._query:
-            raise ValueError('Query not give')
+            msg = 'Query not give'
+            raise ValueError(msg)
         await self._redis.set(key, self._query)
         logger.info('Key: {0} wrote'.format(self._key_template.format(self._chat_id)))
 
@@ -83,8 +84,9 @@ class AyatTextSearchQuery(TextSearchQuery):
         logger.info('Try read {0}'.format(key))
         redis_value = await self._redis.get(key)
         if not redis_value:
-            logger.error("User hasn't search query")
-            raise ValueError("User hasn't search query")
+            msg = "User hasn't search query"
+            logger.error(msg)
+            raise ValueError(msg)
         seqrch_query = redis_value.decode('utf-8')
         logger.info('Read value: {0}'.format(seqrch_query))
         return seqrch_query
