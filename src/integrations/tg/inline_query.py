@@ -39,7 +39,7 @@ class InlineQuery(SupportsStr):
 
     _update: Update
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление.
 
         :return: str
@@ -63,7 +63,7 @@ class InlineQueryId(SupportsInt):
 
     _update: Update
 
-    def __int__(self):
+    def __int__(self) -> int:
         """Числовое представление.
 
         :return: int

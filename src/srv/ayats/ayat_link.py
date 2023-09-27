@@ -48,7 +48,7 @@ class AyatLink(SupportsStr):
     _sura_num: int
     _ayat_num: _AyatNum
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Формирование ссылки с якорем на аят.
 
         Пример: https://umma.ru/sura-56-al-vaky-a-sobytie/#56-18

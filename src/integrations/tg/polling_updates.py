@@ -37,7 +37,7 @@ from integrations.tg.update import TgUpdate
 class UpdatesTimeout(SupportsInt):
     """Таймаут для обновлений."""
 
-    def __int__(self):
+    def __int__(self) -> int:
         """Числовое представление.
 
         :return: int
@@ -64,7 +64,7 @@ class UpdatesURL(SupportsStr):
 
     _token: str
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строчное представление.
 
         :return: str
@@ -80,7 +80,7 @@ class UpdatesWithOffsetURL(UpdatesURLInterface):
 
     _updates_url: SupportsStr
 
-    def generate(self, update_id: int):
+    def generate(self, update_id: int) -> str:
         """Генерация.
 
         :param update_id: int
@@ -98,16 +98,16 @@ class UpdatesLongPollingURL(UpdatesURLInterface):
     _origin: UpdatesURLInterface
     _long_polling_timeout: SupportsInt
 
-    def generate(self, update_id: int):
+    def generate(self, update_id: int) -> str:
         """Генерация.
 
         :param update_id: int
         :return: str
         """
-        return httpx.URL(self._origin.generate(update_id)).copy_add_param(
+        return str(httpx.URL(self._origin.generate(update_id)).copy_add_param(
             'timeout',
             int(self._long_polling_timeout),
-        )
+        ))
 
 
 @elegant

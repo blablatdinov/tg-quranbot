@@ -66,7 +66,7 @@ class ThroughString(SupportsStr):
 
     _source: str
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление.
 
         :return: str
@@ -82,7 +82,7 @@ class UnwrappedString(SupportsStr):
 
     _origin: SupportsStr
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление.
 
         :return: str

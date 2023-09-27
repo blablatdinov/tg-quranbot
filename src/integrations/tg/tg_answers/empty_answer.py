@@ -26,6 +26,7 @@ import attrs
 import httpx
 from pyeo import elegant
 
+from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
@@ -37,7 +38,7 @@ class TgEmptyAnswer(TgAnswer):
 
     _token: str
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Создать ответ с токеном.
 
         :param update: Update

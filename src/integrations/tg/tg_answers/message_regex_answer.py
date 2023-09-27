@@ -59,7 +59,7 @@ class TgMessageRegexAnswer(TgAnswer, SupportsStr):
             return []
         return await self._answer.build(update)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление.
 
         :return: str

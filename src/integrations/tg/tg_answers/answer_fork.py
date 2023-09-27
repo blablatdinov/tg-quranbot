@@ -43,7 +43,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 class TgAnswerFork(TgAnswer):
     """Маршрутизация ответов."""
 
-    def __init__(self, *answers: TgAnswer):
+    def __init__(self, *answers: TgAnswer) -> None:
         """Конструктор класса.
 
         :param answers: TgAnswerInterface

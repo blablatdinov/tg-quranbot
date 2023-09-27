@@ -30,6 +30,7 @@ from redis.asyncio import Redis
 
 from app_types.stringable import ThroughString
 from app_types.supports_bool import SupportsBool
+from app_types.update import Update
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
@@ -54,7 +55,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
     _redis: Redis
     _pgsql: Database
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
         :param update: Update

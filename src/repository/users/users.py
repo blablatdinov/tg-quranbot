@@ -42,14 +42,14 @@ class UsersRepositoryInterface(Protocol):
     async def get_active_user_chat_ids(self) -> list[int]:
         """Получить активных пользователей."""
 
-    async def update_status(self, chat_ids: list[int], to: bool):
+    async def update_status(self, chat_ids: list[int], to: bool) -> None:
         """Обнвоить статус пользователей.
 
         :param chat_ids: list[int]
         :param to: bool
         """
 
-    async def increment_user_days(self, chat_ids: list[int]):
+    async def increment_user_days(self, chat_ids: list[int]) -> None:
         """Обнвоить статус пользователей.
 
         :param chat_ids: list[int]
@@ -84,7 +84,7 @@ class UsersRepository(UsersRepositoryInterface):
             for parsed_row in parse_obj_as(list[QueryResultItem], rows)
         ]
 
-    async def update_status(self, chat_ids: list[int], to: bool):
+    async def update_status(self, chat_ids: list[int], to: bool) -> None:
         """Обнвоить статус пользователей.
 
         :param chat_ids: list[int]
@@ -101,7 +101,7 @@ class UsersRepository(UsersRepositoryInterface):
         query = query_template.format(chat_ids_for_query)
         await self._pgsql.execute(query, {'to': to})
 
-    async def increment_user_days(self, chat_ids: list[int]):
+    async def increment_user_days(self, chat_ids: list[int]) -> None:
         """Обнвоить статус пользователей.
 
         :param chat_ids: list[int]

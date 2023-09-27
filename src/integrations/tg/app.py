@@ -88,7 +88,7 @@ class DatabaseConnectedApp(Runable):
     _pgsql: Database
     _app: Runable
 
-    async def run(self):
+    async def run(self) -> None:
         """Запуск."""
         await self._pgsql.connect()
         await self._app.run()

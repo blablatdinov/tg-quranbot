@@ -52,7 +52,7 @@ class CachedSettings(Settings):
     _origin: Settings
     _cached_values: ClassVar[dict[str, str]] = {}
 
-    def __getattr__(self, attr_name) -> str:
+    def __getattr__(self, attr_name: str) -> str:
         """Получить аттрибут.
 
         :param attr_name: str
@@ -75,7 +75,7 @@ class OsOrFileSettings(Settings):
     _os_envs: Settings
     _env_file: Settings
 
-    def __getattr__(self, attr_name):
+    def __getattr__(self, attr_name: str) -> str:
         """Получить аттрибут.
 
         :param attr_name: str
@@ -104,17 +104,17 @@ class EnvFileSettings(Settings):
         """
         return cls(Path(BASE_DIR / file_path))
 
-    def __getattr__(self, attr_name):
+    def __getattr__(self, attr_name: str) -> str:
         """Получить аттрибут.
 
         :param attr_name: str
         :return: str
         """
         if attr_name == 'BASE_DIR':
-            return BASE_DIR
+            return str(BASE_DIR)
         return self._search_in_file(attr_name)
 
-    def _search_in_file(self, attr_name) -> str:
+    def _search_in_file(self, attr_name: str) -> str:
         for line in self._path.read_text().strip().split('\n'):
             if '=' not in line:
                 continue
@@ -130,7 +130,7 @@ class EnvFileSettings(Settings):
 class OsEnvSettings(Settings):
     """Настройки из переменных окружения."""
 
-    def __getattr__(self, attr_name):
+    def __getattr__(self, attr_name: str) -> str:
         """Получить аттрибут.
 
         :param attr_name: str
@@ -138,7 +138,7 @@ class OsEnvSettings(Settings):
         :raises ValueError: имя не найдено
         """
         if attr_name == 'BASE_DIR':
-            return BASE_DIR
+            return str(BASE_DIR)
         env_value = os.getenv(attr_name)
         if not env_value:
             raise ValueError

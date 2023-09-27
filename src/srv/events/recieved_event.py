@@ -34,7 +34,7 @@ JsonPathReturnType = TypeVar('JsonPathReturnType', covariant=True)
 class ReceivedEvent(Protocol[JsonPathReturnType]):
     """Событие."""
 
-    async def process(self, json: Json) -> int:
+    async def process(self, json: Json) -> None:
         """Обработать событие.
 
         :param json: Json
@@ -51,15 +51,12 @@ class EventFork(ReceivedEvent):
     _version: int
     _origin: ReceivedEvent
 
-    async def process(self, json: Json) -> int:
+    async def process(self, json: Json) -> None:
         """Обработать событие.
 
         :param json: Json
-        :return: int
         """
         name_match = json.path('$.event_name')[0] == self._name
         version_match = json.path('$.event_version')[0] == self._version
         if name_match and version_match:
             await self._origin.process(json)
-            return 1
-        return 0

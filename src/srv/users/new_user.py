@@ -37,7 +37,7 @@ from services.start.start_message import AsyncIntOrNone
 class NewUser(Protocol):
     """Новый пользователь."""
 
-    async def create(self):
+    async def create(self) -> None:
         """Создание."""
 
 

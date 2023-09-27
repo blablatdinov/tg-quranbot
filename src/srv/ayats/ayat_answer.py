@@ -27,6 +27,7 @@ import httpx
 from pyeo import elegant
 
 from app_types.supports_bool import SupportsBool
+from app_types.update import Update
 from integrations.tg.keyboard import KeyboardInterface
 from integrations.tg.tg_answers import (
     TgAnswer,
@@ -53,7 +54,7 @@ class AyatAnswer(TgAnswer):
     _ayat: Ayat
     _ayat_answer_keyboard: KeyboardInterface
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
         :param update: Update

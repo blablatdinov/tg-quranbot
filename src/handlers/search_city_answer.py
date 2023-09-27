@@ -29,6 +29,7 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.supports_bool import SupportsBool
+from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.coordinates import TgMessageCoordinates
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
@@ -55,7 +56,7 @@ class SearchCityAnswer(TgAnswer):
     _debug_mode: SupportsBool
     _redis: Redis
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Обработка запроса.
 
         :param update: Update

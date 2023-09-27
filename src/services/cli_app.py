@@ -37,7 +37,7 @@ class CliApp(SyncRunable):
 
     _origin: Runable
 
-    def run(self, args: list[str]):
+    def run(self, args: list[str]) -> int:
         """Запуск.
 
         :param args: list[str]
@@ -55,14 +55,14 @@ class CliApp(SyncRunable):
 class ForkCliApp(SyncRunable):
     """Маршрутизация для CLI приложения."""
 
-    def __init__(self, *apps: SyncRunable):
+    def __init__(self, *apps: SyncRunable) -> None:
         """Конструктор класса.
 
         :param apps: SyncRunable
         """
         self._apps = apps
 
-    def run(self, args: list[str]):
+    def run(self, args: list[str]) -> int:
         """Запуск.
 
         :param args: list[str]

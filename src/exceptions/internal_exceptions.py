@@ -63,7 +63,7 @@ class TelegramIntegrationsError(BaseAppError):
     _message: str
     admin_message = 'Ошибка интеграции telegram'
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление.
 
         :return: str

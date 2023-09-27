@@ -28,6 +28,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.update import Update
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers.interface import TgAnswer
@@ -44,7 +45,7 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
     _pgsql: Database
     _redis: Redis
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Обработка запроса.
 
         :param update: Update

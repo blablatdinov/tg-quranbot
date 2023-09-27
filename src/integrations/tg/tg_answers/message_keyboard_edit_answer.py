@@ -27,6 +27,7 @@ import httpx
 from furl import furl
 from pyeo import elegant
 
+from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
@@ -38,7 +39,7 @@ class TgKeyboardEditAnswer(TgAnswer):
 
     _origin: TgAnswer
 
-    async def build(self, update) -> list[httpx.Request]:
+    async def build(self, update: Update) -> list[httpx.Request]:
         """Пересобрать запросы к API к телеграмма.
 
         :param update: Update
