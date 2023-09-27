@@ -34,8 +34,8 @@ from exceptions.user import UserAlreadyActiveError, UserAlreadyExistsError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from integrations.tg.tg_datetime import TgDateTime
-from repository.users.users import UsersRepositoryInterface
 from srv.events.sink import SinkInterface
+from srv.users.active_users import PgUsers, UpdatedUsersStatus
 from srv.users.pg_user import PgUser
 
 
@@ -48,7 +48,6 @@ class UserAlreadyExistsAnswer(TgAnswer):
     _origin: TgAnswer
     _sender_answer: TgAnswer
     _pgsql: Database
-    _users_repo: UsersRepositoryInterface
     _event_sink: SinkInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -63,7 +62,10 @@ class UserAlreadyExistsAnswer(TgAnswer):
         user = PgUser(SyncToAsyncIntable(TgChatId(update)), self._pgsql)
         if await user.is_active():
             raise UserAlreadyActiveError
-        await self._users_repo.update_status([int(TgChatId(update))], to=True)
+        await UpdatedUsersStatus(
+            self._pgsql,
+            PgUsers(self._pgsql, [int(TgChatId(update))]),
+        ).update(to=True)
         await self._event_sink.send(
             {
                 'user_id': int(TgChatId(update)),
