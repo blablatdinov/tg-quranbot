@@ -3,6 +3,7 @@
 
 <a href="https://codeclimate.com/github/blablatdinov/quranbot-aiogram/maintainability"><img src="https://api.codeclimate.com/v1/badges/e4206df635326574026e/maintainability" /></a>
 [![wemake-python-styleguide](https://img.shields.io/badge/style-wemake-000000.svg)](https://github.com/wemake-services/wemake-python-styleguide)
+![](https://tokei.rs/b1/github/blablatdinov/quranbot-aiogram)
 [![Hits-of-Code](https://hitsofcode.com/github/blablatdinov/quranbot-aiogram)](https://hitsofcode.com/github/blablatdinov/quranbot-aiogram/view)
 ![Custom badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fquranbot.ilaletdinov.ru%2Fapi%2Fv1%2Fusers%2Fcount-github-badge%2F)
 
