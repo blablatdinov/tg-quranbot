@@ -27,6 +27,7 @@ import httpx
 from databases import Database
 from pyeo import elegant
 
+from app_types.intable import SyncToAsyncIntable
 from app_types.runable import Runable
 from app_types.update import FkUpdate, Update
 from integrations.tg.sendable import BulkSendableAnswer
@@ -78,12 +79,18 @@ class CheckUsersStatus(Runable):
             )
             for user in await users.to_list()
         ]
-        deactivated_user_chat_ids = [
-            response_dict['chat_id']
-            for response_list in await BulkSendableAnswer(answers).send(FkUpdate())
-            for response_dict in response_list
-            if not response_dict['ok']
-        ]
+        responses = await BulkSendableAnswer(answers).send(FkUpdate()),
+        deactivated_user_chat_ids = []
+        for user, response_list in zip(await users.to_list(), responses):
+            for response_dict in response_list[0]:
+                if not response_dict['ok']:
+                    deactivated_user_chat_ids.append(await user.chat_id())
+        # deactivated_user_chat_ids = [
+        #     response_dict['chat_id']
+        #     for response_list in await BulkSendableAnswer(answers).send(FkUpdate())
+        #     for response_dict in response_list
+        #     if not response_dict['ok']
+        # ]
         await UpdatedUsersStatus(
             self._pgsql,
             PgUsers(self._pgsql, deactivated_user_chat_ids),

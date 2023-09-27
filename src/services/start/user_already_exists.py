@@ -76,5 +76,5 @@ class UserAlreadyExistsAnswer(TgAnswer):
         )
         return await TgTextAnswer.str_ctor(
             self._sender_answer,
-            'Рады видеть вас снова, вы продолжите с дня {0}'.format(user.day),
+            'Рады видеть вас снова, вы продолжите с дня {0}'.format(await user.day()),
         ).build(update)

@@ -26,6 +26,7 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
+from app_types.intable import SyncToAsyncIntable
 from app_types.listable import AsyncListable
 from srv.users.pg_user import PgUser, User
 
@@ -50,7 +51,7 @@ class ActiveUsers(AsyncListable):
         """
         rows = await self._pgsql.fetch_all(query)
         return [
-            PgUser(row['chat_id'], self._pgsql)
+            PgUser(SyncToAsyncIntable(row['chat_id']), self._pgsql)
             for row in rows
         ]
 
@@ -69,17 +70,20 @@ class PgUsers(AsyncListable):
 
         :return: list[User]
         """
+        if not self._chat_ids:
+            return []
         query_template = """
             SELECT chat_id
             FROM users
-            WHERE chat_id in ({0})
+            WHERE chat_id IN ({0})
         """
         query = query_template.format(
             ','.join(list(map(str, self._chat_ids))),
         )
+        print(query)
         rows = await self._pgsql.fetch_all(query)
         return [
-            PgUser(row['chat_id'], self._pgsql)
+            PgUser(SyncToAsyncIntable(row['chat_id']), self._pgsql)
             for row in rows
         ]
 
@@ -103,8 +107,11 @@ class UpdatedUsersStatus(object):
             SET is_active = :to
             WHERE chat_id in ({0})
         """
+        users = await self._users.to_list()
+        if not users:
+            return
         query = query_template.format(','.join([
             str(await user.chat_id())
-            for user in await self._users.to_list()
+            for user in users
         ]))
         await self._pgsql.execute(query, {'to': to})
