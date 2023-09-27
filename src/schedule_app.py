@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 
 from app_types.runable import Runable
@@ -31,7 +32,7 @@ from app_types.update import FkUpdate, Update
 from integrations.tg.sendable import BulkSendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer
 from integrations.tg.tg_answers.chat_action import TgChatAction
-from repository.users.users import UsersRepositoryInterface
+from srv.users.active_users import ActiveUsers, PgUsers, UpdatedUsersStatus
 
 
 @final
@@ -62,25 +63,28 @@ class TypingAction(TgAnswer):
 class CheckUsersStatus(Runable):
     """Статусы пользователей."""
 
-    _users_repo: UsersRepositoryInterface
+    _pgsql: Database
     _empty_answer: TgAnswer
 
     async def run(self) -> None:
         """Запуск."""
-        chat_ids = await self._users_repo.get_active_user_chat_ids()
+        users = ActiveUsers(self._pgsql)
         answers: list[TgAnswer] = [
             TypingAction(
                 TgChatIdAnswer(
                     TgChatAction(self._empty_answer),
-                    chat_id,
+                    await user.chat_id(),
                 ),
             )
-            for chat_id in chat_ids
+            for user in await users.to_list()
         ]
-        deactivated_users = [
+        deactivated_user_chat_ids = [
             response_dict['chat_id']
             for response_list in await BulkSendableAnswer(answers).send(FkUpdate())
             for response_dict in response_list
             if not response_dict['ok']
         ]
-        await self._users_repo.update_status(list(set(deactivated_users)), to=False)
+        await UpdatedUsersStatus(
+            self._pgsql,
+            PgUsers(self._pgsql, deactivated_user_chat_ids),
+        ).update(to=False)

@@ -23,11 +23,12 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import Protocol, final
 
 import attrs
-from asyncpg import UniqueViolationError
+from asyncpg import ForeignKeyViolationError, UniqueViolationError
 from databases import Database
 from loguru import logger
 from pyeo import elegant
 
+from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import UserAlreadyExistsError
 from integrations.tg.chat_id import TgChatId
 from services.start.start_message import AsyncIntOrNone
@@ -55,6 +56,7 @@ class PgNewUser(NewUser):
         """Создание.
 
         :raises UserAlreadyExistsError: пользователь уже зарегистрирован
+        :raises UserNotFoundError: не найден реферер
         """
         chat_id = int(self._new_user_chat_id)
         logger.debug('Insert in DB User <{0}>...'.format(chat_id))
@@ -71,4 +73,6 @@ class PgNewUser(NewUser):
             )
         except UniqueViolationError as err:
             raise UserAlreadyExistsError from err
+        except ForeignKeyViolationError as err:
+            raise UserNotFoundError from err
         logger.debug('User <{0}> inserted in DB'.format(chat_id))

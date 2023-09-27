@@ -36,7 +36,6 @@ from integrations.tg.polling_updates import (
 from integrations.tg.sendable import SendableAnswer
 from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer
 from quranbot_answer import QuranbotAnswer
-from repository.users.users import UsersRepository
 from schedule_app import CheckUsersStatus
 from services.cli_app import CliApp, CommandCliApp, ForkCliApp
 from services.logged_answer import LoggedAnswer
@@ -97,7 +96,7 @@ def main(sys_args: list[str]) -> None:
                 DatabaseConnectedApp(
                     pgsql,
                     CheckUsersStatus(
-                        UsersRepository(pgsql),
+                        pgsql,
                         TgEmptyAnswer(settings.API_TOKEN),
                     ),
                 ),

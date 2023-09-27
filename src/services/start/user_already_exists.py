@@ -25,16 +25,18 @@ from typing import final
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 
+from app_types.intable import SyncToAsyncIntable
 from app_types.update import Update
 from exceptions.user import UserAlreadyActiveError, UserAlreadyExistsError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from integrations.tg.tg_datetime import TgDateTime
-from repository.users.user import UserRepositoryInterface
-from repository.users.users import UsersRepositoryInterface
 from srv.events.sink import SinkInterface
+from srv.users.active_users import PgUsers, UpdatedUsersStatus
+from srv.users.pg_user import PgUser
 
 
 @final
@@ -45,8 +47,7 @@ class UserAlreadyExistsAnswer(TgAnswer):
 
     _origin: TgAnswer
     _sender_answer: TgAnswer
-    _user_repo: UserRepositoryInterface
-    _users_repo: UsersRepositoryInterface
+    _pgsql: Database
     _event_sink: SinkInterface
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -58,10 +59,13 @@ class UserAlreadyExistsAnswer(TgAnswer):
         """
         with suppress(UserAlreadyExistsError):
             return await self._origin.build(update)
-        user = await self._user_repo.get_by_chat_id(int(TgChatId(update)))
-        if user.is_active:
+        user = PgUser(SyncToAsyncIntable(TgChatId(update)), self._pgsql)
+        if await user.is_active():
             raise UserAlreadyActiveError
-        await self._users_repo.update_status([int(TgChatId(update))], to=True)
+        await UpdatedUsersStatus(
+            self._pgsql,
+            PgUsers(self._pgsql, [int(TgChatId(update))]),
+        ).update(to=True)
         await self._event_sink.send(
             {
                 'user_id': int(TgChatId(update)),
