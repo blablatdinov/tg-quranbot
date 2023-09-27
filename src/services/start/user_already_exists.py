@@ -60,8 +60,15 @@ class UserAlreadyExistsAnswer(TgAnswer):
         with suppress(UserAlreadyExistsError):
             return await self._origin.build(update)
         user = PgUser(SyncToAsyncIntable(TgChatId(update)), self._pgsql)
+        await self._update_and_push_event(update)
         if await user.is_active():
             raise UserAlreadyActiveError
+        return await TgTextAnswer.str_ctor(
+            self._sender_answer,
+            'Рады видеть вас снова, вы продолжите с дня {0}'.format(await user.day()),
+        ).build(update)
+
+    async def _update_and_push_event(self, update: Update) -> None:
         await UpdatedUsersStatus(
             self._pgsql,
             PgUsers(self._pgsql, [int(TgChatId(update))]),
@@ -74,7 +81,3 @@ class UserAlreadyExistsAnswer(TgAnswer):
             'User.Reactivated',
             1,
         )
-        return await TgTextAnswer.str_ctor(
-            self._sender_answer,
-            'Рады видеть вас снова, вы продолжите с дня {0}'.format(await user.day()),
-        ).build(update)

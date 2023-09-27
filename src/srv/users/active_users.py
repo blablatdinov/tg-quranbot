@@ -80,7 +80,6 @@ class PgUsers(AsyncListable):
         query = query_template.format(
             ','.join(list(map(str, self._chat_ids))),
         )
-        print(query)
         rows = await self._pgsql.fetch_all(query)
         return [
             PgUser(SyncToAsyncIntable(row['chat_id']), self._pgsql)

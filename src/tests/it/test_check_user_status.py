@@ -31,8 +31,11 @@ from schedule_app import CheckUsersStatus
 
 @pytest.fixture()
 def _mock_actives(respx_mock):
-    rv = {'return_value': httpx.Response(200, text=json.dumps({"ok": True, "result": True}))}
-    text = '{"ok":false,"error_code":400,"description":"Bad Request: chat not found"}'
+    rv = {
+        'return_value': httpx.Response(
+            200, text=json.dumps({'ok': True, 'result': True}),
+        ),
+    }
     respx_mock.get('https://some.domain/sendChatAction?chat_id=1&action=typing').mock(**rv)
     respx_mock.get('https://some.domain/sendChatAction?chat_id=2&action=typing').mock(**rv)
     respx_mock.get('https://some.domain/sendChatAction?chat_id=3&action=typing').mock(**rv)
@@ -48,7 +51,7 @@ def _mock_unsubscribed(respx_mock):
     respx_mock.get('https://some.domain/sendChatAction?chat_id=1&action=typing').mock(**rv)
     respx_mock.get('https://some.domain/sendChatAction?chat_id=2&action=typing').mock(**rv)
     respx_mock.get('https://some.domain/sendChatAction?chat_id=3&action=typing').mock(
-        return_value=httpx.Response(200, text=json.dumps({"ok": True, "result": True})),
+        return_value=httpx.Response(200, text=json.dumps({'ok': True, 'result': True})),
     )
 
 
@@ -77,5 +80,5 @@ async def test_unsubscribed(pgsql):
 
     assert [
         (row['chat_id'], row['is_active'])
-        for row in await pgsql.fetch_all('SELECT chat_id, is_active FROM users')
-    ] == [(2, True), (3, True), (1, False)]
+        for row in await pgsql.fetch_all('SELECT chat_id, is_active FROM users ORDER BY chat_id')
+    ] == [(1, False), (2, False), (3, True)]
