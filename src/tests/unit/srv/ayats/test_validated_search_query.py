@@ -20,45 +20,34 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
-
-import attrs
-from pyeo import elegant
+import pytest
 
 from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
-from srv.ayats.search_query import AyatNum, SearchQuery, SuraId
+from srv.ayats.search_query import FkSearchQuery
+from srv.ayats.validated_search_query import ValidatedSearchQuery
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class ValidatedSearchQuery(SearchQuery):
-    """Декоратор, валидирующий запрос для поиска."""
+def test():
+    query = ValidatedSearchQuery(FkSearchQuery(1, '1'))
 
-    _origin: SearchQuery
+    assert query.sura() == 1
+    assert query.ayat() == '1'
 
-    def sura(self) -> SuraId:
-        """Номер суры.
 
-        :return: int
-        :raises SuraNotFoundError: if sura not found
-        """
-        max_sura_num = 114
-        sura_num = self._origin.sura()
-        if not 0 < sura_num <= max_sura_num:  # noqa: WPS508
-            # https://github.com/wemake-services/wemake-python-styleguide/issues/1942
-            raise SuraNotFoundError
-        return sura_num
+@pytest.mark.parametrize('sura_id', [-1, 115])
+def test_fail_sura(sura_id):
+    query = ValidatedSearchQuery(FkSearchQuery(sura_id, '1'))
+    with pytest.raises(SuraNotFoundError):
+        query.sura()
 
-    def ayat(self) -> AyatNum:
-        """Номер аята.
 
-        :return: str
-        :raises AyatNotFoundError: if ayat not found
-        """
-        ayat_num = self._origin.ayat()
-        if not ayat_num.isdigit():
-            raise AyatNotFoundError
-        if int(ayat_num) < 1:
-            raise AyatNotFoundError
-        return ayat_num
+@pytest.mark.parametrize('ayat_num', [
+    '0',
+    '1iw',
+    '1,5',
+    '1-5',
+])
+def test_fail(ayat_num):
+    query = ValidatedSearchQuery(FkSearchQuery(1, ayat_num))
+    with pytest.raises(AyatNotFoundError):
+        query.ayat()
