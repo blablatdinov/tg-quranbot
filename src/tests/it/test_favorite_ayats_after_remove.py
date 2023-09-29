@@ -23,9 +23,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import datetime
 
 import pytest
-from eljson.json_doc import JsonDoc
 
-from srv.ayats.pg_ayat import PgAyat
+from srv.ayats.favorite_ayats_after_remove import FavoriteAyatsAfterRemove
 
 
 @pytest.fixture()
@@ -44,57 +43,63 @@ async def _db_ayat(pgsql):
     await pgsql.execute(
         "INSERT INTO suras (sura_id, link) VALUES (1, 'https://link-to-sura.domain')",
     )
-    await pgsql.execute(
+    await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO ayats',
             '(ayat_id, sura_id, public_id, day, audio_id, ayat_number, content, arab_text, transliteration)',
             'VALUES',
             '(:ayat_id, :sura_id, :public_id, :day, :audio_id, :ayat_number, :content, :arab_text, :transliteration)',
         ]),
-        {
-            'ayat_id': 1,
-            'sura_id': 1,
-            'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
-            'day': 1,
-            'audio_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90',
-            'ayat_number': '1-7',
-            'content': 'Ayat content',
-            'arab_text': 'Arab text',
-            'transliteration': 'Transliteration',
-        },
+        [
+            {
+                'ayat_id': 1,
+                'sura_id': 1,
+                'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
+                'day': 1,
+                'audio_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90',
+                'ayat_number': '1-7',
+                'content': 'Ayat content',
+                'arab_text': 'Arab text',
+                'transliteration': 'Transliteration',
+            },
+            {
+                'ayat_id': 2,
+                'sura_id': 1,
+                'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
+                'day': 1,
+                'audio_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90',
+                'ayat_number': '1-7',
+                'content': 'Ayat content',
+                'arab_text': 'Arab text',
+                'transliteration': 'Transliteration',
+            },
+            {
+                'ayat_id': 3,
+                'sura_id': 1,
+                'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
+                'day': 1,
+                'audio_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90',
+                'ayat_number': '1-7',
+                'content': 'Ayat content',
+                'arab_text': 'Arab text',
+                'transliteration': 'Transliteration',
+            },
+        ],
+    )
+    await pgsql.execute(
+        'INSERT INTO users (chat_id) VALUES (1)',
+    )
+    await pgsql.execute_many(
+        'INSERT INTO favorite_ayats (user_id, ayat_id) VALUES (:user_id, :ayat_id)', [
+            {'user_id': 1, 'ayat_id': 1},
+            {'user_id': 1, 'ayat_id': 2},
+            {'user_id': 1, 'ayat_id': 3},
+        ],
     )
 
 
 @pytest.mark.usefixtures('_db_ayat')
-async def test_change(pgsql):
-    event = {
-        'event_id': 'some_id',
-        'event_version': 1,
-        'event_name': 'event_name',
-        'event_time': '392409283',
-        'producer': 'some producer',
-        'data': {
-            'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
-            'day': 2,
-            'audio_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba',
-            'ayat_number': '1-3',
-            'content': 'Updated content',
-            'arab_text': 'Updated arab text',
-            'transliteration': 'Updated arab transliteration',
-        },
-    }
-    await PgAyat.ayat_changed_event_ctor(JsonDoc(event), pgsql).change(JsonDoc(event))
+async def test(pgsql):
+    got = await FavoriteAyatsAfterRemove(1, 1, pgsql).to_list()
 
-    changed_record = await pgsql.fetch_one('SELECT * FROM ayats WHERE ayat_id = 1')
-
-    assert dict(changed_record) == {
-        'arab_text': 'Updated arab text',
-        'audio_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba',
-        'ayat_id': 1,
-        'ayat_number': '1-3',
-        'content': 'Updated content',
-        'day': 2,
-        'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
-        'sura_id': 1,
-        'transliteration': 'Updated arab transliteration',
-    }
+    assert len(got) == 4
