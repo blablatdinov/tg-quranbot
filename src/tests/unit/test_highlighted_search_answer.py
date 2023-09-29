@@ -30,7 +30,7 @@ from srv.ayats.text_search_query import TextSearchQuery
 
 class FkSearchQuery(TextSearchQuery):
 
-    async def write(self) -> None:
+    async def write(self, query: str) -> None:
         raise NotImplementedError
 
     async def read(self) -> str:

@@ -39,7 +39,7 @@ from services.regular_expression import IntableRegularExpression
 from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
-from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
+from srv.ayats.ayat_text_search_query import AyatTextSearchQuery, CachedTextSearchQuery
 from srv.ayats.ayats_by_text_query import AyatsByTextQuery
 from srv.ayats.neighbor_ayats import TextSearchNeighborAyats
 
@@ -63,18 +63,15 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
         :raises AyatNotFoundError: if ayat not found
         """
         target_ayat_id = int(IntableRegularExpression(str(CallbackQueryData(update))))
-        try:
-            ayats = await AyatsByTextQuery(
-                ThroughString(
-                    await AyatTextSearchQuery.for_reading_cs(
-                        self._redis,
-                        int(TgChatId(update)),
-                    ).read(),
-                ),
-                self._pgsql,
-            ).to_list()
-        except IndexError as err:
-            raise AyatNotFoundError from err
+        ayats = await AyatsByTextQuery(
+            ThroughString(
+                await AyatTextSearchQuery(
+                    self._redis,
+                    int(TgChatId(update)),
+                ).read(),
+            ),
+            self._pgsql,
+        ).to_list()
         for ayat in ayats:
             if await ayat.identifier().ayat_id() == target_ayat_id:
                 result_ayat = ayat
@@ -90,9 +87,11 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
                 TextSearchNeighborAyats(
                     self._pgsql,
                     await result_ayat.identifier().ayat_id(),
-                    AyatTextSearchQuery.for_reading_cs(
-                        self._redis,
-                        int(TgChatId(update)),
+                    CachedTextSearchQuery(
+                        AyatTextSearchQuery(
+                            self._redis,
+                            int(TgChatId(update)),
+                        ),
                     ),
                 ),
                 AyatCallbackTemplateEnum.get_search_ayat,

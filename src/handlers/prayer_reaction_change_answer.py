@@ -40,6 +40,7 @@ from integrations.tg.tg_answers import TgAnswerToSender, TgKeyboardEditAnswer, T
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from services.reset_state_answer import ResetStateAnswer
+from services.user_state import CachedUserState, RedisUserState
 from srv.podcasts.podcast import RandomPodcast
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
 
@@ -146,5 +147,5 @@ class PrayerReactionChangeAnswer(TgAnswer):
                     int(MessageId(update)),
                 ),
             ),
-            self._redis,
+            CachedUserState(RedisUserState(self._redis, TgChatId(update))),
         ).build(update)

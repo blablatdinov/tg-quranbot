@@ -30,7 +30,7 @@ from redis.asyncio import Redis
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer
-from services.user_state import LoggedUserState, UserState
+from services.user_state import RedisUserState
 
 
 @final
@@ -49,9 +49,7 @@ class StepAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        step = await LoggedUserState(
-            UserState(self._redis, int(TgChatId(update))),
-        ).step()
+        step = await RedisUserState(self._redis, int(TgChatId(update))).step()
         if step.value != self._step:
             return []
         return await self._origin.build(update)

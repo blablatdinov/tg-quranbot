@@ -21,18 +21,22 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import pytest
-from fakeredis import aioredis
 
-from app_types.intable import FkIntable
-from services.user_state import RedisUserState, UserStep
+from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 
 
-@pytest.fixture()
-def fake_redis():
-    return aioredis.FakeRedis()
+async def test_read(fake_redis):
+    await fake_redis.set('1:ayat_search_query', b'value')
+
+    assert await AyatTextSearchQuery(fake_redis, 1).read() == 'value'
 
 
-async def test_not_exists_state(fake_redis):
-    got = await RedisUserState(fake_redis, FkIntable(879435)).step()
+async def test_read_without_value(fake_redis):
+    with pytest.raises(ValueError):
+        await AyatTextSearchQuery(fake_redis, 17).read()
 
-    assert got == UserStep.nothing
+
+async def test_write(fake_redis):
+    await AyatTextSearchQuery(fake_redis, 84395).write('query')
+
+    assert await fake_redis.get('84395:ayat_search_query') == b'query'

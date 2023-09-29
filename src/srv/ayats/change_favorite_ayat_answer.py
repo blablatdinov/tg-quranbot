@@ -129,7 +129,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                                 TextSearchNeighborAyats(
                                     self._pgsql,
                                     status.ayat_id(),
-                                    AyatTextSearchQuery.for_reading_cs(self._redis, chat_id),
+                                    AyatTextSearchQuery(self._redis, chat_id),
                                 ),
                                 AyatCallbackTemplateEnum.get_search_ayat,
                                 self._pgsql,

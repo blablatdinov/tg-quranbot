@@ -23,10 +23,12 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import pytest
 from fakeredis import aioredis
 
+from app_types.intable import FkIntable
 from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer
 from integrations.tg.update import TgUpdate
 from services.reset_state_answer import ResetStateAnswer
+from services.user_state import RedisUserState, CachedUserState, UserState, UserStep
 
 
 @pytest.fixture()
@@ -35,13 +37,33 @@ def fake_redis():
 
 
 async def test_redis_query(fake_redis):
-    await ResetStateAnswer(FkAnswer(), fake_redis).build(TgUpdate('{"from":{"id":123}}'))
+    await ResetStateAnswer(
+        FkAnswer(),
+        RedisUserState(fake_redis, FkIntable(123)),
+    ).build(TgUpdate('{"from":{"id":123}}'))
 
     assert await fake_redis.get('123:step') == b'nothing'
 
 
 async def test_origin_answer_not_modificated(fake_redis):
-    got = await ResetStateAnswer(FkAnswer(), fake_redis).build(TgUpdate('{"from":{"id":123}}'))
+    got = await ResetStateAnswer(FkAnswer(), RedisUserState(fake_redis, FkIntable(123))).build(TgUpdate('{"from":{"id":123}}'))
     origin = (await FkAnswer().build(FkUpdate()))[0].url
 
     assert got[0].url == origin
+
+
+async def test_read_cached(fake_redis):
+    user_state = CachedUserState(RedisUserState(fake_redis, FkIntable(1)))
+    await fake_redis.set('1:step', b'city_search')
+
+    assert await user_state.step() == UserStep.city_search
+    await fake_redis.set('1:step', b'new value')
+    assert await user_state.step() == UserStep.city_search
+
+
+async def test_write_cached(fake_redis):
+    await fake_redis.set('1:step', b'city_search')
+    user_state = CachedUserState(RedisUserState(fake_redis, FkIntable(1)))
+    await user_state.change_step(UserStep.ayat_search)
+
+    assert await user_state.step() == UserStep.ayat_search

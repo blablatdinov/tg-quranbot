@@ -30,7 +30,7 @@ from pyeo import elegant
 class TextSearchQuery(Protocol):
     """Интерфейс запроса для поиска аятов."""
 
-    async def write(self) -> None:
+    async def write(self, query: str) -> None:
         """Запись."""
 
     async def read(self) -> str:
@@ -45,7 +45,7 @@ class FkTextSearchQuery(TextSearchQuery):
 
     _query: str
 
-    async def write(self) -> None:
+    async def write(self, query: str) -> None:
         """Запись."""
 
     async def read(self) -> str:
