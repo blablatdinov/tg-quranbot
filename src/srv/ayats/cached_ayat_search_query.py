@@ -52,9 +52,8 @@ class CachedAyatSearchQueryAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        await AyatTextSearchQuery.for_write_cs(
+        await AyatTextSearchQuery(
             self._redis,
-            str(MessageText(update)),
             int(TgChatId(update)),
-        ).write()
+        ).write(str(MessageText(update)))
         return await self._origin.build(update)

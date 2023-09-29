@@ -23,15 +23,16 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import pytest
 from fakeredis import aioredis
 
-from services.user_state import UserState, UserStep
+from app_types.intable import FkIntable
+from services.user_state import RedisUserState, UserStep
 
 
 @pytest.fixture()
-def fake_redis(mocker):
+def fake_redis():
     return aioredis.FakeRedis()
 
 
 async def test_not_exists_state(fake_redis):
-    got = await UserState(fake_redis, 879435).step()
+    got = await RedisUserState(fake_redis, FkIntable(879435)).step()
 
     assert got == UserStep.nothing

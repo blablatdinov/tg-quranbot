@@ -20,43 +20,23 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+import pytest
 
-import attrs
-from pyeo import elegant
-
-
-@elegant
-class TextSearchQuery(Protocol):
-    """Интерфейс запроса для поиска аятов."""
-
-    async def write(self, query: str) -> None:
-        """Запись.
-
-        :param query: str
-        """
-
-    async def read(self) -> str:
-        """Чтение."""
+from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkTextSearchQuery(TextSearchQuery):
-    """Фейковый запрос для поиска аятов."""
+async def test_read(fake_redis):
+    await fake_redis.set('1:ayat_search_query', b'value')
 
-    _query: str
+    assert await AyatTextSearchQuery(fake_redis, 1).read() == 'value'
 
-    async def write(self, query: str) -> None:
-        """Запись.
 
-        :param query: str
-        """
+async def test_read_without_value(fake_redis):
+    with pytest.raises(ValueError, match="User hasn't search query"):
+        await AyatTextSearchQuery(fake_redis, 17).read()
 
-    async def read(self) -> str:
-        """Чтение.
 
-        :return: str
-        """
-        return self._query
+async def test_write(fake_redis):
+    await AyatTextSearchQuery(fake_redis, 84395).write('query')
+
+    assert await fake_redis.get('84395:ayat_search_query') == b'query'

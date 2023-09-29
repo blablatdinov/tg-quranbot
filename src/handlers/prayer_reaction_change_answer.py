@@ -40,6 +40,7 @@ from integrations.tg.tg_answers import TgAnswerToSender, TgKeyboardEditAnswer, T
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from services.reset_state_answer import ResetStateAnswer
+from services.user_state import CachedUserState, RedisUserState
 from srv.podcasts.podcast import RandomPodcast
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
 
@@ -95,8 +96,9 @@ class PrayerReactionChangeAnswer(TgAnswer):
             FROM podcast_reactions
             WHERE user_id = :user_id AND podcast_id = :podcast_id
         """
+        chat_id = int(TgChatId(update))
         prayer_existed_reaction = await self._pgsql.fetch_val(query, {
-            USER_ID_LITERAL: int(TgChatId(update)),
+            USER_ID_LITERAL: chat_id,
             PODCAST_ID_LITERAL: reaction.podcast_id(),
         })
         if prayer_existed_reaction:
@@ -106,7 +108,7 @@ class PrayerReactionChangeAnswer(TgAnswer):
                     WHERE user_id = :user_id AND podcast_id = :podcast_id
                 """
                 await self._pgsql.execute(query, {
-                    USER_ID_LITERAL: int(TgChatId(update)),
+                    USER_ID_LITERAL: chat_id,
                     PODCAST_ID_LITERAL: reaction.podcast_id(),
                 })
             else:
@@ -117,7 +119,7 @@ class PrayerReactionChangeAnswer(TgAnswer):
                 """
                 await self._pgsql.execute(query, {
                     'reaction': reaction.status(),
-                    USER_ID_LITERAL: int(TgChatId(update)),
+                    USER_ID_LITERAL: chat_id,
                     PODCAST_ID_LITERAL: reaction.podcast_id(),
                 })
         else:
@@ -127,7 +129,7 @@ class PrayerReactionChangeAnswer(TgAnswer):
             """
             await self._pgsql.execute(query, {
                 PODCAST_ID_LITERAL: reaction.podcast_id(),
-                USER_ID_LITERAL: int(TgChatId(update)),
+                USER_ID_LITERAL: chat_id,
                 'reaction': reaction.status(),
             })
         podcast = RandomPodcast(
@@ -146,5 +148,5 @@ class PrayerReactionChangeAnswer(TgAnswer):
                     int(MessageId(update)),
                 ),
             ),
-            self._redis,
+            CachedUserState(RedisUserState(self._redis, TgChatId(update))),
         ).build(update)

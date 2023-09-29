@@ -1,9 +1,5 @@
 """The MIT License (MIT).
 
-<<<<<<< HEAD
-||||||| 4250f92
-from redis.asyncio import Redis
-=======
 Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import enum
-from typing import Protocol, final
+from typing import Protocol, SupportsInt, final
 
 import attrs
 from loguru import logger
@@ -44,7 +40,7 @@ class UserStep(enum.Enum):
 
 
 @elegant
-class UserStateInterface(Protocol):
+class UserState(Protocol):
     """Интерфейс для работы с состоянием пользователя."""
 
     async def step(self) -> UserStep:
@@ -58,51 +54,55 @@ class UserStateInterface(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
 @elegant
-class LoggedUserState(UserStateInterface):
-    """Логгирующий декоратор объекта, работающего с состоянием пользователя."""
+class CachedUserState(UserState):
+    """Кэширующий декоратор."""
 
-    _origin: UserStateInterface
+    def __init__(self, origin: UserState) -> None:
+        """Ctor.
+
+        :param origin: UserState
+        """
+        self._origin = origin
+        self._cache: UserStep | None = None
 
     async def step(self) -> UserStep:
         """Состояние пользователя.
 
         :return: UserStep
         """
-        res = await self._origin.step()
-        logger.info('User state: {0}'.format(res))
-        return res
+        if self._cache:
+            return self._cache
+        self._cache = await self._origin.step()
+        return self._cache
 
     async def change_step(self, step: UserStep) -> None:
         """Изменение, состояние пользователя.
 
         :param step: UserStep
         """
-        logger.info('Setting user state...')
         await self._origin.change_step(step)
-        logger.info('State {0} setted'.format(step))
+        self._cache = step
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class UserState(UserStateInterface):
+class RedisUserState(UserState):
     """Объект, работающий с состоянием пользователя."""
 
     _redis: Redis
-    _chat_id: int
+    _chat_id: SupportsInt
 
     async def step(self) -> UserStep:
         """Состояние пользователя.
 
         :return: UserStep
         """
-        redis_state_data = (
-            await self._redis.get('{0}:step'.format(self._chat_id))
-        )
+        redis_state_data = await self._redis.get('{0}:step'.format(int(self._chat_id)))
         if not redis_state_data:
             return UserStep.nothing
+        logger.info('User state: {0}'.format(redis_state_data.decode('utf-8')))
         return UserStep[redis_state_data.decode('utf-8')]
 
     async def change_step(self, step: UserStep) -> None:
@@ -110,7 +110,9 @@ class UserState(UserStateInterface):
 
         :param step: UserStep
         """
+        logger.info('Setting user <{0}> state <{1}>...'.format(int(self._chat_id), step))
         await self._redis.set(
-            '{0}:step'.format(self._chat_id),
+            '{0}:step'.format(int(self._chat_id)),
             step.value,
         )
+        logger.info('State {0} for user {1} setted'.format(step, int(self._chat_id)))

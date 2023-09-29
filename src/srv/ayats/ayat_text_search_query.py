@@ -30,48 +30,54 @@ from srv.ayats.text_search_query import TextSearchQuery
 
 
 @final
+class CachedTextSearchQuery(TextSearchQuery):
+    """Закэшированный запрос."""
+
+    def __init__(self, origin: TextSearchQuery) -> None:
+        """Ctor.
+
+        :param origin: TextSearchQuery
+        """
+        self._origin = origin
+        self._cached = ''
+
+    async def write(self, query: str) -> None:
+        """Запись.
+
+        :param query: str
+        """
+        await self._origin.write(query)
+        self._cached = query
+
+    async def read(self) -> str:
+        """Чтение.
+
+        :return: str
+        """
+        if self._cached:
+            return self._cached
+        self._cached = await self._origin.read()
+        return self._cached
+
+
+@final
 @attrs.define(frozen=True)
 class AyatTextSearchQuery(TextSearchQuery):
     """Запрос поиска аята."""
 
     _redis: Redis
     _chat_id: int  # TODO #360/30min переделать тип на ChatId
-    _query: str | None = None
 
     _key_template = '{0}:ayat_search_query'
 
-    @classmethod
-    def for_write_cs(cls, redis: Redis, query: str, chat_id: int) -> TextSearchQuery:
-        """Конструктор для записи.
-
-        :param redis: Redis
-        :param query: str
-        :param chat_id: int
-        :return: AyatTextSearchQuery
-        """
-        return AyatTextSearchQuery(redis, query=query, chat_id=chat_id)
-
-    @classmethod
-    def for_reading_cs(cls, redis: Redis, chat_id: int) -> TextSearchQuery:
-        """Конструктор для чтения.
-
-        :param redis: Redis
-        :param chat_id: int
-        :return: AyatTextSearchQuery
-        """
-        return AyatTextSearchQuery(redis, chat_id=chat_id)
-
-    async def write(self) -> None:
+    async def write(self, query: str) -> None:
         """Запись.
 
-        :raises ValueError: if query not give
+        :param query: str
         """
         key = self._key_template.format(self._chat_id)
-        logger.info('Try writing key: {0}, value: {1}'.format(key, self._query))
-        if not self._query:
-            msg = 'Query not give'
-            raise ValueError(msg)
-        await self._redis.set(key, self._query)
+        logger.info('Try writing key: {0}, value: {1}'.format(key, query))
+        await self._redis.set(key, query)
         logger.info('Key: {0} wrote'.format(self._key_template.format(self._chat_id)))
 
     async def read(self) -> str:

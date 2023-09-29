@@ -37,7 +37,7 @@ class AsyncIntable(Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
-class ThroughIntable(SupportsInt):
+class FkIntable(SupportsInt):
     """Сквозное число."""
 
     _source: int

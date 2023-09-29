@@ -55,5 +55,5 @@ class PaginateBySearchAyat(TgAnswer):
             SearchAyatByTextCallbackAnswer(
                 DebugMode(self._settings), self._empty_answer, self._redis, self._pgsql,
             ),
-            AyatTextSearchQuery.for_reading_cs(self._redis, int(TgChatId(update))),
+            AyatTextSearchQuery(self._redis, int(TgChatId(update))),
         ).build(update)

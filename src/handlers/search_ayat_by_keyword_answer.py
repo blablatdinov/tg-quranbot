@@ -64,7 +64,7 @@ class SearchAyatByKeywordAnswer(TgAnswer):
                     ),
                     self._redis,
                 ),
-                AyatTextSearchQuery.for_reading_cs(
+                AyatTextSearchQuery(
                     self._redis,
                     int(TgChatId(update)),
                 ),
