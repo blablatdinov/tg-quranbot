@@ -67,7 +67,7 @@ class PgFile(TgFile):
             FROM files
             WHERE file_id = :file_id
         """
-        row = await self._pgsql.fetch_one(query, {'file_id': self._file_id})
+        row = await self._pgsql.fetch_one(query, {'file_id': str(self._file_id)})
         if not row:
             raise BotFileNotFoundError
         return row['link']
