@@ -46,11 +46,6 @@ class TgAnswerFake(TgAnswer):
 
 
 @pytest.fixture()
-def fake_redis():
-    return aioredis.FakeRedis()
-
-
-@pytest.fixture()
 def update():
     return json.dumps(
         {

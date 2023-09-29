@@ -24,15 +24,12 @@ from typing import final
 
 import attrs
 import httpx
-from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.internal_exceptions import UserNotFoundError
-from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers.interface import TgAnswer
-from services.start.start_message import FkAsyncIntOrNone
-from srv.users.new_user import PgNewUser
+from srv.users.new_user import NewUser
 
 
 @final
@@ -41,7 +38,7 @@ from srv.users.new_user import PgNewUser
 class UserNotRegisteredSafeAnswer(TgAnswer):
     """Декоратор для обработки ошибки с незарегистрированным пользователем."""
 
-    _pgsql: Database
+    _new_user: NewUser
     _origin: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -53,9 +50,5 @@ class UserNotRegisteredSafeAnswer(TgAnswer):
         try:
             return await self._origin.build(update)
         except UserNotFoundError:
-            await PgNewUser(
-                FkAsyncIntOrNone(None),
-                TgChatId(update),
-                self._pgsql,
-            ).create()
+            await self._new_user.create()
         return await self._origin.build(update)

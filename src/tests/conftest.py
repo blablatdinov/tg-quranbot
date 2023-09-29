@@ -24,6 +24,7 @@ import asyncio
 import urllib
 
 import pytest
+from fakeredis import aioredis
 
 
 @pytest.fixture()
@@ -41,3 +42,8 @@ def event_loop():
     loop.slow_callback_duration = float('inf')
     yield loop
     loop.close()
+
+
+@pytest.fixture()
+def fake_redis():
+    return aioredis.FakeRedis()

@@ -50,7 +50,7 @@ class Update(SupportsStr, Protocol):
 class FkUpdate(Update):
     """Подделка обновления."""
 
-    _raw: SupportsStr | None = ''
+    _raw: SupportsStr | None = '{}'
 
     def __str__(self) -> str:
         """Приведение к строке.

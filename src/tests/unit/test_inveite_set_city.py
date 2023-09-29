@@ -20,14 +20,33 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol
+import json
 
-from pyeo import elegant
+import httpx
+
+from app_types.update import FkUpdate, Update
+from exceptions.content_exceptions import UserHasNotCityIdError
+from integrations.tg.tg_answers import FkAnswer, TgAnswer
+from srv.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
 
 
-@elegant
-class MarkupEditInterface(Protocol):
-    """Интерфейс для классов, редактирующих клавиатуру."""
+class FkOrigin(TgAnswer):
 
-    async def edit(self) -> None:
-        """Редактирование."""
+    async def build(self, update: Update) -> list[httpx.Request]:
+        raise UserHasNotCityIdError
+
+
+async def test_exception():
+    got = await UserWithoutCitySafeAnswer(FkOrigin(), FkAnswer()).build(FkUpdate())
+
+    assert got[0].url == 'https://some.domain'
+
+
+async def test_invite_set_city_answer(fake_redis, unquote):
+    got = await InviteSetCityAnswer(FkAnswer(), fake_redis).build(FkUpdate('{"chat":{"id":1}}'))
+
+    assert unquote(got[0].url) == 'https://some.domain?reply_markup={0}'.format(json.dumps({
+        'inline_keyboard': [[
+            {'text': 'Поиск города', 'switch_inline_query_current_chat': ''},
+        ]]
+    }))

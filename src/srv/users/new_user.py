@@ -31,7 +31,7 @@ from pyeo import elegant
 from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import UserAlreadyExistsError
 from integrations.tg.chat_id import TgChatId
-from services.start.start_message import AsyncIntOrNone
+from services.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone
 
 
 @elegant
@@ -45,12 +45,27 @@ class NewUser(Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
+class FkNewUser(NewUser):
+
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
 class PgNewUser(NewUser):
     """Новый пользователь в БД postgres."""
 
     _referrer_chat_id: AsyncIntOrNone
     _new_user_chat_id: TgChatId
     _pgsql: Database
+
+    @classmethod
+    def ctor(cls, new_user_chat_id: TgChatId, pgsql: Database):
+        return cls(
+            FkAsyncIntOrNone(None),
+            new_user_chat_id,
+            pgsql,
+        )
 
     async def create(self) -> None:
         """Создание.

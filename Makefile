@@ -29,14 +29,8 @@ lint:
 	poetry run flake8 src
 	poetry run mypy src
 
-unit:
-	poetry run pytest src --ignore=src/tests/{e2e,it} --cov=src
-
-it:
-	poetry run pytest src/tests/it
+test:
+	poetry run pytest src --ignore=src/tests/e2e --cov=src; coverage html
 
 e2e:
 	poetry run pytest src/tests/e2e
-
-cov:
-	poetry run coverage html
