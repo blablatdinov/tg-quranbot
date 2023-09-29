@@ -43,6 +43,7 @@ from srv.prayers.change_city_answer import ChangeCityAnswer, CityNotSupportedAns
 from srv.prayers.city import PgCity
 from srv.prayers.search_cities import PgUpdatedUserCity
 from srv.prayers.user_not_registered_safe_answer import UserNotRegisteredSafeAnswer
+from srv.users.new_user import PgNewUser
 
 
 @final
@@ -68,7 +69,7 @@ class SearchCityAnswer(TgAnswer):
         except MessageTextNotFoundError:
             city = PgCity.location_ctor(TgMessageCoordinates(update), self._pgsql)
         return await UserNotRegisteredSafeAnswer(
-            self._pgsql,
+            PgNewUser.ctor(TgChatId(update), self._pgsql),
             TgSkipNotProcessable(
                 TgAnswerFork(
                     TgMessageRegexAnswer(

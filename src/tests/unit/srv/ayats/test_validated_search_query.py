@@ -20,14 +20,34 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol
+import pytest
 
-from pyeo import elegant
+from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
+from srv.ayats.search_query import FkSearchQuery
+from srv.ayats.validated_search_query import ValidatedSearchQuery
 
 
-@elegant
-class MarkupEditInterface(Protocol):
-    """Интерфейс для классов, редактирующих клавиатуру."""
+def test():
+    query = ValidatedSearchQuery(FkSearchQuery(1, '1'))
 
-    async def edit(self) -> None:
-        """Редактирование."""
+    assert query.sura() == 1
+    assert query.ayat() == '1'
+
+
+@pytest.mark.parametrize('sura_id', [-1, 115])
+def test_fail_sura(sura_id):
+    query = ValidatedSearchQuery(FkSearchQuery(sura_id, '1'))
+    with pytest.raises(SuraNotFoundError):
+        query.sura()
+
+
+@pytest.mark.parametrize('ayat_num', [
+    '0',
+    '1iw',
+    '1,5',
+    '1-5',
+])
+def test_fail(ayat_num):
+    query = ValidatedSearchQuery(FkSearchQuery(1, ayat_num))
+    with pytest.raises(AyatNotFoundError):
+        query.ayat()

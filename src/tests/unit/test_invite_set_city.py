@@ -20,30 +20,35 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import asyncio
-import urllib
+import json
 
-import pytest
-from fakeredis import aioredis
+import httpx
 
-
-@pytest.fixture()
-def unquote():
-    def _unquote(url):  # noqa: WPS430
-        return urllib.parse.unquote(
-            str(url),
-        ).replace('+', ' ')
-    return _unquote
+from app_types.update import FkUpdate, Update
+from exceptions.content_exceptions import UserHasNotCityIdError
+from integrations.tg.tg_answers import FkAnswer, TgAnswer
+from srv.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
 
 
-@pytest.fixture(scope='session')
-def event_loop():
-    loop = asyncio.new_event_loop()
-    loop.slow_callback_duration = float('inf')
-    yield loop
-    loop.close()
+class FkOrigin(TgAnswer):
+
+    async def build(self, update: Update) -> list[httpx.Request]:
+        raise UserHasNotCityIdError
 
 
-@pytest.fixture()
-def fake_redis():
-    return aioredis.FakeRedis()
+async def test_exception():
+    got = await UserWithoutCitySafeAnswer(FkOrigin(), FkAnswer()).build(FkUpdate())
+
+    assert got[0].url == 'https://some.domain'
+
+
+async def test_invite_set_city_answer(fake_redis, unquote):
+    got = await InviteSetCityAnswer(FkAnswer(), fake_redis).build(FkUpdate('{"chat":{"id":1}}'))
+
+    assert unquote(got[0].url) == 'https://some.domain?reply_markup={0}'.format(
+        json.dumps({
+            'inline_keyboard': [[
+                {'text': 'Поиск города', 'switch_inline_query_current_chat': ''},
+            ]],
+        }),
+    )
