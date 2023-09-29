@@ -45,8 +45,10 @@ async def test_exception():
 async def test_invite_set_city_answer(fake_redis, unquote):
     got = await InviteSetCityAnswer(FkAnswer(), fake_redis).build(FkUpdate('{"chat":{"id":1}}'))
 
-    assert unquote(got[0].url) == 'https://some.domain?reply_markup={0}'.format(json.dumps({
-        'inline_keyboard': [[
-            {'text': 'Поиск города', 'switch_inline_query_current_chat': ''},
-        ]]
-    }))
+    assert unquote(got[0].url) == 'https://some.domain?reply_markup={0}'.format(
+        json.dumps({
+            'inline_keyboard': [[
+                {'text': 'Поиск города', 'switch_inline_query_current_chat': ''},
+            ]],
+        }),
+    )

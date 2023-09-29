@@ -20,8 +20,44 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import final
+
+import httpx
+
+from app_types.update import FkUpdate, Update
+from exceptions.internal_exceptions import UserNotFoundError
+from integrations.tg.tg_answers import FkAnswer, TgAnswer
 from srv.prayers.user_not_registered_safe_answer import UserNotRegisteredSafeAnswer
+from srv.users.new_user import FkNewUser
+
+
+@final
+class UserNotFoundAnswer(TgAnswer):
+
+    def __init__(self, origin: TgAnswer):
+        self._origin = origin
+        self._counter = 0
+
+    async def build(self, update: Update) -> list[httpx.Request]:
+        if self._counter == 0:
+            self._counter += 1
+            raise UserNotFoundError
+        return await self._origin.build(update)
 
 
 async def test():
-    UserNotRegisteredSafeAnswer()
+    got = await UserNotRegisteredSafeAnswer(
+        FkNewUser(),
+        FkAnswer(),
+    ).build(FkUpdate())
+
+    assert got[0].url == 'https://some.domain'
+
+
+async def test_user_not_found():
+    got = await UserNotRegisteredSafeAnswer(
+        FkNewUser(),
+        UserNotFoundAnswer(FkAnswer()),
+    ).build(FkUpdate())
+
+    assert got[0].url == 'https://some.domain'

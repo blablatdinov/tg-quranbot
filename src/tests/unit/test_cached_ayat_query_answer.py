@@ -25,7 +25,6 @@ from contextlib import suppress
 from typing import final
 
 import pytest
-from fakeredis import aioredis
 from pyeo import elegant
 
 from integrations.tg.tg_answers import TgAnswer

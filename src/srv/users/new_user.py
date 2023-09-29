@@ -46,7 +46,10 @@ class NewUser(Protocol):
 @attrs.define(frozen=True)
 @elegant
 class FkNewUser(NewUser):
+    """Фейк нового пользователя."""
 
+    async def create(self) -> None:
+        """Создание."""
 
 
 @final
@@ -60,7 +63,13 @@ class PgNewUser(NewUser):
     _pgsql: Database
 
     @classmethod
-    def ctor(cls, new_user_chat_id: TgChatId, pgsql: Database):
+    def ctor(cls, new_user_chat_id: TgChatId, pgsql: Database) -> NewUser:
+        """Конструктор без реферера.
+
+        :param new_user_chat_id: TgChatId
+        :param pgsql: Database
+        :return: NewUser
+        """
         return cls(
             FkAsyncIntOrNone(None),
             new_user_chat_id,
