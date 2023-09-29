@@ -21,14 +21,12 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import enum
-from typing import Protocol, final, SupportsInt
+from typing import Protocol, SupportsInt, final
 
 import attrs
 from loguru import logger
 from pyeo import elegant
 from redis.asyncio import Redis
-
-from integrations.tg.chat_id import TgChatId
 
 
 @final
@@ -56,20 +54,33 @@ class UserState(Protocol):
 
 
 @final
-@attrs.define
 @elegant
 class CachedUserState(UserState):
+    """Кэширующий декоратор."""
 
-    _origin: UserState
-    _cache: UserStep | None = None
+    def __init__(self, origin: UserState) -> None:
+        """Ctor.
+
+        :param origin: UserState
+        """
+        self._origin = origin
+        self._cache: UserStep | None = None
 
     async def step(self) -> UserStep:
+        """Состояние пользователя.
+
+        :return: UserStep
+        """
         if self._cache:
             return self._cache
         self._cache = await self._origin.step()
         return self._cache
 
     async def change_step(self, step: UserStep) -> None:
+        """Изменение, состояние пользователя.
+
+        :param step: UserStep
+        """
         await self._origin.change_step(step)
         self._cache = step
 

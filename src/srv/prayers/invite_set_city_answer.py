@@ -32,7 +32,7 @@ from exceptions.content_exceptions import UserHasNotCityIdError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup
 from services.switch_inline_query_answer import SwitchInlineQueryKeyboard
-from services.user_state import UserStep, UserState, RedisUserState
+from services.user_state import RedisUserState, UserStep
 
 
 @final

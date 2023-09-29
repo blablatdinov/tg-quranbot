@@ -28,7 +28,7 @@ from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer
 from integrations.tg.update import TgUpdate
 from services.reset_state_answer import ResetStateAnswer
-from services.user_state import RedisUserState, CachedUserState, UserState, UserStep
+from services.user_state import CachedUserState, RedisUserState, UserStep
 
 
 @pytest.fixture()
@@ -46,7 +46,10 @@ async def test_redis_query(fake_redis):
 
 
 async def test_origin_answer_not_modificated(fake_redis):
-    got = await ResetStateAnswer(FkAnswer(), RedisUserState(fake_redis, FkIntable(123))).build(TgUpdate('{"from":{"id":123}}'))
+    got = await ResetStateAnswer(
+        FkAnswer(),
+        RedisUserState(fake_redis, FkIntable(123)),
+    ).build(TgUpdate('{"from":{"id":123}}'))
     origin = (await FkAnswer().build(FkUpdate()))[0].url
 
     assert got[0].url == origin

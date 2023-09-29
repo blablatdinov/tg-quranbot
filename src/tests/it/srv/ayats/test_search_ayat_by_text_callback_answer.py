@@ -20,11 +20,10 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import datetime
 import json
 
 import pytest
-import datetime
-
 from furl import furl
 
 from app_types.update import FkUpdate
@@ -69,11 +68,16 @@ async def _db_ayat(pgsql):
     )
 
 
+@pytest.fixture()
+def search_answer(pgsql, rds):
+    debug = True
+    return SearchAyatByTextCallbackAnswer(debug, FkAnswer(), rds, pgsql)
+
+
 @pytest.mark.usefixtures('_db_ayat')
-async def test(rds, pgsql, unquote):
+async def test(rds, pgsql, unquote, search_answer):
     await AyatTextSearchQuery(rds, 1758).write('Content')
-    answer = SearchAyatByTextCallbackAnswer(True, FkAnswer(), rds, pgsql)
-    got = await answer.build(FkUpdate('{"callback_query": {"data": "1"}, "chat": {"id": 1758}}'))
+    got = await search_answer.build(FkUpdate('{"callback_query": {"data": "1"}, "chat": {"id": 1758}}'))
 
     assert unquote(got[0].url) == unquote(
         furl('https://some.domain/sendMessage')
@@ -92,13 +96,12 @@ async def test(rds, pgsql, unquote):
                     [{'text': 'Добавить в избранное', 'callback_data': 'addToFavor(1)'}],
                 ],
             }),
-        })
+        }),
     )
 
 
 @pytest.mark.usefixtures('_db_ayat')
-async def test_unknown_target_ayat(rds, pgsql, unquote):
+async def test_unknown_target_ayat(rds, pgsql, unquote, search_answer):
     await AyatTextSearchQuery(rds, 1758).write('Content')
-    answer = SearchAyatByTextCallbackAnswer(True, FkAnswer(), rds, pgsql)
     with pytest.raises(AyatNotFoundError):
-        await answer.build(FkUpdate('{"callback_query": {"data": "2"}, "chat": {"id": 1758}}'))
+        await search_answer.build(FkUpdate('{"callback_query": {"data": "2"}, "chat": {"id": 1758}}'))

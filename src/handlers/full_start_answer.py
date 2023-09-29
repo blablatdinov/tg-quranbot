@@ -83,5 +83,5 @@ class FullStartAnswer(TgAnswer):
                     DefaultKeyboard(),
                 ),
             ),
-            CachedUserState(RedisUserState(self._redis, TgChatId(update)))
+            CachedUserState(RedisUserState(self._redis, TgChatId(update))),
         ).build(update)

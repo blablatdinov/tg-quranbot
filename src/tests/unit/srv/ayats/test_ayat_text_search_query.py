@@ -32,7 +32,7 @@ async def test_read(fake_redis):
 
 
 async def test_read_without_value(fake_redis):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="User hasn't search query"):
         await AyatTextSearchQuery(fake_redis, 17).read()
 
 

@@ -30,7 +30,7 @@ from redis.asyncio import Redis
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer
-from services.user_state import RedisUserState, UserStep, UserState
+from services.user_state import RedisUserState, UserStep
 
 
 @final

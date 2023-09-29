@@ -39,7 +39,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from services.reset_state_answer import ResetStateAnswer
-from services.user_state import RedisUserState, CachedUserState
+from services.user_state import CachedUserState, RedisUserState
 from srv.prayers.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
 from srv.prayers.city import PgCity
 from srv.prayers.search_cities import PgUpdatedUserCity
@@ -84,7 +84,7 @@ class SearchCityAnswer(TgAnswer):
                                 ),
                                 CachedUserState(
                                     RedisUserState(self._redis, TgChatId(update)),
-                                )
+                                ),
                             ),
                             answer_to_sender,
                         ),

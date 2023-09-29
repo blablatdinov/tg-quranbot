@@ -30,16 +30,21 @@ from srv.ayats.text_search_query import TextSearchQuery
 
 
 @final
-@attrs.define
 class CachedTextSearchQuery(TextSearchQuery):
+    """Закэшированный запрос."""
 
-    _origin: TextSearchQuery
-    _cached: str = ''
+    def __init__(self, origin: TextSearchQuery) -> None:
+        """Ctor.
+
+        :param origin: TextSearchQuery
+        """
+        self._origin = origin
+        self._cached = ''
 
     async def write(self, query: str) -> None:
         """Запись.
 
-        :raises ValueError: if query not give
+        :param query: str
         """
         await self._origin.write(query)
         self._cached = query
@@ -68,7 +73,7 @@ class AyatTextSearchQuery(TextSearchQuery):
     async def write(self, query: str) -> None:
         """Запись.
 
-        :raises ValueError: if query not give
+        :param query: str
         """
         key = self._key_template.format(self._chat_id)
         logger.info('Try writing key: {0}, value: {1}'.format(key, query))
