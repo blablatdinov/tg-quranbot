@@ -30,6 +30,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError
+from integrations.tg.exceptions.update_parse_exceptions import InlineQueryNotFoundError
 from integrations.tg.inline_query import InlineQuery, InlineQueryId
 from integrations.tg.tg_answers import TgAnswer
 from services.debug_answer import DebugAnswer
@@ -54,7 +55,7 @@ class InlineQueryAnswer(TgAnswer):
         """
         try:
             inline_query_data = str(InlineQuery(update))
-        except AttributeError as err:
+        except InlineQueryNotFoundError as err:
             raise NotProcessableUpdateError from err
         origin_requests = await DebugAnswer(self._origin).build(update)
         city_names = await CityNames(self._pgsql, inline_query_data).to_list()
