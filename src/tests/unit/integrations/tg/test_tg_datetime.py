@@ -21,7 +21,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from pathlib import Path
 
 import pytest
 import pytz
@@ -30,14 +29,12 @@ from pytest_lazyfixture import lazy_fixture
 from app_types.stringable import ThroughString
 from integrations.tg.tg_datetime import TgDateTime
 from integrations.tg.update import TgUpdate
-from settings import BASE_DIR
+from settings.settings import BASE_DIR
 
 
 @pytest.fixture()
-def stringable_update():
-    return ThroughString(
-        (BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),
-    )
+def stringable_update(message_update_factory):
+    return ThroughString(message_update_factory())
 
 
 @pytest.fixture()

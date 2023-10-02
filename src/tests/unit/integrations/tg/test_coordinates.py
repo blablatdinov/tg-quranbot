@@ -25,7 +25,7 @@ import pytest
 from app_types.stringable import ThroughString
 from integrations.tg.coordinates import TgMessageCoordinates
 from integrations.tg.update import TgUpdate
-from settings import BASE_DIR
+from settings.settings import BASE_DIR
 
 
 @pytest.fixture()

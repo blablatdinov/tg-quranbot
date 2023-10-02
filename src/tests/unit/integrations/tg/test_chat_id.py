@@ -27,12 +27,12 @@ from pytest_lazyfixture import lazy_fixture
 
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.update import TgUpdate
-from settings import BASE_DIR
+from settings.settings import BASE_DIR
 
 
 @pytest.fixture()
-def stringable_update():
-    return (BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text()
+def stringable_update(message_update_factory):
+    return message_update_factory('', 358610865)
 
 
 @pytest.fixture()

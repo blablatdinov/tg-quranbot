@@ -20,17 +20,21 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from integrations.tg.update import CachedTgUpdate, TgUpdate
-from integrations.tg.update_struct import UpdateStruct
+from settings.admin_chat_ids import AdminChatIds
+from settings.settings import Settings
 
 
-def test(message_update_factory):
-    update = TgUpdate(message_update_factory())
+class FkSettings(Settings):
 
-    assert update.parsed() == UpdateStruct(ok=True)
+    def __getattr__(self, attr_name):
+        return '1, 2, 3'
 
 
-def test_cached(message_update_factory):
-    update = CachedTgUpdate(TgUpdate(message_update_factory()))
+def test():
+    admin_chat_ids = AdminChatIds(FkSettings())
 
-    assert update.parsed() == UpdateStruct(ok=True)
+    assert admin_chat_ids[0] == 1
+    assert admin_chat_ids[1:] == [2, 3]
+    assert admin_chat_ids[-1] == 3
+    assert len(admin_chat_ids) == 3
+    assert admin_chat_ids.count(2) == 1

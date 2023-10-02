@@ -20,20 +20,30 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from settings import AdminChatIds, Settings
+from typing import final
+
+import attrs
+from pyeo import elegant
+
+from settings.settings import Settings
 
 
-class FkSettings(Settings):
+@final
+@elegant
+@attrs.define(frozen=True)
+class OsOrFileSettings(Settings):
+    """Объект, который достает настройки из переменных окружения или файла."""
 
-    def __getattr__(self, attr_name):
-        return '1, 2, 3'
+    _os_envs: Settings
+    _env_file: Settings
 
+    def __getattr__(self, attr_name: str) -> str:
+        """Получить аттрибут.
 
-def test():
-    admin_chat_ids = AdminChatIds(FkSettings())
-
-    assert admin_chat_ids[0] == 1
-    assert admin_chat_ids[1:] == [2, 3]
-    assert admin_chat_ids[-1] == 3
-    assert len(admin_chat_ids) == 3
-    assert admin_chat_ids.count(2) == 1
+        :param attr_name: str
+        :return: str
+        """
+        try:
+            return getattr(self._os_envs, attr_name)
+        except ValueError:
+            return getattr(self._os_envs, attr_name)

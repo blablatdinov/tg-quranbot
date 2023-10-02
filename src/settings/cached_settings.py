@@ -20,31 +20,30 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pathlib import Path
+from typing import ClassVar, final
 
-import pytest
+import attrs
 
-from integrations.tg.tg_answers import FkAnswer, TgMessageRegexAnswer
-from integrations.tg.update import TgUpdate
-
-
-@pytest.fixture()
-def callback_update():
-    return (Path(__file__).parent / 'fixtures' / 'callback_update.json').read_text()
+from settings.settings import Settings
 
 
-@pytest.fixture()
-def message_update():
-    return (Path(__file__).parent / 'fixtures' / 'message_update.json').read_text()
+@final
+@attrs.define(frozen=True)
+class CachedSettings(Settings):
+    """Кеширующиеся настройки."""
 
+    _origin: Settings
+    _cached_values: ClassVar[dict[str, str]] = {}
 
-async def test_on_message_update(message_update):
-    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(TgUpdate(message_update))
+    def __getattr__(self, attr_name: str) -> str:
+        """Получить аттрибут.
 
-    assert got
-
-
-async def test_on_callback_update(callback_update):
-    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(TgUpdate(callback_update))
-
-    assert not got
+        :param attr_name: str
+        :return: str
+        """
+        cached_value = self._cached_values.get(attr_name)
+        if not cached_value:
+            origin_value = getattr(self._origin, attr_name)
+            self._cached_values[attr_name] = origin_value
+            return origin_value
+        return cached_value

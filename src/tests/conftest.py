@@ -25,6 +25,9 @@ import urllib
 
 import pytest
 from fakeredis import aioredis
+from jinja2 import Template
+
+from settings.settings import BASE_DIR
 
 
 @pytest.fixture()
@@ -47,3 +50,12 @@ def event_loop():
 @pytest.fixture()
 def fake_redis():
     return aioredis.FakeRedis()
+
+
+@pytest.fixture()
+def message_update_factory():
+    def _message_update_factory(text='', chat_id=1):  # noqa: WPS430
+        return Template(
+            (BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),
+        ).render({'message_text': '"{0}"'.format(text), 'chat_id': chat_id})
+    return _message_update_factory

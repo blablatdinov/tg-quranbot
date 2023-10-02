@@ -20,33 +20,27 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from app_types.update import FkUpdate
+import pytest
+
 from integrations.tg.tg_answers import FkAnswer, TgMessageRegexAnswer
+from integrations.tg.update import TgUpdate
+from settings.settings import BASE_DIR
 
 
-async def test():
-    got = await TgMessageRegexAnswer('target', FkAnswer()).build(
-        FkUpdate('{"message":{"text":"target"}}'),
+@pytest.fixture()
+def callback_update():
+    return (BASE_DIR / 'tests' / 'fixtures' / 'button_callback.json').read_text()
+
+
+async def test_on_message_update(message_update_factory):
+    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(
+        TgUpdate(message_update_factory('1:1', 1)),
     )
 
-    assert got[0].url == 'https://some.domain'
+    assert got
 
 
-async def test_not_message_text():
-    got = await TgMessageRegexAnswer('target', FkAnswer()).build(FkUpdate('{}'))  # noqa: P103 it is empty jsno
+async def test_on_callback_update(callback_update):
+    got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(TgUpdate(callback_update))
 
-    assert got == []
-
-
-async def test_not_match():
-    got = await TgMessageRegexAnswer('target', FkAnswer()).build(
-        FkUpdate('{"message":{"text":"other_value"}}'),
-    )
-
-    assert got == []
-
-
-async def test_str():
-    got = str(TgMessageRegexAnswer('target', FkAnswer()))
-
-    assert got == 'TgMessageRegexAnswer. pattern: target'
+    assert not got

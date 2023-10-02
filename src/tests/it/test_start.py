@@ -30,7 +30,7 @@ from app_types.update import FkUpdate
 from handlers.full_start_answer import FullStartAnswer
 from integrations.tg.tg_answers import FkAnswer
 from srv.events.sink import FkSink
-from tests.unit.test_amdin_chat_ids import FkSettings
+from tests.unit.settings.test_amdin_chat_ids import FkSettings
 
 
 @pytest.fixture()

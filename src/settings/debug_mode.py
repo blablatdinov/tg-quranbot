@@ -20,17 +20,26 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from integrations.tg.update import CachedTgUpdate, TgUpdate
-from integrations.tg.update_struct import UpdateStruct
+from typing import final
+
+import attrs
+from pyeo import elegant
+
+from app_types.supports_bool import SupportsBool
+from settings.settings import Settings
 
 
-def test(message_update_factory):
-    update = TgUpdate(message_update_factory())
+@final
+@elegant
+@attrs.define(frozen=True)
+class DebugMode(SupportsBool):
+    """Режим отладки."""
 
-    assert update.parsed() == UpdateStruct(ok=True)
+    _settings: Settings
 
+    def __bool__(self) -> bool:
+        """Приведение к булевому значению.
 
-def test_cached(message_update_factory):
-    update = CachedTgUpdate(TgUpdate(message_update_factory()))
-
-    assert update.parsed() == UpdateStruct(ok=True)
+        :return: bool
+        """
+        return self._settings.DEBUG == 'on'

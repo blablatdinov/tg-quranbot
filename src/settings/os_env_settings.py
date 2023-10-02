@@ -20,17 +20,31 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from integrations.tg.update import CachedTgUpdate, TgUpdate
-from integrations.tg.update_struct import UpdateStruct
+import os
+from typing import final
+
+import attrs
+from pyeo import elegant
+
+from settings.settings import BASE_DIR, Settings
 
 
-def test(message_update_factory):
-    update = TgUpdate(message_update_factory())
+@final
+@elegant
+@attrs.define(frozen=True)
+class OsEnvSettings(Settings):
+    """Настройки из переменных окружения."""
 
-    assert update.parsed() == UpdateStruct(ok=True)
+    def __getattr__(self, attr_name: str) -> str:
+        """Получить аттрибут.
 
-
-def test_cached(message_update_factory):
-    update = CachedTgUpdate(TgUpdate(message_update_factory()))
-
-    assert update.parsed() == UpdateStruct(ok=True)
+        :param attr_name: str
+        :return: str
+        :raises ValueError: имя не найдено
+        """
+        if attr_name == 'BASE_DIR':
+            return str(BASE_DIR)
+        env_value = os.getenv(attr_name)
+        if not env_value:
+            raise ValueError
+        return env_value

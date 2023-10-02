@@ -28,7 +28,7 @@ import pika
 import psycopg2
 import pytest
 
-from settings import EnvFileSettings
+from settings.env_file_settings import EnvFileSettings
 
 
 @pytest.fixture()

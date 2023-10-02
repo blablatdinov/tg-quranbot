@@ -25,7 +25,7 @@ import pytest
 from app_types.stringable import ThroughString
 from app_types.update import FkUpdate
 from integrations.tg.callback_query import CallbackQueryData
-from settings import BASE_DIR
+from settings.settings import BASE_DIR
 
 
 @pytest.fixture()

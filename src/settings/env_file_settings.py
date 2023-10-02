@@ -1,14 +1,17 @@
 """The MIT License (MIT).
 
 Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
+
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -17,44 +20,47 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from pathlib import Path
 from typing import final
 
 import attrs
-import httpx
-from databases import Database
 from pyeo import elegant
-from redis.asyncio import Redis
 
-from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers import TgAnswer
-from settings.debug_mode import DebugMode
-from settings.settings import Settings
-from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
-from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer
-from srv.ayats.search_ayat_by_text_callback_answer import SearchAyatByTextCallbackAnswer
+from settings.settings import BASE_DIR, Settings
 
 
 @final
-@attrs.define(frozen=True)
 @elegant
-class PaginateBySearchAyat(TgAnswer):
-    """Пагинация по поиску аятов."""
+@attrs.define(frozen=True)
+class EnvFileSettings(Settings):
+    """Настройки из .env файла."""
 
-    _empty_answer: TgAnswer
-    _redis: Redis
-    _pgsql: Database
-    _settings: Settings
+    _path: Path
 
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
+    @classmethod
+    def from_filename(cls, file_path: str) -> Settings:
+        """Конструктор для имени файла.
 
-        :param update: Update
-        :return: list[httpx.Request]
+        :param file_path: str
+        :return: Settings
         """
-        return await HighlightedSearchAnswer(
-            SearchAyatByTextCallbackAnswer(
-                DebugMode(self._settings), self._empty_answer, self._redis, self._pgsql,
-            ),
-            AyatTextSearchQuery(self._redis, int(TgChatId(update))),
-        ).build(update)
+        return cls(Path(BASE_DIR / file_path))
+
+    def __getattr__(self, attr_name: str) -> str:
+        """Получить аттрибут.
+
+        :param attr_name: str
+        :return: str
+        """
+        if attr_name == 'BASE_DIR':
+            return str(BASE_DIR)
+        return self._search_in_file(attr_name)
+
+    def _search_in_file(self, attr_name: str) -> str:
+        for line in self._path.read_text().strip().split('\n'):
+            if '=' not in line:
+                continue
+            var_name, var_value = line.split('=')
+            if var_name == attr_name:
+                return var_value
+        raise ValueError('{0} not defined'.format(attr_name))

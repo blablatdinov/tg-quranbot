@@ -33,7 +33,7 @@ from pyeo import elegant
 from quranbot_schema_registry import validate_schema
 
 from app_types.runable import SyncRunable
-from settings import Settings
+from settings.settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 
 

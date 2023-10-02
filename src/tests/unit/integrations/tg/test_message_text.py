@@ -26,14 +26,12 @@ from pytest_lazyfixture import lazy_fixture
 from app_types.stringable import ThroughString
 from integrations.tg.message_text import MessageText
 from integrations.tg.update import TgUpdate
-from settings import BASE_DIR
+from settings.settings import BASE_DIR
 
 
 @pytest.fixture()
-def stringable_update():
-    return ThroughString(
-        (BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),
-    )
+def stringable_update(message_update_factory):
+    return ThroughString(message_update_factory('afwe'))
 
 
 @pytest.fixture()
