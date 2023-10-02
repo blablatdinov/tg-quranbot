@@ -20,43 +20,34 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import datetime
-from pathlib import Path
-
 import pytest
-import pytz
 from pytest_lazyfixture import lazy_fixture
 
 from app_types.stringable import ThroughString
-from integrations.tg.tg_datetime import TgDateTime
+from integrations.tg.message_id import MessageId
 from integrations.tg.update import TgUpdate
+from settings import BASE_DIR
 
 
 @pytest.fixture()
 def stringable_update():
     return ThroughString(
-        (Path(__file__).parent.parent / 'fixtures' / 'message_update.json').read_text(),
+        (BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),
     )
 
 
 @pytest.fixture()
 def stringable_callback_update():
     return ThroughString(
-        (Path(__file__).parent.parent / 'fixtures' / 'button_callback.json').read_text(),
+        (BASE_DIR / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
     )
 
 
 @pytest.mark.parametrize(('input_', 'expected'), [
-    (
-        lazy_fixture('stringable_update'),
-        datetime.datetime(2022, 12, 9, 10, 20, 13, tzinfo=pytz.timezone('UTC')),
-    ),
-    (
-        lazy_fixture('stringable_callback_update'),
-        datetime.datetime(2022, 10, 30, 15, 54, 34, tzinfo=pytz.timezone('UTC')),
-    ),
+    (lazy_fixture('stringable_update'), 22628),
+    (lazy_fixture('stringable_callback_update'), 22627),
 ])
 def test(input_, expected):
-    tg_datetime = TgDateTime(TgUpdate(input_))
+    message_id = MessageId(TgUpdate(input_))
 
-    assert tg_datetime.datetime() == expected
+    assert int(message_id) == expected

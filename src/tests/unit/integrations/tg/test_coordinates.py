@@ -20,3 +20,23 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import pytest
+
+from app_types.stringable import ThroughString
+from integrations.tg.coordinates import TgMessageCoordinates
+from integrations.tg.update import TgUpdate
+from settings import BASE_DIR
+
+
+@pytest.fixture()
+def coordinates_json():
+    return ThroughString(
+        (BASE_DIR / 'tests' / 'fixtures' / 'coordinates.json').read_text(),
+    )
+
+
+def test(coordinates_json):
+    coordinates = TgMessageCoordinates(TgUpdate(coordinates_json))
+
+    assert coordinates.latitude() == 40.329649
+    assert coordinates.longitude() == -93.599524

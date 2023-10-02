@@ -30,7 +30,7 @@ from pyeo import elegant
 
 from app_types.supports_bool import SupportsBool
 
-BASE_DIR = Path(__file__).parent
+BASE_DIR = Path(__file__).parent  # Path to src dir
 
 
 @elegant

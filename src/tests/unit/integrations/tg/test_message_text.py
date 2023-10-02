@@ -20,24 +20,35 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pathlib import Path
-
 import pytest
+from pytest_lazyfixture import lazy_fixture
 
 from app_types.stringable import ThroughString
-from app_types.update import FkUpdate
-from integrations.tg.callback_query import CallbackQueryData
+from integrations.tg.message_text import MessageText
+from integrations.tg.update import TgUpdate
 from settings import BASE_DIR
+
+
+@pytest.fixture()
+def stringable_update():
+    return ThroughString(
+        (BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),
+    )
 
 
 @pytest.fixture()
 def stringable_callback_update():
     return ThroughString(
-        (Path(BASE_DIR) / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
+        (BASE_DIR / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
     )
 
 
-def test(stringable_callback_update):
-    cb_query_data = CallbackQueryData(FkUpdate(stringable_callback_update))
+@pytest.mark.parametrize(('input_', 'expected'), [
+    (lazy_fixture('stringable_update'), 'afwe'),
+    (lazy_fixture('stringable_callback_update'), 'awef'),
+    ('{"message":{"text":"hello"}}', 'hello'),
+])
+def test(input_, expected):
+    got = MessageText(TgUpdate(input_))
 
-    assert str(cb_query_data) == 'mark_readed(2362)'
+    assert str(got) == expected

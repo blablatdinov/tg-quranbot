@@ -25,21 +25,13 @@ import urllib
 from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer
 from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer
-from srv.ayats.text_search_query import TextSearchQuery
-
-
-class FkSearchQuery(TextSearchQuery):
-
-    async def write(self, query: str) -> None:
-        raise NotImplementedError
-
-    async def read(self) -> str:
-        return 'How to write tests'
+from srv.ayats.text_search_query import FkTextSearchQuery
 
 
 async def test():
     got = await HighlightedSearchAnswer(
-        FkAnswer('https://some.domain?text=How to write tests in python?'), FkSearchQuery(),
+        FkAnswer('https://some.domain?text=How to write tests in python?'),
+        FkTextSearchQuery('How to write tests'),
     ).build(FkUpdate())
 
     assert len(got) == 1
@@ -49,7 +41,7 @@ async def test():
 
 
 async def test_key_error():
-    got = await HighlightedSearchAnswer(FkAnswer(), FkSearchQuery()).build(FkUpdate())
+    got = await HighlightedSearchAnswer(FkAnswer(), FkTextSearchQuery('How to write tests')).build(FkUpdate())
 
     assert len(got) == 1
     assert urllib.parse.unquote(
@@ -59,7 +51,7 @@ async def test_key_error():
 
 async def test_other_text():
     got = await HighlightedSearchAnswer(
-        FkAnswer('https://some.domain?text=How to write documentation'), FkSearchQuery(),
+        FkAnswer('https://some.domain?text=How to write documentation'), FkTextSearchQuery('How to write tests'),
     ).build(FkUpdate())
 
     assert len(got) == 1

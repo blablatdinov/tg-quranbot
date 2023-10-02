@@ -20,24 +20,53 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pathlib import Path
+import json
 
 import pytest
+from pytest_lazyfixture import lazy_fixture
 
-from app_types.stringable import ThroughString
-from integrations.tg.coordinates import TgMessageCoordinates
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.update import TgUpdate
+from settings import BASE_DIR
 
 
 @pytest.fixture()
-def coordinates_json():
-    return ThroughString(
-        (Path(__file__).parent.parent / 'fixtures' / 'coordinates.json').read_text(),
-    )
+def stringable_update():
+    return (BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text()
 
 
-def test(coordinates_json):
-    coordinates = TgMessageCoordinates(TgUpdate(coordinates_json))
+@pytest.fixture()
+def stringable_callback_update():
+    return (BASE_DIR / 'tests' / 'fixtures' / 'button_callback.json').read_text()
 
-    assert coordinates.latitude() == 40.329649
-    assert coordinates.longitude() == -93.599524
+
+@pytest.fixture()
+def query_search_update():
+    return json.dumps({
+        'update_id': 637463119,
+        'inline_query': {
+            'id': '1540221937896102808',
+            'from': {
+                'id': 358610865,
+                'is_bot': False,
+                'first_name': 'Almaz',
+                'last_name': 'Ilaletdinov',
+                'username': 'ilaletdinov',
+                'language_code': 'ru',
+            },
+            'chat_type': 'sender',
+            'query': 'adsfawef',
+            'offset': '',
+        },
+    })
+
+
+@pytest.mark.parametrize('input_', [
+    lazy_fixture('stringable_update'),
+    lazy_fixture('stringable_callback_update'),
+    lazy_fixture('query_search_update'),
+])
+def test(input_):
+    chat_id = TgChatId(TgUpdate(input_))
+
+    assert int(chat_id) == 358610865

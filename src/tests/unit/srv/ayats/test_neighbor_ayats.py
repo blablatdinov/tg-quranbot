@@ -20,56 +20,22 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import attrs
 import pytest
 
 from app_types.listable import AsyncListable
-from srv.ayats.ayat import Ayat
-from srv.ayats.ayat_identifier import AyatIdentifier
+from srv.ayats.ayat import Ayat, FkAyat
+from srv.ayats.ayat_identifier import FkIdentifier
 from srv.ayats.neighbor_ayats import FavoriteNeighborAyats
 from srv.files.file import FkFile
-
-
-@attrs.define(frozen=True)
-class FkIdentifier(AyatIdentifier):
-
-    _id: int
-
-    async def ayat_id(self):
-        return self._id
-
-    async def sura_num(self):
-        return 1
-
-    async def ayat_num(self):
-        return '1-7'
-
-
-@attrs.define(frozen=True)
-class FkAyat(Ayat):
-
-    _id: int
-
-    def identifier(self):
-        return FkIdentifier(self._id)
-
-    async def text(self):
-        return ''
-
-    async def audio(self):
-        return FkFile('', '')
-
-    async def change(self, event_body) -> None:
-        """Изменить содержимое аята."""
 
 
 class FkFavoriteAyats(AsyncListable[Ayat]):
 
     async def to_list(self) -> list[Ayat]:
         return [
-            FkAyat(1),
-            FkAyat(2),
-            FkAyat(3),
+            FkAyat(FkIdentifier(1, 1, '1-7'), '', FkFile('', '')),
+            FkAyat(FkIdentifier(2, 1, '1-7'), '', FkFile('', '')),
+            FkAyat(FkIdentifier(3, 1, '1-7'), '', FkFile('', '')),
         ]
 
 
