@@ -42,6 +42,16 @@ class UpdatedUserCity(Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
+class FkUpdateUserCity(UpdatedUserCity):
+    """Стаб для обновления города."""
+
+    async def update(self) -> None:
+        """Обновление."""
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
 class PgUpdatedUserCity(UpdatedUserCity):
     """Обновленный город у пользователя в БД postgres."""
 

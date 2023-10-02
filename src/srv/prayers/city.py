@@ -46,6 +46,30 @@ class City(Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
+class FkCity(City):
+    """Стаб города."""
+
+    _city_id: uuid.UUID
+    _name: str
+
+    async def city_id(self) -> uuid.UUID:
+        """Идентификатор города.
+
+        :return: uuid.UUID
+        """
+        return self._city_id
+
+    async def name(self) -> str:
+        """Имя города.
+
+        :return: name
+        """
+        return self._name
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
 class CityIdByName(AsyncSupportsStr):
     """Идентификатор города по имени."""
 
