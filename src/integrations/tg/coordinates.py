@@ -44,6 +44,30 @@ class Coordinates(Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
+class FkCoordinates(Coordinates):
+    """Стаб для координат."""
+
+    _latitude: float
+    _longitude: float
+
+    def latitude(self) -> float:
+        """Широта.
+
+        :return: float
+        """
+        return self._latitude
+
+    def longitude(self) -> float:
+        """Долгота.
+
+        :return: float
+        """
+        return self._longitude
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
 class TgMessageCoordinates(Coordinates):
     """Координаты, принятые из чата."""
 

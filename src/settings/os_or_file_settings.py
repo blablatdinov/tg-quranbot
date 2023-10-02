@@ -46,4 +46,4 @@ class OsOrFileSettings(Settings):
         try:
             return getattr(self._os_envs, attr_name)
         except ValueError:
-            return getattr(self._os_envs, attr_name)
+            return getattr(self._env_file, attr_name)

@@ -24,6 +24,7 @@ import json
 import uuid
 
 import pytest
+
 from app_types.update import FkUpdate
 from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.tg_answers import FkAnswer
@@ -51,10 +52,10 @@ async def test(pgsql, unquote):
 
     assert json.loads(got[0].url.params['results']) == [
         {
-            "id": "0",
-            "type": "article",
-            "title": "Kazan",
-            "input_message_content": {"message_text": "Kazan"},
+            'id': '0',
+            'type': 'article',
+            'title': 'Kazan',
+            'input_message_content': {'message_text': 'Kazan'},
         },
     ]
 
