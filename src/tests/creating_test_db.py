@@ -24,7 +24,7 @@ from pathlib import Path
 
 import psycopg2
 
-from settings import EnvFileSettings
+from settings.env_file_settings import EnvFileSettings
 
 
 def create_db() -> None:

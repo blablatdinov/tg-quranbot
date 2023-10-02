@@ -21,23 +21,46 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from pathlib import Path
+from typing import final
 
-import pytest
+import attrs
+from pyeo import elegant
 
-from app_types.stringable import ThroughString
-from integrations.tg.coordinates import TgMessageCoordinates
-from integrations.tg.update import TgUpdate
-
-
-@pytest.fixture()
-def coordinates_json():
-    return ThroughString(
-        (Path(__file__).parent.parent / 'fixtures' / 'coordinates.json').read_text(),
-    )
+from settings.settings import BASE_DIR, Settings
 
 
-def test(coordinates_json):
-    coordinates = TgMessageCoordinates(TgUpdate(coordinates_json))
+@final
+@elegant
+@attrs.define(frozen=True)
+class EnvFileSettings(Settings):
+    """Настройки из .env файла."""
 
-    assert coordinates.latitude() == 40.329649
-    assert coordinates.longitude() == -93.599524
+    _path: Path
+
+    @classmethod
+    def from_filename(cls, file_path: str) -> Settings:
+        """Конструктор для имени файла.
+
+        :param file_path: str
+        :return: Settings
+        """
+        return cls(Path(BASE_DIR / file_path))
+
+    def __getattr__(self, attr_name: str) -> str:
+        """Получить аттрибут.
+
+        :param attr_name: str
+        :return: str
+        """
+        if attr_name == 'BASE_DIR':
+            return str(BASE_DIR)
+        return self._search_in_file(attr_name)
+
+    def _search_in_file(self, attr_name: str) -> str:
+        for line in self._path.read_text().strip().split('\n'):
+            if '=' not in line:
+                continue
+            var_name, var_value = line.split('=')
+            if var_name == attr_name:
+                return var_value
+        raise ValueError('{0} not defined'.format(attr_name))

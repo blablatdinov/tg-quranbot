@@ -20,36 +20,26 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pathlib import Path
+from typing import final
 
-import pytest
-from pytest_lazyfixture import lazy_fixture
+import attrs
+from pyeo import elegant
 
-from app_types.stringable import ThroughString
-from integrations.tg.message_text import MessageText
-from integrations.tg.update import TgUpdate
-
-
-@pytest.fixture()
-def stringable_update():
-    return ThroughString(
-        (Path(__file__).parent.parent / 'fixtures' / 'message_update.json').read_text(),
-    )
+from app_types.supports_bool import SupportsBool
+from settings.settings import Settings
 
 
-@pytest.fixture()
-def stringable_callback_update():
-    return ThroughString(
-        (Path(__file__).parent.parent / 'fixtures' / 'button_callback.json').read_text(),
-    )
+@final
+@elegant
+@attrs.define(frozen=True)
+class DebugMode(SupportsBool):
+    """Режим отладки."""
 
+    _settings: Settings
 
-@pytest.mark.parametrize(('input_', 'expected'), [
-    (lazy_fixture('stringable_update'), 'afwe'),
-    (lazy_fixture('stringable_callback_update'), 'awef'),
-    ('{"message":{"text":"hello"}}', 'hello'),
-])
-def test(input_, expected):
-    got = MessageText(TgUpdate(input_))
+    def __bool__(self) -> bool:
+        """Приведение к булевому значению.
 
-    assert str(got) == expected
+        :return: bool
+        """
+        return self._settings.DEBUG == 'on'

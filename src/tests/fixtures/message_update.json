@@ -1,2 +1,28 @@
-{"ok": true, "result": [{"update_id": 637463103,
-"message": {"message_id": 22628, "from": {"id": 358610865, "is_bot": false, "first_name": "Алмаз", "last_name": "Илалетдинов", "username": "ilaletdinov", "language_code": "ru"}, "chat": {"id": 358610865, "first_name": "Алмаз", "last_name": "Илалетдинов", "username": "ilaletdinov", "type": "private"}, "date": 1670581213, "text": "afwe"}}]}
+{
+    "ok": true,
+    "result": [
+        {
+            "update_id": 637463103,
+            "message": {
+                "message_id": 22628,
+                "from": {
+                    "id": 358610865,
+                    "is_bot": false,
+                    "first_name": "Алмаз",
+                    "last_name": "Илалетдинов",
+                    "username": "ilaletdinov",
+                    "language_code": "ru"
+                },
+                "chat": {
+                    "id": {{ chat_id }},
+                    "first_name": "Алмаз",
+                    "last_name": "Илалетдинов",
+                    "username": "ilaletdinov",
+                    "type": "private"
+                },
+                "date": 1670581213,
+                "text": {{ message_text }}
+            }
+        }
+    ]
+}

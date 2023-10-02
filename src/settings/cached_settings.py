@@ -20,3 +20,30 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import ClassVar, final
+
+import attrs
+
+from settings.settings import Settings
+
+
+@final
+@attrs.define(frozen=True)
+class CachedSettings(Settings):
+    """Кеширующиеся настройки."""
+
+    _origin: Settings
+    _cached_values: ClassVar[dict[str, str]] = {}
+
+    def __getattr__(self, attr_name: str) -> str:
+        """Получить аттрибут.
+
+        :param attr_name: str
+        :return: str
+        """
+        cached_value = self._cached_values.get(attr_name)
+        if not cached_value:
+            origin_value = getattr(self._origin, attr_name)
+            self._cached_values[attr_name] = origin_value
+            return origin_value
+        return cached_value

@@ -20,40 +20,21 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import os
-import shutil
 from pathlib import Path
+from typing import Protocol
 
-import pytest
-
-from settings import CachedSettings, EnvFileSettings, OsEnvSettings
-
-
-@pytest.fixture()
-def env_file(tmp_path):
-    env_file_path = Path(tmp_path / '.env')
-    env_file_path.write_text('FOO=bar\n\nFIZ=foo')
-    return env_file_path
+from pyeo import elegant
 
 
-def test(env_file):
-    assert EnvFileSettings(env_file).FOO == 'bar'
-    assert EnvFileSettings(env_file).FIZ == 'foo'
+@elegant
+class Settings(Protocol):
+    """Настройки."""
+
+    def __getattr__(self, attr_name: str) -> str:
+        """Получить аттрибут.
+
+        :param attr_name: str
+        """
 
 
-def test_os_env():
-    os.environ['FOO'] = 'bar'
-
-    assert OsEnvSettings().FOO == 'bar'
-
-
-def test_cached(env_file):
-    cached_settings = CachedSettings(EnvFileSettings(env_file))
-    value_from_file = cached_settings.FOO
-    shutil.rmtree(env_file.parent)
-    assert cached_settings.FOO == 'bar' == value_from_file
-
-
-def test_not_found(env_file):
-    with pytest.raises(ValueError, match='unknown not defined'):
-        assert EnvFileSettings(env_file).unknown == 'bar'
+BASE_DIR = Path(__file__).parent.parent  # Path to src dir

@@ -54,7 +54,9 @@ from services.answers.safe_fork import SafeFork
 from services.help_answer import HelpAnswer
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
-from settings import AdminChatIds, DebugMode, Settings
+from settings.admin_chat_ids import AdminChatIds
+from settings.debug_mode import DebugMode
+from settings.settings import Settings
 from srv.admin_messages.pg_admin_message import PgAdminMessage
 from srv.ayats.ayat_by_id_answer import AyatByIdAnswer
 from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer

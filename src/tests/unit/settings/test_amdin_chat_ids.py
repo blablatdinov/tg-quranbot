@@ -20,35 +20,21 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pathlib import Path
-
-import pytest
-from pytest_lazyfixture import lazy_fixture
-
-from app_types.stringable import ThroughString
-from integrations.tg.message_id import MessageId
-from integrations.tg.update import TgUpdate
+from settings.admin_chat_ids import AdminChatIds
+from settings.settings import Settings
 
 
-@pytest.fixture()
-def stringable_update():
-    return ThroughString(
-        (Path(__file__).parent.parent / 'fixtures' / 'message_update.json').read_text(),
-    )
+class FkSettings(Settings):
+
+    def __getattr__(self, attr_name):
+        return '1, 2, 3'
 
 
-@pytest.fixture()
-def stringable_callback_update():
-    return ThroughString(
-        (Path(__file__).parent.parent / 'fixtures' / 'button_callback.json').read_text(),
-    )
+def test():
+    admin_chat_ids = AdminChatIds(FkSettings())
 
-
-@pytest.mark.parametrize(('input_', 'expected'), [
-    (lazy_fixture('stringable_update'), 22628),
-    (lazy_fixture('stringable_callback_update'), 22627),
-])
-def test(input_, expected):
-    message_id = MessageId(TgUpdate(input_))
-
-    assert int(message_id) == expected
+    assert admin_chat_ids[0] == 1
+    assert admin_chat_ids[1:] == [2, 3]
+    assert admin_chat_ids[-1] == 3
+    assert len(admin_chat_ids) == 3
+    assert admin_chat_ids.count(2) == 1

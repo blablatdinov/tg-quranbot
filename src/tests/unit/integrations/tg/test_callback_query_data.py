@@ -21,19 +21,11 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import pytest
-from pytest_lazyfixture import lazy_fixture
 
 from app_types.stringable import ThroughString
-from integrations.tg.update import TgUpdate
-from integrations.tg.update_id import UpdateId
-from settings import BASE_DIR
-
-
-@pytest.fixture()
-def stringable_update():
-    return ThroughString(
-        (BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),
-    )
+from app_types.update import FkUpdate
+from integrations.tg.callback_query import CallbackQueryData
+from settings.settings import BASE_DIR
 
 
 @pytest.fixture()
@@ -43,11 +35,7 @@ def stringable_callback_update():
     )
 
 
-@pytest.mark.parametrize(('input_', 'expected'), [
-    (lazy_fixture('stringable_update'), 637463103),
-    (lazy_fixture('stringable_callback_update'), 637463104),
-])
-def test(input_, expected):
-    update_id = UpdateId(TgUpdate(input_))
+def test(stringable_callback_update):
+    cb_query_data = CallbackQueryData(FkUpdate(stringable_callback_update))
 
-    assert int(update_id) == expected
+    assert str(cb_query_data) == 'mark_readed(2362)'

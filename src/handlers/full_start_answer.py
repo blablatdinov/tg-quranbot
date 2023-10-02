@@ -37,7 +37,8 @@ from services.start.start_answer import StartAnswer
 from services.start.user_already_active import UserAlreadyActiveSafeAnswer
 from services.start.user_already_exists import UserAlreadyExistsAnswer
 from services.user_state import CachedUserState, RedisUserState
-from settings import AdminChatIds, Settings
+from settings.admin_chat_ids import AdminChatIds
+from settings.settings import Settings
 from srv.admin_messages.pg_admin_message import PgAdminMessage
 from srv.events.sink import SinkInterface
 

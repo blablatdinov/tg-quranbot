@@ -25,7 +25,7 @@ import pytest
 import redis
 from databases import Database
 
-from settings import EnvFileSettings
+from settings.env_file_settings import EnvFileSettings
 from tests.creating_test_db import apply_migrations, create_db, drop_db
 
 

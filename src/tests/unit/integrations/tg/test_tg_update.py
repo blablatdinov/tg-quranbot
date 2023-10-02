@@ -20,21 +20,17 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-
 from integrations.tg.update import CachedTgUpdate, TgUpdate
 from integrations.tg.update_struct import UpdateStruct
-from settings import BASE_DIR
 
 
-def test():
-    update = TgUpdate((BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text())
+def test(message_update_factory):
+    update = TgUpdate(message_update_factory())
 
     assert update.parsed() == UpdateStruct(ok=True)
 
 
-def test_cached():
-    update = CachedTgUpdate(
-        TgUpdate((BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text()),
-    )
+def test_cached(message_update_factory):
+    update = CachedTgUpdate(TgUpdate(message_update_factory()))
 
     assert update.parsed() == UpdateStruct(ok=True)

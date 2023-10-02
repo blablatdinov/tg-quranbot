@@ -39,7 +39,9 @@ from quranbot_answer import QuranbotAnswer
 from schedule_app import CheckUsersStatus
 from services.cli_app import CliApp, CommandCliApp, ForkCliApp
 from services.logged_answer import LoggedAnswer
-from settings import BASE_DIR, CachedSettings, EnvFileSettings
+from settings.cached_settings import CachedSettings
+from settings.env_file_settings import EnvFileSettings
+from settings.settings import BASE_DIR
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.event_hook import EventHookApp, RbmqEventHook
 from srv.events.recieved_event import EventFork

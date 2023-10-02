@@ -30,7 +30,7 @@ from loguru import logger
 from telethon.sync import TelegramClient
 
 from main import main
-from settings import EnvFileSettings
+from settings.env_file_settings import EnvFileSettings
 from tests.creating_test_db import create_db, drop_db, fill_test_db
 
 

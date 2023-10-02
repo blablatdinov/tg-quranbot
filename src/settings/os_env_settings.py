@@ -20,20 +20,31 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from settings import AdminChatIds, Settings
+import os
+from typing import final
+
+import attrs
+from pyeo import elegant
+
+from settings.settings import BASE_DIR, Settings
 
 
-class FkSettings(Settings):
+@final
+@elegant
+@attrs.define(frozen=True)
+class OsEnvSettings(Settings):
+    """Настройки из переменных окружения."""
 
-    def __getattr__(self, attr_name):
-        return '1, 2, 3'
+    def __getattr__(self, attr_name: str) -> str:
+        """Получить аттрибут.
 
-
-def test():
-    admin_chat_ids = AdminChatIds(FkSettings())
-
-    assert admin_chat_ids[0] == 1
-    assert admin_chat_ids[1:] == [2, 3]
-    assert admin_chat_ids[-1] == 3
-    assert len(admin_chat_ids) == 3
-    assert admin_chat_ids.count(2) == 1
+        :param attr_name: str
+        :return: str
+        :raises ValueError: имя не найдено
+        """
+        if attr_name == 'BASE_DIR':
+            return str(BASE_DIR)
+        env_value = os.getenv(attr_name)
+        if not env_value:
+            raise ValueError
+        return env_value

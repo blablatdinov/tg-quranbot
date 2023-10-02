@@ -30,7 +30,7 @@ lint:
 	poetry run mypy src
 
 test:
-	poetry run pytest src --ignore=src/tests/e2e --cov=src; coverage html
+	poetry run pytest src --ignore=src/tests/e2e --cov=src --cov-report html
 
 e2e:
 	poetry run pytest src/tests/e2e
