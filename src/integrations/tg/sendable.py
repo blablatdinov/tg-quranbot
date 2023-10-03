@@ -22,13 +22,13 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
 import json
+from itertools import batched
 from typing import Protocol, final
 from urllib import parse as url_parse
 
 import attrs
 import httpx
 from loguru import logger
-from more_itertools import chunked
 from pyeo import elegant
 
 from app_types.update import Update
@@ -127,7 +127,7 @@ class BulkSendableAnswer(SendableInterface):
             for answer in self._answers
         ]
         responses = []
-        for sendable_slice in chunked(tasks, 10):
+        for sendable_slice in batched(tasks, 10):
             res_list = await asyncio.gather(*sendable_slice)
             for res in res_list:
                 responses.append(res)  # noqa: PERF402
