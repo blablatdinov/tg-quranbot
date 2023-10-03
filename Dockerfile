@@ -32,6 +32,7 @@ RUN poetry export --without dev -o requirements.txt
 FROM base as build
 COPY --from=poetry /app/requirements.txt /tmp/requirements.txt
 RUN cat /tmp/requirements.txt
+RUN apt-get update && apt-get install gcc -y
 RUN python -m venv /app/.venv && /app/.venv/bin/pip install -r /tmp/requirements.txt
 
 FROM python:3.12.0-slim as runtime
