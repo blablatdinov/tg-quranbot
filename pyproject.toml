@@ -108,6 +108,7 @@ ignore = [
   # ----------------------------------
   "ANN101",  # Missing type annotation for `self` in method
   "ANN102",  # Missing type annotation for `cls` in classmethod
+  "ARG001",  # Unused function argument
   "ARG002",  # Unused method argument
   "D203",    # no-blank-line-before-class
   "D213",    # multi-line-summary-first-line
@@ -138,10 +139,9 @@ docstring-quotes = "single"
 [tool.ruff.per-file-ignores]
 "src/integrations/tg/tg_answers/__init__.py" = ["F401"]
 "src/tests/*" = [
-  "S101",
-  "D",
-  "ANN",
-  "ARG",
-  "PLR2004",
-  "PLR0913",
+  "S101",    # use of `assert` detected
+  "D",       # Docstrings
+  "ANN",     # Annotations
+  "PLR2004", # Magic value
+  "PLR0913", # Too many arguments to function call
 ]
