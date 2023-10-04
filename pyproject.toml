@@ -82,6 +82,7 @@ skip-string-normalization = true
 
 [tool.pytest.ini_options]
 # TODO #360/30min Пока отключено из-за предупреждения: DeprecationWarning: 'imghdr' is deprecated and slated for removal in Python 3.13
+# https://github.com/spulec/freezegun/pull/511
 # filterwarnings = [
 #   "error::DeprecationWarning",
 # ]

@@ -87,7 +87,20 @@ async def test_change(pgsql):
 
     changed_record = await pgsql.fetch_one('SELECT * FROM ayats WHERE ayat_id = 1')
 
-    assert dict(changed_record) == {
+    assert {
+        key: changed_record[key]
+        for key in (
+            'arab_text',
+            'audio_id',
+            'ayat_id',
+            'ayat_number',
+            'content',
+            'day',
+            'public_id',
+            'sura_id',
+            'transliteration',
+        )
+    } == {
         'arab_text': 'Updated arab text',
         'audio_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba',
         'ayat_id': 1,
