@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import Protocol, final
 
 import attrs
 from databases import Database
@@ -87,10 +87,21 @@ class PgUsers(AsyncListable):
         ]
 
 
+@elegant
+class UpdatedUsersStatus(Protocol):
+    """Обновление статусов пользователей."""
+
+    async def update(self, to: bool) -> None:
+        """Обновление.
+
+        :param to: bool
+        """
+
+
 @final
 @attrs.define(frozen=True)
 @elegant
-class UpdatedUsersStatus(object):
+class PgUpdatedUsersStatus(UpdatedUsersStatus):
     """Обновление статусов пользователей."""
 
     _pgsql: Database

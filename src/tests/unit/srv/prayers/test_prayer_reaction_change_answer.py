@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import pytest
 
-from handlers.prayer_reaction_change_answer import PrayerReaction
+from handlers.prayer_reaction_change_answer import PodcastReaction
 
 
 @pytest.mark.parametrize(('callback_data', 'prayer_id', 'status'), [
@@ -30,7 +30,7 @@ from handlers.prayer_reaction_change_answer import PrayerReaction
     ('dislike(7854)', 7854, 'dislike'),
 ])
 def test(callback_data, prayer_id, status):
-    reaction = PrayerReaction(callback_data)
+    reaction = PodcastReaction(callback_data)
 
     assert reaction.podcast_id() == prayer_id
     assert reaction.status() == status
