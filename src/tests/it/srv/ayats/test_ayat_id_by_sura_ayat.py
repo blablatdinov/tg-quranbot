@@ -26,7 +26,7 @@ import uuid
 import pytest
 
 from exceptions.content_exceptions import AyatNotFoundError
-from srv.ayats.ayat_id_by_sura_ayat import AyatIdBySuraAyatNum, AyatIdByPublicId
+from srv.ayats.ayat_id_by_sura_ayat import AyatIdByPublicId, AyatIdBySuraAyatNum
 from srv.ayats.search_query import FkSearchQuery
 
 

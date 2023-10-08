@@ -74,7 +74,8 @@ def _mock_nominatim(respx_mock):
 
 
 async def test_message(pgsql, fake_redis):
-    got = await SearchCityAnswer(pgsql, FkAnswer(), False, fake_redis).build(
+    debug = False
+    got = await SearchCityAnswer(pgsql, FkAnswer(), debug, fake_redis).build(
         FkUpdate(json.dumps({
             'message': {'text': 'Kazan'},
             'chat': {'id': 384957},
@@ -86,7 +87,8 @@ async def test_message(pgsql, fake_redis):
 
 @pytest.mark.usefixtures('_mock_nominatim')
 async def test_location(pgsql, fake_redis):
-    got = await SearchCityAnswer(pgsql, FkAnswer(), False, fake_redis).build(
+    debug = False
+    got = await SearchCityAnswer(pgsql, FkAnswer(), debug, fake_redis).build(
         FkUpdate(json.dumps({
             'chat': {'id': 34847935},
             'latitude': 55.7887,

@@ -27,7 +27,7 @@ from databases import Database
 from pyeo import elegant
 
 from exceptions.internal_exceptions import UserNotFoundError
-from integrations.tg.chat_id import TgChatId
+from integrations.tg.chat_id import TgChatId, ChatId
 from srv.prayers.city import City
 
 
@@ -56,7 +56,7 @@ class PgUpdatedUserCity(UpdatedUserCity):
     """Обновленный город у пользователя в БД postgres."""
 
     _city: City
-    _chat_id: TgChatId
+    _chat_id: ChatId
     _pgsql: Database
 
     async def update(self) -> None:

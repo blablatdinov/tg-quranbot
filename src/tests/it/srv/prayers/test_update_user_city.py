@@ -32,7 +32,7 @@ from srv.prayers.update_user_city import PgUpdatedUserCity
 @pytest.fixture()
 async def _city(pgsql):
     await pgsql.execute("INSERT INTO cities (city_id, name) VALUES ('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')")
-    await pgsql.execute("INSERT INTO users (chat_id) VALUES (849357)")
+    await pgsql.execute('INSERT INTO users (chat_id) VALUES (849357)')
 
 
 @pytest.mark.usefixtures('_city')
@@ -43,7 +43,9 @@ async def test(pgsql):
         pgsql,
     ).update()
 
-    assert await pgsql.fetch_val('SELECT city_id FROM users WHERE chat_id = 849357') == '080fd3f4-678e-4a1c-97d2-4460700fe7ac'
+    assert await pgsql.fetch_val(
+        'SELECT city_id FROM users WHERE chat_id = 849357',
+    ) == '080fd3f4-678e-4a1c-97d2-4460700fe7ac'
 
 
 @pytest.mark.usefixtures('_city')

@@ -22,8 +22,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import httpx
 
-from app_types.update import Update, FkUpdate
-from integrations.tg.tg_answers import TgAnswer, FkAnswer
+from app_types.update import FkUpdate, Update
+from integrations.tg.tg_answers import FkAnswer, TgAnswer
 from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
 
 
@@ -36,7 +36,7 @@ class IndexErrorAnswer(TgAnswer):
 async def test():
     got = await FavoriteAyatEmptySafeAnswer(
         FkAnswer('http://right-way.com'),
-        FkAnswer('http://error-way.com')
+        FkAnswer('http://error-way.com'),
     ).build(FkUpdate())
 
     assert str(got[0].url) == 'http://right-way.com'
@@ -45,7 +45,7 @@ async def test():
 async def test_error():
     got = await FavoriteAyatEmptySafeAnswer(
         IndexErrorAnswer(),
-        FkAnswer()
+        FkAnswer(),
     ).build(FkUpdate())
 
     assert str(got[0].url) == 'https://some.domain'

@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import SupportsInt, final
+from typing import SupportsInt, final, TypeAlias
 
 import attrs
 from pyeo import elegant
@@ -29,11 +29,13 @@ from app_types.update import Update
 from exceptions.base_exception import InternalBotError
 from services.json_path_value import ErrRedirectJsonPath, MatchManyJsonPath
 
+ChatId: TypeAlias = SupportsInt
+
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class TgChatId(SupportsInt):
+class TgChatId(ChatId):
     """Идентификатор чата."""
 
     _update: Update

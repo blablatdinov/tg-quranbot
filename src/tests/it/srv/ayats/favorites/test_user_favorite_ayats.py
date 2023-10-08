@@ -21,7 +21,9 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
+
 import pytest
+
 from srv.ayats.favorites.user_favorite_ayats import UserFavoriteAyats
 
 
@@ -60,11 +62,11 @@ async def _db_ayat(pgsql):
     )
     await pgsql.execute('\n'.join([
         'INSERT INTO users (chat_id) VALUES',
-        "(49573)",
+        '(49573)',
     ]))
     await pgsql.execute('\n'.join([
         'INSERT INTO favorite_ayats (user_id, ayat_id) VALUES',
-        "(49573, 1)",
+        '(49573, 1)',
     ]))
 
 
