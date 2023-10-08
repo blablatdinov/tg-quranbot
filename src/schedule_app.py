@@ -33,7 +33,7 @@ from app_types.update import FkUpdate, Update
 from integrations.tg.sendable import BulkSendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer
 from integrations.tg.tg_answers.chat_action import TgChatAction
-from srv.users.active_users import ActiveUsers, PgUsers, UpdatedUsersStatus
+from srv.users.active_users import ActiveUsers, PgUpdatedUsersStatus, PgUsers
 from srv.users.pg_user import User
 
 
@@ -82,7 +82,7 @@ class CheckUsersStatus(Runable):
             for response_dict in response_list
             if not response_dict['ok']
         ]
-        await UpdatedUsersStatus(
+        await PgUpdatedUsersStatus(
             self._pgsql,
             PgUsers(self._pgsql, deactivated_user_chat_ids),
         ).update(to=False)

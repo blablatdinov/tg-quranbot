@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import re
-from typing import Final, Literal, final
+from typing import Final, Literal, Protocol, final
 
 import attrs
 import httpx
@@ -48,13 +48,24 @@ PODCAST_ID_LITERAL: Final = 'podcast_id'
 USER_ID_LITERAL: Final = 'user_id'
 
 
+@elegant
+class PodcastReactionsT(Protocol):
+    """Реакция на подкаст."""
+
+    def podcast_id(self) -> int:
+        """Идентификатор подкаста."""
+
+    def status(self) -> Literal['like', 'dislike']:
+        """Реакция."""
+
+
 @final
 @attrs.define(frozen=True)
 @elegant
-class PrayerReaction(object):
+class PodcastReaction(PodcastReactionsT):
     """Реакция на подкастa.
 
-    >>> prayer_reaction = PrayerReaction('like(17)')
+    >>> prayer_reaction = PodcastReaction('like(17)')
     >>> prayer_reaction.podcast_id()
     17
     >>> prayer_reaction.status()
@@ -97,7 +108,7 @@ class PrayerReactionChangeAnswer(TgAnswer):
         :param update: Update
         :return: AnswerInterface
         """
-        reaction = PrayerReaction(CallbackQueryData(update))
+        reaction = PodcastReaction(CallbackQueryData(update))
         query = """
             SELECT reaction
             FROM podcast_reactions

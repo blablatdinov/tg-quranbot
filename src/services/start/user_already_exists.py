@@ -35,7 +35,7 @@ from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from integrations.tg.tg_datetime import TgDateTime
 from srv.events.sink import SinkInterface
-from srv.users.active_users import PgUsers, UpdatedUsersStatus
+from srv.users.active_users import PgUpdatedUsersStatus, PgUsers
 from srv.users.pg_user import PgUser
 
 
@@ -69,7 +69,7 @@ class UserAlreadyExistsAnswer(TgAnswer):
         ).build(update)
 
     async def _update_and_push_event(self, update: Update) -> None:
-        await UpdatedUsersStatus(
+        await PgUpdatedUsersStatus(
             self._pgsql,
             PgUsers(self._pgsql, [int(TgChatId(update))]),
         ).update(to=True)
