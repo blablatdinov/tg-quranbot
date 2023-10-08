@@ -20,35 +20,32 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import uuid
-
 import httpx
 
-from app_types.update import FkUpdate, Update
-from exceptions.content_exceptions import CityNotSupportedError
-from integrations.tg.tg_answers import FkAnswer, TgAnswer
-from srv.prayers.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
-from srv.prayers.city import FkCity
-from srv.prayers.update_user_city import FkUpdateUserCity
+from app_types.update import Update, FkUpdate
+from integrations.tg.tg_answers import TgAnswer, FkAnswer
+from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
 
 
-class _Answer(TgAnswer):
+class IndexErrorAnswer(TgAnswer):
 
     async def build(self, update: Update) -> list[httpx.Request]:
-        raise CityNotSupportedError
+        raise IndexError
 
 
 async def test():
-    got = await ChangeCityAnswer(
-        FkAnswer(),
-        FkUpdateUserCity(),
-        FkCity(uuid.uuid4(), 'Казань'),
+    got = await FavoriteAyatEmptySafeAnswer(
+        FkAnswer('http://right-way.com'),
+        FkAnswer('http://error-way.com')
     ).build(FkUpdate())
 
-    assert got[0].url.params['text'] == 'Вам будет приходить время намаза для города Казань'
+    assert str(got[0].url) == 'http://right-way.com'
 
 
-async def test_city_not_supported():
-    got = await CityNotSupportedAnswer(_Answer(), FkAnswer()).build(FkUpdate())
+async def test_error():
+    got = await FavoriteAyatEmptySafeAnswer(
+        IndexErrorAnswer(),
+        FkAnswer()
+    ).build(FkUpdate())
 
-    assert got[0].url.params['text'] == 'Этот город не поддерживается'
+    assert str(got[0].url) == 'https://some.domain'

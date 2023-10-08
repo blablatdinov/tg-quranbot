@@ -20,35 +20,18 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import uuid
+import json
 
-import httpx
-
-from app_types.update import FkUpdate, Update
-from exceptions.content_exceptions import CityNotSupportedError
-from integrations.tg.tg_answers import FkAnswer, TgAnswer
-from srv.prayers.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
-from srv.prayers.city import FkCity
-from srv.prayers.update_user_city import FkUpdateUserCity
+from app_types.update import FkUpdate
+from handlers.favorites_answer import FavoriteAyatsAnswer
+from integrations.tg.tg_answers import FkAnswer
 
 
-class _Answer(TgAnswer):
+async def test_favorite_ayats_answer(pgsql, fake_redis, unquote):
+    got = await FavoriteAyatsAnswer(False, pgsql, fake_redis, FkAnswer()).build(
+        FkUpdate(json.dumps({
+            'chat': {'id': 74359},
+        })),
+    )
 
-    async def build(self, update: Update) -> list[httpx.Request]:
-        raise CityNotSupportedError
-
-
-async def test():
-    got = await ChangeCityAnswer(
-        FkAnswer(),
-        FkUpdateUserCity(),
-        FkCity(uuid.uuid4(), 'Казань'),
-    ).build(FkUpdate())
-
-    assert got[0].url.params['text'] == 'Вам будет приходить время намаза для города Казань'
-
-
-async def test_city_not_supported():
-    got = await CityNotSupportedAnswer(_Answer(), FkAnswer()).build(FkUpdate())
-
-    assert got[0].url.params['text'] == 'Этот город не поддерживается'
+    assert got[0].url.params['text'] == 'Вы еще не добавляли аятов в избранное'

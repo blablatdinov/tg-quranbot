@@ -28,9 +28,12 @@ from operator import truediv
 import pytest
 from furl import furl
 
+from app_types.intable import ThroughAsyncIntable
 from app_types.update import FkUpdate
+from exceptions.base_exception import InternalBotError
 from handlers.podcast_answer import PodcastAnswer
 from integrations.tg.tg_answers import FkAnswer
+from srv.podcasts.podcast import RandomPodcast
 
 
 @pytest.fixture()
@@ -93,3 +96,10 @@ async def test(pgsql, rds, debug_mode, expected, unquote):
     ).build(FkUpdate('{"chat":{"id":123}}'))
 
     assert unquote(got[0].url) == unquote(expected)
+
+
+async def test_podcast_not_found(pgsql):
+    with pytest.raises(InternalBotError):
+        await RandomPodcast(ThroughAsyncIntable(1), pgsql).tg_file_id()
+    with pytest.raises(InternalBotError):
+        await RandomPodcast(ThroughAsyncIntable(1), pgsql).file_link()

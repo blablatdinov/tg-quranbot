@@ -22,33 +22,35 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import uuid
 
-import httpx
+import pytest
 
-from app_types.update import FkUpdate, Update
-from exceptions.content_exceptions import CityNotSupportedError
-from integrations.tg.tg_answers import FkAnswer, TgAnswer
-from srv.prayers.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
+from exceptions.internal_exceptions import UserNotFoundError
 from srv.prayers.city import FkCity
-from srv.prayers.update_user_city import FkUpdateUserCity
+from srv.prayers.update_user_city import PgUpdatedUserCity
 
 
-class _Answer(TgAnswer):
-
-    async def build(self, update: Update) -> list[httpx.Request]:
-        raise CityNotSupportedError
-
-
-async def test():
-    got = await ChangeCityAnswer(
-        FkAnswer(),
-        FkUpdateUserCity(),
-        FkCity(uuid.uuid4(), 'Казань'),
-    ).build(FkUpdate())
-
-    assert got[0].url.params['text'] == 'Вам будет приходить время намаза для города Казань'
+@pytest.fixture()
+async def _city(pgsql):
+    await pgsql.execute("INSERT INTO cities (city_id, name) VALUES ('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')")
+    await pgsql.execute("INSERT INTO users (chat_id) VALUES (849357)")
 
 
-async def test_city_not_supported():
-    got = await CityNotSupportedAnswer(_Answer(), FkAnswer()).build(FkUpdate())
+@pytest.mark.usefixtures('_city')
+async def test(pgsql):
+    await PgUpdatedUserCity(
+        FkCity(uuid.UUID('080fd3f4-678e-4a1c-97d2-4460700fe7ac'), 'Kazan'),
+        849357,
+        pgsql,
+    ).update()
 
-    assert got[0].url.params['text'] == 'Этот город не поддерживается'
+    assert await pgsql.fetch_val('SELECT city_id FROM users WHERE chat_id = 849357') == '080fd3f4-678e-4a1c-97d2-4460700fe7ac'
+
+
+@pytest.mark.usefixtures('_city')
+async def test_user_not_found(pgsql):
+    with pytest.raises(UserNotFoundError):
+        await PgUpdatedUserCity(
+            FkCity(uuid.UUID('080fd3f4-678e-4a1c-97d2-4460700fe7ac'), 'Kazan'),
+            84935,
+            pgsql,
+        ).update()

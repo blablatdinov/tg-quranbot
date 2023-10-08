@@ -94,7 +94,7 @@ class AyatIdByPublicId(AsyncIntable):
             WHERE public_id = :public_id
         """
         row = await self._pgsql.fetch_one(query, {
-            'public_id': self._public_id,
+            'public_id': str(self._public_id),
         })
         if not row:
             raise AyatNotFoundError
