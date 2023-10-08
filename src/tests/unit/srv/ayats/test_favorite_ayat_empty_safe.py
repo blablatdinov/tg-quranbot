@@ -20,42 +20,32 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pathlib import Path
-from typing import Protocol, final
+import httpx
 
-import attrs
-from pyeo import elegant
-
-
-@elegant
-class Settings(Protocol):
-    """Настройки."""
-
-    def __getattr__(self, attr_name: str) -> str:
-        """Получить аттрибут.
-
-        :param attr_name: str
-        """
+from app_types.update import FkUpdate, Update
+from integrations.tg.tg_answers import FkAnswer, TgAnswer
+from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkSettings(Settings):
-    """Настройки."""
+class IndexErrorAnswer(TgAnswer):
 
-    _origin: dict[str, str]
-
-    def __getattr__(self, attr_name: str) -> str:
-        """Получить аттрибут.
-
-        :param attr_name: str
-        :return: str
-        :raises ValueError: config not found
-        """
-        if attr_name not in self._origin:
-            raise ValueError
-        return self._origin[attr_name]
+    async def build(self, update: Update) -> list[httpx.Request]:
+        raise IndexError
 
 
-BASE_DIR = Path(__file__).parent.parent  # Path to src dir
+async def test():
+    got = await FavoriteAyatEmptySafeAnswer(
+        FkAnswer('http://right-way.com'),
+        FkAnswer('http://error-way.com'),
+    ).build(FkUpdate())
+
+    assert str(got[0].url) == 'http://right-way.com'
+
+
+async def test_error():
+    got = await FavoriteAyatEmptySafeAnswer(
+        IndexErrorAnswer(),
+        FkAnswer(),
+    ).build(FkUpdate())
+
+    assert str(got[0].url) == 'https://some.domain'

@@ -29,6 +29,8 @@ import pytest
 from settings.cached_settings import CachedSettings
 from settings.env_file_settings import EnvFileSettings
 from settings.os_env_settings import OsEnvSettings
+from settings.os_or_file_settings import OsOrFileSettings
+from settings.settings import FkSettings
 
 
 @pytest.fixture()
@@ -59,3 +61,13 @@ def test_cached(env_file):
 def test_not_found(env_file):
     with pytest.raises(ValueError, match='unknown not defined'):
         assert EnvFileSettings(env_file).unknown == 'bar'
+
+
+def test_or_settings(env_file):
+    settings = OsOrFileSettings(
+        FkSettings({'FOO': 'foo_value'}),
+        FkSettings({'BAR': 'bar_value'}),
+    )
+
+    assert settings.FOO == 'foo_value'
+    assert settings.BAR == 'bar_value'

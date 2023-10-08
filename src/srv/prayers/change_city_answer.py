@@ -30,7 +30,7 @@ from app_types.update import Update
 from exceptions.content_exceptions import CityNotSupportedError
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from srv.prayers.city import City
-from srv.prayers.search_cities import UpdatedUserCity
+from srv.prayers.update_user_city import UpdatedUserCity
 
 
 @final

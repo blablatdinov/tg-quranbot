@@ -42,7 +42,7 @@ from services.reset_state_answer import ResetStateAnswer
 from services.user_state import CachedUserState, RedisUserState
 from srv.prayers.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
 from srv.prayers.city import PgCity
-from srv.prayers.search_cities import PgUpdatedUserCity
+from srv.prayers.update_user_city import PgUpdatedUserCity
 from srv.prayers.user_not_registered_safe_answer import UserNotRegisteredSafeAnswer
 from srv.users.new_user import PgNewUser
 

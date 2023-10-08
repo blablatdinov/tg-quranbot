@@ -20,42 +20,16 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pathlib import Path
-from typing import Protocol, final
-
-import attrs
-from pyeo import elegant
+from app_types.update import FkUpdate
+from handlers.status_answer import StatusAnswer
+from integrations.tg.tg_answers import FkAnswer
 
 
-@elegant
-class Settings(Protocol):
-    """Настройки."""
+async def test(pgsql, rds, unquote):
+    got = await StatusAnswer(FkAnswer(), pgsql, rds).build(
+        FkUpdate('{"chat":{"id":1}}'),
+    )
+    answer_text = got[0].url.params['text']
 
-    def __getattr__(self, attr_name: str) -> str:
-        """Получить аттрибут.
-
-        :param attr_name: str
-        """
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkSettings(Settings):
-    """Настройки."""
-
-    _origin: dict[str, str]
-
-    def __getattr__(self, attr_name: str) -> str:
-        """Получить аттрибут.
-
-        :param attr_name: str
-        :return: str
-        :raises ValueError: config not found
-        """
-        if attr_name not in self._origin:
-            raise ValueError
-        return self._origin[attr_name]
-
-
-BASE_DIR = Path(__file__).parent.parent  # Path to src dir
+    assert 'DB' in answer_text
+    assert 'Redis' in answer_text

@@ -63,7 +63,14 @@ class PodcastReactionsT(Protocol):
 @attrs.define(frozen=True)
 @elegant
 class PodcastReaction(PodcastReactionsT):
-    """Реакция на подкаст."""
+    """Реакция на подкастa.
+
+    >>> prayer_reaction = PodcastReaction('like(17)')
+    >>> prayer_reaction.podcast_id()
+    17
+    >>> prayer_reaction.status()
+    'like'
+    """
 
     _callback_query: SupportsStr
 
@@ -77,7 +84,7 @@ class PodcastReaction(PodcastReactionsT):
     def status(self) -> Literal['like', 'dislike']:
         """Реакция.
 
-        :return: Literal['like'] | Literal['dislike']
+        :return: Literal['like', 'dislike']
         """
         if 'dislike' in str(self._callback_query):
             return 'dislike'

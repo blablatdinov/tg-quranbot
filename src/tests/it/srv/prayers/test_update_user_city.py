@@ -20,42 +20,39 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pathlib import Path
-from typing import Protocol, final
+import uuid
 
-import attrs
-from pyeo import elegant
+import pytest
 
-
-@elegant
-class Settings(Protocol):
-    """Настройки."""
-
-    def __getattr__(self, attr_name: str) -> str:
-        """Получить аттрибут.
-
-        :param attr_name: str
-        """
+from exceptions.internal_exceptions import UserNotFoundError
+from srv.prayers.city import FkCity
+from srv.prayers.update_user_city import PgUpdatedUserCity
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkSettings(Settings):
-    """Настройки."""
-
-    _origin: dict[str, str]
-
-    def __getattr__(self, attr_name: str) -> str:
-        """Получить аттрибут.
-
-        :param attr_name: str
-        :return: str
-        :raises ValueError: config not found
-        """
-        if attr_name not in self._origin:
-            raise ValueError
-        return self._origin[attr_name]
+@pytest.fixture()
+async def _city(pgsql):
+    await pgsql.execute("INSERT INTO cities (city_id, name) VALUES ('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')")
+    await pgsql.execute('INSERT INTO users (chat_id) VALUES (849357)')
 
 
-BASE_DIR = Path(__file__).parent.parent  # Path to src dir
+@pytest.mark.usefixtures('_city')
+async def test(pgsql):
+    await PgUpdatedUserCity(
+        FkCity(uuid.UUID('080fd3f4-678e-4a1c-97d2-4460700fe7ac'), 'Kazan'),
+        849357,
+        pgsql,
+    ).update()
+
+    assert await pgsql.fetch_val(
+        'SELECT city_id FROM users WHERE chat_id = 849357',
+    ) == '080fd3f4-678e-4a1c-97d2-4460700fe7ac'
+
+
+@pytest.mark.usefixtures('_city')
+async def test_user_not_found(pgsql):
+    with pytest.raises(UserNotFoundError):
+        await PgUpdatedUserCity(
+            FkCity(uuid.UUID('080fd3f4-678e-4a1c-97d2-4460700fe7ac'), 'Kazan'),
+            84935,
+            pgsql,
+        ).update()

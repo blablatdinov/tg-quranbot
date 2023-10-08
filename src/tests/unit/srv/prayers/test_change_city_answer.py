@@ -20,42 +20,35 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pathlib import Path
-from typing import Protocol, final
+import uuid
 
-import attrs
-from pyeo import elegant
+import httpx
 
-
-@elegant
-class Settings(Protocol):
-    """Настройки."""
-
-    def __getattr__(self, attr_name: str) -> str:
-        """Получить аттрибут.
-
-        :param attr_name: str
-        """
+from app_types.update import FkUpdate, Update
+from exceptions.content_exceptions import CityNotSupportedError
+from integrations.tg.tg_answers import FkAnswer, TgAnswer
+from srv.prayers.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
+from srv.prayers.city import FkCity
+from srv.prayers.update_user_city import FkUpdateUserCity
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkSettings(Settings):
-    """Настройки."""
+class _Answer(TgAnswer):
 
-    _origin: dict[str, str]
-
-    def __getattr__(self, attr_name: str) -> str:
-        """Получить аттрибут.
-
-        :param attr_name: str
-        :return: str
-        :raises ValueError: config not found
-        """
-        if attr_name not in self._origin:
-            raise ValueError
-        return self._origin[attr_name]
+    async def build(self, update: Update) -> list[httpx.Request]:
+        raise CityNotSupportedError
 
 
-BASE_DIR = Path(__file__).parent.parent  # Path to src dir
+async def test():
+    got = await ChangeCityAnswer(
+        FkAnswer(),
+        FkUpdateUserCity(),
+        FkCity(uuid.uuid4(), 'Казань'),
+    ).build(FkUpdate())
+
+    assert got[0].url.params['text'] == 'Вам будет приходить время намаза для города Казань'
+
+
+async def test_city_not_supported():
+    got = await CityNotSupportedAnswer(_Answer(), FkAnswer()).build(FkUpdate())
+
+    assert got[0].url.params['text'] == 'Этот город не поддерживается'

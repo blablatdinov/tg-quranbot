@@ -20,42 +20,19 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from pathlib import Path
-from typing import Protocol, final
+import json
 
-import attrs
-from pyeo import elegant
-
-
-@elegant
-class Settings(Protocol):
-    """Настройки."""
-
-    def __getattr__(self, attr_name: str) -> str:
-        """Получить аттрибут.
-
-        :param attr_name: str
-        """
+from app_types.update import FkUpdate
+from handlers.favorites_answer import FavoriteAyatsAnswer
+from integrations.tg.tg_answers import FkAnswer
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkSettings(Settings):
-    """Настройки."""
+async def test_favorite_ayats_answer(pgsql, fake_redis, unquote):
+    debug = False
+    got = await FavoriteAyatsAnswer(debug, pgsql, fake_redis, FkAnswer()).build(
+        FkUpdate(json.dumps({
+            'chat': {'id': 74359},
+        })),
+    )
 
-    _origin: dict[str, str]
-
-    def __getattr__(self, attr_name: str) -> str:
-        """Получить аттрибут.
-
-        :param attr_name: str
-        :return: str
-        :raises ValueError: config not found
-        """
-        if attr_name not in self._origin:
-            raise ValueError
-        return self._origin[attr_name]
-
-
-BASE_DIR = Path(__file__).parent.parent  # Path to src dir
+    assert got[0].url.params['text'] == 'Вы еще не добавляли аятов в избранное'
