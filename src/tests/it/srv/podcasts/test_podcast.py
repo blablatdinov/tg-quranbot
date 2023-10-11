@@ -110,9 +110,8 @@ async def test_concrete_podcast(pgsql, rds):
         pgsql,
     ).build(FkUpdate('{"chat":{"id":123},"message":{"text":"/podcast1"}}'))
 
-    assert len(got) == 2
-    assert got[0].url.params['text'] == '/podcast1'
-    assert got[1].url.params['text'] == 'https://link-to-file.domain'
+    assert len(got) == 1
+    assert got[0].url.params['text'] == 'https://link-to-file.domain'
 
 
 async def test_podcast_not_found(pgsql):

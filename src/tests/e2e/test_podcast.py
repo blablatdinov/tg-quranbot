@@ -151,6 +151,6 @@ def test_undo_reaction(tg_client, bot_name, wait_until, reaction):
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
 def test_concrete(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/podcast17')
-    messages = wait_until(tg_client, 3)
+    messages = wait_until(tg_client, 2)
 
     assert messages[0].message == 'https://umma.ru/audio/2015/shamil/2015_07_17/2015_07_17_5.mp3'

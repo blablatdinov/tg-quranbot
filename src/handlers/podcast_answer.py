@@ -39,6 +39,7 @@ from integrations.tg.tg_answers.chat_id_answer import TgChatIdAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
+from integrations.tg.tg_answers.skipable_answer import SkipableAnswer
 from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from services.reset_state_answer import ResetStateAnswer
 from services.user_state import CachedUserState, RedisUserState
@@ -91,6 +92,7 @@ class PodcastAnswer(TgAnswer):
     _redis: Redis
     _pgsql: Database
     _podcast_id: _PodcastId
+    _show_podcast_id: bool
 
     @classmethod
     def random_podcast_ctor(cls, debug_mode: SupportsBool, origin: TgAnswer, redis: Redis, pgsql: Database) -> TgAnswer:
@@ -108,6 +110,7 @@ class PodcastAnswer(TgAnswer):
             redis,
             pgsql,
             _RandomPodcastId(pgsql),
+            show_podcast_id=True,
         )
 
     @classmethod
@@ -132,6 +135,7 @@ class PodcastAnswer(TgAnswer):
             redis,
             pgsql,
             _ConcretePodcastId(pgsql),
+            show_podcast_id=False,
         )
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -148,14 +152,17 @@ class PodcastAnswer(TgAnswer):
         chat_id = int(TgChatId(update))
         return await ResetStateAnswer(
             TgAnswerList(
-                TgTextAnswer.str_ctor(
-                    TgChatIdAnswer(
-                        TgMessageAnswer(
-                            self._origin,
+                SkipableAnswer(
+                    not self._show_podcast_id,
+                    TgTextAnswer.str_ctor(
+                        TgChatIdAnswer(
+                            TgMessageAnswer(
+                                self._origin,
+                            ),
+                            chat_id,
                         ),
-                        chat_id,
+                        '/podcast{0}'.format(podcast_id),
                     ),
-                    '/podcast{0}'.format(podcast_id),
                 ),
                 TgAnswerMarkup(
                     FileAnswer(
