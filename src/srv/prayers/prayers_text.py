@@ -26,12 +26,12 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.date_time import DateTimeInterface
-from app_types.stringable import AsyncSupportsStr
+from app_types.stringable import AsyncSupportsStr, SupportsStr
 from exceptions.content_exceptions import UserHasNotCityIdError
 from exceptions.prayer_exceptions import PrayersNotFoundError
 from integrations.nominatim import CityNameById
 from integrations.tg.chat_id import TgChatId
+from srv.prayers.prayer_date import PrayerDate
 
 TIME_LITERAL: Final = 'time'
 
@@ -70,8 +70,9 @@ class PrayersText(AsyncSupportsStr):
     """Текст сообщения с намазами."""
 
     _pgsql: Database
-    _date: DateTimeInterface
+    _date: PrayerDate
     _city_id: AsyncSupportsStr
+    _message_text: SupportsStr
 
     async def to_str(self) -> str:
         """Строковое представление.
@@ -92,13 +93,13 @@ class PrayersText(AsyncSupportsStr):
                 ARRAY_POSITION(ARRAY['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
         """
         rows = await self._pgsql.fetch_all(query, {
-            'date': self._date.datetime().date(),
+            'date': self._date.parse(str(self._message_text)),
             'city_id': await self._city_id.to_str(),
         })
         if not rows:
             raise PrayersNotFoundError(
                 await CityNameById(self._pgsql, self._city_id).to_str(),
-                self._date.datetime().date(),
+                self._date.parse(str(self._message_text)),
             )
         template = '\n'.join([
             'Время намаза для г. {city_name} ({date})\n',

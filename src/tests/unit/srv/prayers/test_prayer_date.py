@@ -25,12 +25,12 @@ import re
 
 import pytest
 
-from srv.prayers.prayer_date import PrayerDate
+from srv.prayers.prayer_date import PrayersRequestDate
 
 
 def test(freezer):
     freezer.move_to('2023-10-11')
-    got = PrayerDate('Время намаза').datetime().date()
+    got = PrayersRequestDate().parse('Время намаза')
 
     assert got == datetime.date(2023, 10, 11)
 
@@ -40,7 +40,7 @@ def test(freezer):
     ('Время намаза 15-10-2023', datetime.date(2023, 10, 15)),
 ])
 def test_with_date(query, expected):
-    got = PrayerDate(query).datetime().date()
+    got = PrayersRequestDate().parse(query)
 
     assert got == expected
 
@@ -53,4 +53,4 @@ def test_fail_format():
         ]),
     )
     with pytest.raises(ValueError, match=error_text):
-        PrayerDate('Время намаза invalid-date').datetime()
+        PrayersRequestDate().parse('Время намаза invalid-date')

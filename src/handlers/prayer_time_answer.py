@@ -20,13 +20,11 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import datetime
 from collections.abc import Sequence
 from typing import final
 
 import attrs
 import httpx
-import pytz
 from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
@@ -47,7 +45,7 @@ from integrations.tg.tg_answers import (
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
-from srv.prayers.prayer_date import PrayerDate
+from srv.prayers.prayer_date import PrayerDate, PrayersMarkAsDate, PrayersRequestDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 from srv.prayers.prayers_text import PrayersText, UserCityId
 
@@ -68,10 +66,15 @@ class PrayerTimeAnswer(TgAnswer):
     _admin_chat_ids: Sequence[int]
     _empty_answer: TgAnswer
     _redis: Redis
+    _prayers_date: PrayerDate
 
     @classmethod
     def new_prayers_ctor(
-        cls, pgsql: Database, empty_answer: TgAnswer, admin_chat_ids: Sequence[int], redis: Redis,
+        cls,
+        pgsql: Database,
+        empty_answer: TgAnswer,
+        admin_chat_ids: Sequence[int],
+        redis: Redis,
     ) -> TgAnswer:
         """Конструктор для генерации времени намаза.
 
@@ -87,11 +90,16 @@ class PrayerTimeAnswer(TgAnswer):
             admin_chat_ids,
             empty_answer,
             redis,
+            PrayersRequestDate(),
         )
 
     @classmethod
     def edited_markup_ctor(
-        cls, pgsql: Database, empty_answer: TgAnswer, admin_chat_ids: Sequence[int], redis: Redis,
+        cls,
+        pgsql: Database,
+        empty_answer: TgAnswer,
+        admin_chat_ids: Sequence[int],
+        redis: Redis,
     ) -> TgAnswer:
         """Конструктор для времен намаза при смене статуса прочитанности.
 
@@ -107,6 +115,7 @@ class PrayerTimeAnswer(TgAnswer):
             admin_chat_ids,
             empty_answer,
             redis,
+            PrayersMarkAsDate(),
         )
 
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -123,13 +132,14 @@ class PrayerTimeAnswer(TgAnswer):
                             self._origin,
                             PrayersText(
                                 self._pgsql,
-                                PrayerDate(MessageText(update)),
+                                self._prayers_date,
                                 UserCityId(self._pgsql, TgChatId(update)),
+                                MessageText(update),
                             ),
                         ),
                         UserPrayersKeyboard(
                             self._pgsql,
-                            datetime.datetime.now(pytz.timezone('Europe/Moscow')).date(),
+                            self._prayers_date,
                             TgChatId(update),
                         ),
                     ),

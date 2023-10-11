@@ -21,9 +21,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from typing import Protocol, final
+from typing import Protocol
 
-import attrs
 from pyeo import elegant
 
 
@@ -33,22 +32,6 @@ class DateTimeInterface(Protocol):
 
     def datetime(self) -> datetime.datetime:
         """Дата/время."""
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkDatetime(DateTimeInterface):
-    """Фейк для даты/времени."""
-
-    _origin: datetime.datetime
-
-    def datetime(self) -> datetime.datetime:
-        """Дата/время.
-
-        :return: datetime.datetime
-        """
-        return self._origin
 
 
 @elegant
