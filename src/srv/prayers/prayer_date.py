@@ -22,37 +22,78 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
 from contextlib import suppress
-from typing import final
+from typing import Protocol, final
 
 import attrs
 import pytz
 from pyeo import elegant
 
-from app_types.date_time import DateTimeInterface
-from app_types.stringable import SupportsStr
+
+@elegant
+class PrayerDate(Protocol):
+    """Дата времен намаза."""
+
+    def parse(self, msg_text: str) -> datetime.date:
+        """Парсинг из текста сообщения.
+
+        :param msg_text: str
+        """
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class PrayerDate(DateTimeInterface):
+class FkPrayerDate(PrayerDate):
+    """Фейковая дата времен намаза."""
+
+    _origin: datetime.date
+
+    def parse(self, msg_text: str) -> datetime.date:
+        """Парсинг из текста сообщения.
+
+        :param msg_text: str
+        :return: datetime.date
+        """
+        return self._origin
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class PrayersRequestDate(PrayerDate):
     """Дата намаза."""
 
-    _message: SupportsStr
+    def parse(self, msg_text: str) -> datetime.date:
+        """Парсинг из текста сообщения.
 
-    def datetime(self) -> datetime.datetime:
-        """Дата/время.
-
-        :return: datetime.datetime
-        :raises ValueError: time not parsed
+        :param msg_text: str
+        :return: datetime.date
+        :raises ValueError: время намаза не соответствует формату
         """
-        date = str(self._message).split(' ')[-1]
+        date = msg_text.split(' ')[-1]
         if date == 'намаза':
-            return datetime.datetime.now(pytz.timezone('Europe/Moscow'))
+            return datetime.datetime.now(pytz.timezone('Europe/Moscow')).date()
         formats = ('%d.%m.%Y', '%d-%m-%Y')  # noqa: WPS323 not string formatting
         for fmt in formats:
             with suppress(ValueError):
-                return datetime.datetime.strptime(date, fmt)
+                return datetime.datetime.strptime(date, fmt).date()
         raise ValueError("time data '{0}' does not match formats {1}".format(
             date, formats,
         ))
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class PrayersMarkAsDate(PrayerDate):
+    """Дата намаза при редактировании."""
+
+    def parse(self, msg_text: str) -> datetime.date:
+        """Парсинг из текста сообщения.
+
+        :param msg_text: str
+        :return: datetime.date
+        """
+        msg_first_line = msg_text.split('\n')[0]
+        date = msg_first_line.split(' ')[-1][1:-1]
+        return datetime.datetime.strptime(date, '%d.%m.%Y').date()  # noqa: WPS323 not string formatting

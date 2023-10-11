@@ -20,7 +20,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import datetime
 import json
 import uuid
 from typing import final
@@ -32,7 +31,9 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
+from integrations.tg.message_text import MessageText
 from services.answers.answer import KeyboardInterface
+from srv.prayers.prayer_date import PrayerDate
 
 
 @final
@@ -42,7 +43,7 @@ class UserPrayersKeyboard(KeyboardInterface):
     """Клавиатура времен намаза."""
 
     _pgsql: Database
-    _date: datetime.date
+    _date: PrayerDate
     _chat_id: TgChatId
 
     async def generate(self, update: Update) -> str:
@@ -51,7 +52,7 @@ class UserPrayersKeyboard(KeyboardInterface):
         :param update: Update
         :return: str
         """
-        prayers = await self._exists_prayers()
+        prayers = await self._exists_prayers(update)
         if not prayers:
             prayer_group_id = str(uuid.uuid4())
             await self._pgsql.fetch_val(
@@ -75,9 +76,9 @@ class UserPrayersKeyboard(KeyboardInterface):
             await self._pgsql.execute(query, {
                 'chat_id': int(self._chat_id),
                 'prayer_group_id': prayer_group_id,
-                'date': self._date,
+                'date': self._date.parse(str(MessageText(update))),
             })
-            prayers = await self._exists_prayers()
+            prayers = await self._exists_prayers(update)
         return json.dumps({
             'inline_keyboard': [[
                 {
@@ -90,7 +91,7 @@ class UserPrayersKeyboard(KeyboardInterface):
             ]],
         })
 
-    async def _exists_prayers(self) -> list[Record]:
+    async def _exists_prayers(self, update: Update) -> list[Record]:
         select_query = """
             SELECT
                 pau.prayer_at_user_id,
@@ -101,6 +102,6 @@ class UserPrayersKeyboard(KeyboardInterface):
             ORDER BY pau.prayer_at_user_id
         """
         return await self._pgsql.fetch_all(select_query, {
-            'date': self._date,
+            'date': self._date.parse(str(MessageText(update))),
             'chat_id': int(self._chat_id),
         })

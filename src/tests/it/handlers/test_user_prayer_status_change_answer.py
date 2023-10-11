@@ -26,12 +26,12 @@ import json
 import pytest
 import pytz
 
-from app_types.date_time import FkDatetime
 from app_types.stringable import FkAsyncStr
 from app_types.update import FkUpdate
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
 from integrations.tg.tg_answers import FkAnswer
+from srv.prayers.prayer_date import FkPrayerDate
 from srv.prayers.prayers_text import PrayersText
 
 
@@ -96,7 +96,18 @@ async def test_today(pgsql, rds, freezer):
     got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds).build(
         FkUpdate(json.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
-            'message': {'message_id': 17, 'text': 'Время намаза'},
+            'message': {
+                'message_id': 17,
+                'text': '\n'.join([
+                    'Время намаза для г. Казань (19.12.2023)\n',
+                    'Иртәнге: 04:02',
+                    'Восход: 06:05',
+                    'Өйлә: 12:00',
+                    'Икенде: 14:57',
+                    'Ахшам: 16:55',
+                    'Ястү: 18:36',
+                ]),
+            },
             'chat': {'id': 905},
         })),
     )
@@ -121,7 +132,18 @@ async def test_before(pgsql, rds, freezer, unquote):
     got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds).build(
         FkUpdate(json.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
-            'message': {'message_id': 17, 'text': 'Время намаза'},
+            'message': {
+                'message_id': 17,
+                'text': '\n'.join([
+                    'Время намаза для г. Казань (19.12.2023)\n',
+                    'Иртәнге: 04:02',
+                    'Восход: 06:05',
+                    'Өйлә: 12:00',
+                    'Икенде: 14:57',
+                    'Ахшам: 16:55',
+                    'Ястү: 18:36',
+                ]),
+            },
             'chat': {'id': 905},
         })),
     )
@@ -144,8 +166,9 @@ async def test_before(pgsql, rds, freezer, unquote):
 async def test_prayers_text(pgsql):
     got = await PrayersText(
         pgsql,
-        FkDatetime(datetime.datetime(2023, 12, 19, tzinfo=pytz.timezone('Europe/Moscow'))),
+        FkPrayerDate(datetime.datetime(2023, 12, 19, tzinfo=pytz.timezone('Europe/Moscow'))),
         FkAsyncStr('080fd3f4-678e-4a1c-97d2-4460700fe7ac'),
+        'Время намаза',
     ).to_str()
 
     assert got == '\n'.join([
