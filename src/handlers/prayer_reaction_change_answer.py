@@ -41,7 +41,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from services.reset_state_answer import ResetStateAnswer
 from services.user_state import CachedUserState, RedisUserState
-from srv.podcasts.podcast import RandomPodcast
+from srv.podcasts.podcast import PgPodcast
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
 
 PODCAST_ID_LITERAL: Final = 'podcast_id'
@@ -150,7 +150,7 @@ class PrayerReactionChangeAnswer(TgAnswer):
                 USER_ID_LITERAL: chat_id,
                 'reaction': reaction.status(),
             })
-        podcast = RandomPodcast(
+        podcast = PgPodcast(
             SyncToAsyncIntable(reaction.podcast_id()),
             self._pgsql,
         )

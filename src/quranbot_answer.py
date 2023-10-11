@@ -104,7 +104,16 @@ class QuranbotAnswer(TgAnswer):
             TgAnswerFork(
                 TgMessageRegexAnswer(
                     'Подкасты',
-                    PodcastAnswer(
+                    PodcastAnswer.random_podcast_ctor(
+                        DebugMode(self._settings),
+                        empty_answer,
+                        self._redis,
+                        self._pgsql,
+                    ),
+                ),
+                TgMessageRegexAnswer(
+                    r'/podcast\d+',
+                    PodcastAnswer.concrete_podcast_ctor(
                         DebugMode(self._settings),
                         empty_answer,
                         self._redis,

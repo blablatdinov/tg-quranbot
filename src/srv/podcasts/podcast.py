@@ -42,7 +42,7 @@ class Podcast(TgFile, Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
-class RandomPodcast(Podcast):
+class PgPodcast(Podcast):
     """Объект подкаста."""
 
     _podcast_id: AsyncIntable
