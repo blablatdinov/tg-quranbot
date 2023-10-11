@@ -61,23 +61,6 @@ class _PodcastId(Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
-class FkPodcastId(_PodcastId):
-    """Фейковый идентификатор подкаста."""
-
-    _podcast_id: int
-
-    async def fetch(self, update: Update) -> int:
-        """Получить.
-
-        :param update: Update
-        :return: int
-        """
-        return self._podcast_id
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
 class _RandomPodcastId(_PodcastId):
 
     _pgsql: Database
