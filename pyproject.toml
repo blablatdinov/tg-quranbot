@@ -38,7 +38,7 @@ pytz = "2023.3.post1"
 databases = {extras = ["asyncpg"], version = "0.8.0"}
 attrs = "23.1.0"
 jsonpath-ng = "1.6.0"
-eo-styleguide = "0.0.1a10"
+eo-styleguide = "0.0.1-a11"
 redis = "5.0.1"
 furl = "2.1.3"
 eljson = "0.0.1a1"
@@ -48,7 +48,7 @@ greenlet = "3.0.0"
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master" }
 ipython = "8.16.1"
-mypy = "1.5.1"
+mypy = "1.6.0"
 asyncpg-stubs = "0.28.0"
 pytest-cov = "4.1.0"
 pytest = "7.4.2"
