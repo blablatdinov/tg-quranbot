@@ -33,7 +33,7 @@ from app_types.update import FkUpdate
 from exceptions.base_exception import InternalBotError
 from handlers.podcast_answer import PodcastAnswer
 from integrations.tg.tg_answers import FkAnswer
-from srv.podcasts.podcast import RandomPodcast
+from srv.podcasts.podcast import PgPodcast
 
 
 @pytest.fixture()
@@ -87,19 +87,36 @@ async def _db_podcast(pgsql):
     ),
 ])
 @pytest.mark.usefixtures('_db_podcast')
-async def test(pgsql, rds, debug_mode, expected, unquote):
-    got = await PodcastAnswer(
+async def test_random_podcast(pgsql, rds, debug_mode, expected, unquote):
+    got = await PodcastAnswer.random_podcast_ctor(
         debug_mode,
         FkAnswer(),
         rds,
         pgsql,
     ).build(FkUpdate('{"chat":{"id":123}}'))
 
-    assert unquote(got[0].url) == unquote(expected)
+    assert len(got) == 2
+    assert got[0].url.params['text'] == '/podcast1'
+    assert unquote(got[1].url) == unquote(expected)
+
+
+@pytest.mark.usefixtures('_db_podcast')
+async def test_concrete_podcast(pgsql, rds):
+    debug_mode = True
+    got = await PodcastAnswer.concrete_podcast_ctor(
+        debug_mode,
+        FkAnswer(),
+        rds,
+        pgsql,
+    ).build(FkUpdate('{"chat":{"id":123},"message":{"text":"/podcast1"}}'))
+
+    assert len(got) == 2
+    assert got[0].url.params['text'] == '/podcast1'
+    assert got[1].url.params['text'] == 'https://link-to-file.domain'
 
 
 async def test_podcast_not_found(pgsql):
     with pytest.raises(InternalBotError):
-        await RandomPodcast(ThroughAsyncIntable(1), pgsql).tg_file_id()
+        await PgPodcast(ThroughAsyncIntable(1), pgsql).tg_file_id()
     with pytest.raises(InternalBotError):
-        await RandomPodcast(ThroughAsyncIntable(1), pgsql).file_link()
+        await PgPodcast(ThroughAsyncIntable(1), pgsql).file_link()

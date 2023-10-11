@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import Protocol, final
 
 import attrs
 import httpx
@@ -32,6 +32,8 @@ from app_types.intable import SyncToAsyncIntable
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
+from integrations.tg.message_text import MessageText
+from integrations.tg.tg_answers.answer_list import TgAnswerList
 from integrations.tg.tg_answers.audio_answer import TgAudioAnswer
 from integrations.tg.tg_answers.chat_id_answer import TgChatIdAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
@@ -42,8 +44,40 @@ from services.reset_state_answer import ResetStateAnswer
 from services.user_state import CachedUserState, RedisUserState
 from srv.files.file_answer import FileAnswer
 from srv.files.file_id_answer import TelegramFileIdAnswer
-from srv.podcasts.podcast import RandomPodcast
+from srv.podcasts.podcast import PgPodcast
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
+
+
+@elegant
+class _PodcastId(Protocol):
+
+    async def fetch(self, update: Update) -> int:
+        """Получить.
+
+        :param update: Update
+        """
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class _RandomPodcastId(_PodcastId):
+
+    _pgsql: Database
+
+    async def fetch(self, update: Update) -> int:
+        return await self._pgsql.fetch_val('SELECT podcast_id FROM podcasts ORDER BY RANDOM()')
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class _ConcretePodcastId(_PodcastId):
+
+    _pgsql: Database
+
+    async def fetch(self, update: Update) -> int:
+        return int(str(MessageText(update))[8:])
 
 
 @final
@@ -56,6 +90,49 @@ class PodcastAnswer(TgAnswer):
     _origin: TgAnswer
     _redis: Redis
     _pgsql: Database
+    _podcast_id: _PodcastId
+
+    @classmethod
+    def random_podcast_ctor(cls, debug_mode: SupportsBool, origin: TgAnswer, redis: Redis, pgsql: Database) -> TgAnswer:
+        """Конструктор для рандомного подкаста.
+
+        :param debug_mode: SupportsBool
+        :param origin: TgAnswer
+        :param redis: Redis
+        :param pgsql: Database
+        :return: TgAnswer
+        """
+        return cls(
+            debug_mode,
+            origin,
+            redis,
+            pgsql,
+            _RandomPodcastId(pgsql),
+        )
+
+    @classmethod
+    def concrete_podcast_ctor(
+        cls,
+        debug_mode: SupportsBool,
+        origin: TgAnswer,
+        redis: Redis,
+        pgsql: Database,
+    ) -> TgAnswer:
+        """Конструктор для конкретного подкаста.
+
+        :param debug_mode: SupportsBool
+        :param origin: TgAnswer
+        :param redis: Redis
+        :param pgsql: Database
+        :return: TgAnswer
+        """
+        return cls(
+            debug_mode,
+            origin,
+            redis,
+            pgsql,
+            _ConcretePodcastId(pgsql),
+        )
 
     async def build(self, update: Update) -> list[httpx.Request]:
         """Трансформация в ответ.
@@ -63,36 +140,47 @@ class PodcastAnswer(TgAnswer):
         :param update: Update
         :return: AnswerInterface
         """
-        podcasts_id = await self._pgsql.fetch_val('SELECT podcast_id FROM podcasts ORDER BY RANDOM()')
-        podcast = RandomPodcast(
-            SyncToAsyncIntable(podcasts_id),
+        podcast_id = await self._podcast_id.fetch(update)
+        podcast = PgPodcast(
+            SyncToAsyncIntable(podcast_id),
             self._pgsql,
         )
         chat_id = int(TgChatId(update))
         return await ResetStateAnswer(
-            TgAnswerMarkup(
-                FileAnswer(
-                    self._debug_mode,
-                    TelegramFileIdAnswer(
-                        TgChatIdAnswer(
-                            TgAudioAnswer(
-                                self._origin,
-                            ),
-                            chat_id,
+            TgAnswerList(
+                TgTextAnswer.str_ctor(
+                    TgChatIdAnswer(
+                        TgMessageAnswer(
+                            self._origin,
                         ),
-                        podcast,
+                        chat_id,
                     ),
-                    TgTextAnswer.str_ctor(
-                        TgChatIdAnswer(
-                            TgMessageAnswer(
-                                self._origin,
-                            ),
-                            chat_id,
-                        ),
-                        await podcast.file_link(),
-                    ),
+                    '/podcast{0}'.format(podcast_id),
                 ),
-                PodcastKeyboard(self._pgsql, podcast),
+                TgAnswerMarkup(
+                    FileAnswer(
+                        self._debug_mode,
+                        TelegramFileIdAnswer(
+                            TgChatIdAnswer(
+                                TgAudioAnswer(
+                                    self._origin,
+                                ),
+                                chat_id,
+                            ),
+                            podcast,
+                        ),
+                        TgTextAnswer.str_ctor(
+                            TgChatIdAnswer(
+                                TgMessageAnswer(
+                                    self._origin,
+                                ),
+                                chat_id,
+                            ),
+                            await podcast.file_link(),
+                        ),
+                    ),
+                    PodcastKeyboard(self._pgsql, podcast),
+                ),
             ),
             CachedUserState(RedisUserState(self._redis, TgChatId(update))),
         ).build(update)
