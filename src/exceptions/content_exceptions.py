@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+# flake8: noqa: WPS202
 from typing import final
 
 from exceptions.base_exception import BaseAppError
@@ -70,3 +71,8 @@ class UserHasNotFavoriteAyatsError(BaseAppError):
     """Исключение, вызываемое при попытке получить избранные ааяты, пользователем, у которого их нет."""
 
     user_message = 'Вы еще не добавляли аятов в избранное'
+
+
+@final
+class TelegramFileIdNotFilledError(BaseAppError):
+    """Идентификатор файла не заполнен."""

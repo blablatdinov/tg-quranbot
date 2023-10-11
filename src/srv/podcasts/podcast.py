@@ -28,6 +28,7 @@ from pyeo import elegant
 
 from app_types.intable import AsyncIntable
 from exceptions.base_exception import InternalBotError
+from exceptions.content_exceptions import TelegramFileIdNotFilledError
 from srv.files.file import FileLink, TgFile, TgFileId
 
 
@@ -60,6 +61,7 @@ class PgPodcast(Podcast):
 
         :returns: str
         :raises InternalBotError: если таблилца с подкастами не заполнена
+        :raises TelegramFileIdNotFilledError: идентификатор файла не заполнен
         """
         query = """
             SELECT f.telegram_file_id
@@ -74,6 +76,8 @@ class PgPodcast(Podcast):
         if not row:
             msg = 'Подкасты не найдены'
             raise InternalBotError(msg)
+        if not row['telegram_file_id']:
+            raise TelegramFileIdNotFilledError
         return row['telegram_file_id']
 
     async def file_link(self) -> FileLink:

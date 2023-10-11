@@ -52,6 +52,22 @@ async def _db_podcast(pgsql):
     )
 
 
+@pytest.fixture()
+async def _db_podcast_without_telegram_file_id(pgsql):
+    file_id = str(uuid.uuid4())
+    await pgsql.execute(
+        '\n'.join([
+            'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
+            "VALUES (:file_id, NULL, 'https://link-to-file.domain', :created_at)",
+        ]),
+        {'file_id': file_id, 'created_at': datetime.datetime.now()},
+    )
+    await pgsql.execute(
+        'INSERT INTO podcasts (public_id, file_id)\nVALUES (:public_id, :file_id)',
+        {'public_id': str(uuid.uuid4()), 'file_id': file_id},
+    )
+
+
 @pytest.mark.parametrize(('debug_mode', 'expected'), [
     (
         False,
@@ -119,3 +135,17 @@ async def test_podcast_not_found(pgsql):
         await PgPodcast(ThroughAsyncIntable(1), pgsql).tg_file_id()
     with pytest.raises(InternalBotError):
         await PgPodcast(ThroughAsyncIntable(1), pgsql).file_link()
+
+
+@pytest.mark.usefixtures('_db_podcast_without_telegram_file_id')
+async def test_podcast_without_tg_file_id(pgsql, rds):
+    debug_mode = False
+    got = await PodcastAnswer.concrete_podcast_ctor(
+        debug_mode,
+        FkAnswer(),
+        rds,
+        pgsql,
+    ).build(FkUpdate('{"chat":{"id":123},"message":{"text":"/podcast1"}}'))
+
+    assert 'audio' not in got[0].url.params
+    assert got[0].url.params['text'] == 'https://link-to-file.domain'

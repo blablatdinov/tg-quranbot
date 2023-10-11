@@ -28,7 +28,29 @@ from pyeo import elegant
 
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
+from exceptions.content_exceptions import TelegramFileIdNotFilledError
 from integrations.tg.tg_answers import TgAnswer
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class TgFileIdNotFilledSafeAnswer(TgAnswer):
+    """Декоратор для обработки файлов с незаполненным идентификатором файла."""
+
+    _file_id_answer: TgAnswer
+    _text_answer: TgAnswer
+
+    async def build(self, update: Update) -> list[httpx.Request]:
+        """Сборка ответа.
+
+        :param update: Update
+        :return: list[httpx.Request]
+        """
+        try:
+            return await self._file_id_answer.build(update)
+        except TelegramFileIdNotFilledError:
+            return await self._text_answer.build(update)
 
 
 @final
@@ -49,4 +71,7 @@ class FileAnswer(TgAnswer):
         """
         if self._debug_mode:
             return await self._file_link_answer.build(update)
-        return await self._telegram_file_id_answer.build(update)
+        return await TgFileIdNotFilledSafeAnswer(
+            self._telegram_file_id_answer,
+            self._file_link_answer,
+        ).build(update)
