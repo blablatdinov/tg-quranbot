@@ -24,7 +24,9 @@ import datetime
 import json
 
 import pytest
+import pytz
 
+from app_types.date_time import FkDatetime
 from app_types.stringable import FkAsyncStr
 from app_types.update import FkUpdate
 from handlers.prayer_time_answer import PrayerTimeAnswer
@@ -67,7 +69,11 @@ async def _generated_prayers(pgsql, _prayers):
 async def test_new_prayer_times(pgsql, rds, freezer):
     freezer.move_to('2023-12-19')
     got = await PrayerTimeAnswer.new_prayers_ctor(pgsql, FkAnswer(), [123], rds).build(
-        FkUpdate('{"callback_query": {"data": "mark_readed(3)"}, "message": {"message_id": 17}, "chat": {"id": 905}}'),
+        FkUpdate(json.dumps({
+            'callback_query': {'data': 'mark_readed(3)'},
+            'message': {'message_id': 17, 'text': 'Время намаза'},
+            'chat': {'id': 905},
+        })),
     )
 
     assert json.loads(got[0].url.params.get('reply_markup')) == {
@@ -88,7 +94,11 @@ async def test_new_prayer_times(pgsql, rds, freezer):
 async def test_today(pgsql, rds, freezer):
     freezer.move_to('2023-12-19')
     got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds).build(
-        FkUpdate('{"callback_query": {"data": "mark_readed(3)"}, "message": {"message_id": 17}, "chat": {"id": 905}}'),
+        FkUpdate(json.dumps({
+            'callback_query': {'data': 'mark_readed(3)'},
+            'message': {'message_id': 17, 'text': 'Время намаза'},
+            'chat': {'id': 905},
+        })),
     )
 
     assert json.loads(got[0].url.params.get('reply_markup')) == {
@@ -109,7 +119,11 @@ async def test_today(pgsql, rds, freezer):
 async def test_before(pgsql, rds, freezer, unquote):
     freezer.move_to('2023-12-19')
     got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds).build(
-        FkUpdate('{"callback_query": {"data": "mark_readed(3)"}, "message": {"message_id": 17}, "chat": {"id": 905}}'),
+        FkUpdate(json.dumps({
+            'callback_query': {'data': 'mark_readed(3)'},
+            'message': {'message_id': 17, 'text': 'Время намаза'},
+            'chat': {'id': 905},
+        })),
     )
 
     assert json.loads(got[0].url.params.get('reply_markup')) == {
@@ -130,7 +144,7 @@ async def test_before(pgsql, rds, freezer, unquote):
 async def test_prayers_text(pgsql):
     got = await PrayersText(
         pgsql,
-        datetime.date(2023, 12, 19),
+        FkDatetime(datetime.datetime(2023, 12, 19, tzinfo=pytz.timezone('Europe/Moscow'))),
         FkAsyncStr('080fd3f4-678e-4a1c-97d2-4460700fe7ac'),
     ).to_str()
 

@@ -21,39 +21,38 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from typing import Protocol, final
+from contextlib import suppress
+from typing import final
 
 import attrs
+import pytz
 from pyeo import elegant
 
-
-@elegant
-class DateTimeInterface(Protocol):
-    """Интерфейс даты/времени."""
-
-    def datetime(self) -> datetime.datetime:
-        """Дата/время."""
+from app_types.date_time import DateTimeInterface
+from app_types.stringable import SupportsStr
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class FkDatetime(DateTimeInterface):
-    """Фейк для даты/времени."""
+class PrayerDate(DateTimeInterface):
+    """Дата намаза."""
 
-    _origin: datetime.datetime
+    _message: SupportsStr
 
     def datetime(self) -> datetime.datetime:
         """Дата/время.
 
         :return: datetime.datetime
+        :raises ValueError: time not parsed
         """
-        return self._origin
-
-
-@elegant
-class AsyncDateTimeInterface(Protocol):
-    """Интерфейс даты/времени для вычисления с возможностью переключения контекста."""
-
-    async def datetime(self) -> datetime.datetime:
-        """Дата/время."""
+        date = str(self._message).split(' ')[-1]
+        if date == 'намаза':
+            return datetime.datetime.now(pytz.timezone('Europe/Moscow'))
+        formats = ('%d.%m.%Y', '%d-%m-%Y')  # noqa: WPS323 not string formatting
+        for fmt in formats:
+            with suppress(ValueError):
+                return datetime.datetime.strptime(date, fmt)
+        raise ValueError("time data '{0}' does not match formats {1}".format(
+            date, formats,
+        ))

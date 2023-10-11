@@ -20,13 +20,13 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import datetime
 from typing import Final, final
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
+from app_types.date_time import DateTimeInterface
 from app_types.stringable import AsyncSupportsStr
 from exceptions.content_exceptions import UserHasNotCityIdError
 from exceptions.prayer_exceptions import PrayersNotFoundError
@@ -70,7 +70,7 @@ class PrayersText(AsyncSupportsStr):
     """Текст сообщения с намазами."""
 
     _pgsql: Database
-    _date: datetime.date
+    _date: DateTimeInterface
     _city_id: AsyncSupportsStr
 
     async def to_str(self) -> str:
@@ -92,13 +92,13 @@ class PrayersText(AsyncSupportsStr):
                 ARRAY_POSITION(ARRAY['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
         """
         rows = await self._pgsql.fetch_all(query, {
-            'date': self._date,
+            'date': self._date.datetime().date(),
             'city_id': await self._city_id.to_str(),
         })
         if not rows:
             raise PrayersNotFoundError(
                 await CityNameById(self._pgsql, self._city_id).to_str(),
-                self._date,
+                self._date.datetime().date(),
             )
         template = '\n'.join([
             'Время намаза для г. {city_name} ({date})\n',
