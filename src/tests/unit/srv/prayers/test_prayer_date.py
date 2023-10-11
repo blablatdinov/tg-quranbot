@@ -21,39 +21,36 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from typing import Protocol, final
+import re
 
-import attrs
-from pyeo import elegant
+import pytest
 
-
-@elegant
-class DateTimeInterface(Protocol):
-    """Интерфейс даты/времени."""
-
-    def datetime(self) -> datetime.datetime:
-        """Дата/время."""
+from srv.prayers.prayer_date import PrayerDate
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkDatetime(DateTimeInterface):
-    """Фейк для даты/времени."""
+def test(freezer):
+    freezer.move_to('2023-10-11')
+    got = PrayerDate('Время намаза').datetime().date()
 
-    _origin: datetime.datetime
-
-    def datetime(self) -> datetime.datetime:
-        """Дата/время.
-
-        :return: datetime.datetime
-        """
-        return self._origin
+    assert got == datetime.date(2023, 10, 11)
 
 
-@elegant
-class AsyncDateTimeInterface(Protocol):
-    """Интерфейс даты/времени для вычисления с возможностью переключения контекста."""
+@pytest.mark.parametrize(('query', 'expected'), [
+    ('Время намаза 10.10.2023', datetime.date(2023, 10, 10)),
+    ('Время намаза 15-10-2023', datetime.date(2023, 10, 15)),
+])
+def test_with_date(query, expected):
+    got = PrayerDate(query).datetime().date()
 
-    async def datetime(self) -> datetime.datetime:
-        """Дата/время."""
+    assert got == expected
+
+
+def test_fail_format():
+    error_text = re.escape(
+        ' '.join([
+            "time data 'invalid-date' does not match",
+            "formats ('%d.%m.%Y', '%d-%m-%Y')",  # noqa: WPS323 not string formatting
+        ]),
+    )
+    with pytest.raises(ValueError, match=error_text):
+        PrayerDate('Время намаза invalid-date').datetime()
