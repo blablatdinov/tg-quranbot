@@ -100,8 +100,9 @@ def wait_until(bot_name):
                 break
             if len(last_messages) == messages_count:
                 return last_messages
-        logger.debug('Taked messages: {0}'.format(
+        logger.debug('Taked messages: {0}, count: {1}'.format(
             pformat([mess.message for mess in last_messages], width=99999),
+            len(last_messages),
         ))
         raise TimeoutError
     return _wait_until

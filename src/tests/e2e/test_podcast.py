@@ -40,7 +40,7 @@ def test(tg_client, bot_name, wait_until):
 
     """
     tg_client.send_message(bot_name, '🎧 Подкасты')
-    messages = wait_until(tg_client, 2)
+    messages = wait_until(tg_client, 3)
     buttons = [
         (button.text, button.data)
         for button_row in messages[0].get_buttons()
@@ -61,9 +61,9 @@ def test(tg_client, bot_name, wait_until):
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
 def test_random(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '🎧 Подкасты')
-    wait_until(tg_client, 2)
+    wait_until(tg_client, 3)
     tg_client.send_message(bot_name, '🎧 Подкасты')
-    messages = wait_until(tg_client, 4)
+    messages = wait_until(tg_client, 6)
 
     assert messages[0].message != messages[2].message
 
@@ -75,14 +75,14 @@ def test_random(tg_client, bot_name, wait_until):
 ])
 def test_reaction(tg_client, bot_name, wait_until, target_button, expected):
     tg_client.send_message(bot_name, '🎧 Подкасты')
-    messages = wait_until(tg_client, 5)
+    messages = wait_until(tg_client, 6)
     next(
         button
         for button_row in messages[0].get_buttons()
         for button in button_row
         if target_button in button.text
     ).click()
-    messages = wait_until(tg_client, 5)
+    messages = wait_until(tg_client, 6)
 
     assert expected == [
         button.text
@@ -98,21 +98,21 @@ def test_reaction(tg_client, bot_name, wait_until, target_button, expected):
 ])
 def test_reverse_reaction(tg_client, bot_name, wait_until, first_reaction, second_reaction, expected):
     tg_client.send_message(bot_name, '🎧 Подкасты')
-    messages = wait_until(tg_client, 5)
+    messages = wait_until(tg_client, 6)
     next(
         button
         for button_row in messages[0].get_buttons()
         for button in button_row
         if first_reaction in button.text
     ).click()
-    messages = wait_until(tg_client, 5)
+    messages = wait_until(tg_client, 6)
     next(
         button
         for button_row in messages[0].get_buttons()
         for button in button_row
         if second_reaction in button.text
     ).click()
-    messages = wait_until(tg_client, 5)
+    messages = wait_until(tg_client, 6)
 
     assert expected == [
         button.text
@@ -125,24 +125,32 @@ def test_reverse_reaction(tg_client, bot_name, wait_until, first_reaction, secon
 @pytest.mark.parametrize('reaction', ['👎', '👍'])
 def test_undo_reaction(tg_client, bot_name, wait_until, reaction):
     tg_client.send_message(bot_name, '🎧 Подкасты')
-    messages = wait_until(tg_client, 5)
+    messages = wait_until(tg_client, 6)
     next(
         button
         for button_row in messages[0].get_buttons()
         for button in button_row
         if reaction in button.text
     ).click()
-    messages = wait_until(tg_client, 5)
+    messages = wait_until(tg_client, 6)
     next(
         button
         for button_row in messages[0].get_buttons()
         for button in button_row
         if reaction in button.text
     ).click()
-    messages = wait_until(tg_client, 5)
+    messages = wait_until(tg_client, 6)
 
     assert [
         button.text
         for button_row in messages[0].get_buttons()
         for button in button_row
     ] == ['👍 0', '👎 0']
+
+
+@pytest.mark.usefixtures('_bot_process', '_clear_db')
+def test_concrete(tg_client, bot_name, wait_until):
+    tg_client.send_message(bot_name, '/podcast17')
+    messages = wait_until(tg_client, 3)
+
+    assert messages[0].message == 'https://umma.ru/audio/2015/shamil/2015_07_17/2015_07_17_5.mp3'
