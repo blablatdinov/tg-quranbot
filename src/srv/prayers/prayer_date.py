@@ -77,9 +77,8 @@ class PrayersRequestDate(PrayerDate):
         for fmt in formats:
             with suppress(ValueError):
                 return datetime.datetime.strptime(date, fmt).date()
-        raise ValueError("time data '{0}' does not match formats {1}".format(
-            date, formats,
-        ))
+        msg = "time data '{0}' does not match formats {1}".format(date, formats)
+        raise ValueError(msg)
 
 
 @final

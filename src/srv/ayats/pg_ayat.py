@@ -133,7 +133,8 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         ayat_id = await self._ayat_id.to_int()
         row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
         if not row:
-            raise AyatNotFoundError('Аят с id={0} не найден'.format(ayat_id))
+            msg = 'Аят с id={0} не найден'.format(ayat_id)
+            raise AyatNotFoundError(msg)
         template = '<a href="{link}">{sura}:{ayat})</a>\n{arab_text}\n\n{content}\n\n<i>{transliteration}</i>'
         return template.format(
             link=str(AyatLink(row['sura_link'], row['sura_num'], row['ayat_num'])),
@@ -159,7 +160,8 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         ayat_id = await self._ayat_id.to_int()
         row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
         if not row:
-            raise AyatNotFoundError('Аят с id={0} не найден'.format(ayat_id))
+            msg = 'Аят с id={0} не найден'.format(ayat_id)
+            raise AyatNotFoundError(msg)
         return PgFile(row['file_id'], self._pgsql)
 
     async def change(self, event_body: Json) -> None:

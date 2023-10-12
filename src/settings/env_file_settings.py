@@ -63,4 +63,5 @@ class EnvFileSettings(Settings):
             var_name, var_value = line.split('=')
             if var_name == attr_name:
                 return var_value
-        raise ValueError('{0} not defined'.format(attr_name))
+        msg = '{0} not defined'.format(attr_name)
+        raise ValueError(msg)
