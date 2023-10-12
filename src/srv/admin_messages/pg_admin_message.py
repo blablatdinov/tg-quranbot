@@ -49,5 +49,6 @@ class PgAdminMessage(AdminMessage):
             'SELECT text FROM admin_messages m WHERE m.key = :key', {'key': self._key},
         )
         if not record:
-            raise InternalBotError('Не найдено административное сообщение с ключом {0}'.format(self._key))
+            msg = 'Не найдено административное сообщение с ключом {0}'.format(self._key)
+            raise InternalBotError(msg)
         return record['text']
