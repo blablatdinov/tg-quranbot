@@ -82,8 +82,13 @@ build-backend = "poetry.core.masonry.api"
 skip-string-normalization = true
 
 [tool.pytest.ini_options]
-# TODO #360/30min Пока отключено из-за предупреждения: DeprecationWarning: 'imghdr' is deprecated and slated for removal in Python 3.13
+# TODO #360/30min Пока отключено из-за предупреждения:
+# freezegun/api.py:465: DeprecationWarning: datetime.datetime.utcnow() is deprecated
+# and scheduled for removal in a future version. Use timezone-aware objects to represent
+# datetimes in UTC: datetime.datetime.now(datetime.UTC).
+#    time_to_freeze_str = datetime.datetime.utcnow()
 # https://github.com/spulec/freezegun/pull/511
+# 
 # filterwarnings = [
 #   "error::DeprecationWarning",
 # ]

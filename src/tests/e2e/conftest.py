@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import asyncio
 import multiprocessing
 import time
 from pprint import pformat
@@ -110,6 +111,7 @@ def wait_until(bot_name):
 
 @pytest.fixture()
 def tg_client(bot_name):
+    asyncio.set_event_loop(asyncio.new_event_loop())
     settings = EnvFileSettings.from_filename('../.env')
     with TelegramClient('me', settings.TELEGRAM_CLIENT_ID, settings.TELEGRAM_CLIENT_HASH) as client:
         all_messages = [message.id for message in client.iter_messages('@WokeUpSmiled_bot')]
