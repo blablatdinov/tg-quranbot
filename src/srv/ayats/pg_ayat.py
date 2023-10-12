@@ -49,7 +49,6 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
     _pgsql: Database
 
     @classmethod
-    @override
     async def by_sura_ayat_num(cls, sura_ayat_num: SupportsStr, database: Database) -> Ayat:
         """Конструктор для поиска по номеру суры, аята.
 
@@ -68,7 +67,6 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         )
 
     @classmethod
-    @override
     def from_int(cls, ayat_id: int, database: Database) -> Ayat:
         """Конструктор для числа.
 
@@ -79,7 +77,6 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         return PgAyat(ThroughAsyncIntable(ayat_id), database)
 
     @classmethod
-    @override
     def from_callback_query(cls, callback_query: SupportsStr, database: Database) -> Ayat:
         """Создать аят из данных нажатой inline кнопки.
 
@@ -95,7 +92,6 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         )
 
     @classmethod
-    @override
     def ayat_changed_event_ctor(cls, event_body: Json, pgsql: Database) -> Ayat:
         """Конструктор для события изменения аята.
 

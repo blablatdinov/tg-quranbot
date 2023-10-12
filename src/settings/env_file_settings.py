@@ -38,7 +38,6 @@ class EnvFileSettings(Settings):
     _path: Path
 
     @classmethod
-    @override
     def from_filename(cls, file_path: str) -> Settings:
         """Конструктор для имени файла.
 

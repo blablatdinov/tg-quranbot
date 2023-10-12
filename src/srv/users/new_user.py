@@ -65,7 +65,6 @@ class PgNewUser(NewUser):
     _pgsql: Database
 
     @classmethod
-    @override
     def ctor(cls, new_user_chat_id: TgChatId, pgsql: Database) -> NewUser:
         """Конструктор без реферера.
 

@@ -41,7 +41,6 @@ class Millis(SupportsFloat):
     _millis: float
 
     @classmethod
-    @override
     def seconds_ctor(cls, seconds: float) -> SupportsFloat:
         """Конструктор для секунд.
 

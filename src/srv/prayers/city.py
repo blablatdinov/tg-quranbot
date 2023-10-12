@@ -107,7 +107,6 @@ class PgCity(City):
     _pgsql: Database
 
     @classmethod
-    @override
     def name_ctor(cls, city_name: str, pgsql: Database) -> City:
         """Конструктор для имени города.
 
@@ -118,7 +117,6 @@ class PgCity(City):
         return cls(CityIdByName(FkAsyncStr(city_name), pgsql), pgsql)
 
     @classmethod
-    @override
     def location_ctor(cls, location: Coordinates, pgsql: Database) -> City:
         """Конструктор для координат города.
 

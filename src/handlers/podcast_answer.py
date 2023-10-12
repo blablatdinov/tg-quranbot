@@ -98,7 +98,6 @@ class PodcastAnswer(TgAnswer):
     _show_podcast_id: bool
 
     @classmethod
-    @override
     def random_podcast_ctor(cls, debug_mode: SupportsBool, origin: TgAnswer, redis: Redis, pgsql: Database) -> TgAnswer:
         """Конструктор для рандомного подкаста.
 
@@ -118,7 +117,6 @@ class PodcastAnswer(TgAnswer):
         )
 
     @classmethod
-    @override
     def concrete_podcast_ctor(
         cls,
         debug_mode: SupportsBool,

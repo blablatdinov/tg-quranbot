@@ -42,7 +42,6 @@ class TgTextAnswer(TgAnswer):
     _text: AsyncSupportsStr
 
     @classmethod
-    @override
     def str_ctor(cls, origin: TgAnswer, text: str) -> TgAnswer:
         """Конструктор для строки.
 

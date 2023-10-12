@@ -69,7 +69,6 @@ class PrayerTimeAnswer(TgAnswer):
     _prayers_date: PrayerDate
 
     @classmethod
-    @override
     def new_prayers_ctor(
         cls,
         pgsql: Database,
@@ -95,7 +94,6 @@ class PrayerTimeAnswer(TgAnswer):
         )
 
     @classmethod
-    @override
     def edited_markup_ctor(
         cls,
         pgsql: Database,

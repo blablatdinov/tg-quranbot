@@ -82,7 +82,6 @@ class PgUser(User):
     _pgsql: Database
 
     @classmethod
-    @override
     def legacy_id_ctor(cls, legacy_id: int, pgsql: Database) -> User:
         """Конструктор по старому идентификатору в БД.
 
@@ -93,7 +92,6 @@ class PgUser(User):
         return cls(ChatIdByLegacyId(pgsql, legacy_id), pgsql)
 
     @classmethod
-    @override
     def int_ctor(cls, chat_id: int, pgsql: Database) -> User:
         """Конструктор по идентификатору чата.
 
