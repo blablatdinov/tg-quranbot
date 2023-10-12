@@ -38,7 +38,6 @@ from integrations.tg.update_id import UpdateId
 class DebugParamInterface(Protocol):
     """Интерфейс отладочной информации."""
 
-    @override
     async def debug_value(self, update: Update) -> str:
         """Значение отладочной информации.
 
@@ -81,7 +80,6 @@ class AppendDebugInfoAnswer(TgAnswer):
             ],
         )
 
-    @override
     def _build_new_requests(self, origin_requests: list[httpx.Request], debug_params: list[str]) -> list[httpx.Request]:
         debug_str = '\n\n!----- DEBUG INFO -----!\n\n{0}\n\n!----- END DEBUG INFO -----!'.format(
             '\n'.join(debug_params),

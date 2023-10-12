@@ -62,7 +62,6 @@ class AyatLink(SupportsStr):
             self._ayat_first_digit(self._ayat_num),
         )
 
-    @override
     def _ayat_first_digit(self, ayat_num: _AyatNum) -> str:
         num = ''
         for char in ayat_num:

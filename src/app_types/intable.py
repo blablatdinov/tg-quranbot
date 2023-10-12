@@ -30,7 +30,6 @@ from pyeo import elegant
 class AsyncIntable(Protocol):
     """Интерфейс объектов, которые можно привести к числу."""
 
-    @override
     async def to_int(self) -> int:
         """Приведение к числу с возможностью переключения контекста."""
 

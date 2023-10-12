@@ -34,7 +34,6 @@ JsonPathReturnType_co = TypeVar('JsonPathReturnType_co', covariant=True)
 class ReceivedEvent(Protocol[JsonPathReturnType_co]):
     """Событие."""
 
-    @override
     async def process(self, json: Json) -> None:
         """Обработать событие.
 

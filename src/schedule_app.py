@@ -89,7 +89,6 @@ class CheckUsersStatus(Runable):
             PgUsers(self._pgsql, deactivated_user_chat_ids),
         ).update(to=False)
 
-    @override
     async def _answers(self, users: AsyncListable[User]) -> list[TgAnswer]:
         return [
             TypingAction(

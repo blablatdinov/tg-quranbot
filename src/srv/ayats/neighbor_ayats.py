@@ -40,15 +40,12 @@ AYAT_ID: Final = 'ayat_id'
 class NeighborAyats(Protocol):
     """Интерфейс для работы с соседними аятами в хранилище."""
 
-    @override
     async def left_neighbor(self) -> Ayat:
         """Левый аят."""
 
-    @override
     async def right_neighbor(self) -> Ayat:
         """Правый аят."""
 
-    @override
     async def page(self) -> str:
         """Информация о странице."""
 

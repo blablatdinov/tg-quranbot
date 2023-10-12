@@ -61,7 +61,6 @@ class StatusAnswer(TgAnswer):
             ),
         ).build(update)
 
-    @override
     async def _measure_pgsql(self) -> str:
         db_start = time.time()
         await self._pgsql.execute('SELECT 1')
@@ -72,7 +71,6 @@ class StatusAnswer(TgAnswer):
             ),
         ))
 
-    @override
     async def _measure_redis(self) -> str:
         redis_start = time.time()
         await self._redis.ping()

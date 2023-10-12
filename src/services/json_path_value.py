@@ -37,7 +37,6 @@ _ET_co = TypeVar('_ET_co', covariant=True)
 class JsonPath(Protocol[_ET_co]):
     """Интерфейс объектов, получающих значение по jsonpath."""
 
-    @override
     def evaluate(self) -> _ET_co:
         """Получить значение."""
 

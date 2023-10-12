@@ -52,7 +52,6 @@ from srv.podcasts.podcast_keyboard import PodcastKeyboard
 @elegant
 class _PodcastId(Protocol):
 
-    @override
     async def fetch(self, update: Update) -> int:
         """Получить.
 

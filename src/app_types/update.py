@@ -34,15 +34,12 @@ from integrations.tg.update_struct import UpdateStruct
 class Update(SupportsStr, Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
-    @override
     def __str__(self) -> str:
         """Приведение к строке."""
 
-    @override
     def parsed(self) -> UpdateStruct:
         """Десериализованный объект."""
 
-    @override
     def asdict(self) -> dict:
         """Словарь."""
 

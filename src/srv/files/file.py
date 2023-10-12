@@ -32,11 +32,9 @@ FileLink: TypeAlias = str
 class TgFile(Protocol):
     """Тип файла."""
 
-    @override
     async def tg_file_id(self) -> TgFileId:
         """Идентификатор файла в телеграм."""
 
-    @override
     async def file_link(self) -> FileLink:
         """Ссылка на файл."""
 

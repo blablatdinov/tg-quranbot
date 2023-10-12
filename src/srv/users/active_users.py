@@ -93,7 +93,6 @@ class PgUsers(AsyncListable):
 class UpdatedUsersStatus(Protocol):
     """Обновление статусов пользователей."""
 
-    @override
     async def update(self, to: bool) -> None:
         """Обновление.
 

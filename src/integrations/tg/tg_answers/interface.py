@@ -33,7 +33,6 @@ from app_types.update import Update
 class TgAnswer(Protocol):
     """Интерфейс ответа пользователю."""
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

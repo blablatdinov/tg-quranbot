@@ -100,7 +100,6 @@ class QuranbotAnswer(TgAnswer):
         """
         return await self._answer.build(update)
 
-    @override
     def _pre_build(self) -> None:
         empty_answer = TgEmptyAnswer(self._settings.API_TOKEN)
         self._answer = SafeFork(

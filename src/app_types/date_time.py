@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from typing import Protocol, override
+from typing import Protocol
 
 from pyeo import elegant
 
@@ -30,7 +30,6 @@ from pyeo import elegant
 class DateTimeInterface(Protocol):
     """Интерфейс даты/времени."""
 
-    @override
     def datetime(self) -> datetime.datetime:
         """Дата/время."""
 
@@ -39,6 +38,5 @@ class DateTimeInterface(Protocol):
 class AsyncDateTimeInterface(Protocol):
     """Интерфейс даты/времени для вычисления с возможностью переключения контекста."""
 
-    @override
     async def datetime(self) -> datetime.datetime:
         """Дата/время."""

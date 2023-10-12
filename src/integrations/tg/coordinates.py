@@ -34,11 +34,9 @@ from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 class Coordinates(Protocol):
     """Интерфейс координат."""
 
-    @override
     def latitude(self) -> float:
         """Ширина."""
 
-    @override
     def longitude(self) -> float:
         """Долгота."""
 

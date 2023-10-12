@@ -36,7 +36,6 @@ from srv.files.file import FileLink, TgFile, TgFileId
 class Podcast(TgFile, Protocol):
     """Интерфейс подкаста."""
 
-    @override
     async def podcast_id(self) -> int:
         """Идентификатор аята."""
 

@@ -39,7 +39,6 @@ from srv.users.pg_user import PgUser
 class AsyncIntOrNone(Protocol):
     """AsyncIntOrNone."""
 
-    @override
     async def to_int(self) -> int | None:
         """Числовое представление."""
 

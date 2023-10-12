@@ -30,7 +30,6 @@ from pyeo import elegant
 class SinkInterface(Protocol):
     """Интерфейс отправщика событий."""
 
-    @override
     async def send(self, event_data: dict, event_name: str, version: int) -> None:
         """Отправить событие.
 

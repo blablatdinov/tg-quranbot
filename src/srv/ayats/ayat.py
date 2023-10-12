@@ -36,19 +36,15 @@ AyatText: TypeAlias = str
 class Ayat(Protocol):
     """Интерфейс аята."""
 
-    @override
     def identifier(self) -> AyatIdentifier:
         """Идентификатор аята."""
 
-    @override
     async def text(self) -> AyatText:
         """Строковое представление."""
 
-    @override
     async def audio(self) -> TgFile:
         """Аудио файл."""
 
-    @override
     async def change(self, event_body: Json) -> None:
         """Изменить содержимое аята.
 

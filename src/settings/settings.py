@@ -31,7 +31,6 @@ from pyeo import elegant
 class Settings(Protocol):
     """Настройки."""
 
-    @override
     def __getattr__(self, attr_name: str) -> str:
         """Получить аттрибут.
 

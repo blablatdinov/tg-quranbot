@@ -57,7 +57,6 @@ class EnvFileSettings(Settings):
             return str(BASE_DIR)
         return self._search_in_file(attr_name)
 
-    @override
     def _search_in_file(self, attr_name: str) -> str:
         for line in self._path.read_text().strip().split('\n'):
             if '=' not in line:

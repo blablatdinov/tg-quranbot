@@ -41,7 +41,6 @@ from srv.events.recieved_event import ReceivedEvent
 class EventHook(Protocol):
     """Обработчик событий из очереди."""
 
-    @override
     async def catch(self) -> None:
         """Запуск обработки."""
 
@@ -87,7 +86,6 @@ class RbmqEventHook(EventHook):
             await protocol.close()
             transport.close()
 
-    @override
     async def _pre_build(self) -> tuple:
         await self._pgsql.connect()
         transport, protocol = await aioamqp.connect(
@@ -99,7 +97,6 @@ class RbmqEventHook(EventHook):
         await channel.queue_declare(queue_name='my_queue')
         return channel, transport, protocol
 
-    @override
     async def _callback(
         self,
         channel: aioamqp.channel.Channel,

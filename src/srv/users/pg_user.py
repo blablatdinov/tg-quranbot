@@ -33,15 +33,12 @@ from app_types.intable import AsyncIntable, SyncToAsyncIntable
 class User(Protocol):
     """Интерфейс пользователя."""
 
-    @override
     async def chat_id(self) -> int:
         """Идентификатор чата."""
 
-    @override
     async def day(self) -> int:
         """День для рассылки утреннего контента."""
 
-    @override
     async def is_active(self) -> bool:
         """Статус активности пользователя."""
 

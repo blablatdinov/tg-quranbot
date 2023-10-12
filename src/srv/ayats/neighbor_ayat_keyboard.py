@@ -65,7 +65,6 @@ class NeighborAyatKeyboard(KeyboardInterface):
             'inline_keyboard': [buttons],
         })
 
-    @override
     async def _generate_left_button(self) -> dict[str, str] | None:
         with suppress(AyatNotFoundError):
             left = await self._ayats_neighbors.left_neighbor()
@@ -78,7 +77,6 @@ class NeighborAyatKeyboard(KeyboardInterface):
             }
         return None
 
-    @override
     async def _generate_right_button(self) -> dict[str, str] | None:
         with suppress(AyatNotFoundError):
             right = await self._ayats_neighbors.right_neighbor()

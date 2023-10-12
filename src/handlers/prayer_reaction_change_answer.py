@@ -52,11 +52,9 @@ USER_ID_LITERAL: Final = 'user_id'
 class PodcastReactionsT(Protocol):
     """Реакция на подкаст."""
 
-    @override
     def podcast_id(self) -> int:
         """Идентификатор подкаста."""
 
-    @override
     def status(self) -> Literal['like', 'dislike']:
         """Реакция."""
 

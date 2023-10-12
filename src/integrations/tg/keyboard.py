@@ -32,7 +32,6 @@ from app_types.update import Update
 class KeyboardInterface(Protocol):
     """Интерфейс клавиатуры."""
 
-    @override
     async def generate(self, update: Update) -> str:
         """Генерация.
 

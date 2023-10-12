@@ -33,11 +33,9 @@ AyatNum: TypeAlias = str
 class SearchQuery(Protocol):
     """Интерфейс объекта с запросом для поиска."""
 
-    @override
     def sura(self) -> SuraId:
         """Номер суры."""
 
-    @override
     def ayat(self) -> AyatNum:
         """Номер аята."""
 

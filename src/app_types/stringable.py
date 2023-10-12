@@ -39,7 +39,6 @@ class SupportsStr(Protocol):
 class AsyncSupportsStr(Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
-    @override
     async def to_str(self) -> str:
         """Приведение к строке."""
 

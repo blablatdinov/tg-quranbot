@@ -33,11 +33,9 @@ from services.regular_expression import IntableRegularExpression
 class PrayerStatusInterface(Protocol):
     """Объект, рассчитывающий данные кнопки для изменения статуса прочитанности намаза."""
 
-    @override
     def user_prayer_id(self) -> int:
         """Рассчитать идентификатор времени намаза пользователя."""
 
-    @override
     def change_to(self) -> bool:
         """Рассчитать статус времени намаза пользователя."""
 
@@ -71,7 +69,6 @@ class PrayerStatus(PrayerStatusInterface):
 class UserPrayerStatusInterface(Protocol):
     """Интерфейс статуса прочитанности намаза."""
 
-    @override
     async def change(self, prayer_status: PrayerStatus) -> None:
         """Изменить статус прочитанности.
 

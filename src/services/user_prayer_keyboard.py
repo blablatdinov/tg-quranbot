@@ -92,7 +92,6 @@ class UserPrayersKeyboard(KeyboardInterface):
             ]],
         })
 
-    @override
     async def _exists_prayers(self, update: Update) -> list[Record]:
         select_query = """
             SELECT

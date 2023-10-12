@@ -35,15 +35,12 @@ AyatId: TypeAlias = int
 class AyatIdentifier(Protocol):
     """Информация для идентификации аята."""
 
-    @override
     async def ayat_id(self) -> AyatId:
         """Идентификатор в хранилище."""
 
-    @override
     async def sura_num(self) -> SuraId:
         """Номер суры."""
 
-    @override
     async def ayat_num(self) -> AyatNum:
         """Номер аята."""
 

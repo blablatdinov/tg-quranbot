@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, override
+from typing import Protocol
 
 from pyeo import elegant
 
@@ -29,7 +29,6 @@ from pyeo import elegant
 class SupportsBool(Protocol):
     """Интерфейс объектов, которые можно привести к булевому значению."""
 
-    @override
     def __bool__(self) -> bool:
         """Приведение к булевому значению."""
 
@@ -38,6 +37,5 @@ class SupportsBool(Protocol):
 class AsyncSupportsBool(Protocol):
     """Интерфейс объектов, которые можно привести к булевому значению."""
 
-    @override
     async def to_bool(self) -> bool:
         """Приведение к булевому значению."""

@@ -40,7 +40,6 @@ from integrations.tg.tg_answers.interface import TgAnswer
 class SendableInterface(Protocol):
     """Интерфейс объекта, отправляющего ответы в API."""
 
-    @override
     async def send(self, update: Update) -> list[dict]:
         """Отправка.
 

@@ -43,11 +43,9 @@ class UserStep(enum.Enum):
 class UserState(Protocol):
     """Интерфейс для работы с состоянием пользователя."""
 
-    @override
     async def step(self) -> UserStep:
         """Состояние пользователя."""
 
-    @override
     async def change_step(self, step: UserStep) -> None:
         """Изменение, состояние пользователя.
 

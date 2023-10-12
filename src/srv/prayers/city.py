@@ -36,11 +36,9 @@ from integrations.tg.coordinates import Coordinates
 class City(Protocol):
     """Интерфейс города."""
 
-    @override
     async def city_id(self) -> uuid.UUID:
         """Идентификатор города."""
 
-    @override
     async def name(self) -> str:
         """Имя города."""
 

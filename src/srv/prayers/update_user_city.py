@@ -35,7 +35,6 @@ from srv.prayers.city import City
 class UpdatedUserCity(Protocol):
     """Обновленный город у пользователя."""
 
-    @override
     async def update(self) -> None:
         """Обновление."""
 

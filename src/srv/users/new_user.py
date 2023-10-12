@@ -38,7 +38,6 @@ from services.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone
 class NewUser(Protocol):
     """Новый пользователь."""
 
-    @override
     async def create(self) -> None:
         """Создание."""
 

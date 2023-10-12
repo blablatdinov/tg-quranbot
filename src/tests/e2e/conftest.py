@@ -24,7 +24,6 @@ import asyncio
 import multiprocessing
 import time
 from pprint import pformat
-from typing import override
 
 import psycopg2
 import pytest
@@ -67,7 +66,6 @@ def db_conn():
 
 @pytest.fixture()
 def db_query_vals(db_conn):
-    @override
     def _db_query_vals(query):  # noqa: WPS430
         cursor = db_conn.cursor()
         cursor.execute(query)
@@ -95,7 +93,6 @@ def _bot_process():
 
 @pytest.fixture()
 def wait_until(bot_name):
-    @override
     def _wait_until(tg_client, messages_count, retry=50, delay=0.1):  # noqa: WPS430
         for _ in range(retry):
             time.sleep(delay)

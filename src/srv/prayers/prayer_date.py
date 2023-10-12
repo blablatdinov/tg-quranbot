@@ -33,7 +33,6 @@ from pyeo import elegant
 class PrayerDate(Protocol):
     """Дата времен намаза."""
 
-    @override
     def parse(self, msg_text: str) -> datetime.date:
         """Парсинг из текста сообщения.
 

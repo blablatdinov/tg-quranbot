@@ -30,14 +30,12 @@ from pyeo import elegant
 class TextSearchQuery(Protocol):
     """Интерфейс запроса для поиска аятов."""
 
-    @override
     async def write(self, query: str) -> None:
         """Запись.
 
         :param query: str
         """
 
-    @override
     async def read(self) -> str:
         """Чтение."""
 

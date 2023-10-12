@@ -69,7 +69,6 @@ class UserAlreadyExistsAnswer(TgAnswer):
             'Рады видеть вас снова, вы продолжите с дня {0}'.format(await user.day()),
         ).build(update)
 
-    @override
     async def _update_and_push_event(self, update: Update) -> None:
         await PgUpdatedUsersStatus(
             self._pgsql,
