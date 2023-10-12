@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import enum
-from typing import Protocol, SupportsInt, final
+from typing import Protocol, SupportsInt, final, override
 
 import attrs
 from loguru import logger
@@ -43,9 +43,11 @@ class UserStep(enum.Enum):
 class UserState(Protocol):
     """Интерфейс для работы с состоянием пользователя."""
 
+    @override
     async def step(self) -> UserStep:
         """Состояние пользователя."""
 
+    @override
     async def change_step(self, step: UserStep) -> None:
         """Изменение, состояние пользователя.
 
@@ -58,6 +60,7 @@ class UserState(Protocol):
 class CachedUserState(UserState):
     """Кэширующий декоратор."""
 
+    @override
     def __init__(self, origin: UserState) -> None:
         """Ctor.
 
@@ -66,6 +69,7 @@ class CachedUserState(UserState):
         self._origin = origin
         self._cache: UserStep | None = None
 
+    @override
     async def step(self) -> UserStep:
         """Состояние пользователя.
 
@@ -76,6 +80,7 @@ class CachedUserState(UserState):
         self._cache = await self._origin.step()
         return self._cache
 
+    @override
     async def change_step(self, step: UserStep) -> None:
         """Изменение, состояние пользователя.
 
@@ -94,6 +99,7 @@ class RedisUserState(UserState):
     _redis: Redis
     _chat_id: SupportsInt
 
+    @override
     async def step(self) -> UserStep:
         """Состояние пользователя.
 
@@ -105,6 +111,7 @@ class RedisUserState(UserState):
         logger.info('User state: {0}'.format(redis_state_data.decode('utf-8')))
         return UserStep[redis_state_data.decode('utf-8')]
 
+    @override
     async def change_step(self, step: UserStep) -> None:
         """Изменение, состояние пользователя.
 

@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 import httpx
@@ -52,6 +52,7 @@ from srv.podcasts.podcast_keyboard import PodcastKeyboard
 @elegant
 class _PodcastId(Protocol):
 
+    @override
     async def fetch(self, update: Update) -> int:
         """Получить.
 
@@ -66,6 +67,7 @@ class _RandomPodcastId(_PodcastId):
 
     _pgsql: Database
 
+    @override
     async def fetch(self, update: Update) -> int:
         return await self._pgsql.fetch_val('SELECT podcast_id FROM podcasts ORDER BY RANDOM()')
 
@@ -77,6 +79,7 @@ class _ConcretePodcastId(_PodcastId):
 
     _pgsql: Database
 
+    @override
     async def fetch(self, update: Update) -> int:
         return int(str(MessageText(update))[8:])
 
@@ -95,6 +98,7 @@ class PodcastAnswer(TgAnswer):
     _show_podcast_id: bool
 
     @classmethod
+    @override
     def random_podcast_ctor(cls, debug_mode: SupportsBool, origin: TgAnswer, redis: Redis, pgsql: Database) -> TgAnswer:
         """Конструктор для рандомного подкаста.
 
@@ -114,6 +118,7 @@ class PodcastAnswer(TgAnswer):
         )
 
     @classmethod
+    @override
     def concrete_podcast_ctor(
         cls,
         debug_mode: SupportsBool,
@@ -138,6 +143,7 @@ class PodcastAnswer(TgAnswer):
             show_podcast_id=False,
         )
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Трансформация в ответ.
 

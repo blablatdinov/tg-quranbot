@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from contextlib import suppress
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from databases import Database
@@ -39,6 +39,7 @@ from srv.users.pg_user import PgUser
 class AsyncIntOrNone(Protocol):
     """AsyncIntOrNone."""
 
+    @override
     async def to_int(self) -> int | None:
         """Числовое представление."""
 
@@ -51,6 +52,7 @@ class FkAsyncIntOrNone(AsyncIntOrNone):
 
     _origin_value: int | None
 
+    @override
     async def to_int(self) -> int | None:
         """Числовое представление.
 
@@ -68,6 +70,7 @@ class ReferrerChatId(AsyncIntable):
     _message: str
     _pgsql: Database
 
+    @override
     async def to_int(self) -> int:
         """Получить идентификатор пригласившего.
 
@@ -93,6 +96,7 @@ class ReferrerIdOrNone(AsyncIntOrNone):
 
     _origin: AsyncIntable
 
+    @override
     async def to_int(self) -> int | None:
         """Получить идентификатор пригласившего.
 

@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
-from typing import final
+from typing import final, override
 
 import attrs
 from pyeo import elegant
@@ -37,6 +37,7 @@ class CliApp(SyncRunable):
 
     _origin: Runable
 
+    @override
     def run(self, args: list[str]) -> int:
         """Запуск.
 
@@ -55,6 +56,7 @@ class CliApp(SyncRunable):
 class ForkCliApp(SyncRunable):
     """Маршрутизация для CLI приложения."""
 
+    @override
     def __init__(self, *apps: SyncRunable) -> None:
         """Конструктор класса.
 
@@ -62,6 +64,7 @@ class ForkCliApp(SyncRunable):
         """
         self._apps = apps
 
+    @override
     def run(self, args: list[str]) -> int:
         """Запуск.
 
@@ -82,6 +85,7 @@ class CommandCliApp(SyncRunable):
     _command: str
     _app: SyncRunable
 
+    @override
     def run(self, args: list[str]) -> int:
         """Запуск.
 

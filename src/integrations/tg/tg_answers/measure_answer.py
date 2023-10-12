@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import time
-from typing import SupportsFloat, final
+from typing import SupportsFloat, final, override
 
 import attrs
 import httpx
@@ -41,6 +41,7 @@ class Millis(SupportsFloat):
     _millis: float
 
     @classmethod
+    @override
     def seconds_ctor(cls, seconds: float) -> SupportsFloat:
         """Конструктор для секунд.
 
@@ -49,6 +50,7 @@ class Millis(SupportsFloat):
         """
         return Millis(seconds * 1000)
 
+    @override
     def __float__(self) -> float:
         """Представление в форме числа с плавающей запятой.
 
@@ -66,6 +68,7 @@ class RoundedFloat(SupportsFloat):
     _origin: SupportsFloat
     _shift_comma: int
 
+    @override
     def __float__(self) -> float:
         """Представление в форме числа с плавающей запятой.
 
@@ -82,6 +85,7 @@ class TgMeasureAnswer(TgAnswer):
 
     _origin: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

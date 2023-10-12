@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
-from typing import final
+from typing import final, override
 
 import attrs
 import httpx
@@ -44,6 +44,7 @@ class PollingApp(Runable):
     _updates: PollingUpdatesIterator
     _sendable: SendableInterface
 
+    @override
     async def run(self) -> None:
         """Запуск."""
         logger.info('Start app on polling')
@@ -66,6 +67,7 @@ class AppWithGetMe(Runable):
     _origin: Runable
     _token: str
 
+    @override
     async def run(self) -> None:
         """Запуск.
 
@@ -88,6 +90,7 @@ class DatabaseConnectedApp(Runable):
     _pgsql: Database
     _app: Runable
 
+    @override
     async def run(self) -> None:
         """Запуск."""
         await self._pgsql.connect()

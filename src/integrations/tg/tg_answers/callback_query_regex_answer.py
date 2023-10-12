@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import re
-from typing import final
+from typing import final, override
 
 import attrs
 import httpx
@@ -42,6 +42,7 @@ class TgCallbackQueryRegexAnswer(TgAnswer):
     _pattern: str
     _answer: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

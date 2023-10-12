@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from typing import final
+from typing import final, override
 
 import attrs
 import pytz
@@ -41,6 +41,7 @@ class TgDateTime(DateTimeInterface):
 
     _update: Update
 
+    @override
     def datetime(self) -> datetime.datetime:
         """Дата/время.
 

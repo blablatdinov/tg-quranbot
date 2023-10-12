@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
 from contextlib import suppress
-from typing import final
+from typing import final, override
 
 import attrs
 from pyeo import elegant
@@ -43,6 +43,7 @@ class NeighborAyatKeyboard(KeyboardInterface):
     _ayats_neighbors: NeighborAyats
     _callback_template: AyatCallbackTemplateEnum
 
+    @override
     async def generate(self, update: Update) -> str:
         """Генерация клавиатуры.
 
@@ -64,6 +65,7 @@ class NeighborAyatKeyboard(KeyboardInterface):
             'inline_keyboard': [buttons],
         })
 
+    @override
     async def _generate_left_button(self) -> dict[str, str] | None:
         with suppress(AyatNotFoundError):
             left = await self._ayats_neighbors.left_neighbor()
@@ -76,6 +78,7 @@ class NeighborAyatKeyboard(KeyboardInterface):
             }
         return None
 
+    @override
     async def _generate_right_button(self) -> dict[str, str] | None:
         with suppress(AyatNotFoundError):
             right = await self._ayats_neighbors.right_neighbor()

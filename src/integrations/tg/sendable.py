@@ -23,7 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import asyncio
 import json
 from itertools import batched
-from typing import Protocol, final
+from typing import Protocol, final, override
 from urllib import parse as url_parse
 
 import attrs
@@ -40,6 +40,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 class SendableInterface(Protocol):
     """Интерфейс объекта, отправляющего ответы в API."""
 
+    @override
     async def send(self, update: Update) -> list[dict]:
         """Отправка.
 
@@ -55,6 +56,7 @@ class SendableAnswer(SendableInterface):
 
     _answer: TgAnswer
 
+    @override
     async def send(self, update: Update) -> list[dict]:
         """Отправка.
 
@@ -82,6 +84,7 @@ class UserNotSubscribedSafeSendable(SendableInterface):
 
     _origin: SendableInterface
 
+    @override
     async def send(self, update: Update) -> list[dict]:
         """Отправка.
 
@@ -114,6 +117,7 @@ class BulkSendableAnswer(SendableInterface):
 
     _answers: list[TgAnswer]
 
+    @override
     async def send(self, update: Update) -> list[dict]:
         """Отправка.
 

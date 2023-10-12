@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from collections.abc import Sequence
-from typing import final
+from typing import final, override
 
 import attrs
 import httpx
@@ -51,6 +51,7 @@ class StartAnswer(TgAnswer):
     _pgsql: Database
     _admin_chat_ids: Sequence[int]
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
@@ -79,6 +80,7 @@ class StartAnswer(TgAnswer):
         answer = await self._answer(update, referrer_chat_id)
         return await answer.build(update)
 
+    @override
     async def _answer(self, update: Update, referrer_chat_id: AsyncIntOrNone) -> TgAnswer:
         start_message, ayat_message = await self._start_answers()
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
@@ -108,12 +110,14 @@ class StartAnswer(TgAnswer):
             ),
         )
 
+    @override
     async def _start_answers(self) -> tuple[str, str]:
         return (
             await self._admin_message.text(),
             await PgAyat(ThroughAsyncIntable(1), self._pgsql).text(),
         )
 
+    @override
     async def _create_with_referrer(
         self, update: Update, start_message: str, ayat_message: str, referrer_id: int,
     ) -> TgAnswer:

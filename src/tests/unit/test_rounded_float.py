@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import SupportsFloat, final
+from typing import SupportsFloat, final, override
 
 import attrs
 from pyeo import elegant
@@ -35,6 +35,7 @@ class FloatableFake(SupportsFloat):
 
     _origin: float
 
+    @override
     def __float__(self):
         return self._origin
 

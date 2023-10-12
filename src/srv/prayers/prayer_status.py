@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from databases import Database
@@ -33,9 +33,11 @@ from services.regular_expression import IntableRegularExpression
 class PrayerStatusInterface(Protocol):
     """Объект, рассчитывающий данные кнопки для изменения статуса прочитанности намаза."""
 
+    @override
     def user_prayer_id(self) -> int:
         """Рассчитать идентификатор времени намаза пользователя."""
 
+    @override
     def change_to(self) -> bool:
         """Рассчитать статус времени намаза пользователя."""
 
@@ -48,6 +50,7 @@ class PrayerStatus(PrayerStatusInterface):
 
     _source: str
 
+    @override
     def user_prayer_id(self) -> int:
         """Рассчитать идентификатор времени намаза пользователя.
 
@@ -55,6 +58,7 @@ class PrayerStatus(PrayerStatusInterface):
         """
         return int(IntableRegularExpression(self._source))
 
+    @override
     def change_to(self) -> bool:
         """Рассчитать статус времени намаза пользователя.
 
@@ -67,6 +71,7 @@ class PrayerStatus(PrayerStatusInterface):
 class UserPrayerStatusInterface(Protocol):
     """Интерфейс статуса прочитанности намаза."""
 
+    @override
     async def change(self, prayer_status: PrayerStatus) -> None:
         """Изменить статус прочитанности.
 
@@ -82,6 +87,7 @@ class UserPrayerStatus(UserPrayerStatusInterface):
 
     _pgsql: Database
 
+    @override
     async def change(self, prayer_status: PrayerStatus) -> None:
         """Изменить статус прочитанности.
 

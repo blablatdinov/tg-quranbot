@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from pyeo import elegant
@@ -32,6 +32,7 @@ from app_types.update import Update
 class KeyboardInterface(Protocol):
     """Интерфейс клавиатуры."""
 
+    @override
     async def generate(self, update: Update) -> str:
         """Генерация.
 
@@ -45,6 +46,7 @@ class KeyboardInterface(Protocol):
 class FkKeyboard(KeyboardInterface):
     """Фейковая клавиатура."""
 
+    @override
     async def generate(self, update: Update) -> str:
         """Генерация.
 

@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from pathlib import Path
-from typing import final
+from typing import final, override
 
 import attrs
 from pyeo import elegant
@@ -38,6 +38,7 @@ class EnvFileSettings(Settings):
     _path: Path
 
     @classmethod
+    @override
     def from_filename(cls, file_path: str) -> Settings:
         """Конструктор для имени файла.
 
@@ -46,6 +47,7 @@ class EnvFileSettings(Settings):
         """
         return cls(Path(BASE_DIR / file_path))
 
+    @override
     def __getattr__(self, attr_name: str) -> str:
         """Получить аттрибут.
 
@@ -56,6 +58,7 @@ class EnvFileSettings(Settings):
             return str(BASE_DIR)
         return self._search_in_file(attr_name)
 
+    @override
     def _search_in_file(self, attr_name: str) -> str:
         for line in self._path.read_text().strip().split('\n'):
             if '=' not in line:

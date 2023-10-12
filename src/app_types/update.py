@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from pyeo import elegant
@@ -34,12 +34,15 @@ from integrations.tg.update_struct import UpdateStruct
 class Update(SupportsStr, Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
+    @override
     def __str__(self) -> str:
         """Приведение к строке."""
 
+    @override
     def parsed(self) -> UpdateStruct:
         """Десериализованный объект."""
 
+    @override
     def asdict(self) -> dict:
         """Словарь."""
 
@@ -52,6 +55,7 @@ class FkUpdate(Update):
 
     _raw: SupportsStr | None = '{}'  # noqa: P103. Empty json
 
+    @override
     def __str__(self) -> str:
         """Приведение к строке.
 
@@ -59,6 +63,7 @@ class FkUpdate(Update):
         """
         return str(self._raw)
 
+    @override
     def parsed(self) -> UpdateStruct:
         """Десериализованный объект.
 
@@ -66,6 +71,7 @@ class FkUpdate(Update):
         """
         return UpdateStruct(ok=True)
 
+    @override
     def asdict(self) -> dict:
         """Словарь.
 

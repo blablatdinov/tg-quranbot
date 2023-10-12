@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, TypeAlias, final
+from typing import Protocol, TypeAlias, final, override
 
 import attrs
 from pyeo import elegant
@@ -33,9 +33,11 @@ AyatNum: TypeAlias = str
 class SearchQuery(Protocol):
     """Интерфейс объекта с запросом для поиска."""
 
+    @override
     def sura(self) -> SuraId:
         """Номер суры."""
 
+    @override
     def ayat(self) -> AyatNum:
         """Номер аята."""
 
@@ -49,6 +51,7 @@ class FkSearchQuery(SearchQuery):
     _sura: SuraId
     _ayat: AyatNum
 
+    @override
     def sura(self) -> SuraId:
         """Идентификатор суры.
 
@@ -56,6 +59,7 @@ class FkSearchQuery(SearchQuery):
         """
         return self._sura
 
+    @override
     def ayat(self) -> AyatNum:
         """Номер аята.
 

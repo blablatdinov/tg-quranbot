@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-from typing import final
+from typing import final, override
 
 from pyeo import elegant
 
@@ -34,6 +34,7 @@ from services.answers.answer import KeyboardInterface
 class SwitchInlineQueryKeyboard(KeyboardInterface):
     """Переключение на инлайн поиск."""
 
+    @override
     async def generate(self, update: Update) -> str:
         """Сборка клавиатуры.
 

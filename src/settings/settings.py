@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from pathlib import Path
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from pyeo import elegant
@@ -31,6 +31,7 @@ from pyeo import elegant
 class Settings(Protocol):
     """Настройки."""
 
+    @override
     def __getattr__(self, attr_name: str) -> str:
         """Получить аттрибут.
 
@@ -46,6 +47,7 @@ class FkSettings(Settings):
 
     _origin: dict[str, str]
 
+    @override
     def __getattr__(self, attr_name: str) -> str:
         """Получить аттрибут.
 

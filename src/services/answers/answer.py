@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-from typing import final
+from typing import final, override
 
 import attrs
 from pyeo import elegant
@@ -38,6 +38,7 @@ class ResizedKeyboard(KeyboardInterface):
 
     _origin: KeyboardInterface
 
+    @override
     async def generate(self, update: Update) -> str:
         """Генерация.
 
@@ -55,6 +56,7 @@ class ResizedKeyboard(KeyboardInterface):
 class DefaultKeyboard(KeyboardInterface):
     """Класс клавиатуры по умолчанию."""
 
+    @override
     async def generate(self, update: Update) -> str:
         """Генерация.
 

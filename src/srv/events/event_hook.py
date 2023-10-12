@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
 import json
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import aioamqp
 import attrs
@@ -41,6 +41,7 @@ from srv.events.recieved_event import ReceivedEvent
 class EventHook(Protocol):
     """Обработчик событий из очереди."""
 
+    @override
     async def catch(self) -> None:
         """Запуск обработки."""
 
@@ -53,6 +54,7 @@ class EventHookApp(SyncRunable):
 
     _event_hook: EventHook
 
+    @override
     def run(self, args: list[str]) -> int:
         """Запуск.
 
@@ -73,6 +75,7 @@ class RbmqEventHook(EventHook):
     _pgsql: Database
     _event: ReceivedEvent
 
+    @override
     async def catch(self) -> None:
         """Запуск обработки."""
         channel, transport, protocol = await self._pre_build()
@@ -84,6 +87,7 @@ class RbmqEventHook(EventHook):
             await protocol.close()
             transport.close()
 
+    @override
     async def _pre_build(self) -> tuple:
         await self._pgsql.connect()
         transport, protocol = await aioamqp.connect(
@@ -95,6 +99,7 @@ class RbmqEventHook(EventHook):
         await channel.queue_declare(queue_name='my_queue')
         return channel, transport, protocol
 
+    @override
     async def _callback(
         self,
         channel: aioamqp.channel.Channel,

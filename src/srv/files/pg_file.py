@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import uuid
-from typing import final
+from typing import final, override
 
 import attrs
 from databases import Database
@@ -40,6 +40,7 @@ class PgFile(TgFile):
     _file_id: uuid.UUID
     _pgsql: Database
 
+    @override
     async def tg_file_id(self) -> TgFileId:
         """Идентификатор файла в телеграм.
 
@@ -56,6 +57,7 @@ class PgFile(TgFile):
             raise BotFileNotFoundError
         return row['telegram_file_id']
 
+    @override
     async def file_link(self) -> FileLink:
         """Ссылка на файл.
 

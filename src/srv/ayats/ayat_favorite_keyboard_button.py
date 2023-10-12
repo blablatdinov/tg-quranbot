@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-from typing import final
+from typing import final, override
 
 import attrs
 from pyeo import elegant
@@ -42,6 +42,7 @@ class AyatFavoriteKeyboardButton(KeyboardInterface):
     _is_favor: AsyncSupportsBool
     _ayat: Ayat
 
+    @override
     async def generate(self, update: Update) -> str:
         """Генерация клавиатуры.
 

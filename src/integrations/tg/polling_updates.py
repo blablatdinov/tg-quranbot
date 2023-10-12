@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-from typing import Protocol, SupportsInt, final
+from typing import Protocol, SupportsInt, final, override
 
 import attrs
 import httpx
@@ -37,6 +37,7 @@ from integrations.tg.update import TgUpdate
 class UpdatesTimeout(SupportsInt):
     """Таймаут для обновлений."""
 
+    @override
     def __int__(self) -> int:
         """Числовое представление.
 
@@ -49,6 +50,7 @@ class UpdatesTimeout(SupportsInt):
 class UpdatesURLInterface(Protocol):
     """Интерфейс URL запроса для получения уведомлений."""
 
+    @override
     def generate(self, update_id: int) -> str:
         """Генерация.
 
@@ -64,6 +66,7 @@ class UpdatesURL(SupportsStr):
 
     _token: str
 
+    @override
     def __str__(self) -> str:
         """Строчное представление.
 
@@ -80,6 +83,7 @@ class UpdatesWithOffsetURL(UpdatesURLInterface):
 
     _updates_url: SupportsStr
 
+    @override
     def generate(self, update_id: int) -> str:
         """Генерация.
 
@@ -98,6 +102,7 @@ class UpdatesLongPollingURL(UpdatesURLInterface):
     _origin: UpdatesURLInterface
     _long_polling_timeout: SupportsInt
 
+    @override
     def generate(self, update_id: int) -> str:
         """Генерация.
 
@@ -114,9 +119,11 @@ class UpdatesLongPollingURL(UpdatesURLInterface):
 class UpdatesIteratorInterface(Protocol):
     """Интерфейс итератора по обновлениям."""
 
+    @override
     def __aiter__(self) -> 'UpdatesIteratorInterface':
         """Точка входа в итератор."""
 
+    @override
     async def __anext__(self) -> list[Update]:
         """Вернуть следующий элемент."""
 
@@ -132,6 +139,7 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
 
     _offset: int = 0
 
+    @override
     def __aiter__(self) -> 'UpdatesIteratorInterface':
         """Точка входа в итератор.
 
@@ -139,6 +147,7 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
         """
         return self
 
+    @override
     async def __anext__(self) -> list[Update]:
         """Вернуть следующий элемент.
 

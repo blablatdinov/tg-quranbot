@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from pyeo import elegant
@@ -30,6 +30,7 @@ from pyeo import elegant
 class SupportsStr(Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
+    @override
     def __str__(self) -> str:
         """Приведение к строке."""
 
@@ -38,6 +39,7 @@ class SupportsStr(Protocol):
 class AsyncSupportsStr(Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
+    @override
     async def to_str(self) -> str:
         """Приведение к строке."""
 
@@ -50,6 +52,7 @@ class FkAsyncStr(AsyncSupportsStr):
 
     _source: str
 
+    @override
     async def to_str(self) -> str:
         """Строковое представление.
 
@@ -66,6 +69,7 @@ class ThroughString(SupportsStr):
 
     _source: str
 
+    @override
     def __str__(self) -> str:
         """Строковое представление.
 
@@ -82,6 +86,7 @@ class UnwrappedString(SupportsStr):
 
     _origin: SupportsStr
 
+    @override
     def __str__(self) -> str:
         """Строковое представление.
 

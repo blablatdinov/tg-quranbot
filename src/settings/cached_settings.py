@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import ClassVar, final
+from typing import ClassVar, final, override
 
 import attrs
 
@@ -35,6 +35,7 @@ class CachedSettings(Settings):
     _origin: Settings
     _cached_values: ClassVar[dict[str, str]] = {}
 
+    @override
     def __getattr__(self, attr_name: str) -> str:
         """Получить аттрибут.
 

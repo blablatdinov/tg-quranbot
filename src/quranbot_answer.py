@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import final, override
 
 import httpx
 from databases import Database
@@ -70,6 +70,7 @@ from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 class QuranbotAnswer(TgAnswer):
     """Ответ бота quranbot."""
 
+    @override
     def __init__(
         self,
         database: Database,
@@ -90,6 +91,7 @@ class QuranbotAnswer(TgAnswer):
         self._settings = settings
         self._pre_build()
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
@@ -98,6 +100,7 @@ class QuranbotAnswer(TgAnswer):
         """
         return await self._answer.build(update)
 
+    @override
     def _pre_build(self) -> None:
         empty_answer = TgEmptyAnswer(self._settings.API_TOKEN)
         self._answer = SafeFork(

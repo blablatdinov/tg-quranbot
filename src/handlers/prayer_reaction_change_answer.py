@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import re
-from typing import Final, Literal, Protocol, final
+from typing import Final, Literal, Protocol, final, override
 
 import attrs
 import httpx
@@ -52,9 +52,11 @@ USER_ID_LITERAL: Final = 'user_id'
 class PodcastReactionsT(Protocol):
     """Реакция на подкаст."""
 
+    @override
     def podcast_id(self) -> int:
         """Идентификатор подкаста."""
 
+    @override
     def status(self) -> Literal['like', 'dislike']:
         """Реакция."""
 
@@ -74,6 +76,7 @@ class PodcastReaction(PodcastReactionsT):
 
     _callback_query: SupportsStr
 
+    @override
     def podcast_id(self) -> int:
         """Идентификатор подкаста.
 
@@ -81,6 +84,7 @@ class PodcastReaction(PodcastReactionsT):
         """
         return int(re.findall(r'\((.+)\)', str(self._callback_query))[0])
 
+    @override
     def status(self) -> Literal['like', 'dislike']:
         """Реакция.
 
@@ -102,6 +106,7 @@ class PrayerReactionChangeAnswer(TgAnswer):
     _redis: Redis
     _pgsql: Database
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Трансформация в ответ.
 

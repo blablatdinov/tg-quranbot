@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from asyncpg import ForeignKeyViolationError, UniqueViolationError
@@ -38,6 +38,7 @@ from services.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone
 class NewUser(Protocol):
     """Новый пользователь."""
 
+    @override
     async def create(self) -> None:
         """Создание."""
 
@@ -48,6 +49,7 @@ class NewUser(Protocol):
 class FkNewUser(NewUser):
     """Фейк нового пользователя."""
 
+    @override
     async def create(self) -> None:
         """Создание."""
 
@@ -63,6 +65,7 @@ class PgNewUser(NewUser):
     _pgsql: Database
 
     @classmethod
+    @override
     def ctor(cls, new_user_chat_id: TgChatId, pgsql: Database) -> NewUser:
         """Конструктор без реферера.
 
@@ -76,6 +79,7 @@ class PgNewUser(NewUser):
             pgsql,
         )
 
+    @override
     async def create(self) -> None:
         """Создание.
 

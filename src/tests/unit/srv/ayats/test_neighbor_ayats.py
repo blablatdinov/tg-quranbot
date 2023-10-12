@@ -20,6 +20,8 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import override
+
 import pytest
 
 from app_types.listable import AsyncListable
@@ -31,6 +33,7 @@ from srv.files.file import FkFile
 
 class FkFavoriteAyats(AsyncListable[Ayat]):
 
+    @override
     async def to_list(self) -> list[Ayat]:
         return [
             FkAyat(FkIdentifier(1, 1, '1-7'), '', FkFile('', '')),

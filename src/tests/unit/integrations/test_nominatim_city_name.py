@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
+from typing import override
 
 import httpx
 import pytest
@@ -31,9 +32,11 @@ from integrations.tg.coordinates import Coordinates
 
 class FkCoordinates(Coordinates):
 
+    @override
     def latitude(self) -> float:
         return 55.7887
 
+    @override
     def longitude(self) -> float:
         return 49.1221
 

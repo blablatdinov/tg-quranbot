@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-from typing import TypedDict, final
+from typing import TypedDict, final, override
 
 import attrs
 from databases import Database
@@ -47,6 +47,7 @@ class PodcastKeyboard(KeyboardInterface):
     _pgsql: Database
     _podcast: Podcast
 
+    @override
     async def generate(self, update: Update) -> str:
         """Генерация клавиатуры.
 

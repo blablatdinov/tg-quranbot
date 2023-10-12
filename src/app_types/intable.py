@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, SupportsInt, final
+from typing import Protocol, SupportsInt, final, override
 
 import attrs
 from pyeo import elegant
@@ -30,6 +30,7 @@ from pyeo import elegant
 class AsyncIntable(Protocol):
     """Интерфейс объектов, которые можно привести к числу."""
 
+    @override
     async def to_int(self) -> int:
         """Приведение к числу с возможностью переключения контекста."""
 
@@ -42,6 +43,7 @@ class FkIntable(SupportsInt):
 
     _source: int
 
+    @override
     def __int__(self) -> int:
         """Приведение к числу.
 
@@ -58,6 +60,7 @@ class ThroughAsyncIntable(AsyncIntable):
 
     _source: int
 
+    @override
     async def to_int(self) -> int:
         """Приведение к числу с возможностью переключения контекста.
 
@@ -74,6 +77,7 @@ class SyncToAsyncIntable(AsyncIntable):
 
     _origin: SupportsInt
 
+    @override
     async def to_int(self) -> int:
         """Числовое представление.
 

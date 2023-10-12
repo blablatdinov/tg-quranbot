@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, TypeVar
+from typing import Protocol, TypeVar, override
 
 from pyeo import elegant
 
@@ -31,5 +31,6 @@ ListElemT = TypeVar('ListElemT')
 class AsyncListable(Protocol[ListElemT]):
     """Объект, имеющий корутину представляющую его в кач-ве списка."""
 
+    @override
     async def to_list(self) -> list[ListElemT]:
         """Список."""

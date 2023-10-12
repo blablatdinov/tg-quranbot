@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from databases import Database
@@ -36,6 +36,7 @@ from srv.files.file import FileLink, TgFile, TgFileId
 class Podcast(TgFile, Protocol):
     """Интерфейс подкаста."""
 
+    @override
     async def podcast_id(self) -> int:
         """Идентификатор аята."""
 
@@ -49,6 +50,7 @@ class PgPodcast(Podcast):
     _podcast_id: AsyncIntable
     _pgsql: Database
 
+    @override
     async def podcast_id(self) -> int:
         """Идентификатор подкаста.
 
@@ -56,6 +58,7 @@ class PgPodcast(Podcast):
         """
         return await self._podcast_id.to_int()
 
+    @override
     async def tg_file_id(self) -> TgFileId:
         """Получить идентификатор файла.
 
@@ -80,6 +83,7 @@ class PgPodcast(Podcast):
             raise TelegramFileIdNotFilledError
         return row['telegram_file_id']
 
+    @override
     async def file_link(self) -> FileLink:
         """Получить ссылку на файл.
 

@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, TypeAlias, final
+from typing import Protocol, TypeAlias, final, override
 
 import attrs
 from databases import Database
@@ -35,12 +35,15 @@ AyatId: TypeAlias = int
 class AyatIdentifier(Protocol):
     """Информация для идентификации аята."""
 
+    @override
     async def ayat_id(self) -> AyatId:
         """Идентификатор в хранилище."""
 
+    @override
     async def sura_num(self) -> SuraId:
         """Номер суры."""
 
+    @override
     async def ayat_num(self) -> AyatNum:
         """Номер аята."""
 
@@ -53,6 +56,7 @@ class PgAyatIdentifier(AyatIdentifier):
     _ayat_id: AsyncIntable
     _pgsql: Database
 
+    @override
     async def ayat_id(self) -> AyatId:
         """Идентификатор в хранилище.
 
@@ -60,6 +64,7 @@ class PgAyatIdentifier(AyatIdentifier):
         """
         return await self._ayat_id.to_int()
 
+    @override
     async def sura_num(self) -> SuraId:
         """Номер суры.
 
@@ -77,6 +82,7 @@ class PgAyatIdentifier(AyatIdentifier):
             raise AyatNotFoundError
         return row['sura_id']
 
+    @override
     async def ayat_num(self) -> AyatNum:
         """Номер аята.
 
@@ -103,6 +109,7 @@ class FkIdentifier(AyatIdentifier):
     _sura_num: int
     _ayat_num: str
 
+    @override
     async def ayat_id(self) -> int:
         """Идентификатор.
 
@@ -110,6 +117,7 @@ class FkIdentifier(AyatIdentifier):
         """
         return self._id
 
+    @override
     async def sura_num(self) -> int:
         """Номер суры.
 
@@ -117,6 +125,7 @@ class FkIdentifier(AyatIdentifier):
         """
         return self._sura_num
 
+    @override
     async def ayat_num(self) -> str:
         """Номер аята.
 

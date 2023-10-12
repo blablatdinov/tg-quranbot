@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from databases import Database
@@ -35,6 +35,7 @@ from srv.prayers.city import City
 class UpdatedUserCity(Protocol):
     """Обновленный город у пользователя."""
 
+    @override
     async def update(self) -> None:
         """Обновление."""
 
@@ -45,6 +46,7 @@ class UpdatedUserCity(Protocol):
 class FkUpdateUserCity(UpdatedUserCity):
     """Стаб для обновления города."""
 
+    @override
     async def update(self) -> None:
         """Обновление."""
 
@@ -59,6 +61,7 @@ class PgUpdatedUserCity(UpdatedUserCity):
     _chat_id: ChatId
     _pgsql: Database
 
+    @override
     async def update(self) -> None:
         """Обновление.
 

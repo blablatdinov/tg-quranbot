@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from contextlib import suppress
-from typing import final
+from typing import final, override
 
 import attrs
 import httpx
@@ -50,6 +50,7 @@ class UserAlreadyExistsAnswer(TgAnswer):
     _pgsql: Database
     _event_sink: SinkInterface
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
@@ -68,6 +69,7 @@ class UserAlreadyExistsAnswer(TgAnswer):
             'Рады видеть вас снова, вы продолжите с дня {0}'.format(await user.day()),
         ).build(update)
 
+    @override
     async def _update_and_push_event(self, update: Update) -> None:
         await PgUpdatedUsersStatus(
             self._pgsql,

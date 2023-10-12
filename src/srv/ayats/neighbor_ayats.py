@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Final, Protocol, final
+from typing import Final, Protocol, final, override
 
 import attrs
 from databases import Database
@@ -40,12 +40,15 @@ AYAT_ID: Final = 'ayat_id'
 class NeighborAyats(Protocol):
     """Интерфейс для работы с соседними аятами в хранилище."""
 
+    @override
     async def left_neighbor(self) -> Ayat:
         """Левый аят."""
 
+    @override
     async def right_neighbor(self) -> Ayat:
         """Правый аят."""
 
+    @override
     async def page(self) -> str:
         """Информация о странице."""
 
@@ -59,6 +62,7 @@ class FavoriteNeighborAyats(NeighborAyats):
     _ayat_id: int
     _favorite_ayats: AsyncListable[Ayat]
 
+    @override
     async def left_neighbor(self) -> Ayat:
         """Получить левый аят.
 
@@ -74,6 +78,7 @@ class FavoriteNeighborAyats(NeighborAyats):
                 return fayats[ayat_index - 1]
         raise AyatNotFoundError
 
+    @override
     async def right_neighbor(self) -> Ayat:
         """Получить правый аят.
 
@@ -89,6 +94,7 @@ class FavoriteNeighborAyats(NeighborAyats):
                 return fayats[ayat_index + 1]
         raise AyatNotFoundError
 
+    @override
     async def page(self) -> str:
         """Информация о странице.
 
@@ -116,6 +122,7 @@ class PgNeighborAyats(NeighborAyats):
     _pgsql: Database
     _ayat_id: int
 
+    @override
     async def left_neighbor(self) -> Ayat:
         """Получить левый аят.
 
@@ -132,6 +139,7 @@ class PgNeighborAyats(NeighborAyats):
             raise AyatNotFoundError
         return PgAyat.from_int(row[AYAT_ID], self._pgsql)
 
+    @override
     async def right_neighbor(self) -> Ayat:
         """Получить правый аят.
 
@@ -148,6 +156,7 @@ class PgNeighborAyats(NeighborAyats):
             raise AyatNotFoundError
         return PgAyat.from_int(row[AYAT_ID], self._pgsql)
 
+    @override
     async def page(self) -> str:
         """Информация о странице.
 
@@ -177,6 +186,7 @@ class TextSearchNeighborAyats(NeighborAyats):
         ORDER BY ayats.ayat_id
     """
 
+    @override
     async def left_neighbor(self) -> Ayat:
         """Получить левый аят.
 
@@ -190,6 +200,7 @@ class TextSearchNeighborAyats(NeighborAyats):
                 return PgAyat.from_int(rows[idx - 1][AYAT_ID], self._pgsql)
         raise AyatNotFoundError
 
+    @override
     async def right_neighbor(self) -> Ayat:
         """Получить правый аят.
 
@@ -203,6 +214,7 @@ class TextSearchNeighborAyats(NeighborAyats):
                 return PgAyat.from_int(rows[idx + 1][AYAT_ID], self._pgsql)
         raise AyatNotFoundError
 
+    @override
     async def page(self) -> str:
         """Информация о странице.
 

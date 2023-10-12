@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import final, override
 
 import attrs
 from databases import Database
@@ -38,6 +38,7 @@ class CityNames(AsyncListable):
     _pgsql: Database
     _query: str
 
+    @override
     async def to_list(self) -> list[str]:
         """Список строк.
 

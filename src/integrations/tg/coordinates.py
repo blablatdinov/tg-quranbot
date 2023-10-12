@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from pyeo import elegant
@@ -34,9 +34,11 @@ from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 class Coordinates(Protocol):
     """Интерфейс координат."""
 
+    @override
     def latitude(self) -> float:
         """Ширина."""
 
+    @override
     def longitude(self) -> float:
         """Долгота."""
 
@@ -50,6 +52,7 @@ class FkCoordinates(Coordinates):
     _latitude: float
     _longitude: float
 
+    @override
     def latitude(self) -> float:
         """Широта.
 
@@ -57,6 +60,7 @@ class FkCoordinates(Coordinates):
         """
         return self._latitude
 
+    @override
     def longitude(self) -> float:
         """Долгота.
 
@@ -73,6 +77,7 @@ class TgMessageCoordinates(Coordinates):
 
     _update: Update
 
+    @override
     def latitude(self) -> float:
         """Ширина.
 
@@ -88,6 +93,7 @@ class TgMessageCoordinates(Coordinates):
             ).evaluate(),
         )
 
+    @override
     def longitude(self) -> float:
         """Долгота.
 

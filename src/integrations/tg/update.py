@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-from typing import ClassVar, final
+from typing import ClassVar, final, override
 
 import attrs
 from pyeo import elegant
@@ -42,6 +42,7 @@ class TgUpdate(Update):
 
     _raw_update: SupportsStr
 
+    @override
     def __str__(self) -> str:
         """Приведение к строке.
 
@@ -49,6 +50,7 @@ class TgUpdate(Update):
         """
         return str(self._raw_update)
 
+    @override
     def parsed(self) -> UpdateStruct:
         """Десериализованный объект.
 
@@ -56,6 +58,7 @@ class TgUpdate(Update):
         """
         return UpdateStruct.model_validate_json(str(self))
 
+    @override
     def asdict(self) -> dict:
         """Словарь.
 
@@ -83,6 +86,7 @@ class CachedTgUpdate(Update):
         'asdict': None,
     }
 
+    @override
     def __str__(self) -> str:
         """Приведение к строке.
 
@@ -93,6 +97,7 @@ class CachedTgUpdate(Update):
             self._cache[str_cache_key] = self._origin.__str__()
         return self._cache[str_cache_key]
 
+    @override
     def parsed(self) -> UpdateStruct:
         """Десериализованный объект.
 
@@ -103,6 +108,7 @@ class CachedTgUpdate(Update):
             self._cache[parsed_cache_key] = self._origin.parsed()
         return self._cache[parsed_cache_key]
 
+    @override
     def asdict(self) -> dict:
         """Словарь.
 

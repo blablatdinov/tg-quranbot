@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
 import uuid
-from typing import final
+from typing import final, override
 
 import attrs
 from databases import Database
@@ -46,6 +46,7 @@ class UserPrayersKeyboard(KeyboardInterface):
     _date: PrayerDate
     _chat_id: TgChatId
 
+    @override
     async def generate(self, update: Update) -> str:
         """Генерация.
 
@@ -91,6 +92,7 @@ class UserPrayersKeyboard(KeyboardInterface):
             ]],
         })
 
+    @override
     async def _exists_prayers(self, update: Update) -> list[Record]:
         select_query = """
             SELECT

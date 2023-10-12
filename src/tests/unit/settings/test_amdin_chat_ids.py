@@ -20,12 +20,15 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import override
+
 from settings.admin_chat_ids import AdminChatIds
 from settings.settings import Settings
 
 
 class FkSettings(Settings):
 
+    @override
     def __getattr__(self, attr_name):
         return '1, 2, 3'
 

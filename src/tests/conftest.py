@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
 import urllib
+from typing import override
 
 import pytest
 from fakeredis import aioredis
@@ -32,6 +33,7 @@ from settings.settings import BASE_DIR
 
 @pytest.fixture()
 def unquote():
+    @override
     def _unquote(url):  # noqa: WPS430
         return urllib.parse.unquote(
             str(url),
@@ -54,6 +56,7 @@ def fake_redis():
 
 @pytest.fixture()
 def message_update_factory():
+    @override
     def _message_update_factory(text='', chat_id=1):  # noqa: WPS430
         return Template(
             (BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),

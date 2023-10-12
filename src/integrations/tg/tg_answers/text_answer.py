@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import final, override
 
 import attrs
 import httpx
@@ -42,6 +42,7 @@ class TgTextAnswer(TgAnswer):
     _text: AsyncSupportsStr
 
     @classmethod
+    @override
     def str_ctor(cls, origin: TgAnswer, text: str) -> TgAnswer:
         """Конструктор для строки.
 
@@ -53,6 +54,7 @@ class TgTextAnswer(TgAnswer):
             origin, FkAsyncStr(text),
         )
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
