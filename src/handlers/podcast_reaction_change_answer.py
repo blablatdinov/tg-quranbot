@@ -96,7 +96,7 @@ class PodcastReaction(PodcastReactionsT):
 @final
 @attrs.define(frozen=True)
 @elegant
-class PrayerReactionChangeAnswer(TgAnswer):
+class PodcastReactionChangeAnswer(TgAnswer):
     """Ответ с подкастом."""
 
     _debug_mode: SupportsBool
