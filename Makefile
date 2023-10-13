@@ -31,7 +31,7 @@ lint:
 	poetry run mypy src
 
 test:
-	poetry run pytest src --ignore=src/tests/e2e --cov=src --cov-report html
+	poetry run pytest src --ignore=src/tests/e2e --cov=src --cov-report html --cov-fail-under=95
 
 e2e:
 	poetry run pytest src/tests/e2e
