@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import os
-from typing import final
+from typing import final, override
 
 import attrs
 from pyeo import elegant
@@ -35,6 +35,7 @@ from settings.settings import BASE_DIR, Settings
 class OsEnvSettings(Settings):
     """Настройки из переменных окружения."""
 
+    @override
     def __getattr__(self, attr_name: str) -> str:
         """Получить аттрибут.
 

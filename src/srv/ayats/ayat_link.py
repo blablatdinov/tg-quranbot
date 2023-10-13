@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import TypeAlias, final
+from typing import TypeAlias, final, override
 
 import attrs
 from pyeo import elegant
@@ -48,6 +48,7 @@ class AyatLink(SupportsStr):
     _sura_num: int
     _ayat_num: _AyatNum
 
+    @override
     def __str__(self) -> str:
         """Формирование ссылки с якорем на аят.
 

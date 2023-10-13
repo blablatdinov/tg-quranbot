@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, TypeAlias
+from typing import Protocol, TypeAlias, override
 
 import attrs
 from eljson.json import Json
@@ -60,6 +60,7 @@ class FkAyat(Ayat):
     _text: str
     _audio: TgFile
 
+    @override
     def identifier(self) -> AyatIdentifier:
         """Идентификатор.
 
@@ -67,6 +68,7 @@ class FkAyat(Ayat):
         """
         return self._id
 
+    @override
     async def text(self) -> str:
         """Текст.
 
@@ -74,6 +76,7 @@ class FkAyat(Ayat):
         """
         return self._text
 
+    @override
     async def audio(self) -> TgFile:
         """Аудио.
 
@@ -81,6 +84,7 @@ class FkAyat(Ayat):
         """
         return self._audio
 
+    @override
     async def change(self, event_body: Json) -> None:
         """Изменить содержимое аята.
 

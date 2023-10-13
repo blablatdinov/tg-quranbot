@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, TypeAlias, TypeVar, final
+from typing import Protocol, TypeAlias, TypeVar, final, override
 
 import attrs
 from eljson.json import Json
@@ -51,6 +51,7 @@ class EventFork(ReceivedEvent):
     _version: int
     _origin: ReceivedEvent
 
+    @override
     async def process(self, json: Json) -> None:
         """Обработать событие.
 

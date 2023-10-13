@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import final, override
 
 import httpx
 from pyeo import elegant
@@ -34,6 +34,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 class TgAnswerList(TgAnswer):
     """Список ответов пользователю."""
 
+    @override
     def __init__(self, *answers: TgAnswer) -> None:
         """Конструктор класса.
 
@@ -41,6 +42,7 @@ class TgAnswerList(TgAnswer):
         """
         self._answers = answers
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

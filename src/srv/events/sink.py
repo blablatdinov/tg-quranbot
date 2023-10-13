@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from pyeo import elegant
@@ -45,6 +45,7 @@ class SinkInterface(Protocol):
 class FkSink(SinkInterface):
     """Фейковый слив для событий."""
 
+    @override
     async def send(self, event_data: dict, event_name: str, version: int) -> None:
         """Отправить событие.
 

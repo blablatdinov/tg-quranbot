@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from databases import Database
@@ -55,6 +55,7 @@ class ChatIdByLegacyId(AsyncIntable):
     _pgsql: Database
     _legacy_id: int
 
+    @override
     async def to_int(self) -> int:
         """Числовое представление.
 
@@ -97,6 +98,7 @@ class PgUser(User):
         """
         return cls(SyncToAsyncIntable(chat_id), pgsql)
 
+    @override
     async def chat_id(self) -> int:
         """Идентификатор чата.
 
@@ -104,6 +106,7 @@ class PgUser(User):
         """
         return await self._chat_id.to_int()
 
+    @override
     async def day(self) -> int:
         """День для рассылки утреннего контента.
 
@@ -116,6 +119,7 @@ class PgUser(User):
         """
         return await self._pgsql.fetch_val(query, {'chat_id': await self._chat_id.to_int()})
 
+    @override
     async def is_active(self) -> bool:
         """Статус пользователя.
 

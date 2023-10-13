@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import TypeAlias, final
+from typing import TypeAlias, final, override
 
 import attrs
 import httpx
@@ -42,6 +42,7 @@ class CityNameById(CityName):
     _pgsql: Database
     _city_id: AsyncSupportsStr
 
+    @override
     async def to_str(self) -> str:
         """Поиск.
 
@@ -60,6 +61,7 @@ class NominatimCityName(CityName):
 
     _coordinates: Coordinates
 
+    @override
     async def to_str(self) -> str:
         """Поиск по координатам.
 

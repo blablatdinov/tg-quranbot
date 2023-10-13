@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import uuid
-from typing import final
+from typing import final, override
 
 import attrs
 from databases import Database
@@ -42,6 +42,7 @@ class AyatIdBySuraAyatNum(AsyncIntable):
     _query: SearchQuery
     _pgsql: Database
 
+    @override
     async def to_int(self) -> AyatId:
         """Числовое представление.
 
@@ -83,6 +84,7 @@ class AyatIdByPublicId(AsyncIntable):
     _public_id: uuid.UUID
     _pgsql: Database
 
+    @override
     async def to_int(self) -> AyatId:
         """Числовое представление.
 

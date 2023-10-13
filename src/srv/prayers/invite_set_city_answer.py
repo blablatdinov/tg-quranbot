@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import final, override
 
 import attrs
 import httpx
@@ -44,6 +44,7 @@ class UserWithoutCitySafeAnswer(TgAnswer):
     _origin: TgAnswer
     _invite_set_city_answer: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
@@ -65,6 +66,7 @@ class InviteSetCityAnswer(TgAnswer):
     _message_answer: TgAnswer
     _redis: Redis
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

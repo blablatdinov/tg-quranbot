@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, TypeAlias, final
+from typing import Protocol, TypeAlias, final, override
 
 import attrs
 from pyeo import elegant
@@ -48,6 +48,7 @@ class FkFile(TgFile):
     _file_id: str
     _link: str
 
+    @override
     async def tg_file_id(self) -> TgFileId:
         """Идентификатор файла в телеграм.
 
@@ -55,6 +56,7 @@ class FkFile(TgFile):
         """
         return self._file_id
 
+    @override
     async def file_link(self) -> FileLink:
         """Идентификатор файла в телеграм.
 

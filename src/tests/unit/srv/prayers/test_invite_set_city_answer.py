@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
+from typing import override
 
 import httpx
 
@@ -32,6 +33,7 @@ from srv.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutC
 
 class FkOrigin(TgAnswer):
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         raise UserHasNotCityIdError
 

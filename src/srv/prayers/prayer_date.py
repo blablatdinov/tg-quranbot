@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
 from contextlib import suppress
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 import pytz
@@ -48,6 +48,7 @@ class FkPrayerDate(PrayerDate):
 
     _origin: datetime.date
 
+    @override
     def parse(self, msg_text: str) -> datetime.date:
         """Парсинг из текста сообщения.
 
@@ -63,6 +64,7 @@ class FkPrayerDate(PrayerDate):
 class PrayersRequestDate(PrayerDate):
     """Дата намаза."""
 
+    @override
     def parse(self, msg_text: str) -> datetime.date:
         """Парсинг из текста сообщения.
 
@@ -87,6 +89,7 @@ class PrayersRequestDate(PrayerDate):
 class PrayersMarkAsDate(PrayerDate):
     """Дата намаза при редактировании."""
 
+    @override
     def parse(self, msg_text: str) -> datetime.date:
         """Парсинг из текста сообщения.
 

@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from collections.abc import Sequence
-from typing import final, overload
+from typing import final, overload, override
 
 import attrs
 
@@ -36,6 +36,7 @@ class AdminChatIds(Sequence[int]):
     _settings: Settings
 
     @overload
+    @override
     def __getitem__(self, idx: int) -> int:
         """Тип для индекса.
 
@@ -43,12 +44,14 @@ class AdminChatIds(Sequence[int]):
         """
 
     @overload
+    @override
     def __getitem__(self, idx: slice) -> Sequence[int]:
         """Тип для среза.
 
         :param idx: slice
         """
 
+    @override
     def __getitem__(self, idx: int | slice) -> int | Sequence[int]:
         """Получить элемент.
 
@@ -59,6 +62,7 @@ class AdminChatIds(Sequence[int]):
             int(chat_id.strip()) for chat_id in self._settings.ADMIN_CHAT_IDS.split(',')
         ][idx]
 
+    @override
     def __len__(self) -> int:
         """Кол-во администраторов.
 
@@ -66,6 +70,7 @@ class AdminChatIds(Sequence[int]):
         """
         return len(self._settings.ADMIN_CHAT_IDS.split(','))
 
+    @override
     def count(self, search_value: int) -> int:
         """Кол-во элементов.
 

@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 import httpx
@@ -50,6 +50,7 @@ class DebugParamInterface(Protocol):
 class AppendDebugInfoAnswer(TgAnswer):
     """Ответ с отладочной информацией."""
 
+    @override
     def __init__(self, debug_mode: bool, answer: TgAnswer, *debug_params: DebugParamInterface) -> None:
         """Конструктор класса.
 
@@ -61,6 +62,7 @@ class AppendDebugInfoAnswer(TgAnswer):
         self._origin = answer
         self._debug_params = debug_params
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
@@ -104,6 +106,7 @@ class AppendDebugInfoAnswer(TgAnswer):
 class UpdateIdDebugParam(DebugParamInterface):
     """Отладочная информация с идентификатором обновления."""
 
+    @override
     async def debug_value(self, update: Update) -> str:
         """Идентификатор обновления.
 
@@ -118,6 +121,7 @@ class UpdateIdDebugParam(DebugParamInterface):
 class TimeDebugParam(DebugParamInterface):
     """Отладочная информация с временем."""
 
+    @override
     async def debug_value(self, update: Update) -> str:
         """Время.
 
@@ -132,6 +136,7 @@ class TimeDebugParam(DebugParamInterface):
 class ChatIdDebugParam(DebugParamInterface):
     """Отладочная информация с идентификатором чата."""
 
+    @override
     async def debug_value(self, update: Update) -> str:
         """Идентификатор чата.
 
@@ -149,6 +154,7 @@ class CommitHashDebugParam(DebugParamInterface):
 
     _commit_hash: str
 
+    @override
     async def debug_value(self, update: Update) -> str:
         """Хэш коммита.
 

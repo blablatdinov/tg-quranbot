@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import re
-from typing import SupportsInt, final
+from typing import SupportsInt, final, override
 
 import attrs
 from pyeo import elegant
@@ -38,6 +38,7 @@ class IntableRegularExpression(SupportsInt):
 
     _text_for_searching: SupportsStr
 
+    @override
     def __int__(self) -> int:
         """Приведение к числу.
 

@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Final, final
+from typing import Final, final, override
 
 import attrs
 from databases import Database
@@ -45,6 +45,7 @@ class UserCityId(AsyncSupportsStr):
     _pgsql: Database
     _chat_id: TgChatId
 
+    @override
     async def to_str(self) -> str:
         """Строковое представление.
 
@@ -74,6 +75,7 @@ class PrayersText(AsyncSupportsStr):
     _city_id: AsyncSupportsStr
     _message_text: SupportsStr
 
+    @override
     async def to_str(self) -> str:
         """Строковое представление.
 

@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from collections.abc import Iterable
 from contextlib import suppress
-from typing import Generic, Protocol, TypeVar, final
+from typing import Generic, Protocol, TypeVar, final, override
 
 import attrs
 import jsonpath_ng
@@ -65,6 +65,7 @@ class JsonPathValue(JsonPath, Generic[_ET_co]):
     _json: dict
     _json_path: SupportsStr
 
+    @override
     def evaluate(self) -> _ET_co:
         """Получить значение.
 
@@ -86,6 +87,7 @@ class MatchManyJsonPath(JsonPath, Generic[_ET_co]):
     _json: dict
     _json_paths: Iterable[SupportsStr]
 
+    @override
     def evaluate(self) -> _ET_co:
         """Получить значение.
 
@@ -110,6 +112,7 @@ class ErrRedirectJsonPath(JsonPath, Generic[_ET_co]):
     _origin: JsonPath
     _to_error: Exception
 
+    @override
     def evaluate(self) -> _ET_co:
         """Получить значение.
 

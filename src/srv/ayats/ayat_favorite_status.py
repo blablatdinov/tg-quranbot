@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import TypeAlias, final
+from typing import TypeAlias, final, override
 
 import attrs
 from pyeo import elegant
@@ -54,6 +54,7 @@ class AyatFavoriteStatus(FavoriteAyatStatus):
 
     _source: _ChangeAyatStatusCommand
 
+    @override
     def ayat_id(self) -> AyatId:
         """Идентификатор аята.
 
@@ -61,6 +62,7 @@ class AyatFavoriteStatus(FavoriteAyatStatus):
         """
         return int(IntableRegularExpression(self._source))
 
+    @override
     def change_to(self) -> bool:
         """Целевое значение.
 

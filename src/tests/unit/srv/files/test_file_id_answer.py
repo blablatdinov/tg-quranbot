@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import final, override
 
 import httpx
 from pyeo import elegant
@@ -35,6 +35,7 @@ from srv.files.file_id_answer import TelegramFileIdAnswer
 @final
 class FakeAnswer(TgAnswer):
 
+    @override
     async def build(self, update):
         return [
             httpx.Request('GET', 'https://some.domain'),

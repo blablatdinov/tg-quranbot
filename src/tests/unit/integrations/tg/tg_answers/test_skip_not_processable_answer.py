@@ -20,6 +20,8 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from typing import override
+
 import httpx
 
 from app_types.update import FkUpdate, Update
@@ -30,6 +32,7 @@ from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 
 class _NotProcessableAnswer(TgAnswer):
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         raise NotProcessableUpdateError
 

@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from databases import Database
@@ -39,6 +39,7 @@ class ActiveUsers(AsyncListable):
 
     _pgsql: Database
 
+    @override
     async def to_list(self) -> list[User]:
         """Список пользователей.
 
@@ -65,6 +66,7 @@ class PgUsers(AsyncListable):
     _pgsql: Database
     _chat_ids: list[int]
 
+    @override
     async def to_list(self) -> list[User]:
         """Список пользователей.
 
@@ -107,6 +109,7 @@ class PgUpdatedUsersStatus(UpdatedUsersStatus):
     _pgsql: Database
     _users: AsyncListable[User]
 
+    @override
     async def update(self, to: bool) -> None:
         """Обновление.
 

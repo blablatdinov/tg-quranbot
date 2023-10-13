@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import uuid
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from databases import Database
@@ -52,6 +52,7 @@ class FkCity(City):
     _city_id: uuid.UUID
     _name: str
 
+    @override
     async def city_id(self) -> uuid.UUID:
         """Идентификатор города.
 
@@ -59,6 +60,7 @@ class FkCity(City):
         """
         return self._city_id
 
+    @override
     async def name(self) -> str:
         """Имя города.
 
@@ -76,6 +78,7 @@ class CityIdByName(AsyncSupportsStr):
     _name: AsyncSupportsStr
     _pgsql: Database
 
+    @override
     async def to_str(self) -> str:
         """Строковое представление.
 
@@ -121,6 +124,7 @@ class PgCity(City):
         """
         return cls(CityIdByName(NominatimCityName(location), pgsql), pgsql)
 
+    @override
     async def city_id(self) -> uuid.UUID:
         """Идентификатор города.
 
@@ -128,6 +132,7 @@ class PgCity(City):
         """
         return uuid.UUID(await self._city_id.to_str())
 
+    @override
     async def name(self) -> str:
         """Имя города.
 

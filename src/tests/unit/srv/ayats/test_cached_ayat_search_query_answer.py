@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
 from contextlib import suppress
-from typing import final
+from typing import final, override
 
 import pytest
 from pyeo import elegant
@@ -40,6 +40,7 @@ class FakeError(Exception):
 @final
 class TgAnswerFake(TgAnswer):
 
+    @override
     async def build(self, update):
         raise FakeError
 

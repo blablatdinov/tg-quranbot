@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import final, override
 
 import attrs
 from loguru import logger
@@ -33,6 +33,7 @@ from srv.ayats.text_search_query import TextSearchQuery
 class CachedTextSearchQuery(TextSearchQuery):
     """Закэшированный запрос."""
 
+    @override
     def __init__(self, origin: TextSearchQuery) -> None:
         """Ctor.
 
@@ -41,6 +42,7 @@ class CachedTextSearchQuery(TextSearchQuery):
         self._origin = origin
         self._cached = ''
 
+    @override
     async def write(self, query: str) -> None:
         """Запись.
 
@@ -49,6 +51,7 @@ class CachedTextSearchQuery(TextSearchQuery):
         await self._origin.write(query)
         self._cached = query
 
+    @override
     async def read(self) -> str:
         """Чтение.
 
@@ -70,6 +73,7 @@ class AyatTextSearchQuery(TextSearchQuery):
 
     _key_template = '{0}:ayat_search_query'
 
+    @override
     async def write(self, query: str) -> None:
         """Запись.
 
@@ -80,6 +84,7 @@ class AyatTextSearchQuery(TextSearchQuery):
         await self._redis.set(key, query)
         logger.info('Key: {0} wrote'.format(self._key_template.format(self._chat_id)))
 
+    @override
     async def read(self) -> str:
         """Чтение.
 

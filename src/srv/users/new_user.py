@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 from asyncpg import ForeignKeyViolationError, UniqueViolationError
@@ -48,6 +48,7 @@ class NewUser(Protocol):
 class FkNewUser(NewUser):
     """Фейк нового пользователя."""
 
+    @override
     async def create(self) -> None:
         """Создание."""
 
@@ -76,6 +77,7 @@ class PgNewUser(NewUser):
             pgsql,
         )
 
+    @override
     async def create(self) -> None:
         """Создание.
 

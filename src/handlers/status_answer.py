@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import time
-from typing import final
+from typing import final, override
 
 import attrs
 import httpx
@@ -44,6 +44,7 @@ class StatusAnswer(TgAnswer):
     _pgsql: Database
     _redis: Redis
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

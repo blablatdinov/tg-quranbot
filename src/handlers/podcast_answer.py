@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import Protocol, final, override
 
 import attrs
 import httpx
@@ -66,6 +66,7 @@ class _RandomPodcastId(_PodcastId):
 
     _pgsql: Database
 
+    @override
     async def fetch(self, update: Update) -> int:
         return await self._pgsql.fetch_val('SELECT podcast_id FROM podcasts ORDER BY RANDOM()')
 
@@ -77,6 +78,7 @@ class _ConcretePodcastId(_PodcastId):
 
     _pgsql: Database
 
+    @override
     async def fetch(self, update: Update) -> int:
         return int(str(MessageText(update))[8:])
 
@@ -138,6 +140,7 @@ class PodcastAnswer(TgAnswer):
             show_podcast_id=False,
         )
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Трансформация в ответ.
 

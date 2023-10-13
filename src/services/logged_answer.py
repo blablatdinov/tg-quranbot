@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-from typing import final
+from typing import final, override
 
 import attrs
 from pyeo import elegant
@@ -40,6 +40,7 @@ class LoggedAnswer(SendableInterface):
     _origin: SendableInterface
     _event_sink: SinkInterface
 
+    @override
     async def send(self, update: Update) -> list[dict]:
         """Отправка.
 

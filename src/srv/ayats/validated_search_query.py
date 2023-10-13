@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
+from typing import final, override
 
 import attrs
 from pyeo import elegant
@@ -37,6 +37,7 @@ class ValidatedSearchQuery(SearchQuery):
 
     _origin: SearchQuery
 
+    @override
     def sura(self) -> SuraId:
         """Номер суры.
 
@@ -50,6 +51,7 @@ class ValidatedSearchQuery(SearchQuery):
             raise SuraNotFoundError
         return sura_num
 
+    @override
     def ayat(self) -> AyatNum:
         """Номер аята.
 
