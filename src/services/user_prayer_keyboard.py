@@ -77,7 +77,7 @@ class UserPrayersKeyboard(KeyboardInterface):
             await self._pgsql.execute(query, {
                 'chat_id': int(self._chat_id),
                 'prayer_group_id': prayer_group_id,
-                'date': self._date.parse(str(MessageText(update))),
+                'date': self._date.parse(MessageText(update)),
             })
             prayers = await self._exists_prayers(update)
         return json.dumps({
@@ -103,6 +103,6 @@ class UserPrayersKeyboard(KeyboardInterface):
             ORDER BY pau.prayer_at_user_id
         """
         return await self._pgsql.fetch_all(select_query, {
-            'date': self._date.parse(str(MessageText(update))),
+            'date': self._date.parse(MessageText(update)),
             'chat_id': int(self._chat_id),
         })

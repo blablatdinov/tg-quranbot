@@ -95,13 +95,13 @@ class PrayersText(AsyncSupportsStr):
                 ARRAY_POSITION(ARRAY['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
         """
         rows = await self._pgsql.fetch_all(query, {
-            'date': self._date.parse(str(self._message_text)),
+            'date': self._date.parse(self._message_text),
             'city_id': await self._city_id.to_str(),
         })
         if not rows:
             raise PrayersNotFoundError(
                 await CityNameById(self._pgsql, self._city_id).to_str(),
-                self._date.parse(str(self._message_text)),
+                self._date.parse(self._message_text),
             )
         template = '\n'.join([
             'Время намаза для г. {city_name} ({date})\n',

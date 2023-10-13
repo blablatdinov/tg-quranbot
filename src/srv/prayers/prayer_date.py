@@ -28,15 +28,17 @@ import attrs
 import pytz
 from pyeo import elegant
 
+from app_types.stringable import SupportsStr
+
 
 @elegant
 class PrayerDate(Protocol):
     """Дата времен намаза."""
 
-    def parse(self, msg_text: str) -> datetime.date:
+    def parse(self, msg_text: SupportsStr) -> datetime.date:
         """Парсинг из текста сообщения.
 
-        :param msg_text: str
+        :param msg_text: SupportsStr
         """
 
 
@@ -49,10 +51,10 @@ class FkPrayerDate(PrayerDate):
     _origin: datetime.date
 
     @override
-    def parse(self, msg_text: str) -> datetime.date:
+    def parse(self, msg_text: SupportsStr) -> datetime.date:
         """Парсинг из текста сообщения.
 
-        :param msg_text: str
+        :param msg_text: SupportsStr
         :return: datetime.date
         """
         return self._origin
@@ -65,14 +67,14 @@ class PrayersRequestDate(PrayerDate):
     """Дата намаза."""
 
     @override
-    def parse(self, msg_text: str) -> datetime.date:
+    def parse(self, msg_text: SupportsStr) -> datetime.date:
         """Парсинг из текста сообщения.
 
-        :param msg_text: str
+        :param msg_text: SupportsStr
         :return: datetime.date
         :raises ValueError: время намаза не соответствует формату
         """
-        date = msg_text.split(' ')[-1]
+        date = str(msg_text).split(' ')[-1]
         if date == 'намаза':
             return datetime.datetime.now(pytz.timezone('Europe/Moscow')).date()
         formats = ('%d.%m.%Y', '%d-%m-%Y')  # noqa: WPS323 not string formatting
@@ -90,12 +92,12 @@ class PrayersMarkAsDate(PrayerDate):
     """Дата намаза при редактировании."""
 
     @override
-    def parse(self, msg_text: str) -> datetime.date:
+    def parse(self, msg_text: SupportsStr) -> datetime.date:
         """Парсинг из текста сообщения.
 
-        :param msg_text: str
+        :param msg_text: SupportsStr
         :return: datetime.date
         """
-        msg_first_line = msg_text.split('\n')[0]
+        msg_first_line = str(msg_text).split('\n')[0]
         date = msg_first_line.split(' ')[-1][1:-1]
         return datetime.datetime.strptime(date, '%d.%m.%Y').date()  # noqa: WPS323 not string formatting
