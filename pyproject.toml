@@ -103,6 +103,9 @@ max_line_length = 120
 
 [tool.ruff]
 select = ["ALL"]
+fixable = [
+  "F401",   # Unused import
+]
 target-version = "py311"  # TODO: up to 3.12
 ignore = [
   "DTZ005",  # TODO
