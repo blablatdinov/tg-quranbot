@@ -31,7 +31,6 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
-from integrations.tg.message_text import MessageText
 from services.answers.answer import KeyboardInterface
 from srv.prayers.prayer_date import PrayerDate
 
@@ -77,7 +76,7 @@ class UserPrayersKeyboard(KeyboardInterface):
             await self._pgsql.execute(query, {
                 'chat_id': int(self._chat_id),
                 'prayer_group_id': prayer_group_id,
-                'date': self._date.parse(MessageText(update)),
+                'date': await self._date.parse(update),
             })
             prayers = await self._exists_prayers(update)
         return json.dumps({
@@ -103,6 +102,6 @@ class UserPrayersKeyboard(KeyboardInterface):
             ORDER BY pau.prayer_at_user_id
         """
         return await self._pgsql.fetch_all(select_query, {
-            'date': self._date.parse(MessageText(update)),
+            'date': await self._date.parse(update),
             'chat_id': int(self._chat_id),
         })

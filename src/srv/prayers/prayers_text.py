@@ -26,7 +26,8 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.stringable import AsyncSupportsStr, SupportsStr
+from app_types.stringable import AsyncSupportsStr
+from app_types.update import Update
 from exceptions.content_exceptions import UserHasNotCityIdError
 from exceptions.prayer_exceptions import PrayersNotFoundError
 from integrations.nominatim import CityNameById
@@ -73,7 +74,7 @@ class PrayersText(AsyncSupportsStr):
     _pgsql: Database
     _date: PrayerDate
     _city_id: AsyncSupportsStr
-    _message_text: SupportsStr
+    _update: Update
 
     @override
     async def to_str(self) -> str:
@@ -95,13 +96,13 @@ class PrayersText(AsyncSupportsStr):
                 ARRAY_POSITION(ARRAY['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
         """
         rows = await self._pgsql.fetch_all(query, {
-            'date': self._date.parse(self._message_text),
+            'date': await self._date.parse(self._update),
             'city_id': await self._city_id.to_str(),
         })
         if not rows:
             raise PrayersNotFoundError(
                 await CityNameById(self._pgsql, self._city_id).to_str(),
-                self._date.parse(self._message_text),
+                await self._date.parse(self._update),
             )
         template = '\n'.join([
             'Время намаза для г. {city_name} ({date})\n',

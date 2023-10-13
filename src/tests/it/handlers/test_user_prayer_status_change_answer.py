@@ -168,7 +168,7 @@ async def test_prayers_text(pgsql):
         pgsql,
         FkPrayerDate(datetime.datetime(2023, 12, 19, tzinfo=pytz.timezone('Europe/Moscow'))),
         FkAsyncStr('080fd3f4-678e-4a1c-97d2-4460700fe7ac'),
-        'Время намаза',
+        FkUpdate('{"message":{"text":"Время намаза"}}'),
     ).to_str()
 
     assert got == '\n'.join([
@@ -180,3 +180,46 @@ async def test_prayers_text(pgsql):
         'Ахшам: 15:07',
         'Ястү: 17:04',
     ])
+
+
+@pytest.mark.usefixtures('_generated_prayers')
+async def test_without_message_text(pgsql, rds):
+    """Случай без текста в update.
+
+    Почему-то телеграм не присылает текст сообщения спустя время
+    """
+    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds).build(
+        FkUpdate(json.dumps({
+            'callback_query': {
+                'from': {'id': 905},
+                'message': {
+                    'message_id': 496344,
+                    'chat': {'id': 905},
+                    'date': 0,
+                },
+                'chat_instance': '-8563585384798880073',
+                'data': 'mark_readed(5)',
+            },
+        })),
+    )
+
+    assert got[0].url.params['text'] == '\n'.join([
+        'Время намаза для г. Kazan (19.12.2023)\n',
+        'Иртәнге: 05:43',
+        'Восход: 08:02',
+        'Өйлә: 12:00',
+        'Икенде: 13:21',
+        'Ахшам: 15:07',
+        'Ястү: 17:04',
+    ])
+    assert json.loads(got[0].url.params['reply_markup']) == {
+        'inline_keyboard': [
+            [
+                {'callback_data': 'mark_readed(1)', 'text': '❌'},
+                {'callback_data': 'mark_readed(3)', 'text': '❌'},
+                {'callback_data': 'mark_readed(4)', 'text': '❌'},
+                {'callback_data': 'mark_not_readed(5)', 'text': '✅'},
+                {'callback_data': 'mark_readed(6)', 'text': '❌'},
+            ],
+        ],
+    }

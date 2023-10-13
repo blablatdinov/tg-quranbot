@@ -21,16 +21,18 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
+import json
 import re
 
 import pytest
 
+from app_types.update import FkUpdate
 from srv.prayers.prayer_date import PrayersRequestDate
 
 
-def test(freezer):
+async def test(freezer):
     freezer.move_to('2023-10-11')
-    got = PrayersRequestDate().parse('Время намаза')
+    got = await PrayersRequestDate().parse(FkUpdate('{"message":{"text":"Время намаза"}}'))
 
     assert got == datetime.date(2023, 10, 11)
 
@@ -39,13 +41,15 @@ def test(freezer):
     ('Время намаза 10.10.2023', datetime.date(2023, 10, 10)),
     ('Время намаза 15-10-2023', datetime.date(2023, 10, 15)),
 ])
-def test_with_date(query, expected):
-    got = PrayersRequestDate().parse(query)
+async def test_with_date(query, expected):
+    got = await PrayersRequestDate().parse(FkUpdate(
+        json.dumps({'message': {'text': query}}),
+    ))
 
     assert got == expected
 
 
-def test_fail_format():
+async def test_fail_format():
     error_text = re.escape(
         ' '.join([
             "time data 'invalid-date' does not match",
@@ -53,4 +57,4 @@ def test_fail_format():
         ]),
     )
     with pytest.raises(ValueError, match=error_text):
-        PrayersRequestDate().parse('Время намаза invalid-date')
+        await PrayersRequestDate().parse(FkUpdate('{"message":{"text":"Время намаза invalid-date"}}'))

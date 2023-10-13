@@ -26,19 +26,23 @@ from typing import Protocol, final, override
 
 import attrs
 import pytz
+from databases import Database
 from pyeo import elegant
 
-from app_types.stringable import SupportsStr
+from app_types.update import Update
+from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
+from integrations.tg.message_text import MessageText
+from srv.prayers.prayer_status import PrayerStatus
 
 
 @elegant
 class PrayerDate(Protocol):
     """Дата времен намаза."""
 
-    def parse(self, msg_text: SupportsStr) -> datetime.date:
+    async def parse(self, update: Update) -> datetime.date:
         """Парсинг из текста сообщения.
 
-        :param msg_text: SupportsStr
+        :param update: Update
         """
 
 
@@ -51,10 +55,10 @@ class FkPrayerDate(PrayerDate):
     _origin: datetime.date
 
     @override
-    def parse(self, msg_text: SupportsStr) -> datetime.date:
+    async def parse(self, update: Update) -> datetime.date:
         """Парсинг из текста сообщения.
 
-        :param msg_text: SupportsStr
+        :param update: Update
         :return: datetime.date
         """
         return self._origin
@@ -67,14 +71,14 @@ class PrayersRequestDate(PrayerDate):
     """Дата намаза."""
 
     @override
-    def parse(self, msg_text: SupportsStr) -> datetime.date:
+    async def parse(self, update: Update) -> datetime.date:
         """Парсинг из текста сообщения.
 
-        :param msg_text: SupportsStr
+        :param update: Update
         :return: datetime.date
         :raises ValueError: время намаза не соответствует формату
         """
-        date = str(msg_text).split(' ')[-1]
+        date = str(MessageText(update)).split(' ')[-1]
         if date == 'намаза':
             return datetime.datetime.now(pytz.timezone('Europe/Moscow')).date()
         formats = ('%d.%m.%Y', '%d-%m-%Y')  # noqa: WPS323 not string formatting
@@ -88,16 +92,49 @@ class PrayersRequestDate(PrayerDate):
 @final
 @attrs.define(frozen=True)
 @elegant
+class MessageHasNotTextSafeDate(PrayerDate):
+    """Декоратор для обработки update без текста сообщеиня.
+
+    Почему-то телеграм не присылает текст сообщения спустя время
+    """
+
+    _origin: PrayerDate
+    _pgsql: Database
+
+    @override
+    async def parse(self, update: Update) -> datetime.date:
+        """Парсинг из текста сообщения.
+
+        :param update: Update
+        :return: datetime.date
+        """
+        try:
+            return await self._origin.parse(update)
+        except MessageTextNotFoundError:
+            query = """
+                SELECT prayers.day
+                FROM prayers_at_user
+                INNER JOIN prayers ON prayers_at_user.prayer_id = prayers.prayer_id
+                WHERE prayer_at_user_id = :prayer_at_user_id
+            """
+            return await self._pgsql.fetch_val(query, {
+                'prayer_at_user_id': PrayerStatus.update_ctor(update).user_prayer_id(),
+            })
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
 class PrayersMarkAsDate(PrayerDate):
     """Дата намаза при редактировании."""
 
     @override
-    def parse(self, msg_text: SupportsStr) -> datetime.date:
+    async def parse(self, update: Update) -> datetime.date:
         """Парсинг из текста сообщения.
 
-        :param msg_text: SupportsStr
+        :param update: Update
         :return: datetime.date
         """
-        msg_first_line = str(msg_text).split('\n')[0]
+        msg_first_line = str(MessageText(update)).split('\n')[0]
         date = msg_first_line.split(' ')[-1][1:-1]
         return datetime.datetime.strptime(date, '%d.%m.%Y').date()  # noqa: WPS323 not string formatting
