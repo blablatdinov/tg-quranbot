@@ -30,7 +30,6 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 from integrations.tg.message_text import MessageText
 from srv.prayers.prayer_status import PrayerStatus
 
@@ -92,39 +91,6 @@ class PrayersRequestDate(PrayerDate):
 @final
 @attrs.define(frozen=True)
 @elegant
-class MessageHasNotTextSafeDate(PrayerDate):
-    """Декоратор для обработки update без текста сообщеиня.
-
-    Почему-то телеграм не присылает текст сообщения спустя время
-    """
-
-    _origin: PrayerDate
-    _pgsql: Database
-
-    @override
-    async def parse(self, update: Update) -> datetime.date:
-        """Парсинг из текста сообщения.
-
-        :param update: Update
-        :return: datetime.date
-        """
-        try:
-            return await self._origin.parse(update)
-        except MessageTextNotFoundError:
-            query = """
-                SELECT prayers.day
-                FROM prayers_at_user
-                INNER JOIN prayers ON prayers_at_user.prayer_id = prayers.prayer_id
-                WHERE prayer_at_user_id = :prayer_at_user_id
-            """
-            return await self._pgsql.fetch_val(query, {
-                'prayer_at_user_id': PrayerStatus.update_ctor(update).user_prayer_id(),
-            })
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
 class PrayersMarkAsDate(PrayerDate):
     """Дата намаза при редактировании."""
 
@@ -138,3 +104,29 @@ class PrayersMarkAsDate(PrayerDate):
         msg_first_line = str(MessageText(update)).split('\n')[0]
         date = msg_first_line.split(' ')[-1][1:-1]
         return datetime.datetime.strptime(date, '%d.%m.%Y').date()  # noqa: WPS323 not string formatting
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class DateFromUserPrayerId(PrayerDate):
+    """Дата намаза по идентификатору времени намаза."""
+
+    _pgsql: Database
+
+    @override
+    async def parse(self, update: Update) -> datetime.date:
+        """Парсинг из идентификатора времени намаза.
+
+        :param update: Update
+        :return: datetime.date
+        """
+        query = """
+            SELECT prayers.day
+            FROM prayers_at_user
+            INNER JOIN prayers ON prayers_at_user.prayer_id = prayers.prayer_id
+            WHERE prayer_at_user_id = :prayer_at_user_id
+        """
+        return await self._pgsql.fetch_val(query, {
+            'prayer_at_user_id': PrayerStatus.update_ctor(update).user_prayer_id(),
+        })

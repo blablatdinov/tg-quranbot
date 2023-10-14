@@ -203,6 +203,7 @@ async def test_without_message_text(pgsql, rds):
         })),
     )
 
+    assert got[0].url.path == '/sendMessage'
     assert got[0].url.params['text'] == '\n'.join([
         'Время намаза для г. Kazan (19.12.2023)\n',
         'Иртәнге: 05:43',
