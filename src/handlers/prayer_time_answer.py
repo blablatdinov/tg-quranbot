@@ -31,8 +31,8 @@ from redis.asyncio import Redis
 
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
+from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 from integrations.tg.message_id import MessageId
-from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerMarkup,
@@ -45,9 +45,24 @@ from integrations.tg.tg_answers import (
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
-from srv.prayers.prayer_date import PrayerDate, PrayersMarkAsDate, PrayersRequestDate
+from srv.prayers.prayer_date import DateFromUserPrayerId, PrayerDate, PrayersMarkAsDate, PrayersRequestDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 from srv.prayers.prayers_text import PrayersText, UserCityId
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class _MessageNotFoundSafeAnswer(TgAnswer):
+
+    _origin: TgAnswer
+    _new_message_answer: TgAnswer
+
+    async def build(self, update: Update) -> list[httpx.Request]:
+        try:
+            return await self._origin.build(update)
+        except MessageTextNotFoundError:
+            return await self._new_message_answer.build(update)
 
 
 @final
@@ -109,13 +124,23 @@ class PrayerTimeAnswer(TgAnswer):
         :param redis: Redis
         :return: TgAnswer
         """
-        return cls(
-            pgsql,
-            TgAnswerToSender(TgKeyboardEditAnswer(empty_answer)),
-            admin_chat_ids,
-            empty_answer,
-            redis,
-            PrayersMarkAsDate(),
+        return _MessageNotFoundSafeAnswer(
+            cls(
+                pgsql,
+                TgAnswerToSender(TgKeyboardEditAnswer(empty_answer)),
+                admin_chat_ids,
+                empty_answer,
+                redis,
+                PrayersMarkAsDate(),
+            ),
+            cls(
+                pgsql,
+                TgAnswerToSender(TgMessageAnswer(empty_answer)),
+                admin_chat_ids,
+                empty_answer,
+                redis,
+                DateFromUserPrayerId(pgsql),
+            ),
         )
 
     @override
@@ -135,7 +160,7 @@ class PrayerTimeAnswer(TgAnswer):
                                 self._pgsql,
                                 self._prayers_date,
                                 UserCityId(self._pgsql, TgChatId(update)),
-                                MessageText(update),
+                                update,
                             ),
                         ),
                         UserPrayersKeyboard(

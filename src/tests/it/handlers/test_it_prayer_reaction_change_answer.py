@@ -27,7 +27,7 @@ import uuid
 import pytest
 
 from app_types.update import FkUpdate
-from handlers.prayer_reaction_change_answer import PrayerReactionChangeAnswer
+from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
 from integrations.tg.tg_answers import FkAnswer
 
 
@@ -75,7 +75,7 @@ async def _existed_reaction(pgsql):
 ])
 async def test(pgsql, rds, reaction, podcast_id, button1, button2):
     debug = True
-    got = await PrayerReactionChangeAnswer(debug, FkAnswer(), rds, pgsql).build(FkUpdate(
+    got = await PodcastReactionChangeAnswer(debug, FkAnswer(), rds, pgsql).build(FkUpdate(
         json.dumps({
             'chat': {'id': 1},
             'callback_query': {'data': '{0}({1})'.format(reaction, podcast_id)},

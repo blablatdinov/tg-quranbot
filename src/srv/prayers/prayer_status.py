@@ -26,6 +26,8 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
+from app_types.update import Update
+from integrations.tg.callback_query import CallbackQueryData
 from services.regular_expression import IntableRegularExpression
 
 
@@ -47,6 +49,15 @@ class PrayerStatus(PrayerStatusInterface):
     """Объект, рассчитывающий данные кнопки для изменения статуса прочитанности намаза."""
 
     _source: str
+
+    @classmethod
+    def update_ctor(cls, update: Update) -> PrayerStatusInterface:
+        """Конструктор для update.
+
+        :param update: Update
+        :return: PrayerStatusInterface
+        """
+        return cls(str(CallbackQueryData(update)))
 
     @override
     def user_prayer_id(self) -> int:
@@ -85,7 +96,7 @@ class UserPrayerStatus(UserPrayerStatusInterface):
     _pgsql: Database
 
     @override
-    async def change(self, prayer_status: PrayerStatus) -> None:
+    async def change(self, prayer_status: PrayerStatusInterface) -> None:
         """Изменить статус прочитанности.
 
         :param prayer_status: PrayerStatus

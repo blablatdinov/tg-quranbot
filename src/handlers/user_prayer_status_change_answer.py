@@ -30,7 +30,6 @@ from redis.asyncio import Redis
 
 from app_types.update import Update
 from handlers.prayer_time_answer import PrayerTimeAnswer
-from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers.interface import TgAnswer
 from srv.prayers.prayer_status import PrayerStatus, UserPrayerStatus
 
@@ -52,7 +51,7 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        prayer_status = PrayerStatus(str(CallbackQueryData(update)))
+        prayer_status = PrayerStatus.update_ctor(update)
         await UserPrayerStatus(self._pgsql).change(prayer_status)
         return await PrayerTimeAnswer.edited_markup_ctor(
             self._pgsql,

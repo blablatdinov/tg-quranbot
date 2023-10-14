@@ -31,7 +31,7 @@ from handlers.favorites_answer import FavoriteAyatsAnswer
 from handlers.full_start_answer import FullStartAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.podcast_answer import PodcastAnswer
-from handlers.prayer_reaction_change_answer import PrayerReactionChangeAnswer
+from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
 from handlers.search_ayat_by_numbers_answer import SearchAyatByNumbersAnswer
@@ -177,7 +177,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(like|dislike)',
-                    PrayerReactionChangeAnswer(DebugMode(self._settings), empty_answer, self._redis, self._pgsql),
+                    PodcastReactionChangeAnswer(DebugMode(self._settings), empty_answer, self._redis, self._pgsql),
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getAyat',
