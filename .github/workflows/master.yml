@@ -116,3 +116,5 @@ jobs:
         run: .venv/bin/ruff check src && .venv/bin/flake8 src && .venv/bin/refurb src
       - name: Check types with mypy
         run: .venv/bin/mypy src
+      - name: sqlfluff
+        run: .venv/bin/sqlfluff lint migrations --dialect postgres

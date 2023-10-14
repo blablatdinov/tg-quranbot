@@ -11,12 +11,11 @@ ALTER TABLE prayers ADD COLUMN day_id date;
 UPDATE prayers SET day_id = day;
 
 INSERT INTO prayer_days (date)
-SELECT datetime::date
+SELECT i::date
 FROM generate_series(
     '2019-12-01'::date,
     '2023-12-31'::date,
     '1 day'::interval
-) AS datetime;
-SELECT * FROM prayer_days;
+) AS t (i);
 
 ALTER TABLE ONLY prayers ADD CONSTRAINT prayers_day_id_fkey FOREIGN KEY (day_id) REFERENCES prayer_days (date);
