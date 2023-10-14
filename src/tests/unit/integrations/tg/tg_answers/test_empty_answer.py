@@ -28,3 +28,7 @@ async def test():
     got = await TgEmptyAnswer('token').build(FkUpdate())
 
     assert got[0].url == 'https://api.telegram.org/bottoken/'
+
+
+async def test_str():
+    assert 'superSecret' not in str(TgEmptyAnswer('superSecret'))
