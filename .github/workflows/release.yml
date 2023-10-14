@@ -90,8 +90,6 @@ jobs:
       run: .venv/bin/ruff check src && .venv/bin/flake8 src && .venv/bin/refurb src
     - name: Check types with mypy
       run: .venv/bin/mypy src
-    - name: Run tests with pytest
-      run: .venv/bin/pytest src --ignore=src/tests/e2e --doctest-modules --cov --cov-report xml --cov-fail-under=95
     - name: Run e2e tests
       run: .venv/bin/pytest src/tests/e2e
 

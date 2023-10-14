@@ -29,6 +29,7 @@ lint:
 	poetry run flake8 src
 	poetry run refurb src
 	poetry run mypy src
+	poetry run sqlfluff lint migrations --dialect postgres
 
 test:
 	poetry run pytest src --ignore=src/tests/e2e --cov=src --cov-report html --cov-fail-under=95
