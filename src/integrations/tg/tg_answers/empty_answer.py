@@ -26,14 +26,15 @@ import attrs
 import httpx
 from pyeo import elegant
 
+from app_types.stringable import SupportsStr
 from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, repr=False)
 @elegant
-class TgEmptyAnswer(TgAnswer):
+class TgEmptyAnswer(TgAnswer, SupportsStr):
     """Пустой ответ."""
 
     _token: str
@@ -46,3 +47,11 @@ class TgEmptyAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         return [httpx.Request('GET', httpx.URL('https://api.telegram.org/bot{0}/'.format(self._token)))]
+
+    @override
+    def __str__(self) -> str:
+        """Приведение к строке.
+
+        :return: str
+        """
+        return 'TgEmptyAnswer(token=...)'
