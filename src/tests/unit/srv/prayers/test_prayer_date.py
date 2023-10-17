@@ -30,8 +30,8 @@ from app_types.update import FkUpdate
 from srv.prayers.prayer_date import PrayersRequestDate
 
 
-async def test(freezer):
-    freezer.move_to('2023-10-11')
+async def test(time_machine):
+    time_machine.move_to('2023-10-11')
     got = await PrayersRequestDate().parse(FkUpdate('{"message":{"text":"Время намаза"}}'))
 
     assert got == datetime.date(2023, 10, 11)
