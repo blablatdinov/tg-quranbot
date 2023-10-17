@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
+from itertools import chain
 
 import httpx
 import pytest
@@ -75,11 +76,9 @@ def test_prayer_times(tg_client, bot_name, expected_message, wait_until):
 def test_mark_as_readed(tg_client, bot_name, expected_message, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     messages = wait_until(tg_client, 5)
-    [
-        button
-        for button_row in messages[0].get_buttons()
-        for button in button_row
-    ][1].click()
+    list(chain.from_iterable(
+        button_row for button_row in messages[0].get_buttons()
+    ))[1].click()
     messages = wait_until(tg_client, 5)
 
     assert [
@@ -99,17 +98,13 @@ def test_mark_as_readed(tg_client, bot_name, expected_message, wait_until):
 def test_mark_not_readed(tg_client, bot_name, expected_message, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     messages = wait_until(tg_client, 5)
-    [
-        button
-        for button_row in messages[0].get_buttons()
-        for button in button_row
-    ][1].click()
+    list(chain.from_iterable(
+        button_row for button_row in messages[0].get_buttons()
+    ))[1].click()
     messages = wait_until(tg_client, 5)
-    [
-        button
-        for button_row in messages[0].get_buttons()
-        for button in button_row
-    ][1].click()
+    list(chain.from_iterable(
+        button_row for button_row in messages[0].get_buttons()
+    ))[1].click()
     messages = wait_until(tg_client, 5)
 
     assert [
