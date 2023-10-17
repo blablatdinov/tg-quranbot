@@ -41,8 +41,8 @@ async def _user(pgsql):
 
 
 @pytest.mark.usefixtures('_user')
-async def test_not_found_prayer(pgsql, rds, freezer):
-    freezer.move_to('2023-08-30')
+async def test_not_found_prayer(pgsql, rds, time_machine):
+    time_machine.move_to('2023-08-30')
     got = await PrayerTimeAnswer.new_prayers_ctor(
         pgsql, FkAnswer(), [321], rds,
     ).build(FkUpdate('{"chat":{"id":123},"message":{"message_id":1,"text":"Время намаза"}}'))
