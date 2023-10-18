@@ -24,7 +24,7 @@ import datetime
 
 import pytest
 
-from srv.ayats.favorites.user_favorite_ayats import UserFavoriteAyats
+from srv.ayats.favourites.user_favourite_ayats import UserFavouriteAyats
 
 
 @pytest.fixture()
@@ -65,13 +65,13 @@ async def _db_ayat(pgsql):
         '(49573)',
     ]))
     await pgsql.execute('\n'.join([
-        'INSERT INTO favorite_ayats (user_id, ayat_id) VALUES',
+        'INSERT INTO favourite_ayats (user_id, ayat_id) VALUES',
         '(49573, 1)',
     ]))
 
 
 @pytest.mark.usefixtures('_db_ayat')
-async def test_user_favorite_ayats(pgsql):
-    got = await UserFavoriteAyats(pgsql, 49573).to_list()
+async def test_user_favourite_ayats(pgsql):
+    got = await UserFavouriteAyats(pgsql, 49573).to_list()
 
     assert [await ayat.identifier().ayat_id() for ayat in got] == [1]

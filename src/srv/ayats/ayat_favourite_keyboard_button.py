@@ -20,40 +20,41 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import json
 from typing import final, override
 
 import attrs
-from databases import Database
 from pyeo import elegant
 
 from app_types.supports_bool import AsyncSupportsBool
-from integrations.tg.chat_id import ChatId
+from app_types.update import Update
+from integrations.tg.keyboard import KeyboardInterface
 from srv.ayats.ayat import Ayat
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatIsFavor(AsyncSupportsBool):
-    """Является ли аят избранным."""
+class AyatFavouriteKeyboardButton(KeyboardInterface):
+    """Кнопка с добавлением аята в избранные."""
 
+    _origin: KeyboardInterface
+    _is_favor: AsyncSupportsBool
     _ayat: Ayat
-    _chat_id: ChatId
-    _pgsql: Database
 
     @override
-    async def to_bool(self) -> bool:
-        """Приведение к булевому значению.
+    async def generate(self, update: Update) -> str:
+        """Генерация клавиатуры.
 
-        :return: bool
+        :param update: Update
+        :return: str
         """
-        query = """
-            SELECT COUNT(*)
-            FROM favorite_ayats AS fa
-            INNER JOIN users AS u ON fa.user_id = u.chat_id
-            WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id
-        """
-        count = await self._pgsql.fetch_val(
-            query, {'ayat_id': await self._ayat.identifier().ayat_id(), 'chat_id': self._chat_id},
-        )
-        return bool(count)
+        keyboard = json.loads(await self._origin.generate(update))
+        is_favor = await self._is_favor.to_bool()
+        keyboard['inline_keyboard'].append([{
+            'text': 'Удалить из избранного' if is_favor else 'Добавить в избранное',
+            'callback_data': ('removeFromFavor({0})' if is_favor else 'addToFavor({0})').format(
+                await self._ayat.identifier().ayat_id(),
+            ),
+        }])
+        return json.dumps(keyboard)

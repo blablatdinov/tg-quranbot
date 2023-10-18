@@ -20,52 +20,50 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import TypeAlias, final, override
+from typing import final, override
 
 import attrs
+from databases import Database
 from pyeo import elegant
 
-from services.regular_expression import IntableRegularExpression
+from app_types.listable import AsyncListable
+from integrations.tg.chat_id import ChatId
+from srv.ayats.ayat import Ayat
 from srv.ayats.ayat_identifier import AyatId
-from srv.ayats.favorite_ayat_status import FavoriteAyatStatus
-
-# Строка имеющая формат addToFavor(<id аята>) или removeFromFavor(<id аята>)
-_ChangeAyatStatusCommand: TypeAlias = str
+from srv.ayats.pg_ayat import PgAyat
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatFavoriteStatus(FavoriteAyatStatus):
-    """Пользовательский ввод статуса аята в избранном.
+class FavouriteAyatsAfterRemove(AsyncListable):
+    """Избранные аяты."""
 
-    >>> ayat_favor_status = AyatFavoriteStatus('addToFavor(14)')
-    >>> ayat_favor_status.ayat_id()
-    14
-    >>> ayat_favor_status.change_to()
-    True
-
-    >>> ayat_favor_status = AyatFavoriteStatus('removeFromFavor(14)')
-    >>> ayat_favor_status.ayat_id()
-    14
-    >>> ayat_favor_status.change_to()
-    False
-    """
-
-    _source: _ChangeAyatStatusCommand
+    _chat_id: ChatId
+    _ayat_id: AyatId
+    _pgsql: Database
 
     @override
-    def ayat_id(self) -> AyatId:
-        """Идентификатор аята.
+    async def to_list(self) -> list[Ayat]:
+        """Получить избранные аяты.
 
-        :return: int
+        :returns: list[QAyat]
         """
-        return int(IntableRegularExpression(self._source))
-
-    @override
-    def change_to(self) -> bool:
-        """Целевое значение.
-
-        :return: bool
+        query = """
+            SELECT fa.ayat_id
+            FROM favourite_ayats AS fa
+            INNER JOIN users AS u ON fa.user_id = u.chat_id
+            WHERE u.chat_id = :chat_id OR fa.ayat_id = :ayat_id
+            ORDER BY fa.ayat_id
         """
-        return 'addToFavor' in self._source
+        rows = await self._pgsql.fetch_all(
+            query, {'chat_id': int(self._chat_id), 'ayat_id': self._ayat_id},
+        )
+        ayats = []
+        flag = True
+        for row in rows:
+            if row['ayat_id'] > self._ayat_id and flag:
+                ayats.append(PgAyat.from_int(self._ayat_id, self._pgsql))
+                flag = False
+            ayats.append(PgAyat.from_int(row['ayat_id'], self._pgsql))
+        return ayats

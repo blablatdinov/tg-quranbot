@@ -53,11 +53,11 @@ class NeighborAyats(Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
-class FavoriteNeighborAyats(NeighborAyats):
+class FavouriteNeighborAyats(NeighborAyats):
     """Класс для работы с соседними аятами в хранилище."""
 
     _ayat_id: int
-    _favorite_ayats: AsyncListable[Ayat]
+    _favourite_ayats: AsyncListable[Ayat]
 
     @override
     async def left_neighbor(self) -> Ayat:
@@ -66,7 +66,7 @@ class FavoriteNeighborAyats(NeighborAyats):
         :return: Ayat
         :raises AyatNotFoundError: if ayat not found
         """
-        fayats = await self._favorite_ayats.to_list()
+        fayats = await self._favourite_ayats.to_list()
         for ayat_index, ayat in enumerate(fayats):
             ayat_id = await ayat.identifier().ayat_id()
             if ayat_id == self._ayat_id and ayat_index == 0:
@@ -82,7 +82,7 @@ class FavoriteNeighborAyats(NeighborAyats):
         :return: AyatShort
         :raises AyatNotFoundError: if ayat not found
         """
-        fayats = await self._favorite_ayats.to_list()
+        fayats = await self._favourite_ayats.to_list()
         for ayat_index, ayat in enumerate(fayats):
             ayat_id = await ayat.identifier().ayat_id()
             if ayat_id == self._ayat_id and ayat_index + 1 == len(fayats):
@@ -98,7 +98,7 @@ class FavoriteNeighborAyats(NeighborAyats):
         :return: str
         :raises BaseAppError: if page not generated
         """
-        fayats = await self._favorite_ayats.to_list()
+        fayats = await self._favourite_ayats.to_list()
         for ayat_idx, ayat in enumerate(fayats, start=1):
             if self._ayat_id == 1:
                 return 'стр. 1/{0}'.format(len(fayats))

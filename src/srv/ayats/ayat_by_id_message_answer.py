@@ -32,8 +32,8 @@ from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgTextAnswer
 from srv.ayats.ayat import Ayat
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
-from srv.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
-from srv.ayats.favorites.ayat_is_favor import AyatIsFavor
+from srv.ayats.ayat_favourite_keyboard_button import AyatFavouriteKeyboardButton
+from srv.ayats.favourites.ayat_is_favor import AyatIsFavor
 from srv.ayats.neighbor_ayat_keyboard import NeighborAyatKeyboard
 from srv.ayats.neighbor_ayats import PgNeighborAyats
 
@@ -60,7 +60,7 @@ class AyatByIdMessageAnswer(TgAnswer):
                 self._message_answer,
                 await self._result_ayat.text(),
             ),
-            AyatFavoriteKeyboardButton(
+            AyatFavouriteKeyboardButton(
                 NeighborAyatKeyboard(
                     PgNeighborAyats(self._pgsql, await self._result_ayat.identifier().ayat_id()),
                     AyatCallbackTemplateEnum.get_ayat,

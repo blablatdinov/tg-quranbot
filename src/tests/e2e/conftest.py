@@ -47,7 +47,7 @@ def _clear_db():
     cursor = qbot_connection.cursor()
     tables = (
         'prayers_at_user',
-        'favorite_ayats',
+        'favourite_ayats',
         'podcast_reactions',
         'users',
     )

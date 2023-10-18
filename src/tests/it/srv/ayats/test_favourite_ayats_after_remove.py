@@ -24,7 +24,7 @@ import datetime
 
 import pytest
 
-from srv.ayats.favorite_ayats_after_remove import FavoriteAyatsAfterRemove
+from srv.ayats.favourite_ayats_after_remove import FavouriteAyatsAfterRemove
 
 
 @pytest.fixture()
@@ -90,7 +90,7 @@ async def _db_ayat(pgsql):
         'INSERT INTO users (chat_id) VALUES (1)',
     )
     await pgsql.execute_many(
-        'INSERT INTO favorite_ayats (user_id, ayat_id) VALUES (:user_id, :ayat_id)', [
+        'INSERT INTO favourite_ayats (user_id, ayat_id) VALUES (:user_id, :ayat_id)', [
             {'user_id': 1, 'ayat_id': 1},
             {'user_id': 1, 'ayat_id': 2},
             {'user_id': 1, 'ayat_id': 3},
@@ -100,6 +100,6 @@ async def _db_ayat(pgsql):
 
 @pytest.mark.usefixtures('_db_ayat')
 async def test(pgsql):
-    got = await FavoriteAyatsAfterRemove(1, 1, pgsql).to_list()
+    got = await FavouriteAyatsAfterRemove(1, 1, pgsql).to_list()
 
     assert len(got) == 4

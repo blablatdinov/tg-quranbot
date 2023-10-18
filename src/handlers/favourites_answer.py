@@ -26,30 +26,27 @@ import attrs
 import httpx
 from databases import Database
 from pyeo import elegant
+from redis.asyncio import Redis
 
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
-from integrations.tg.callback_query import CallbackQueryData
-from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers import TgAnswer
-from services.regular_expression import IntableRegularExpression
-from srv.ayats.ayat_answer import AyatAnswer
-from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
-from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
-from srv.ayats.favorite_ayats import FavoriteAyats
-from srv.ayats.favorites.user_favorite_ayats import UserFavoriteAyats
-from srv.ayats.neighbor_ayats import FavoriteNeighborAyats
+from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
+from services.answers.change_state_answer import ChangeStateAnswer
+from services.user_state import UserStep
+from srv.ayats.favourite_ayat_answer import FavouriteAyatAnswer
+from srv.ayats.favourite_ayat_empty_safe import FavouriteAyatEmptySafeAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class FavoriteAyatPage(TgAnswer):
-    """Страница с избранным аятом."""
+class FavouriteAyatsAnswer(TgAnswer):
+    """Ответ с временами намаза."""
 
     _debug_mode: SupportsBool
-    _empty_answer: TgAnswer
     _pgsql: Database
+    _redis: Redis
+    _empty_answer: TgAnswer
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -58,23 +55,19 @@ class FavoriteAyatPage(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        favorite_ayats = await FavoriteAyats(TgChatId(update), self._pgsql).to_list()
-        for ayat in favorite_ayats:
-            expect_ayat_id = IntableRegularExpression(CallbackQueryData(update))
-            if await ayat.identifier().ayat_id() == int(expect_ayat_id):
-                result_ayat = ayat
-                break
-        return await AyatAnswer(
-            self._debug_mode,
-            self._empty_answer,
-            result_ayat,
-            AyatAnswerKeyboard(
-                result_ayat,
-                FavoriteNeighborAyats(
-                    await result_ayat.identifier().ayat_id(),
-                    UserFavoriteAyats(self._pgsql, TgChatId(update)),
+        answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
+        return await ChangeStateAnswer(
+            FavouriteAyatEmptySafeAnswer(
+                FavouriteAyatAnswer(
+                    self._debug_mode,
+                    self._empty_answer,
+                    self._pgsql,
                 ),
-                AyatCallbackTemplateEnum.get_favorite_ayat,
-                self._pgsql,
+                TgTextAnswer.str_ctor(
+                    answer_to_sender,
+                    'Вы еще не добавляли аятов в избранное',
+                ),
             ),
+            self._redis,
+            UserStep.ayat_favor,
         ).build(update)

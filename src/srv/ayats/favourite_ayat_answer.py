@@ -24,20 +24,30 @@ from typing import final, override
 
 import attrs
 import httpx
+from databases import Database
 from pyeo import elegant
 
+from app_types.supports_bool import SupportsBool
 from app_types.update import Update
+from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer
+from srv.ayats.ayat_answer import AyatAnswer
+from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
+from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
+from srv.ayats.favourite_ayats import FavouriteAyats
+from srv.ayats.favourites.user_favourite_ayats import UserFavouriteAyats
+from srv.ayats.neighbor_ayats import FavouriteNeighborAyats
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class FavoriteAyatEmptySafeAnswer(TgAnswer):
-    """Обработка ошибок с пустыми избранными."""
+class FavouriteAyatAnswer(TgAnswer):
+    """Ответ с избранными аятами."""
 
-    _origin: TgAnswer
-    _error_answer: TgAnswer
+    _debug_mode: SupportsBool
+    _empty_answer: TgAnswer
+    _pgsql: Database
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -46,7 +56,22 @@ class FavoriteAyatEmptySafeAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        try:
-            return await self._origin.build(update)
-        except IndexError:  # @todo #360:30min
-            return await self._error_answer.build(update)
+        result_ayat = (
+            await FavouriteAyats(
+                TgChatId(update),
+                self._pgsql,
+            ).to_list()
+        )[0]
+        return await AyatAnswer(
+            self._debug_mode,
+            self._empty_answer,
+            result_ayat,
+            AyatAnswerKeyboard(
+                result_ayat,
+                FavouriteNeighborAyats(
+                    await result_ayat.identifier().ayat_id(), UserFavouriteAyats(self._pgsql, TgChatId(update)),
+                ),
+                AyatCallbackTemplateEnum.get_favourite_ayat,
+                self._pgsql,
+            ),
+        ).build(update)

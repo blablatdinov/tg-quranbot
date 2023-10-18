@@ -67,7 +67,7 @@ class AyatHaveNotNeighborsError(BaseAppError):
 
 
 @final
-class UserHasNotFavoriteAyatsError(BaseAppError):
+class UserHasNotFavouriteAyatsError(BaseAppError):
     """Исключение, вызываемое при попытке получить избранные ааяты, пользователем, у которого их нет."""
 
     user_message = 'Вы еще не добавляли аятов в избранное'

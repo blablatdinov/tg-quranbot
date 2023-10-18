@@ -37,7 +37,7 @@ def _favor_ayats(db_conn):
     cursor = db_conn.cursor()
     for ayat_id in (671, 3383, 1829, 409):
         cursor.execute(
-            'INSERT INTO favorite_ayats (ayat_id, user_id) VALUES (%s, %s)',
+            'INSERT INTO favourite_ayats (ayat_id, user_id) VALUES (%s, %s)',
             (ayat_id, 5354079702),
         )
 
@@ -133,7 +133,7 @@ def test_add_to_favor(tg_client, bot_name, wait_until, db_query_vals):
         ('8:8 ->', b'getAyat(1146)'),
         ('Удалить из избранного', b'removeFromFavor(1145)'),
     ]
-    assert db_query_vals('SELECT * FROM favorite_ayats') == [(1145, 5354079702)]
+    assert db_query_vals('SELECT * FROM favourite_ayats') == [(1145, 5354079702)]
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user', '_favor_ayats')
@@ -153,7 +153,7 @@ def test_remove_from_favor(tg_client, bot_name, wait_until, db_query_vals):
         ('3:134 ->', b'getAyat(410)'),
         ('Добавить в избранное', b'addToFavor(409)'),
     ]
-    assert len(db_query_vals('SELECT * FROM favorite_ayats')) == 3
+    assert len(db_query_vals('SELECT * FROM favourite_ayats')) == 3
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user', '_favor_ayats')
@@ -172,7 +172,7 @@ def test_remove_from_favor_in_favor_pagination(tg_client, bot_name, wait_until, 
     last_messages[1].get_buttons()[1][0].click()
     last_messages = wait_until(tg_client, 6)
 
-    assert len(db_query_vals('SELECT * FROM favorite_ayats')) == 3
+    assert len(db_query_vals('SELECT * FROM favourite_ayats')) == 3
     assert [
         (button.text, button.data)
         for button_row in last_messages[1].get_buttons()

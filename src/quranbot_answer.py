@@ -27,7 +27,7 @@ from databases import Database
 from redis.asyncio import Redis
 
 from app_types.update import Update
-from handlers.favorites_answer import FavoriteAyatsAnswer
+from handlers.favourites_answer import FavouriteAyatsAnswer
 from handlers.full_start_answer import FullStartAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.podcast_answer import PodcastAnswer
@@ -59,8 +59,8 @@ from settings.debug_mode import DebugMode
 from settings.settings import Settings
 from srv.admin_messages.pg_admin_message import PgAdminMessage
 from srv.ayats.ayat_by_id_answer import AyatByIdAnswer
-from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
-from srv.ayats.favorite_ayat_page import FavoriteAyatPage
+from srv.ayats.change_favourite_ayat_answer import ChangeFavouriteAyatAnswer
+from srv.ayats.favourite_ayat_page import FavouriteAyatPage
 from srv.events.sink import SinkInterface
 from srv.prayers.inline_query_answer import InlineQueryAnswer
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
@@ -130,7 +130,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgMessageRegexAnswer(
                     'Избранное',
-                    FavoriteAyatsAnswer(DebugMode(self._settings), self._pgsql, self._redis, empty_answer),
+                    FavouriteAyatsAnswer(DebugMode(self._settings), self._pgsql, self._redis, empty_answer),
                 ),
                 TgMessageRegexAnswer(
                     r'\d+:\d+',
@@ -198,11 +198,11 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getFAyat',
-                    FavoriteAyatPage(DebugMode(self._settings), empty_answer, self._pgsql),
+                    FavouriteAyatPage(DebugMode(self._settings), empty_answer, self._pgsql),
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(addToFavor|removeFromFavor)',
-                    ChangeFavoriteAyatAnswer(self._pgsql, empty_answer, self._redis),
+                    ChangeFavouriteAyatAnswer(self._pgsql, empty_answer, self._redis),
                 ),
                 InlineQueryAnswer(empty_answer, self._pgsql),
             ),

@@ -47,17 +47,17 @@ from services.state_answer import StepAnswer
 from services.user_state import UserStep
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
-from srv.ayats.ayat_favorite_status import AyatFavoriteStatus
+from srv.ayats.ayat_favourite_status import AyatFavouriteStatus
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
-from srv.ayats.favorite_ayats_after_remove import FavoriteAyatsAfterRemove
-from srv.ayats.neighbor_ayats import FavoriteNeighborAyats, PgNeighborAyats, TextSearchNeighborAyats
+from srv.ayats.favourite_ayats_after_remove import FavouriteAyatsAfterRemove
+from srv.ayats.neighbor_ayats import FavouriteNeighborAyats, PgNeighborAyats, TextSearchNeighborAyats
 from srv.ayats.pg_ayat import PgAyat
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class ChangeFavoriteAyatAnswer(TgAnswer):
+class ChangeFavouriteAyatAnswer(TgAnswer):
     """Ответ на запрос о смене аята в избранном."""
 
     _pgsql: Database
@@ -71,7 +71,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        status = AyatFavoriteStatus(str(CallbackQueryData(update)))
+        status = AyatFavouriteStatus(str(CallbackQueryData(update)))
         result_ayat = PgAyat(
             SyncToAsyncIntable(
                 IntableRegularExpression(
@@ -82,14 +82,14 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
         )
         if status.change_to():
             query = """
-                INSERT INTO favorite_ayats
+                INSERT INTO favourite_ayats
                 (ayat_id, user_id)
                 VALUES
                 (:ayat_id, :user_id)
             """
         else:
             query = """
-                DELETE FROM favorite_ayats
+                DELETE FROM favourite_ayats
                 WHERE ayat_id = :ayat_id AND user_id = :user_id
             """
         await self._pgsql.execute(
@@ -105,11 +105,11 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                             TgKeyboardEditAnswer(TgAnswerToSender(self._origin)),
                             AyatAnswerKeyboard(
                                 result_ayat,
-                                FavoriteNeighborAyats(
+                                FavouriteNeighborAyats(
                                     status.ayat_id(),
-                                    FavoriteAyatsAfterRemove(chat_id, status.ayat_id(), self._pgsql),
+                                    FavouriteAyatsAfterRemove(chat_id, status.ayat_id(), self._pgsql),
                                 ),
-                                AyatCallbackTemplateEnum.get_favorite_ayat,
+                                AyatCallbackTemplateEnum.get_favourite_ayat,
                                 self._pgsql,
                             ),
                         ),

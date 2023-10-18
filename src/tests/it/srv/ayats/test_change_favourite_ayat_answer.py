@@ -27,7 +27,7 @@ import pytest
 
 from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer
-from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
+from srv.ayats.change_favourite_ayat_answer import ChangeFavouriteAyatAnswer
 
 
 @pytest.fixture()
@@ -68,7 +68,7 @@ async def _db_ayat(pgsql):
 
 @pytest.mark.usefixtures('_db_ayat')
 async def test_add(pgsql, rds, unquote):
-    got = await ChangeFavoriteAyatAnswer(pgsql, FkAnswer(), rds).build(FkUpdate(
+    got = await ChangeFavouriteAyatAnswer(pgsql, FkAnswer(), rds).build(FkUpdate(
         json.dumps({
             'callback_query': {'data': 'addToFavor(1)'},
             'chat': {'id': 1},
@@ -86,7 +86,7 @@ async def test_add(pgsql, rds, unquote):
 
 @pytest.mark.usefixtures('_db_ayat')
 async def test_remove(pgsql, rds, unquote):
-    got = await ChangeFavoriteAyatAnswer(pgsql, FkAnswer(), rds).build(FkUpdate(
+    got = await ChangeFavouriteAyatAnswer(pgsql, FkAnswer(), rds).build(FkUpdate(
         json.dumps({
             'callback_query': {'data': 'removeFromFavor(1)'},
             'chat': {'id': 1},

@@ -20,42 +20,35 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final, override
+from typing import override
 
-import attrs
-from databases import Database
-from pyeo import elegant
+import httpx
 
-from app_types.listable import AsyncListable
-from integrations.tg.chat_id import ChatId
-from srv.ayats.ayat import Ayat
-from srv.ayats.pg_ayat import PgAyat
+from app_types.update import FkUpdate, Update
+from integrations.tg.tg_answers import FkAnswer, TgAnswer
+from srv.ayats.favourite_ayat_empty_safe import FavouriteAyatEmptySafeAnswer
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class UserFavoriteAyats(AsyncListable[Ayat]):
-    """Избранные аяты пользователя."""
-
-    _pgsql: Database
-    _chat_id: ChatId
+class IndexErrorAnswer(TgAnswer):
 
     @override
-    async def to_list(self) -> list[Ayat]:
-        """Списковое представление.
+    async def build(self, update: Update) -> list[httpx.Request]:
+        raise IndexError
 
-        :return: list[PgAyat]
-        """
-        query = """
-            SELECT a.ayat_id AS id
-            FROM favorite_ayats AS fa
-            INNER JOIN ayats AS a ON fa.ayat_id = a.ayat_id
-            INNER JOIN users AS u ON fa.user_id = u.chat_id
-            WHERE u.chat_id = :chat_id
-            ORDER BY a.ayat_id
-        """
-        rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
-        return [
-            PgAyat.from_int(row['id'], self._pgsql) for row in rows
-        ]
+
+async def test():
+    got = await FavouriteAyatEmptySafeAnswer(
+        FkAnswer('http://right-way.com'),
+        FkAnswer('http://error-way.com'),
+    ).build(FkUpdate())
+
+    assert str(got[0].url) == 'http://right-way.com'
+
+
+async def test_error():
+    got = await FavouriteAyatEmptySafeAnswer(
+        IndexErrorAnswer(),
+        FkAnswer(),
+    ).build(FkUpdate())
+
+    assert str(got[0].url) == 'https://some.domain'

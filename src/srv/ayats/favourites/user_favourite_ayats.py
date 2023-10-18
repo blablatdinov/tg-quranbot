@@ -20,35 +20,42 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import override
+from typing import final, override
 
-import httpx
+import attrs
+from databases import Database
+from pyeo import elegant
 
-from app_types.update import FkUpdate, Update
-from integrations.tg.tg_answers import FkAnswer, TgAnswer
-from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
+from app_types.listable import AsyncListable
+from integrations.tg.chat_id import ChatId
+from srv.ayats.ayat import Ayat
+from srv.ayats.pg_ayat import PgAyat
 
 
-class IndexErrorAnswer(TgAnswer):
+@final
+@attrs.define(frozen=True)
+@elegant
+class UserFavouriteAyats(AsyncListable[Ayat]):
+    """Избранные аяты пользователя."""
+
+    _pgsql: Database
+    _chat_id: ChatId
 
     @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        raise IndexError
+    async def to_list(self) -> list[Ayat]:
+        """Списковое представление.
 
-
-async def test():
-    got = await FavoriteAyatEmptySafeAnswer(
-        FkAnswer('http://right-way.com'),
-        FkAnswer('http://error-way.com'),
-    ).build(FkUpdate())
-
-    assert str(got[0].url) == 'http://right-way.com'
-
-
-async def test_error():
-    got = await FavoriteAyatEmptySafeAnswer(
-        IndexErrorAnswer(),
-        FkAnswer(),
-    ).build(FkUpdate())
-
-    assert str(got[0].url) == 'https://some.domain'
+        :return: list[PgAyat]
+        """
+        query = """
+            SELECT a.ayat_id AS id
+            FROM favourite_ayats AS fa
+            INNER JOIN ayats AS a ON fa.ayat_id = a.ayat_id
+            INNER JOIN users AS u ON fa.user_id = u.chat_id
+            WHERE u.chat_id = :chat_id
+            ORDER BY a.ayat_id
+        """
+        rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
+        return [
+            PgAyat.from_int(row['id'], self._pgsql) for row in rows
+        ]

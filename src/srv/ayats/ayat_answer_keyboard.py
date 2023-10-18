@@ -31,8 +31,8 @@ from integrations.tg.chat_id import TgChatId
 from integrations.tg.keyboard import KeyboardInterface
 from srv.ayats.ayat import Ayat
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
-from srv.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
-from srv.ayats.favorites.ayat_is_favor import AyatIsFavor
+from srv.ayats.ayat_favourite_keyboard_button import AyatFavouriteKeyboardButton
+from srv.ayats.favourites.ayat_is_favor import AyatIsFavor
 from srv.ayats.neighbor_ayat_keyboard import NeighborAyatKeyboard
 from srv.ayats.neighbor_ayats import NeighborAyats
 
@@ -55,7 +55,7 @@ class AyatAnswerKeyboard(KeyboardInterface):
         :param update: Update
         :return: str
         """
-        return await AyatFavoriteKeyboardButton(
+        return await AyatFavouriteKeyboardButton(
             NeighborAyatKeyboard(self._neighbor_ayats, self._ayat_callback_template),
             AyatIsFavor(
                 self._ayat,

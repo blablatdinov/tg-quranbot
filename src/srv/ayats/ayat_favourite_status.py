@@ -20,41 +20,52 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
-from typing import final, override
+from typing import TypeAlias, final, override
 
 import attrs
 from pyeo import elegant
 
-from app_types.supports_bool import AsyncSupportsBool
-from app_types.update import Update
-from integrations.tg.keyboard import KeyboardInterface
-from srv.ayats.ayat import Ayat
+from services.regular_expression import IntableRegularExpression
+from srv.ayats.ayat_identifier import AyatId
+from srv.ayats.favourite_ayat_status import FavouriteAyatStatus
+
+# Строка имеющая формат addToFavor(<id аята>) или removeFromFavor(<id аята>)
+_ChangeAyatStatusCommand: TypeAlias = str
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatFavoriteKeyboardButton(KeyboardInterface):
-    """Кнопка с добавлением аята в избранные."""
+class AyatFavouriteStatus(FavouriteAyatStatus):
+    """Пользовательский ввод статуса аята в избранном.
 
-    _origin: KeyboardInterface
-    _is_favor: AsyncSupportsBool
-    _ayat: Ayat
+    >>> ayat_favor_status = AyatFavouriteStatus('addToFavor(14)')
+    >>> ayat_favor_status.ayat_id()
+    14
+    >>> ayat_favor_status.change_to()
+    True
+
+    >>> ayat_favor_status = AyatFavouriteStatus('removeFromFavor(14)')
+    >>> ayat_favor_status.ayat_id()
+    14
+    >>> ayat_favor_status.change_to()
+    False
+    """
+
+    _source: _ChangeAyatStatusCommand
 
     @override
-    async def generate(self, update: Update) -> str:
-        """Генерация клавиатуры.
+    def ayat_id(self) -> AyatId:
+        """Идентификатор аята.
 
-        :param update: Update
-        :return: str
+        :return: int
         """
-        keyboard = json.loads(await self._origin.generate(update))
-        is_favor = await self._is_favor.to_bool()
-        keyboard['inline_keyboard'].append([{
-            'text': 'Удалить из избранного' if is_favor else 'Добавить в избранное',
-            'callback_data': ('removeFromFavor({0})' if is_favor else 'addToFavor({0})').format(
-                await self._ayat.identifier().ayat_id(),
-            ),
-        }])
-        return json.dumps(keyboard)
+        return int(IntableRegularExpression(self._source))
+
+    @override
+    def change_to(self) -> bool:
+        """Целевое значение.
+
+        :return: bool
+        """
+        return 'addToFavor' in self._source

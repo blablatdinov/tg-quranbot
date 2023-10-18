@@ -49,7 +49,7 @@ async def pgsql(_migrate):
     yield database
     tables = (
         'prayers_at_user',
-        'favorite_ayats',
+        'favourite_ayats',
         'podcast_reactions',
         'podcasts',
         'users',

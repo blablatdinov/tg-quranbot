@@ -26,44 +26,34 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.listable import AsyncListable
+from app_types.supports_bool import AsyncSupportsBool
 from integrations.tg.chat_id import ChatId
 from srv.ayats.ayat import Ayat
-from srv.ayats.ayat_identifier import AyatId
-from srv.ayats.pg_ayat import PgAyat
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class FavoriteAyatsAfterRemove(AsyncListable):
-    """Избранные аяты."""
+class AyatIsFavor(AsyncSupportsBool):
+    """Является ли аят избранным."""
 
+    _ayat: Ayat
     _chat_id: ChatId
-    _ayat_id: AyatId
     _pgsql: Database
 
     @override
-    async def to_list(self) -> list[Ayat]:
-        """Получить избранные аяты.
+    async def to_bool(self) -> bool:
+        """Приведение к булевому значению.
 
-        :returns: list[QAyat]
+        :return: bool
         """
         query = """
-            SELECT fa.ayat_id
-            FROM favorite_ayats AS fa
+            SELECT COUNT(*)
+            FROM favourite_ayats AS fa
             INNER JOIN users AS u ON fa.user_id = u.chat_id
-            WHERE u.chat_id = :chat_id OR fa.ayat_id = :ayat_id
-            ORDER BY fa.ayat_id
+            WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id
         """
-        rows = await self._pgsql.fetch_all(
-            query, {'chat_id': int(self._chat_id), 'ayat_id': self._ayat_id},
+        count = await self._pgsql.fetch_val(
+            query, {'ayat_id': await self._ayat.identifier().ayat_id(), 'chat_id': self._chat_id},
         )
-        ayats = []
-        flag = True
-        for row in rows:
-            if row['ayat_id'] > self._ayat_id and flag:
-                ayats.append(PgAyat.from_int(self._ayat_id, self._pgsql))
-                flag = False
-            ayats.append(PgAyat.from_int(row['ayat_id'], self._pgsql))
-        return ayats
+        return bool(count)

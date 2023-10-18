@@ -20,43 +20,19 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final, override
+import json
 
-import attrs
-from databases import Database
-from pyeo import elegant
-
-from app_types.intable import ThroughAsyncIntable
-from app_types.listable import AsyncListable
-from integrations.tg.chat_id import ChatId
-from srv.ayats.ayat import Ayat
-from srv.ayats.pg_ayat import PgAyat
+from app_types.update import FkUpdate
+from handlers.favourites_answer import FavouriteAyatsAnswer
+from integrations.tg.tg_answers import FkAnswer
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class FavoriteAyats(AsyncListable):
-    """Избранные аяты."""
+async def test_favourite_ayats_answer(pgsql, fake_redis, unquote):
+    debug = False
+    got = await FavouriteAyatsAnswer(debug, pgsql, fake_redis, FkAnswer()).build(
+        FkUpdate(json.dumps({
+            'chat': {'id': 74359},
+        })),
+    )
 
-    _chat_id: ChatId
-    _pgsql: Database
-
-    @override
-    async def to_list(self) -> list[Ayat]:
-        """Получить избранные аяты.
-
-        :returns: list[QAyat]
-        """
-        query = """
-            SELECT fa.ayat_id
-            FROM favorite_ayats AS fa
-            INNER JOIN users AS u ON fa.user_id = u.chat_id
-            WHERE u.chat_id = :chat_id
-            ORDER BY fa.ayat_id
-        """
-        rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
-        return [
-            PgAyat(ThroughAsyncIntable(row['ayat_id']), self._pgsql)
-            for row in rows
-        ]
+    assert got[0].url.params['text'] == 'Вы еще не добавляли аятов в избранное'

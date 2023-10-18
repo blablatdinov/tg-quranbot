@@ -27,11 +27,11 @@ import pytest
 from app_types.listable import AsyncListable
 from srv.ayats.ayat import Ayat, FkAyat
 from srv.ayats.ayat_identifier import FkIdentifier
-from srv.ayats.neighbor_ayats import FavoriteNeighborAyats
+from srv.ayats.neighbor_ayats import FavouriteNeighborAyats
 from srv.files.file import FkFile
 
 
-class FkFavoriteAyats(AsyncListable[Ayat]):
+class FkFavouriteAyats(AsyncListable[Ayat]):
 
     @override
     async def to_list(self) -> list[Ayat]:
@@ -48,8 +48,8 @@ class FkFavoriteAyats(AsyncListable[Ayat]):
     (3, 'стр. 3/3'),
 ])
 async def test_page(ayat_id, expected):
-    got = await FavoriteNeighborAyats(
-        ayat_id, FkFavoriteAyats(),
+    got = await FavouriteNeighborAyats(
+        ayat_id, FkFavouriteAyats(),
     ).page()
 
     assert got == expected

@@ -25,7 +25,7 @@ from typing import Protocol
 from srv.ayats.ayat_identifier import AyatId
 
 
-class FavoriteAyatStatus(Protocol):
+class FavouriteAyatStatus(Protocol):
     """Пользовательский ввод статуса аята в избранном."""
 
     def ayat_id(self) -> AyatId:
