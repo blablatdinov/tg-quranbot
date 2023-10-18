@@ -39,7 +39,7 @@ class AyatFavouriteKeyboardButton(KeyboardInterface):
     """Кнопка с добавлением аята в избранные."""
 
     _origin: KeyboardInterface
-    _is_favor: AsyncSupportsBool
+    _is_favour: AsyncSupportsBool
     _ayat: Ayat
 
     @override
@@ -50,10 +50,10 @@ class AyatFavouriteKeyboardButton(KeyboardInterface):
         :return: str
         """
         keyboard = json.loads(await self._origin.generate(update))
-        is_favor = await self._is_favor.to_bool()
+        is_favour = await self._is_favour.to_bool()
         keyboard['inline_keyboard'].append([{
-            'text': 'Удалить из избранного' if is_favor else 'Добавить в избранное',
-            'callback_data': ('removeFromFavor({0})' if is_favor else 'addToFavor({0})').format(
+            'text': 'Удалить из избранного' if is_favour else 'Добавить в избранное',
+            'callback_data': ('removeFromFavor({0})' if is_favour else 'addToFavor({0})').format(
                 await self._ayat.identifier().ayat_id(),
             ),
         }])

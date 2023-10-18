@@ -39,16 +39,16 @@ _ChangeAyatStatusCommand: TypeAlias = str
 class AyatFavouriteStatus(FavouriteAyatStatus):
     """Пользовательский ввод статуса аята в избранном.
 
-    >>> ayat_favor_status = AyatFavouriteStatus('addToFavor(14)')
-    >>> ayat_favor_status.ayat_id()
+    >>> ayat_favour_status = AyatFavouriteStatus('addToFavor(14)')
+    >>> ayat_favour_status.ayat_id()
     14
-    >>> ayat_favor_status.change_to()
+    >>> ayat_favour_status.change_to()
     True
 
-    >>> ayat_favor_status = AyatFavouriteStatus('removeFromFavor(14)')
-    >>> ayat_favor_status.ayat_id()
+    >>> ayat_favour_status = AyatFavouriteStatus('removeFromFavor(14)')
+    >>> ayat_favour_status.ayat_id()
     14
-    >>> ayat_favor_status.change_to()
+    >>> ayat_favour_status.change_to()
     False
     """
 

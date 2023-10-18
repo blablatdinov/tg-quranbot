@@ -98,7 +98,7 @@ class ChangeFavouriteAyatAnswer(TgAnswer):
         chat_id = int(TgChatId(update))
         return await TgAnswerFork(
             StepAnswer(
-                UserStep.ayat_favor.value,
+                UserStep.ayat_favour.value,
                 TgChatIdAnswer(
                     TgMessageIdAnswer(
                         TgAnswerMarkup(

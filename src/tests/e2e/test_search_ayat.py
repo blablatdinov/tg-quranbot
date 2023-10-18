@@ -116,7 +116,7 @@ def test_search_pagination_backward(tg_client, bot_name, wait_until):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
-def test_add_to_favor_from_search(tg_client, bot_name, wait_until):
+def test_add_to_favour_from_search(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/start')
     wait_until(tg_client, 3)
     tg_client.send_message(bot_name, 'Найти аят')

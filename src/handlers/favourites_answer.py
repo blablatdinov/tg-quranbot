@@ -69,5 +69,5 @@ class FavouriteAyatsAnswer(TgAnswer):
                 ),
             ),
             self._redis,
-            UserStep.ayat_favor,
+            UserStep.ayat_favour,
         ).build(update)
