@@ -12,8 +12,8 @@ classDiagram
     users <|-- prayers_at_user
     prayers_at_user_groups <|-- prayers_at_user
     cities <|-- prayers
-    users <|-- favorite_ayats
-    ayats <|-- favorite_ayats
+    users <|-- favourite_ayats
+    ayats <|-- favourite_ayats
     class ayats{
         int ayat_id
         uuid public_id
@@ -26,7 +26,7 @@ classDiagram
         uuid audio_id
         uuid one_day_content_id
     }
-    class favorite_ayats{
+    class favourite_ayats{
         int user_id
         int ayat_id
     }

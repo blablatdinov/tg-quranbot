@@ -239,14 +239,14 @@
                 [
                     {
                         "text":"Добавить в избранное",
-                        "callback_data":"add_to_favorite(17)"
+                        "callback_data":"add_to_favourite(17)"
                     }
                 ]
             ]
         }
     },
     "chat_instance":"-8377414756201282502",
-    "data":"add_to_favorite(17)"
+    "data":"add_to_favourite(17)"
 }
 ```
 
