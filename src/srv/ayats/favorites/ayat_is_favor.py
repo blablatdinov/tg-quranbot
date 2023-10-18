@@ -27,7 +27,7 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.supports_bool import AsyncSupportsBool
-from integrations.tg.chat_id import TgChatId
+from integrations.tg.chat_id import ChatId
 from srv.ayats.ayat import Ayat
 
 
@@ -38,7 +38,7 @@ class AyatIsFavor(AsyncSupportsBool):
     """Является ли аят избранным."""
 
     _ayat: Ayat
-    _chat_id: TgChatId
+    _chat_id: ChatId
     _pgsql: Database
 
     @override

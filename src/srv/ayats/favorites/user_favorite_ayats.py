@@ -20,13 +20,14 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import SupportsInt, final, override
+from typing import final, override
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
 from app_types.listable import AsyncListable
+from integrations.tg.chat_id import ChatId
 from srv.ayats.ayat import Ayat
 from srv.ayats.pg_ayat import PgAyat
 
@@ -38,7 +39,7 @@ class UserFavoriteAyats(AsyncListable[Ayat]):
     """Избранные аяты пользователя."""
 
     _pgsql: Database
-    _chat_id: SupportsInt
+    _chat_id: ChatId
 
     @override
     async def to_list(self) -> list[Ayat]:
