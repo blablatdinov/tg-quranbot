@@ -26,6 +26,7 @@ import attrs
 from loguru import logger
 from redis.asyncio import Redis
 
+from integrations.tg.chat_id import ChatId
 from srv.ayats.text_search_query import TextSearchQuery
 
 
@@ -69,7 +70,7 @@ class AyatTextSearchQuery(TextSearchQuery):
     """Запрос поиска аята."""
 
     _redis: Redis
-    _chat_id: int  # TODO #360/30min переделать тип на ChatId
+    _chat_id: ChatId
 
     _key_template = '{0}:ayat_search_query'
 

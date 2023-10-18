@@ -21,12 +21,14 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import enum
-from typing import Protocol, SupportsInt, final, override
+from typing import Protocol, final, override
 
 import attrs
 from loguru import logger
 from pyeo import elegant
 from redis.asyncio import Redis
+
+from integrations.tg.chat_id import ChatId
 
 
 @final
@@ -95,7 +97,7 @@ class RedisUserState(UserState):
     """Объект, работающий с состоянием пользователя."""
 
     _redis: Redis
-    _chat_id: SupportsInt
+    _chat_id: ChatId
 
     @override
     async def step(self) -> UserStep:

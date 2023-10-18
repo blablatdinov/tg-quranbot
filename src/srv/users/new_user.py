@@ -30,7 +30,7 @@ from pyeo import elegant
 
 from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import UserAlreadyExistsError
-from integrations.tg.chat_id import TgChatId
+from integrations.tg.chat_id import ChatId
 from services.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone
 
 
@@ -60,14 +60,14 @@ class PgNewUser(NewUser):
     """Новый пользователь в БД postgres."""
 
     _referrer_chat_id: AsyncIntOrNone
-    _new_user_chat_id: TgChatId
+    _new_user_chat_id: ChatId
     _pgsql: Database
 
     @classmethod
-    def ctor(cls, new_user_chat_id: TgChatId, pgsql: Database) -> NewUser:
+    def ctor(cls, new_user_chat_id: ChatId, pgsql: Database) -> NewUser:
         """Конструктор без реферера.
 
-        :param new_user_chat_id: TgChatId
+        :param new_user_chat_id: ChatId
         :param pgsql: Database
         :return: NewUser
         """

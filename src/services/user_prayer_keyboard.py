@@ -30,7 +30,7 @@ from databases.interfaces import Record
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
+from integrations.tg.chat_id import ChatId
 from services.answers.answer import KeyboardInterface
 from srv.prayers.prayer_date import PrayerDate
 
@@ -43,7 +43,7 @@ class UserPrayersKeyboard(KeyboardInterface):
 
     _pgsql: Database
     _date: PrayerDate
-    _chat_id: TgChatId
+    _chat_id: ChatId
 
     @override
     async def generate(self, update: Update) -> str:

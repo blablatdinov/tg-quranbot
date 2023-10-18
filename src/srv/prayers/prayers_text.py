@@ -31,7 +31,7 @@ from app_types.update import Update
 from exceptions.content_exceptions import UserHasNotCityIdError
 from exceptions.prayer_exceptions import PrayersNotFoundError
 from integrations.nominatim import CityNameById
-from integrations.tg.chat_id import TgChatId
+from integrations.tg.chat_id import ChatId
 from srv.prayers.prayer_date import PrayerDate
 
 TIME_LITERAL: Final = 'time'
@@ -44,7 +44,7 @@ class UserCityId(AsyncSupportsStr):
     """Идентификатор города."""
 
     _pgsql: Database
-    _chat_id: TgChatId
+    _chat_id: ChatId
 
     @override
     async def to_str(self) -> str:
