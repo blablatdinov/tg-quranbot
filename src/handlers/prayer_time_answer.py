@@ -48,6 +48,7 @@ from srv.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutC
 from srv.prayers.prayer_date import DateFromUserPrayerId, PrayerDate, PrayersMarkAsDate, PrayersRequestDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 from srv.prayers.prayers_text import PrayersText, UserCityId
+from srv.prayers.ramadan_prayer_text import RamadanPrayerText
 
 
 @final
@@ -156,11 +157,14 @@ class PrayerTimeAnswer(TgAnswer):
                     TgAnswerMarkup(
                         TgTextAnswer(
                             self._origin,
-                            PrayersText(
-                                self._pgsql,
-                                self._prayers_date,
-                                UserCityId(self._pgsql, TgChatId(update)),
-                                update,
+                            RamadanPrayerText(
+                                PrayersText(
+                                    self._pgsql,
+                                    self._prayers_date,
+                                    UserCityId(self._pgsql, TgChatId(update)),
+                                    update,
+                                ),
+                                ramadan_mode=False,
                             ),
                         ),
                         UserPrayersKeyboard(
