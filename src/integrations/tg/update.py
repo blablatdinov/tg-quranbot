@@ -28,7 +28,6 @@ from pyeo import elegant
 
 from app_types.stringable import SupportsStr
 from app_types.update import Update
-from integrations.tg.update_struct import UpdateStruct
 
 
 @final
@@ -49,14 +48,6 @@ class TgUpdate(Update):
         :return: str
         """
         return str(self._raw_update)
-
-    @override
-    def parsed(self) -> UpdateStruct:
-        """Десериализованный объект.
-
-        :return: UpdateStruct
-        """
-        return UpdateStruct.model_validate_json(str(self))
 
     @override
     def asdict(self) -> dict:
@@ -96,17 +87,6 @@ class CachedTgUpdate(Update):
         if not self._cache[str_cache_key]:
             self._cache[str_cache_key] = self._origin.__str__()
         return self._cache[str_cache_key]
-
-    @override
-    def parsed(self) -> UpdateStruct:
-        """Десериализованный объект.
-
-        :return: UpdateStruct
-        """
-        parsed_cache_key = 'parsed'
-        if not self._cache[parsed_cache_key]:
-            self._cache[parsed_cache_key] = self._origin.parsed()
-        return self._cache[parsed_cache_key]
 
     @override
     def asdict(self) -> dict:

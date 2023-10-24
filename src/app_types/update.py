@@ -27,7 +27,6 @@ import attrs
 from pyeo import elegant
 
 from app_types.stringable import SupportsStr
-from integrations.tg.update_struct import UpdateStruct
 
 
 @elegant
@@ -36,9 +35,6 @@ class Update(SupportsStr, Protocol):
 
     def __str__(self) -> str:
         """Приведение к строке."""
-
-    def parsed(self) -> UpdateStruct:
-        """Десериализованный объект."""
 
     def asdict(self) -> dict:
         """Словарь."""
@@ -59,14 +55,6 @@ class FkUpdate(Update):
         :return: str
         """
         return str(self._raw)
-
-    @override
-    def parsed(self) -> UpdateStruct:
-        """Десериализованный объект.
-
-        :return: UpdateStruct
-        """
-        return UpdateStruct(ok=True)
 
     @override
     def asdict(self) -> dict:
