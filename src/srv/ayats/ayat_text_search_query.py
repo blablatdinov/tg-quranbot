@@ -80,10 +80,10 @@ class AyatTextSearchQuery(TextSearchQuery):
 
         :param query: str
         """
-        key = self._key_template.format(self._chat_id)
+        key = self._key_template.format(int(self._chat_id))
         logger.info('Try writing key: {0}, value: {1}'.format(key, query))
         await self._redis.set(key, query)
-        logger.info('Key: {0} wrote'.format(self._key_template.format(self._chat_id)))
+        logger.info('Key: {0} wrote'.format(self._key_template.format(int(self._chat_id))))
 
     @override
     async def read(self) -> str:
@@ -92,7 +92,7 @@ class AyatTextSearchQuery(TextSearchQuery):
         :return: str
         :raises ValueError: user has not search query
         """
-        key = self._key_template.format(self._chat_id)
+        key = self._key_template.format(int(self._chat_id))
         logger.info('Try read {0}'.format(key))
         redis_value = await self._redis.get(key)
         if not redis_value:

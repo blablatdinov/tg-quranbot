@@ -68,7 +68,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
             ThroughString(
                 await AyatTextSearchQuery(
                     self._redis,
-                    int(TgChatId(update)),
+                    TgChatId(update),
                 ).read(),
             ),
             self._pgsql,
@@ -91,7 +91,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
                     CachedTextSearchQuery(
                         AyatTextSearchQuery(
                             self._redis,
-                            int(TgChatId(update)),
+                            TgChatId(update),
                         ),
                     ),
                 ),

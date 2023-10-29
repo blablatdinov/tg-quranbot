@@ -152,7 +152,7 @@ class PodcastAnswer(TgAnswer):
             SyncToAsyncIntable(podcast_id),
             self._pgsql,
         )
-        chat_id = int(TgChatId(update))
+        chat_id = TgChatId(update)
         return await ResetStateAnswer(
             TgAnswerList(
                 SkipableAnswer(

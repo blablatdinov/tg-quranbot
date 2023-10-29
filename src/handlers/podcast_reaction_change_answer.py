@@ -117,7 +117,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
             FROM podcast_reactions
             WHERE user_id = :user_id AND podcast_id = :podcast_id
         """
-        chat_id = int(TgChatId(update))
+        chat_id = TgChatId(update)
         prayer_existed_reaction = await self._pgsql.fetch_val(query, {
             USER_ID_LITERAL: chat_id,
             PODCAST_ID_LITERAL: reaction.podcast_id(),
