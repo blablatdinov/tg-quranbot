@@ -122,3 +122,9 @@ jobs:
         run: .venv/bin/mypy src
       - name: sqlfluff
         run: .venv/bin/sqlfluff lint migrations --dialect postgres
+
+  pdd:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: g4s8/pdd-action@master
