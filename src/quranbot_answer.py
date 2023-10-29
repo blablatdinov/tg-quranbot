@@ -27,12 +27,13 @@ from databases import Database
 from redis.asyncio import Redis
 
 from app_types.update import Update
+from handlers.concrete_podcast_answer import ConcretePodcastAnswer
 from handlers.favorites_answer import FavoriteAyatsAnswer
 from handlers.full_start_answer import FullStartAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
-from handlers.podcast_answer import PodcastAnswer
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
 from handlers.prayer_time_answer import PrayerTimeAnswer
+from handlers.random_podcast_answer import RandomPodcastAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
 from handlers.search_ayat_by_numbers_answer import SearchAyatByNumbersAnswer
 from handlers.search_city_answer import SearchCityAnswer
@@ -106,7 +107,7 @@ class QuranbotAnswer(TgAnswer):
             TgAnswerFork(
                 TgMessageRegexAnswer(
                     'Подкасты',
-                    PodcastAnswer.random_podcast_ctor(
+                    RandomPodcastAnswer(
                         DebugMode(self._settings),
                         empty_answer,
                         self._redis,
@@ -115,7 +116,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgMessageRegexAnswer(
                     r'/podcast\d+',
-                    PodcastAnswer.concrete_podcast_ctor(
+                    ConcretePodcastAnswer(
                         DebugMode(self._settings),
                         empty_answer,
                         self._redis,

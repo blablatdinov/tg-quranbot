@@ -31,7 +31,8 @@ from furl import furl
 from app_types.intable import ThroughAsyncIntable
 from app_types.update import FkUpdate
 from exceptions.base_exception import InternalBotError
-from handlers.podcast_answer import PodcastAnswer
+from handlers.concrete_podcast_answer import ConcretePodcastAnswer
+from handlers.random_podcast_answer import RandomPodcastAnswer
 from integrations.tg.tg_answers import FkAnswer
 from srv.podcasts.podcast import PgPodcast
 
@@ -104,7 +105,7 @@ async def _db_podcast_without_telegram_file_id(pgsql):
 ])
 @pytest.mark.usefixtures('_db_podcast')
 async def test_random_podcast(pgsql, rds, debug_mode, expected, unquote):
-    got = await PodcastAnswer.random_podcast_ctor(
+    got = await RandomPodcastAnswer(
         debug_mode,
         FkAnswer(),
         rds,
@@ -119,7 +120,7 @@ async def test_random_podcast(pgsql, rds, debug_mode, expected, unquote):
 @pytest.mark.usefixtures('_db_podcast')
 async def test_concrete_podcast(pgsql, rds):
     debug_mode = True
-    got = await PodcastAnswer.concrete_podcast_ctor(
+    got = await ConcretePodcastAnswer(
         debug_mode,
         FkAnswer(),
         rds,
@@ -140,7 +141,7 @@ async def test_podcast_not_found(pgsql):
 @pytest.mark.usefixtures('_db_podcast_without_telegram_file_id')
 async def test_podcast_without_tg_file_id(pgsql, rds):
     debug_mode = False
-    got = await PodcastAnswer.concrete_podcast_ctor(
+    got = await ConcretePodcastAnswer(
         debug_mode,
         FkAnswer(),
         rds,
