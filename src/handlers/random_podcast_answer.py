@@ -69,5 +69,5 @@ class RandomPodcastAnswer(TgAnswer):
             ),
             self._redis,
             podcast,
-            show_podcast_id=False,
+            show_podcast_id=True,
         ).build(update)

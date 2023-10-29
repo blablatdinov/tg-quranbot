@@ -81,6 +81,7 @@ class PodcastAnswer(TgAnswer):
                         '/podcast{0}'.format(await self._podcast.podcast_id()),
                     ),
                 ),
+                self._markupped_answer,
             ),
             CachedUserState(RedisUserState(self._redis, TgChatId(update))),
         ).build(update)
