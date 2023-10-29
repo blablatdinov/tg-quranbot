@@ -28,7 +28,6 @@ from pyeo import elegant
 
 from app_types.intable import SyncToAsyncIntable
 from app_types.listable import AsyncListable
-from integrations.tg.chat_id import ChatId
 from srv.users.pg_user import PgUser, User
 
 

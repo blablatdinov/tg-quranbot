@@ -83,7 +83,9 @@ class AyatTextSearchQuery(TextSearchQuery):
         key = self._key_template.format(int(self._chat_id))
         logger.info('Try writing key: {0}, value: {1}'.format(key, query))
         await self._redis.set(key, query)
-        logger.info('Key: {0} wrote'.format(self._key_template.format(int(self._chat_id))))
+        logger.info('Key: {0} wrote'.format(
+            self._key_template.format(int(self._chat_id)),
+        ))
 
     @override
     async def read(self) -> str:
