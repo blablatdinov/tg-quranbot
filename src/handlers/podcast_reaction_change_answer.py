@@ -35,7 +35,7 @@ from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
-from integrations.tg.message_id import MessageId
+from integrations.tg.message_id import TgMessageId
 from integrations.tg.tg_answers import TgAnswerToSender, TgKeyboardEditAnswer, TgMessageIdAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
@@ -117,7 +117,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
             FROM podcast_reactions
             WHERE user_id = :user_id AND podcast_id = :podcast_id
         """
-        chat_id = int(TgChatId(update))
+        chat_id = TgChatId(update)
         prayer_existed_reaction = await self._pgsql.fetch_val(query, {
             USER_ID_LITERAL: chat_id,
             PODCAST_ID_LITERAL: reaction.podcast_id(),
@@ -166,7 +166,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
                             PodcastKeyboard(self._pgsql, podcast),
                         ),
                     ),
-                    int(MessageId(update)),
+                    TgMessageId(update),
                 ),
             ),
             CachedUserState(RedisUserState(self._redis, TgChatId(update))),

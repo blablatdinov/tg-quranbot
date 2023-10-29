@@ -112,8 +112,12 @@ jobs:
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-      - name: Lint with ruff, flake8, refurb
-        run: .venv/bin/ruff check src && .venv/bin/flake8 src && .venv/bin/refurb src 
+      - name: Lint via ruff
+        run: .venv/bin/ruff check src
+      - name: Lint via flake8
+        run: .venv/bin/flake8 src
+      - name: Lint via refurb
+        run: .venv/bin/refurb src
       - name: Check types with mypy
         run: .venv/bin/mypy src
       - name: sqlfluff

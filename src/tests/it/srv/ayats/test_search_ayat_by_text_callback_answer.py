@@ -28,6 +28,7 @@ from furl import furl
 
 from app_types.update import FkUpdate
 from exceptions.content_exceptions import AyatNotFoundError
+from integrations.tg.chat_id import FkChatId
 from integrations.tg.tg_answers import FkAnswer
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.search_ayat_by_text_callback_answer import SearchAyatByTextCallbackAnswer
@@ -76,7 +77,7 @@ def search_answer(pgsql, rds):
 
 @pytest.mark.usefixtures('_db_ayat')
 async def test(rds, pgsql, unquote, search_answer):
-    await AyatTextSearchQuery(rds, 1758).write('Content')
+    await AyatTextSearchQuery(rds, FkChatId(1758)).write('Content')
     got = await search_answer.build(FkUpdate('{"callback_query": {"data": "1"}, "chat": {"id": 1758}}'))
 
     assert unquote(got[0].url) == unquote(

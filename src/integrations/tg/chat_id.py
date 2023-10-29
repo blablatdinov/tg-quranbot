@@ -35,6 +35,23 @@ ChatId: TypeAlias = SupportsInt
 @final
 @attrs.define(frozen=True)
 @elegant
+class FkChatId(ChatId):
+    """Фейк идентификатора чата."""
+
+    _origin: int
+
+    @override
+    def __int__(self) -> int:
+        """Числовое представление.
+
+        :return: int
+        """
+        return self._origin
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
 class TgChatId(ChatId):
     """Идентификатор чата."""
 

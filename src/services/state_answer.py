@@ -50,7 +50,7 @@ class StepAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        step = await RedisUserState(self._redis, int(TgChatId(update))).step()
+        step = await RedisUserState(self._redis, TgChatId(update)).step()
         if step.value != self._step:
             return []
         return await self._origin.build(update)

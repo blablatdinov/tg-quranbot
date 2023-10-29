@@ -55,6 +55,6 @@ class CachedAyatSearchQueryAnswer(TgAnswer):
         """
         await AyatTextSearchQuery(
             self._redis,
-            int(TgChatId(update)),
+            TgChatId(update),
         ).write(str(MessageText(update)))
         return await self._origin.build(update)

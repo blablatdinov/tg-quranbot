@@ -32,7 +32,7 @@ from app_types.intable import SyncToAsyncIntable
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
-from integrations.tg.message_id import MessageId
+from integrations.tg.message_id import TgMessageId
 from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerFork,
@@ -95,7 +95,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
         await self._pgsql.execute(
             query, {'ayat_id': status.ayat_id(), 'user_id': int(TgChatId(update))},
         )
-        chat_id = int(TgChatId(update))
+        chat_id = TgChatId(update)
         return await TgAnswerFork(
             StepAnswer(
                 UserStep.ayat_favor.value,
@@ -113,7 +113,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                                 self._pgsql,
                             ),
                         ),
-                        int(MessageId(update)),
+                        TgMessageId(update),
                     ),
                     chat_id,
                 ),
@@ -136,7 +136,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                                 self._pgsql,
                             ),
                         ),
-                        int(MessageId(update)),
+                        TgMessageId(update),
                     ),
                     chat_id,
                 ),
@@ -155,7 +155,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                             self._pgsql,
                         ),
                     ),
-                    int(MessageId(update)),
+                    TgMessageId(update),
                 ),
                 chat_id,
             ),

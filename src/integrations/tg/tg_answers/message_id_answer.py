@@ -28,6 +28,7 @@ from furl import furl
 from pyeo import elegant
 
 from app_types.update import Update
+from integrations.tg.message_id import MessageId
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
@@ -38,7 +39,7 @@ class TgMessageIdAnswer(TgAnswer):
     """Ответ с идентификатором сообщения."""
 
     _origin: TgAnswer
-    _message_id: int
+    _message_id: MessageId
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

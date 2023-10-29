@@ -32,7 +32,7 @@ from redis.asyncio import Redis
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
-from integrations.tg.message_id import MessageId
+from integrations.tg.message_id import TgMessageId
 from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerMarkup,
@@ -173,7 +173,7 @@ class PrayerTimeAnswer(TgAnswer):
                             TgChatId(update),
                         ),
                     ),
-                    int(MessageId(update)),
+                    TgMessageId(update),
                 ),
                 self._empty_answer,
                 self._admin_chat_ids,
