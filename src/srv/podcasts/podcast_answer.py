@@ -66,7 +66,7 @@ class PodcastAnswer(TgAnswer):
         :param update: Update
         :return: AnswerInterface
         """
-        chat_id = int(TgChatId(update))
+        chat_id = TgChatId(update)
         return await ResetStateAnswer(
             TgAnswerList(
                 SkipableAnswer(
@@ -106,7 +106,7 @@ class MarkuppedPodcastAnswer(TgAnswer):
         :param update: Update
         :return: AnswerInterface
         """
-        chat_id = int(TgChatId(update))
+        chat_id = TgChatId(update)
         return await TgAnswerMarkup(
             FileAnswer(
                 self._debug_mode,
