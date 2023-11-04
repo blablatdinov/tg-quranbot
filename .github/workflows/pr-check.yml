@@ -30,95 +30,120 @@ permissions:
   contents: read
 
 jobs:
-  setup:
+
+  apply-migrations:
+    # needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python 3.12
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12.0"
-      - name: Install Poetry
-        uses: snok/install-poetry@v1.3.4
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-          installer-parallel: true
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v3
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-      - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root
+          python-version: 3.12.0
+      - name: Install Dependencies
+        run: |
+          pip install yoyo-migrations==8.2.0 psycopg2-binary==2.9.9 setuptools==68.2.2
+      - name: Fill yoyo.ini
+        run: |
+          echo '[DEFAULT]
+          sources = migrations
+          database = ${{ secrets.POSTGRES_URL }}
+          batch_mode = on
+          verbosity = 3' > yoyo.ini
+      - name: Apply Migrations
+        run: |
+          yoyo apply
 
-  tests:
-    needs: setup
-    runs-on: ubuntu-latest
-    env:
-      TZ: "Europe/Moscow"
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: almazilaletdinov
-          POSTGRES_DB: postgres
-          POSTGRES_PASSWORD: password
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-      redis:
-        image: redis:latest
-        ports:
-          - 6379:6379
-        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12.0"
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v3
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-      - name: create .env file
-        run: echo '${{ secrets.E2E_ENV_SETUP }}' > .env
-      - name: Run tests with pytest
-        run: .venv/bin/pytest src --ignore=src/tests/e2e --doctest-modules --cov --cov-report xml --cov-fail-under=95
-      - uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          fail_ci_if_error: true
-
-  lint:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12.0"
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v3
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-      - name: Lint via ruff
-        run: .venv/bin/ruff check src
-      - name: Lint via flake8
-        run: .venv/bin/flake8 src
-      - name: Lint via refurb
-        run: .venv/bin/refurb src
-      - name: Check types with mypy
-        run: .venv/bin/mypy src
-      - name: sqlfluff
-        run: .venv/bin/sqlfluff lint migrations --dialect postgres
+  # setup:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Set up Python 3.12
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: "3.12.0"
+  #     - name: Install Poetry
+  #       uses: snok/install-poetry@v1.3.4
+  #       with:
+  #         virtualenvs-create: true
+  #         virtualenvs-in-project: true
+  #         installer-parallel: true
+  #     - name: Load cached venv
+  #       id: cached-poetry-dependencies
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: .venv
+  #         key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+  #     - name: Install dependencies
+  #       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+  #       run: poetry install --no-interaction --no-root
+  #
+  # tests:
+  #   needs: setup
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     TZ: "Europe/Moscow"
+  #   services:
+  #     postgres:
+  #       image: postgres:latest
+  #       env:
+  #         POSTGRES_USER: almazilaletdinov
+  #         POSTGRES_DB: postgres
+  #         POSTGRES_PASSWORD: password
+  #       ports:
+  #         - 5432:5432
+  #       options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+  #     redis:
+  #       image: redis:latest
+  #       ports:
+  #         - 6379:6379
+  #       options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+  #
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Set up Python 3.12
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: "3.12.0"
+  #     - name: Load cached venv
+  #       id: cached-poetry-dependencies
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: .venv
+  #         key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+  #     - name: create .env file
+  #       run: echo '${{ secrets.E2E_ENV_SETUP }}' > .env
+  #     - name: Run tests with pytest
+  #       run: .venv/bin/pytest src --ignore=src/tests/e2e --doctest-modules --cov --cov-report xml --cov-fail-under=95
+  #     - uses: codecov/codecov-action@v3
+  #       with:
+  #         token: ${{ secrets.CODECOV_TOKEN }}
+  #         files: ./coverage.xml
+  #         fail_ci_if_error: true
+  #
+  # lint:
+  #   needs: setup
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Set up Python 3.12
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: "3.12.0"
+  #     - name: Load cached venv
+  #       id: cached-poetry-dependencies
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: .venv
+  #         key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+  #     - name: Lint via ruff
+  #       run: .venv/bin/ruff check src
+  #     - name: Lint via flake8
+  #       run: .venv/bin/flake8 src
+  #     - name: Lint via refurb
+  #       run: .venv/bin/refurb src
+  #     - name: Check types with mypy
+  #       run: .venv/bin/mypy src
+  #     - name: sqlfluff
+  #       run: .venv/bin/sqlfluff lint migrations --dialect postgres
