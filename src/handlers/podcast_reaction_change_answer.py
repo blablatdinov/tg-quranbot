@@ -163,10 +163,12 @@ class PodcastReactionChangeAnswer(TgAnswer):
         try:
             message_text = str(MessageText(update))
             origin: TgAnswer = TgMessageIdAnswer(
-                TgKeyboardEditAnswer(
-                    TgAnswerMarkup(
-                        self._origin,
-                        PodcastKeyboard(self._pgsql, podcast),
+                TgAnswerToSender(
+                    TgKeyboardEditAnswer(
+                        TgAnswerMarkup(
+                            self._origin,
+                            PodcastKeyboard(self._pgsql, podcast),
+                        ),
                     ),
                 ),
                 TgMessageId(update),
@@ -186,8 +188,8 @@ class PodcastReactionChangeAnswer(TgAnswer):
                 podcast,
                 show_podcast_id=True,
             )
-        await reaction.apply()  # FIXME: проверить покрыто ли тестами
+        await reaction.apply()  # FIXME: проверить покрыто ли assert'ами
         return await ResetStateAnswer(
-            TgAnswerToSender(origin),
+            origin,
             CachedUserState(RedisUserState(self._redis, TgChatId(update))),
         ).build(update)

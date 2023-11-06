@@ -1,4 +1,3 @@
-
 """The MIT License (MIT).
 
 Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
@@ -71,23 +70,9 @@ async def test_without_message_text(pgsql, rds):
     )
 
     assert got[0].url.path == '/sendMessage'
-    # assert got[0].url.params['text'] == '\n'.join([
-    #     'Время намаза для г. Kazan (19.12.2023)\n',
-    #     'Иртәнге: 05:43',
-    #     'Восход: 08:02',
-    #     'Өйлә: 12:00',
-    #     'Икенде: 13:21',
-    #     'Ахшам: 15:07',
-    #     'Ястү: 17:04',
-    # ])
-    # assert json.loads(got[0].url.params['reply_markup']) == {
-    #     'inline_keyboard': [
-    #         [
-    #             {'callback_data': 'mark_readed(1)', 'text': '❌'},
-    #             {'callback_data': 'mark_readed(3)', 'text': '❌'},
-    #             {'callback_data': 'mark_readed(4)', 'text': '❌'},
-    #             {'callback_data': 'mark_not_readed(5)', 'text': '✅'},
-    #             {'callback_data': 'mark_readed(6)', 'text': '❌'},
-    #         ],
-    #     ],
-    # }
+    assert got[0].url.params['text'] == '/podcast5'
+    assert got[1].url.params['reply_markup'] == json.dumps({
+        "inline_keyboard": [[
+            {"text": "👍 1", "callback_data": "like(5)"}, {"text": "👎 0", "callback_data": "dislike(5)"},
+        ]],
+    })
