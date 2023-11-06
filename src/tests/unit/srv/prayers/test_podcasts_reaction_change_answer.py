@@ -20,10 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from unittest.mock import create_autospec
-
 import pytest
-from databases import Database
 
 from handlers.podcast_reaction_change_answer import PodcastReaction
 
@@ -33,7 +30,7 @@ from handlers.podcast_reaction_change_answer import PodcastReaction
     ('dislike(7854)', 7854, 'dislike'),
 ])
 def test(callback_data, prayer_id, status):
-    reaction = PodcastReaction(callback_data, 834795, create_autospec(Database))
+    reaction = PodcastReaction(callback_data)
 
     assert reaction.podcast_id() == prayer_id
     assert reaction.status() == status

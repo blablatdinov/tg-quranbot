@@ -77,3 +77,30 @@ async def test_without_message_text(pgsql, rds):
             {'text': '👍 1', 'callback_data': 'like(5)'}, {'text': '👎 0', 'callback_data': 'dislike(5)'},
         ]],
     })
+
+
+@pytest.mark.usefixtures('_db_podcast')
+async def test_without_message_with_audio(pgsql, rds):
+    debug = False
+    got = await PodcastReactionChangeAnswer(debug, FkAnswer(), rds, pgsql).build(
+        FkUpdate(json.dumps({
+            'callback_query': {
+                'from': {'id': 905},
+                'message': {
+                    'message_id': 743895,
+                    'audio': {},
+                    'chat': {'id': 905},
+                    'date': 0,
+                },
+                'chat_instance': '-8563585384798880073',
+                'data': 'mark_readed(5)',
+            },
+        })),
+    )
+
+    assert got[0].url.path == '/editMessageReplyMarkup'
+    assert got[0].url.params['reply_markup'] == json.dumps({
+        'inline_keyboard': [[
+            {'text': '👍 1', 'callback_data': 'like(5)'}, {'text': '👎 0', 'callback_data': 'dislike(5)'},
+        ]],
+    })

@@ -34,12 +34,11 @@ from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import ChatId, TgChatId
-from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 from integrations.tg.message_id import TgMessageId
-from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerToSender, TgKeyboardEditAnswer, TgMessageIdAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
+from services.json_path_value import MatchManyJsonPath
 from services.regular_expression import IntableRegularExpression
 from services.reset_state_answer import ResetStateAnswer
 from services.user_state import CachedUserState, RedisUserState
@@ -66,11 +65,16 @@ class PodcastReactionsT(Protocol):
 @attrs.define(frozen=True)
 @elegant
 class PodcastReaction(PodcastReactionsT):
-    """Реакция на подкастa."""
+    """Реакция на подкаст.
+
+    >>> prayer_reaction = PodcastReaction('like(17)')
+    >>> prayer_reaction.podcast_id()
+    17
+    >>> prayer_reaction.status()
+    'like'
+    """
 
     _callback_query: SupportsStr
-    _chat_id: ChatId
-    _pgsql: Database
 
     @override
     def podcast_id(self) -> int:
@@ -108,11 +112,14 @@ class PodcastMessageTextNotExistsSafeAnswer(TgAnswer):
         """
         try:
             return await self._message_text_exists_case(update)
-        except MessageTextNotFoundError:
+        except ValueError:
             return await self._new_podcast_message_answer.build(update)
 
     async def _message_text_exists_case(self, update: Update) -> list[httpx.Request]:
-        str(MessageText(update))
+        MatchManyJsonPath(
+            update.asdict(),
+            ('$..message.text', '$..message.audio'),
+        ).evaluate()
         return await self._edited_markup_answer.build(update)
 
 
@@ -134,7 +141,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
         :param update: Update
         :return: AnswerInterface  # TODO: нужно заменить по всему проекту
         """
-        reaction = PodcastReaction(CallbackQueryData(update), TgChatId(update), self._pgsql)
+        reaction = PodcastReaction(CallbackQueryData(update))
         podcast = PgPodcast(
             SyncToAsyncIntable(reaction.podcast_id()),
             self._pgsql,
