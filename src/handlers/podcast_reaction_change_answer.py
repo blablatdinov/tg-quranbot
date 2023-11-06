@@ -41,6 +41,7 @@ from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerToSender, TgKeyboardEditAnswer, TgMessageIdAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
+from services.regular_expression import IntableRegularExpression
 from services.reset_state_answer import ResetStateAnswer
 from services.user_state import CachedUserState, RedisUserState
 from srv.podcasts.podcast import PgPodcast
@@ -81,7 +82,7 @@ class PodcastReaction(PodcastReactionsT):
 
         :return: int
         """
-        return int(re.findall(r'\((.+)\)', str(self._callback_query))[0])
+        return int(IntableRegularExpression(str(self._callback_query)))
 
     @override
     def status(self) -> Literal['like', 'dislike']:
