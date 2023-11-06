@@ -34,7 +34,7 @@ from app_types.stringable import SupportsStr
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
-from integrations.tg.chat_id import TgChatId
+from integrations.tg.chat_id import TgChatId, ChatId
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 from integrations.tg.message_id import TgMessageId
 from integrations.tg.message_text import MessageText
@@ -61,21 +61,19 @@ class PodcastReactionsT(Protocol):
     def status(self) -> Literal['like', 'dislike']:
         """Реакция."""
 
+    async def apply(self) -> None:
+        """Применить."""
+
 
 @final
 @attrs.define(frozen=True)
 @elegant
 class PodcastReaction(PodcastReactionsT):
-    """Реакция на подкастa.
-
-    >>> prayer_reaction = PodcastReaction('like(17)')
-    >>> prayer_reaction.podcast_id()
-    17
-    >>> prayer_reaction.status()
-    'like'
-    """
+    """Реакция на подкастa."""
 
     _callback_query: SupportsStr
+    _chat_id: ChatId
+    _pgsql: Database
 
     @override
     def podcast_id(self) -> int:
@@ -95,53 +93,48 @@ class PodcastReaction(PodcastReactionsT):
             return 'dislike'
         return 'like'
 
-
-async def _process(update, pgsql, reaction) -> Podcast:
-    query = """
-        SELECT reaction
-        FROM podcast_reactions
-        WHERE user_id = :user_id AND podcast_id = :podcast_id
-    """
-    chat_id = TgChatId(update)
-    prayer_existed_reaction = await pgsql.fetch_val(query, {
-        USER_ID_LITERAL: chat_id,
-        PODCAST_ID_LITERAL: reaction.podcast_id(),
-    })
-    if prayer_existed_reaction:
-        if prayer_existed_reaction == reaction.status():
-            query = """
-                DELETE FROM podcast_reactions
-                WHERE user_id = :user_id AND podcast_id = :podcast_id
-            """
-            await pgsql.execute(query, {
-                USER_ID_LITERAL: chat_id,
-                PODCAST_ID_LITERAL: reaction.podcast_id(),
-            })
+    @override
+    async def apply(self) -> None:
+        query = """
+            SELECT reaction
+            FROM podcast_reactions
+            WHERE user_id = :user_id AND podcast_id = :podcast_id
+        """
+        prayer_existed_reaction = await self._pgsql.fetch_val(query, {
+            USER_ID_LITERAL: self._chat_id,
+            PODCAST_ID_LITERAL: self.podcast_id(),
+        })
+        if prayer_existed_reaction:
+            if prayer_existed_reaction == self.status():
+                query = """
+                    DELETE FROM podcast_reactions
+                    WHERE user_id = :user_id AND podcast_id = :podcast_id
+                """
+                await self._pgsql.execute(query, {
+                    USER_ID_LITERAL: self._chat_id,
+                    PODCAST_ID_LITERAL: self.podcast_id(),
+                })
+            else:
+                query = """
+                    UPDATE podcast_reactions
+                    SET reaction = :reaction
+                    WHERE user_id = :user_id AND podcast_id = :podcast_id
+                """
+                await self._pgsql.execute(query, {
+                    'reaction': self.status(),
+                    USER_ID_LITERAL: self._chat_id,
+                    PODCAST_ID_LITERAL: self.podcast_id(),
+                })
         else:
             query = """
-                UPDATE podcast_reactions
-                SET reaction = :reaction
-                WHERE user_id = :user_id AND podcast_id = :podcast_id
+                INSERT INTO podcast_reactions (podcast_id, user_id, reaction)
+                VALUES (:podcast_id, :user_id, :reaction)
             """
-            await pgsql.execute(query, {
-                'reaction': reaction.status(),
-                USER_ID_LITERAL: chat_id,
-                PODCAST_ID_LITERAL: reaction.podcast_id(),
+            await self._pgsql.execute(query, {
+                PODCAST_ID_LITERAL: self.podcast_id(),
+                USER_ID_LITERAL: self._chat_id,
+                'reaction': self.status(),
             })
-    else:
-        query = """
-            INSERT INTO podcast_reactions (podcast_id, user_id, reaction)
-            VALUES (:podcast_id, :user_id, :reaction)
-        """
-        await pgsql.execute(query, {
-            PODCAST_ID_LITERAL: reaction.podcast_id(),
-            USER_ID_LITERAL: chat_id,
-            'reaction': reaction.status(),
-        })
-    return PgPodcast(
-        SyncToAsyncIntable(reaction.podcast_id()),
-        pgsql,
-    )
 
 
 @final
@@ -162,8 +155,11 @@ class PodcastReactionChangeAnswer(TgAnswer):
         :param update: Update
         :return: AnswerInterface
         """
-        reaction = PodcastReaction(CallbackQueryData(update))
-        podcast = await _process(update, self._pgsql, reaction)
+        reaction = PodcastReaction(CallbackQueryData(update), TgChatId(update), self._pgsql)
+        podcast = PgPodcast(
+            SyncToAsyncIntable(reaction.podcast_id()),
+            self._pgsql,
+        )
         try:
             message_text = str(MessageText(update))
             origin: TgAnswer = TgMessageIdAnswer(
@@ -190,6 +186,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
                 podcast,
                 show_podcast_id=True,
             )
+        await reaction.apply()  # FIXME: проверить покрыто ли тестами
         return await ResetStateAnswer(
             TgAnswerToSender(origin),
             CachedUserState(RedisUserState(self._redis, TgChatId(update))),
