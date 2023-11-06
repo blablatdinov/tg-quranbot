@@ -34,7 +34,7 @@ from app_types.stringable import SupportsStr
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
-from integrations.tg.chat_id import TgChatId, ChatId
+from integrations.tg.chat_id import ChatId, TgChatId
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 from integrations.tg.message_id import TgMessageId
 from integrations.tg.message_text import MessageText
@@ -43,7 +43,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from services.reset_state_answer import ResetStateAnswer
 from services.user_state import CachedUserState, RedisUserState
-from srv.podcasts.podcast import PgPodcast, Podcast
+from srv.podcasts.podcast import PgPodcast
 from srv.podcasts.podcast_answer import MarkuppedPodcastAnswer, PodcastAnswer
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
 
@@ -95,6 +95,7 @@ class PodcastReaction(PodcastReactionsT):
 
     @override
     async def apply(self) -> None:
+        """Применить реакцию."""
         query = """
             SELECT reaction
             FROM podcast_reactions
@@ -161,7 +162,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
             self._pgsql,
         )
         try:
-            message_text = str(MessageText(update))
+            str(MessageText(update))
             origin: TgAnswer = TgMessageIdAnswer(
                 TgAnswerToSender(
                     TgKeyboardEditAnswer(
@@ -174,7 +175,6 @@ class PodcastReactionChangeAnswer(TgAnswer):
                 TgMessageId(update),
             )
         except MessageTextNotFoundError:
-            print(reaction.podcast_id())
             origin: TgAnswer = PodcastAnswer(  # type: ignore [no-redef]
                 self._origin,
                 MarkuppedPodcastAnswer(

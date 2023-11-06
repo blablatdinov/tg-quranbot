@@ -34,7 +34,7 @@ from integrations.tg.tg_answers import FkAnswer
 @pytest.fixture()
 async def _db_podcast(pgsql):
     file_id = str(uuid.uuid4())
-    await pgsql.execute("INSERT INTO users (chat_id) VALUES (905)")
+    await pgsql.execute('INSERT INTO users (chat_id) VALUES (905)')
     await pgsql.execute(
         '\n'.join([
             'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
@@ -72,7 +72,7 @@ async def test_without_message_text(pgsql, rds):
     assert got[0].url.path == '/sendMessage'
     assert got[0].url.params['text'] == '/podcast5'
     assert got[1].url.params['reply_markup'] == json.dumps({
-        "inline_keyboard": [[
-            {"text": "👍 1", "callback_data": "like(5)"}, {"text": "👎 0", "callback_data": "dislike(5)"},
+        'inline_keyboard': [[
+            {'text': '👍 1', 'callback_data': 'like(5)'}, {'text': '👎 0', 'callback_data': 'dislike(5)'},
         ]],
     })
