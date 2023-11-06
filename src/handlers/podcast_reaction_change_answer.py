@@ -61,9 +61,6 @@ class PodcastReactionsT(Protocol):
     def status(self) -> Literal['like', 'dislike']:
         """Реакция."""
 
-    async def apply(self) -> None:
-        """Применить."""
-
 
 @final
 @attrs.define(frozen=True)
@@ -93,49 +90,22 @@ class PodcastReaction(PodcastReactionsT):
             return 'dislike'
         return 'like'
 
-    @override
-    async def apply(self) -> None:
-        """Применить реакцию."""
-        query = """
-            SELECT reaction
-            FROM podcast_reactions
-            WHERE user_id = :user_id AND podcast_id = :podcast_id
-        """
-        prayer_existed_reaction = await self._pgsql.fetch_val(query, {
-            USER_ID_LITERAL: self._chat_id,
-            PODCAST_ID_LITERAL: self.podcast_id(),
-        })
-        if prayer_existed_reaction:
-            if prayer_existed_reaction == self.status():
-                query = """
-                    DELETE FROM podcast_reactions
-                    WHERE user_id = :user_id AND podcast_id = :podcast_id
-                """
-                await self._pgsql.execute(query, {
-                    USER_ID_LITERAL: self._chat_id,
-                    PODCAST_ID_LITERAL: self.podcast_id(),
-                })
-            else:
-                query = """
-                    UPDATE podcast_reactions
-                    SET reaction = :reaction
-                    WHERE user_id = :user_id AND podcast_id = :podcast_id
-                """
-                await self._pgsql.execute(query, {
-                    'reaction': self.status(),
-                    USER_ID_LITERAL: self._chat_id,
-                    PODCAST_ID_LITERAL: self.podcast_id(),
-                })
-        else:
-            query = """
-                INSERT INTO podcast_reactions (podcast_id, user_id, reaction)
-                VALUES (:podcast_id, :user_id, :reaction)
-            """
-            await self._pgsql.execute(query, {
-                PODCAST_ID_LITERAL: self.podcast_id(),
-                USER_ID_LITERAL: self._chat_id,
-                'reaction': self.status(),
-            })
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class BadName(TgAnswer):  # FIXME: rename
+
+    _edited_markup_answer: TgAnswer
+    _new_podcast_message_answer: TgAnswer
+
+    async def build(self, update: Update) -> list[httpx.Request]:
+        try:
+            str(MessageText(update))
+            return await self._edited_markup_answer.build(update)
+        except MessageTextNotFoundError:
+            return await self._new_podcast_message_answer.build(update)
+
 
 
 @final
@@ -161,35 +131,75 @@ class PodcastReactionChangeAnswer(TgAnswer):
             SyncToAsyncIntable(reaction.podcast_id()),
             self._pgsql,
         )
-        try:
-            str(MessageText(update))
-            origin: TgAnswer = TgMessageIdAnswer(
-                TgAnswerToSender(
-                    TgKeyboardEditAnswer(
-                        TgAnswerMarkup(
-                            self._origin,
-                            PodcastKeyboard(self._pgsql, podcast),
+        await self._apply_reaction(int(TgChatId(update)), reaction)
+        return await ResetStateAnswer(
+            BadName(
+                TgMessageIdAnswer(
+                    TgAnswerToSender(
+                        TgKeyboardEditAnswer(
+                            TgAnswerMarkup(
+                                self._origin,
+                                PodcastKeyboard(self._pgsql, podcast),
+                            ),
                         ),
                     ),
+                    TgMessageId(update),
                 ),
-                TgMessageId(update),
-            )
-        except MessageTextNotFoundError:
-            origin: TgAnswer = PodcastAnswer(  # type: ignore [no-redef]
-                self._origin,
-                MarkuppedPodcastAnswer(
-                    self._debug_mode,
+                PodcastAnswer(
                     self._origin,
+                    MarkuppedPodcastAnswer(
+                        self._debug_mode,
+                        self._origin,
+                        self._redis,
+                        self._pgsql,
+                        podcast,
+                    ),
                     self._redis,
-                    self._pgsql,
                     podcast,
+                    show_podcast_id=True,
                 ),
-                self._redis,
-                podcast,
-                show_podcast_id=True,
-            )
-        await reaction.apply()
-        return await ResetStateAnswer(
-            origin,
+            ),
             CachedUserState(RedisUserState(self._redis, TgChatId(update))),
         ).build(update)
+
+    async def _apply_reaction(self, chat_id: ChatId, reaction: PodcastReactionsT):
+        query = """
+            SELECT reaction
+            FROM podcast_reactions
+            WHERE user_id = :user_id AND podcast_id = :podcast_id
+        """
+        prayer_existed_reaction = await self._pgsql.fetch_val(query, {
+            USER_ID_LITERAL: chat_id,
+            PODCAST_ID_LITERAL: reaction.podcast_id(),
+        })
+        if prayer_existed_reaction:
+            if prayer_existed_reaction == reaction.status():
+                query = """
+                    DELETE FROM podcast_reactions
+                    WHERE user_id = :user_id AND podcast_id = :podcast_id
+                """
+                await self._pgsql.execute(query, {
+                    USER_ID_LITERAL: chat_id,
+                    PODCAST_ID_LITERAL: reaction.podcast_id(),
+                })
+            else:
+                query = """
+                    UPDATE podcast_reactions
+                    SET reaction = :reaction
+                    WHERE user_id = :user_id AND podcast_id = :podcast_id
+                """
+                await self._pgsql.execute(query, {
+                    'reaction': reaction.status(),
+                    USER_ID_LITERAL: chat_id,
+                    PODCAST_ID_LITERAL: reaction.podcast_id(),
+                })
+        else:
+            query = """
+                INSERT INTO podcast_reactions (podcast_id, user_id, reaction)
+                VALUES (:podcast_id, :user_id, :reaction)
+            """
+            await self._pgsql.execute(query, {
+                PODCAST_ID_LITERAL: reaction.podcast_id(),
+                USER_ID_LITERAL: chat_id,
+                'reaction': reaction.status(),
+            })
