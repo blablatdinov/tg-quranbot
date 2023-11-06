@@ -188,7 +188,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
                 podcast,
                 show_podcast_id=True,
             )
-        await reaction.apply()  # FIXME: проверить покрыто ли assert'ами
+        await reaction.apply()
         return await ResetStateAnswer(
             origin,
             CachedUserState(RedisUserState(self._redis, TgChatId(update))),
