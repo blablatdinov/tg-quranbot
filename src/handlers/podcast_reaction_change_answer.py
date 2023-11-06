@@ -94,18 +94,26 @@ class PodcastReaction(PodcastReactionsT):
 @final
 @attrs.define(frozen=True)
 @elegant
-class BadName(TgAnswer):  # FIXME: rename
+class PodcastMessageTextNotExistsSafeAnswer(TgAnswer):
+    """В случаи нажатия на кнопку с отсутствующем текстом сообщения."""
 
     _edited_markup_answer: TgAnswer
     _new_podcast_message_answer: TgAnswer
 
     async def build(self, update: Update) -> list[httpx.Request]:
+        """Трансформация в ответ.
+
+        :param update: Update
+        :return: list[httpx.Request]
+        """
         try:
-            str(MessageText(update))
-            return await self._edited_markup_answer.build(update)
+            return await self._message_text_exists_case(update)
         except MessageTextNotFoundError:
             return await self._new_podcast_message_answer.build(update)
 
+    async def _message_text_exists_case(self, update: Update) -> list[httpx.Request]:
+        str(MessageText(update))
+        return await self._edited_markup_answer.build(update)
 
 
 @final
@@ -124,7 +132,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
         """Трансформация в ответ.
 
         :param update: Update
-        :return: AnswerInterface
+        :return: AnswerInterface  # TODO: нужно заменить по всему проекту
         """
         reaction = PodcastReaction(CallbackQueryData(update), TgChatId(update), self._pgsql)
         podcast = PgPodcast(
@@ -133,7 +141,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
         )
         await self._apply_reaction(int(TgChatId(update)), reaction)
         return await ResetStateAnswer(
-            BadName(
+            PodcastMessageTextNotExistsSafeAnswer(
                 TgMessageIdAnswer(
                     TgAnswerToSender(
                         TgKeyboardEditAnswer(
@@ -162,7 +170,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
             CachedUserState(RedisUserState(self._redis, TgChatId(update))),
         ).build(update)
 
-    async def _apply_reaction(self, chat_id: ChatId, reaction: PodcastReactionsT):
+    async def _apply_reaction(self, chat_id: ChatId, reaction: PodcastReactionsT) -> None:
         query = """
             SELECT reaction
             FROM podcast_reactions
