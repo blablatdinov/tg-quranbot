@@ -54,7 +54,8 @@ async def test_without_message_text(pgsql, rds):
 
     Почему-то телеграм не присылает текст сообщения спустя время
     """
-    got = await PodcastReactionChangeAnswer(False, FkAnswer(), rds, pgsql).build(
+    debug = False
+    got = await PodcastReactionChangeAnswer(debug, FkAnswer(), rds, pgsql).build(
         FkUpdate(json.dumps({
             'callback_query': {
                 'from': {'id': 905},
