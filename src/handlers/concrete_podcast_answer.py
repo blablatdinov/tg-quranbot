@@ -54,7 +54,7 @@ class ConcretePodcastAnswer(TgAnswer):
         """Трансформация в ответ.
 
         :param update: Update
-        :return: AnswerInterface
+        :return: list[httpx.Request]
         """
         podcast = PgPodcast(
             SyncToAsyncIntable(IntableRegularExpression(str(MessageText(update)))),

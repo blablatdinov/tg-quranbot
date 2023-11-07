@@ -20,7 +20,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import re
 from typing import Final, Literal, Protocol, final, override
 
 import attrs
@@ -34,14 +33,17 @@ from app_types.stringable import SupportsStr
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
-from integrations.tg.chat_id import TgChatId
+from integrations.tg.chat_id import ChatId, TgChatId
 from integrations.tg.message_id import TgMessageId
 from integrations.tg.tg_answers import TgAnswerToSender, TgKeyboardEditAnswer, TgMessageIdAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
+from services.json_path_value import MatchManyJsonPath
+from services.regular_expression import IntableRegularExpression
 from services.reset_state_answer import ResetStateAnswer
 from services.user_state import CachedUserState, RedisUserState
 from srv.podcasts.podcast import PgPodcast
+from srv.podcasts.podcast_answer import MarkuppedPodcastAnswer, PodcastAnswer
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
 
 PODCAST_ID_LITERAL: Final = 'podcast_id'
@@ -63,7 +65,7 @@ class PodcastReactionsT(Protocol):
 @attrs.define(frozen=True)
 @elegant
 class PodcastReaction(PodcastReactionsT):
-    """Реакция на подкастa.
+    """Реакция на подкаст.
 
     >>> prayer_reaction = PodcastReaction('like(17)')
     >>> prayer_reaction.podcast_id()
@@ -80,7 +82,7 @@ class PodcastReaction(PodcastReactionsT):
 
         :return: int
         """
-        return int(re.findall(r'\((.+)\)', str(self._callback_query))[0])
+        return int(IntableRegularExpression(str(self._callback_query)))
 
     @override
     def status(self) -> Literal['like', 'dislike']:
@@ -91,6 +93,34 @@ class PodcastReaction(PodcastReactionsT):
         if 'dislike' in str(self._callback_query):
             return 'dislike'
         return 'like'
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class PodcastMessageTextNotExistsSafeAnswer(TgAnswer):
+    """В случаи нажатия на кнопку с отсутствующем текстом сообщения."""
+
+    _edited_markup_answer: TgAnswer
+    _new_podcast_message_answer: TgAnswer
+
+    async def build(self, update: Update) -> list[httpx.Request]:
+        """Трансформация в ответ.
+
+        :param update: Update
+        :return: list[httpx.Request]
+        """
+        try:
+            return await self._message_text_exists_case(update)
+        except ValueError:
+            return await self._new_podcast_message_answer.build(update)
+
+    async def _message_text_exists_case(self, update: Update) -> list[httpx.Request]:
+        MatchManyJsonPath(
+            update.asdict(),
+            ('$..message.text', '$..message.audio'),
+        ).evaluate()
+        return await self._edited_markup_answer.build(update)
 
 
 @final
@@ -109,15 +139,50 @@ class PodcastReactionChangeAnswer(TgAnswer):
         """Трансформация в ответ.
 
         :param update: Update
-        :return: AnswerInterface
+        :return: list[httpx.Request]
         """
         reaction = PodcastReaction(CallbackQueryData(update))
+        podcast = PgPodcast(
+            SyncToAsyncIntable(reaction.podcast_id()),
+            self._pgsql,
+        )
+        await self._apply_reaction(int(TgChatId(update)), reaction)
+        return await ResetStateAnswer(
+            PodcastMessageTextNotExistsSafeAnswer(
+                TgMessageIdAnswer(
+                    TgAnswerToSender(
+                        TgKeyboardEditAnswer(
+                            TgAnswerMarkup(
+                                self._origin,
+                                PodcastKeyboard(self._pgsql, podcast),
+                            ),
+                        ),
+                    ),
+                    TgMessageId(update),
+                ),
+                PodcastAnswer(
+                    self._origin,
+                    MarkuppedPodcastAnswer(
+                        self._debug_mode,
+                        self._origin,
+                        self._redis,
+                        self._pgsql,
+                        podcast,
+                    ),
+                    self._redis,
+                    podcast,
+                    show_podcast_id=True,
+                ),
+            ),
+            CachedUserState(RedisUserState(self._redis, TgChatId(update))),
+        ).build(update)
+
+    async def _apply_reaction(self, chat_id: ChatId, reaction: PodcastReactionsT) -> None:
         query = """
             SELECT reaction
             FROM podcast_reactions
             WHERE user_id = :user_id AND podcast_id = :podcast_id
         """
-        chat_id = TgChatId(update)
         prayer_existed_reaction = await self._pgsql.fetch_val(query, {
             USER_ID_LITERAL: chat_id,
             PODCAST_ID_LITERAL: reaction.podcast_id(),
@@ -153,21 +218,3 @@ class PodcastReactionChangeAnswer(TgAnswer):
                 USER_ID_LITERAL: chat_id,
                 'reaction': reaction.status(),
             })
-        podcast = PgPodcast(
-            SyncToAsyncIntable(reaction.podcast_id()),
-            self._pgsql,
-        )
-        return await ResetStateAnswer(
-            TgAnswerToSender(
-                TgMessageIdAnswer(
-                    TgKeyboardEditAnswer(
-                        TgAnswerMarkup(
-                            self._origin,
-                            PodcastKeyboard(self._pgsql, podcast),
-                        ),
-                    ),
-                    TgMessageId(update),
-                ),
-            ),
-            CachedUserState(RedisUserState(self._redis, TgChatId(update))),
-        ).build(update)

@@ -52,7 +52,7 @@ class RandomPodcastAnswer(TgAnswer):
         """Трансформация в ответ.
 
         :param update: Update
-        :return: AnswerInterface
+        :return: list[httpx.Request]
         """
         podcast = PgPodcast(
             SyncToAsyncIntable(await self._pgsql.fetch_val('SELECT podcast_id FROM podcasts ORDER BY RANDOM()')),

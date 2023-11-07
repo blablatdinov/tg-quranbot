@@ -79,10 +79,11 @@ async def test(pgsql, rds, reaction, podcast_id, button1, button2):
         json.dumps({
             'chat': {'id': 1},
             'callback_query': {'data': '{0}({1})'.format(reaction, podcast_id)},
-            'message': {'message_id': 1},
+            'message': {'message_id': 1, 'text': '/podcast{0}'.format(podcast_id)},
         }),
     ))
 
+    assert len(got) == 1
     assert json.loads(got[0].url.params['reply_markup']) == {
         'inline_keyboard': [[
             {'callback_data': 'like({0})'.format(podcast_id), 'text': button1},
