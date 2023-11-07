@@ -1,0 +1,3 @@
+plugins:
+  radon: 
+    enabled: true
