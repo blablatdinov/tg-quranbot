@@ -64,7 +64,7 @@ class PodcastAnswer(TgAnswer):
         """Трансформация в ответ.
 
         :param update: Update
-        :return: AnswerInterface
+        :return: list[httpx.Request]
         """
         chat_id = TgChatId(update)
         return await ResetStateAnswer(
@@ -104,7 +104,7 @@ class MarkuppedPodcastAnswer(TgAnswer):
         """Трансформация в ответ.
 
         :param update: Update
-        :return: AnswerInterface
+        :return: list[httpx.Request]
         """
         chat_id = TgChatId(update)
         return await TgAnswerMarkup(

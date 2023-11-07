@@ -139,7 +139,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
         """Трансформация в ответ.
 
         :param update: Update
-        :return: AnswerInterface  # TODO: нужно заменить по всему проекту
+        :return: list[httpx.Request]
         """
         reaction = PodcastReaction(CallbackQueryData(update))
         podcast = PgPodcast(
