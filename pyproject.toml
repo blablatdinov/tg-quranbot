@@ -130,6 +130,9 @@ ignore = [
 line-length = 120
 preview = true
 
+[tool.ruff.lint]
+preview = true
+
 [tool.ruff.flake8-quotes]
 docstring-quotes = "double"
 inline-quotes = "single"
