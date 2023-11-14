@@ -20,14 +20,27 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final
-from itertools import batched, chain
+import datetime
+from typing import final, TypedDict
+from itertools import batched
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
 from integrations.tg.chat_id import ChatId
+
+_PrayerStatisticRow = TypedDict(
+    '_PrayerStatisticRow',
+    {
+        'asr': bool,
+        'day': datetime.date,
+        'dhuhr': bool,
+        'fajr': bool,
+        "isha'a": bool,
+        'maghrib': bool,
+    }
+)
 
 
 @final
@@ -38,7 +51,7 @@ class PgPrayersStatisic(object):
     _pgsql: Database
     _chat_id: ChatId
 
-    async def csv(self):
+    async def generate(self) -> list[_PrayerStatisticRow]:
         query = """
             SELECT
                 pau.is_read,
@@ -55,13 +68,15 @@ class PgPrayersStatisic(object):
             }),
             5,
         )
-        lines = [
-            "Day;fajr;dhuhr;asr;maghrib;isha'a",
-        ]
+        res = []
         for rows in prayers_per_day:
-            line_str = ';'.join(chain(
-                [str(rows[0]['day'])],
-                [str(row['is_read']) for row in rows]
-            ))
-            lines.append(line_str)
-        return '\n'.join(lines)
+            statistic_row: _PrayerStatisticRow = {
+                'day': rows[0]['day'],
+                'fajr': rows[0]['is_read'],
+                'dhuhr': rows[1]['is_read'],
+                'asr': rows[2]['is_read'],
+                'maghrib': rows[3]['is_read'],
+                "isha'a": rows[4]['is_read'],
+            }
+            res.append(statistic_row)
+        return res
