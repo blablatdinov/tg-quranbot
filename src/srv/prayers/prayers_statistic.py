@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import final
-from itertools import batched
+from itertools import batched, chain
 
 import attrs
 from databases import Database
@@ -47,15 +47,13 @@ class PgPrayersStatisic(object):
             ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
         """
         prayers_per_day = batched(await self._pgsql.fetch_all(query), 5)
-        res = ''
-        res += "Day;fajr;dhuhr;asr;maghrib;isha'a\n"
-        # print("Day;fajr;dhuhr;asr;maghrib;isha'a")
+        lines = [
+            "Day;fajr;dhuhr;asr;maghrib;isha'a",
+        ]
         for rows in prayers_per_day:
-            res += str(rows[0]['day']) + ';'
-            # print(rows[0]['day'], end=';')
-            for row in rows:
-                res += str(row['is_read']) + ';'
-                # print(row['is_read'], end=';')
-            res += '\n'
-            # print()
-        return res
+            line_str = ';'.join(chain(
+                [str(rows[0]['day'])],
+                [str(row['is_read']) for row in rows]
+            ))
+            lines.append(line_str)
+        return '\n'.join(lines)
