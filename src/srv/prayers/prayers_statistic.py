@@ -27,6 +27,8 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
+from integrations.tg.chat_id import ChatId
+
 
 @final
 @attrs.define(frozen=True)
@@ -34,19 +36,25 @@ from pyeo import elegant
 class PgPrayersStatisic(object):
 
     _pgsql: Database
+    _chat_id: ChatId
 
     async def csv(self):
         query = """
             SELECT
-              pau.is_read,
-              p.day,
-              p.name
+                pau.is_read,
+                p.day,
+                p.name
             FROM prayers_at_user AS pau
             INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id
-            WHERE pau.user_id = 358610865
+            WHERE pau.user_id = :chat_id
             ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
         """
-        prayers_per_day = batched(await self._pgsql.fetch_all(query), 5)
+        prayers_per_day = batched(
+            await self._pgsql.fetch_all(query, {
+                'chat_id': int(self._chat_id),
+            }),
+            5,
+        )
         lines = [
             "Day;fajr;dhuhr;asr;maghrib;isha'a",
         ]

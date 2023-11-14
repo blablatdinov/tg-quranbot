@@ -25,6 +25,7 @@ from pathlib import Path
 
 import pytest
 
+from integrations.tg.chat_id import FkChatId
 from srv.prayers.prayers_statistic import PgPrayersStatisic
 
 
@@ -82,7 +83,7 @@ async def _prayers(pgsql):
 
 @pytest.mark.usefixtures('_prayers')
 async def test(pgsql):
-    got = await PgPrayersStatisic(pgsql).csv()
+    got = await PgPrayersStatisic(pgsql, FkChatId(358610865)).csv()
 
     assert got == '\n'.join([
         "Day;fajr;dhuhr;asr;maghrib;isha'a",
