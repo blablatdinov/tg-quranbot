@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
 import json
-from itertools import batched
+from itertools import batched, chain
 from typing import Protocol, final, override
 from urllib import parse as url_parse
 
@@ -129,9 +129,9 @@ class BulkSendableAnswer(SendableInterface):
             ).send(update)
             for answer in self._answers
         ]
-        responses = []
+        responses: list[dict] = []
         for sendable_slice in batched(tasks, 10):
             res_list = await asyncio.gather(*sendable_slice)
-            for res in res_list:
+            for res in chain.from_iterable(res_list):
                 responses.append(res)  # noqa: PERF402
         return responses
