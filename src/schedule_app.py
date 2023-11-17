@@ -80,8 +80,7 @@ class CheckUsersStatus(Runable):
         )
         deactivated_user_chat_ids = [
             await user.chat_id()
-            for user, response_list in zipped_user_responses
-            for response_dict in response_list
+            for user, response_dict in zipped_user_responses
             if not response_dict['ok']
         ]
         await PgUpdatedUsersStatus(
