@@ -21,11 +21,12 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from typing import final, TypedDict
 from itertools import batched
+from typing import TypedDict, final
 
 import attrs
 from databases import Database
+from dateutil import rrule
 from pyeo import elegant
 
 from integrations.tg.chat_id import ChatId
@@ -50,6 +51,8 @@ class PgPrayersStatisic(object):
 
     _pgsql: Database
     _chat_id: ChatId
+    _start_date: datetime.date
+    _end_date: datetime.date
 
     async def generate(self) -> list[_PrayerStatisticRow]:
         query = """
@@ -62,21 +65,33 @@ class PgPrayersStatisic(object):
             WHERE pau.user_id = :chat_id
             ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
         """
-        prayers_per_day = batched(
+        prayers_per_day = list(batched(
             await self._pgsql.fetch_all(query, {
                 'chat_id': int(self._chat_id),
             }),
             5,
-        )
+        ))
+        p = 0
         res = []
-        for rows in prayers_per_day:
-            statistic_row: _PrayerStatisticRow = {
-                'day': rows[0]['day'],
-                'fajr': rows[0]['is_read'],
-                'dhuhr': rows[1]['is_read'],
-                'asr': rows[2]['is_read'],
-                'maghrib': rows[3]['is_read'],
-                "isha'a": rows[4]['is_read'],
-            }
-            res.append(statistic_row)
+        for date in map(lambda dt: dt.date(), rrule.rrule(rrule.DAILY, dtstart=self._start_date, until=self._end_date)):
+            if date == prayers_per_day[p][0]['day']:
+                statistic_row: _PrayerStatisticRow = {
+                    'day': prayers_per_day[p][0]['day'],
+                    'fajr': prayers_per_day[p][0]['is_read'],
+                    'dhuhr': prayers_per_day[p][1]['is_read'],
+                    'asr': prayers_per_day[p][2]['is_read'],
+                    'maghrib': prayers_per_day[p][3]['is_read'],
+                    "isha'a": prayers_per_day[p][4]['is_read'],
+                }
+                res.append(statistic_row)
+                p += 1
+            else:
+                res.append({
+                    'day': date,
+                    'fajr': False,
+                    'dhuhr': False,
+                    'asr': False,
+                    'maghrib': False,
+                    "isha'a": False,
+                })
         return res

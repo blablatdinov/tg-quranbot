@@ -24,6 +24,7 @@ import datetime
 from pathlib import Path
 
 import pytest
+from dateutil import rrule
 
 from integrations.tg.chat_id import FkChatId
 from srv.prayers.prayers_statistic import PgPrayersStatisic
@@ -83,191 +84,12 @@ async def _prayers(pgsql):
 
 @pytest.mark.usefixtures('_prayers')
 async def test(pgsql):
-    got = await PgPrayersStatisic(pgsql, FkChatId(358610865)).generate()
+    got = await PgPrayersStatisic(
+        pgsql,
+        FkChatId(358610865),
+        datetime.date(2023, 10, 1),
+        datetime.date(2023, 10, 31),
+    ).generate()
 
-    assert got == [
-        {
-            'asr': False,
-            'day': datetime.date(2023, 10, 1),
-            'dhuhr': False,
-            'fajr': False,
-            "isha'a": False,
-            'maghrib': False,
-        },
-        {
-            'asr': False,
-            'day': datetime.date(2023, 10, 2),
-            'dhuhr': False,
-            'fajr': False,
-            "isha'a": False,
-            'maghrib': False,
-        },
-        {
-            'asr': True,
-            'day': datetime.date(2023, 10, 4),
-            'dhuhr': True,
-            'fajr': False,
-            "isha'a": False,
-            'maghrib': False,
-        },
-        {
-            'asr': False,
-            'day': datetime.date(2023, 10, 5),
-            'dhuhr': False,
-            'fajr': False,
-            "isha'a": False,
-            'maghrib': False,
-        },
-        {
-            'asr': False,
-            'day': datetime.date(2023, 10, 6),
-            'dhuhr': False,
-            'fajr': False,
-            "isha'a": False,
-            'maghrib': False,
-        },
-        {
-            'asr': True,
-            'day': datetime.date(2023, 10, 10),
-            'dhuhr': True,
-            'fajr': True,
-            "isha'a": True,
-            'maghrib': True,
-        },
-        {
-            'asr': True,
-            'day': datetime.date(2023, 10, 11),
-            'dhuhr': True,
-            'fajr': True,
-            "isha'a": True,
-            'maghrib': True,
-        },
-        {
-            'asr': True,
-            'day': datetime.date(2023, 10, 12),
-            'dhuhr': True,
-            'fajr': True,
-            "isha'a": False,
-            'maghrib': True,
-        },
-        {
-            'asr': True,
-            'day': datetime.date(2023, 10, 13),
-            'dhuhr': True,
-            'fajr': True,
-            "isha'a": True,
-            'maghrib': True,
-        },
-        {
-            'asr': True,
-            'day': datetime.date(2023, 10, 14),
-            'dhuhr': True,
-            'fajr': True,
-            "isha'a": False,
-            'maghrib': True,
-        },
-        {
-            'asr': True,
-            'day': datetime.date(2023, 10, 15),
-            'dhuhr': True,
-            'fajr': True,
-            "isha'a": False,
-            'maghrib': True,
-        },
-        {
-            'asr': True,
-            'day': datetime.date(2023, 10, 16),
-            'dhuhr': True,
-            'fajr': True,
-            "isha'a": False,
-            'maghrib': True,
-        },
-        {
-            'asr': True,
-            'day': datetime.date(2023, 10, 17),
-            'dhuhr': True,
-            'fajr': False,
-            "isha'a": True,
-            'maghrib': True,
-        },
-        {
-            'asr': True,
-            'day': datetime.date(2023, 10, 18),
-            'dhuhr': True,
-            'fajr': True,
-            "isha'a": True,
-            'maghrib': True,
-        },
-        {
-            'asr': True,
-            'day': datetime.date(2023, 10, 19),
-            'dhuhr': True,
-            'fajr': True,
-            "isha'a": True,
-            'maghrib': True,
-        },
-        {
-            'asr': False,
-            'day': datetime.date(2023, 10, 20),
-            'dhuhr': False,
-            'fajr': True,
-            "isha'a": True,
-            'maghrib': True,
-        },
-        {
-            'asr': False,
-            'day': datetime.date(2023, 10, 21),
-            'dhuhr': False,
-            'fajr': False,
-            "isha'a": True,
-            'maghrib': True,
-        },
-        {
-            'asr': True,
-            'day': datetime.date(2023, 10, 22),
-            'dhuhr': True,
-            'fajr': False,
-            "isha'a": True,
-            'maghrib': False,
-        },
-        {
-            'asr': False,
-            'day': datetime.date(2023, 10, 23),
-            'dhuhr': False,
-            'fajr': True,
-            "isha'a": True,
-            'maghrib': False,
-        },
-        {
-            'asr': False,
-            'day': datetime.date(2023, 10, 25),
-            'dhuhr': True,
-            'fajr': True,
-            "isha'a": False,
-            'maghrib': True,
-        },
-        {
-            'asr': False,
-            'day': datetime.date(2023, 10, 26),
-            'dhuhr': False,
-            'fajr': False,
-            "isha'a": True,
-            'maghrib': False,
-        },
-        {
-            'asr': False,
-            'day': datetime.date(2023, 10, 27),
-            'dhuhr': False,
-            'fajr': False,
-            "isha'a": False,
-            'maghrib': False,
-        },
-        {
-            'asr': False,
-            'day': datetime.date(2023, 11, 1),
-            'dhuhr': False,
-            'fajr': False,
-            "isha'a": True,
-            'maghrib': False,
-        },
-    ]
+    assert len(got) == 31
+    assert [x['day'] for x in got] == [x.date() for x in rrule.rrule(rrule.DAILY, dtstart=datetime.date(2023, 10, 1), until=datetime.date(2023, 10, 31))]
