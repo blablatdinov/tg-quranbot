@@ -21,13 +21,14 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
+import json
 from pathlib import Path
 
 import pytest
-from dateutil import rrule
 
-from integrations.tg.chat_id import FkChatId
-from srv.prayers.prayers_statistic import PgPrayersStatisic
+from app_types.update import FkUpdate
+from handlers.skipped_prayers_answer import SkippedPrayersAnswer
+from integrations.tg.tg_answers import FkAnswer
 
 
 @pytest.fixture()
@@ -57,7 +58,7 @@ async def _prayers(pgsql):
                 'day': datetime.datetime.strptime(line[4], '%Y-%m-%d'),
             }
             for line in lines
-        ]
+        ],
     )
     lines = [
         line.split(';')
@@ -78,18 +79,28 @@ async def _prayers(pgsql):
                 'is_read': line[4] == 'true',
             }
             for line in lines
-        ]
+        ],
     )
 
 
 @pytest.mark.usefixtures('_prayers')
-async def test(pgsql):
-    got = await PgPrayersStatisic(
-        pgsql,
-        FkChatId(358610865),
-        datetime.date(2023, 10, 1),
-        datetime.date(2023, 10, 31),
-    ).generate()
+async def test(message_update_factory, pgsql):
+    got = await SkippedPrayersAnswer(FkAnswer(), pgsql).build(FkUpdate(message_update_factory(chat_id=358610865)))
 
-    assert len(got) == 31
-    assert [x['day'] for x in got] == [x.date() for x in rrule.rrule(rrule.DAILY, dtstart=datetime.date(2023, 10, 1), until=datetime.date(2023, 10, 31))]
+    assert got[0].url.params['text'] == '\n'.join([
+        'Кол-во непрочитанных намазов:\n',
+        'Иртәнге: 19',
+        'Өйлә: 18',
+        'Икенде: 19',
+        'Ахшам: 18',
+        'Ястү: 20',
+    ])
+    assert json.loads(got[0].url.params['reply_markup']) == {
+        'inline_keyboard': [
+            [{'callback_data': 'fk', 'text': 'Иртәнге: (-1)'}],
+            [{'callback_data': 'fk', 'text': 'Өйлә: (-1)'}],
+            [{'callback_data': 'fk', 'text': 'Икенде: (-1)'}],
+            [{'callback_data': 'fk', 'text': 'Ахшам: (-1)'}],
+            [{'callback_data': 'fk', 'text': 'Ястү: (-1)'}],
+        ],
+    }

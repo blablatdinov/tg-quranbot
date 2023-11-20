@@ -33,11 +33,11 @@ from handlers.full_start_answer import FullStartAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
 from handlers.prayer_time_answer import PrayerTimeAnswer
-from handlers.prayers_statistic_answer import PrayersStatisticAnswer
 from handlers.random_podcast_answer import RandomPodcastAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
 from handlers.search_ayat_by_numbers_answer import SearchAyatByNumbersAnswer
 from handlers.search_city_answer import SearchCityAnswer
+from handlers.skipped_prayers_answer import SkippedPrayersAnswer
 from handlers.status_answer import StatusAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
 from integrations.tg.tg_answers import (
@@ -132,7 +132,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgMessageRegexAnswer(
                     '/skipped_prayers',
-                    PrayersStatisticAnswer(empty_answer),
+                    SkippedPrayersAnswer(empty_answer, self._pgsql),
                 ),
                 TgMessageRegexAnswer(
                     'Избранное',
