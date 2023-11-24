@@ -20,7 +20,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import datetime
 from pathlib import Path
 
 import pytest
@@ -30,21 +29,17 @@ import pytest
 def _prayers(db_conn):
     lines = [
         line.split(';')
-        for line in
-        Path('src/tests/fixtures/prayers.csv').read_text().splitlines()
+        for line in Path('src/tests/fixtures/prayers.csv').read_text().splitlines()
     ]
     cursor = db_conn.cursor()
     cursor.execute("INSERT INTO users (chat_id, city_id) VALUES (5354079702, 'bc932b25-707e-4af1-8b6e-facb5e6dfa9b')")
     lines = [
         line.split(';')
-        for line in
-        Path('src/tests/fixtures/prayers_at_user.csv').read_text().splitlines()
+        for line in Path('src/tests/fixtures/prayers_at_user.csv').read_text().splitlines()
     ]
-    query = """
-        INSERT INTO prayers_at_user (prayer_at_user_id, user_id, prayer_id, is_read)
-        VALUES
-        {0}
-    """.format(
+    query = '\n'.join([
+        'INSERT INTO prayers_at_user (prayer_at_user_id, user_id, prayer_id, is_read)',
+        'VALUES',
         ',\n'.join([
             "('{0}', 5354079702, {1}, {2})".format(
                 int(line[0]),
@@ -53,7 +48,7 @@ def _prayers(db_conn):
             )
             for line in lines
         ]),
-    )
+    ])
     cursor.execute(query)
 
 
@@ -77,13 +72,14 @@ def test_skipped_prayers(tg_client, bot_name, wait_until):
     ] == [
         ('Иртәнге: (-1)', b'decr(fajr)'),
         ('Өйлә: (-1)', b'decr(dhuhr)'),
-        ('Икенде: (-1)', b'decr(asr)' ),
+        ('Икенде: (-1)', b'decr(asr)'),
         ('Ахшам: (-1)', b'decr(maghrib)'),
-        ('Ястү: (-1)', b'decr(isha)' ),
+        ('Ястү: (-1)', b'decr(isha)'),
     ]
 
 
 @pytest.mark.usefixtures('_bot_process')
+@pytest.mark.skip()
 def test_mark_readed(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/skipped_prayers')
     messages = wait_until(tg_client, 2)

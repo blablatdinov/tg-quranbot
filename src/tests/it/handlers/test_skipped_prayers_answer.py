@@ -35,8 +35,7 @@ from integrations.tg.tg_answers import FkAnswer
 async def _prayers(pgsql):
     lines = [
         line.split(';')
-        for line in
-        Path('src/tests/fixtures/prayers.csv').read_text().splitlines()
+        for line in Path('src/tests/fixtures/prayers.csv').read_text().splitlines()
     ]
     await pgsql.execute("INSERT INTO cities (city_id, name) VALUES ('bc932b25-707e-4af1-8b6e-facb5e6dfa9b', 'Казань')")
     await pgsql.execute(
@@ -62,8 +61,7 @@ async def _prayers(pgsql):
     )
     lines = [
         line.split(';')
-        for line in
-        Path('src/tests/fixtures/prayers_at_user.csv').read_text().splitlines()
+        for line in Path('src/tests/fixtures/prayers_at_user.csv').read_text().splitlines()
     ]
     query = """
         INSERT INTO prayers_at_user (prayer_at_user_id, user_id, prayer_id, is_read)
@@ -100,11 +98,11 @@ async def test(message_update_factory, pgsql):
         'Ястү: 20',
     ])
     assert await pgsql.fetch_val(
-        """
-            SELECT COUNT(*)
-            FROM prayers_at_user AS pau
-            WHERE pau.user_id = 358610865
-        """
+        '\n'.join([
+            'SELECT COUNT(*)',
+            'FROM prayers_at_user AS pau',
+            'WHERE pau.user_id = 358610865',
+        ]),
     ) == 160
     assert json.loads(got[0].url.params['reply_markup']) == {
         'inline_keyboard': [

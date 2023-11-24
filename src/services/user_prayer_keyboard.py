@@ -41,7 +41,10 @@ class NewPrayersAtUser(Protocol):
     """Новые записи о статусе намаза."""
 
     async def create(self, date: datetime.date) -> None:
-        """Создать."""
+        """Создать.
+
+        :param date: datetime.date
+        """
 
 
 @final
@@ -50,12 +53,14 @@ class NewPrayersAtUser(Protocol):
 class PgNewPrayersAtUser(NewPrayersAtUser):
     """Новые записи о статусе намаза."""
 
-    # _date: datetime.date
     _chat_id: ChatId
     _pgsql: Database
 
     async def create(self, date: datetime.date) -> None:
-        """Создать."""
+        """Создать.
+
+        :param date: datetime.date
+        """
         prayer_group_id = str(uuid.uuid4())
         await self._pgsql.fetch_val(
             'INSERT INTO prayers_at_user_groups VALUES (:prayer_group_id)', {'prayer_group_id': prayer_group_id},

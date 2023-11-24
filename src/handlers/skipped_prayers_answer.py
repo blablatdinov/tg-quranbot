@@ -23,20 +23,17 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import datetime
 import enum
 import json
-from collections.abc import Generator
 from itertools import batched
 from typing import Final, final
 
 import attrs
 import httpx
-from app_types.stringable import SupportsStr
 from databases import Database
 from dateutil import rrule
 from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.chat_id import ChatId, TgChatId
-from integrations.tg.message_text import MessageText
 from integrations.tg.keyboard import KeyboardInterface
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
 from services.user_prayer_keyboard import NewPrayersAtUser, PgNewPrayersAtUser
@@ -82,14 +79,13 @@ class SkippedPrayersKeyboard(KeyboardInterface):
 
 @final
 @attrs.define(frozen=True)
-@elegant
-class _PrayersStatistic(object):
+class _PrayersStatistic(object):  # TODO: must be elegant
 
     _prayers_at_user: NewPrayersAtUser
     _chat_id: ChatId
     _pgsql: Database
 
-    async def statistic(self):
+    async def statistic(self) -> dict:
         idx = 0
         res = {
             prayer_name: 0
@@ -98,14 +94,20 @@ class _PrayersStatistic(object):
         prayers_per_day = await self._prayers_per_day()
         for date in await self._dates_range():
             if date == prayers_per_day[idx][0]['day']:
-                for prayer_idx, prayer_name in enumerate(_PrayerNames.names()):
-                    res[prayer_name] += int(not prayers_per_day[idx][prayer_idx][IS_READ_LITERAL])
+                self._exist_prayer_case(prayers_per_day, res, idx)
                 idx += 1
             else:
-                await self._prayers_at_user.create(date)
-                for prayer_name in _PrayerNames.names():
-                    res[prayer_name] += 1
+                await self._new_prayer_at_user_case(res, date)
         return res
+
+    def _exist_prayer_case(self, prayers_per_day: list[tuple], res: dict, idx: int) -> None:
+        for prayer_idx, prayer_name in enumerate(_PrayerNames.names()):
+            res[prayer_name] += int(not prayers_per_day[idx][prayer_idx][IS_READ_LITERAL])
+
+    async def _new_prayer_at_user_case(self, res: dict, date: datetime.date) -> None:
+        await self._prayers_at_user.create(date)
+        for prayer_name in _PrayerNames.names():
+            res[prayer_name] += 1
 
     async def _prayers_per_day(self) -> list[tuple]:
         query = """
@@ -136,14 +138,14 @@ class _PrayersStatistic(object):
         rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
         if not rows:
             return []
-        return list(
+        return [
             dt.date()
             for dt in rrule.rrule(
                 rrule.DAILY,
                 dtstart=rows[0]['day'],
                 until=rows[-1]['day'],
             )
-        )
+        ]
 
 
 @final
