@@ -99,6 +99,13 @@ async def test(message_update_factory, pgsql):
         'Ахшам: 19',
         'Ястү: 20',
     ])
+    assert await pgsql.fetch_val(
+        """
+            SELECT COUNT(*)
+            FROM prayers_at_user AS pau
+            WHERE pau.user_id = 358610865
+        """
+    ) == 160
     assert json.loads(got[0].url.params['reply_markup']) == {
         'inline_keyboard': [
             [{'callback_data': 'fk', 'text': 'Иртәнге: (-1)'}],
