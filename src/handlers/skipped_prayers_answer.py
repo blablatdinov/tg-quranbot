@@ -46,15 +46,15 @@ IS_READ_LITERAL: Final = 'is_read'
 
 class _PrayerNames(enum.Enum):
 
-    fajr = 'fajr'
-    dhuhr = 'dhuhr'
-    asr = 'asr'
-    maghrib = 'maghrib'
-    isha = "isha'a"
+    fajr = ('fajr', 'Иртәнге')
+    dhuhr = ('dhuhr', 'Өйлә')
+    asr = ('asr', 'Икенде')
+    maghrib = ('maghrib', 'Ахшам')
+    isha = ("isha'a", 'Ястү')
 
     @classmethod
     def names(cls) -> tuple[str, ...]:
-        return tuple(field.name for field in _PrayerNames)
+        return tuple(field.name for field in cls)
 
 
 @final
@@ -69,20 +69,13 @@ class SkippedPrayersKeyboard(KeyboardInterface):
         :param update: Update
         :return: str
         """
-        prayer_names = [
-            'Иртәнге',
-            'Өйлә',
-            'Икенде',
-            'Ахшам',
-            'Ястү',
-        ]
         return json.dumps({
             'inline_keyboard': [
                 [{
-                    'text': '{0}: (-1)'.format(prayer_name),
-                    'callback_data': 'fk',
+                    'text': '{0}: (-1)'.format(field.value[1]),
+                    'callback_data': 'decr({0})'.format(field.name),
                 }]
-                for prayer_name in prayer_names
+                for field in _PrayerNames
             ],
         })
 

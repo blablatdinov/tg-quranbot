@@ -108,10 +108,10 @@ async def test(message_update_factory, pgsql):
     ) == 160
     assert json.loads(got[0].url.params['reply_markup']) == {
         'inline_keyboard': [
-            [{'callback_data': 'fk', 'text': 'Иртәнге: (-1)'}],
-            [{'callback_data': 'fk', 'text': 'Өйлә: (-1)'}],
-            [{'callback_data': 'fk', 'text': 'Икенде: (-1)'}],
-            [{'callback_data': 'fk', 'text': 'Ахшам: (-1)'}],
-            [{'callback_data': 'fk', 'text': 'Ястү: (-1)'}],
+            [{'callback_data': 'decr(fajr)', 'text': 'Иртәнге: (-1)'}],
+            [{'callback_data': 'decr(dhuhr)', 'text': 'Өйлә: (-1)'}],
+            [{'callback_data': 'decr(asr)', 'text': 'Икенде: (-1)'}],
+            [{'callback_data': 'decr(maghrib)', 'text': 'Ахшам: (-1)'}],
+            [{'callback_data': 'decr(isha)', 'text': 'Ястү: (-1)'}],
         ],
     }
