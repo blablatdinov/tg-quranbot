@@ -125,7 +125,7 @@ class _PrayersStatistic(object):
             5,
         ))
 
-    async def _dates_range(self) -> Generator[datetime.date, None, None]:
+    async def _dates_range(self) -> list[datetime.date]:
         query = """
             SELECT p.day
             FROM prayers_at_user AS pau
@@ -134,7 +134,9 @@ class _PrayersStatistic(object):
             ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
         """
         rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
-        return (
+        if not rows:
+            return []
+        return list(
             dt.date()
             for dt in rrule.rrule(
                 rrule.DAILY,

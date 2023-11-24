@@ -115,3 +115,20 @@ async def test(message_update_factory, pgsql):
             [{'callback_data': 'decr(isha)', 'text': 'Ястү: (-1)'}],
         ],
     }
+
+
+async def test_empty_prayers_at_user(pgsql, message_update_factory):
+    got = await SkippedPrayersAnswer(FkAnswer(), pgsql).build(
+        FkUpdate(
+            message_update_factory(chat_id=358610865, text='/skipped_prayers'),
+        ),
+    )
+
+    assert got[0].url.params['text'] == '\n'.join([
+        'Кол-во непрочитанных намазов:\n',
+        'Иртәнге: 0',
+        'Өйлә: 0',
+        'Икенде: 0',
+        'Ахшам: 0',
+        'Ястү: 0',
+    ])
