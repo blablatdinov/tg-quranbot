@@ -29,12 +29,14 @@ from typing import Final, final
 
 import attrs
 import httpx
+from app_types.stringable import SupportsStr
 from databases import Database
 from dateutil import rrule
 from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.chat_id import ChatId, TgChatId
+from integrations.tg.message_text import MessageText
 from integrations.tg.keyboard import KeyboardInterface
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
 from services.user_prayer_keyboard import NewPrayersAtUser, PgNewPrayersAtUser
@@ -131,12 +133,20 @@ class _PrayersStatistic(object):
         ))
 
     async def _dates_range(self) -> Generator[datetime.date, None, None]:
+        query = """
+            SELECT p.day
+            FROM prayers_at_user AS pau
+            INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id
+            WHERE pau.user_id = :chat_id
+            ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
+        """
+        rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
         return (
             dt.date()
             for dt in rrule.rrule(
                 rrule.DAILY,
-                dtstart=datetime.date(2023, 10, 1),
-                until=datetime.date(2023, 10, 31),
+                dtstart=rows[0]['day'],
+                until=rows[-1]['day'],
             )
         )
 

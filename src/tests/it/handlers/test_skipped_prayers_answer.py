@@ -85,14 +85,18 @@ async def _prayers(pgsql):
 
 @pytest.mark.usefixtures('_prayers')
 async def test(message_update_factory, pgsql):
-    got = await SkippedPrayersAnswer(FkAnswer(), pgsql).build(FkUpdate(message_update_factory(chat_id=358610865)))
+    got = await SkippedPrayersAnswer(FkAnswer(), pgsql).build(
+        FkUpdate(
+            message_update_factory(chat_id=358610865, text='/skipped_prayers'),
+        ),
+    )
 
     assert got[0].url.params['text'] == '\n'.join([
         'Кол-во непрочитанных намазов:\n',
-        'Иртәнге: 19',
-        'Өйлә: 18',
-        'Икенде: 19',
-        'Ахшам: 18',
+        'Иртәнге: 20',
+        'Өйлә: 19',
+        'Икенде: 20',
+        'Ахшам: 19',
         'Ястү: 20',
     ])
     assert json.loads(got[0].url.params['reply_markup']) == {
