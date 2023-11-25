@@ -27,7 +27,6 @@ from pytest_lazyfixture import lazy_fixture
 
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.update import TgUpdate
-from settings.settings import BASE_DIR
 
 
 @pytest.fixture()
@@ -36,8 +35,8 @@ def stringable_update(message_update_factory):
 
 
 @pytest.fixture()
-def stringable_callback_update():
-    return (BASE_DIR / 'tests' / 'fixtures' / 'button_callback.json').read_text()
+def stringable_callback_update(callback_update_factory):
+    return callback_update_factory(chat_id=358610865)
 
 
 @pytest.fixture()
@@ -61,12 +60,12 @@ def query_search_update():
     })
 
 
-@pytest.mark.parametrize('input_', [
+@pytest.mark.parametrize('update', [
     lazy_fixture('stringable_update'),
     lazy_fixture('stringable_callback_update'),
     lazy_fixture('query_search_update'),
 ])
-def test(input_):
-    chat_id = TgChatId(TgUpdate(input_))
+def test(update):
+    chat_id = TgChatId(TgUpdate(update))
 
     assert int(chat_id) == 358610865

@@ -3,7 +3,7 @@
     "callback_query": {
         "id": "1540221939656839505",
         "from": {
-            "id": 358610865,
+            "id": {{ chat_id }},
             "is_bot": false,
             "first_name": "Алмаз",
             "last_name": "Илалетдинов",
@@ -19,7 +19,7 @@
                 "username": "WokeUpSmiled_bot"
             },
             "chat": {
-                "id": 358610865,
+                "id": {{ chat_id }},
                 "first_name": "Алмаз",
                 "last_name": "Илалетдинов",
                 "username": "ilaletdinov",
@@ -55,6 +55,6 @@
             }
         },
         "chat_instance": "-8377414756201282502",
-        "data": "mark_readed(2362)"
+        "data": "{{ callback_data }}"
     }
 }

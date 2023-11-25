@@ -28,6 +28,7 @@ from redis.asyncio import Redis
 
 from app_types.update import Update
 from handlers.concrete_podcast_answer import ConcretePodcastAnswer
+from handlers.decrement_skipped_prayer_answer import DecrementSkippedPrayerAnswer
 from handlers.favorites_answer import FavoriteAyatsAnswer
 from handlers.full_start_answer import FullStartAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
@@ -37,6 +38,7 @@ from handlers.random_podcast_answer import RandomPodcastAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
 from handlers.search_ayat_by_numbers_answer import SearchAyatByNumbersAnswer
 from handlers.search_city_answer import SearchCityAnswer
+from handlers.skipped_prayers_answer import SkippedPrayersAnswer
 from handlers.status_answer import StatusAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
 from integrations.tg.tg_answers import (
@@ -130,6 +132,10 @@ class QuranbotAnswer(TgAnswer):
                     ),
                 ),
                 TgMessageRegexAnswer(
+                    '/skipped_prayers',
+                    SkippedPrayersAnswer(empty_answer, self._pgsql),
+                ),
+                TgMessageRegexAnswer(
                     'Избранное',
                     FavoriteAyatsAnswer(DebugMode(self._settings), self._pgsql, self._redis, empty_answer),
                 ),
@@ -183,6 +189,10 @@ class QuranbotAnswer(TgAnswer):
                 TgCallbackQueryRegexAnswer(
                     'getAyat',
                     AyatByIdAnswer(DebugMode(self._settings), empty_answer, self._pgsql),
+                ),
+                TgCallbackQueryRegexAnswer(
+                    'decr',
+                    DecrementSkippedPrayerAnswer(empty_answer, self._pgsql),
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,

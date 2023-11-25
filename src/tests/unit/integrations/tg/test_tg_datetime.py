@@ -29,24 +29,21 @@ from pytest_lazyfixture import lazy_fixture
 from app_types.stringable import ThroughString
 from integrations.tg.tg_datetime import TgDateTime
 from integrations.tg.update import TgUpdate
-from settings.settings import BASE_DIR
 
 
 @pytest.fixture()
-def stringable_update(message_update_factory):
+def message_update(message_update_factory):
     return ThroughString(message_update_factory())
 
 
 @pytest.fixture()
-def stringable_callback_update():
-    return ThroughString(
-        (BASE_DIR / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
-    )
+def stringable_callback_update(callback_update_factory):
+    return callback_update_factory()
 
 
-@pytest.mark.parametrize(('input_', 'expected'), [
+@pytest.mark.parametrize(('update', 'expected'), [
     (
-        lazy_fixture('stringable_update'),
+        lazy_fixture('message_update'),
         datetime.datetime(2022, 12, 9, 10, 20, 13, tzinfo=pytz.timezone('UTC')),
     ),
     (
@@ -54,7 +51,7 @@ def stringable_callback_update():
         datetime.datetime(2022, 10, 30, 15, 54, 34, tzinfo=pytz.timezone('UTC')),
     ),
 ])
-def test(input_, expected):
-    tg_datetime = TgDateTime(TgUpdate(input_))
+def test(update, expected):
+    tg_datetime = TgDateTime(TgUpdate(update))
 
     assert tg_datetime.datetime() == expected

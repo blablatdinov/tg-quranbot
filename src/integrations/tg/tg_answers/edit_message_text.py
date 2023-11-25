@@ -20,29 +20,38 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import pytest
-from pytest_lazyfixture import lazy_fixture
+from typing import final, override
 
-from app_types.stringable import ThroughString
-from integrations.tg.message_id import TgMessageId
-from integrations.tg.update import TgUpdate
+import attrs
+import httpx
+from furl import furl
+from pyeo import elegant
 
-
-@pytest.fixture()
-def stringable_update(message_update_factory):
-    return ThroughString(message_update_factory())
+from app_types.update import Update
+from integrations.tg.tg_answers.interface import TgAnswer
 
 
-@pytest.fixture()
-def stringable_callback_update(callback_update_factory):
-    return callback_update_factory()
+@final
+@attrs.define(frozen=True)
+@elegant
+class TgEditMessageText(TgAnswer):
+    """Ответ с отредактированным текстом."""
 
+    _origin: TgAnswer
 
-@pytest.mark.parametrize(('update', 'expected'), [
-    (lazy_fixture('stringable_update'), 22628),
-    (lazy_fixture('stringable_callback_update'), 22627),
-])
-def test(update, expected):
-    message_id = TgMessageId(TgUpdate(update))
+    @override
+    async def build(self, update: Update) -> list[httpx.Request]:
+        """Пересобрать запросы к API к телеграмма.
 
-    assert int(message_id) == expected
+        :param update: Update
+        :return: list[httpx.Request]
+        """
+        return [
+            httpx.Request(
+                request.method,
+                (furl(request.url) / 'editMessageText').url,
+                stream=request.stream,
+                headers=request.headers,
+            )
+            for request in await self._origin.build(update)
+        ]
