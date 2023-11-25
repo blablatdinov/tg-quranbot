@@ -59,3 +59,12 @@ def message_update_factory():
             (BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),
         ).render({'message_text': '"{0}"'.format(text), 'chat_id': chat_id})
     return _message_update_factory
+
+
+@pytest.fixture()
+def callback_update_factory():
+    def _message_update_factory(chat_id=1, callback_data=''):  # noqa: WPS430
+        return Template(
+            (BASE_DIR / 'tests/fixtures/button_callback.json').read_text(),
+        ).render({'chat_id': chat_id, 'callback_data': callback_data})
+    return _message_update_factory

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from itertools import chain
 from pathlib import Path
 
 import pytest
@@ -78,28 +79,34 @@ def test_skipped_prayers(tg_client, bot_name, wait_until):
     ]
 
 
-@pytest.mark.usefixtures('_bot_process')
-@pytest.mark.skip()
-def test_mark_readed(tg_client, bot_name, wait_until):
+@pytest.mark.usefixtures('_bot_process', '_prayers')
+def test_mark_readed(tg_client, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, '/skipped_prayers')
     messages = wait_until(tg_client, 2)
+    next(chain.from_iterable(
+        button_row for button_row in messages[0].get_buttons()
+    )).click()
+    messages = wait_until(tg_client, 2)
 
+    assert db_query_vals(
+        'SELECT is_read FROM prayers_at_user AS pau WHERE pau.prayer_at_user_id = 511037',
+    ) == [(True,)]
     assert messages[0].message == '\n'.join([
         'Кол-во непрочитанных намазов:\n',
-        'Иртәнге: 0',
-        'Өйлә: 4',
-        'Икенде: 5',
-        'Ахшам: 0',
-        'Ястү: 2',
+        'Иртәнге: 19',
+        'Өйлә: 19',
+        'Икенде: 20',
+        'Ахшам: 19',
+        'Ястү: 20',
     ])
     assert [
         (button.text, button.data)
         for button_row in messages[0].get_buttons()
         for button in button_row
     ] == [
-        ('Иртәнге: (-1)', b'fk'),
-        ('Өйлә: (-1)', b'fk'),
-        ('Икенде: (-1)', b'fk'),
-        ('Ахшам: (-1)', b'fk'),
-        ('Ястү: (-1)', b'fk'),
+        ('Иртәнге: (-1)', b'decr(fajr)'),
+        ('Өйлә: (-1)', b'decr(dhuhr)'),
+        ('Икенде: (-1)', b'decr(asr)'),
+        ('Ахшам: (-1)', b'decr(maghrib)'),
+        ('Ястү: (-1)', b'decr(isha)'),
     ]

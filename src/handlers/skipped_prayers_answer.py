@@ -32,6 +32,7 @@ from databases import Database
 from dateutil import rrule
 from pyeo import elegant
 
+from app_types.stringable import AsyncSupportsStr
 from app_types.update import Update
 from integrations.tg.chat_id import ChatId, TgChatId
 from integrations.tg.keyboard import KeyboardInterface
@@ -79,13 +80,19 @@ class SkippedPrayersKeyboard(KeyboardInterface):
 
 @final
 @attrs.define(frozen=True)
-class _PrayersStatistic(object):  # TODO: must be elegant
+@elegant
+class PrayersStatistic(AsyncSupportsStr):
+    """Статистика непрочитанных намазов."""
 
     _prayers_at_user: NewPrayersAtUser
     _chat_id: ChatId
     _pgsql: Database
 
-    async def statistic(self) -> dict:
+    async def to_str(self) -> str:
+        """Приведение к строке.
+
+        :return: str
+        """
         idx = 0
         res = {
             prayer_name: 0
@@ -98,7 +105,14 @@ class _PrayersStatistic(object):  # TODO: must be elegant
                 idx += 1
             else:
                 await self._new_prayer_at_user_case(res, date)
-        return res
+        return '\n'.join([
+            'Кол-во непрочитанных намазов:\n',
+            'Иртәнге: {0}'.format(res[_PrayerNames.fajr.name]),
+            'Өйлә: {0}'.format(res[_PrayerNames.dhuhr.name]),
+            'Икенде: {0}'.format(res[_PrayerNames.asr.name]),
+            'Ахшам: {0}'.format(res[_PrayerNames.maghrib.name]),
+            'Ястү: {0}'.format(res[_PrayerNames.isha.name]),
+        ])
 
     def _exist_prayer_case(self, prayers_per_day: list[tuple], res: dict, idx: int) -> None:
         for prayer_idx, prayer_name in enumerate(_PrayerNames.names()):
@@ -163,24 +177,16 @@ class SkippedPrayersAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        prayers_statistic = await _PrayersStatistic(
-            PgNewPrayersAtUser(TgChatId(update), self._pgsql),
-            TgChatId(update),
-            self._pgsql,
-        ).statistic()
         return await TgAnswerMarkup(
-            TgTextAnswer.str_ctor(
+            TgTextAnswer(
                 TgAnswerToSender(
                     TgMessageAnswer(self._empty_answer),
                 ),
-                '\n'.join([
-                    'Кол-во непрочитанных намазов:\n',
-                    'Иртәнге: {0}'.format(prayers_statistic[_PrayerNames.fajr.name]),
-                    'Өйлә: {0}'.format(prayers_statistic[_PrayerNames.dhuhr.name]),
-                    'Икенде: {0}'.format(prayers_statistic[_PrayerNames.asr.name]),
-                    'Ахшам: {0}'.format(prayers_statistic[_PrayerNames.maghrib.name]),
-                    'Ястү: {0}'.format(prayers_statistic[_PrayerNames.isha.name]),
-                ]),
+                PrayersStatistic(
+                    PgNewPrayersAtUser(TgChatId(update), self._pgsql),
+                    TgChatId(update),
+                    self._pgsql,
+                ),
             ),
             SkippedPrayersKeyboard(),
         ).build(update)

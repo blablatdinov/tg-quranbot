@@ -23,29 +23,15 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import pytest
 from pytest_lazyfixture import lazy_fixture
 
-from app_types.stringable import ThroughString
 from integrations.tg.update import TgUpdate
 from integrations.tg.update_id import UpdateId
-from settings.settings import BASE_DIR
 
 
-@pytest.fixture()
-def stringable_update(message_update_factory):
-    return ThroughString(message_update_factory())
-
-
-@pytest.fixture()
-def stringable_callback_update():
-    return ThroughString(
-        (BASE_DIR / 'tests' / 'fixtures' / 'button_callback.json').read_text(),
-    )
-
-
-@pytest.mark.parametrize(('input_', 'expected'), [
-    (lazy_fixture('stringable_update'), 637463103),
-    (lazy_fixture('stringable_callback_update'), 637463104),
+@pytest.mark.parametrize(('update_factory', 'expected'), [
+    (lazy_fixture('message_update_factory'), 637463103),
+    (lazy_fixture('callback_update_factory'), 637463104),
 ])
-def test(input_, expected):
-    update_id = UpdateId(TgUpdate(input_))
+def test(update_factory, expected):
+    update_id = UpdateId(TgUpdate(update_factory()))
 
     assert int(update_id) == expected
