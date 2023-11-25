@@ -53,7 +53,7 @@ def _prayers(db_conn):
     cursor.execute(query)
 
 
-@pytest.mark.usefixtures('_bot_process', '_prayers')
+@pytest.mark.usefixtures('_bot_process', '_clear_db', '_prayers')
 def test_skipped_prayers(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/skipped_prayers')
     messages = wait_until(tg_client, 2)
@@ -79,7 +79,7 @@ def test_skipped_prayers(tg_client, bot_name, wait_until):
     ]
 
 
-@pytest.mark.usefixtures('_bot_process', '_prayers')
+@pytest.mark.usefixtures('_bot_process', '_clear_db', '_prayers')
 def test_mark_readed(tg_client, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, '/skipped_prayers')
     messages = wait_until(tg_client, 2)
