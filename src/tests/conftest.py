@@ -40,11 +40,8 @@ def unquote():
 
 
 @pytest.fixture(scope='session')
-def event_loop():
-    loop = asyncio.new_event_loop()
-    loop.slow_callback_duration = float('inf')
-    yield loop
-    loop.close()
+def event_loop_policy():
+    return asyncio.get_event_loop_policy()
 
 
 @pytest.fixture()
