@@ -65,7 +65,7 @@ respx = "0.20.2"
 psycopg2-binary = "2.9.9"
 time-machine = "2.13.0"
 pika = "1.3.2"
-ruff = "0.1.6"
+ruff = "0.1.7"
 fakeredis = "2.20.0"
 jinja2 = "3.1.2"
 refurb = "1.24.0"
@@ -139,6 +139,9 @@ preview = true
 docstring-quotes = "double"
 inline-quotes = "single"
 multiline-quotes = "double"
+
+[tool.ruff.lint.pylint]
+max-args = 6
 
 [tool.ruff.per-file-ignores]
 "src/integrations/tg/tg_answers/__init__.py" = ["F401"]
