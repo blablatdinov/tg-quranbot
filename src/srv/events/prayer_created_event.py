@@ -1,6 +1,6 @@
 """The MIT License (MIT).
 
-Copyright (c) 2018-2024 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+Copyright (c) 2018-2023 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,46 +20,42 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, TypeAlias, TypeVar, final, override
+import datetime
+from typing import TypeAlias, final, override
 
+import attrs
+from databases import Database
 from eljson.json import Json
 from loguru import logger
 from pyeo import elegant
 
-JsonPathQuery: TypeAlias = str
-JsonPathReturnType_co = TypeVar('JsonPathReturnType_co', covariant=True)
+from srv.events.recieved_event import ReceivedEvent
+
+PrayerCreatedEvent: TypeAlias = ReceivedEvent
 
 
-@elegant
-class ReceivedEvent(Protocol[JsonPathReturnType_co]):
-    """Событие."""
-
-    async def process(self, json_doc: Json) -> None:
-        """Обработать событие.
-
-        :param json_doc: Json
-        """
-
-
-@elegant
 @final
-class EventFork(ReceivedEvent):
-    """Событие."""
+@attrs.define(frozen=True)
+@elegant
+class RbmqPrayerCreatedEvent(PrayerCreatedEvent):
+    """Событие создания аята из rabbitmq."""
 
-    def __init__(self, *matches: tuple[str, int, ReceivedEvent]) -> None:
-        """Ctor.
-
-        :param matches: tuple[str, int, ReceivedEvent]
-        """
-        self._matches = matches
+    _pgsql: Database
 
     @override
-    async def process(self, json_doc: Json) -> None:
-        """Обработать событие.
+    async def process(self, json: Json) -> None:
+        """Обработка события.
 
-        :param json_doc: Json
+        :param json: Json
         """
-        name_match = json_doc.path('$.event_name')[0] == self._name
-        version_match = json_doc.path('$.event_version')[0] == self._version
-        if name_match and version_match:
-            await self._origin.process(json_doc)
+        query = """
+            INSERT INTO prayers (name, time, city_id, day) VALUES
+            (:name, :time, :city_id, :day)
+        """
+        await self._pgsql.execute(query, {
+            'name': json.path('$.data.name')[0],
+            'time': datetime.datetime.strptime(json.path('$.data.time')[0], '%H:%M'),
+            'city_id': json.path('$.data.city_id')[0],
+            'day': datetime.datetime.strptime(json.path('$.data.day')[0], '%Y-%m-%d'),
+        })
+        logger.info('Prayer created')
