@@ -50,10 +50,12 @@ def test(db_query_vals):
             'event_time': '392409283',
             'producer': 'some producer',
             'data': {
-                'name': 'fajr',
-                'time': '5:36',
-                'city_id': '4075504b-4b6f-4978-bf9c-8ecd5ecf9192',
-                'day': '2023-01-02',
+                'prayers': [{
+                    'name': 'fajr',
+                    'time': '5:36',
+                    'city_id': '4075504b-4b6f-4978-bf9c-8ecd5ecf9192',
+                    'day': '2023-01-02',
+                }],
             },
         }).encode('utf-8'),
     )

@@ -48,14 +48,20 @@ class RbmqPrayerCreatedEvent(PrayerCreatedEvent):
 
         :param json: Json
         """
-        query = """
-            INSERT INTO prayers (name, time, city_id, day) VALUES
-            (:name, :time, :city_id, :day)
-        """
-        await self._pgsql.execute(query, {
-            'name': json.path('$.data.name')[0],
-            'time': datetime.datetime.strptime(json.path('$.data.time')[0], '%H:%M'),
-            'city_id': json.path('$.data.city_id')[0],
-            'day': datetime.datetime.strptime(json.path('$.data.day')[0], '%Y-%m-%d'),
-        })
+        query = '\n'.join([
+            'INSERT INTO prayers (name, time, city_id, day) VALUES',
+            '(:name, :time, :city_id, :day)',
+        ])
+        await self._pgsql.execute_many(
+            query,
+            [
+                {
+                    'name': elem['name'],
+                    'time': datetime.datetime.strptime(elem['time'], '%H:%M'),
+                    'city_id': elem['city_id'],
+                    'day': datetime.datetime.strptime(elem['day'], '%Y-%m-%d'),
+                }
+                for elem in json.path('$.data.prayers')[0]
+            ],
+        )
         logger.info('Prayer created')
