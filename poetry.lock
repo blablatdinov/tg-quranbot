@@ -1911,13 +1911,13 @@ rpds-py = ">=0.7.0"
 
 [[package]]
 name = "refurb"
-version = "1.25.0"
+version = "1.27.0"
 description = "A tool for refurbish and modernize Python codebases"
 optional = false
 python-versions = ">=3.10"
 files = [
-    {file = "refurb-1.25.0-py3-none-any.whl", hash = "sha256:0bf7887cd193a2f2175731b28037206f46a1c7f8d7153d4f3ec141669860bd16"},
-    {file = "refurb-1.25.0.tar.gz", hash = "sha256:ad65682432d106c9f759bb0f93940d6627931baa75ef8c616e04e4f1cf5c1e21"},
+    {file = "refurb-1.27.0-py3-none-any.whl", hash = "sha256:ca80b9f06878d2a6d87e534ad8aeaf784cf157613dd68c85b86d647abc8cc42b"},
+    {file = "refurb-1.27.0.tar.gz", hash = "sha256:91c76fdc00573e316ea5f6ce9015f2511722ff113d67154955c2d9dbf7cb63ff"},
 ]
 
 [package.dependencies]
