@@ -152,3 +152,6 @@ max-args = 6
   "PLR2004", # Magic value
   "PLR0913", # Too many arguments to function call
 ]
+
+[tool.refurb]
+ignore = [184]
