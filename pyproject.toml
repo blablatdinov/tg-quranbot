@@ -35,7 +35,7 @@ httpx = "0.26.0"
 pytz = "2023.3.post1"
 databases = {extras = ["asyncpg"], version = "0.8.0"}
 attrs = "23.2.0"
-jsonpath-ng = "1.6.0"
+jsonpath-ng = "1.6.1"
 eo-styleguide = "0.0.1-a12"
 redis = "5.0.1"
 furl = "2.1.3"
