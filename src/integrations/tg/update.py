@@ -85,7 +85,7 @@ class CachedTgUpdate(Update):
         """
         str_cache_key = 'str'
         if not self._cache[str_cache_key]:
-            self._cache[str_cache_key] = self._origin.__str__()
+            self._cache[str_cache_key] = str(self._origin)
         return self._cache[str_cache_key]
 
     @override
