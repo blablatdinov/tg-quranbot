@@ -1,3 +1,5 @@
+import glob
+import os
 import tempfile
 from collections import defaultdict
 from operator import itemgetter
@@ -19,6 +21,7 @@ def repo_path():
     Path(temp_dir_path / 'first').write_text('Some changes')
     repo.index.add(['first'])
     repo.index.commit('Some changes')
+    os.remove(Path(temp_dir_path / 'second'))
     yield temp_dir_path
     temp_dir.cleanup()
 
@@ -26,9 +29,11 @@ def repo_path():
 def test(repo_path):
     repo = Repo(repo_path)
     file_change_count = defaultdict(int)
+    exists_files = glob.glob('*', root_dir=repo_path, recursive=True)
     for commit in repo.iter_commits():
         for item in commit.stats.files.items():
             filename, stats = item
-            file_change_count[filename] += stats['lines']
+            if filename in exists_files:
+                file_change_count[filename] += stats['lines']
     sorted_files = sorted(file_change_count.items(), key=itemgetter(1))
-    assert [x[0] for x in sorted_files] == ['third', 'second', 'first']
+    assert [x[0] for x in sorted_files] == ['third', 'first']
