@@ -6,8 +6,8 @@ authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.12"
-django = "4.2.4"
+python = ">=3.12,<3.13"
+litestar = "2.5.1"
 gitpython = "3.1.32"
 
 [tool.poetry.group.dev.dependencies]
