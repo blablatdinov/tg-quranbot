@@ -9,11 +9,21 @@ readme = "README.md"
 python = ">=3.12,<3.13"
 litestar = "2.5.1"
 gitpython = "3.1.32"
+gunicorn = "21.2.0"
+uvicorn = "0.26.0"
+psycopg2-binary = "2.9.9"
+pydantic-settings = "2.1.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "7.4.0"
 isort = "5.12.0"
-flake8 = "6.1.0"
+ruff = "0.1.14"
+wemake-python-styleguide = "0.18.0"
+refurb = "1.27.0"
+mypy = "1.8.0"
+yoyo-migrations = "8.2.0"
+pytest-cov = "4.1.0"
+sqlfluff = "2.3.5"
 
 [build-system]
 requires = ["poetry-core"]
@@ -24,3 +34,64 @@ line_length = 119
 skip = ["migrations/*.py", ".venv"]
 multi_line_output = 3
 include_trailing_comma = true
+
+[tool.sqlfluff.core]
+max_line_length = 120
+
+[tool.ruff]
+select = ["ALL"]
+fixable = [
+  "F401",   # Unused import
+]
+target-version = "py311"  # TODO: up to 3.12
+ignore = [
+  "ANN101",  # Missing type annotation for `self` in method
+  "ANN102",  # Missing type annotation for `cls` in classmethod
+  "ARG001",  # Unused function argument
+  "ARG002",  # Unused method argument
+  "D203",    # no-blank-line-before-class
+  "D213",    # multi-line-summary-first-line
+  "D401",    # First line of docstring should be in imperative mood
+  "D418",    # Function decorated with `@overload` shouldn't contain a docstring
+  "FBT001",  # Boolean-typed positional argument in function definition
+  "FBT002",  # Boolean-typed positional argument in function definition
+  "FIX002",  # Line contains TODO, consider resolving the issue
+  "FLY002",  # We not use f-strings
+  "I001",    # Conflict with isort
+  "RUF100",  # WPS primary linter
+  "RUF001",  # Project contain cyrillic symbols
+  "RUF002",  # Project contain cyrillic symbols
+  "RET505",  # Unnecessary `elif` after `return` statement
+  "RET506",  # Unnecessary `elif` after `raise` statement
+  "UP030",   # We use explicit references
+  "UP032",   # We not use f-strings
+  "UP004",   # Class `PrayerReaction` inherits from `object`
+  "TD",      # "todo" formats
+  "PLR630",  # We not respect staticmethods
+]
+line-length = 120
+preview = true
+
+[tool.ruff.lint]
+preview = true
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "single"
+multiline-quotes = "double"
+
+[tool.ruff.lint.pylint]
+max-args = 6
+
+[tool.ruff.per-file-ignores]
+"tests/*" = [
+  "S101",    # use of `assert` detected
+  "INP001",  # File `...` is part of an implicit namespace package.
+  "D",       # Docstrings
+  "ANN",     # Annotations
+  "PLR2004", # Magic value
+  "PLR0913", # Too many arguments to function call
+]
+
+[tool.refurb]
+ignore = [184]
