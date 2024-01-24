@@ -20,4 +20,4 @@ WORKDIR /app
 COPY --from=build /app/.venv /app/.venv
 
 # Creating folders, and files for a project:
-COPY src/app /app
+COPY src /app

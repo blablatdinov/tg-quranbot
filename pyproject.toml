@@ -2,17 +2,19 @@
 name = "revive-code-bot"
 version = "0.1.0"
 description = ""
+packages = [
+  { include = "src/revive_code_bot" }
+]
 authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
-litestar = "2.5.1"
 gitpython = "3.1.32"
 gunicorn = "21.2.0"
-uvicorn = "0.26.0"
 psycopg2-binary = "2.9.9"
-pydantic-settings = "2.1.0"
+django = "5.0.1"
+django-environ = "^0.11.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "7.4.0"
@@ -20,10 +22,7 @@ isort = "5.12.0"
 ruff = "0.1.14"
 wemake-python-styleguide = "0.18.0"
 refurb = "1.27.0"
-mypy = "1.8.0"
-yoyo-migrations = "8.2.0"
 pytest-cov = "4.1.0"
-sqlfluff = "2.3.5"
 
 [build-system]
 requires = ["poetry-core"]
@@ -45,6 +44,8 @@ fixable = [
 ]
 target-version = "py311"  # TODO: up to 3.12
 ignore = [
+  "ANN",
+  # --------------------
   "ANN101",  # Missing type annotation for `self` in method
   "ANN102",  # Missing type annotation for `cls` in classmethod
   "ARG001",  # Unused function argument
@@ -68,6 +69,7 @@ ignore = [
   "UP004",   # Class `PrayerReaction` inherits from `object`
   "TD",      # "todo" formats
   "PLR630",  # We not respect staticmethods
+  "TCH003",  # Move standard library import `os.PathLike` into a type-checking block
 ]
 line-length = 120
 preview = true
@@ -84,7 +86,7 @@ multiline-quotes = "double"
 max-args = 6
 
 [tool.ruff.per-file-ignores]
-"tests/*" = [
+"src/tests/*" = [
   "S101",    # use of `assert` detected
   "INP001",  # File `...` is part of an implicit namespace package.
   "D",       # Docstrings

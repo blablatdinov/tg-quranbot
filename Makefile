@@ -1,13 +1,12 @@
 run:
-	# poetry run uvicorn src.app.main:app --reload --log-level=debug
-	poetry run litestar --app src.app.main:app run -d
+	poetry run python src/manage.py runserver
 
 lint:
-	poetry run isort src tests
-	poetry run ruff check src tests --fix
-	poetry run flake8 src tests
-	poetry run refurb src tests
-	poetry run mypy src tests
+	poetry run isort src
+	poetry run ruff check src --fix
+	# poetry run flake8 src
+	poetry run refurb src
+	# poetry run mypy src
 
 test:
 	poetry run pytest

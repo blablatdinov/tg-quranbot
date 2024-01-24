@@ -52,8 +52,8 @@ jobs:
     #   run: .venv/bin/flake8 src
     - name: Lint via refurb
       run: .venv/bin/refurb src
-    - name: Check types with mypy
-      run: .venv/bin/mypy src
+    # - name: Check types with mypy
+    #   run: .venv/bin/mypy src
     # - name: Run e2e tests
     #   run: .venv/bin/pytest src/tests/e2e
 
@@ -84,25 +84,32 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-      - name: Set up Python
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12.1
-      - name: Install Dependencies
+          python-version: "3.12.1"
+      - name: Install Poetry
+        uses: snok/install-poetry@v1.3.4
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+      - name: Fill .env
         run: |
-          pip install yoyo-migrations==8.2.0 psycopg2-binary==2.9.9 setuptools==68.2.2
-      - name: Fill yoyo.ini
-        run: |
-          echo '[DEFAULT]
-          sources = migrations
-          database = ${{ secrets.POSTGRES_URL }}
-          batch_mode = on
-          verbosity = 3' > yoyo.ini
+          echo 'DATABASE_URL=${{ secrets.POSTGRES_URL }}' > .env
       - name: Apply Migrations
         run: |
-          yoyo apply
+          .venv/bin/python src/manage.py migrate
 
   apply-nginx-conf:
     needs: build-and-push
@@ -139,7 +146,7 @@ jobs:
           services:
             revive-code-bot:
               image: blablatdinov/revive-code-bot:${{ steps.tag_name.outputs.TAG_NAME }}
-              command: .venv/bin/uvicorn main:app --host 0.0.0.0 --port 8011
+              command: .venv/bin/gunicorn config.wsgi:application -b 0.0.0.0:8011
               restart: always
               ports:
                 - 8011:8011

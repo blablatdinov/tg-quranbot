@@ -91,7 +91,5 @@ jobs:
       #   run: .venv/bin/flake8 src
       - name: Lint via refurb
         run: .venv/bin/refurb src
-      - name: Check types with mypy
-        run: .venv/bin/mypy src
-      - name: sqlfluff
-        run: .venv/bin/sqlfluff lint migrations --dialect postgres
+      # - name: Check types with mypy
+      #   run: .venv/bin/mypy src
