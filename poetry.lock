@@ -1912,13 +1912,13 @@ rpds-py = ">=0.7.0"
 
 [[package]]
 name = "refurb"
-version = "1.27.0"
+version = "1.28.0"
 description = "A tool for refurbish and modernize Python codebases"
 optional = false
 python-versions = ">=3.10"
 files = [
-    {file = "refurb-1.27.0-py3-none-any.whl", hash = "sha256:ca80b9f06878d2a6d87e534ad8aeaf784cf157613dd68c85b86d647abc8cc42b"},
-    {file = "refurb-1.27.0.tar.gz", hash = "sha256:91c76fdc00573e316ea5f6ce9015f2511722ff113d67154955c2d9dbf7cb63ff"},
+    {file = "refurb-1.28.0-py3-none-any.whl", hash = "sha256:c89516b77745df67a1fc099e876bf31fe41ac48b80d1e7c8ced29aae902343ae"},
+    {file = "refurb-1.28.0.tar.gz", hash = "sha256:9fb4dc340e475818a4d2a7f274c77b81861d2ed8115a3f4fabff53e0ee350aa1"},
 ]
 
 [package.dependencies]
@@ -2898,4 +2898,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "50d47b02aef017427b377b8b280a602824db8ac05fe2f93ed7f380df687d4205"
+content-hash = "f5d06103b07d148b5b9569635e9787c4fcf7531d9e0f30aef3f275233a7990d9"
