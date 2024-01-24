@@ -20,19 +20,14 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from django.contrib import admin
-from django.http.response import JsonResponse
-from django.urls import path
+import pytest
+
+pytestmark = [pytest.mark.django_db]
 
 
-def healthcheck(request):
-    """Endpoint for checking app."""
-    return JsonResponse({
-        'app': 'ok',
-    })
+def test(anon):
+    """Test health check endpoint."""
+    got = anon.get('/health-check/')
 
-
-urlpatterns = [
-    path('health-check/', healthcheck),
-    path('admin/', admin.site.urls),
-]
+    assert got.status_code == 200
+    assert got.content == b'{"app": "ok"}'

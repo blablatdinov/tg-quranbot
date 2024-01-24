@@ -23,6 +23,7 @@ ruff = "0.1.14"
 wemake-python-styleguide = "0.18.0"
 refurb = "1.27.0"
 pytest-cov = "4.1.0"
+pytest-django = "4.7.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -97,3 +98,6 @@ max-args = 6
 
 [tool.refurb]
 ignore = [184]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"

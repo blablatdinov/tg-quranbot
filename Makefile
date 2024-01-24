@@ -9,4 +9,4 @@ lint:
 	# poetry run mypy src
 
 test:
-	poetry run pytest
+	cd src && poetry run pytest
