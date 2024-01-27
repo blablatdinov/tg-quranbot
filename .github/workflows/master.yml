@@ -122,3 +122,5 @@ jobs:
         run: .venv/bin/mypy src
       - name: sqlfluff
         run: .venv/bin/sqlfluff lint migrations --dialect postgres
+      - name: Check dependencies relevance
+        run: .venv/bin/deltaver poetry.lock --format lock --fail-on-avg 100
