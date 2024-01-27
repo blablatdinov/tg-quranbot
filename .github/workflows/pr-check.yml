@@ -96,6 +96,8 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
           fail_ci_if_error: true
+      - name: Check dependencies relevance
+        run: .venv/bin/deltaver poetry.lock --format lock
 
   lint:
     needs: setup
@@ -122,5 +124,3 @@ jobs:
         run: .venv/bin/mypy src
       - name: sqlfluff
         run: .venv/bin/sqlfluff lint migrations --dialect postgres
-      - name: Check dependencies relevance
-        run: .venv/bin/deltaver poetry.lock --format lock --fail-on-avg 100

@@ -156,3 +156,8 @@ max-args = 6
 
 [tool.refurb]
 ignore = [184]
+
+[tool.deltaver]
+fail_on_avg = 50
+fail_on_max = 180
+excluded = ["sqlalchemy"]
