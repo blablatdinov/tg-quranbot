@@ -26,9 +26,6 @@ on:
   push:
     tags: "*"
 
-permissions:
-  contents: read
-
 jobs:
   checks:
     env:
@@ -216,3 +213,21 @@ jobs:
           ssh www@87.249.49.217 'echo "Connected!"'
           scp docker-compose.yml www@87.249.49.217:/home/www/code/quranbot-aiogram/docker-compose.yml
           ssh www@87.249.49.217 'cd /home/www/code/quranbot-aiogram/ && docker-compose up -d'
+
+  change-pyproject-version:
+    needs: checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          git fetch --tags --force && \
+          latest=$(git tag --sort=creatordate | tail -1) && \
+          sed -i '/^version = "/s/"[^"]*"/"'"$latest"'"/' pyproject.toml
+      - uses: peter-evans/create-pull-request@v5
+        with:
+          branch: version-up
+          commit-message: 'new version in pyproject.toml'
+          delete-branch: true
+          title: 'Up version in pyproject.toml'
+          assignees: blablatdinov
+          base: master
