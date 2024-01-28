@@ -22,7 +22,7 @@
 
 [tool.poetry]
 name = "quranbot-aiogram"
-version = "0.1.0"
+version = "${latest}"
 description = ""
 authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 
