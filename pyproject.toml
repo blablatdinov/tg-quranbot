@@ -22,7 +22,7 @@
 
 [tool.poetry]
 name = "quranbot-aiogram"
-version = "0.1.0"
+version = "${latest}"
 description = ""
 authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 
@@ -33,7 +33,7 @@ quranbot-schema-registry = "0.0.20"
 sentry-sdk = "1.39.2"
 httpx = "0.26.0"
 pytz = "2023.3.post1"
-databases = {extras = ["asyncpg"], version = "0.8.0"}
+databases = {extras = ["asyncpg"], version = "${latest}"}
 attrs = "23.2.0"
 jsonpath-ng = "1.6.1"
 eo-styleguide = "0.0.1-a12"
@@ -101,7 +101,7 @@ select = ["ALL"]
 fixable = [
   "F401",   # Unused import
 ]
-target-version = "py311"  # TODO: up to 3.12
+target-version = "${latest}"  # TODO: up to 3.12
 ignore = [
   "DTZ005",  # TODO
   "DTZ007",  # TODO
