@@ -463,27 +463,23 @@ files = [
 
 [[package]]
 name = "deltaver"
-version = "0.0.1-alpha"
+version = "0.1.0"
 description = ""
 optional = false
-python-versions = "^3.9"
-files = []
-develop = false
+python-versions = ">=3.9,<4.0"
+files = [
+    {file = "deltaver-0.1.0-py3-none-any.whl", hash = "sha256:2e2d8a16397b27fa28acd382244865f2c06c3d553da7b2ee5738e022e54156fb"},
+    {file = "deltaver-0.1.0.tar.gz", hash = "sha256:9f5d4fa0c16785053af1a292a9766c2f4d4bced76e046770be20513b8c20bc7b"},
+]
 
 [package.dependencies]
-attrs = "^23.0"
-httpx = "^0"
-packaging = "^23.2"
-rich = "^13.0"
-toml = "^0.10.2"
-typer = "^0.9"
-typing-extensions = "^4.9.0"
-
-[package.source]
-type = "git"
-url = "https://github.com/blablatdinov/deltaver"
-reference = "master"
-resolved_reference = "d0f749dfa1bfe759639adf9d48245310291619c4"
+attrs = ">=23.0,<24.0"
+httpx = ">=0,<1"
+packaging = ">=23.2,<24.0"
+rich = ">=13.0,<14.0"
+toml = ">=0.10.2,<0.11.0"
+typer = ">=0.9,<0.10"
+typing-extensions = ">=4.9.0,<5.0.0"
 
 [[package]]
 name = "diff-cover"
@@ -2899,4 +2895,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "f3b34d3d5490c26991b433335f9e0bc3ff9e27df59bdb81f4fba1fb07c47d573"
+content-hash = "e0f19cafdb9aa08cde5170b05028d58cff8623c68f9daa8789d66884f6ba30fc"
