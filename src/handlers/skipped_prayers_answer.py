@@ -94,10 +94,7 @@ class PrayersStatistic(AsyncSupportsStr):
         :return: str
         """
         idx = 0
-        res = {
-            prayer_name: 0
-            for prayer_name in _PrayerNames.names()
-        }
+        res = dict.fromkeys(_PrayerNames.names(), 0)
         prayers_per_day = await self._prayers_per_day()
         for date in await self._dates_range():
             if date == prayers_per_day[idx][0]['day']:
