@@ -221,7 +221,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           git fetch --tags --force && \
-          latest=$(git tag --sort=creatordate | tail -1) && \
+          latest=$(git tag --sort=creatordate | tail -1 | cut -c2-) && \
           sed -i '/^version = "/s/"[^"]*"/"'"$latest"'"/' pyproject.toml
       - uses: peter-evans/create-pull-request@v5
         with:
