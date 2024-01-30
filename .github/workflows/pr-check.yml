@@ -61,7 +61,7 @@ jobs:
       TZ: "Europe/Moscow"
     services:
       postgres:
-        image: postgres:latest
+        image: postgres:14.9
         env:
           POSTGRES_USER: almazilaletdinov
           POSTGRES_DB: postgres
@@ -87,6 +87,23 @@ jobs:
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Fill yoyo.ini
+        run: |
+          echo '[DEFAULT]
+          sources = migrations
+          database = postgres://almazilaletdinov:password@localhost:5432/postgres
+          batch_mode = on
+          verbosity = 3' > yoyo.ini
+      - name: Apply and rollback migrations
+        run: |
+          .venv/bin/yoyo apply
+          .venv/bin/yoyo rollback -a
+          PGPASSWORD="password" pg_dump -U almazilaletdinov -d postgres --schema-only -h localhost -p 5432 | grep 'CREATE TABLE' | wc -l | grep 4
+      - name: Test on production dump
+        run: |
+          export PGPASSWORD=$(echo '${{ secrets.POSTGRES_URL }}' | python -c "print(input().split(':')[2].split('@')[0])")
+          pg_dump -d quranbot -U quranbot_user -h 77.232.131.6 --schema-only | PGPASSWORD="password" psql -U almazilaletdinov -d postgres -h localhost -p 5432
+          .venv/bin/yoyo apply
       - name: create .env file
         run: echo '${{ secrets.E2E_ENV_SETUP }}' > .env
       - name: Run tests with pytest
