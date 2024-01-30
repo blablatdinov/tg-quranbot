@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import sys
 
+import sentry_sdk
 from redis import asyncio as aioredis
 
 from db.connection import pgsql
@@ -55,6 +56,11 @@ def main(sys_args: list[str]) -> None:
     """
     nats_sink = FkSink()
     settings = CachedSettings(EnvFileSettings(BASE_DIR.parent / '.env'))
+    if settings.SENTRY_DSN:
+        sentry_sdk.init(
+            dsn='https://{0}@o0.ingest.sentry.io/0'.format(settings.SENTRY_DSN),
+            enable_tracing=True,
+        )
     quranbot_polling_app = CliApp(
         DatabaseConnectedApp(
             pgsql,
