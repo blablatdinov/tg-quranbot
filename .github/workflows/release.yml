@@ -223,7 +223,7 @@ jobs:
           git fetch --tags --force && \
           latest=$(git tag --sort=creatordate | tail -1 | cut -c2-) && \
           sed -i '/^version = "/s/"[^"]*"/"'"$latest"'"/' pyproject.toml
-      - uses: peter-evans/create-pull-request@v5
+      - uses: peter-evans/create-pull-request@v6
         with:
           branch: version-up
           commit-message: 'new version in pyproject.toml'
