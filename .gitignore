@@ -232,3 +232,6 @@ tags
 # Telethon sessions
 *.session
 me.session-journal
+
+# Mutation testing cache file
+.mutmut-cache
