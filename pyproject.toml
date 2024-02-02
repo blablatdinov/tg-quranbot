@@ -46,7 +46,6 @@ python-dateutil = "2.8.2"
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master" }
 deltaver = "0.1.1"
-ipython = "8.20.0"
 mypy = "1.8.0"
 asyncpg-stubs = "0.29.1"
 pytest-cov = "4.1.0"
@@ -161,3 +160,8 @@ ignore = [184]
 fail_on_avg = 50
 fail_on_max = 180
 excluded = ["sqlalchemy"]
+
+[tool.mutmut]
+paths_to_mutate="src/app_types/,src/db/,src/exceptions/,src/handlers/,src/integrations/,main.py,quranbot_answer.py,schedule_app.py,src/services/,src/settings/,src/srv/"
+runner="pytest src/tests/unit -x -q --tb=no -o addopts=''"
+tests_dir="src/tests/unit"
