@@ -97,11 +97,16 @@ include_trailing_comma = true
 max_line_length = 120
 
 [tool.ruff]
+target-version = "py311"  # TODO: up to 3.12
+line-length = 120
+preview = true
+
+[tool.ruff.lint]
 select = ["ALL"]
+preview = true
 fixable = [
   "F401",   # Unused import
 ]
-target-version = "py311"  # TODO: up to 3.12
 ignore = [
   "DTZ005",  # TODO
   "DTZ007",  # TODO
@@ -130,13 +135,8 @@ ignore = [
   "TD",      # "todo" formats
   "PLR630",  # We not respect staticmethods
 ]
-line-length = 120
-preview = true
 
-[tool.ruff.lint]
-preview = true
-
-[tool.ruff.flake8-quotes]
+[tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
 inline-quotes = "single"
 multiline-quotes = "double"
@@ -144,7 +144,7 @@ multiline-quotes = "double"
 [tool.ruff.lint.pylint]
 max-args = 6
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "src/integrations/tg/tg_answers/__init__.py" = ["F401"]
 "src/tests/*" = [
   "S101",    # use of `assert` detected
