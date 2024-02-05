@@ -463,13 +463,13 @@ files = [
 
 [[package]]
 name = "deltaver"
-version = "0.1.1"
+version = "0.2.0"
 description = ""
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "deltaver-0.1.1-py3-none-any.whl", hash = "sha256:5685c1c4c505b8b2201df93cb2499ff43ed5ea3339355d69e79687553e084e6e"},
-    {file = "deltaver-0.1.1.tar.gz", hash = "sha256:57fd0ec8f3fefc3c65f2079140cf5e6fb3639494ff9c0e35fc087b6d99e7a1b9"},
+    {file = "deltaver-0.2.0-py3-none-any.whl", hash = "sha256:df3b637d10aaf2b3682ddf317d9f78f3438e09566f8fab5bd8af3313db632673"},
+    {file = "deltaver-0.2.0.tar.gz", hash = "sha256:e42815522ff4e56dc884231604a1e3eb3185f4e26a0c53668b2a388396e8d527"},
 ]
 
 [package.dependencies]
@@ -2919,4 +2919,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "38cf1a7f81d89996675bdedabbcf7b11853c92620bdc9207ea99f0b04eab2fd7"
+content-hash = "2d4b594e28b39c4579746be76489d400bbd1ddf91c82975fd34e4452f9786574"
