@@ -45,7 +45,7 @@ python-dateutil = "2.8.2"
 
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master" }
-deltaver = "0.2.0"
+deltaver = "0.2.1"
 ipython = "8.21.0"
 mypy = "1.8.0"
 asyncpg-stubs = "0.29.1"
