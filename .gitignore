@@ -235,3 +235,6 @@ me.session-journal
 
 # Mutation testing cache file
 .mutmut-cache
+
+# Deltaver cache dir
+.deltaver_cache
