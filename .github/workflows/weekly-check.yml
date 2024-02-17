@@ -3,10 +3,9 @@ name: Weekly check
 on:
   push:
     branches:
-      # - master
-      - weekle-check
+      - master
   schedule:
-    - cron: '0 0 * * 0' # Запускать каждую неделю в воскресенье в полночь UTC
+    - cron: '17 13 * * 2'
 
 jobs:
   checks:
