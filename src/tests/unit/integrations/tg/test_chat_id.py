@@ -23,7 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import json
 
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.update import TgUpdate
@@ -61,9 +61,9 @@ def query_search_update():
 
 
 @pytest.mark.parametrize('update', [
-    lazy_fixture('stringable_update'),
-    lazy_fixture('stringable_callback_update'),
-    lazy_fixture('query_search_update'),
+    lf('stringable_update'),
+    lf('stringable_callback_update'),
+    lf('query_search_update'),
 ])
 def test(update):
     chat_id = TgChatId(TgUpdate(update))

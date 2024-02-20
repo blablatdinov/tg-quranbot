@@ -24,7 +24,7 @@ import datetime
 
 import pytest
 import pytz
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from app_types.stringable import ThroughString
 from integrations.tg.tg_datetime import TgDateTime
@@ -43,11 +43,11 @@ def stringable_callback_update(callback_update_factory):
 
 @pytest.mark.parametrize(('update', 'expected'), [
     (
-        lazy_fixture('message_update'),
+        lf('message_update'),
         datetime.datetime(2022, 12, 9, 10, 20, 13, tzinfo=pytz.timezone('UTC')),
     ),
     (
-        lazy_fixture('stringable_callback_update'),
+        lf('stringable_callback_update'),
         datetime.datetime(2022, 10, 30, 15, 54, 34, tzinfo=pytz.timezone('UTC')),
     ),
 ])

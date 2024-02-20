@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from app_types.stringable import ThroughString
 from integrations.tg.message_text import MessageText
@@ -39,8 +39,8 @@ def stringable_callback_update(callback_update_factory):
 
 
 @pytest.mark.parametrize(('update', 'expected'), [
-    (lazy_fixture('stringable_update'), 'afwe'),
-    (lazy_fixture('stringable_callback_update'), 'awef'),
+    (lf('stringable_update'), 'afwe'),
+    (lf('stringable_callback_update'), 'awef'),
     ('{"message":{"text":"hello"}}', 'hello'),
 ])
 def test(update, expected):
