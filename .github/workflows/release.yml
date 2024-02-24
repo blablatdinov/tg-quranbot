@@ -92,7 +92,7 @@ jobs:
     - name: Check types with mypy
       run: .venv/bin/mypy src
     - name: Run e2e tests
-      run: .venv/bin/pytest src/tests/e2e
+      run: .venv/bin/pytest src/tests/e2e -x -vv
 
   build-and-push:
     needs: checks
