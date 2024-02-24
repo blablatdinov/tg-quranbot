@@ -25,7 +25,7 @@ run:
 
 lint:
 	poetry run isort src
-	poetry run ruff check src --fix
+	poetry run ruff check src --fix --output-format=concise
 	poetry run flake8 src
 	poetry run refurb src
 	poetry run mypy src

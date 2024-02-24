@@ -24,7 +24,7 @@ import asyncio
 import json
 from typing import Protocol, final, override
 
-import aioamqp
+import aio_pika
 import attrs
 from databases import Database
 from eljson.json_doc import JsonDoc
@@ -75,40 +75,35 @@ class RbmqEventHook(EventHook):
     _event: ReceivedEvent
 
     @override
-    async def catch(self) -> None:
+    async def catch(self) -> None:  # noqa: WPS217
         """Запуск обработки."""
-        channel, transport, protocol = await self._pre_build()
-        await channel.basic_consume(self._callback, queue_name='my_queue')
-        try:  # noqa: WPS501
-            while True:  # noqa: WPS457
-                await asyncio.sleep(1)
-        finally:
-            await protocol.close()
-            transport.close()
-
-    async def _pre_build(self) -> tuple:
         await self._pgsql.connect()
-        transport, protocol = await aioamqp.connect(
-            host=self._settings.RABBITMQ_HOST,
-            login=self._settings.RABBITMQ_USER,
-            password=self._settings.RABBITMQ_PASS,
+        connection = await aio_pika.connect_robust(
+            'amqp://{0}:{1}@{2}:5672/default_vhost'.format(
+                self._settings.RABBITMQ_USER,
+                self._settings.RABBITMQ_PASS,
+                self._settings.RABBITMQ_HOST,
+            ),
         )
-        channel = await protocol.channel()
-        await channel.queue_declare(queue_name='my_queue')
-        return channel, transport, protocol
+        async with connection:
+            channel = await connection.channel()
+            await channel.set_qos(prefetch_count=10)
+            queue = await channel.declare_queue('quranbot_queue')
+            async with queue.iterator() as queue_iter:
+                await self._iter_messages(queue_iter)
 
-    async def _callback(
-        self,
-        channel: aioamqp.channel.Channel,
-        body: bytes,
-        envelope: aioamqp.envelope.Envelope,
-        properties: aioamqp.properties.Properties,
-    ) -> None:
-        logger.info('Taked event {0}'.format(json.loads(body.decode('utf-8'))))
-        body_json = JsonDoc.from_string(body.decode('utf-8'))  # type: ignore [no-untyped-call]
+    async def _iter_messages(self, queue_iter: aio_pika.abc.AbstractQueueIterator) -> None:
+        async for message in queue_iter:
+            async with message.process():
+                await self._callback(message)
+
+    async def _callback(self, message: aio_pika.abc.AbstractIncomingMessage) -> None:
+        decoded_body = message.body.decode('utf-8')
+        logger.info('Taked event {0}'.format(decoded_body))
+        body_json = JsonDoc.from_string(decoded_body)  # type: ignore [no-untyped-call]
         try:
             validate_schema(
-                json.loads(body.decode('utf-8')),
+                json.loads(decoded_body),
                 body_json.path('$.event_name')[0],
                 body_json.path('$.event_version')[0],
             )
@@ -118,4 +113,3 @@ class RbmqEventHook(EventHook):
             ))
             return
         await self._event.process(body_json)
-        await channel.basic_client_ack(envelope.delivery_tag)
