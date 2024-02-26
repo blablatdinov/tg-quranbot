@@ -79,10 +79,11 @@ class RbmqEventHook(EventHook):
         """Запуск обработки."""
         await self._pgsql.connect()
         connection = await aio_pika.connect_robust(
-            'amqp://{0}:{1}@{2}:5672/default_vhost'.format(
+            'amqp://{0}:{1}@{2}:5672/{3}'.format(
                 self._settings.RABBITMQ_USER,
                 self._settings.RABBITMQ_PASS,
                 self._settings.RABBITMQ_HOST,
+                self._settings.RABBITMQ_VHOST,
             ),
         )
         async with connection:
