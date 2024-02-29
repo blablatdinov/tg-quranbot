@@ -36,7 +36,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 @attrs.define(frozen=True)
 @elegant
 class TgLinkPreviewOptions(TgAnswer):
-    """Текстовое сообщение."""
+    """Опции превью ссылок."""
 
     _origin: TgAnswer
     _disabled: bool
