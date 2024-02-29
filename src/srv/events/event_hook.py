@@ -86,10 +86,12 @@ class RbmqEventHook(EventHook):
                 self._settings.RABBITMQ_VHOST,
             ),
         )
+        logger.info('Connected to rabbitmq')
         async with connection:
             channel = await connection.channel()
             await channel.set_qos(prefetch_count=10)
             queue = await channel.declare_queue('quranbot_queue')
+            logger.info('Wait events...')
             async with queue.iterator() as queue_iter:
                 await self._iter_messages(queue_iter)
 

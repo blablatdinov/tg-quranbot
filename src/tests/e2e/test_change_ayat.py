@@ -55,10 +55,10 @@ def test_change_ayat(db_query_vals):
         credentials=pika.PlainCredentials(settings.RABBITMQ_USER, settings.RABBITMQ_PASS),
     ))
     channel = connection.channel()
-    channel.queue_declare(queue='my_queue')
+    channel.queue_declare(queue='quranbot_queue')
     channel.basic_publish(
         exchange='',
-        routing_key='my_queue',
+        routing_key='quranbot_queue',
         body=json.dumps({
             'event_id': 'some_id',
             'event_version': 1,
