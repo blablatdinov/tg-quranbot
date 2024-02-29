@@ -52,18 +52,18 @@ class DecrementSkippedPrayerAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        query = """
-            UPDATE prayers_at_user AS pau
-            SET is_read = 't'
-            WHERE pau.prayer_at_user_id = (
-                SELECT pau.prayer_at_user_id
-                FROM prayers AS p
-                INNER JOIN prayers_at_user AS pau ON pau.prayer_id = p.prayer_id
-                WHERE p.name = :prayer_name AND pau.is_read = 'f' AND pau.user_id = :chat_id
-                LIMIT 1
-            )
-            RETURNING *
-        """
+        query = '\n'.join([
+            'UPDATE prayers_at_user AS pau',
+            "SET is_read = 't'",
+            'WHERE pau.prayer_at_user_id = (',
+            '   SELECT pau.prayer_at_user_id',
+            '   FROM prayers AS p',
+            '   INNER JOIN prayers_at_user AS pau ON pau.prayer_id = p.prayer_id',
+            "   WHERE p.name = :prayer_name AND pau.is_read = 'f' AND pau.user_id = :chat_id",
+            '   LIMIT 1',
+            ')',
+            'RETURNING *',
+        ])
         await self._pgsql.execute(query, {
             'chat_id': int(TgChatId(update)),
             'prayer_name': str(

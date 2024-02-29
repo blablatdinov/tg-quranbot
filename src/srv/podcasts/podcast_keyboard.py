@@ -54,14 +54,14 @@ class PodcastKeyboard(KeyboardInterface):
         :param update: Update
         :return: str
         """
-        query = """
-            SELECT
-                COUNT(CASE WHEN reaction = 'like' THEN 1 END) AS like_count,
-                COUNT(CASE WHEN reaction = 'dislike' THEN 1 END) AS dislike_count
-            FROM podcast_reactions
-            WHERE podcast_id = :podcast_id
-            GROUP BY podcast_id
-        """
+        query = '\n'.join([
+            'SELECT',
+            "    COUNT(CASE WHEN reaction = 'like' THEN 1 END) AS like_count,",
+            "    COUNT(CASE WHEN reaction = 'dislike' THEN 1 END) AS dislike_count",
+            'FROM podcast_reactions',
+            'WHERE podcast_id = :podcast_id',
+            'GROUP BY podcast_id',
+        ])
         podcast_id = await self._podcast.podcast_id()
         row = await self._pgsql.fetch_one(query, {'podcast_id': podcast_id})
         if row:

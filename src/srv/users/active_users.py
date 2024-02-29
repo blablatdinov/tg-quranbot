@@ -45,11 +45,11 @@ class ActiveUsers(AsyncListable):
 
         :return: list[User]
         """
-        query = """
-            SELECT chat_id
-            FROM users
-            WHERE is_active = 't'
-        """
+        query = '\n'.join([
+            'SELECT chat_id',
+            'FROM users',
+            "WHERE is_active = 't'",
+        ])
         rows = await self._pgsql.fetch_all(query)
         return [
             PgUser(SyncToAsyncIntable(row['chat_id']), self._pgsql)
@@ -74,11 +74,11 @@ class PgUsers(AsyncListable):
         """
         if not self._chat_ids:
             return []
-        query_template = """
-            SELECT chat_id
-            FROM users
-            WHERE chat_id IN ({0})
-        """
+        query_template = '\n'.join([
+            'SELECT chat_id',
+            'FROM users',
+            'WHERE chat_id IN ({0})',
+        ])
         query = query_template.format(
             ','.join(list(map(str, self._chat_ids))),
         )
@@ -115,11 +115,11 @@ class PgUpdatedUsersStatus(UpdatedUsersStatus):
 
         :param to: bool
         """
-        query_template = """
-            UPDATE users
-            SET is_active = :to
-            WHERE chat_id in ({0})
-        """
+        query_template = '\n'.join([
+            'UPDATE users',
+            'SET is_active = :to',
+            'WHERE chat_id in ({0})',
+        ])
         users = await self._users.to_list()
         if not users:
             return

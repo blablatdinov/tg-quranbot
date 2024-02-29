@@ -181,41 +181,41 @@ class PodcastReactionChangeAnswer(TgAnswer):
         ).build(update)
 
     async def _apply_reaction(self, chat_id: ChatId, reaction: PodcastReactionsT) -> None:
-        query = """
-            SELECT reaction
-            FROM podcast_reactions
-            WHERE user_id = :user_id AND podcast_id = :podcast_id
-        """
+        query = '\n'.join([
+            'SELECT reaction',
+            'FROM podcast_reactions',
+            'WHERE user_id = :user_id AND podcast_id = :podcast_id',
+        ])
         prayer_existed_reaction = await self._pgsql.fetch_val(query, {
             USER_ID_LITERAL: chat_id,
             PODCAST_ID_LITERAL: reaction.podcast_id(),
         })
         if prayer_existed_reaction:
             if prayer_existed_reaction == reaction.status():
-                query = """
-                    DELETE FROM podcast_reactions
-                    WHERE user_id = :user_id AND podcast_id = :podcast_id
-                """
+                query = '\n'.join([
+                    'DELETE FROM podcast_reactions',
+                    'WHERE user_id = :user_id AND podcast_id = :podcast_id',
+                ])
                 await self._pgsql.execute(query, {
                     USER_ID_LITERAL: chat_id,
                     PODCAST_ID_LITERAL: reaction.podcast_id(),
                 })
             else:
-                query = """
-                    UPDATE podcast_reactions
-                    SET reaction = :reaction
-                    WHERE user_id = :user_id AND podcast_id = :podcast_id
-                """
+                query = '\n'.join([
+                    'UPDATE podcast_reactions',
+                    'SET reaction = :reaction',
+                    'WHERE user_id = :user_id AND podcast_id = :podcast_id',
+                ])
                 await self._pgsql.execute(query, {
                     'reaction': reaction.status(),
                     USER_ID_LITERAL: chat_id,
                     PODCAST_ID_LITERAL: reaction.podcast_id(),
                 })
         else:
-            query = """
-                INSERT INTO podcast_reactions (podcast_id, user_id, reaction)
-                VALUES (:podcast_id, :user_id, :reaction)
-            """
+            query = '\n'.join([
+                'INSERT INTO podcast_reactions (podcast_id, user_id, reaction)',
+                'VALUES (:podcast_id, :user_id, :reaction)',
+            ])
             await self._pgsql.execute(query, {
                 PODCAST_ID_LITERAL: reaction.podcast_id(),
                 USER_ID_LITERAL: chat_id,

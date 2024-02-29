@@ -47,12 +47,12 @@ class AyatsByTextQuery(AsyncListable):
 
         :return: list[QAyat]
         """
-        query = """
-            SELECT a.ayat_id AS id
-            FROM ayats AS a
-            WHERE a.content ILIKE :search_query
-            ORDER BY a.ayat_id
-        """
+        query = '\n'.join([
+            'SELECT a.ayat_id AS id',
+            'FROM ayats AS a',
+            'WHERE a.content ILIKE :search_query',
+            'ORDER BY a.ayat_id',
+        ])
         rows = await self._pgsql.fetch_all(query, {
             'search_query': '%{0}%'.format(self._query),
         })

@@ -53,15 +53,15 @@ async def _db_podcast(pgsql):
 
 @pytest.fixture()
 async def _existed_reaction(pgsql):
-    query = """
-        INSERT INTO podcast_reactions (user_id, podcast_id, reaction)
-        VALUES (1, 1, 'like')
-    """
+    query = '\n'.join([
+        'INSERT INTO podcast_reactions (user_id, podcast_id, reaction)',
+        "VALUES (1, 1, 'like')",
+    ])
     await pgsql.execute(query)
-    query = """
-        INSERT INTO podcast_reactions (user_id, podcast_id, reaction)
-        VALUES (1, 2, 'dislike')
-    """
+    query = '\n'.join([
+        'INSERT INTO podcast_reactions (user_id, podcast_id, reaction)',
+        "VALUES (1, 2, 'dislike')",
+    ])
     await pgsql.execute(query)
 
 

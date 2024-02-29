@@ -47,11 +47,11 @@ class PgFile(TgFile):
         :return: str
         :raises BotFileNotFoundError: файл не найден
         """
-        query = """
-            SELECT telegram_file_id
-            FROM files
-            WHERE file_id = :file_id
-        """
+        query = '\n'.join([
+            'SELECT telegram_file_id',
+            'FROM files',
+            'WHERE file_id = :file_id',
+        ])
         row = await self._pgsql.fetch_one(query, {'file_id': str(self._file_id)})
         if not row:
             raise BotFileNotFoundError
@@ -64,11 +64,11 @@ class PgFile(TgFile):
         :return: str
         :raises BotFileNotFoundError: файл не найден
         """
-        query = """
-            SELECT link
-            FROM files
-            WHERE file_id = :file_id
-        """
+        query = '\n'.join([
+            'SELECT link',
+            'FROM files',
+            'WHERE file_id = :file_id',
+        ])
         row = await self._pgsql.fetch_one(query, {'file_id': str(self._file_id)})
         if not row:
             raise BotFileNotFoundError

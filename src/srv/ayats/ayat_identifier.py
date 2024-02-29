@@ -68,11 +68,11 @@ class PgAyatIdentifier(AyatIdentifier):
         :return: SuraId
         :raises AyatNotFoundError: в случае если аят не найден
         """
-        query = """
-            SELECT a.sura_id
-            FROM ayats AS a
-            WHERE a.ayat_id = :ayat_id
-        """
+        query = '\n'.join([
+            'SELECT a.sura_id',
+            'FROM ayats AS a',
+            'WHERE a.ayat_id = :ayat_id',
+        ])
         ayat_id = await self.ayat_id()
         row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
         if not row:
@@ -86,11 +86,11 @@ class PgAyatIdentifier(AyatIdentifier):
         :return: AyatNum
         :raises AyatNotFoundError: в случае если аят не найден
         """
-        query = """
-            SELECT ayat_number
-            FROM ayats
-            WHERE ayat_id = :ayat_id
-        """
+        query = '\n'.join([
+            'SELECT ayat_number',
+            'FROM ayats',
+            'WHERE ayat_id = :ayat_id',
+        ])
         ayat_id = await self.ayat_id()
         row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
         if not row:

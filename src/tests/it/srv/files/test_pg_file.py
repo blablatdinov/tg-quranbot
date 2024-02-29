@@ -32,10 +32,10 @@ from srv.files.pg_file import PgFile
 @pytest.fixture()
 async def db_file_id(pgsql):
     file_id = uuid.uuid4()
-    query = """
-        INSERT INTO files (file_id, telegram_file_id, link, created_at)
-        VALUES (:file_id, :tg_file_id, :link, :created_at)
-    """
+    query = '\n'.join([
+        'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
+        'VALUES (:file_id, :tg_file_id, :link, :created_at)',
+    ])
     await pgsql.execute(query, {
         'file_id': str(file_id),
         'tg_file_id': 'adsf',

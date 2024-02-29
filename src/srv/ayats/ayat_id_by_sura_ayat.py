@@ -49,20 +49,20 @@ class AyatIdBySuraAyatNum(AsyncIntable):
         :return: int
         :raises AyatNotFoundError: если аят не найден
         """
-        query = """
-            SELECT ayat_id FROM ayats
-            WHERE
-                sura_id = :sura_id
-                AND (
-                    ayat_number LIKE :ayat_num_str
-                    OR ayat_number LIKE :ayat_comma_prefix
-                    OR ayat_number LIKE :ayat_comma_postfix
-                    OR (
-                        CAST(SUBSTRING(ayat_number FROM '^[0-9]+') AS INTEGER) <= :ayat_num
-                        AND CAST(SUBSTRING(ayat_number FROM '[0-9]+$') AS INTEGER) >= :ayat_num
-                    )
-                )
-        """
+        query = '\n'.join([
+            'SELECT ayat_id FROM ayats',
+            'WHERE',
+            '    sura_id = :sura_id',
+            '    AND (',
+            '        ayat_number LIKE :ayat_num_str',
+            '        OR ayat_number LIKE :ayat_comma_prefix',
+            '        OR ayat_number LIKE :ayat_comma_postfix',
+            '        OR (',
+            "            CAST(SUBSTRING(ayat_number FROM '^[0-9]+') AS INTEGER) <= :ayat_num",
+            "            AND CAST(SUBSTRING(ayat_number FROM '[0-9]+$') AS INTEGER) >= :ayat_num",
+            '        )',
+            '    )',
+        ])
         row = await self._pgsql.fetch_one(query, {
             'sura_id': self._query.sura(),
             'ayat_comma_prefix': '%,{0}'.format(self._query.ayat()),
@@ -91,10 +91,10 @@ class AyatIdByPublicId(AsyncIntable):
         :return: int
         :raises AyatNotFoundError: если аят не найден
         """
-        query = """
-            SELECT ayat_id FROM ayats
-            WHERE public_id = :public_id
-        """
+        query = '\n'.join([
+            'SELECT ayat_id FROM ayats',
+            'WHERE public_id = :public_id',
+        ])
         row = await self._pgsql.fetch_one(query, {
             'public_id': str(self._public_id),
         })

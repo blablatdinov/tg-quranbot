@@ -47,14 +47,14 @@ class UserFavoriteAyats(AsyncListable[Ayat]):
 
         :return: list[PgAyat]
         """
-        query = """
-            SELECT a.ayat_id AS id
-            FROM favorite_ayats AS fa
-            INNER JOIN ayats AS a ON fa.ayat_id = a.ayat_id
-            INNER JOIN users AS u ON fa.user_id = u.chat_id
-            WHERE u.chat_id = :chat_id
-            ORDER BY a.ayat_id
-        """
+        query = '\n'.join([
+            'SELECT a.ayat_id AS id',
+            'FROM favorite_ayats AS fa',
+            'INNER JOIN ayats AS a ON fa.ayat_id = a.ayat_id',
+            'INNER JOIN users AS u ON fa.user_id = u.chat_id',
+            'WHERE u.chat_id = :chat_id',
+            'ORDER BY a.ayat_id',
+        ])
         rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
         return [
             PgAyat.from_int(row['id'], self._pgsql) for row in rows
