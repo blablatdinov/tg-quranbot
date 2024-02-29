@@ -44,7 +44,7 @@ python-dateutil = "2.9.0"
 aio-pika = "9.4.0"
 
 [tool.poetry.group.dev.dependencies]
-wemake-python-styleguide = {path = "/Users/almazilaletdinov/code/source-codes/wemake-python-styleguide"}
+wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master" }
 deltaver = "0.2.1"
 ipython = "8.22.1"
 mypy = "1.8.0"

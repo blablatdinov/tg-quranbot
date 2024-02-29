@@ -2968,8 +2968,10 @@ setuptools = "*"
 typing_extensions = ">=4.0,<5.0"
 
 [package.source]
-type = "directory"
-url = "../../source-codes/wemake-python-styleguide"
+type = "git"
+url = "https://github.com/wemake-services/wemake-python-styleguide"
+reference = "master"
+resolved_reference = "865720580eca80595a870501b824a035d85ca5b5"
 
 [[package]]
 name = "win32-setctime"
@@ -3127,4 +3129,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "d85ef6b654726ccc6692caa3045e1e1a208f9186c1eca62b57e0ad30748e21d6"
+content-hash = "422bf7f9e34f9d8ab88631c59c9433d65d7f8550d59e0002981270b242682449"
