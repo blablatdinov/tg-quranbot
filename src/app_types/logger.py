@@ -20,9 +20,8 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import ClassVar, Protocol, final
+from typing import Protocol, final
 
-import attrs
 from pyeo import elegant
 
 
@@ -53,12 +52,15 @@ class LogSink(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
 @elegant
 class FkLogSink(LogSink):
     """Фейковый логгер."""
 
-    stack: ClassVar[list[str]] = []
+    stack: list[str]
+
+    def __init__(self) -> None:
+        """Ctor."""
+        self.stack = []
 
     def info(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003, WPS110
         """Информационный уровень.
