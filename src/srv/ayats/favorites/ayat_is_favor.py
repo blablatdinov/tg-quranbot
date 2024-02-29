@@ -47,12 +47,12 @@ class AyatIsFavor(AsyncSupportsBool):
 
         :return: bool
         """
-        query = """
-            SELECT COUNT(*)
-            FROM favorite_ayats AS fa
-            INNER JOIN users AS u ON fa.user_id = u.chat_id
-            WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id
-        """
+        query = '\n'.join([
+            'SELECT COUNT(*)',
+            'FROM favorite_ayats AS fa',
+            'INNER JOIN users AS u ON fa.user_id = u.chat_id',
+            'WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id',
+        ])
         count = await self._pgsql.fetch_val(
             query, {'ayat_id': await self._ayat.identifier().ayat_id(), 'chat_id': self._chat_id},
         )

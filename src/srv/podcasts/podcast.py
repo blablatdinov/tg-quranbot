@@ -65,12 +65,12 @@ class PgPodcast(Podcast):
         :raises InternalBotError: если таблилца с подкастами не заполнена
         :raises TelegramFileIdNotFilledError: идентификатор файла не заполнен
         """
-        query = """
-            SELECT f.telegram_file_id
-            FROM podcasts AS p
-            INNER JOIN files AS f ON p.file_id = f.file_id
-            WHERE p.podcast_id = :podcast_id
-        """
+        query = '\n'.join([
+            'SELECT f.telegram_file_id',
+            'FROM podcasts AS p',
+            'INNER JOIN files AS f ON p.file_id = f.file_id',
+            'WHERE p.podcast_id = :podcast_id',
+        ])
         row = await self._pgsql.fetch_one(
             query,
             {'podcast_id': await self._podcast_id.to_int()},
@@ -89,12 +89,12 @@ class PgPodcast(Podcast):
         :returns: str
         :raises InternalBotError: если таблилца с подкастами не заполнена
         """
-        query = """
-            SELECT f.link
-            FROM podcasts AS p
-            INNER JOIN files AS f ON p.file_id = f.file_id
-            WHERE p.podcast_id = :podcast_id
-        """
+        query = '\n'.join([
+            'SELECT f.link',
+            'FROM podcasts AS p',
+            'INNER JOIN files AS f ON p.file_id = f.file_id',
+            'WHERE p.podcast_id = :podcast_id',
+        ])
         row = await self._pgsql.fetch_one(
             query,
             {'podcast_id': await self._podcast_id.to_int()},

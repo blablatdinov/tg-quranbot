@@ -89,12 +89,12 @@ class PgNewUser(NewUser):
         """
         chat_id = int(self._new_user_chat_id)
         self._logger.debug('Insert in DB User <{0}>...'.format(chat_id))
-        query = """
-            INSERT INTO
-            users (chat_id, referrer_id, day)
-            VALUES (:chat_id, :referrer_id, 2)
-            RETURNING (chat_id, referrer_id)
-        """
+        query = '\n'.join([
+            'INSERT INTO',
+            'users (chat_id, referrer_id, day)',
+            'VALUES (:chat_id, :referrer_id, 2)',
+            'RETURNING (chat_id, referrer_id)',
+        ])
         try:
             await self._pgsql.fetch_one(
                 query,

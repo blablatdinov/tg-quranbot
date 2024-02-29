@@ -49,13 +49,13 @@ class FavoriteAyatsAfterRemove(AsyncListable):
 
         :returns: list[QAyat]
         """
-        query = """
-            SELECT fa.ayat_id
-            FROM favorite_ayats AS fa
-            INNER JOIN users AS u ON fa.user_id = u.chat_id
-            WHERE u.chat_id = :chat_id OR fa.ayat_id = :ayat_id
-            ORDER BY fa.ayat_id
-        """
+        query = '\n'.join([
+            'SELECT fa.ayat_id',
+            'FROM favorite_ayats AS fa',
+            'INNER JOIN users AS u ON fa.user_id = u.chat_id',
+            'WHERE u.chat_id = :chat_id OR fa.ayat_id = :ayat_id',
+            'ORDER BY fa.ayat_id',
+        ])
         rows = await self._pgsql.fetch_all(
             query, {'chat_id': int(self._chat_id), 'ayat_id': self._ayat_id},
         )

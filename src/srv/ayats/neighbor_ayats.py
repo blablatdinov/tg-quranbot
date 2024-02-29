@@ -126,11 +126,11 @@ class PgNeighborAyats(NeighborAyats):
         :return: AyatShort
         :raises AyatNotFoundError: if ayat not found
         """
-        query = """
-            SELECT ayat_id
-            FROM ayats
-            WHERE ayat_id = :ayat_id
-        """
+        query = '\n'.join([
+            'SELECT ayat_id',
+            'FROM ayats',
+            'WHERE ayat_id = :ayat_id',
+        ])
         row = await self._pgsql.fetch_one(query, {AYAT_ID: self._ayat_id - 1})
         if not row:
             raise AyatNotFoundError
@@ -143,11 +143,11 @@ class PgNeighborAyats(NeighborAyats):
         :return: AyatShort
         :raises AyatNotFoundError: if ayat not found
         """
-        query = """
-            SELECT ayats.ayat_id
-            FROM ayats
-            WHERE ayats.ayat_id = :ayat_id
-        """
+        query = '\n'.join([
+            'SELECT ayats.ayat_id',
+            'FROM ayats',
+            'WHERE ayats.ayat_id = :ayat_id',
+        ])
         row = await self._pgsql.fetch_one(query, {AYAT_ID: self._ayat_id + 1})
         if not row:
             raise AyatNotFoundError
@@ -176,12 +176,12 @@ class TextSearchNeighborAyats(NeighborAyats):
     _pgsql: Database
     _ayat_id: int
     _query: TextSearchQuery
-    _search_sql_query = """
-        SELECT ayats.ayat_id
-        FROM ayats
-        WHERE ayats.content ILIKE :search_query
-        ORDER BY ayats.ayat_id
-    """
+    _search_sql_query = '\n'.join([
+        'SELECT ayats.ayat_id',
+        'FROM ayats',
+        'WHERE ayats.content ILIKE :search_query',
+        'ORDER BY ayats.ayat_id',
+    ])
 
     @override
     async def left_neighbor(self) -> Ayat:

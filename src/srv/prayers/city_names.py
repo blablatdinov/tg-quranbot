@@ -45,12 +45,11 @@ class CityNames(AsyncListable):
         :returns: list[str]
         """
         search_query = '%{0}%'.format(self._query)
-        db_query = """
-            SELECT
-                name
-            FROM cities
-            WHERE name ILIKE :search_query
-        """
+        db_query = '\n'.join([
+            'SELECT name',
+            'FROM cities',
+            'WHERE name ILIKE :search_query',
+        ])
         return [
             row['name']
             for row in await self._pgsql.fetch_all(db_query, {'search_query': search_query})

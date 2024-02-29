@@ -83,17 +83,17 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
             self._pgsql,
         )
         if status.change_to():
-            query = """
-                INSERT INTO favorite_ayats
-                (ayat_id, user_id)
-                VALUES
-                (:ayat_id, :user_id)
-            """
+            query = '\n'.join([
+                'INSERT INTO favorite_ayats',
+                '(ayat_id, user_id)',
+                'VALUES',
+                '(:ayat_id, :user_id)',
+            ])
         else:
-            query = """
-                DELETE FROM favorite_ayats
-                WHERE ayat_id = :ayat_id AND user_id = :user_id
-            """
+            query = '\n'.join([
+                'DELETE FROM favorite_ayats',
+                'WHERE ayat_id = :ayat_id AND user_id = :user_id',
+            ])
         await self._pgsql.execute(
             query, {'ayat_id': status.ayat_id(), 'user_id': int(TgChatId(update))},
         )

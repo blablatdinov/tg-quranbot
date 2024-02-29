@@ -41,11 +41,11 @@ async def _prayers(pgsql):
     await pgsql.execute(
         "INSERT INTO users (chat_id, city_id) VALUES (358610865, 'bc932b25-707e-4af1-8b6e-facb5e6dfa9b')",
     )
-    query = """
-        INSERT INTO prayers (prayer_id, name, time, city_id, day)
-        VALUES
-        (:prayer_id, :name, :time, :city_id, :day)
-    """
+    query = '\n'.join([
+        'INSERT INTO prayers (prayer_id, name, time, city_id, day)',
+        'VALUES',
+        '(:prayer_id, :name, :time, :city_id, :day)',
+    ])
     await pgsql.execute_many(
         query,
         [
@@ -63,11 +63,11 @@ async def _prayers(pgsql):
         line.split(';')
         for line in Path('src/tests/fixtures/prayers_at_user.csv').read_text().splitlines()
     ]
-    query = """
-        INSERT INTO prayers_at_user (prayer_at_user_id, user_id, prayer_id, is_read)
-        VALUES
-        (:prayer_at_user_id, 358610865, :prayer_id, :is_read)
-    """
+    query = '\n'.join([
+        'INSERT INTO prayers_at_user (prayer_at_user_id, user_id, prayer_id, is_read)',
+        'VALUES',
+        '(:prayer_at_user_id, 358610865, :prayer_id, :is_read)',
+    ])
     await pgsql.execute_many(
         query,
         [

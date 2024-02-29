@@ -65,21 +65,21 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
         await self._pgsql.fetch_val(
             'INSERT INTO prayers_at_user_groups VALUES (:prayer_group_id)', {'prayer_group_id': prayer_group_id},
         )
-        query = """
-            INSERT INTO prayers_at_user
-            (user_id, prayer_id, is_read, prayer_group_id)
-            SELECT
-                :chat_id,
-                p.prayer_id,
-                false,
-                :prayer_group_id
-            FROM prayers AS p
-            INNER JOIN cities AS c ON p.city_id = c.city_id
-            INNER JOIN users AS u ON u.city_id = c.city_id
-            WHERE p.day = :date AND u.chat_id = :chat_id AND p.name <> 'sunrise'
-            ORDER BY
-                ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
-        """
+        query = '\n'.join([
+            'INSERT INTO prayers_at_user',
+            '(user_id, prayer_id, is_read, prayer_group_id)',
+            'SELECT',
+            '    :chat_id,',
+            '    p.prayer_id,',
+            '    false,',
+            '    :prayer_group_id',
+            'FROM prayers AS p',
+            'INNER JOIN cities AS c ON p.city_id = c.city_id',
+            'INNER JOIN users AS u ON u.city_id = c.city_id',
+            "WHERE p.day = :date AND u.chat_id = :chat_id AND p.name <> 'sunrise'",
+            'ORDER BY',
+            "    ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
+        ])
         await self._pgsql.execute(query, {
             'chat_id': int(self._chat_id),
             'prayer_group_id': prayer_group_id,
@@ -124,15 +124,15 @@ class UserPrayersKeyboard(KeyboardInterface):
         })
 
     async def _exists_prayers(self, update: Update) -> list[Record]:
-        select_query = """
-            SELECT
-                pau.prayer_at_user_id,
-                pau.is_read
-            FROM prayers_at_user AS pau
-            INNER JOIN prayers AS p on pau.prayer_id = p.prayer_id
-            WHERE p.day = :date AND pau.user_id = :chat_id AND p.name <> 'sunrise'
-            ORDER BY pau.prayer_at_user_id
-        """
+        select_query = '\n'.join([
+            'SELECT',
+            '    pau.prayer_at_user_id,',
+            '    pau.is_read',
+            'FROM prayers_at_user AS pau',
+            'INNER JOIN prayers AS p on pau.prayer_id = p.prayer_id',
+            "WHERE p.day = :date AND pau.user_id = :chat_id AND p.name <> 'sunrise'",
+            'ORDER BY pau.prayer_at_user_id',
+        ])
         return await self._pgsql.fetch_all(select_query, {
             'date': await self._date.parse(update),
             'chat_id': int(self._chat_id),

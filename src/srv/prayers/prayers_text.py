@@ -53,12 +53,12 @@ class UserCityId(AsyncSupportsStr):
         :return: str
         :raises UserHasNotCityIdError: user has not set city
         """
-        query = """
-            SELECT c.city_id
-            FROM cities AS c
-            INNER JOIN users AS u ON u.city_id = c.city_id
-            WHERE u.chat_id = :chat_id
-        """
+        query = '\n'.join([
+            'SELECT c.city_id',
+            'FROM cities AS c',
+            'INNER JOIN users AS u ON u.city_id = c.city_id',
+            'WHERE u.chat_id = :chat_id',
+        ])
         city_name = await self._pgsql.fetch_val(query, {'chat_id': int(self._chat_id)})
         if not city_name:
             raise UserHasNotCityIdError
@@ -83,18 +83,18 @@ class PrayersText(AsyncSupportsStr):
         :return: str
         :raises PrayersNotFoundError: намазы не найдены
         """
-        query = """
-            SELECT
-                c.name AS city_name,
-                p.day,
-                p.time,
-                p.name
-            FROM prayers AS p
-            INNER JOIN cities AS c ON p.city_id = c.city_id
-            WHERE p.day = :date AND c.city_id = :city_id
-            ORDER BY
-                ARRAY_POSITION(ARRAY['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
-        """
+        query = '\n'.join([
+            'SELECT',
+            '    c.name AS city_name,',
+            '    p.day,',
+            '    p.time,',
+            '    p.name',
+            'FROM prayers AS p',
+            'INNER JOIN cities AS c ON p.city_id = c.city_id',
+            'WHERE p.day = :date AND c.city_id = :city_id',
+            'ORDER BY',
+            "    ARRAY_POSITION(ARRAY['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
+        ])
         rows = await self._pgsql.fetch_all(query, {
             'date': await self._date.parse(self._update),
             'city_id': await self._city_id.to_str(),

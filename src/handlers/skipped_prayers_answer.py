@@ -121,16 +121,16 @@ class PrayersStatistic(AsyncSupportsStr):
             res[prayer_name] += 1
 
     async def _prayers_per_day(self) -> list[tuple]:
-        query = """
-            SELECT
-                pau.is_read,
-                p.day,
-                p.name
-            FROM prayers_at_user AS pau
-            INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id
-            WHERE pau.user_id = :chat_id
-            ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
-        """
+        query = '\n'.join([
+            'SELECT',
+            '    pau.is_read,',
+            '    p.day,',
+            '    p.name',
+            'FROM prayers_at_user AS pau',
+            'INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id',
+            'WHERE pau.user_id = :chat_id',
+            "ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
+        ])
         return list(batched(
             await self._pgsql.fetch_all(query, {
                 'chat_id': int(self._chat_id),
@@ -139,13 +139,13 @@ class PrayersStatistic(AsyncSupportsStr):
         ))
 
     async def _dates_range(self) -> list[datetime.date]:
-        query = """
-            SELECT p.day
-            FROM prayers_at_user AS pau
-            INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id
-            WHERE pau.user_id = :chat_id
-            ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)
-        """
+        query = '\n'.join([
+            'SELECT p.day',
+            'FROM prayers_at_user AS pau',
+            'INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id',
+            'WHERE pau.user_id = :chat_id',
+            "ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
+        ])
         rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
         if not rows:
             return []

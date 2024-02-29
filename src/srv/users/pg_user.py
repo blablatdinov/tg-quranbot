@@ -61,11 +61,11 @@ class ChatIdByLegacyId(AsyncIntable):
 
         :return: int
         """
-        query = """
-            SELECT chat_id
-            FROM users
-            WHERE legacy_id = :legacy_id
-        """
+        query = '\n'.join([
+            'SELECT chat_id',
+            'FROM users',
+            'WHERE legacy_id = :legacy_id',
+        ])
         return await self._pgsql.fetch_val(query, {'legacy_id': self._legacy_id})
 
 
@@ -112,11 +112,11 @@ class PgUser(User):
 
         :return: int
         """
-        query = """
-            SELECT day
-            FROM users
-            WHERE chat_id = :chat_id
-        """
+        query = '\n'.join([
+            'SELECT day',
+            'FROM users',
+            'WHERE chat_id = :chat_id',
+        ])
         return await self._pgsql.fetch_val(query, {'chat_id': await self._chat_id.to_int()})
 
     @override
@@ -125,9 +125,9 @@ class PgUser(User):
 
         :return: bool
         """
-        query = """
-            SELECT is_active
-            FROM users
-            WHERE chat_id = :chat_id
-        """
+        query = '\n'.join([
+            'SELECT is_active',
+            'FROM users',
+            'WHERE chat_id = :chat_id',
+        ])
         return await self._pgsql.fetch_val(query, {'chat_id': await self._chat_id.to_int()})

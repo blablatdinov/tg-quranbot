@@ -66,12 +66,12 @@ class PgUpdatedUserCity(UpdatedUserCity):
 
         :raises UserNotFoundError: незарегистрированный пользователь меняет город
         """
-        query = """
-            UPDATE users
-            SET city_id = :city_id
-            WHERE chat_id = :chat_id
-            RETURNING *
-        """
+        query = '\n'.join([
+            'UPDATE users',
+            'SET city_id = :city_id',
+            'WHERE chat_id = :chat_id',
+            'RETURNING *',
+        ])
         updated_rows = await self._pgsql.fetch_all(query, {
             'city_id': str(await self._city.city_id()),
             'chat_id': int(self._chat_id),
