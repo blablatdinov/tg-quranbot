@@ -134,6 +134,8 @@ ignore = [
   "UP004",   # Class `PrayerReaction` inherits from `object`
   "TD",      # "todo" formats
   "PLR630",  # We not respect staticmethods
+  "G001",    # Only .format for strings
+  "TRY400",  # logger.error enable
 ]
 
 [tool.ruff.lint.flake8-quotes]

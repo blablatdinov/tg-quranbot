@@ -28,6 +28,7 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.listable import AsyncListable
+from app_types.logger import LogSink
 from app_types.runable import Runable
 from app_types.update import FkUpdate, Update
 from integrations.tg.sendable import BulkSendableAnswer
@@ -68,6 +69,7 @@ class CheckUsersStatus(Runable):
 
     _pgsql: Database
     _empty_answer: TgAnswer
+    _logger: LogSink
 
     @override
     async def run(self) -> None:
@@ -75,7 +77,7 @@ class CheckUsersStatus(Runable):
         users = ActiveUsers(self._pgsql)
         zipped_user_responses = zip(
             await users.to_list(),
-            await BulkSendableAnswer(await self._answers(users)).send(FkUpdate()),
+            await BulkSendableAnswer(await self._answers(users), self._logger).send(FkUpdate()),
             strict=True,
         )
         deactivated_user_chat_ids = [

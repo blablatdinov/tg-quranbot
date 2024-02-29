@@ -28,6 +28,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
@@ -57,6 +58,7 @@ class SearchCityAnswer(TgAnswer):
     _empty_answer: TgAnswer
     _debug_mode: SupportsBool
     _redis: Redis
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -71,9 +73,10 @@ class SearchCityAnswer(TgAnswer):
         except MessageTextNotFoundError:
             city = PgCity.location_ctor(TgMessageCoordinates(update), self._pgsql)
         return await UserNotRegisteredSafeAnswer(
-            PgNewUser.ctor(TgChatId(update), self._pgsql),
+            PgNewUser.ctor(TgChatId(update), self._pgsql, self._logger),
             TgSkipNotProcessable(
                 TgAnswerFork(
+                    self._logger,
                     TgMessageRegexAnswer(
                         '.+',
                         CityNotSupportedAnswer(
@@ -84,7 +87,7 @@ class SearchCityAnswer(TgAnswer):
                                     city,
                                 ),
                                 CachedUserState(
-                                    RedisUserState(self._redis, TgChatId(update)),
+                                    RedisUserState(self._redis, TgChatId(update), self._logger),
                                 ),
                             ),
                             answer_to_sender,

@@ -28,6 +28,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from app_types.stringable import ThroughString
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
@@ -54,6 +55,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
     _empty_answer: TgAnswer
     _redis: Redis
     _pgsql: Database
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -69,6 +71,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
                 await AyatTextSearchQuery(
                     self._redis,
                     TgChatId(update),
+                    self._logger,
                 ).read(),
             ),
             self._pgsql,
@@ -92,6 +95,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
                         AyatTextSearchQuery(
                             self._redis,
                             TgChatId(update),
+                            self._logger,
                         ),
                     ),
                 ),

@@ -28,6 +28,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgHtmlParseAnswer, TgMessageAnswer
@@ -54,6 +55,7 @@ class FullStartAnswer(TgAnswer):
     _event_sink: SinkInterface
     _redis: Redis
     _settings: Settings
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -74,6 +76,7 @@ class FullStartAnswer(TgAnswer):
                             PgAdminMessage('start', self._pgsql),
                             self._pgsql,
                             AdminChatIds(self._settings),
+                            self._logger,
                         ),
                         answer_to_sender,
                         self._pgsql,
@@ -85,5 +88,5 @@ class FullStartAnswer(TgAnswer):
                     DefaultKeyboard(),
                 ),
             ),
-            CachedUserState(RedisUserState(self._redis, TgChatId(update))),
+            CachedUserState(RedisUserState(self._redis, TgChatId(update), self._logger)),
         ).build(update)

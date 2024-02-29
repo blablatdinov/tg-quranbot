@@ -29,6 +29,7 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.intable import SyncToAsyncIntable
+from app_types.logger import LogSink
 from app_types.stringable import SupportsStr
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
@@ -133,6 +134,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
     _origin: TgAnswer
     _redis: Redis
     _pgsql: Database
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -171,10 +173,11 @@ class PodcastReactionChangeAnswer(TgAnswer):
                     ),
                     self._redis,
                     podcast,
+                    self._logger,
                     show_podcast_id=True,
                 ),
             ),
-            CachedUserState(RedisUserState(self._redis, TgChatId(update))),
+            CachedUserState(RedisUserState(self._redis, TgChatId(update), self._logger)),
         ).build(update)
 
     async def _apply_reaction(self, chat_id: ChatId, reaction: PodcastReactionsT) -> None:

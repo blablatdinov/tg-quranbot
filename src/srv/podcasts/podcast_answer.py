@@ -28,6 +28,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
@@ -57,6 +58,7 @@ class PodcastAnswer(TgAnswer):
     _markupped_answer: TgAnswer
     _redis: Redis
     _podcast: Podcast
+    _logger: LogSink
     _show_podcast_id: bool
 
     @override
@@ -83,7 +85,7 @@ class PodcastAnswer(TgAnswer):
                 ),
                 self._markupped_answer,
             ),
-            CachedUserState(RedisUserState(self._redis, TgChatId(update))),
+            CachedUserState(RedisUserState(self._redis, TgChatId(update), self._logger)),
         ).build(update)
 
 

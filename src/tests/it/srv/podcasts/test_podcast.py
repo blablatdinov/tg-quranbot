@@ -29,6 +29,7 @@ import pytest
 from furl import furl
 
 from app_types.intable import ThroughAsyncIntable
+from app_types.logger import FkLogSink
 from app_types.update import FkUpdate
 from exceptions.base_exception import InternalBotError
 from handlers.concrete_podcast_answer import ConcretePodcastAnswer
@@ -110,6 +111,7 @@ async def test_random_podcast(pgsql, rds, debug_mode, expected, unquote):
         FkAnswer(),
         rds,
         pgsql,
+        FkLogSink(),
     ).build(FkUpdate('{"chat":{"id":123}}'))
 
     assert len(got) == 2
@@ -125,6 +127,7 @@ async def test_concrete_podcast(pgsql, rds):
         FkAnswer(),
         rds,
         pgsql,
+        FkLogSink(),
     ).build(FkUpdate('{"chat":{"id":123},"message":{"text":"/podcast1"}}'))
 
     assert len(got) == 1
@@ -146,6 +149,7 @@ async def test_podcast_without_tg_file_id(pgsql, rds):
         FkAnswer(),
         rds,
         pgsql,
+        FkLogSink(),
     ).build(FkUpdate('{"chat":{"id":123},"message":{"text":"/podcast1"}}'))
 
     assert 'audio' not in got[0].url.params

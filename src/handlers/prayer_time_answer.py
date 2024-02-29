@@ -29,6 +29,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
@@ -83,6 +84,7 @@ class PrayerTimeAnswer(TgAnswer):
     _empty_answer: TgAnswer
     _redis: Redis
     _prayers_date: PrayerDate
+    _logger: LogSink
 
     @classmethod
     def new_prayers_ctor(
@@ -91,6 +93,7 @@ class PrayerTimeAnswer(TgAnswer):
         empty_answer: TgAnswer,
         admin_chat_ids: Sequence[int],
         redis: Redis,
+        logger: LogSink,
     ) -> TgAnswer:
         """Конструктор для генерации времени намаза.
 
@@ -98,6 +101,7 @@ class PrayerTimeAnswer(TgAnswer):
         :param empty_answer: TgAnswer
         :param admin_chat_ids: Sequence[int]
         :param redis: Redis
+        :param logger: LogSink
         :return: TgAnswer
         """
         return cls(
@@ -107,6 +111,7 @@ class PrayerTimeAnswer(TgAnswer):
             empty_answer,
             redis,
             PrayersRequestDate(),
+            logger,
         )
 
     @classmethod
@@ -116,6 +121,7 @@ class PrayerTimeAnswer(TgAnswer):
         empty_answer: TgAnswer,
         admin_chat_ids: Sequence[int],
         redis: Redis,
+        logger: LogSink,
     ) -> TgAnswer:
         """Конструктор для времен намаза при смене статуса прочитанности.
 
@@ -123,6 +129,7 @@ class PrayerTimeAnswer(TgAnswer):
         :param empty_answer: TgAnswer
         :param admin_chat_ids: Sequence[int]
         :param redis: Redis
+        :param logger: LogSink
         :return: TgAnswer
         """
         return _MessageNotFoundSafeAnswer(
@@ -133,6 +140,7 @@ class PrayerTimeAnswer(TgAnswer):
                 empty_answer,
                 redis,
                 PrayersMarkAsDate(),
+                logger,
             ),
             cls(
                 pgsql,
@@ -141,6 +149,7 @@ class PrayerTimeAnswer(TgAnswer):
                 empty_answer,
                 redis,
                 DateFromUserPrayerId(pgsql),
+                logger,
             ),
         )
 
@@ -184,5 +193,6 @@ class PrayerTimeAnswer(TgAnswer):
                     'Отправьте местоположение или воспользуйтесь поиском',
                 ),
                 self._redis,
+                self._logger,
             ),
         ).build(update)

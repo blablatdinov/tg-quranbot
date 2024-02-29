@@ -29,6 +29,7 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.intable import ThroughAsyncIntable
+from app_types.logger import LogSink
 from app_types.update import Update
 from exceptions.internal_exceptions import UserNotFoundError
 from integrations.tg.chat_id import TgChatId
@@ -50,6 +51,7 @@ class StartAnswer(TgAnswer):
     _admin_message: AdminMessage
     _pgsql: Database
     _admin_chat_ids: Sequence[int]
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -69,6 +71,7 @@ class StartAnswer(TgAnswer):
                 referrer_chat_id,
                 TgChatId(update),
                 self._pgsql,
+                self._logger,
             ).create()
         except UserNotFoundError:
             referrer_chat_id = FkAsyncIntOrNone(None)
@@ -76,6 +79,7 @@ class StartAnswer(TgAnswer):
                 referrer_chat_id,
                 TgChatId(update),
                 self._pgsql,
+                self._logger,
             ).create()
         answer = await self._answer(update, referrer_chat_id)
         return await answer.build(update)

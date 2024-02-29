@@ -26,9 +26,9 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from loguru import logger
 from pyeo import elegant
 
+from app_types.logger import LogSink
 from app_types.runable import Runable
 from exceptions.base_exception import InternalBotError
 from integrations.tg.polling_updates import PollingUpdatesIterator
@@ -43,15 +43,16 @@ class PollingApp(Runable):
 
     _updates: PollingUpdatesIterator
     _sendable: SendableInterface
+    _logger: LogSink
 
     @override
     async def run(self) -> None:
         """Запуск."""
-        logger.info('Start app on polling')
+        self._logger.info('Start app on polling')
         background_tasks = set()
         async for update_list in self._updates:
             for update in update_list:
-                logger.debug('Update: {update}', update=update)
+                self._logger.debug('Update: {update}', update=update)
                 task = asyncio.create_task(self._sendable.send(update))
                 background_tasks.add(task)
                 task.add_done_callback(background_tasks.discard)
@@ -66,6 +67,7 @@ class AppWithGetMe(Runable):
 
     _origin: Runable
     _token: str
+    _logger: LogSink
 
     @override
     async def run(self) -> None:
@@ -77,7 +79,7 @@ class AppWithGetMe(Runable):
             response = await client.get('https://api.telegram.org/bot{0}/getMe'.format(self._token))
             if response.status_code != httpx.codes.OK:
                 raise InternalBotError(response.text)
-            logger.info(response.content)
+            self._logger.info(response.content)
         await self._origin.run()
 
 

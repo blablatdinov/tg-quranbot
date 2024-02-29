@@ -25,6 +25,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer
@@ -45,6 +46,7 @@ class PaginateBySearchAyat(TgAnswer):
     _redis: Redis
     _pgsql: Database
     _settings: Settings
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -55,7 +57,11 @@ class PaginateBySearchAyat(TgAnswer):
         """
         return await HighlightedSearchAnswer(
             SearchAyatByTextCallbackAnswer(
-                DebugMode(self._settings), self._empty_answer, self._redis, self._pgsql,
+                DebugMode(self._settings),
+                self._empty_answer,
+                self._redis,
+                self._pgsql,
+                self._logger,
             ),
-            AyatTextSearchQuery(self._redis, TgChatId(update)),
+            AyatTextSearchQuery(self._redis, TgChatId(update), self._logger),
         ).build(update)

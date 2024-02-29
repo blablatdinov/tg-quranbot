@@ -24,9 +24,9 @@ from contextlib import suppress
 from typing import final, override
 
 import httpx
-from loguru import logger
 from pyeo import elegant
 
+from app_types.logger import LogSink
 from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.exceptions.update_parse_exceptions import (
@@ -44,12 +44,14 @@ class TgAnswerFork(TgAnswer):
     """Маршрутизация ответов."""
 
     @override
-    def __init__(self, *answers: TgAnswer) -> None:
+    def __init__(self, logger: LogSink, *answers: TgAnswer) -> None:
         """Конструктор класса.
 
         :param answers: TgAnswerInterface
+        :param logger: LogSink
         """
         self._answers = answers
+        self._logger = logger
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -65,6 +67,6 @@ class TgAnswerFork(TgAnswer):
             ):
                 origin_requests = await answer.build(update)
                 if origin_requests:
-                    logger.debug('Update processed by: {handler}', handler=answer)
+                    self._logger.debug('Update processed by: {handler}', handler=answer)
                     return origin_requests
         raise NotProcessableUpdateError

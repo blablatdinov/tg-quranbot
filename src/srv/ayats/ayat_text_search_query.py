@@ -23,9 +23,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import final, override
 
 import attrs
-from loguru import logger
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from integrations.tg.chat_id import ChatId
 from srv.ayats.text_search_query import TextSearchQuery
 
@@ -71,6 +71,7 @@ class AyatTextSearchQuery(TextSearchQuery):
 
     _redis: Redis
     _chat_id: ChatId
+    _logger: LogSink
 
     _key_template = '{0}:ayat_search_query'
 
@@ -81,9 +82,9 @@ class AyatTextSearchQuery(TextSearchQuery):
         :param query: str
         """
         key = self._key_template.format(int(self._chat_id))
-        logger.info('Try writing key: {0}, value: {1}'.format(key, query))
+        self._logger.info('Try writing key: {0}, value: {1}'.format(key, query))
         await self._redis.set(key, query)
-        logger.info('Key: {0} wrote'.format(
+        self._logger.info('Key: {0} wrote'.format(
             self._key_template.format(int(self._chat_id)),
         ))
 
@@ -95,12 +96,12 @@ class AyatTextSearchQuery(TextSearchQuery):
         :raises ValueError: user has not search query
         """
         key = self._key_template.format(int(self._chat_id))
-        logger.info('Try read {0}'.format(key))
+        self._logger.info('Try read {0}'.format(key))
         redis_value = await self._redis.get(key)
         if not redis_value:
             msg = "User hasn't search query"
-            logger.error(msg)
+            self._logger.error(msg)
             raise ValueError(msg)
         seqrch_query = redis_value.decode('utf-8')
-        logger.info('Read value: {0}'.format(seqrch_query))
+        self._logger.info('Read value: {0}'.format(seqrch_query))
         return seqrch_query

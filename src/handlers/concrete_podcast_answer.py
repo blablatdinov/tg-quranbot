@@ -29,6 +29,7 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.intable import SyncToAsyncIntable
+from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.message_text import MessageText
@@ -48,6 +49,7 @@ class ConcretePodcastAnswer(TgAnswer):
     _empty_answer: TgAnswer
     _redis: Redis
     _pgsql: Database
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -71,5 +73,6 @@ class ConcretePodcastAnswer(TgAnswer):
             ),
             self._redis,
             podcast,
+            self._logger,
             show_podcast_id=False,
         ).build(update)

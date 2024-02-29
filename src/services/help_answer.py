@@ -27,6 +27,7 @@ import httpx
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
@@ -45,6 +46,7 @@ class HelpAnswer(TgAnswer):
     _origin: TgAnswer
     _admin_message: AdminMessage
     _redis: Redis
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -59,6 +61,6 @@ class HelpAnswer(TgAnswer):
                 await self._admin_message.text(),
             ),
             CachedUserState(
-                RedisUserState(self._redis, TgChatId(update)),
+                RedisUserState(self._redis, TgChatId(update), self._logger),
             ),
         ).build(update)

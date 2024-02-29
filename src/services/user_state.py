@@ -24,10 +24,10 @@ import enum
 from typing import Protocol, final, override
 
 import attrs
-from loguru import logger
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from integrations.tg.chat_id import ChatId
 
 
@@ -98,6 +98,7 @@ class RedisUserState(UserState):
 
     _redis: Redis
     _chat_id: ChatId
+    _logger: LogSink
 
     @override
     async def step(self) -> UserStep:
@@ -108,7 +109,7 @@ class RedisUserState(UserState):
         redis_state_data = await self._redis.get('{0}:step'.format(int(self._chat_id)))
         if not redis_state_data:
             return UserStep.nothing
-        logger.info('User state: {0}'.format(redis_state_data.decode('utf-8')))
+        self._logger.info('User state: {0}'.format(redis_state_data.decode('utf-8')))
         return UserStep[redis_state_data.decode('utf-8')]
 
     @override
@@ -117,9 +118,9 @@ class RedisUserState(UserState):
 
         :param step: UserStep
         """
-        logger.info('Setting user <{0}> state <{1}>...'.format(int(self._chat_id), step))
+        self._logger.info('Setting user <{0}> state <{1}>...'.format(int(self._chat_id), step))
         await self._redis.set(
             '{0}:step'.format(int(self._chat_id)),
             step.value,
         )
-        logger.info('State {0} for user {1} setted'.format(step, int(self._chat_id)))
+        self._logger.info('State {0} for user {1} setted'.format(step, int(self._chat_id)))

@@ -26,6 +26,7 @@ import uuid
 
 import pytest
 
+from app_types.logger import FkLogSink
 from app_types.update import FkUpdate
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
 from integrations.tg.tg_answers import FkAnswer
@@ -55,7 +56,7 @@ async def test_without_message_text(pgsql, rds):
     Почему-то телеграм не присылает текст сообщения спустя время
     """
     debug = False
-    got = await PodcastReactionChangeAnswer(debug, FkAnswer(), rds, pgsql).build(
+    got = await PodcastReactionChangeAnswer(debug, FkAnswer(), rds, pgsql, FkLogSink()).build(
         FkUpdate(json.dumps({
             'callback_query': {
                 'from': {'id': 905},
@@ -82,7 +83,7 @@ async def test_without_message_text(pgsql, rds):
 @pytest.mark.usefixtures('_db_podcast')
 async def test_without_message_with_audio(pgsql, rds):
     debug = False
-    got = await PodcastReactionChangeAnswer(debug, FkAnswer(), rds, pgsql).build(
+    got = await PodcastReactionChangeAnswer(debug, FkAnswer(), rds, pgsql, FkLogSink()).build(
         FkUpdate(json.dumps({
             'callback_query': {
                 'from': {'id': 905},

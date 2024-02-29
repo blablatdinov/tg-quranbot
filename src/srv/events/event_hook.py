@@ -28,10 +28,10 @@ import aio_pika
 import attrs
 from databases import Database
 from eljson.json_doc import JsonDoc
-from loguru import logger
 from pyeo import elegant
 from quranbot_schema_registry import validate_schema
 
+from app_types.logger import LogSink
 from app_types.runable import SyncRunable
 from settings.settings import Settings
 from srv.events.recieved_event import ReceivedEvent
@@ -73,6 +73,7 @@ class RbmqEventHook(EventHook):
     _settings: Settings
     _pgsql: Database
     _event: ReceivedEvent
+    _logger: LogSink
 
     @override
     async def catch(self) -> None:  # noqa: WPS217
@@ -86,12 +87,12 @@ class RbmqEventHook(EventHook):
                 self._settings.RABBITMQ_VHOST,
             ),
         )
-        logger.info('Connected to rabbitmq')
+        self._logger.info('Connected to rabbitmq')
         async with connection:
             channel = await connection.channel()
             await channel.set_qos(prefetch_count=10)
             queue = await channel.declare_queue('quranbot_queue')
-            logger.info('Wait events...')
+            self._logger.info('Wait events...')
             async with queue.iterator() as queue_iter:
                 await self._iter_messages(queue_iter)
 
@@ -102,7 +103,7 @@ class RbmqEventHook(EventHook):
 
     async def _callback(self, message: aio_pika.abc.AbstractIncomingMessage) -> None:
         decoded_body = message.body.decode('utf-8')
-        logger.info('Taked event {0}'.format(decoded_body))
+        self._logger.info('Taked event {0}'.format(decoded_body))
         body_json = JsonDoc.from_string(decoded_body)  # type: ignore [no-untyped-call]
         try:
             validate_schema(
@@ -111,7 +112,7 @@ class RbmqEventHook(EventHook):
                 body_json.path('$.event_version')[0],
             )
         except TypeError as err:
-            logger.error('Schema of event: {0} invalid. {1}'.format(
+            self._logger.error('Schema of event: {0} invalid. {1}'.format(
                 body_json.path('$.event_id')[0], str(err),
             ))
             return
