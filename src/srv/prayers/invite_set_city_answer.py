@@ -27,8 +27,8 @@ import httpx
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from app_types.update import Update
-from app_types.logger import Logger
 from exceptions.content_exceptions import UserHasNotCityIdError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup
@@ -66,7 +66,7 @@ class InviteSetCityAnswer(TgAnswer):
 
     _message_answer: TgAnswer
     _redis: Redis
-    _logger: Logger
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -75,7 +75,9 @@ class InviteSetCityAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        await RedisUserState(self._redis, TgChatId(update), self._logger).change_step(UserStep.city_search)
+        await RedisUserState(
+            self._redis, TgChatId(update), self._logger,
+        ).change_step(UserStep.city_search)
         return await TgAnswerMarkup(
             self._message_answer,
             SwitchInlineQueryKeyboard(),

@@ -28,10 +28,10 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from app_types.stringable import ThroughString
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
-from app_types.logger import Logger
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
@@ -55,7 +55,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
     _empty_answer: TgAnswer
     _redis: Redis
     _pgsql: Database
-    _logger: Logger
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

@@ -22,15 +22,15 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import pytest
 
+from app_types.logger import FkLogSink
 from app_types.update import FkUpdate
-from app_types.logger import FkLogger
 from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.tg_answers import FkAnswer, TgAnswerFork
 
 
 async def test():
     got = await TgAnswerFork(
-        FkLogger(),
+        FkLogSink(),
         FkAnswer(),
     ).build(FkUpdate())
 
@@ -40,4 +40,4 @@ async def test():
 
 async def test_not_processable():
     with pytest.raises(NotProcessableUpdateError):
-        await TgAnswerFork(FkLogger()).build(FkUpdate())
+        await TgAnswerFork(FkLogSink()).build(FkUpdate())

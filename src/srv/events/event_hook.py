@@ -31,8 +31,8 @@ from eljson.json_doc import JsonDoc
 from pyeo import elegant
 from quranbot_schema_registry import validate_schema
 
+from app_types.logger import LogSink
 from app_types.runable import SyncRunable
-from app_types.logger import Logger
 from settings.settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 
@@ -73,7 +73,7 @@ class RbmqEventHook(EventHook):
     _settings: Settings
     _pgsql: Database
     _event: ReceivedEvent
-    _logger: Logger
+    _logger: LogSink
 
     @override
     async def catch(self) -> None:  # noqa: WPS217

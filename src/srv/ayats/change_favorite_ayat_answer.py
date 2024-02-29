@@ -29,8 +29,8 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.intable import SyncToAsyncIntable
+from app_types.logger import LogSink
 from app_types.update import Update
-from app_types.logger import Logger
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_id import TgMessageId
@@ -64,7 +64,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
     _pgsql: Database
     _origin: TgAnswer
     _redis: Redis
-    _logger: Logger
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

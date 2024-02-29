@@ -26,8 +26,8 @@ from typing import final, override
 import httpx
 from pyeo import elegant
 
+from app_types.logger import LogSink
 from app_types.update import Update
-from app_types.logger import Logger
 from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.exceptions.update_parse_exceptions import (
     CallbackQueryNotFoundError,
@@ -44,11 +44,11 @@ class TgAnswerFork(TgAnswer):
     """Маршрутизация ответов."""
 
     @override
-    def __init__(self, logger: Logger, *answers: TgAnswer) -> None:
+    def __init__(self, logger: LogSink, *answers: TgAnswer) -> None:
         """Конструктор класса.
 
         :param answers: TgAnswerInterface
-        :param logger: Logger
+        :param logger: LogSink
         """
         self._answers = answers
         self._logger = logger

@@ -27,8 +27,8 @@ import httpx
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from app_types.update import Update
-from app_types.logger import Logger
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
@@ -46,7 +46,7 @@ class HelpAnswer(TgAnswer):
     _origin: TgAnswer
     _admin_message: AdminMessage
     _redis: Redis
-    _logger: Logger
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

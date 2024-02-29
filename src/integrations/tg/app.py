@@ -28,8 +28,8 @@ import httpx
 from databases import Database
 from pyeo import elegant
 
+from app_types.logger import LogSink
 from app_types.runable import Runable
-from app_types.logger import Logger
 from exceptions.base_exception import InternalBotError
 from integrations.tg.polling_updates import PollingUpdatesIterator
 from integrations.tg.sendable import SendableInterface
@@ -43,7 +43,7 @@ class PollingApp(Runable):
 
     _updates: PollingUpdatesIterator
     _sendable: SendableInterface
-    _logger: Logger
+    _logger: LogSink
 
     @override
     async def run(self) -> None:
@@ -67,7 +67,7 @@ class AppWithGetMe(Runable):
 
     _origin: Runable
     _token: str
-    _logger: Logger
+    _logger: LogSink
 
     @override
     async def run(self) -> None:

@@ -28,9 +28,9 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
-from app_types.logger import Logger
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.coordinates import TgMessageCoordinates
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
@@ -58,7 +58,7 @@ class SearchCityAnswer(TgAnswer):
     _empty_answer: TgAnswer
     _debug_mode: SupportsBool
     _redis: Redis
-    _logger: Logger
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

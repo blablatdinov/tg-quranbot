@@ -26,8 +26,8 @@ import json
 import pytest
 from furl import furl
 
+from app_types.logger import FkLogSink
 from app_types.update import FkUpdate
-from app_types.logger import FkLogger
 from handlers.full_start_answer import FullStartAnswer
 from integrations.tg.tg_answers import FkAnswer
 from srv.events.sink import FkSink
@@ -83,7 +83,7 @@ async def _existed_user(pgsql):
 
 async def test(pgsql, rds, _db_ayat, unquote):
     got = await FullStartAnswer(
-        pgsql, FkAnswer(), FkSink(), rds, FkSettings(), FkLogger(),
+        pgsql, FkAnswer(), FkSink(), rds, FkSettings(), FkLogSink(),
     ).build(FkUpdate('{"message":{"text":"/start"},"chat":{"id":321}}'))
 
     assert len(got) == 3
@@ -129,7 +129,7 @@ async def test(pgsql, rds, _db_ayat, unquote):
 @pytest.mark.usefixtures('_db_ayat', '_existed_user')
 async def test_exists_user(pgsql, rds, unquote):
     got = await FullStartAnswer(
-        pgsql, FkAnswer(), FkSink(), rds, FkSettings(), FkLogger(),
+        pgsql, FkAnswer(), FkSink(), rds, FkSettings(), FkLogSink(),
     ).build(FkUpdate('{"message":{"text":"/start"},"chat":{"id":321},"date":0}'))
 
     assert len(got) == 1
@@ -153,7 +153,7 @@ async def test_exists_user(pgsql, rds, unquote):
 @pytest.mark.usefixtures('_db_ayat', '_existed_user')
 async def test_with_referrer(pgsql, rds, unquote):
     got = await FullStartAnswer(
-        pgsql, FkAnswer(), FkSink(), rds, FkSettings(), FkLogger(),
+        pgsql, FkAnswer(), FkSink(), rds, FkSettings(), FkLogSink(),
     ).build(FkUpdate('{"message":{"text":"/start 1"},"chat":{"id":1}}'))
 
     assert len(got) == 4
@@ -195,7 +195,7 @@ async def test_with_referrer(pgsql, rds, unquote):
 @pytest.mark.parametrize('referrer_id', [85, 3001])
 async def test_fake_referrer(pgsql, rds, unquote, referrer_id):
     got = await FullStartAnswer(
-        pgsql, FkAnswer(), FkSink(), rds, FkSettings(), FkLogger(),
+        pgsql, FkAnswer(), FkSink(), rds, FkSettings(), FkLogSink(),
     ).build(FkUpdate(json.dumps({
         'message': {'text': '/start {0}'.format(referrer_id)},
         'chat': {'id': 1},

@@ -22,22 +22,22 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import pytest
 
+from app_types.logger import FkLogSink
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
-from app_types.logger import FkLogger
 
 
 async def test_read(fake_redis):
     await fake_redis.set('1:ayat_search_query', b'value')
 
-    assert await AyatTextSearchQuery(fake_redis, 1, FkLogger()).read() == 'value'
+    assert await AyatTextSearchQuery(fake_redis, 1, FkLogSink()).read() == 'value'
 
 
 async def test_read_without_value(fake_redis):
     with pytest.raises(ValueError, match="User hasn't search query"):
-        await AyatTextSearchQuery(fake_redis, 17, FkLogger()).read()
+        await AyatTextSearchQuery(fake_redis, 17, FkLogSink()).read()
 
 
 async def test_write(fake_redis):
-    await AyatTextSearchQuery(fake_redis, 84395, FkLogger()).write('query')
+    await AyatTextSearchQuery(fake_redis, 84395, FkLogSink()).write('query')
 
     assert await fake_redis.get('84395:ayat_search_query') == b'query'

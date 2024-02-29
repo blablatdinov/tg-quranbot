@@ -27,7 +27,7 @@ from asyncpg import ForeignKeyViolationError, UniqueViolationError
 from databases import Database
 from pyeo import elegant
 
-from app_types.logger import Logger
+from app_types.logger import LogSink
 from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import UserAlreadyExistsError
 from integrations.tg.chat_id import ChatId
@@ -62,15 +62,15 @@ class PgNewUser(NewUser):
     _referrer_chat_id: AsyncIntOrNone
     _new_user_chat_id: ChatId
     _pgsql: Database
-    _logger: Logger
+    _logger: LogSink
 
     @classmethod
-    def ctor(cls, new_user_chat_id: ChatId, pgsql: Database, logger: Logger) -> NewUser:
+    def ctor(cls, new_user_chat_id: ChatId, pgsql: Database, logger: LogSink) -> NewUser:
         """Конструктор без реферера.
 
         :param new_user_chat_id: ChatId
         :param pgsql: Database
-        :param logger: Logger
+        :param logger: LogSink
         :return: NewUser
         """
         return cls(

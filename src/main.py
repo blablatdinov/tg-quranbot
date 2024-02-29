@@ -23,8 +23,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import sys
 
 import sentry_sdk
-from redis import asyncio as aioredis
 from loguru import logger
+from redis import asyncio as aioredis
 
 from db.connection import pgsql
 from integrations.tg.app import AppWithGetMe, DatabaseConnectedApp, PollingApp

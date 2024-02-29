@@ -27,8 +27,8 @@ import attrs
 import httpx
 from pyeo import elegant
 
+from app_types.logger import LogSink
 from app_types.update import Update
-from app_types.logger import Logger
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.update_id import UpdateId
 
@@ -83,7 +83,7 @@ class TgMeasureAnswer(TgAnswer):
     """Замеренный ответ."""
 
     _origin: TgAnswer
-    _logger: Logger
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

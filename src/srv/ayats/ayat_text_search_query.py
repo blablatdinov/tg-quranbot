@@ -25,7 +25,7 @@ from typing import final, override
 import attrs
 from redis.asyncio import Redis
 
-from app_types.logger import Logger
+from app_types.logger import LogSink
 from integrations.tg.chat_id import ChatId
 from srv.ayats.text_search_query import TextSearchQuery
 
@@ -71,7 +71,7 @@ class AyatTextSearchQuery(TextSearchQuery):
 
     _redis: Redis
     _chat_id: ChatId
-    _logger: Logger
+    _logger: LogSink
 
     _key_template = '{0}:ayat_search_query'
 

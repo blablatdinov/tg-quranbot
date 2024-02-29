@@ -26,8 +26,8 @@ import httpx
 from databases import Database
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from app_types.update import Update
-from app_types.logger import Logger
 from handlers.concrete_podcast_answer import ConcretePodcastAnswer
 from handlers.decrement_skipped_prayer_answer import DecrementSkippedPrayerAnswer
 from handlers.favorites_answer import FavoriteAyatsAnswer
@@ -81,7 +81,7 @@ class QuranbotAnswer(TgAnswer):
         redis: Redis,
         event_sink: SinkInterface,
         settings: Settings,
-        logger: Logger,
+        logger: LogSink,
     ) -> None:
         """Конструктор класса.
 
@@ -89,7 +89,7 @@ class QuranbotAnswer(TgAnswer):
         :param redis: Redis
         :param event_sink: SinkInterface
         :param settings: Settings
-        :param logger: Logger
+        :param logger: LogSink
         """
         self._pgsql = database
         self._redis = redis
@@ -216,9 +216,9 @@ class QuranbotAnswer(TgAnswer):
                 TgCallbackQueryRegexAnswer(
                     '(like|dislike)',
                     PodcastReactionChangeAnswer(
-                        DebugMode(self._settings), 
-                        empty_answer, 
-                        self._redis, 
+                        DebugMode(self._settings),
+                        empty_answer,
+                        self._redis,
                         self._pgsql,
                         self._logger,
                     ),

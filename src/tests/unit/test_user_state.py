@@ -24,7 +24,7 @@ import pytest
 from fakeredis import aioredis
 
 from app_types.intable import FkIntable
-from app_types.logger import FkLogger
+from app_types.logger import FkLogSink
 from services.user_state import RedisUserState, UserStep
 
 
@@ -34,6 +34,6 @@ def fake_redis():
 
 
 async def test_not_exists_state(fake_redis):
-    got = await RedisUserState(fake_redis, FkIntable(879435), FkLogger()).step()
+    got = await RedisUserState(fake_redis, FkIntable(879435), FkLogSink()).step()
 
     assert got == UserStep.nothing

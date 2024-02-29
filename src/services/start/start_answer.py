@@ -29,8 +29,8 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.intable import ThroughAsyncIntable
+from app_types.logger import LogSink
 from app_types.update import Update
-from app_types.logger import Logger
 from exceptions.internal_exceptions import UserNotFoundError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
@@ -51,7 +51,7 @@ class StartAnswer(TgAnswer):
     _admin_message: AdminMessage
     _pgsql: Database
     _admin_chat_ids: Sequence[int]
-    _logger: Logger
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

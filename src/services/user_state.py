@@ -27,8 +27,8 @@ import attrs
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from integrations.tg.chat_id import ChatId
-from app_types.logger import Logger
 
 
 @final
@@ -98,7 +98,7 @@ class RedisUserState(UserState):
 
     _redis: Redis
     _chat_id: ChatId
-    _logger: Logger
+    _logger: LogSink
 
     @override
     async def step(self) -> UserStep:
