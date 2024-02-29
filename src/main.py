@@ -47,7 +47,7 @@ from settings.settings import BASE_DIR
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.event_hook import EventHookApp, RbmqEventHook
 from srv.events.recieved_event import EventFork
-from srv.events.sink import FkSink
+from srv.events.sink import RabbitmqSink
 
 
 def main(sys_args: list[str]) -> None:
@@ -55,8 +55,8 @@ def main(sys_args: list[str]) -> None:
 
     :param sys_args: list[str]
     """
-    nats_sink = FkSink()
     settings = CachedSettings(EnvFileSettings(BASE_DIR.parent / '.env'))
+    rabbitmq_sink = RabbitmqSink(settings)
     if settings.SENTRY_DSN:
         sentry_sdk.init(
             dsn=settings.SENTRY_DSN,
@@ -82,7 +82,7 @@ def main(sys_args: list[str]) -> None:
                                 QuranbotAnswer(
                                     pgsql,
                                     aioredis.from_url(str(settings.REDIS_DSN)),
-                                    nats_sink,
+                                    rabbitmq_sink,
                                     settings,
                                     logger,
                                 ),
@@ -90,7 +90,7 @@ def main(sys_args: list[str]) -> None:
                             ),
                             logger,
                         ),
-                        nats_sink,
+                        rabbitmq_sink,
                     ),
                     logger,
                 ),

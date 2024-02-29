@@ -20,10 +20,16 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import json
 from typing import Protocol, final, override
 
+import aio_pika
 import attrs
+from loguru import logger
 from pyeo import elegant
+from quranbot_schema_registry import validate_schema
+
+from settings.settings import Settings
 
 
 @elegant
@@ -53,3 +59,46 @@ class FkSink(SinkInterface):
         :param event_name: str
         :param version: int
         """
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class RabbitmqSink(SinkInterface):
+
+    _settings: Settings
+
+    @override
+    async def send(self, event_data: dict, event_name: str, version: int) -> None:
+        """Отправить событие.
+
+        :param event_data: dict
+        :param event_name: str
+        :param version: int
+        """
+        body_json = json.dumps(event_data)
+        try:
+            validate_schema(
+                body_json,
+                event_name,
+                version,
+            )
+        except TypeError as err:
+            logger.error('Schema of event: {0} invalid. {1}'.format(
+                body_json.path('$.event_id')[0], str(err),
+            ))
+            return
+        connection = await aio_pika.connect_robust(
+            'amqp://{0}:{1}@{2}:5672/{3}'.format(
+                self._settings.RABBITMQ_USER,
+                self._settings.RABBITMQ_PASS,
+                self._settings.RABBITMQ_HOST,
+                self._settings.RABBITMQ_VHOST,
+            ),
+        )
+        async with connection:
+            channel = await connection.channel()
+            await channel.default_exchange.publish(
+                aio_pika.Message(body=body_json.encode('utf-8')),
+                routing_key="quranbot_queue",
+            )
