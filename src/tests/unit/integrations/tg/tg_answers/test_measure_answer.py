@@ -20,12 +20,17 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from app_types.logger import FkLogSink
+import re
+
 from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer, TgMeasureAnswer
 
 
-async def test():
-    got = await TgMeasureAnswer(FkAnswer(), FkLogSink()).build(FkUpdate('{"update_id":1}'))
+async def test(fk_logger):
+    got = await TgMeasureAnswer(FkAnswer(), fk_logger).build(FkUpdate('{"update_id":1}'))
 
     assert got[0].url == 'https://some.domain'
+    assert re.match(
+        r'INFO Update <1> process time: \d{2,3}.\d{2} ms',
+        fk_logger.stack[1],
+    )

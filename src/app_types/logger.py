@@ -20,7 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final
+from typing import ClassVar, Protocol, final
 
 import attrs
 from pyeo import elegant
@@ -58,12 +58,15 @@ class LogSink(Protocol):
 class FkLogSink(LogSink):
     """Фейковый логгер."""
 
+    stack: ClassVar[list[str]] = []
+
     def info(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003, WPS110
         """Информационный уровень.
 
         :param args: tuple[object]
         :param kwargs: dict[object, object]
         """
+        self.stack.append('INFO {0}'.format(args[0]))
 
     def debug(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         """Уровень для отладки.
@@ -71,6 +74,7 @@ class FkLogSink(LogSink):
         :param args: tuple[object]
         :param kwargs: dict[object, object]
         """
+        self.stack.append('DEBUG {0}'.format(args[0]))
 
     def error(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         """Уровень для ошибок.
@@ -78,3 +82,4 @@ class FkLogSink(LogSink):
         :param args: tuple[object]
         :param kwargs: dict[object, object]
         """
+        self.stack.append('ERROR {0}'.format(args[0]))
