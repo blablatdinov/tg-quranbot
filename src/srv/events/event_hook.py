@@ -79,16 +79,19 @@ class RbmqEventHook(EventHook):
         """Запуск обработки."""
         await self._pgsql.connect()
         connection = await aio_pika.connect_robust(
-            'amqp://{0}:{1}@{2}:5672/default_vhost'.format(
+            'amqp://{0}:{1}@{2}:5672/{3}'.format(
                 self._settings.RABBITMQ_USER,
                 self._settings.RABBITMQ_PASS,
                 self._settings.RABBITMQ_HOST,
+                self._settings.RABBITMQ_VHOST,
             ),
         )
+        logger.info('Connected to rabbitmq')
         async with connection:
             channel = await connection.channel()
             await channel.set_qos(prefetch_count=10)
             queue = await channel.declare_queue('quranbot_queue')
+            logger.info('Wait events...')
             async with queue.iterator() as queue_iter:
                 await self._iter_messages(queue_iter)
 
