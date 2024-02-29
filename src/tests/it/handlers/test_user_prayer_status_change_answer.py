@@ -28,6 +28,7 @@ import pytz
 
 from app_types.stringable import FkAsyncStr
 from app_types.update import FkUpdate
+from app_types.logger import FkLogger
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
 from integrations.tg.tg_answers import FkAnswer
@@ -68,7 +69,7 @@ async def _generated_prayers(pgsql, _prayers):
 @pytest.mark.usefixtures('_prayers')
 async def test_new_prayer_times(pgsql, rds, time_machine):
     time_machine.move_to('2023-12-19')
-    got = await PrayerTimeAnswer.new_prayers_ctor(pgsql, FkAnswer(), [123], rds).build(
+    got = await PrayerTimeAnswer.new_prayers_ctor(pgsql, FkAnswer(), [123], rds, FkLogger()).build(
         FkUpdate(json.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
             'message': {'message_id': 17, 'text': 'Время намаза'},
@@ -93,7 +94,7 @@ async def test_new_prayer_times(pgsql, rds, time_machine):
 @pytest.mark.usefixtures('_generated_prayers')
 async def test_today(pgsql, rds, time_machine):
     time_machine.move_to('2023-12-19')
-    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds).build(
+    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds, FkLogger()).build(
         FkUpdate(json.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
             'message': {
@@ -129,7 +130,7 @@ async def test_today(pgsql, rds, time_machine):
 @pytest.mark.usefixtures('_generated_prayers')
 async def test_before(pgsql, rds, time_machine, unquote):
     time_machine.move_to('2023-12-19')
-    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds).build(
+    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds, FkLogger()).build(
         FkUpdate(json.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
             'message': {
@@ -188,7 +189,7 @@ async def test_without_message_text(pgsql, rds):
 
     Почему-то телеграм не присылает текст сообщения спустя время
     """
-    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds).build(
+    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds, FkLogger()).build(
         FkUpdate(json.dumps({
             'callback_query': {
                 'from': {'id': 905},

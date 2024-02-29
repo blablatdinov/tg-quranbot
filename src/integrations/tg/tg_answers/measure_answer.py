@@ -25,10 +25,10 @@ from typing import SupportsFloat, final, override
 
 import attrs
 import httpx
-from loguru import logger
 from pyeo import elegant
 
 from app_types.update import Update
+from app_types.logger import Logger
 from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.update_id import UpdateId
 
@@ -83,6 +83,7 @@ class TgMeasureAnswer(TgAnswer):
     """Замеренный ответ."""
 
     _origin: TgAnswer
+    _logger: Logger
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -92,9 +93,9 @@ class TgMeasureAnswer(TgAnswer):
         :returns: list[httpx.Request]
         """
         start = time.time()
-        logger.info('Start process update <{0}>'.format(int(UpdateId(update))))
+        self._logger.info('Start process update <{0}>'.format(int(UpdateId(update))))
         requests = await self._origin.build(update)
-        logger.info('Update <{0}> process time: {1} ms'.format(
+        self._logger.info('Update <{0}> process time: {1} ms'.format(
             int(UpdateId(update)),
             float(
                 RoundedFloat(

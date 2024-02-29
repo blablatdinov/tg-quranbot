@@ -30,6 +30,7 @@ from redis.asyncio import Redis
 
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
+from app_types.logger import Logger
 from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.user_state import UserStep
@@ -47,6 +48,7 @@ class FavoriteAyatsAnswer(TgAnswer):
     _pgsql: Database
     _redis: Redis
     _empty_answer: TgAnswer
+    _logger: Logger
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -70,4 +72,5 @@ class FavoriteAyatsAnswer(TgAnswer):
             ),
             self._redis,
             UserStep.ayat_favor,
+            self._logger,
         ).build(update)

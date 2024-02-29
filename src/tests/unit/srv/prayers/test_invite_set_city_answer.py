@@ -26,6 +26,7 @@ from typing import override
 import httpx
 
 from app_types.update import FkUpdate, Update
+from app_types.logger import FkLogger
 from exceptions.content_exceptions import UserHasNotCityIdError
 from integrations.tg.tg_answers import FkAnswer, TgAnswer
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
@@ -45,7 +46,7 @@ async def test_exception():
 
 
 async def test_invite_set_city_answer(fake_redis, unquote):
-    got = await InviteSetCityAnswer(FkAnswer(), fake_redis).build(FkUpdate('{"chat":{"id":1}}'))
+    got = await InviteSetCityAnswer(FkAnswer(), fake_redis, FkLogger()).build(FkUpdate('{"chat":{"id":1}}'))
 
     assert unquote(got[0].url) == 'https://some.domain?reply_markup={0}'.format(
         json.dumps({

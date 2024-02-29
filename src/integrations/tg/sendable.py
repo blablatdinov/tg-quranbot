@@ -28,10 +28,10 @@ from urllib import parse as url_parse
 
 import attrs
 import httpx
-from loguru import logger
 from pyeo import elegant
 
 from app_types.update import Update
+from app_types.logger import Logger
 from exceptions.internal_exceptions import TelegramIntegrationsError
 from integrations.tg.tg_answers.interface import TgAnswer
 
@@ -54,6 +54,7 @@ class SendableAnswer(SendableInterface):
     """Объект, отправляющий ответы в API."""
 
     _answer: TgAnswer
+    _logger: Logger
 
     @override
     async def send(self, update: Update) -> list[dict]:
@@ -67,7 +68,7 @@ class SendableAnswer(SendableInterface):
         success_status = 200
         async with httpx.AsyncClient() as client:
             for request in await self._answer.build(update):
-                logger.debug('Try send request to: {0}'.format(url_parse.unquote(str(request.url))))
+                self._logger.debug('Try send request to: {0}'.format(url_parse.unquote(str(request.url))))
                 resp = await client.send(request)
                 responses.append(resp.text)
                 if resp.status_code != success_status:
@@ -115,6 +116,7 @@ class BulkSendableAnswer(SendableInterface):
     """Массовая отправка."""
 
     _answers: list[TgAnswer]
+    _logger: Logger
 
     @override
     async def send(self, update: Update) -> list[dict]:
@@ -125,7 +127,7 @@ class BulkSendableAnswer(SendableInterface):
         """
         tasks = [
             UserNotSubscribedSafeSendable(
-                SendableAnswer(answer),
+                SendableAnswer(answer, self._logger),
             ).send(update)
             for answer in self._answers
         ]

@@ -32,6 +32,7 @@ from app_types.intable import SyncToAsyncIntable
 from app_types.stringable import SupportsStr
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
+from app_types.logger import Logger
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import ChatId, TgChatId
 from integrations.tg.message_id import TgMessageId
@@ -133,6 +134,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
     _origin: TgAnswer
     _redis: Redis
     _pgsql: Database
+    _logger: Logger
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -171,10 +173,11 @@ class PodcastReactionChangeAnswer(TgAnswer):
                     ),
                     self._redis,
                     podcast,
+                    self._logger,
                     show_podcast_id=True,
                 ),
             ),
-            CachedUserState(RedisUserState(self._redis, TgChatId(update))),
+            CachedUserState(RedisUserState(self._redis, TgChatId(update), self._logger)),
         ).build(update)
 
     async def _apply_reaction(self, chat_id: ChatId, reaction: PodcastReactionsT) -> None:

@@ -30,6 +30,7 @@ from redis.asyncio import Redis
 
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
+from app_types.logger import Logger
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers.answer_list import TgAnswerList
 from integrations.tg.tg_answers.audio_answer import TgAudioAnswer
@@ -57,6 +58,7 @@ class PodcastAnswer(TgAnswer):
     _markupped_answer: TgAnswer
     _redis: Redis
     _podcast: Podcast
+    _logger: Logger
     _show_podcast_id: bool
 
     @override
@@ -83,7 +85,7 @@ class PodcastAnswer(TgAnswer):
                 ),
                 self._markupped_answer,
             ),
-            CachedUserState(RedisUserState(self._redis, TgChatId(update))),
+            CachedUserState(RedisUserState(self._redis, TgChatId(update), self._logger)),
         ).build(update)
 
 

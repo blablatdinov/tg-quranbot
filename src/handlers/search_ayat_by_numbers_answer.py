@@ -27,6 +27,7 @@ from redis.asyncio import Redis
 
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
+from app_types.logger import Logger
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgAudioAnswer
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
@@ -47,6 +48,7 @@ class SearchAyatByNumbersAnswer(TgAnswer):
     _empty_answer: TgAnswer
     _redis: Redis
     _pgsql: Database
+    _logger: Logger
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -68,5 +70,5 @@ class SearchAyatByNumbersAnswer(TgAnswer):
                 ),
                 TgHtmlMessageAnswerToSender(self._empty_answer),
             ),
-            CachedUserState(RedisUserState(self._redis, TgChatId(update))),
+            CachedUserState(RedisUserState(self._redis, TgChatId(update), self._logger)),
         ).build(update)

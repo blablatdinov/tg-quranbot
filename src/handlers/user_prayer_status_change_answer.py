@@ -29,6 +29,7 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.update import Update
+from app_types.logger import Logger
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 from srv.prayers.prayer_status import PrayerStatus, UserPrayerStatus
@@ -43,6 +44,7 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
     _empty_answer: TgAnswer
     _pgsql: Database
     _redis: Redis
+    _logger: Logger
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -58,4 +60,5 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
             self._empty_answer,
             [123],
             self._redis,
+            self._logger,
         ).build(update)

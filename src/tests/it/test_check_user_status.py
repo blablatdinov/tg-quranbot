@@ -25,6 +25,7 @@ import json
 import httpx
 import pytest
 
+from app_types.logger import FkLogger
 from integrations.tg.tg_answers import FkAnswer
 from schedule_app import CheckUsersStatus
 
@@ -66,7 +67,7 @@ async def _users(pgsql):
 
 @pytest.mark.usefixtures('_users', '_mock_actives')
 async def test_user_status(pgsql):
-    await CheckUsersStatus(pgsql, FkAnswer()).run()
+    await CheckUsersStatus(pgsql, FkAnswer(), FkLogger()).run()
 
     assert [
         row['is_active']
@@ -76,7 +77,7 @@ async def test_user_status(pgsql):
 
 @pytest.mark.usefixtures('_users', '_mock_unsubscribed')
 async def test_unsubscribed(pgsql):
-    await CheckUsersStatus(pgsql, FkAnswer()).run()
+    await CheckUsersStatus(pgsql, FkAnswer(), FkLogger()).run()
 
     assert [
         (row['chat_id'], row['is_active'])

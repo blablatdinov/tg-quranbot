@@ -23,13 +23,14 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import json
 
 from app_types.update import FkUpdate
+from app_types.logger import FkLogger
 from handlers.favorites_answer import FavoriteAyatsAnswer
 from integrations.tg.tg_answers import FkAnswer
 
 
 async def test_favorite_ayats_answer(pgsql, fake_redis, unquote):
     debug = False
-    got = await FavoriteAyatsAnswer(debug, pgsql, fake_redis, FkAnswer()).build(
+    got = await FavoriteAyatsAnswer(debug, pgsql, fake_redis, FkAnswer(), FkLogger()).build(
         FkUpdate(json.dumps({
             'chat': {'id': 74359},
         })),

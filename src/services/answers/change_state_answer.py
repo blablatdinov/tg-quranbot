@@ -28,6 +28,7 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.update import Update
+from app_types.logger import Logger
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer
 from services.user_state import RedisUserState, UserStep
@@ -42,6 +43,7 @@ class ChangeStateAnswer(TgAnswer):
     _origin: TgAnswer
     _redis: Redis
     _step: UserStep
+    _logger: Logger
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -50,5 +52,5 @@ class ChangeStateAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        await RedisUserState(self._redis, TgChatId(update)).change_step(self._step)
+        await RedisUserState(self._redis, TgChatId(update), self._logger).change_step(self._step)
         return await self._origin.build(update)

@@ -1,0 +1,19 @@
+from typing import Protocol, final
+
+import attrs
+
+
+class Logger(Protocol):
+
+    def info(self, *args, **kwargs) -> None: ...
+    def debug(self, *args, **kwargs) -> None: ...
+    def error(self, *args, **kwargs) -> None: ...
+
+
+@final
+@attrs.define(frozen=True)
+class FkLogger(Logger):
+
+    def info(self, *args, **kwargs) -> None: ...
+    def debug(self, *args, **kwargs) -> None: ...
+    def error(self, *args, **kwargs) -> None: ...

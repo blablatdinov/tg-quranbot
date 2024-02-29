@@ -25,9 +25,9 @@ from typing import Protocol, final, override
 import attrs
 from asyncpg import ForeignKeyViolationError, UniqueViolationError
 from databases import Database
-from loguru import logger
 from pyeo import elegant
 
+from app_types.logger import Logger
 from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import UserAlreadyExistsError
 from integrations.tg.chat_id import ChatId
@@ -62,19 +62,22 @@ class PgNewUser(NewUser):
     _referrer_chat_id: AsyncIntOrNone
     _new_user_chat_id: ChatId
     _pgsql: Database
+    _logger: Logger
 
     @classmethod
-    def ctor(cls, new_user_chat_id: ChatId, pgsql: Database) -> NewUser:
+    def ctor(cls, new_user_chat_id: ChatId, pgsql: Database, logger: Logger) -> NewUser:
         """Конструктор без реферера.
 
         :param new_user_chat_id: ChatId
         :param pgsql: Database
+        :param logger: Logger
         :return: NewUser
         """
         return cls(
             FkAsyncIntOrNone(None),
             new_user_chat_id,
             pgsql,
+            logger,
         )
 
     @override
@@ -85,7 +88,7 @@ class PgNewUser(NewUser):
         :raises UserNotFoundError: не найден реферер
         """
         chat_id = int(self._new_user_chat_id)
-        logger.debug('Insert in DB User <{0}>...'.format(chat_id))
+        self._logger.debug('Insert in DB User <{0}>...'.format(chat_id))
         query = """
             INSERT INTO
             users (chat_id, referrer_id, day)
@@ -101,4 +104,4 @@ class PgNewUser(NewUser):
             raise UserAlreadyExistsError from err
         except ForeignKeyViolationError as err:
             raise UserNotFoundError from err
-        logger.debug('User <{0}> inserted in DB'.format(chat_id))
+        self._logger.debug('User <{0}> inserted in DB'.format(chat_id))

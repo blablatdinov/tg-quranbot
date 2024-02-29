@@ -24,6 +24,7 @@ import sys
 
 import sentry_sdk
 from redis import asyncio as aioredis
+from loguru import logger
 
 from db.connection import pgsql
 from integrations.tg.app import AppWithGetMe, DatabaseConnectedApp, PollingApp
@@ -83,13 +84,18 @@ def main(sys_args: list[str]) -> None:
                                     aioredis.from_url(str(settings.REDIS_DSN)),
                                     nats_sink,
                                     settings,
+                                    logger,
                                 ),
+                                logger,
                             ),
+                            logger,
                         ),
                         nats_sink,
                     ),
+                    logger,
                 ),
                 settings.API_TOKEN,
+                logger,
             ),
         ),
     )
@@ -106,6 +112,7 @@ def main(sys_args: list[str]) -> None:
                     CheckUsersStatus(
                         pgsql,
                         TgEmptyAnswer(settings.API_TOKEN),
+                        logger,
                     ),
                 ),
             ),
@@ -117,6 +124,7 @@ def main(sys_args: list[str]) -> None:
                     settings,
                     pgsql,
                     EventFork('Ayat.Changed', 1, RbmqAyatChangedEvent(pgsql)),
+                    logger,
                 ),
             ),
         ),

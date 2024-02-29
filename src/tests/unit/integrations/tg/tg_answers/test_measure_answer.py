@@ -21,10 +21,11 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from app_types.update import FkUpdate
+from app_types.logger import FkLogger
 from integrations.tg.tg_answers import FkAnswer, TgMeasureAnswer
 
 
 async def test():
-    got = await TgMeasureAnswer(FkAnswer()).build(FkUpdate('{"update_id":1}'))
+    got = await TgMeasureAnswer(FkAnswer(), FkLogger()).build(FkUpdate('{"update_id":1}'))
 
     assert got[0].url == 'https://some.domain'

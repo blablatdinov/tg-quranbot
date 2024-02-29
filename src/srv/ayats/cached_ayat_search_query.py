@@ -28,6 +28,7 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.update import Update
+from app_types.logger import Logger
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer
@@ -45,6 +46,7 @@ class CachedAyatSearchQueryAnswer(TgAnswer):
 
     _origin: TgAnswer
     _redis: Redis
+    _logger: Logger
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -56,5 +58,6 @@ class CachedAyatSearchQueryAnswer(TgAnswer):
         await AyatTextSearchQuery(
             self._redis,
             TgChatId(update),
+            self._logger,
         ).write(str(MessageText(update)))
         return await self._origin.build(update)

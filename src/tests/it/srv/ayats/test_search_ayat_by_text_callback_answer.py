@@ -27,6 +27,7 @@ import pytest
 from furl import furl
 
 from app_types.update import FkUpdate
+from app_types.logger import FkLogger
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.chat_id import FkChatId
 from integrations.tg.tg_answers import FkAnswer
@@ -72,12 +73,12 @@ async def _db_ayat(pgsql):
 @pytest.fixture()
 def search_answer(pgsql, rds):
     debug = True
-    return SearchAyatByTextCallbackAnswer(debug, FkAnswer(), rds, pgsql)
+    return SearchAyatByTextCallbackAnswer(debug, FkAnswer(), rds, pgsql, FkLogger())
 
 
 @pytest.mark.usefixtures('_db_ayat')
 async def test(rds, pgsql, unquote, search_answer):
-    await AyatTextSearchQuery(rds, FkChatId(1758)).write('Content')
+    await AyatTextSearchQuery(rds, FkChatId(1758), FkLogger()).write('Content')
     got = await search_answer.build(FkUpdate('{"callback_query": {"data": "1"}, "chat": {"id": 1758}}'))
 
     assert unquote(got[0].url) == unquote(
@@ -103,6 +104,6 @@ async def test(rds, pgsql, unquote, search_answer):
 
 @pytest.mark.usefixtures('_db_ayat')
 async def test_unknown_target_ayat(rds, pgsql, unquote, search_answer):
-    await AyatTextSearchQuery(rds, 1758).write('Content')
+    await AyatTextSearchQuery(rds, 1758, FkLogger()).write('Content')
     with pytest.raises(AyatNotFoundError):
         await search_answer.build(FkUpdate('{"callback_query": {"data": "2"}, "chat": {"id": 1758}}'))

@@ -27,6 +27,7 @@ from typing import final, override
 import pytest
 from pyeo import elegant
 
+from app_types.logger import FkLogger
 from integrations.tg.tg_answers import TgAnswer
 from integrations.tg.update import TgUpdate
 from srv.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
@@ -68,6 +69,6 @@ def update():
 
 async def test(update, fake_redis):
     with suppress(FakeError):
-        await CachedAyatSearchQueryAnswer(TgAnswerFake(), fake_redis).build(TgUpdate(update))
+        await CachedAyatSearchQueryAnswer(TgAnswerFake(), fake_redis, FkLogger()).build(TgUpdate(update))
 
     assert await fake_redis.get('358610865:ayat_search_query') == 'камни'.encode()

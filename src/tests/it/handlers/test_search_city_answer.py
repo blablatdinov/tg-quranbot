@@ -26,6 +26,7 @@ import httpx
 import pytest
 
 from app_types.update import FkUpdate
+from app_types.logger import FkLogger
 from handlers.search_city_answer import SearchCityAnswer
 from integrations.tg.tg_answers import FkAnswer
 
@@ -75,7 +76,7 @@ def _mock_nominatim(respx_mock):
 
 async def test_message(pgsql, fake_redis):
     debug = False
-    got = await SearchCityAnswer(pgsql, FkAnswer(), debug, fake_redis).build(
+    got = await SearchCityAnswer(pgsql, FkAnswer(), debug, fake_redis, FkLogger()).build(
         FkUpdate(json.dumps({
             'message': {'text': 'Kazan'},
             'chat': {'id': 384957},
@@ -88,7 +89,7 @@ async def test_message(pgsql, fake_redis):
 @pytest.mark.usefixtures('_mock_nominatim')
 async def test_location(pgsql, fake_redis):
     debug = False
-    got = await SearchCityAnswer(pgsql, FkAnswer(), debug, fake_redis).build(
+    got = await SearchCityAnswer(pgsql, FkAnswer(), debug, fake_redis, FkLogger()).build(
         FkUpdate(json.dumps({
             'chat': {'id': 34847935},
             'latitude': 55.7887,
