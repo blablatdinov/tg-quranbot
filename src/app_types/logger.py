@@ -22,7 +22,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import Protocol, final
 
-import attrs
 from pyeo import elegant
 
 
@@ -53,10 +52,15 @@ class LogSink(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
 @elegant
 class FkLogSink(LogSink):
     """Фейковый логгер."""
+
+    stack: list[str]
+
+    def __init__(self) -> None:
+        """Ctor."""
+        self.stack = []
 
     def info(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003, WPS110
         """Информационный уровень.
@@ -64,6 +68,7 @@ class FkLogSink(LogSink):
         :param args: tuple[object]
         :param kwargs: dict[object, object]
         """
+        self.stack.append('INFO {0}'.format(args[0]))
 
     def debug(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         """Уровень для отладки.
@@ -71,6 +76,7 @@ class FkLogSink(LogSink):
         :param args: tuple[object]
         :param kwargs: dict[object, object]
         """
+        self.stack.append('DEBUG {0}'.format(args[0]))
 
     def error(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         """Уровень для ошибок.
@@ -78,3 +84,4 @@ class FkLogSink(LogSink):
         :param args: tuple[object]
         :param kwargs: dict[object, object]
         """
+        self.stack.append('ERROR {0}'.format(args[0]))

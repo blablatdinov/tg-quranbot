@@ -27,6 +27,7 @@ import pytest
 from fakeredis import aioredis
 from jinja2 import Template
 
+from app_types.logger import FkLogSink
 from settings.settings import BASE_DIR
 
 
@@ -65,3 +66,8 @@ def callback_update_factory():
             (BASE_DIR / 'tests/fixtures/button_callback.json').read_text(),
         ).render({'chat_id': chat_id, 'callback_data': callback_data})
     return _message_update_factory
+
+
+@pytest.fixture()
+def fk_logger():
+    return FkLogSink()
