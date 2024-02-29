@@ -98,6 +98,7 @@ async def test(rds, pgsql, unquote, search_answer):
                     [{'text': 'Добавить в избранное', 'callback_data': 'addToFavor(1)'}],
                 ],
             }),
+            'link_preview_options': '{"is_disabled": true}',
         }),
     )
 

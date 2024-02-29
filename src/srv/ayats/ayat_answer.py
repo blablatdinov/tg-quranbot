@@ -35,6 +35,7 @@ from integrations.tg.tg_answers import (
     TgAnswerMarkup,
     TgAnswerToSender,
     TgAudioAnswer,
+    TgLinkPreviewOptions,
     TgTextAnswer,
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
@@ -62,12 +63,15 @@ class AyatAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         return await TgAnswerList(
-            TgAnswerMarkup(
-                TgTextAnswer.str_ctor(
-                    TgHtmlMessageAnswerToSender(self._empty_answer),
-                    await self._ayat.text(),
+            TgLinkPreviewOptions(
+                TgAnswerMarkup(
+                    TgTextAnswer.str_ctor(
+                        TgHtmlMessageAnswerToSender(self._empty_answer),
+                        await self._ayat.text(),
+                    ),
+                    self._ayat_answer_keyboard,
                 ),
-                self._ayat_answer_keyboard,
+                disabled=True,
             ),
             FileAnswer(
                 self._debug_mode,
