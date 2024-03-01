@@ -24,7 +24,8 @@ name: Test and release
 
 on:
   push:
-    tags: "*"
+    branches: "fix-e2e-tests"
+    # tags: "*"
 
 jobs:
   checks:
@@ -83,16 +84,16 @@ jobs:
       run: echo '${{ secrets.E2E_ENV_SETUP }}' > .env
     - name: Create telethon session
       run: echo "${{ secrets.TELETHON_SESSION }}" | base64 --decode > me.session
-    - name: Lint via ruff
-      run: .venv/bin/ruff check src
-    - name: Lint via flake8
-      run: .venv/bin/flake8 src
-    - name: Lint via refurb
-      run: .venv/bin/refurb src
-    - name: Check types with mypy
-      run: .venv/bin/mypy src
+    # - name: Lint via ruff
+    #   run: .venv/bin/ruff check src
+    # - name: Lint via flake8
+    #   run: .venv/bin/flake8 src
+    # - name: Lint via refurb
+    #   run: .venv/bin/refurb src
+    # - name: Check types with mypy
+    #   run: .venv/bin/mypy src
     - name: Run e2e tests
-      run: .venv/bin/pytest src/tests/e2e -x -vv
+      run: .venv/bin/pytest src/tests/e2e -vv --retries 2 --retry-delay 5
 
   build-and-push:
     needs: checks

@@ -23,8 +23,10 @@
 name: Check pull request
 
 on:
-  pull_request:
-    branches: [ "master" ]
+  push:
+    tags: "*"
+  # pull_request:
+  #   branches: [ "master" ]
 
 permissions:
   contents: read

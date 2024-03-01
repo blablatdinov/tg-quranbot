@@ -1908,6 +1908,23 @@ files = [
 pytest = "*"
 
 [[package]]
+name = "pytest-retry"
+version = "1.6.2"
+description = "Adds the ability to retry flaky tests in CI environments"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "pytest-retry-1.6.2.tar.gz", hash = "sha256:8278634e21b0e8afa2b8bf85615700b9ae1a5da78463b13576b6c05aed2dbf5e"},
+    {file = "pytest_retry-1.6.2-py3-none-any.whl", hash = "sha256:85cfd067ee30735b23df37e80761ad00fb3a367941d8dbeb90977373e4fcf575"},
+]
+
+[package.dependencies]
+pytest = ">=7.0.0"
+
+[package.extras]
+dev = ["black", "flake8", "isort", "mypy"]
+
+[[package]]
 name = "python-dateutil"
 version = "2.9.0"
 description = "Extensions to the standard Python datetime module"
@@ -3129,4 +3146,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "de5e055c71b8e856bef9044b0048e2cba6f46dfd52df8fb5ee3d1f11a9902167"
+content-hash = "82ae9d99110d3b50344737664ae3e2567e7343e311453fe69e918725ff876672"
