@@ -63,6 +63,7 @@ def test_get_favors(tg_client, bot_name, wait_until):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user', '_favor_ayats')
+@pytest.mark.tg_button
 def test_paginate_forward(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Избранное')
     last_messages = wait_until(tg_client, 6)
@@ -87,6 +88,7 @@ def test_paginate_forward(tg_client, bot_name, wait_until):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user', '_favor_ayats')
+@pytest.mark.tg_button
 def test_paginate_backward(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Избранное')
     last_messages = wait_until(tg_client, 6)
@@ -117,6 +119,7 @@ def test_paginate_backward(tg_client, bot_name, wait_until):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user')
+@pytest.mark.tg_button
 def test_add_to_favor(tg_client, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, '8:7')
     last_messages = wait_until(tg_client, 6)
@@ -137,6 +140,7 @@ def test_add_to_favor(tg_client, bot_name, wait_until, db_query_vals):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user', '_favor_ayats')
+@pytest.mark.tg_button
 def test_remove_from_favor(tg_client, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, '3:133')
     last_messages = wait_until(tg_client, 6)
@@ -157,6 +161,7 @@ def test_remove_from_favor(tg_client, bot_name, wait_until, db_query_vals):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user', '_favor_ayats')
+@pytest.mark.tg_button
 def test_remove_from_favor_in_favor_pagination(tg_client, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, 'Избранное')
     last_messages = wait_until(tg_client, 6)

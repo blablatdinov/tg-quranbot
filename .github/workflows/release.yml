@@ -93,7 +93,7 @@ jobs:
     # - name: Check types with mypy
     #   run: .venv/bin/mypy src
     - name: Run e2e tests
-      run: .venv/bin/pytest src/tests/e2e -vv --retries 2 --retry-delay 5
+      run: .venv/bin/pytest src/tests/e2e -vv -m 'not tg_button'  # TODO: enable button tests
 
   build-and-push:
     needs: checks

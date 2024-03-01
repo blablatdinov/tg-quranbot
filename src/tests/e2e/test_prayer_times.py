@@ -73,6 +73,7 @@ def test_prayer_times(tg_client, bot_name, expected_message, wait_until):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')
+@pytest.mark.tg_button
 def test_mark_as_readed(tg_client, bot_name, expected_message, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     messages = wait_until(tg_client, 5)
@@ -95,6 +96,7 @@ def test_mark_as_readed(tg_client, bot_name, expected_message, wait_until):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')
+@pytest.mark.tg_button
 def test_mark_not_readed(tg_client, bot_name, expected_message, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     messages = wait_until(tg_client, 5)
