@@ -51,7 +51,7 @@ class LoggedAnswer(SendableInterface):
             'updates_log',
             {
                 'messages': [{
-                    'message_json': str(update.asdict()['message']),
+                    'message_json': json.dumps(update.asdict()['message']),
                     'is_unknown': False,
                     'trigger_message_id': None,
                 }],
@@ -65,7 +65,7 @@ class LoggedAnswer(SendableInterface):
             {
                 'messages': [
                     {
-                        'message_json': json.dumps(answer),
+                        'message_json': json.dumps(answer['result']),
                         'is_unknown': False,
                         'trigger_message_id': update.asdict()['message']['message_id'],
                     }

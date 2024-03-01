@@ -86,7 +86,7 @@ class RabbitmqSink(SinkInterface):
             'event_id': str(uuid.uuid4()),
             'event_version': 1,
             'event_name': event_name,
-            'event_time': str(time.time()),
+            'event_time': str(int(time.time())),
             'producer': 'quranbot',
             'data': event_data,
         }
