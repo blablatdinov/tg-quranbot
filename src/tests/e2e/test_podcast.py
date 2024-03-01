@@ -78,7 +78,7 @@ def test_reaction(tg_client, bot_name, wait_until, target_button, expected):
     messages = wait_until(tg_client, 6)
     next(
         button
-        for button_row in messages[0].get_buttons()
+        for button_row in messages[-1].get_buttons()
         for button in button_row
         if target_button in button.text
     ).click()
@@ -86,7 +86,7 @@ def test_reaction(tg_client, bot_name, wait_until, target_button, expected):
 
     assert expected == [
         button.text
-        for button_row in messages[0].get_buttons()
+        for button_row in messages[-1].get_buttons()
         for button in button_row
     ]
 
@@ -101,14 +101,14 @@ def test_reverse_reaction(tg_client, bot_name, wait_until, first_reaction, secon
     messages = wait_until(tg_client, 6)
     next(
         button
-        for button_row in messages[0].get_buttons()
+        for button_row in messages[-1].get_buttons()
         for button in button_row
         if first_reaction in button.text
     ).click()
     messages = wait_until(tg_client, 6)
     next(
         button
-        for button_row in messages[0].get_buttons()
+        for button_row in messages[-1].get_buttons()
         for button in button_row
         if second_reaction in button.text
     ).click()
@@ -116,7 +116,7 @@ def test_reverse_reaction(tg_client, bot_name, wait_until, first_reaction, secon
 
     assert expected == [
         button.text
-        for button_row in messages[0].get_buttons()
+        for button_row in messages[-1].get_buttons()
         for button in button_row
     ]
 
@@ -128,14 +128,14 @@ def test_undo_reaction(tg_client, bot_name, wait_until, reaction):
     messages = wait_until(tg_client, 6)
     next(
         button
-        for button_row in messages[0].get_buttons()
+        for button_row in messages[-1].get_buttons()
         for button in button_row
         if reaction in button.text
     ).click()
     messages = wait_until(tg_client, 6)
     next(
         button
-        for button_row in messages[0].get_buttons()
+        for button_row in messages[-1].get_buttons()
         for button in button_row
         if reaction in button.text
     ).click()
