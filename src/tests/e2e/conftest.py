@@ -24,6 +24,7 @@ import asyncio
 import multiprocessing
 import time
 from pprint import pformat
+from typing import Final
 
 import psycopg2
 import pytest
@@ -33,6 +34,11 @@ from telethon.sync import TelegramClient
 from main import main
 from settings.env_file_settings import EnvFileSettings
 from tests.creating_test_db import create_db, drop_db, fill_test_db
+
+# Костыль, для сохранения одного сообщения в чате.
+# При удалении всех сообщений, отправленное сообщение /start дублируется.
+# Поэтому прходится оставлять одно сообщение и при скане чата учитывать оставшееся сообщение.
+UGGLY_OFFSET: Final = 1
 
 
 @pytest.fixture(scope='session')
@@ -97,9 +103,9 @@ def wait_until(bot_name):
         for _ in range(retry):
             time.sleep(delay)
             last_messages = [mess for mess in tg_client.iter_messages(bot_name) if mess.message]
-            if len(last_messages) > messages_count:
+            if len(last_messages) > messages_count + UGGLY_OFFSET:
                 break
-            if len(last_messages) == messages_count:
+            if len(last_messages) == messages_count + UGGLY_OFFSET:
                 return last_messages
         logger.debug('Taked messages: {0}, count: {1}'.format(
             pformat([mess.message for mess in last_messages], width=99999),
@@ -115,5 +121,5 @@ def tg_client(bot_name):
     settings = EnvFileSettings.from_filename('../.env')
     with TelegramClient('me', settings.TELEGRAM_CLIENT_ID, settings.TELEGRAM_CLIENT_HASH) as client:
         all_messages = [message.id for message in client.iter_messages('@WokeUpSmiled_bot')]
-        client.delete_messages(entity=bot_name, message_ids=all_messages)
+        client.delete_messages(entity=bot_name, message_ids=all_messages[UGGLY_OFFSET:])
         yield client
