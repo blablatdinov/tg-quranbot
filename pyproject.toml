@@ -162,7 +162,6 @@ ignore = [184]
 [tool.deltaver]
 fail_on_avg = 50
 fail_on_max = 180
-excluded = ["sqlalchemy"]
 
 [tool.mutmut]
 paths_to_mutate="src/app_types/,src/db/,src/exceptions/,src/handlers/,src/integrations/,main.py,quranbot_answer.py,schedule_app.py,src/services/,src/settings/,src/srv/"
