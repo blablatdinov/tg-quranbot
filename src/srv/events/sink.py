@@ -41,6 +41,7 @@ class SinkInterface(Protocol):
     async def send(self, queue_name: str, event_data: dict, event_name: str, version: int) -> None:
         """Отправить событие.
 
+        :param queue_name: dict
         :param event_data: dict
         :param event_name: str
         :param version: int
@@ -57,6 +58,7 @@ class FkSink(SinkInterface):
     async def send(self, queue_name: str, event_data: dict, event_name: str, version: int) -> None:
         """Отправить событие.
 
+        :param queue_name: dict
         :param event_data: dict
         :param event_name: str
         :param version: int
