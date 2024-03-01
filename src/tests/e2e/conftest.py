@@ -20,12 +20,16 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+# flake8: noqa: WPS202
 import asyncio
+import datetime
+import json
 import multiprocessing
 import time
 from pprint import pformat
 from typing import Final
 
+import pika
 import psycopg2
 import pytest
 from loguru import logger
@@ -113,6 +117,36 @@ def wait_until(bot_name):
         ))
         raise TimeoutError
     return _wait_until
+
+
+@pytest.fixture()
+def wait_event():
+    settings = EnvFileSettings.from_filename('../.env')
+    def _wait_event(count, retry=50, delay=0.1):  # noqa: WPS430, E306
+        connection = pika.BlockingConnection(pika.ConnectionParameters(
+            host='localhost',
+            port=5672,
+            credentials=pika.PlainCredentials(settings.RABBITMQ_USER, settings.RABBITMQ_PASS),
+        ))
+        channel = connection.channel()
+        events = []
+        channel.queue_purge('updates_log')
+        for _ in range(retry):
+            time.sleep(delay)
+            method_frame, _, body = channel.basic_get('updates_log')
+            if not body:
+                continue
+            body = body.decode('utf-8')
+            channel.basic_ack(method_frame.delivery_tag)
+            events.append(json.loads(body))
+            if len(events) == count:
+                return sorted(
+                    events,
+                    key=lambda event: datetime.datetime.fromtimestamp(int(event['event_time']), datetime.UTC),
+                )
+        logger.debug('Taked event: {0}'.format(body))
+        raise TimeoutError
+    return _wait_event
 
 
 @pytest.fixture()
