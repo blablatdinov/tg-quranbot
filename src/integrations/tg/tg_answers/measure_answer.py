@@ -95,7 +95,7 @@ class TgMeasureAnswer(TgAnswer):
         start = time.time()
         self._logger.info('Start process update <{0}>'.format(int(UpdateId(update))))
         requests = await self._origin.build(update)
-        self._logger.info('Update <{0}> process time: {1} ms'.format(
+        self._logger.info('Update <{0}> process time: {1:.2f} ms'.format(
             int(UpdateId(update)),
             float(
                 RoundedFloat(
