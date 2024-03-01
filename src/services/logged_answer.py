@@ -48,9 +48,10 @@ class LoggedAnswer(SendableInterface):
         :return: list[dict]
         """
         await self._event_sink.send(
+            'updates_log',
             {
                 'messages': [{
-                    'message_json': str(update),
+                    'message_json': str(update.asdict()['message']),
                     'is_unknown': False,
                     'trigger_message_id': None,
                 }],
@@ -60,12 +61,13 @@ class LoggedAnswer(SendableInterface):
         )
         sent_answers = await self._origin.send(update)
         await self._event_sink.send(
+            'updates_log',
             {
                 'messages': [
                     {
                         'message_json': json.dumps(answer),
                         'is_unknown': False,
-                        'trigger_message_id': json.loads(str(update))['update_id'],
+                        'trigger_message_id': update.asdict()['message']['message_id'],
                     }
                     for answer in sent_answers
                 ],

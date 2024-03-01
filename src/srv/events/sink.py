@@ -21,10 +21,13 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
+import time
+import uuid
 from typing import Protocol, final, override
 
 import aio_pika
 import attrs
+from eljson.json_doc import JsonDoc
 from loguru import logger
 from pyeo import elegant
 from quranbot_schema_registry import validate_schema
@@ -36,7 +39,7 @@ from settings.settings import Settings
 class SinkInterface(Protocol):
     """Интерфейс отправщика событий."""
 
-    async def send(self, event_data: dict, event_name: str, version: int) -> None:
+    async def send(self, queue_name: str, event_data: dict, event_name: str, version: int) -> None:
         """Отправить событие.
 
         :param event_data: dict
@@ -52,7 +55,7 @@ class FkSink(SinkInterface):
     """Фейковый слив для событий."""
 
     @override
-    async def send(self, event_data: dict, event_name: str, version: int) -> None:
+    async def send(self, queue_name: str, event_data: dict, event_name: str, version: int) -> None:
         """Отправить событие.
 
         :param event_data: dict
@@ -69,14 +72,22 @@ class RabbitmqSink(SinkInterface):
     _settings: Settings
 
     @override
-    async def send(self, event_data: dict, event_name: str, version: int) -> None:
+    async def send(self, queue_name: str, event_data: dict, event_name: str, version: int) -> None:
         """Отправить событие.
 
         :param event_data: dict
         :param event_name: str
         :param version: int
         """
-        body_json = json.dumps(event_data)
+        event = {
+            'event_id': str(uuid.uuid4()),
+            'event_version': 1,
+            'event_name': event_name,
+            'event_time': str(time.time()),
+            'producer': 'quranbot',
+            'data': event_data,
+        }
+        body_json = json.dumps(event)
         try:
             validate_schema(
                 body_json,
@@ -85,7 +96,7 @@ class RabbitmqSink(SinkInterface):
             )
         except TypeError as err:
             logger.error('Schema of event: {0} invalid. {1}'.format(
-                body_json.path('$.event_id')[0], str(err),
+                body_json, str(err),
             ))
             return
         connection = await aio_pika.connect_robust(
@@ -98,7 +109,8 @@ class RabbitmqSink(SinkInterface):
         )
         async with connection:
             channel = await connection.channel()
+            await channel.declare_queue(queue_name)
             await channel.default_exchange.publish(
                 aio_pika.Message(body=body_json.encode('utf-8')),
-                routing_key="quranbot_queue",
+                routing_key=queue_name,
             )
