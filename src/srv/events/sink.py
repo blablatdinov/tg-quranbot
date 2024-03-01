@@ -114,7 +114,6 @@ class RabbitmqSink(SinkInterface):
         )
         async with connection:
             channel = await connection.channel()
-            await channel.declare_queue(queue_name)
             await channel.default_exchange.publish(
                 aio_pika.Message(body=body_json.encode('utf-8')),
                 routing_key=queue_name,
