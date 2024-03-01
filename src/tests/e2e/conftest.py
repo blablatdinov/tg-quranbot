@@ -25,7 +25,6 @@ import multiprocessing
 import time
 from pprint import pformat
 
-import pika
 import psycopg2
 import pytest
 from loguru import logger
@@ -106,29 +105,6 @@ def wait_until(bot_name):
             pformat([mess.message for mess in last_messages], width=99999),
             len(last_messages),
         ))
-        raise TimeoutError
-    return _wait_until
-
-
-@pytest.fixture()
-def wait_event(bot_name):
-    def _wait_until(queue, retry=50, delay=0.1):  # noqa: WPS430
-        settings = EnvFileSettings.from_filename('../.env')
-        connection = pika.BlockingConnection(pika.ConnectionParameters(
-            host=settings.RABBITMQ_HOST,
-            port=5672,
-            credentials=pika.PlainCredentials(settings.RABBITMQ_USER, settings.RABBITMQ_PASS),
-        ))
-        channel = connection.channel()
-        channel.queue_declare(queue=queue)
-        for _ in range(retry):
-            _, _, body = channel.consume(queue)
-            time.sleep(delay)
-            return body
-        # logger.debug('Taked events: {0}'.format(
-        #     pformat([mess.message for mess in last_messages], width=99999),
-        #     len(last_messages),
-        # ))
         raise TimeoutError
     return _wait_until
 

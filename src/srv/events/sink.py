@@ -27,7 +27,6 @@ from typing import Protocol, final, override
 
 import aio_pika
 import attrs
-from eljson.json_doc import JsonDoc
 from loguru import logger
 from pyeo import elegant
 from quranbot_schema_registry import validate_schema
@@ -68,6 +67,7 @@ class FkSink(SinkInterface):
 @attrs.define(frozen=True)
 @elegant
 class RabbitmqSink(SinkInterface):
+    """События в rabbitmq."""
 
     _settings: Settings
 
@@ -75,6 +75,7 @@ class RabbitmqSink(SinkInterface):
     async def send(self, queue_name: str, event_data: dict, event_name: str, version: int) -> None:
         """Отправить событие.
 
+        :param queue_name: dict
         :param event_data: dict
         :param event_name: str
         :param version: int
