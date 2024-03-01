@@ -77,6 +77,7 @@ class FullStartAnswer(TgAnswer):
                             self._pgsql,
                             AdminChatIds(self._settings),
                             self._logger,
+                            self._event_sink,
                         ),
                         answer_to_sender,
                         self._pgsql,

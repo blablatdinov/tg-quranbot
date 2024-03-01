@@ -27,11 +27,13 @@ from asyncpg import ForeignKeyViolationError, UniqueViolationError
 from databases import Database
 from pyeo import elegant
 
+from app_types.date_time import DateTimeInterface
 from app_types.logger import LogSink
 from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import UserAlreadyExistsError
 from integrations.tg.chat_id import ChatId
 from services.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone
+from srv.events.sink import SinkInterface
 
 
 @elegant
@@ -51,6 +53,32 @@ class FkNewUser(NewUser):
     @override
     async def create(self) -> None:
         """Создание."""
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class PgNewUserWithEvent(NewUser):
+    """Создание пользователя с событием."""
+
+    _origin: NewUser
+    _event_sink: SinkInterface
+    _new_user_chat_id: ChatId
+    _datetime: DateTimeInterface
+
+    @override
+    async def create(self) -> None:
+        """Создание."""
+        await self._origin.create()
+        await self._event_sink.send(
+            'users',
+            {
+                'user_id': int(self._new_user_chat_id),
+                'date_time': str(self._datetime.datetime()),
+            },
+            'User.Subscribed',
+            1,
+        )
 
 
 @final

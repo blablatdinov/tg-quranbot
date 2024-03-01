@@ -84,7 +84,7 @@ async def _existed_user(pgsql):
 async def test(pgsql, rds, _db_ayat, unquote):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), rds, FkSettings(), FkLogSink(),
-    ).build(FkUpdate('{"message":{"text":"/start"},"chat":{"id":321}}'))
+    ).build(FkUpdate('{"message":{"text":"/start"},"chat":{"id":321},"date":0}'))
 
     assert len(got) == 3
     assert unquote(got[0].url) == unquote(
@@ -154,7 +154,7 @@ async def test_exists_user(pgsql, rds, unquote):
 async def test_with_referrer(pgsql, rds, unquote):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), rds, FkSettings(), FkLogSink(),
-    ).build(FkUpdate('{"message":{"text":"/start 1"},"chat":{"id":1}}'))
+    ).build(FkUpdate('{"message":{"text":"/start 1"},"chat":{"id":1},"date":1670581213}'))
 
     assert len(got) == 4
     assert unquote(got[0].url) == unquote(
@@ -199,6 +199,7 @@ async def test_fake_referrer(pgsql, rds, unquote, referrer_id):
     ).build(FkUpdate(json.dumps({
         'message': {'text': '/start {0}'.format(referrer_id)},
         'chat': {'id': 1},
+        'date': 0,
     })))
 
     assert len(got) == 3

@@ -35,10 +35,12 @@ from exceptions.internal_exceptions import UserNotFoundError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
+from integrations.tg.tg_datetime import TgDateTime
 from services.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone, ReferrerChatId, ReferrerIdOrNone
 from srv.admin_messages.admin_message import AdminMessage
 from srv.ayats.pg_ayat import PgAyat
-from srv.users.new_user import PgNewUser
+from srv.events.sink import SinkInterface
+from srv.users.new_user import PgNewUser, PgNewUserWithEvent
 
 
 @final
@@ -52,6 +54,7 @@ class StartAnswer(TgAnswer):
     _pgsql: Database
     _admin_chat_ids: Sequence[int]
     _logger: LogSink
+    _event_sink: SinkInterface
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -67,19 +70,29 @@ class StartAnswer(TgAnswer):
             ),
         )
         try:
-            await PgNewUser(
-                referrer_chat_id,
+            await PgNewUserWithEvent(
+                PgNewUser(
+                    referrer_chat_id,
+                    TgChatId(update),
+                    self._pgsql,
+                    self._logger,
+                ),
+                self._event_sink,
                 TgChatId(update),
-                self._pgsql,
-                self._logger,
+                TgDateTime(update),
             ).create()
         except UserNotFoundError:
             referrer_chat_id = FkAsyncIntOrNone(None)
-            await PgNewUser(
-                referrer_chat_id,
+            await PgNewUserWithEvent(
+                PgNewUser(
+                    referrer_chat_id,
+                    TgChatId(update),
+                    self._pgsql,
+                    self._logger,
+                ),
+                self._event_sink,
                 TgChatId(update),
-                self._pgsql,
-                self._logger,
+                TgDateTime(update),
             ).create()
         answer = await self._answer(update, referrer_chat_id)
         return await answer.build(update)
