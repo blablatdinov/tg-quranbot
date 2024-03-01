@@ -100,6 +100,7 @@ class RbmqEventHook(EventHook):
         async for message in queue_iter:
             async with message.process():
                 await self._callback(message)
+                await message.ack()
 
     async def _callback(self, message: aio_pika.abc.AbstractIncomingMessage) -> None:
         decoded_body = message.body.decode('utf-8')
