@@ -82,10 +82,14 @@ skip-string-normalization = true
 [tool.pytest.ini_options]
 filterwarnings = [
   # "error::DeprecationWarning",  # TODO: uncomment this line
+  "error::pytest.PytestUnknownMarkWarning",
 ]
 asyncio_mode = "auto"
 addopts = [
   "--doctest-modules",
+]
+markers = [
+  "tg_button: tests that check the behavior of buttons",
 ]
 
 [tool.isort]
