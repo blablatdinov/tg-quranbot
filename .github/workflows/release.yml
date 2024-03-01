@@ -24,8 +24,7 @@ name: Test and release
 
 on:
   push:
-    branches: "fix-e2e-tests"
-    # tags: "*"
+    tags: "*"
 
 jobs:
   checks:
@@ -84,14 +83,14 @@ jobs:
       run: echo '${{ secrets.E2E_ENV_SETUP }}' > .env
     - name: Create telethon session
       run: echo "${{ secrets.TELETHON_SESSION }}" | base64 --decode > me.session
-    # - name: Lint via ruff
-    #   run: .venv/bin/ruff check src
-    # - name: Lint via flake8
-    #   run: .venv/bin/flake8 src
-    # - name: Lint via refurb
-    #   run: .venv/bin/refurb src
-    # - name: Check types with mypy
-    #   run: .venv/bin/mypy src
+    - name: Lint via ruff
+      run: .venv/bin/ruff check src
+    - name: Lint via flake8
+      run: .venv/bin/flake8 src
+    - name: Lint via refurb
+      run: .venv/bin/refurb src
+    - name: Check types with mypy
+      run: .venv/bin/mypy src
     - name: Run e2e tests
       run: .venv/bin/pytest src/tests/e2e -vv -m 'not tg_button'  # TODO: enable button tests
 

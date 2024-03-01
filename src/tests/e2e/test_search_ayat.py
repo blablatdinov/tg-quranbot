@@ -39,7 +39,7 @@ def test_search_by_sura_ayat(tg_client, bot_name, query, expected, wait_until):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
-@pytest.mark.tg_button
+@pytest.mark.tg_button()
 def test_paginate_in_search_by_sura_ayat(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '8:7')
     last_messages = wait_until(tg_client, 3)
@@ -75,7 +75,7 @@ def test_by_word(tg_client, bot_name, wait_until):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
-@pytest.mark.tg_button
+@pytest.mark.tg_button()
 def test_search_pagination_forward(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Найти аят')
     wait_until(tg_client, 2)
@@ -94,7 +94,7 @@ def test_search_pagination_forward(tg_client, bot_name, wait_until):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
-@pytest.mark.tg_button
+@pytest.mark.tg_button()
 def test_search_pagination_backward(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Найти аят')
     wait_until(tg_client, 2)
@@ -119,7 +119,7 @@ def test_search_pagination_backward(tg_client, bot_name, wait_until):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
-@pytest.mark.tg_button
+@pytest.mark.tg_button()
 def test_add_to_favor_from_search(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/start')
     wait_until(tg_client, 3)
