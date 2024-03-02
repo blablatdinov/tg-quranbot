@@ -1994,13 +1994,13 @@ files = [
 
 [[package]]
 name = "quranbot-schema-registry"
-version = "0.0.20"
+version = "0.0.21"
 description = "quranbot-schema-registry"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "quranbot_schema_registry-0.0.20-py3-none-any.whl", hash = "sha256:5b47d26e5c34fe300d1406c66d1241b90b7646612a8b46dd7bc0785e02309581"},
-    {file = "quranbot_schema_registry-0.0.20.tar.gz", hash = "sha256:cbc4f879f810f4eda61debc6934acf3d64fca7b5237ebbe785893bb815977909"},
+    {file = "quranbot_schema_registry-0.0.21-py3-none-any.whl", hash = "sha256:3c2ad45e462f5ad3c9c1822454e935455e566975f73c1b64cdb452343ec81383"},
+    {file = "quranbot_schema_registry-0.0.21.tar.gz", hash = "sha256:e742b67005ded9cfbfa109d6cb0ce8985cfa419cc000e151fdd46ae94e852ab3"},
 ]
 
 [package.dependencies]
@@ -3159,4 +3159,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "48fbd93bbeffec19aea561efce4ee5b5fdd15b572e72a47161cdfebea7d7bc6a"
+content-hash = "9916a0d01ff2b4ab8a2365c8162cad13ce0cb75fefe76be8590f4fa3fcdff06f"
