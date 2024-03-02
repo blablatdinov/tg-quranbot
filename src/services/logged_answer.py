@@ -20,8 +20,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import datetime
 import json
-from typing import final, override
+from typing import Final, final, override
 
 import attrs
 from pyeo import elegant
@@ -29,6 +30,9 @@ from pyeo import elegant
 from app_types.update import Update
 from integrations.tg.sendable import SendableInterface
 from srv.events.sink import SinkInterface
+
+MESSAGE_LITERAL: Final = 'message'
+UPDATES_LOG: Final = 'updates_log'
 
 
 @final
@@ -47,32 +51,62 @@ class LoggedAnswer(SendableInterface):
         :param update: str
         :return: list[dict]
         """
-        await self._event_sink.send(
-            'updates_log',
-            {
-                'messages': [{
-                    'message_json': json.dumps(update.asdict()['message']),
-                    'is_unknown': False,
-                    'trigger_message_id': None,
-                }],
-            },
-            'Messages.Created',
-            1,
-        )
-        sent_answers = await self._origin.send(update)
-        await self._event_sink.send(
-            'updates_log',
-            {
-                'messages': [
-                    {
-                        'message_json': json.dumps(answer['result']),
+        if update.asdict().get(MESSAGE_LITERAL):
+            await self._event_sink.send(
+                UPDATES_LOG,
+                {
+                    'messages': [{
+                        'message_json': json.dumps(update.asdict()[MESSAGE_LITERAL]),
                         'is_unknown': False,
-                        'trigger_message_id': update.asdict()['message']['message_id'],
-                    }
-                    for answer in sent_answers
-                ],
-            },
-            'Messages.Created',
-            1,
-        )
+                        'trigger_message_id': None,
+                    }],
+                },
+                'Messages.Created',
+                1,
+            )
+        elif update.asdict().get('callback_query'):
+            await self._event_sink.send(
+                UPDATES_LOG,
+                {
+                    'json': str(update),
+                    'timestamp': datetime.datetime.now().isoformat(),
+                },
+                'Button.Pushed',
+                1,
+            )
+        sent_answers = await self._origin.send(update)
+        if update.asdict().get(MESSAGE_LITERAL):
+            await self._event_sink.send(
+                UPDATES_LOG,
+                {
+                    'messages': [
+                        {
+                            'message_json': json.dumps(answer['result']),
+                            'is_unknown': False,
+                            'trigger_message_id': update.asdict()[MESSAGE_LITERAL]['message_id'],
+                        }
+                        for answer in sent_answers
+                    ],
+                },
+                'Messages.Created',
+                1,
+            )
+            return sent_answers
+        elif update.asdict().get('callback_query'):
+            await self._event_sink.send(
+                UPDATES_LOG,
+                {
+                    'messages': [
+                        {
+                            'message_json': json.dumps(answer['result']),
+                            'is_unknown': False,
+                            'trigger_message_id': None,
+                            'trigger_callback_id': update.asdict()['callback_query']['id'],
+                        }
+                        for answer in sent_answers
+                    ],
+                },
+                'Messages.Created',
+                1,
+            )
         return sent_answers
