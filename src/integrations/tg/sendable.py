@@ -50,6 +50,24 @@ class SendableInterface(Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
+class FkSendable(SendableInterface):
+    """Фейковый объект для отправки ответов."""
+
+    _origin: list[dict]
+
+    @override
+    async def send(self, update: Update) -> list[dict]:
+        """Отправка.
+
+        :param update: Update
+        :return: list[str]
+        """
+        return self._origin
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
 class SendableAnswer(SendableInterface):
     """Объект, отправляющий ответы в API."""
 
