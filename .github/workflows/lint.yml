@@ -20,42 +20,12 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-name: Check pull request
-
 on:
-  pull_request:
-    branches: [ "master" ]
-  push:
-    branches: [ "master" ]
-
-permissions:
-  contents: read
+  workflow_call
 
 jobs:
-  setup:
-    uses: blablatdinov/quranbot-aiogram/.github/workflows/installing-dependencies.yml@master
-
-  tests:
-    needs: setup
+  lint:
     runs-on: ubuntu-latest
-    env:
-      TZ: "Europe/Moscow"
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: almazilaletdinov
-          POSTGRES_DB: postgres
-          POSTGRES_PASSWORD: password
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-      redis:
-        image: redis:latest
-        ports:
-          - 6379:6379
-        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python 3.12
@@ -68,18 +38,13 @@ jobs:
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-      - name: create .env file
-        run: echo '${{ secrets.E2E_ENV_SETUP }}' > .env
-      - name: Run tests with pytest
-        run: .venv/bin/pytest src --ignore=src/tests/e2e --doctest-modules --cov --cov-report xml --cov-fail-under=95
-      - uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          fail_ci_if_error: true
-      - name: Check dependencies relevance
-        run: .venv/bin/deltaver poetry.lock --format lock
-
-  lint:
-    needs: setup
-    uses: blablatdinov/quranbot-aiogram/.github/workflows/lint.yml@master
+      - name: Lint via ruff
+        run: .venv/bin/ruff check src
+      - name: Lint via flake8
+        run: .venv/bin/flake8 src
+      - name: Lint via refurb
+        run: .venv/bin/refurb src
+      - name: Check types with mypy
+        run: .venv/bin/mypy src
+      - name: sqlfluff
+        run: .venv/bin/sqlfluff lint migrations --dialect postgres

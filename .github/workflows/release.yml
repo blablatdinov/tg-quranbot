@@ -57,6 +57,7 @@ jobs:
         options: --health-cmd "rabbitmqctl status" --health-interval 10s --health-timeout 5s --health-retries 5
 
     uses: blablatdinov/quranbot-aiogram/.github/workflows/installing-dependencies.yml@master
+    uses: blablatdinov/quranbot-aiogram/.github/workflows/lint.yml@master
 
     steps:
     - uses: actions/checkout@v4
@@ -85,14 +86,6 @@ jobs:
       run: echo '${{ secrets.E2E_ENV_SETUP }}' > .env
     - name: Create telethon session
       run: echo "${{ secrets.TELETHON_SESSION }}" | base64 --decode > me.session
-    - name: Lint via ruff
-      run: .venv/bin/ruff check src
-    - name: Lint via flake8
-      run: .venv/bin/flake8 src
-    - name: Lint via refurb
-      run: .venv/bin/refurb src
-    - name: Check types with mypy
-      run: .venv/bin/mypy src
     - name: Run e2e tests
       run: .venv/bin/pytest src/tests/e2e -vv -m 'not tg_button'  # TODO: enable button tests
 
