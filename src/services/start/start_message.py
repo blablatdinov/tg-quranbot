@@ -77,7 +77,7 @@ class ReferrerChatId(AsyncIntable):
         :raises StartMessageNotContainReferrerError: if message not contain referrer id
         """
         try:
-            # TODO: можно передавать это значение в PgUser без int(...)
+            # TODO #360:30min можно передавать это значение в PgUser без int(...)
             message_meta = int(IntableRegularExpression(self._message))
         except BaseAppError as err:
             raise StartMessageNotContainReferrerError from err

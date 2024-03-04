@@ -82,7 +82,9 @@ skip-string-normalization = true
 
 [tool.pytest.ini_options]
 filterwarnings = [
-  # "error::DeprecationWarning",  # TODO: uncomment this line
+  # TODO #360:30min включить проверку warnings
+  #  Рассскомаентировать следующую строку
+  # "error::DeprecationWarning",
   "error::pytest.PytestUnknownMarkWarning",
   "error::pytest.PytestUnraisableExceptionWarning",
 ]
@@ -103,7 +105,8 @@ include_trailing_comma = true
 max_line_length = 120
 
 [tool.ruff]
-target-version = "py311"  # TODO: up to 3.12
+# TODO #360:30min Поднять python target-version до "py312"
+target-version = "py311"
 line-length = 120
 preview = true
 output-format = "concise"
@@ -115,10 +118,11 @@ fixable = [
   "F401",   # Unused import
 ]
 ignore = [
+  # TODO #360:30min Исправить ошибки линтера
   "DTZ001",  # TODO
-  "DTZ005",  # TODO
-  "DTZ007",  # TODO
-  "INP001",  # TODO
+  "DTZ005",  
+  "DTZ007",
+  "INP001",
   # ----------------------------------
   "ANN101",  # Missing type annotation for `self` in method
   "ANN102",  # Missing type annotation for `cls` in classmethod
@@ -129,7 +133,7 @@ ignore = [
   "D418",    # Function decorated with `@overload` shouldn't contain a docstring
   "FBT001",  # Boolean-typed positional argument in function definition
   "FBT002",  # Boolean-typed positional argument in function definition
-  "FIX002",  # Line contains TODO, consider resolving the issue
+  "FIX002",  # Line contains T0DO, consider resolving the issue
   "FLY002",  # We not use f-strings
   "I001",    # Conflict with isort
   "RUF100",  # WPS primary linter
@@ -140,7 +144,7 @@ ignore = [
   "UP030",   # We use explicit references
   "UP032",   # We not use f-strings
   "UP004",   # Class `PrayerReaction` inherits from `object`
-  "TD",      # "todo" formats
+  "TD",      # "t0do" formats
   "PLR630",  # We not respect staticmethods
   "G001",    # Only .format for strings
   "TRY400",  # logger.error enable

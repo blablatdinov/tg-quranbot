@@ -41,7 +41,9 @@ from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 class CachedAyatSearchQueryAnswer(TgAnswer):
     """Закешированный запрос пользователя на поиск аятов.
 
-    TODO: что делать если данные из кэша будут удалены
+    # TODO #360:30min что делать если данные из кэша будут удалены.
+    #  возможно следует перенести эту информацию в кнопку
+    #  или выдавать пользователю предупреждение, чтобы ввел поисковый запрос
     """
 
     _origin: TgAnswer
