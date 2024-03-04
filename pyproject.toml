@@ -46,7 +46,7 @@ aio-pika = "9.4.0"
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master" }
 deltaver = "0.2.1"
-ipython = "8.22.1"
+ipython = "8.22.2"
 mypy = "1.8.0"
 asyncpg-stubs = "0.29.1"
 pytest-cov = "4.1.0"
