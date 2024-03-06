@@ -22,6 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
 import json
+import uuid
 from typing import Final, final, override
 
 import attrs
@@ -33,6 +34,7 @@ from srv.events.sink import SinkInterface
 
 MESSAGE_LITERAL: Final = 'message'
 UPDATES_LOG: Final = 'updates_log'
+CALLBACK_QUERY: Final = 'callback_query'
 
 
 @final
@@ -43,6 +45,7 @@ class LoggedAnswer(SendableInterface):
 
     _origin: SendableInterface
     _event_sink: SinkInterface
+    _mailing_id: uuid.UUID | None = None
 
     @override
     async def send(self, update: Update) -> list[dict]:
@@ -59,12 +62,14 @@ class LoggedAnswer(SendableInterface):
                         'message_json': json.dumps(update.asdict()[MESSAGE_LITERAL]),
                         'is_unknown': False,
                         'trigger_message_id': None,
+                        'trigger_callback_id': update.asdict()[CALLBACK_QUERY]['id'],
+                        'mailing_id': self._mailing_id,
                     }],
                 },
                 'Messages.Created',
                 1,
             )
-        elif update.asdict().get('callback_query'):
+        elif update.asdict().get(CALLBACK_QUERY):
             await self._event_sink.send(
                 UPDATES_LOG,
                 {
@@ -84,6 +89,8 @@ class LoggedAnswer(SendableInterface):
                             'message_json': json.dumps(answer['result']),
                             'is_unknown': False,
                             'trigger_message_id': update.asdict()[MESSAGE_LITERAL]['message_id'],
+                            'trigger_callback_id': None,
+                            'mailing_id': self._mailing_id,
                         }
                         for answer in sent_answers
                     ],
@@ -92,7 +99,7 @@ class LoggedAnswer(SendableInterface):
                 1,
             )
             return sent_answers
-        elif update.asdict().get('callback_query'):
+        elif update.asdict().get(CALLBACK_QUERY):
             await self._event_sink.send(
                 UPDATES_LOG,
                 {
@@ -101,7 +108,8 @@ class LoggedAnswer(SendableInterface):
                             'message_json': json.dumps(answer['result']),
                             'is_unknown': False,
                             'trigger_message_id': None,
-                            'trigger_callback_id': update.asdict()['callback_query']['id'],
+                            'trigger_callback_id': update.asdict()[CALLBACK_QUERY]['id'],
+                            'mailing_id': self._mailing_id,
                         }
                         for answer in sent_answers
                     ],

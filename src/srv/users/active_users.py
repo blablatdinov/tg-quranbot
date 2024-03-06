@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import datetime
 from typing import Protocol, final, override
 
 import attrs
@@ -28,6 +29,7 @@ from pyeo import elegant
 
 from app_types.intable import SyncToAsyncIntable
 from app_types.listable import AsyncListable
+from srv.events.sink import SinkInterface
 from srv.users.pg_user import PgUser, User
 
 
@@ -128,3 +130,32 @@ class PgUpdatedUsersStatus(UpdatedUsersStatus):
             for user in users
         ]))
         await self._pgsql.execute(query, {'to': to})
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class UpdatedUsersStatusEvent(UpdatedUsersStatus):
+    """Событие об отписке."""
+
+    _origin: UpdatedUsersStatus
+    _users: AsyncListable[User]
+    _events_sink: SinkInterface
+
+    @override
+    async def update(self, to: bool) -> None:
+        """Обновление.
+
+        :param to: bool
+        """
+        for user in await self._users.to_list():
+            await self._events_sink.send(
+                'users',
+                {
+                    'user_id': await user.chat_id(),
+                    'date_time': str(datetime.datetime.now()),
+                },
+                'User.Unsubscribed',
+                1,
+            )
+        await self._origin.update(to)

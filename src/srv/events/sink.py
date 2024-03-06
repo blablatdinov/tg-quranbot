@@ -31,6 +31,7 @@ from loguru import logger
 from pyeo import elegant
 from quranbot_schema_registry import validate_schema
 
+from app_types.logger import LogSink
 from settings.settings import Settings
 
 
@@ -72,6 +73,7 @@ class RabbitmqSink(SinkInterface):
     """События в rabbitmq."""
 
     _settings: Settings
+    _logger: LogSink
 
     @override
     async def send(self, queue_name: str, event_data: dict, event_name: str, version: int) -> None:
@@ -117,3 +119,4 @@ class RabbitmqSink(SinkInterface):
                 aio_pika.Message(body=body_json.encode('utf-8')),
                 routing_key=queue_name,
             )
+        self._logger.info('Event: {0} published'.format(body_json))

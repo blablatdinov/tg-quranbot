@@ -56,7 +56,7 @@ def main(sys_args: list[str]) -> None:
     :param sys_args: list[str]
     """
     settings = CachedSettings(EnvFileSettings(BASE_DIR.parent / '.env'))
-    rabbitmq_sink = RabbitmqSink(settings)
+    rabbitmq_sink = RabbitmqSink(settings, logger)
     if settings.SENTRY_DSN:
         sentry_sdk.init(
             dsn=settings.SENTRY_DSN,
