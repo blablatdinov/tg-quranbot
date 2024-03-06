@@ -47,6 +47,16 @@ async def _morning_ayats_task() -> None:
     )
 
 
+async def _daily_prayers_task() -> None:
+    settings = CachedSettings(EnvFileSettings(BASE_DIR.parent / '.env'))
+    await RabbitmqSink(settings, logger).send(
+        'quranbot.mailings',
+        {},
+        'Mailing.DailyPrayers',
+        1,
+    )
+
+
 async def main() -> None:
     """Entrypoint."""
     settings = CachedSettings(EnvFileSettings(BASE_DIR.parent / '.env'))
@@ -62,6 +72,7 @@ async def main() -> None:
     }
     scheduler = AsyncIOScheduler(jobstores=jobstores)
     job = scheduler.add_job(_morning_ayats_task, 'cron', hour='7')
+    job = scheduler.add_job(_daily_prayers_task, 'cron', hour='20')
     scheduler.start()
     logger.info('Starting the scheduler...')
     try:

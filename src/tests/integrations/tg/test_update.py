@@ -20,44 +20,38 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, TypeAlias, TypeVar, final, override
+from typing import final, override
 
-import attrs
-from eljson.json import Json
-from pyeo import elegant
-
-JsonPathQuery: TypeAlias = str
-JsonPathReturnType_co = TypeVar('JsonPathReturnType_co', covariant=True)
+from app_types.update import Update
+from integrations.tg.update import CachedTgUpdate
 
 
-@elegant
-class ReceivedEvent(Protocol[JsonPathReturnType_co]):
-    """Событие."""
-
-    async def process(self, json_doc: Json) -> None:
-        """Обработать событие.
-
-        :param json_doc: Json
-        """
-
-
-@elegant
-@attrs.define(frozen=True)
 @final
-class EventFork(ReceivedEvent):
-    """Событие."""
+class SeUpdate(Update):
 
-    _name: str
-    _version: int
-    _origin: ReceivedEvent
+    def __init__(self) -> None:
+        self._str_call_count = 0
+        self._asdict_call_count = 0
 
     @override
-    async def process(self, json_doc: Json) -> None:
-        """Обработать событие.
+    def __str__(self) -> str:
+        if self._str_call_count == 0:
+            self._str_call_count += 1
+            return 'value'
+        raise Exception  # noqa: TRY002, WPS454
 
-        :param json_doc: Json
-        """
-        name_match = json_doc.path('$.event_name')[0] == self._name
-        version_match = json_doc.path('$.event_version')[0] == self._version
-        if name_match and version_match:
-            await self._origin.process(json_doc)
+    @override
+    def asdict(self) -> dict:
+        if self._asdict_call_count == 0:
+            self._asdict_call_count += 1
+            return {'key': 'value'}
+        raise Exception  # noqa: TRY002, WPS454
+
+
+def test():
+    update = CachedTgUpdate(SeUpdate())
+
+    assert str(update) == 'value'
+    assert str(update) == 'value'
+    assert update.asdict() == {'key': 'value'}
+    assert update.asdict() == {'key': 'value'}

@@ -47,6 +47,7 @@ from settings.settings import BASE_DIR
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.event_hook import EventHookApp, RbmqEventHook
 from srv.events.morning_content_published import MorningContentPublishedEvent
+from srv.events.prayers_mailing import PrayersMailingPublishedEvent
 from srv.events.recieved_event import EventFork
 from srv.events.sink import RabbitmqSink
 
@@ -58,6 +59,7 @@ def main(sys_args: list[str]) -> None:
     """
     settings = CachedSettings(EnvFileSettings(BASE_DIR.parent / '.env'))
     rabbitmq_sink = RabbitmqSink(settings, logger)
+    redis = aioredis.from_url(str(settings.REDIS_DSN))
     if settings.SENTRY_DSN:
         sentry_sdk.init(
             dsn=settings.SENTRY_DSN,
@@ -82,7 +84,7 @@ def main(sys_args: list[str]) -> None:
                             TgMeasureAnswer(
                                 QuranbotAnswer(
                                     pgsql,
-                                    aioredis.from_url(str(settings.REDIS_DSN)),
+                                    redis,
                                     rabbitmq_sink,
                                     settings,
                                     logger,
@@ -132,6 +134,14 @@ def main(sys_args: list[str]) -> None:
                         settings,
                         rabbitmq_sink,
                         logger,
+                    )),
+                    EventFork('Mailing.DailyPrayers', 1, PrayersMailingPublishedEvent(
+                        TgEmptyAnswer(settings.API_TOKEN),
+                        pgsql,
+                        settings,
+                        rabbitmq_sink,
+                        logger,
+                        redis,
                     )),
                 ),
             ),
