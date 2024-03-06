@@ -50,8 +50,7 @@ class DebugParamInterface(Protocol):
 class AppendDebugInfoAnswer(TgAnswer):
     """Ответ с отладочной информацией."""
 
-    @override
-    def __init__(self, debug_mode: bool, answer: TgAnswer, *debug_params: DebugParamInterface) -> None:
+    def __init__(self, answer: TgAnswer, *debug_params: DebugParamInterface, debug_mode: bool) -> None:
         """Конструктор класса.
 
         :param debug_mode: bool

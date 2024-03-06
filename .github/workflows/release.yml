@@ -164,6 +164,13 @@ jobs:
               restart: always
               volumes:
                 - .env:/.env
+
+            scheduler:
+              image: blablatdinov/quranbot-aiogram:${{ steps.tag_name.outputs.TAG_NAME }}
+              command: .venv/bin/python scheduler_entry.py
+              restart: always
+              volumes:
+                - .env:/.env
           ' > docker-compose.yml
           cat docker-compose.yml
       - name: Deploy with docker-compose on remote server

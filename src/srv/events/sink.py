@@ -112,9 +112,9 @@ class RabbitmqSink(SinkInterface):
                 self._settings.RABBITMQ_VHOST,
             ),
         )
+        self._logger.info('Try to publish event: {0}'.format(body_json))
         async with connection:
             channel = await connection.channel()
-            await channel.declare_queue(queue_name)
             await channel.default_exchange.publish(
                 aio_pika.Message(body=body_json.encode('utf-8')),
                 routing_key=queue_name,
