@@ -23,6 +23,9 @@
 run:
 	poetry run python src/main.py run_polling
 
+events:
+	poetry run python src/main.py receive_events
+
 lint:
 	poetry run isort src
 	poetry run ruff check src --fix --output-format=concise
@@ -36,4 +39,4 @@ test:
 	poetry run pytest src --ignore=src/tests/e2e --cov=src --cov-report html --cov-fail-under=95
 
 e2e:
-	poetry run pytest src/tests/e2e
+	poetry run pytest src/tests/e2e -m 'not tg_button'

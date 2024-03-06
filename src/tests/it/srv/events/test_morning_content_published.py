@@ -55,11 +55,11 @@ def _mock_http(respx_mock):
             status_code=400,
         ),
     )
-    x = {
+    chat_content = {
         '24391797': '<b>1:1)</b> First ayat content\n<b>1:2)</b> Second ayat content\n\nhttps://umma.ru/sura-1',
         '206497847': '<b>2:1-4)</b> Third ayat content\n\nhttps://umma.ru/sura-2',
     }
-    for chat_id, text in x.items():
+    for chat_id, text in chat_content.items():
         respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add({
             'text': text,
             'chat_id': chat_id,
@@ -142,14 +142,15 @@ async def users(pgsql):
 
 
 @pytest.mark.usefixtures('_ayats', '_mock_http')
+# @pytest.mark.skip()  # TODO: uncomment after testing functional
 async def test(pgsql, users):
     settings = FkSettings(
         {
-            'DEBUG': 'localhost',
             'RABBITMQ_HOST': 'localhost',
             'RABBITMQ_USER': 'guest',
             'RABBITMQ_PASS': 'guest',
             'RABBITMQ_VHOST': '',
+            'DAILY_AYATS': 'on',
         },
     )
     await MorningContentPublishedEvent(
@@ -161,12 +162,11 @@ async def test(pgsql, users):
     ).process(JsonDoc({}))
 
     assert [
-        (await user.chat_id(), await user.is_active())
+        (await user.chat_id(), await user.is_active(), await user.day())
         for user in users
     ] == [
-        (358610865, False),
-        (206497847, True),
-        (827078672, False),
-        (24391797, True),
+        (358610865, False, 2),
+        (206497847, True, 4),
+        (827078672, False, 5),
+        (24391797, True, 3),
     ]
-

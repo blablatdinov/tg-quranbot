@@ -62,7 +62,7 @@ class LoggedAnswer(SendableInterface):
                         'message_json': json.dumps(update.asdict()[MESSAGE_LITERAL]),
                         'is_unknown': False,
                         'trigger_message_id': None,
-                        'trigger_callback_id': update.asdict()[CALLBACK_QUERY]['id'],
+                        'trigger_callback_id': None,
                         'mailing_id': self._mailing_id,
                     }],
                 },

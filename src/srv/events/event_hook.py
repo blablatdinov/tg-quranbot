@@ -26,6 +26,7 @@ from typing import Protocol, final, override
 
 import aio_pika
 import attrs
+from aiormq.abc import DeliveredMessage
 from databases import Database
 from eljson.json_doc import JsonDoc
 from pyeo import elegant
@@ -65,15 +66,28 @@ class EventHookApp(SyncRunable):
 
 
 @final
-@attrs.define(frozen=True)
 @elegant
 class RbmqEventHook(EventHook):
     """Обработчик событий из RabbitMQ."""
 
-    _settings: Settings
-    _pgsql: Database
-    _event: ReceivedEvent
-    _logger: LogSink
+    def __init__(
+        self,
+        settings: Settings,
+        pgsql: Database,
+        logger: LogSink,
+        *events: ReceivedEvent,
+    ) -> None:
+        """Ctor.
+
+        :param settings: Settings,
+        :param pgsql: Database,
+        :param logger: LogSink,
+        :param events: ReceivedEvent,
+        """
+        self._settings = settings
+        self._pgsql = pgsql
+        self._logger = logger
+        self._events = events
 
     @override
     async def catch(self) -> None:  # noqa: WPS217
@@ -89,20 +103,29 @@ class RbmqEventHook(EventHook):
         )
         self._logger.info('Connected to rabbitmq')
         async with connection:
-            channel = await connection.channel()
-            await channel.set_qos(prefetch_count=10)
-            queue = await channel.declare_queue('quranbot_queue')
+            chnl = await connection.channel()
+            channel = await chnl.get_underlay_channel()
             self._logger.info('Wait events...')
-            async with queue.iterator() as queue_iter:
-                await self._iter_messages(queue_iter)
+            while True:  # noqa: WPS457
+                await asyncio.sleep(0.1)
+                for queue_name in ('quranbot.users', 'quranbot.mailings', 'quranbot.ayats'):
+                    msg: DeliveredMessage = await channel.basic_get(queue_name)
+                    await self._event_handler(msg, chnl)
 
-    async def _iter_messages(self, queue_iter: aio_pika.abc.AbstractQueueIterator) -> None:
-        async for message in queue_iter:
-            async with message.process():
-                await self._callback(message)
-                await message.ack()
+    async def _event_handler(self, message: DeliveredMessage, chnl: aio_pika.abc.AbstractChannel) -> None:
+        if not message.body:
+            return
+        try:
+            await self._inner_handler(message)
+        except Exception:  # noqa: BLE001
+            self._logger.exception('Fail on process event')
+            await chnl.default_exchange.publish(
+                aio_pika.Message(body=message.body),
+                routing_key='failed-events',
+            )
+        await message.channel.basic_ack(message.delivery.delivery_tag)  # type: ignore [union-attr, arg-type]
 
-    async def _callback(self, message: aio_pika.abc.AbstractIncomingMessage) -> None:
+    async def _inner_handler(self, message: DeliveredMessage) -> None:
         decoded_body = message.body.decode('utf-8')
         self._logger.info('Taked event {0}'.format(decoded_body))
         body_json = JsonDoc.from_string(decoded_body)  # type: ignore [no-untyped-call]
@@ -117,4 +140,5 @@ class RbmqEventHook(EventHook):
                 body_json.path('$.event_id')[0], str(err),
             ))
             return
-        await self._event.process(body_json)
+        for event in self._events:
+            await event.process(body_json)
