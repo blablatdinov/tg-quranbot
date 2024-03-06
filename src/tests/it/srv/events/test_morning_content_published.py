@@ -145,6 +145,7 @@ async def users(pgsql):
 async def test(pgsql, users):
     settings = FkSettings(
         {
+            'DEBUG': 'localhost',
             'RABBITMQ_HOST': 'localhost',
             'RABBITMQ_USER': 'guest',
             'RABBITMQ_PASS': 'guest',

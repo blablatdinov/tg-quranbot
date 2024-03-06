@@ -38,6 +38,7 @@ from integrations.tg.tg_answers.link_preview_options import TgLinkPreviewOptions
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from services.logged_answer import LoggedAnswer
 from settings.settings import Settings
+from settings.debug_mode import DebugMode
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import SinkInterface
 from srv.users.active_users import PgUpdatedUsersStatus, UpdatedUsersStatusEvent
@@ -56,35 +57,33 @@ class MorningContentPublishedEvent(ReceivedEvent):
     _events_sink: SinkInterface
     _log_sink: LogSink
 
-    _query = '\n'.join([
-        'SELECT',
-        '    u.chat_id,',
-        '    STRING_AGG(',
-        "        '<b>'",
-        '        || a.sura_id::character varying',
-        "        || ':'",
-        '        || a.ayat_number',
-        "        || ')</b> '",
-        '        || a.content,',
-        "        '\n'",
-        '        ORDER BY a.ayat_id',
-        '    ) AS content,',
-        "    STRING_AGG(s.link, '||' ORDER BY a.ayat_id) AS sura_link",
-        'FROM public.ayats AS a',
-        'JOIN public.users AS u ON a.day = u.day',
-        'JOIN suras AS s ON a.sura_id = s.sura_id',
-        "WHERE u.is_active = 't'",
-        'GROUP BY u.chat_id',
-        'ORDER BY u.chat_id',
-    ])
-
     @override
     async def process(self, json: Json) -> None:
         """Обработка события.
 
         :param json: Json
         """
-        rows = await self._pgsql.fetch_all(self._query)
+        rows = await self._pgsql.fetch_all('\n'.join([
+            'SELECT',
+            '    u.chat_id,',
+            '    STRING_AGG(',
+            "        '<b>'",
+            '        || a.sura_id::character varying',
+            "        || ':'",
+            '        || a.ayat_number',
+            "        || ')</b> '",
+            '        || a.content,',
+            "        '\n'",
+            '        ORDER BY a.ayat_id',
+            '    ) AS content,',
+            "    STRING_AGG(s.link, '||' ORDER BY a.ayat_id) AS sura_link",
+            'FROM public.ayats AS a',
+            'JOIN public.users AS u ON a.day = u.day',
+            'JOIN suras AS s ON a.sura_id = s.sura_id',
+            "WHERE u.is_active = 't' {0}".format(' AND chat_id = 358610865' if bool(DebugMode(self._settings)) else ''),
+            'GROUP BY u.chat_id',
+            'ORDER BY u.chat_id',
+        ]))
         unsubscribed_users: list[User] = []
         zipped_ans_chat_ids = zip(
             [
@@ -115,7 +114,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
             self._events_sink,
         ).update(to=False)
 
-    async def _iteration(self, answer: TgAnswer, chat_id: int, unsubscribed_users: list[User]):
+    async def _iteration(self, answer: TgAnswer, chat_id: int, unsubscribed_users: list[User]) -> None:
         try:
             await LoggedAnswer(
                 SendableAnswer(
