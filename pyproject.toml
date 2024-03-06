@@ -83,6 +83,7 @@ skip-string-normalization = true
 filterwarnings = [
   # "error::DeprecationWarning",  # TODO: uncomment this line
   "error::pytest.PytestUnknownMarkWarning",
+  "error::pytest.PytestUnraisableExceptionWarning",
 ]
 asyncio_mode = "auto"
 addopts = [
@@ -112,6 +113,7 @@ fixable = [
   "F401",   # Unused import
 ]
 ignore = [
+  "DTZ001",  # TODO
   "DTZ005",  # TODO
   "DTZ007",  # TODO
   "INP001",  # TODO

@@ -50,6 +50,13 @@ class LogSink(Protocol):
         :param kwargs: dict[object, object]
         """
 
+    def exception(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
+        """Уровень для исключений.
+
+        :param args: tuple[object]
+        :param kwargs: dict[object, object]
+        """
+
 
 @final
 @elegant
@@ -80,6 +87,14 @@ class FkLogSink(LogSink):
 
     def error(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         """Уровень для ошибок.
+
+        :param args: tuple[object]
+        :param kwargs: dict[object, object]
+        """
+        self.stack.append('ERROR {0}'.format(args[0]))
+
+    def exception(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
+        """Уровень для исключений.
 
         :param args: tuple[object]
         :param kwargs: dict[object, object]

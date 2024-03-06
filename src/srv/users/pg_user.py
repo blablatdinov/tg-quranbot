@@ -46,6 +46,38 @@ class User(Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
+class FkUser(User):
+    """Фейковый пользователь."""
+
+    _chat_id: int
+    _day: int
+    _is_active: bool
+
+    async def chat_id(self) -> int:
+        """Идентификатор чата.
+
+        :return: int
+        """
+        return self._chat_id
+
+    async def day(self) -> int:
+        """День для рассылки утреннего контента.
+
+        :return: int
+        """
+        return self._day
+
+    async def is_active(self) -> bool:
+        """Статус пользователя.
+
+        :return: bool
+        """
+        return self._is_active
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
 class ChatIdByLegacyId(AsyncIntable):
     """Идентификатор чата по старому идентификатору в БД.
 
