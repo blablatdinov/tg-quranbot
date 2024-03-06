@@ -112,6 +112,7 @@ class RabbitmqSink(SinkInterface):
                 self._settings.RABBITMQ_VHOST,
             ),
         )
+        self._logger.info('Try to publish event: {0}'.format(body_json))
         async with connection:
             channel = await connection.channel()
             await channel.default_exchange.publish(

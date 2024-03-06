@@ -33,8 +33,15 @@ from integrations.tg.sendable import SendableInterface
 from srv.events.sink import SinkInterface
 
 MESSAGE_LITERAL: Final = 'message'
-UPDATES_LOG: Final = 'updates_log'
+UPDATES_LOG: Final = 'qbot_admin.updates_log'
 CALLBACK_QUERY: Final = 'callback_query'
+MESSAGES: Final = 'messages'
+MESSAGE_JSON: Final = 'message_json'
+IS_UNKNOWN: Final = 'is_unknown'
+TRIGGER_MESSAGE_ID: Final = 'trigger_message_id'
+TRIGGER_CALLBACK_ID: Final = 'trigger_callback_id'
+MAILING_ID: Final = 'mailing_id'
+MESSAGES_CREATED: Final = 'Messages.Created'
 
 
 @final
@@ -48,7 +55,7 @@ class LoggedAnswer(SendableInterface):
     _mailing_id: uuid.UUID | None = None
 
     @override
-    async def send(self, update: Update) -> list[dict]:
+    async def send(self, update: Update) -> list[dict]:  # noqa: WPS217, WPS231
         """Отправка.
 
         :param update: str
@@ -58,15 +65,15 @@ class LoggedAnswer(SendableInterface):
             await self._event_sink.send(
                 UPDATES_LOG,
                 {
-                    'messages': [{
-                        'message_json': json.dumps(update.asdict()[MESSAGE_LITERAL]),
-                        'is_unknown': False,
-                        'trigger_message_id': None,
-                        'trigger_callback_id': None,
-                        'mailing_id': self._mailing_id,
+                    MESSAGES: [{
+                        MESSAGE_JSON: json.dumps(update.asdict()[MESSAGE_LITERAL]),
+                        IS_UNKNOWN: False,
+                        TRIGGER_MESSAGE_ID: None,
+                        TRIGGER_CALLBACK_ID: None,
+                        MAILING_ID: str(self._mailing_id) if self._mailing_id else None,
                     }],
                 },
-                'Messages.Created',
+                MESSAGES_CREATED,
                 1,
             )
         elif update.asdict().get(CALLBACK_QUERY):
@@ -84,18 +91,18 @@ class LoggedAnswer(SendableInterface):
             await self._event_sink.send(
                 UPDATES_LOG,
                 {
-                    'messages': [
+                    MESSAGES: [
                         {
-                            'message_json': json.dumps(answer['result']),
-                            'is_unknown': False,
-                            'trigger_message_id': update.asdict()[MESSAGE_LITERAL]['message_id'],
-                            'trigger_callback_id': None,
-                            'mailing_id': self._mailing_id,
+                            MESSAGE_JSON: json.dumps(answer['result']),
+                            IS_UNKNOWN: False,
+                            TRIGGER_MESSAGE_ID: update.asdict()[MESSAGE_LITERAL]['message_id'],
+                            TRIGGER_CALLBACK_ID: None,
+                            MAILING_ID: str(self._mailing_id) if self._mailing_id else None,
                         }
                         for answer in sent_answers
                     ],
                 },
-                'Messages.Created',
+                MESSAGES_CREATED,
                 1,
             )
             return sent_answers
@@ -103,18 +110,36 @@ class LoggedAnswer(SendableInterface):
             await self._event_sink.send(
                 UPDATES_LOG,
                 {
-                    'messages': [
+                    MESSAGES: [
                         {
-                            'message_json': json.dumps(answer['result']),
-                            'is_unknown': False,
-                            'trigger_message_id': None,
-                            'trigger_callback_id': update.asdict()[CALLBACK_QUERY]['id'],
-                            'mailing_id': self._mailing_id,
+                            MESSAGE_JSON: json.dumps(answer['result']),
+                            IS_UNKNOWN: False,
+                            TRIGGER_MESSAGE_ID: None,
+                            TRIGGER_CALLBACK_ID: update.asdict()[CALLBACK_QUERY]['id'],
+                            MAILING_ID: str(self._mailing_id) if self._mailing_id else None,
                         }
                         for answer in sent_answers
                     ],
                 },
-                'Messages.Created',
+                MESSAGES_CREATED,
+                1,
+            )
+        else:
+            await self._event_sink.send(
+                UPDATES_LOG,
+                {
+                    MESSAGES: [
+                        {
+                            MESSAGE_JSON: json.dumps(answer['result']),
+                            IS_UNKNOWN: False,
+                            TRIGGER_MESSAGE_ID: None,
+                            TRIGGER_CALLBACK_ID: None,
+                            MAILING_ID: str(self._mailing_id) if self._mailing_id else None,
+                        }
+                        for answer in sent_answers
+                    ],
+                },
+                MESSAGES_CREATED,
                 1,
             )
         return sent_answers
