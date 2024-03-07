@@ -83,3 +83,31 @@ class SyncToAsyncIntable(AsyncIntable):
         :return: int
         """
         return int(self._origin)
+
+
+@final
+@elegant
+class CachedAsyncIntable(AsyncIntable):
+    """Кэшируемое число."""
+
+    def __init__(self, origin: AsyncIntable) -> None:
+        """Конструктор.
+
+        :param origin: AsyncIntable
+        """
+        self._origin = origin
+        self._cached = False
+        self._cached_value = 0
+
+    @override
+    async def to_int(self) -> int:
+        """Числовое представление.
+
+        :return: int
+        """
+        if self._cached:
+            return self._cached_value
+        int_val = await self._origin.to_int()
+        self._cached = True
+        self._cached_value = int_val
+        return int_val
