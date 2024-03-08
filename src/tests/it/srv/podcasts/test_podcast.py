@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+# flake8: noqa: WPS202
 import datetime
 import json
 import uuid
@@ -42,6 +43,10 @@ from srv.podcasts.podcast import PgPodcast
 async def _db_podcast(pgsql):
     file_id = str(uuid.uuid4())
     await pgsql.execute(
+        'INSERT INTO users (chat_id) VALUES (:chat_id)',
+        {'chat_id': 123},
+    )
+    await pgsql.execute(
         '\n'.join([
             'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
             "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
@@ -51,6 +56,42 @@ async def _db_podcast(pgsql):
     await pgsql.execute(
         'INSERT INTO podcasts (public_id, file_id)\nVALUES (:public_id, :file_id)',
         {'public_id': str(uuid.uuid4()), 'file_id': file_id},
+    )
+
+
+@pytest.fixture()
+async def _podcast_reactions(pgsql):
+    file_ids = [str(uuid.uuid4()) for _ in range(3)]
+    await pgsql.execute_many(
+        '\n'.join([
+            'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
+            "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
+        ]),
+        [
+            {'file_id': file_id, 'created_at': datetime.datetime.now()}
+            for file_id in file_ids
+        ],
+    )
+    await pgsql.execute_many(
+        'INSERT INTO podcasts (file_id) VALUES (:file_id)',
+        [{'file_id': file_id} for file_id in file_ids],
+    )
+    await pgsql.execute_many(
+        'INSERT INTO users (chat_id) VALUES (:chat_id)',
+        [
+            {'chat_id': 937584},
+            {'chat_id': 87945},
+        ],
+    )
+    await pgsql.execute_many(
+        'INSERT INTO podcast_reactions (podcast_id, reaction, user_id) VALUES (:podcast_id, :reaction, :user_id)',
+        [
+            {'podcast_id': 1, 'reaction': 'showed', 'user_id': 937584},
+            {'podcast_id': 2, 'reaction': 'like', 'user_id': 937584},
+            {'podcast_id': 1, 'reaction': 'showed', 'user_id': 87945},
+            {'podcast_id': 2, 'reaction': 'dislike', 'user_id': 87945},
+            {'podcast_id': 3, 'reaction': 'like', 'user_id': 87945},
+        ],
     )
 
 
@@ -154,3 +195,34 @@ async def test_podcast_without_tg_file_id(pgsql, rds):
 
     assert 'audio' not in got[0].url.params
     assert got[0].url.params['text'] == 'https://link-to-file.domain'
+
+
+@pytest.mark.usefixtures('_podcast_reactions')
+async def test_ignore_showed_podcasts(rds, pgsql, unquote):
+    debug_mode = False
+    got = await RandomPodcastAnswer(
+        debug_mode,
+        FkAnswer(),
+        rds,
+        pgsql,
+        FkLogSink(),
+    ).build(FkUpdate('{"chat":{"id":937584}}'))
+
+    assert unquote(
+        got[0].url.query.decode('utf-8'),
+    )[20:] == '/podcast3'
+
+
+@pytest.mark.usefixtures('_podcast_reactions')
+async def test_all_podcasts_showed(rds, pgsql, unquote):
+    debug_mode = False
+    random_podcast_answer = RandomPodcastAnswer(
+        debug_mode,
+        FkAnswer(),
+        rds,
+        pgsql,
+        FkLogSink(),
+    )
+    answer1 = await random_podcast_answer.build(FkUpdate('{"chat":{"id":87945}}'))
+
+    assert '/podcast' in unquote(answer1[0].url.query.decode('utf-8'))
