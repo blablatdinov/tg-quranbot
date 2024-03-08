@@ -48,7 +48,7 @@ apscheduler = "^3.10.4"
 wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master" }
 deltaver = "0.2.1"
 ipython = "8.22.2"
-mypy = "1.8.0"
+mypy = "1.9.0"
 asyncpg-stubs = "0.29.1"
 pytest-cov = "4.1.0"
 pytest = "8.1.0"
