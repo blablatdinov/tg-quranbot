@@ -127,7 +127,7 @@ def test_reverse_reaction(tg_client, bot_name, wait_until, first_reaction, secon
 @pytest.mark.parametrize('reaction', ['👎', '👍'])
 @pytest.mark.tg_button()
 def test_undo_reaction(tg_client, bot_name, wait_until, reaction, db_query_vals):
-    tg_client.send_message(bot_name, '🎧 Подкасты')
+    tg_client.send_message(bot_name, '/podcast1')
     messages = wait_until(tg_client, 6)
     next(
         button
@@ -149,7 +149,9 @@ def test_undo_reaction(tg_client, bot_name, wait_until, reaction, db_query_vals)
         for button_row in messages[0].get_buttons()
         for button in button_row
     ] == ['👍 0', '👎 0']
-    assert db_query_vals('SELECT reaction FROM podcast_reactions') == [('showed',)]
+    assert db_query_vals(
+        'SELECT reaction FROM podcast_reactions WHERE podcast_id = 1',
+    ) == [('showed',)]
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
