@@ -193,7 +193,8 @@ class PodcastReactionChangeAnswer(TgAnswer):
         if prayer_existed_reaction:
             if prayer_existed_reaction == reaction.status():
                 query = '\n'.join([
-                    'DELETE FROM podcast_reactions',
+                    'UPDATE podcast_reactions',
+                    "SET reaction = 'showed'",
                     'WHERE user_id = :user_id AND podcast_id = :podcast_id',
                 ])
                 await self._pgsql.execute(query, {
