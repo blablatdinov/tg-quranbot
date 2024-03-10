@@ -135,7 +135,12 @@ class QuranbotAnswer(TgAnswer):
                 TgMessageRegexAnswer(
                     'Время намаза',
                     PrayerTimeAnswer.new_prayers_ctor(
-                        self._pgsql, empty_answer, AdminChatIds(self._settings), self._redis, self._logger,
+                        self._pgsql,
+                        empty_answer,
+                        AdminChatIds(self._settings),
+                        self._redis,
+                        self._logger,
+                        self._settings,
                     ),
                 ),
                 TgMessageRegexAnswer(
@@ -211,7 +216,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(mark_readed|mark_not_readed)',
-                    UserPrayerStatusChangeAnswer(empty_answer, self._pgsql, self._redis, self._logger),
+                    UserPrayerStatusChangeAnswer(empty_answer, self._pgsql, self._redis, self._logger, self._settings),
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(like|dislike)',

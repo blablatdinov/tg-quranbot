@@ -152,6 +152,7 @@ async def test(pgsql, users, fake_redis, time_machine):
             'RABBITMQ_VHOST': '',
             'DAILY_PRAYERS': 'on',
             'ADMIN_CHAT_IDS': '358610865',
+            'RAMADAN_MODE': 'off',
         },
     )
     await PrayersMailingPublishedEvent(

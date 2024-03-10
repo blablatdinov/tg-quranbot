@@ -38,14 +38,15 @@ from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerMarkup,
     TgAnswerToSender,
+    TgHtmlParseAnswer,
     TgKeyboardEditAnswer,
     TgMessageAnswer,
     TgMessageIdAnswer,
     TgTextAnswer,
-    TgHtmlParseAnswer,
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from services.user_prayer_keyboard import UserPrayersKeyboard
+from settings.settings import Settings
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
 from srv.prayers.prayer_date import DateFromUserPrayerId, PrayerDate, PrayersMarkAsDate, PrayersRequestDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
@@ -86,15 +87,17 @@ class PrayerTimeAnswer(TgAnswer):
     _redis: Redis
     _prayers_date: PrayerDate
     _logger: LogSink
+    _settings: Settings
 
     @classmethod
-    def new_prayers_ctor(
+    def new_prayers_ctor(  # noqa: PLR0913
         cls,
         pgsql: Database,
         empty_answer: TgAnswer,
         admin_chat_ids: Sequence[int],
         redis: Redis,
         logger: LogSink,
+        settings: Settings,
     ) -> TgAnswer:
         """Конструктор для генерации времени намаза.
 
@@ -103,6 +106,7 @@ class PrayerTimeAnswer(TgAnswer):
         :param admin_chat_ids: Sequence[int]
         :param redis: Redis
         :param logger: LogSink
+        :param settings: Settings
         :return: TgAnswer
         """
         return cls(
@@ -113,16 +117,18 @@ class PrayerTimeAnswer(TgAnswer):
             redis,
             PrayersRequestDate(),
             logger,
+            settings,
         )
 
     @classmethod
-    def edited_markup_ctor(
+    def edited_markup_ctor(  # noqa: PLR0913
         cls,
         pgsql: Database,
         empty_answer: TgAnswer,
         admin_chat_ids: Sequence[int],
         redis: Redis,
         logger: LogSink,
+        settings: Settings,
     ) -> TgAnswer:
         """Конструктор для времен намаза при смене статуса прочитанности.
 
@@ -131,6 +137,7 @@ class PrayerTimeAnswer(TgAnswer):
         :param admin_chat_ids: Sequence[int]
         :param redis: Redis
         :param logger: LogSink
+        :param settings: Settings
         :return: TgAnswer
         """
         return _MessageNotFoundSafeAnswer(
@@ -142,6 +149,7 @@ class PrayerTimeAnswer(TgAnswer):
                 redis,
                 PrayersMarkAsDate(),
                 logger,
+                settings,
             ),
             cls(
                 pgsql,
@@ -151,6 +159,7 @@ class PrayerTimeAnswer(TgAnswer):
                 redis,
                 DateFromUserPrayerId(pgsql),
                 logger,
+                settings,
             ),
         )
 
@@ -175,7 +184,7 @@ class PrayerTimeAnswer(TgAnswer):
                                         UserCityId(self._pgsql, TgChatId(update)),
                                         update,
                                     ),
-                                    ramadan_mode=True,
+                                    ramadan_mode=self._settings.RAMADAN_MODE == 'on',
                                 ),
                             ),
                             UserPrayersKeyboard(

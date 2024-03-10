@@ -32,6 +32,7 @@ from app_types.update import FkUpdate
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
 from integrations.tg.tg_answers import FkAnswer
+from settings.settings import FkSettings
 from srv.prayers.prayer_date import FkPrayerDate
 from srv.prayers.prayers_text import PrayersText
 
@@ -70,7 +71,7 @@ async def _generated_prayers(pgsql, _prayers):
 async def test_new_prayer_times(pgsql, rds, time_machine):
     time_machine.move_to('2023-12-19')
     got = await PrayerTimeAnswer.new_prayers_ctor(
-        pgsql, FkAnswer(), [123], rds, FkLogSink(),
+        pgsql, FkAnswer(), [123], rds, FkLogSink(), FkSettings({'RAMADAN_MODE': 'off'}),
     ).build(
         FkUpdate(json.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
@@ -97,7 +98,7 @@ async def test_new_prayer_times(pgsql, rds, time_machine):
 async def test_today(pgsql, rds, time_machine):
     time_machine.move_to('2023-12-19')
     got = await UserPrayerStatusChangeAnswer(
-        FkAnswer(), pgsql, rds, FkLogSink(),
+        FkAnswer(), pgsql, rds, FkLogSink(), FkSettings({'RAMADAN_MODE': 'off'}),
     ).build(
         FkUpdate(json.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
@@ -134,7 +135,9 @@ async def test_today(pgsql, rds, time_machine):
 @pytest.mark.usefixtures('_generated_prayers')
 async def test_before(pgsql, rds, time_machine, unquote):
     time_machine.move_to('2023-12-19')
-    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds, FkLogSink()).build(
+    got = await UserPrayerStatusChangeAnswer(
+        FkAnswer(), pgsql, rds, FkLogSink(), FkSettings({'RAMADAN_MODE': 'off'}),
+    ).build(
         FkUpdate(json.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
             'message': {
@@ -193,7 +196,9 @@ async def test_without_message_text(pgsql, rds):
 
     Почему-то телеграм не присылает текст сообщения спустя время
     """
-    got = await UserPrayerStatusChangeAnswer(FkAnswer(), pgsql, rds, FkLogSink()).build(
+    got = await UserPrayerStatusChangeAnswer(
+        FkAnswer(), pgsql, rds, FkLogSink(), FkSettings({'RAMADAN_MODE': 'off'}),
+    ).build(
         FkUpdate(json.dumps({
             'callback_query': {
                 'from': {'id': 905},

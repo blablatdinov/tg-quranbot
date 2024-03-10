@@ -106,6 +106,7 @@ max_line_length = 120
 target-version = "py311"  # TODO: up to 3.12
 line-length = 120
 preview = true
+output-format = "concise"
 
 [tool.ruff.lint]
 select = ["ALL"]
