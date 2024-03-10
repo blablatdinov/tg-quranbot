@@ -42,6 +42,7 @@ from integrations.tg.tg_answers import (
     TgMessageAnswer,
     TgMessageIdAnswer,
     TgTextAnswer,
+    TgHtmlParseAnswer,
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from services.user_prayer_keyboard import UserPrayersKeyboard
@@ -163,23 +164,25 @@ class PrayerTimeAnswer(TgAnswer):
         return await UserWithoutCitySafeAnswer(
             PrayersExpiredAnswer(
                 TgMessageIdAnswer(
-                    TgAnswerMarkup(
-                        TgTextAnswer(
-                            self._origin,
-                            RamadanPrayerText(
-                                PrayersText(
-                                    self._pgsql,
-                                    self._prayers_date,
-                                    UserCityId(self._pgsql, TgChatId(update)),
-                                    update,
+                    TgHtmlParseAnswer(
+                        TgAnswerMarkup(
+                            TgTextAnswer(
+                                self._origin,
+                                RamadanPrayerText(
+                                    PrayersText(
+                                        self._pgsql,
+                                        self._prayers_date,
+                                        UserCityId(self._pgsql, TgChatId(update)),
+                                        update,
+                                    ),
+                                    ramadan_mode=True,
                                 ),
-                                ramadan_mode=False,
                             ),
-                        ),
-                        UserPrayersKeyboard(
-                            self._pgsql,
-                            self._prayers_date,
-                            TgChatId(update),
+                            UserPrayersKeyboard(
+                                self._pgsql,
+                                self._prayers_date,
+                                TgChatId(update),
+                            ),
                         ),
                     ),
                     TgMessageId(update),
