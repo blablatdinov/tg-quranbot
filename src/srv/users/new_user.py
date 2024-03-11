@@ -75,6 +75,7 @@ class PgNewUserWithEvent(NewUser):
             {
                 'user_id': int(self._new_user_chat_id),
                 'date_time': str(self._datetime.datetime()),
+                'referrer_id': None,
             },
             'User.Subscribed',
             1,
