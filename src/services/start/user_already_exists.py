@@ -75,7 +75,7 @@ class UserAlreadyExistsAnswer(TgAnswer):
             PgUsers(self._pgsql, [int(TgChatId(update))]),
         ).update(to=True)
         await self._event_sink.send(
-            'users',
+            'qbot_admin.users',
             {
                 'user_id': int(TgChatId(update)),
                 'date_time': str(TgDateTime(update).datetime()),

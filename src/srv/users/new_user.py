@@ -71,7 +71,7 @@ class PgNewUserWithEvent(NewUser):
         """Создание."""
         await self._origin.create()
         await self._event_sink.send(
-            'users',
+            'qbot_admin.users',
             {
                 'user_id': int(self._new_user_chat_id),
                 'date_time': str(self._datetime.datetime()),

@@ -150,7 +150,7 @@ class UpdatedUsersStatusEvent(UpdatedUsersStatus):
         """
         for user in await self._users.to_list():
             await self._events_sink.send(
-                'users',
+                'qbot_admin.users',
                 {
                     'user_id': await user.chat_id(),
                     'date_time': str(datetime.datetime.now()),
