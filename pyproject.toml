@@ -42,7 +42,8 @@ furl = "2.1.3"
 eljson = "0.0.1a1"
 python-dateutil = "2.9.0.post0"
 aio-pika = "9.4.0"
-apscheduler = "^3.10.4"
+apscheduler = "3.10.4"
+jinja2 = "3.1.3"
 
 [tool.poetry.group.dev.dependencies]
 wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master" }
@@ -69,7 +70,6 @@ time-machine = "2.14.0"
 pika = "1.3.2"
 ruff = "0.3.2"
 fakeredis = "2.21.2"
-jinja2 = "3.1.3"
 refurb = "1.28.0"
 types-python-dateutil = "2.8.19.20240311"
 
