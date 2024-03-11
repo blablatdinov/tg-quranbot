@@ -21,11 +21,14 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import uuid
+from collections.abc import Iterator
 from typing import final, override
 
 import attrs
 from databases import Database
+from databases.interfaces import Record
 from eljson.json import Json
+from jinja2 import Template
 from pyeo import elegant
 
 from app_types.listable import FkAsyncListable
@@ -65,17 +68,14 @@ class MorningContentPublishedEvent(ReceivedEvent):
         rows = await self._pgsql.fetch_all('\n'.join([
             'SELECT',
             '    u.chat_id,',
+            "    STRING_AGG(a.sura_id::character varying, ',') as sura_ids,",
+            "    STRING_AGG(a.ayat_number, '|' ORDER BY a.ayat_id) as ayat_nums,",
             '    STRING_AGG(',
-            "        '<b>'",
-            '        || a.sura_id::character varying',
-            "        || ':'",
-            '        || a.ayat_number',
-            "        || ')</b> '",
-            '        || a.content,',
-            "        '\n'",
+            '        a.content,',
+            "        '|sep|'",
             '        ORDER BY a.ayat_id',
             '    ) AS content,',
-            "    STRING_AGG(s.link, '||' ORDER BY a.ayat_id) AS sura_link",
+            "    STRING_AGG(s.link, '|sep|' ORDER BY a.ayat_id) AS sura_link",
             'FROM public.ayats AS a',
             'JOIN public.users AS u ON a.day = u.day',
             'JOIN suras AS s ON a.sura_id = s.sura_id',
@@ -86,26 +86,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
             'ORDER BY u.chat_id',
         ]))
         unsubscribed_users: list[User] = []
-        zipped_ans_chat_ids = zip(
-            [
-                TgLinkPreviewOptions(
-                    TgHtmlParseAnswer(
-                        TgTextAnswer.str_ctor(
-                            TgChatIdAnswer(
-                                TgMessageAnswer(self._empty_answer),
-                                row['chat_id'],
-                            ),
-                            '{0}\n\nhttps://umma.ru{1}'.format(row['content'], row['sura_link'].split('||')[0]),
-                        ),
-                    ),
-                    disabled=True,
-                )
-                for row in rows
-            ],
-            [row['chat_id'] for row in rows],
-            strict=True,
-        )
-        for answer, chat_id in zipped_ans_chat_ids:
+        for answer, chat_id in self._zipped_ans_chat_ids(rows):
             await self._iteration(answer, chat_id, unsubscribed_users)
         await UpdatedUsersStatusEvent(
             PgUpdatedUsersStatus(self._pgsql, FkAsyncListable(unsubscribed_users)),
@@ -117,6 +98,47 @@ class MorningContentPublishedEvent(ReceivedEvent):
             'SET day = day + 1',
             "WHERE is_active = 't' AND chat_id IN ({0})".format(','.join([str(row['chat_id']) for row in rows])),
         ]))
+
+    def _zipped_ans_chat_ids(self, rows: list[Record]) -> Iterator[tuple[TgAnswer, int]]:
+        return zip(
+            [
+                TgLinkPreviewOptions(
+                    TgHtmlParseAnswer(
+                        TgTextAnswer.str_ctor(
+                            TgChatIdAnswer(
+                                TgMessageAnswer(self._empty_answer),
+                                row['chat_id'],
+                            ),
+                            Template(''.join([
+                                '{% for ayat in ayats %}',
+                                '<b>{{ ayat.sura_id }}:{{ ayat.ayat_number }})</b> {{ ayat.content }}\n',
+                                '{% endfor %}',
+                                '\nhttps://umma.ru{{ sura_link }}',
+                            ])).render({
+                                'ayats': [
+                                    {
+                                        'sura_id': sura_id,
+                                        'ayat_number': ayat_num,
+                                        'content': ayat_content,
+                                    }
+                                    for sura_id, ayat_num, ayat_content in zip(
+                                        row['sura_ids'].split(','),
+                                        row['ayat_nums'].split('|'),
+                                        row['content'].split('|sep|'),
+                                        strict=True,
+                                    )
+                                ],
+                                'sura_link': row['sura_link'].split('|sep|')[0],
+                            }),
+                        ),
+                    ),
+                    disabled=True,
+                )
+                for row in rows
+            ],
+            [row['chat_id'] for row in rows],
+            strict=True,
+        )
 
     async def _iteration(self, answer: TgAnswer, chat_id: int, unsubscribed_users: list[User]) -> None:
         try:
