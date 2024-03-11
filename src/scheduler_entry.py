@@ -71,8 +71,6 @@ async def main() -> None:
         ),
     }
     scheduler = AsyncIOScheduler(jobstores=jobstores, timezone='Europe/Moscow')
-    job = scheduler.add_job(_morning_ayats_task, 'cron', hour='7', minute='0')
-    job = scheduler.add_job(_daily_prayers_task, 'cron', hour='20', minute='0')
     scheduler.start()
     logger.info('Starting the scheduler...')
     try:
@@ -80,7 +78,6 @@ async def main() -> None:
             await asyncio.sleep(1)
     except KeyboardInterrupt:
         logger.info('Stopping the scheduler...')
-        job.remove()
         scheduler.shutdown()
 
 
