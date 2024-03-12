@@ -35,10 +35,10 @@ from srv.events.sink import RabbitmqSink
 
 logging.basicConfig()
 logging.getLogger('apscheduler').setLevel(logging.DEBUG)
+settings = CachedSettings(EnvFileSettings(BASE_DIR.parent / '.env'))
 
 
 async def _morning_ayats_task() -> None:
-    settings = CachedSettings(EnvFileSettings(BASE_DIR.parent / '.env'))
     await RabbitmqSink(settings, logger).send(
         'quranbot.mailings',
         {},
@@ -48,7 +48,6 @@ async def _morning_ayats_task() -> None:
 
 
 async def _daily_prayers_task() -> None:
-    settings = CachedSettings(EnvFileSettings(BASE_DIR.parent / '.env'))
     await RabbitmqSink(settings, logger).send(
         'quranbot.mailings',
         {},
@@ -57,9 +56,17 @@ async def _daily_prayers_task() -> None:
     )
 
 
+async def _daily_check_user_status() -> None:
+    await RabbitmqSink(settings, logger).send(
+        'quranbot.users',
+        {},
+        'User.CheckStatus',
+        1,
+    )
+
+
 async def main() -> None:
     """Entrypoint."""
-    settings = CachedSettings(EnvFileSettings(BASE_DIR.parent / '.env'))
     redis_settings = httpx.URL(settings.REDIS_DSN)
     jobstores = {
         'default': RedisJobStore(
