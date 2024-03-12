@@ -38,13 +38,13 @@ from integrations.tg.polling_updates import (
 from integrations.tg.sendable import SendableAnswer
 from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer
 from quranbot_answer import QuranbotAnswer
-from schedule_app import CheckUsersStatus
 from services.cli_app import CliApp, CommandCliApp, ForkCliApp
 from services.logged_answer import LoggedAnswer
 from settings.cached_settings import CachedSettings
 from settings.env_file_settings import EnvFileSettings
 from settings.settings import BASE_DIR
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
+from srv.events.check_user_status import CheckUsersStatus
 from srv.events.event_hook import EventHookApp, RbmqEventHook
 from srv.events.morning_content_published import MorningContentPublishedEvent
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
@@ -108,19 +108,6 @@ def main(sys_args: list[str]) -> None:
             quranbot_polling_app,
         ),
         CommandCliApp(
-            'check_user_status',
-            CliApp(
-                DatabaseConnectedApp(
-                    pgsql,
-                    CheckUsersStatus(
-                        pgsql,
-                        TgEmptyAnswer(settings.API_TOKEN),
-                        logger,
-                    ),
-                ),
-            ),
-        ),
-        CommandCliApp(
             'receive_events',
             EventHookApp(
                 RbmqEventHook(
@@ -142,6 +129,12 @@ def main(sys_args: list[str]) -> None:
                         rabbitmq_sink,
                         logger,
                         redis,
+                    )),
+                    EventFork('User.CheckStatus', 1, CheckUsersStatus(
+                        TgEmptyAnswer(settings.API_TOKEN),
+                        pgsql,
+                        rabbitmq_sink,
+                        logger,
                     )),
                 ),
             ),
