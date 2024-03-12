@@ -24,10 +24,12 @@ import json
 
 import httpx
 import pytest
+from eljson.json_doc import JsonDoc
 
 from app_types.logger import FkLogSink
 from integrations.tg.tg_answers import FkAnswer
-from schedule_app import CheckUsersStatus
+from srv.events.check_user_status import CheckUsersStatus
+from srv.events.sink import FkSink
 
 
 @pytest.fixture()
@@ -67,7 +69,9 @@ async def _users(pgsql):
 
 @pytest.mark.usefixtures('_users', '_mock_actives')
 async def test_user_status(pgsql):
-    await CheckUsersStatus(pgsql, FkAnswer(), FkLogSink()).run()
+    await CheckUsersStatus(
+        FkAnswer(), pgsql, FkSink(), FkLogSink(),
+    ).process(JsonDoc({}))
 
     assert [
         row['is_active']
@@ -77,7 +81,9 @@ async def test_user_status(pgsql):
 
 @pytest.mark.usefixtures('_users', '_mock_unsubscribed')
 async def test_unsubscribed(pgsql):
-    await CheckUsersStatus(pgsql, FkAnswer(), FkLogSink()).run()
+    await CheckUsersStatus(
+        FkAnswer(), pgsql, FkSink(), FkLogSink(),
+    ).process(JsonDoc({}))
 
     assert [
         (row['chat_id'], row['is_active'])
