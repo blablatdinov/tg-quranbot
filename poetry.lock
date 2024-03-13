@@ -2557,13 +2557,13 @@ sqlcipher = ["sqlcipher3_binary"]
 
 [[package]]
 name = "sqlfluff"
-version = "3.0.0"
+version = "3.0.1"
 description = "The SQL Linter for Humans"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "sqlfluff-3.0.0-py3-none-any.whl", hash = "sha256:362a70cbf3f8d72b0e8687c0c04e61286ed424fd6cc9d4a79b079cba9be62d4d"},
-    {file = "sqlfluff-3.0.0.tar.gz", hash = "sha256:bd91d52bf915b66a3bef4b35b7496a968e11ea35c2095f957fdf8cf4a7a3ee5f"},
+    {file = "sqlfluff-3.0.1-py3-none-any.whl", hash = "sha256:252bdefb5a7f454e7931d277bee01ed26352d9325ef9f12ca56fe9c5d00f2b8e"},
+    {file = "sqlfluff-3.0.1.tar.gz", hash = "sha256:22306af028dc8513e2cc3b1b8d3fd460b5f5385d341685a31233ddc4d77a6093"},
 ]
 
 [package.dependencies]
@@ -3202,4 +3202,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "3f55c33f5868479980963f0607d4438ac8866fe55d39a8eb4f91e2ed5d382de3"
+content-hash = "0cdd77a41339052abdaac4b01ef1fd847583351103edff8e188a88490f297155"
