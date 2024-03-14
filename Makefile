@@ -26,6 +26,10 @@ run:
 events:
 	poetry run python src/main.py receive_events
 
+fmt:
+	poetry run isort src
+	poetry run ruff check src --fix-only
+
 lint:
 	poetry run isort src
 	poetry run ruff check src --fix --output-format=concise

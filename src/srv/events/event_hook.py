@@ -108,7 +108,7 @@ class RbmqEventHook(EventHook):
             self._logger.info('Wait events...')
             while True:  # noqa: WPS457
                 await asyncio.sleep(0.1)
-                for queue_name in ('quranbot.users', 'quranbot.mailings', 'quranbot.ayats'):
+                for queue_name in ('quranbot.users', 'quranbot.mailings', 'quranbot.ayats', 'quranbot.messages'):
                     msg: DeliveredMessage = await channel.basic_get(queue_name)
                     await self._event_handler(msg, chnl)
 
