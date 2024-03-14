@@ -37,7 +37,14 @@ from app_types.update import FkUpdate
 from exceptions.internal_exceptions import TelegramIntegrationsError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.sendable import SendableAnswer
-from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgChatIdAnswer, TgMessageAnswer, TgTextAnswer
+from integrations.tg.tg_answers import (
+    TgAnswer,
+    TgAnswerMarkup,
+    TgChatIdAnswer,
+    TgHtmlParseAnswer,
+    TgMessageAnswer,
+    TgTextAnswer,
+)
 from services.logged_answer import LoggedAnswer
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from settings.settings import Settings
@@ -85,26 +92,28 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
         )
         for row in rows:
             await self._iteration(
-                TgAnswerMarkup(
-                    TgChatIdAnswer(
-                        TgTextAnswer(
-                            TgMessageAnswer(self._empty_answer),
-                            RamadanPrayerText(
-                                PrayersText(
-                                    self._pgsql,
-                                    date,
-                                    UserCityId(self._pgsql, row[CHAT_ID]),
-                                    FkUpdate(),
+                TgHtmlParseAnswer(
+                    TgAnswerMarkup(
+                        TgChatIdAnswer(
+                            TgTextAnswer(
+                                TgMessageAnswer(self._empty_answer),
+                                RamadanPrayerText(
+                                    PrayersText(
+                                        self._pgsql,
+                                        date,
+                                        UserCityId(self._pgsql, row[CHAT_ID]),
+                                        FkUpdate(),
+                                    ),
+                                    ramadan_mode=self._settings.RAMADAN_MODE == 'on',
                                 ),
-                                ramadan_mode=self._settings.RAMADAN_MODE == 'on',
                             ),
+                            row[CHAT_ID],
                         ),
-                        row[CHAT_ID],
-                    ),
-                    UserPrayersKeyboard(
-                        self._pgsql,
-                        date,
-                        TgChatId(FkUpdate(json.dumps({'chat': {'id': row[CHAT_ID]}}))),
+                        UserPrayersKeyboard(
+                            self._pgsql,
+                            date,
+                            TgChatId(FkUpdate(json.dumps({'chat': {'id': row[CHAT_ID]}}))),
+                        ),
                     ),
                 ),
                 row[CHAT_ID],
