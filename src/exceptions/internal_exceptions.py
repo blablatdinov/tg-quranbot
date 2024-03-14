@@ -70,3 +70,9 @@ class TelegramIntegrationsError(BaseAppError):
         :return: str
         """
         return self._message
+
+
+@final
+@attrs.define(frozen=True)
+class UnreacheableError(BaseAppError):
+    """Ошибка непредвиденного состояния."""

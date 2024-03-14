@@ -142,3 +142,4 @@ class RbmqEventHook(EventHook):
             return
         for event in self._events:
             await event.process(body_json)
+        self._logger.info('Event {0} processed'.format(body_json.path('$.event_id')[0]))

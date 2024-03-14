@@ -40,12 +40,14 @@ from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer
 from quranbot_answer import QuranbotAnswer
 from services.cli_app import CliApp, CommandCliApp, ForkCliApp
 from services.logged_answer import LoggedAnswer
+from settings.admin_chat_ids import AdminChatIds
 from settings.cached_settings import CachedSettings
 from settings.env_file_settings import EnvFileSettings
 from settings.settings import BASE_DIR
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.check_user_status import CheckUsersStatus
 from srv.events.event_hook import EventHookApp, RbmqEventHook
+from srv.events.mailing_created import MailingCreatedEvent
 from srv.events.message_deleted import MessageDeleted
 from srv.events.morning_content_published import MorningContentPublishedEvent
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
@@ -130,6 +132,13 @@ def main(sys_args: list[str]) -> None:
                         rabbitmq_sink,
                         logger,
                         redis,
+                    )),
+                    EventFork('Mailing.Created', 1, MailingCreatedEvent(
+                        TgEmptyAnswer(settings.API_TOKEN),
+                        pgsql,
+                        rabbitmq_sink,
+                        logger,
+                        AdminChatIds(settings),
                     )),
                     EventFork('User.CheckStatus', 1, CheckUsersStatus(
                         TgEmptyAnswer(settings.API_TOKEN),
