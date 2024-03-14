@@ -46,6 +46,7 @@ from settings.settings import BASE_DIR
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.check_user_status import CheckUsersStatus
 from srv.events.event_hook import EventHookApp, RbmqEventHook
+from srv.events.message_deleted import MessageDeleted
 from srv.events.morning_content_published import MorningContentPublishedEvent
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
 from srv.events.recieved_event import EventFork
@@ -131,6 +132,12 @@ def main(sys_args: list[str]) -> None:
                         redis,
                     )),
                     EventFork('User.CheckStatus', 1, CheckUsersStatus(
+                        TgEmptyAnswer(settings.API_TOKEN),
+                        pgsql,
+                        rabbitmq_sink,
+                        logger,
+                    )),
+                    EventFork('Messages.Deleted', 2, MessageDeleted(
                         TgEmptyAnswer(settings.API_TOKEN),
                         pgsql,
                         rabbitmq_sink,
