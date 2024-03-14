@@ -67,6 +67,7 @@ def _mock_http(respx_mock):
                     {'text': '\u274c', 'callback_data': 'mark_readed(5)'},
                 ]],
             }),
+            'parse_mode': 'html',
         }))).mock(**rv)
 
 
