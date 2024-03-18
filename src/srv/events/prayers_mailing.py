@@ -139,7 +139,6 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                 self._events_sink,
                 uuid.uuid4(),
             ).send(FkUpdate())
-            # TODO: передача даты в update выглядит костыльно
         except TelegramIntegrationsError as err:
             error_messages = [
                 'chat not found',

@@ -148,7 +148,8 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
     async def __anext__(self) -> list[Update]:
         """Вернуть следующий элемент.
 
-        TODO: мы парсим json, потом обратно перегоняем его в строку
+        # TODO #360:30min мы парсим json, потом обратно перегоняем его в строку.
+        #  Проверить насколько это вредит производительности
 
         :return: list[Update]
         """

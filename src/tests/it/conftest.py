@@ -71,5 +71,6 @@ async def pgsql(_migrate):
 async def rds():
     rd = redis.asyncio.from_url(EnvFileSettings.from_filename('../.env').REDIS_DSN)
     yield rd
-    # TODO: redis.asyncio.Redis must be have aclose() method
+    # TODO #360:30min Включить проверку типов
+    #  redis.asyncio.Redis must be have aclose() method
     await rd.aclose()  # type: ignore [attr-defined]

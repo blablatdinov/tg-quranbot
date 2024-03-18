@@ -142,7 +142,6 @@ async def users(pgsql):
 
 
 @pytest.mark.usefixtures('_ayats', '_mock_http')
-# @pytest.mark.skip()  # TODO: uncomment after testing functional
 async def test(pgsql, users):
     settings = FkSettings(
         {
