@@ -40,6 +40,7 @@ from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer, TgHtmlParseAnsw
 from integrations.tg.tg_answers.link_preview_options import TgLinkPreviewOptions
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from services.logged_answer import LoggedAnswer
+from settings.admin_chat_ids import AdminChatIds
 from settings.settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import SinkInterface
@@ -80,7 +81,10 @@ class MorningContentPublishedEvent(ReceivedEvent):
             'JOIN public.users AS u ON a.day = u.day',
             'JOIN suras AS s ON a.sura_id = s.sura_id',
             "WHERE u.is_active = 't' {0}".format(
-                'AND u.chat_id = 358610865' if self._settings.DAILY_AYATS == 'off' else '',
+                'AND u.chat_id IN ({0})'.format(
+                    ','.join([str(chat_id) for chat_id in list(AdminChatIds(self._settings))]),
+                )
+                if self._settings.DAILY_AYATS == 'off' else '',
             ),
             'GROUP BY u.chat_id',
             'ORDER BY u.chat_id',

@@ -47,6 +47,7 @@ from integrations.tg.tg_answers import (
 )
 from services.logged_answer import LoggedAnswer
 from services.user_prayer_keyboard import UserPrayersKeyboard
+from settings.admin_chat_ids import AdminChatIds
 from settings.settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import SinkInterface
@@ -81,8 +82,11 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
         rows = await self._pgsql.fetch_all('\n'.join([
             'SELECT u.chat_id',
             'FROM users AS u',
-            "WHERE u.is_active = 't' AND u.city_id NOTNULL {0}".format(
-                'AND u.chat_id = 358610865' if self._settings.DAILY_PRAYERS == 'off' else '',
+            "WHERE u.is_active = 't' {0}".format(
+                'AND u.chat_id IN ({0})'.format(
+                    ','.join([str(chat_id) for chat_id in list(AdminChatIds(self._settings))]),
+                )
+                if self._settings.DAILY_PRAYERS == 'off' else '',
             ),
             'ORDER BY u.chat_id',
         ]))
