@@ -20,13 +20,13 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 import time
 from pathlib import Path
 
 import pika
 import psycopg2
 import pytest
+import ujson
 
 from settings.env_file_settings import EnvFileSettings
 
@@ -59,7 +59,7 @@ def test_change_ayat(db_query_vals):
     channel.basic_publish(
         exchange='',
         routing_key='quranbot_queue',
-        body=json.dumps({
+        body=ujson.dumps({
             'event_id': 'some_id',
             'event_version': 1,
             'event_name': 'Ayat.Changed',

@@ -20,11 +20,11 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from contextlib import suppress
 from typing import final, override
 
 import pytest
+import ujson
 from pyeo import elegant
 
 from app_types.logger import FkLogSink
@@ -48,7 +48,7 @@ class TgAnswerFake(TgAnswer):
 
 @pytest.fixture()
 def update():
-    return json.dumps(
+    return ujson.dumps(
         {
             'callback_query': None,
             'inline_query': None,

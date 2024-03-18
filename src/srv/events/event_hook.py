@@ -21,11 +21,11 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
-import json
 from typing import Protocol, final, override
 
 import aio_pika
 import attrs
+import ujson
 from aiormq.abc import DeliveredMessage
 from databases import Database
 from eljson.json_doc import JsonDoc
@@ -131,7 +131,7 @@ class RbmqEventHook(EventHook):
         body_json = JsonDoc.from_string(decoded_body)  # type: ignore [no-untyped-call]
         try:
             validate_schema(
-                json.loads(decoded_body),
+                ujson.loads(decoded_body),
                 body_json.path('$.event_name')[0],
                 body_json.path('$.event_version')[0],
             )

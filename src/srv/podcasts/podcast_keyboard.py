@@ -20,10 +20,10 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import TypedDict, final, override
 
 import attrs
+import ujson
 from databases import Database
 from pyeo import elegant
 
@@ -74,7 +74,7 @@ class PodcastKeyboard(KeyboardInterface):
                 like_count=0,
                 dislike_count=0,
             )
-        return json.dumps({
+        return ujson.dumps({
             'inline_keyboard': [[
                 {
                     'text': '👍 {0}'.format(likes_count_map['like_count']),

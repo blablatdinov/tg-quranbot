@@ -20,11 +20,11 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from contextlib import suppress
 from typing import final, override
 
 import attrs
+import ujson
 from pyeo import elegant
 
 from app_types.update import Update
@@ -61,7 +61,7 @@ class NeighborAyatKeyboard(KeyboardInterface):
         right_button = await self._generate_right_button()
         if right_button:
             buttons.append(right_button)
-        return json.dumps({
+        return ujson.dumps({
             'inline_keyboard': [buttons],
         })
 

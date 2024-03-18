@@ -20,11 +20,11 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import Protocol, SupportsInt, final, override
 
 import attrs
 import httpx
+import ujson
 from pyeo import elegant
 
 from app_types.stringable import SupportsStr
@@ -163,10 +163,10 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
                 return []
             resp_content = resp.text
             try:
-                parsed_result = json.loads(resp_content)['result']
+                parsed_result = ujson.loads(resp_content)['result']
             except KeyError:
                 return []
             if not parsed_result:
                 return []
             self._offset = parsed_result[-1]['update_id'] + 1  # noqa: WPS601
-            return [TgUpdate(json.dumps(elem, ensure_ascii=False)) for elem in parsed_result]
+            return [TgUpdate(ujson.dumps(elem, ensure_ascii=False)) for elem in parsed_result]

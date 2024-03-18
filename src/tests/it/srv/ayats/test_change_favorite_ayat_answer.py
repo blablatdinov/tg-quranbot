@@ -21,10 +21,10 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import json
 
 import pytest
 import pytz
+import ujson
 
 from app_types.logger import FkLogSink
 from app_types.update import FkUpdate
@@ -73,14 +73,14 @@ async def test_add(pgsql, fake_redis, unquote):
     got = await ChangeFavoriteAyatAnswer(
         pgsql, FkAnswer(), fake_redis, FkLogSink(),
     ).build(FkUpdate(
-        json.dumps({
+        ujson.dumps({
             'callback_query': {'data': 'addToFavor(1)'},
             'chat': {'id': 1},
             'message': {'message_id': 1},
         }),
     ))
 
-    assert json.loads(got[0].url.params['reply_markup']) == {
+    assert ujson.loads(got[0].url.params['reply_markup']) == {
         'inline_keyboard': [
             [{'callback_data': 'fake', 'text': 'стр. 1/1'}],
             [{'callback_data': 'removeFromFavor(1)', 'text': 'Удалить из избранного'}],
@@ -93,14 +93,14 @@ async def test_remove(pgsql, fake_redis, unquote):
     got = await ChangeFavoriteAyatAnswer(
         pgsql, FkAnswer(), fake_redis, FkLogSink(),
     ).build(FkUpdate(
-        json.dumps({
+        ujson.dumps({
             'callback_query': {'data': 'removeFromFavor(1)'},
             'chat': {'id': 1},
             'message': {'message_id': 1},
         }),
     ))
 
-    assert json.loads(got[0].url.params['reply_markup']) == {
+    assert ujson.loads(got[0].url.params['reply_markup']) == {
         'inline_keyboard': [
             [{'callback_data': 'fake', 'text': 'стр. 1/1'}],
             [{'callback_data': 'addToFavor(1)', 'text': 'Добавить в избранное'}],

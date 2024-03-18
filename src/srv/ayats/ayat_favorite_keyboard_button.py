@@ -20,10 +20,10 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import final, override
 
 import attrs
+import ujson
 from pyeo import elegant
 
 from app_types.supports_bool import AsyncSupportsBool
@@ -49,7 +49,7 @@ class AyatFavoriteKeyboardButton(KeyboardInterface):
         :param update: Update
         :return: str
         """
-        keyboard = json.loads(await self._origin.generate(update))
+        keyboard = ujson.loads(await self._origin.generate(update))
         is_favor = await self._is_favor.to_bool()
         keyboard['inline_keyboard'].append([{
             'text': 'Удалить из избранного' if is_favor else 'Добавить в избранное',
@@ -57,4 +57,4 @@ class AyatFavoriteKeyboardButton(KeyboardInterface):
                 await self._ayat.identifier().ayat_id(),
             ),
         }])
-        return json.dumps(keyboard)
+        return ujson.dumps(keyboard)

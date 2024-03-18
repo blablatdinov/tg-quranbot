@@ -20,9 +20,8 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
-
 import pytest
+import ujson
 
 from integrations.tg.inline_query import InlineQuery, InlineQueryId
 from integrations.tg.update import TgUpdate
@@ -30,7 +29,7 @@ from integrations.tg.update import TgUpdate
 
 @pytest.fixture()
 def inline_query_update():
-    return json.dumps({
+    return ujson.dumps({
         'update_id': 637463119,
         'inline_query': {
             'id': '1540221937896102808',

@@ -21,11 +21,11 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import json
 import uuid
 
 import pytest
 import pytz
+import ujson
 
 from app_types.logger import FkLogSink
 from app_types.update import FkUpdate
@@ -58,7 +58,7 @@ async def test_without_message_text(pgsql, fake_redis):
     """
     debug = False
     got = await PodcastReactionChangeAnswer(debug, FkAnswer(), fake_redis, pgsql, FkLogSink()).build(
-        FkUpdate(json.dumps({
+        FkUpdate(ujson.dumps({
             'callback_query': {
                 'from': {'id': 905},
                 'message': {
@@ -74,7 +74,7 @@ async def test_without_message_text(pgsql, fake_redis):
 
     assert got[0].url.path == '/sendMessage'
     assert got[0].url.params['text'] == '/podcast5'
-    assert got[1].url.params['reply_markup'] == json.dumps({
+    assert got[1].url.params['reply_markup'] == ujson.dumps({
         'inline_keyboard': [[
             {'text': '👍 1', 'callback_data': 'like(5)'}, {'text': '👎 0', 'callback_data': 'dislike(5)'},
         ]],
@@ -85,7 +85,7 @@ async def test_without_message_text(pgsql, fake_redis):
 async def test_without_message_with_audio(pgsql, fake_redis):
     debug = False
     got = await PodcastReactionChangeAnswer(debug, FkAnswer(), fake_redis, pgsql, FkLogSink()).build(
-        FkUpdate(json.dumps({
+        FkUpdate(ujson.dumps({
             'callback_query': {
                 'from': {'id': 905},
                 'message': {
@@ -101,7 +101,7 @@ async def test_without_message_with_audio(pgsql, fake_redis):
     )
 
     assert got[0].url.path == '/editMessageReplyMarkup'
-    assert got[0].url.params['reply_markup'] == json.dumps({
+    assert got[0].url.params['reply_markup'] == ujson.dumps({
         'inline_keyboard': [[
             {'text': '👍 1', 'callback_data': 'like(5)'}, {'text': '👎 0', 'callback_data': 'dislike(5)'},
         ]],

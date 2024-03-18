@@ -20,10 +20,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
-
 import httpx
 import pytest
+import ujson
 from eljson.json_doc import JsonDoc
 
 from app_types.logger import FkLogSink
@@ -36,7 +35,7 @@ from srv.events.sink import FkSink
 def _mock_actives(respx_mock):
     rv = {
         'return_value': httpx.Response(
-            200, text=json.dumps({'ok': True, 'result': True}),
+            200, text=ujson.dumps({'ok': True, 'result': True}),
         ),
     }
     respx_mock.get('https://some.domain/sendChatAction?chat_id=1&action=typing').mock(**rv)
@@ -54,7 +53,7 @@ def _mock_unsubscribed(respx_mock):
     respx_mock.get('https://some.domain/sendChatAction?chat_id=1&action=typing').mock(**rv)
     respx_mock.get('https://some.domain/sendChatAction?chat_id=2&action=typing').mock(**rv)
     respx_mock.get('https://some.domain/sendChatAction?chat_id=3&action=typing').mock(
-        return_value=httpx.Response(200, text=json.dumps({'ok': True, 'result': True})),
+        return_value=httpx.Response(200, text=ujson.dumps({'ok': True, 'result': True})),
     )
 
 

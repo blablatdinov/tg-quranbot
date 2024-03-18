@@ -20,10 +20,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
-
 import httpx
 import pytest
+import ujson
 
 from app_types.logger import FkLogSink
 from app_types.update import FkUpdate
@@ -37,7 +36,7 @@ def _mock_nominatim(respx_mock):
         'https://nominatim.openstreetmap.org/reverse.php?lat=55.7887&lon=49.1221&format=jsonv2',
     ).mock(return_value=httpx.Response(
         200,
-        text=json.dumps({
+        text=ujson.dumps({
             'address': {
                 'ISO3166-2-lvl4': 'RU-TA',
                 'city': 'Казань',
@@ -77,7 +76,7 @@ def _mock_nominatim(respx_mock):
 async def test_message(pgsql, fake_redis):
     debug = False
     got = await SearchCityAnswer(pgsql, FkAnswer(), debug, fake_redis, FkLogSink()).build(
-        FkUpdate(json.dumps({
+        FkUpdate(ujson.dumps({
             'message': {'text': 'Kazan'},
             'chat': {'id': 384957},
         })),
@@ -90,7 +89,7 @@ async def test_message(pgsql, fake_redis):
 async def test_location(pgsql, fake_redis):
     debug = False
     got = await SearchCityAnswer(pgsql, FkAnswer(), debug, fake_redis, FkLogSink()).build(
-        FkUpdate(json.dumps({
+        FkUpdate(ujson.dumps({
             'chat': {'id': 34847935},
             'latitude': 55.7887,
             'longitude': 49.1221,

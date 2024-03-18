@@ -21,10 +21,10 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import json
 
 import pytest
 import pytz
+import ujson
 from furl import furl
 
 from app_types.logger import FkLogSink
@@ -93,13 +93,13 @@ async def test(fake_redis, pgsql, unquote, search_answer):
                 'Content\n',
                 '<i>Transliteration</i>',
             ]),
-            'reply_markup': json.dumps({
+            'reply_markup': ujson.dumps({
                 'inline_keyboard': [
                     [{'text': 'стр. 1/1', 'callback_data': 'fake'}],
                     [{'text': 'Добавить в избранное', 'callback_data': 'addToFavor(1)'}],
                 ],
             }),
-            'link_preview_options': '{"is_disabled": true}',
+            'link_preview_options': '{"is_disabled":true}',
         }),
     )
 

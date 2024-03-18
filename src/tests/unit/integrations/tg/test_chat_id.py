@@ -20,9 +20,8 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
-
 import pytest
+import ujson
 from pytest_lazy_fixtures import lf
 
 from integrations.tg.chat_id import TgChatId
@@ -41,7 +40,7 @@ def stringable_callback_update(callback_update_factory):
 
 @pytest.fixture()
 def query_search_update():
-    return json.dumps({
+    return ujson.dumps({
         'update_id': 637463119,
         'inline_query': {
             'id': '1540221937896102808',

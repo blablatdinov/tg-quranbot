@@ -22,12 +22,12 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
 import enum
-import json
 from itertools import batched
 from typing import Final, final
 
 import attrs
 import httpx
+import ujson
 from databases import Database
 from dateutil import rrule
 from pyeo import elegant
@@ -67,7 +67,7 @@ class SkippedPrayersKeyboard(KeyboardInterface):
         :param update: Update
         :return: str
         """
-        return json.dumps({
+        return ujson.dumps({
             'inline_keyboard': [
                 [{
                     'text': '{0}: (-1)'.format(field.value[1]),
