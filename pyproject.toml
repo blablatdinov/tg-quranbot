@@ -118,12 +118,6 @@ fixable = [
   "F401",   # Unused import
 ]
 ignore = [
-  # TODO #360 Исправить ошибки линтера
-  "DTZ001",
-  "DTZ005",  
-  "DTZ007",
-  "INP001",
-  # ----------------------------------
   "ANN101",  # Missing type annotation for `self` in method
   "ANN102",  # Missing type annotation for `cls` in classmethod
   "ARG001",  # Unused function argument
@@ -136,6 +130,7 @@ ignore = [
   "FIX002",  # Line contains T0DO, consider resolving the issue
   "FLY002",  # We not use f-strings
   "I001",    # Conflict with isort
+  "INP001",  # File ... is part of an implicit namespace package. Add an `__init__.py`.
   "RUF100",  # WPS primary linter
   "RUF001",  # Project contain cyrillic symbols
   "RUF002",  # Project contain cyrillic symbols

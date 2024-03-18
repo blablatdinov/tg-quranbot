@@ -25,6 +25,7 @@ import json
 import uuid
 
 import pytest
+import pytz
 
 from app_types.logger import FkLogSink
 from app_types.update import FkUpdate
@@ -38,7 +39,7 @@ async def _db_podcast(pgsql):
     await pgsql.execute_many('INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)', [
         {
             'file_id': str(file_id),
-            'created_at': datetime.datetime.now(),
+            'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
         }
         for file_id in file_ids
     ])

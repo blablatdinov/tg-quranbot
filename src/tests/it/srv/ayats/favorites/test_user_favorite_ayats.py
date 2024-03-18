@@ -23,13 +23,14 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import datetime
 
 import pytest
+import pytz
 
 from srv.ayats.favorites.user_favorite_ayats import UserFavoriteAyats
 
 
 @pytest.fixture()
 async def _db_ayat(pgsql):
-    created_at = datetime.datetime.now()
+    created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
     await pgsql.execute(
         '\n'.join([
             'INSERT INTO files (file_id, telegram_file_id, link, created_at)',

@@ -24,6 +24,7 @@ import datetime
 import json
 
 import pytest
+import pytz
 from furl import furl
 
 from app_types.logger import FkLogSink
@@ -36,7 +37,7 @@ from tests.unit.settings.test_amdin_chat_ids import FkSettings
 
 @pytest.fixture()
 async def _db_ayat(pgsql):
-    created_at = datetime.datetime.now()
+    created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
     await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO files (file_id, telegram_file_id, link, created_at)',

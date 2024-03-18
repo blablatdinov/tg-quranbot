@@ -25,6 +25,7 @@ import json
 
 import httpx
 import pytest
+import pytz
 from eljson.json_doc import JsonDoc
 from furl import furl
 from loguru import logger
@@ -74,7 +75,7 @@ async def _ayats(pgsql):
         'INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)',
         {
             'file_id': '7fc47c04-2271-4ef0-9e47-ba08f499932b',
-            'created_at': datetime.datetime(2020, 1, 1),
+            'created_at': datetime.datetime(2020, 1, 1, tzinfo=pytz.timezone('Europe/Moscow')),
         },
     )
     await pgsql.execute_many(

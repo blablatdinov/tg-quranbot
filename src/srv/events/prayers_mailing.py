@@ -23,9 +23,11 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import datetime
 import json
 import uuid
+from operator import add
 from typing import Final, final, override
 
 import attrs
+import pytz
 from databases import Database
 from eljson.json import Json
 from pyeo import elegant
@@ -92,7 +94,10 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
         ]))
         unsubscribed_users: list[User] = []
         date = FkPrayerDate(
-            (datetime.datetime.now() + datetime.timedelta(days=1)).date(),
+            add(
+                datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
+                datetime.timedelta(days=1),
+            ).date(),
         )
         for row in rows:
             await self._iteration(
