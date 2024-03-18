@@ -50,6 +50,7 @@ from srv.events.event_hook import EventHookApp, RbmqEventHook
 from srv.events.mailing_created import MailingCreatedEvent
 from srv.events.message_deleted import MessageDeleted
 from srv.events.morning_content_published import MorningContentPublishedEvent
+from srv.events.prayer_created_event import PrayerCreatedEvent
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
 from srv.events.recieved_event import EventFork
 from srv.events.sink import RabbitmqSink
@@ -152,6 +153,7 @@ def main(sys_args: list[str]) -> None:
                         rabbitmq_sink,
                         logger,
                     )),
+                    EventFork('Prayers.Created', 2, PrayerCreatedEvent(pgsql)),
                 ),
             ),
         ),
