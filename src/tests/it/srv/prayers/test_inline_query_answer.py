@@ -20,10 +20,10 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 import uuid
 
 import pytest
+import ujson
 
 from app_types.update import FkUpdate
 from exceptions.internal_exceptions import NotProcessableUpdateError
@@ -42,7 +42,7 @@ async def _db_cities(pgsql):
 @pytest.mark.usefixtures('_db_cities')
 async def test(pgsql, unquote):
     got = await InlineQueryAnswer(FkAnswer(), pgsql).build(
-        FkUpdate(json.dumps({
+        FkUpdate(ujson.dumps({
             'update_id': 1,
             'query': 'Kazan',
             'chat': {'id': 1},
@@ -50,7 +50,7 @@ async def test(pgsql, unquote):
         })),
     )
 
-    assert json.loads(got[0].url.params['results']) == [
+    assert ujson.loads(got[0].url.params['results']) == [
         {
             'id': '0',
             'type': 'article',
@@ -64,7 +64,7 @@ async def test(pgsql, unquote):
 async def test_not_processable(pgsql, unquote):
     with pytest.raises(NotProcessableUpdateError):
         await InlineQueryAnswer(FkAnswer(), pgsql).build(
-            FkUpdate(json.dumps({
+            FkUpdate(ujson.dumps({
                 'update_id': 1,
                 'chat': {'id': 1},
             })),

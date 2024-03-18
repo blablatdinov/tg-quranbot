@@ -21,13 +21,13 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import asyncio
-import json
 from itertools import batched, chain
 from typing import Protocol, final, override
 from urllib import parse as url_parse
 
 import attrs
 import httpx
+import ujson
 from pyeo import elegant
 
 from app_types.logger import LogSink
@@ -93,7 +93,7 @@ class SendableAnswer(SendableInterface):
                 responses.append(resp.text)
                 if resp.status_code != success_status:
                     raise TelegramIntegrationsError(resp.text)
-            return [json.loads(response) for response in responses]
+            return [ujson.loads(response) for response in responses]
 
 
 @final
@@ -123,7 +123,7 @@ class UserNotSubscribedSafeSendable(SendableInterface):
             for error_message in error_messages:
                 if error_message not in str(err):
                     continue
-                dict_response = json.loads(str(err))
+                dict_response = ujson.loads(str(err))
                 return [dict_response]
             raise TelegramIntegrationsError(str(err)) from err
         return responses

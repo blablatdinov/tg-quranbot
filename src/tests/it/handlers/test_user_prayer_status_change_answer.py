@@ -21,10 +21,10 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import json
 
 import pytest
 import pytz
+import ujson
 
 from app_types.logger import FkLogSink
 from app_types.stringable import FkAsyncStr
@@ -73,14 +73,14 @@ async def test_new_prayer_times(pgsql, fake_redis, time_machine):
     got = await PrayerTimeAnswer.new_prayers_ctor(
         pgsql, FkAnswer(), [123], fake_redis, FkLogSink(), FkSettings({'RAMADAN_MODE': 'off'}),
     ).build(
-        FkUpdate(json.dumps({
+        FkUpdate(ujson.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
             'message': {'message_id': 17, 'text': 'Время намаза'},
             'chat': {'id': 905},
         })),
     )
 
-    assert json.loads(got[0].url.params.get('reply_markup')) == {
+    assert ujson.loads(got[0].url.params.get('reply_markup')) == {
         'inline_keyboard': [
             [
                 {'callback_data': 'mark_readed(1)', 'text': '❌'},
@@ -100,7 +100,7 @@ async def test_today(pgsql, fake_redis, time_machine):
     got = await UserPrayerStatusChangeAnswer(
         FkAnswer(), pgsql, fake_redis, FkLogSink(), FkSettings({'RAMADAN_MODE': 'off'}),
     ).build(
-        FkUpdate(json.dumps({
+        FkUpdate(ujson.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
             'message': {
                 'message_id': 17,
@@ -118,7 +118,7 @@ async def test_today(pgsql, fake_redis, time_machine):
         })),
     )
 
-    assert json.loads(got[0].url.params.get('reply_markup')) == {
+    assert ujson.loads(got[0].url.params.get('reply_markup')) == {
         'inline_keyboard': [
             [
                 {'callback_data': 'mark_readed(1)', 'text': '❌'},
@@ -138,7 +138,7 @@ async def test_before(pgsql, fake_redis, time_machine, unquote):
     got = await UserPrayerStatusChangeAnswer(
         FkAnswer(), pgsql, fake_redis, FkLogSink(), FkSettings({'RAMADAN_MODE': 'off'}),
     ).build(
-        FkUpdate(json.dumps({
+        FkUpdate(ujson.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
             'message': {
                 'message_id': 17,
@@ -156,7 +156,7 @@ async def test_before(pgsql, fake_redis, time_machine, unquote):
         })),
     )
 
-    assert json.loads(got[0].url.params.get('reply_markup')) == {
+    assert ujson.loads(got[0].url.params.get('reply_markup')) == {
         'inline_keyboard': [
             [
                 {'callback_data': 'mark_readed(1)', 'text': '❌'},
@@ -199,7 +199,7 @@ async def test_without_message_text(pgsql, fake_redis):
     got = await UserPrayerStatusChangeAnswer(
         FkAnswer(), pgsql, fake_redis, FkLogSink(), FkSettings({'RAMADAN_MODE': 'off'}),
     ).build(
-        FkUpdate(json.dumps({
+        FkUpdate(ujson.dumps({
             'callback_query': {
                 'from': {'id': 905},
                 'message': {
@@ -223,7 +223,7 @@ async def test_without_message_text(pgsql, fake_redis):
         'Ахшам: 15:07',
         'Ястү: 17:04',
     ])
-    assert json.loads(got[0].url.params['reply_markup']) == {
+    assert ujson.loads(got[0].url.params['reply_markup']) == {
         'inline_keyboard': [
             [
                 {'callback_data': 'mark_readed(1)', 'text': '❌'},

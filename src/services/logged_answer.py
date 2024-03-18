@@ -21,12 +21,12 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import json
 import uuid
 from typing import Final, final, override
 
 import attrs
 import pytz
+import ujson
 from pyeo import elegant
 
 from app_types.update import Update
@@ -67,7 +67,7 @@ class LoggedAnswer(SendableInterface):
                 UPDATES_LOG,
                 {
                     MESSAGES: [{
-                        MESSAGE_JSON: json.dumps(update.asdict()[MESSAGE_LITERAL]),
+                        MESSAGE_JSON: ujson.dumps(update.asdict()[MESSAGE_LITERAL]),
                         IS_UNKNOWN: False,
                         TRIGGER_MESSAGE_ID: None,
                         TRIGGER_CALLBACK_ID: None,
@@ -94,7 +94,7 @@ class LoggedAnswer(SendableInterface):
                 {
                     MESSAGES: [
                         {
-                            MESSAGE_JSON: json.dumps(answer['result']),
+                            MESSAGE_JSON: ujson.dumps(answer['result']),
                             IS_UNKNOWN: False,
                             TRIGGER_MESSAGE_ID: update.asdict()[MESSAGE_LITERAL]['message_id'],
                             TRIGGER_CALLBACK_ID: None,
@@ -113,7 +113,7 @@ class LoggedAnswer(SendableInterface):
                 {
                     MESSAGES: [
                         {
-                            MESSAGE_JSON: json.dumps(answer['result']),
+                            MESSAGE_JSON: ujson.dumps(answer['result']),
                             IS_UNKNOWN: False,
                             TRIGGER_MESSAGE_ID: None,
                             TRIGGER_CALLBACK_ID: update.asdict()[CALLBACK_QUERY]['id'],
@@ -131,7 +131,7 @@ class LoggedAnswer(SendableInterface):
                 {
                     MESSAGES: [
                         {
-                            MESSAGE_JSON: json.dumps(answer['result']),
+                            MESSAGE_JSON: ujson.dumps(answer['result']),
                             IS_UNKNOWN: False,
                             TRIGGER_MESSAGE_ID: None,
                             TRIGGER_CALLBACK_ID: None,

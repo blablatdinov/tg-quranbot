@@ -21,11 +21,11 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import json
 import uuid
 from typing import Protocol, final, override
 
 import attrs
+import ujson
 from databases import Database
 from databases.interfaces import Record
 from pyeo import elegant
@@ -111,7 +111,7 @@ class UserPrayersKeyboard(KeyboardInterface):
                 self._pgsql,
             ).create(await self._date.parse(update))
             prayers = await self._exists_prayers(update)
-        return json.dumps({
+        return ujson.dumps({
             'inline_keyboard': [[
                 {
                     'text': '✅' if user_prayer['is_read'] else '❌',

@@ -23,7 +23,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 # flake8: noqa: WPS202
 import asyncio
 import datetime
-import json
 import multiprocessing
 import time
 from pprint import pformat
@@ -32,6 +31,7 @@ from typing import Final
 import pika
 import psycopg2
 import pytest
+import ujson
 from loguru import logger
 from telethon.sync import TelegramClient
 
@@ -138,7 +138,7 @@ def wait_event():
                 continue
             body = body.decode('utf-8')
             channel.basic_ack(method_frame.delivery_tag)
-            events.append(json.loads(body))
+            events.append(ujson.loads(body))
             if len(events) == count:
                 return sorted(
                     events,

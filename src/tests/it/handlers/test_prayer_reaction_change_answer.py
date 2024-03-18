@@ -21,11 +21,11 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import json
 import uuid
 
 import pytest
 import pytz
+import ujson
 
 from app_types.logger import FkLogSink
 from app_types.update import FkUpdate
@@ -80,7 +80,7 @@ async def test(pgsql, fake_redis, reaction, podcast_id, button1, button2):
     got = await PodcastReactionChangeAnswer(
         debug, FkAnswer(), fake_redis, pgsql, FkLogSink(),
     ).build(FkUpdate(
-        json.dumps({
+        ujson.dumps({
             'chat': {'id': 1},
             'callback_query': {'data': '{0}({1})'.format(reaction, podcast_id)},
             'message': {'message_id': 1, 'text': '/podcast{0}'.format(podcast_id)},
@@ -88,7 +88,7 @@ async def test(pgsql, fake_redis, reaction, podcast_id, button1, button2):
     ))
 
     assert len(got) == 1
-    assert json.loads(got[0].url.params['reply_markup']) == {
+    assert ujson.loads(got[0].url.params['reply_markup']) == {
         'inline_keyboard': [[
             {'callback_data': 'like({0})'.format(podcast_id), 'text': button1},
             {'callback_data': 'dislike({0})'.format(podcast_id), 'text': button2},

@@ -21,10 +21,10 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import json
 
 import pytest
 import pytz
+import ujson
 from furl import furl
 
 from app_types.logger import FkLogSink
@@ -94,7 +94,7 @@ async def test(pgsql, fake_redis, _db_ayat, unquote):
             'parse_mode': 'html',
             'text': 'start admin message',
             'chat_id': 321,
-            'reply_markup': json.dumps({
+            'reply_markup': ujson.dumps({
                 'keyboard': [
                     ['🎧 Подкасты'],
                     ['🕋 Время намаза', '🏘️ Поменять город'],
@@ -115,7 +115,7 @@ async def test(pgsql, fake_redis, _db_ayat, unquote):
                 '<i>Transliteration</i>',
             ]),
             'chat_id': 321,
-            'reply_markup': json.dumps({
+            'reply_markup': ujson.dumps({
                 'keyboard': [
                     ['🎧 Подкасты'],
                     ['🕋 Время намаза', '🏘️ Поменять город'],
@@ -139,7 +139,7 @@ async def test_exists_user(pgsql, fake_redis, unquote):
         .add({
             'chat_id': 321,
             'text': 'Вы уже зарегистрированы!',
-            'reply_markup': json.dumps({
+            'reply_markup': ujson.dumps({
                 'keyboard': [
                     ['🎧 Подкасты'],
                     ['🕋 Время намаза', '🏘️ Поменять город'],
@@ -164,7 +164,7 @@ async def test_with_referrer(pgsql, fake_redis, unquote):
             'parse_mode': 'html',
             'text': 'start admin message',
             'chat_id': 1,
-            'reply_markup': json.dumps({
+            'reply_markup': ujson.dumps({
                 'keyboard': [
                     ['🎧 Подкасты'],
                     ['🕋 Время намаза', '🏘️ Поменять город'],
@@ -180,7 +180,7 @@ async def test_with_referrer(pgsql, fake_redis, unquote):
             'parse_mode': 'html',
             'text': 'По вашей реферальной ссылке произошла регистрация',
             'chat_id': 321,
-            'reply_markup': json.dumps({
+            'reply_markup': ujson.dumps({
                 'keyboard': [
                     ['🎧 Подкасты'],
                     ['🕋 Время намаза', '🏘️ Поменять город'],
@@ -197,7 +197,7 @@ async def test_with_referrer(pgsql, fake_redis, unquote):
 async def test_fake_referrer(pgsql, fake_redis, unquote, referrer_id):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), fake_redis, FkSettings(), FkLogSink(),
-    ).build(FkUpdate(json.dumps({
+    ).build(FkUpdate(ujson.dumps({
         'message': {'text': '/start {0}'.format(referrer_id)},
         'chat': {'id': 1},
         'date': 0,

@@ -20,11 +20,11 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import final, override
 
 import attrs
 import httpx
+import ujson
 from furl import furl
 from pyeo import elegant
 
@@ -52,7 +52,7 @@ class TgLinkPreviewOptions(TgAnswer):
             httpx.Request(
                 request.method,
                 furl(request.url).add({
-                    'link_preview_options': json.dumps({'is_disabled': self._disabled}),
+                    'link_preview_options': ujson.dumps({'is_disabled': self._disabled}),
                 }).url,
             )
             for request in await self._origin.build(update)

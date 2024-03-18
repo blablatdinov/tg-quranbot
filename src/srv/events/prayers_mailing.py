@@ -21,13 +21,13 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import json
 import uuid
 from operator import add
 from typing import Final, final, override
 
 import attrs
 import pytz
+import ujson
 from databases import Database
 from eljson.json import Json
 from pyeo import elegant
@@ -121,7 +121,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                         UserPrayersKeyboard(
                             self._pgsql,
                             date,
-                            TgChatId(FkUpdate(json.dumps({'chat': {'id': row[CHAT_ID]}}))),
+                            TgChatId(FkUpdate(ujson.dumps({'chat': {'id': row[CHAT_ID]}}))),
                         ),
                     ),
                 ),

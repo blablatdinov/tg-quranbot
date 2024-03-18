@@ -20,10 +20,10 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import override
 
 import httpx
+import ujson
 
 from app_types.logger import FkLogSink
 from app_types.update import FkUpdate, Update
@@ -51,7 +51,7 @@ async def test_invite_set_city_answer(fake_redis, unquote):
     ).build(FkUpdate('{"chat":{"id":1}}'))
 
     assert unquote(got[0].url) == 'https://some.domain?reply_markup={0}'.format(
-        json.dumps({
+        ujson.dumps({
             'inline_keyboard': [[
                 {'text': 'Поиск города', 'switch_inline_query_current_chat': ''},
             ]],

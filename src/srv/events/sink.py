@@ -20,13 +20,13 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 import time
 import uuid
 from typing import Protocol, final, override
 
 import aio_pika
 import attrs
+import ujson
 from loguru import logger
 from pyeo import elegant
 from quranbot_schema_registry import validate_schema
@@ -92,7 +92,7 @@ class RabbitmqSink(SinkInterface):
             'producer': 'quranbot',
             'data': event_data,
         }
-        body_json = json.dumps(event)
+        body_json = ujson.dumps(event)
         try:
             validate_schema(
                 body_json,

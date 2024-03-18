@@ -21,10 +21,10 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import json
 import re
 
 import pytest
+import ujson
 
 from app_types.update import FkUpdate
 from srv.prayers.prayer_date import PrayersRequestDate
@@ -43,7 +43,7 @@ async def test(time_machine):
 ])
 async def test_with_date(query, expected):
     got = await PrayersRequestDate().parse(FkUpdate(
-        json.dumps({'message': {'text': query}}),
+        ujson.dumps({'message': {'text': query}}),
     ))
 
     assert got == expected

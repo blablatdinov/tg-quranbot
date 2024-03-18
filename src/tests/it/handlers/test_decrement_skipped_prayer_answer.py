@@ -21,11 +21,11 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import json
 from pathlib import Path
 
 import pytest
 import pytz
+import ujson
 
 from app_types.update import FkUpdate
 from handlers.decrement_skipped_prayer_answer import DecrementSkippedPrayerAnswer
@@ -108,7 +108,7 @@ async def test(callback_update_factory, pgsql):
             "WHERE pau.user_id = 358610865 AND pau.is_read = 't'",
         ]),
     ) == 63
-    assert json.loads(got[0].url.params['reply_markup']) == {
+    assert ujson.loads(got[0].url.params['reply_markup']) == {
         'inline_keyboard': [
             [{'callback_data': 'decr(fajr)', 'text': 'Иртәнге: (-1)'}],
             [{'callback_data': 'decr(dhuhr)', 'text': 'Өйлә: (-1)'}],

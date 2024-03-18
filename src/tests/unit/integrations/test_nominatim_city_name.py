@@ -20,11 +20,11 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import override
 
 import httpx
 import pytest
+import ujson
 
 from integrations.nominatim import NominatimCityName
 from integrations.tg.coordinates import Coordinates
@@ -47,7 +47,7 @@ def _mock_nominatim(respx_mock):
         'https://nominatim.openstreetmap.org/reverse.php?lat=55.7887&lon=49.1221&format=jsonv2',
     ).mock(return_value=httpx.Response(
         200,
-        text=json.dumps({
+        text=ujson.dumps({
             'address': {
                 'ISO3166-2-lvl4': 'RU-TA',
                 'city': 'Казань',

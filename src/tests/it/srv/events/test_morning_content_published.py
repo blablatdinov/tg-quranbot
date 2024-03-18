@@ -21,11 +21,11 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-import json
 
 import httpx
 import pytest
 import pytz
+import ujson
 from eljson.json_doc import JsonDoc
 from furl import furl
 from loguru import logger
@@ -41,14 +41,14 @@ from srv.users.pg_user import PgUser
 def _mock_http(respx_mock):
     rv = {
         'return_value': httpx.Response(
-            200, text=json.dumps({'ok': True, 'result': True}),
+            200, text=ujson.dumps({'ok': True, 'result': True}),
         ),
     }
     url = furl('https://api.telegram.org/botfakeToken/sendMessage').add({
         'text': '<b>1:1)</b> First ayat content\n<b>1:2)</b> Second ayat content\n\nhttps://umma.ru/sura-1',
         'chat_id': '358610865',
         'parse_mode': 'html',
-        'link_preview_options': '{"is_disabled": true}',
+        'link_preview_options': '{"is_disabled":true}',
     })
     respx_mock.get(str(url)).mock(
         return_value=httpx.Response(
@@ -65,7 +65,7 @@ def _mock_http(respx_mock):
             'text': text,
             'chat_id': chat_id,
             'parse_mode': 'html',
-            'link_preview_options': '{"is_disabled": true}',
+            'link_preview_options': '{"is_disabled":true}',
         }))).mock(**rv)
 
 

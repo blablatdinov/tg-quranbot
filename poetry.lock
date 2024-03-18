@@ -2869,6 +2869,17 @@ cryptography = ">=35.0.0"
 types-pyOpenSSL = "*"
 
 [[package]]
+name = "types-ujson"
+version = "5.9.0.0"
+description = "Typing stubs for ujson"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "types-ujson-5.9.0.0.tar.gz", hash = "sha256:7e7042454dc7cd7f31b09c420d7caf36b93d30bdf4b8db93791bd0561713d017"},
+    {file = "types_ujson-5.9.0.0-py3-none-any.whl", hash = "sha256:f274fa604ed6317effcd1c424ef4cf292c3b0689cb118fb3180689d40ed1f4ed"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.9.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -3201,4 +3212,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "a2c3eb6d0be42ef45d32a2b987a2fb43877539efe1f9110f5b0266a69fc8ebf5"
+content-hash = "db129e5f734c7162c2b23262da673eb94dc6730809964c573de06e83d6a2da5c"

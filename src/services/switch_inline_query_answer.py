@@ -20,9 +20,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import final, override
 
+import ujson
 from pyeo import elegant
 
 from app_types.update import Update
@@ -41,7 +41,7 @@ class SwitchInlineQueryKeyboard(KeyboardInterface):
         :param update: Update
         :return: str
         """
-        return json.dumps({
+        return ujson.dumps({
             'inline_keyboard': [
                 [{'text': 'Поиск города', 'switch_inline_query_current_chat': ''}],
             ],

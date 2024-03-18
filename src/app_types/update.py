@@ -20,10 +20,10 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import Protocol, final, override
 
 import attrs
+import ujson
 from pyeo import elegant
 
 from app_types.stringable import SupportsStr
@@ -62,4 +62,4 @@ class FkUpdate(Update):
 
         :return: dict
         """
-        return json.loads(str(self._raw))
+        return ujson.loads(str(self._raw))
