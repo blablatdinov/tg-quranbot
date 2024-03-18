@@ -26,7 +26,7 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import ThroughAsyncIntable
+from app_types.intable import FkAsyncIntable
 from app_types.listable import AsyncListable
 from app_types.stringable import SupportsStr
 from srv.ayats.pg_ayat import PgAyat
@@ -58,7 +58,7 @@ class AyatsByTextQuery(AsyncListable):
         })
         return [
             PgAyat(
-                ThroughAsyncIntable(row['id']),
+                FkAsyncIntable(row['id']),
                 self._pgsql,
             )
             for row in rows

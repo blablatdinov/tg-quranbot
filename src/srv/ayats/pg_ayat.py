@@ -26,7 +26,7 @@ import attrs
 from databases import Database
 from eljson.json import Json
 
-from app_types.intable import AsyncIntable, ThroughAsyncIntable
+from app_types.intable import AsyncIntable, FkAsyncIntable
 from app_types.stringable import SupportsStr
 from exceptions.content_exceptions import AyatNotFoundError
 from services.regular_expression import IntableRegularExpression
@@ -74,7 +74,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         :param database: Database
         :return: Ayat
         """
-        return PgAyat(ThroughAsyncIntable(ayat_id), database)
+        return PgAyat(FkAsyncIntable(ayat_id), database)
 
     @classmethod
     def from_callback_query(cls, callback_query: SupportsStr, database: Database) -> Ayat:
@@ -85,7 +85,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         :return: Ayat
         """
         return PgAyat(
-            ThroughAsyncIntable(
+            FkAsyncIntable(
                 int(IntableRegularExpression(callback_query)),
             ),
             database,

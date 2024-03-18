@@ -54,10 +54,10 @@ class FkIntable(SupportsInt):
 @final
 @attrs.define(frozen=True)
 @elegant
-class ThroughAsyncIntable(AsyncIntable):
+class FkAsyncIntable(AsyncIntable):
     """Сквозное число."""
 
-    _source: int
+    _source: SupportsInt
 
     @override
     async def to_int(self) -> int:
@@ -65,24 +65,7 @@ class ThroughAsyncIntable(AsyncIntable):
 
         :return: int
         """
-        return self._source
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class SyncToAsyncIntable(AsyncIntable):
-    """Объект для использования синхронного Intable в кач-ве асинхронного AsyncIntable."""
-
-    _origin: SupportsInt
-
-    @override
-    async def to_int(self) -> int:
-        """Числовое представление.
-
-        :return: int
-        """
-        return int(self._origin)
+        return int(self._source)
 
 
 @final

@@ -28,7 +28,7 @@ import httpx
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import ThroughAsyncIntable
+from app_types.intable import FkAsyncIntable
 from app_types.logger import LogSink
 from app_types.update import Update
 from exceptions.internal_exceptions import UserNotFoundError
@@ -129,7 +129,7 @@ class StartAnswer(TgAnswer):
     async def _start_answers(self) -> tuple[str, str]:
         return (
             await self._admin_message.text(),
-            await PgAyat(ThroughAsyncIntable(1), self._pgsql).text(),
+            await PgAyat(FkAsyncIntable(1), self._pgsql).text(),
         )
 
     async def _create_with_referrer(

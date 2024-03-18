@@ -27,7 +27,7 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import AsyncIntable, SyncToAsyncIntable
+from app_types.intable import AsyncIntable, FkAsyncIntable
 from exceptions.base_exception import BaseAppError
 from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import StartMessageNotContainReferrerError
@@ -77,14 +77,18 @@ class ReferrerChatId(AsyncIntable):
         :raises StartMessageNotContainReferrerError: if message not contain referrer id
         """
         try:
-            # TODO #360:30min можно передавать это значение в PgUser без int(...)
             message_meta = int(IntableRegularExpression(self._message))
         except BaseAppError as err:
             raise StartMessageNotContainReferrerError from err
         max_legacy_id = 3000
         if message_meta < max_legacy_id:
-            return await PgUser.legacy_id_ctor(message_meta, self._pgsql).chat_id()
-        return await PgUser(SyncToAsyncIntable(message_meta), self._pgsql).chat_id()
+            return await PgUser.legacy_id_ctor(
+                FkAsyncIntable(
+                    IntableRegularExpression(self._message),
+                ),
+                self._pgsql,
+            ).chat_id()
+        return await PgUser(FkAsyncIntable(IntableRegularExpression(self._message)), self._pgsql).chat_id()
 
 
 @final

@@ -28,7 +28,7 @@ import pytz
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import SyncToAsyncIntable
+from app_types.intable import FkAsyncIntable
 from app_types.listable import AsyncListable
 from srv.events.sink import SinkInterface
 from srv.users.pg_user import PgUser, User
@@ -55,7 +55,7 @@ class ActiveUsers(AsyncListable):
         ])
         rows = await self._pgsql.fetch_all(query)
         return [
-            PgUser(SyncToAsyncIntable(row['chat_id']), self._pgsql)
+            PgUser(FkAsyncIntable(row['chat_id']), self._pgsql)
             for row in rows
         ]
 
@@ -87,7 +87,7 @@ class PgUsers(AsyncListable):
         )
         rows = await self._pgsql.fetch_all(query)
         return [
-            PgUser(SyncToAsyncIntable(row['chat_id']), self._pgsql)
+            PgUser(FkAsyncIntable(row['chat_id']), self._pgsql)
             for row in rows
         ]
 

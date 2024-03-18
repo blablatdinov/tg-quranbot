@@ -26,7 +26,7 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import AsyncIntable, SyncToAsyncIntable
+from app_types.intable import AsyncIntable, FkAsyncIntable
 
 
 @elegant
@@ -85,7 +85,7 @@ class ChatIdByLegacyId(AsyncIntable):
     """
 
     _pgsql: Database
-    _legacy_id: int
+    _legacy_id: AsyncIntable
 
     @override
     async def to_int(self) -> int:
@@ -98,7 +98,7 @@ class ChatIdByLegacyId(AsyncIntable):
             'FROM users',
             'WHERE legacy_id = :legacy_id',
         ])
-        return await self._pgsql.fetch_val(query, {'legacy_id': self._legacy_id})
+        return await self._pgsql.fetch_val(query, {'legacy_id': await self._legacy_id.to_int()})
 
 
 @final
@@ -111,7 +111,7 @@ class PgUser(User):
     _pgsql: Database
 
     @classmethod
-    def legacy_id_ctor(cls, legacy_id: int, pgsql: Database) -> User:
+    def legacy_id_ctor(cls, legacy_id: AsyncIntable, pgsql: Database) -> User:
         """Конструктор по старому идентификатору в БД.
 
         :param legacy_id: int
@@ -128,7 +128,7 @@ class PgUser(User):
         :param pgsql: Database
         :return: User
         """
-        return cls(SyncToAsyncIntable(chat_id), pgsql)
+        return cls(FkAsyncIntable(chat_id), pgsql)
 
     @override
     async def chat_id(self) -> int:
