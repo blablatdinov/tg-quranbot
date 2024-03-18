@@ -76,3 +76,8 @@ class UserHasNotFavoriteAyatsError(BaseAppError):
 @final
 class TelegramFileIdNotFilledError(BaseAppError):
     """Идентификатор файла не заполнен."""
+
+
+@final
+class UserHasNotSearchQueryError(BaseAppError):
+    """Пользователь пагинируется по аятам в поиске, но не имеет запроса в кэше."""

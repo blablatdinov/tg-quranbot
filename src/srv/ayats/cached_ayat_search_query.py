@@ -39,12 +39,7 @@ from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 @attrs.define(frozen=True)
 @elegant
 class CachedAyatSearchQueryAnswer(TgAnswer):
-    """Закешированный запрос пользователя на поиск аятов.
-
-    # TODO #360:30min что делать если данные из кэша будут удалены.
-    #  возможно следует перенести эту информацию в кнопку
-    #  или выдавать пользователю предупреждение, чтобы ввел поисковый запрос
-    """
+    """Объект кэширует запрос на поиск аятов, для использования в пагинации."""
 
     _origin: TgAnswer
     _redis: Redis

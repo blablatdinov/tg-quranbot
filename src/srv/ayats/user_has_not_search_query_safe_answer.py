@@ -20,25 +20,34 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import pytest
+from typing import final, override
 
-from app_types.logger import FkLogSink
+import attrs
+import httpx
+from pyeo import elegant
+
+from app_types.update import Update
 from exceptions.content_exceptions import UserHasNotSearchQueryError
-from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
+from integrations.tg.tg_answers import TgAnswer
 
 
-async def test_read(fake_redis):
-    await fake_redis.set('1:ayat_search_query', b'value')
+@final
+@attrs.define(frozen=True)
+@elegant
+class UserHasNotSearchQuerySafeAnswer(TgAnswer):
+    """Обработка исключения с отсутствием запроса к поиску аятов."""
 
-    assert await AyatTextSearchQuery(fake_redis, 1, FkLogSink()).read() == 'value'
+    _origin: TgAnswer
+    _fail_answer: TgAnswer
 
+    @override
+    async def build(self, update: Update) -> list[httpx.Request]:
+        """Сборка ответа.
 
-async def test_read_without_value(fake_redis):
-    with pytest.raises(UserHasNotSearchQueryError, match="User hasn't search query"):
-        await AyatTextSearchQuery(fake_redis, 17, FkLogSink()).read()
-
-
-async def test_write(fake_redis):
-    await AyatTextSearchQuery(fake_redis, 84395, FkLogSink()).write('query')
-
-    assert await fake_redis.get('84395:ayat_search_query') == b'query'
+        :param update: Update
+        :return: list[httpx.Request]
+        """
+        try:
+            return await self._origin.build(update)
+        except UserHasNotSearchQueryError:
+            return await self._fail_answer.build(update)
