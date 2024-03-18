@@ -32,6 +32,6 @@ from integrations.tg.update_id import UpdateId
     (lf('callback_update_factory'), 637463104),
 ])
 def test(update_factory, expected):
-    update_id = UpdateId(TgUpdate(update_factory()))
+    update_id = UpdateId(TgUpdate.str_ctor(update_factory()))
 
     assert int(update_id) == expected

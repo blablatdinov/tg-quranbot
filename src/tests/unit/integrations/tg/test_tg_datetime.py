@@ -52,6 +52,6 @@ def stringable_callback_update(callback_update_factory):
     ),
 ])
 def test(update, expected):
-    tg_datetime = TgDateTime(TgUpdate(update))
+    tg_datetime = TgDateTime(TgUpdate.str_ctor(update))
 
     assert tg_datetime.datetime() == expected

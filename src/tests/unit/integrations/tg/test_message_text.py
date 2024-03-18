@@ -44,6 +44,6 @@ def stringable_callback_update(callback_update_factory):
     ('{"message":{"text":"hello"}}', 'hello'),
 ])
 def test(update, expected):
-    got = MessageText(TgUpdate(update))
+    got = MessageText(TgUpdate.str_ctor(update))
 
     assert str(got) == expected
