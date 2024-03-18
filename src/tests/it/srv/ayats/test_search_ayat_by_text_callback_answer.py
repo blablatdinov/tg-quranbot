@@ -72,14 +72,14 @@ async def _db_ayat(pgsql):
 
 
 @pytest.fixture()
-def search_answer(pgsql, rds):
+def search_answer(pgsql, fake_redis):
     debug = True
-    return SearchAyatByTextCallbackAnswer(debug, FkAnswer(), rds, pgsql, FkLogSink())
+    return SearchAyatByTextCallbackAnswer(debug, FkAnswer(), fake_redis, pgsql, FkLogSink())
 
 
 @pytest.mark.usefixtures('_db_ayat')
-async def test(rds, pgsql, unquote, search_answer):
-    await AyatTextSearchQuery(rds, FkChatId(1758), FkLogSink()).write('Content')
+async def test(fake_redis, pgsql, unquote, search_answer):
+    await AyatTextSearchQuery(fake_redis, FkChatId(1758), FkLogSink()).write('Content')
     got = await search_answer.build(FkUpdate('{"callback_query": {"data": "1"}, "chat": {"id": 1758}}'))
 
     assert unquote(got[0].url) == unquote(
@@ -105,7 +105,7 @@ async def test(rds, pgsql, unquote, search_answer):
 
 
 @pytest.mark.usefixtures('_db_ayat')
-async def test_unknown_target_ayat(rds, pgsql, unquote, search_answer):
-    await AyatTextSearchQuery(rds, 1758, FkLogSink()).write('Content')
+async def test_unknown_target_ayat(fake_redis, pgsql, unquote, search_answer):
+    await AyatTextSearchQuery(fake_redis, 1758, FkLogSink()).write('Content')
     with pytest.raises(AyatNotFoundError):
         await search_answer.build(FkUpdate('{"callback_query": {"data": "2"}, "chat": {"id": 1758}}'))

@@ -22,7 +22,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import psycopg2
 import pytest
-import redis
 from databases import Database
 
 from settings.env_file_settings import EnvFileSettings
@@ -65,12 +64,3 @@ async def pgsql(_migrate):
     await database.execute("SELECT setval('podcasts_podcast_id_seq', 1, false)")
     await database.execute("SELECT setval('prayers_at_user_prayer_at_user_id_seq', 1, false)")
     await database.disconnect()
-
-
-@pytest.fixture()
-async def rds():
-    rd = redis.asyncio.from_url(EnvFileSettings.from_filename('../.env').REDIS_DSN)
-    yield rd
-    # TODO #360:30min Включить проверку типов
-    #  redis.asyncio.Redis must be have aclose() method
-    await rd.aclose()  # type: ignore [attr-defined]

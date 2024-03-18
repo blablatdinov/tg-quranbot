@@ -147,11 +147,11 @@ async def _db_podcast_without_telegram_file_id(pgsql):
     ),
 ])
 @pytest.mark.usefixtures('_db_podcast')
-async def test_random_podcast(pgsql, rds, debug_mode, expected, unquote):
+async def test_random_podcast(pgsql, fake_redis, debug_mode, expected, unquote):
     got = await RandomPodcastAnswer(
         debug_mode,
         FkAnswer(),
-        rds,
+        fake_redis,
         pgsql,
         FkLogSink(),
     ).build(FkUpdate('{"chat":{"id":123}}'))
@@ -162,12 +162,12 @@ async def test_random_podcast(pgsql, rds, debug_mode, expected, unquote):
 
 
 @pytest.mark.usefixtures('_db_podcast')
-async def test_concrete_podcast(pgsql, rds):
+async def test_concrete_podcast(pgsql, fake_redis):
     debug_mode = True
     got = await ConcretePodcastAnswer(
         debug_mode,
         FkAnswer(),
-        rds,
+        fake_redis,
         pgsql,
         FkLogSink(),
     ).build(FkUpdate('{"chat":{"id":123},"message":{"text":"/podcast1"}}'))
@@ -184,12 +184,12 @@ async def test_podcast_not_found(pgsql):
 
 
 @pytest.mark.usefixtures('_db_podcast_without_telegram_file_id')
-async def test_podcast_without_tg_file_id(pgsql, rds):
+async def test_podcast_without_tg_file_id(pgsql, fake_redis):
     debug_mode = False
     got = await ConcretePodcastAnswer(
         debug_mode,
         FkAnswer(),
-        rds,
+        fake_redis,
         pgsql,
         FkLogSink(),
     ).build(FkUpdate('{"chat":{"id":123},"message":{"text":"/podcast1"}}'))
@@ -199,12 +199,12 @@ async def test_podcast_without_tg_file_id(pgsql, rds):
 
 
 @pytest.mark.usefixtures('_podcast_reactions')
-async def test_ignore_showed_podcasts(rds, pgsql, unquote):
+async def test_ignore_showed_podcasts(fake_redis, pgsql, unquote):
     debug_mode = False
     got = await RandomPodcastAnswer(
         debug_mode,
         FkAnswer(),
-        rds,
+        fake_redis,
         pgsql,
         FkLogSink(),
     ).build(FkUpdate('{"chat":{"id":937584}}'))
@@ -215,12 +215,12 @@ async def test_ignore_showed_podcasts(rds, pgsql, unquote):
 
 
 @pytest.mark.usefixtures('_podcast_reactions')
-async def test_all_podcasts_showed(rds, pgsql, unquote):
+async def test_all_podcasts_showed(fake_redis, pgsql, unquote):
     debug_mode = False
     random_podcast_answer = RandomPodcastAnswer(
         debug_mode,
         FkAnswer(),
-        rds,
+        fake_redis,
         pgsql,
         FkLogSink(),
     )

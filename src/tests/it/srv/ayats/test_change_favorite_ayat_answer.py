@@ -69,9 +69,9 @@ async def _db_ayat(pgsql):
 
 
 @pytest.mark.usefixtures('_db_ayat')
-async def test_add(pgsql, rds, unquote):
+async def test_add(pgsql, fake_redis, unquote):
     got = await ChangeFavoriteAyatAnswer(
-        pgsql, FkAnswer(), rds, FkLogSink(),
+        pgsql, FkAnswer(), fake_redis, FkLogSink(),
     ).build(FkUpdate(
         json.dumps({
             'callback_query': {'data': 'addToFavor(1)'},
@@ -89,9 +89,9 @@ async def test_add(pgsql, rds, unquote):
 
 
 @pytest.mark.usefixtures('_db_ayat')
-async def test_remove(pgsql, rds, unquote):
+async def test_remove(pgsql, fake_redis, unquote):
     got = await ChangeFavoriteAyatAnswer(
-        pgsql, FkAnswer(), rds, FkLogSink(),
+        pgsql, FkAnswer(), fake_redis, FkLogSink(),
     ).build(FkUpdate(
         json.dumps({
             'callback_query': {'data': 'removeFromFavor(1)'},
