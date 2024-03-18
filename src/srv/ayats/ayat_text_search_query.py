@@ -26,6 +26,7 @@ import attrs
 from redis.asyncio import Redis
 
 from app_types.logger import LogSink
+from exceptions.content_exceptions import UserHasNotSearchQueryError
 from integrations.tg.chat_id import ChatId
 from srv.ayats.text_search_query import TextSearchQuery
 
@@ -93,7 +94,7 @@ class AyatTextSearchQuery(TextSearchQuery):
         """Чтение.
 
         :return: str
-        :raises ValueError: user has not search query
+        :raises UserHasNotSearchQueryError: user has not search query
         """
         key = self._key_template.format(int(self._chat_id))
         self._logger.info('Try read {0}'.format(key))
@@ -101,7 +102,7 @@ class AyatTextSearchQuery(TextSearchQuery):
         if not redis_value:
             msg = "User hasn't search query"
             self._logger.error(msg)
-            raise ValueError(msg)
+            raise UserHasNotSearchQueryError(msg)
         seqrch_query = redis_value.decode('utf-8')
         self._logger.info('Read value: {0}'.format(seqrch_query))
         return seqrch_query

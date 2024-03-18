@@ -20,25 +20,27 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import pytest
+import json
 
 from app_types.logger import FkLogSink
-from exceptions.content_exceptions import UserHasNotSearchQueryError
-from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
+from app_types.update import FkUpdate
+from handlers.paginate_by_search_ayat import PaginateBySearchAyat
+from integrations.tg.tg_answers import FkAnswer
+from settings.settings import FkSettings
 
 
-async def test_read(fake_redis):
-    await fake_redis.set('1:ayat_search_query', b'value')
+async def test(fake_redis, pgsql):
+    got = await PaginateBySearchAyat(
+        FkAnswer(),
+        fake_redis,
+        pgsql,
+        FkSettings({}),
+        FkLogSink(),
+    ).build(FkUpdate(json.dumps({
+        'chat': {'id': 843759},
+        'callback_query': {
+            'data': '1',
+        },
+    })))
 
-    assert await AyatTextSearchQuery(fake_redis, 1, FkLogSink()).read() == 'value'
-
-
-async def test_read_without_value(fake_redis):
-    with pytest.raises(UserHasNotSearchQueryError, match="User hasn't search query"):
-        await AyatTextSearchQuery(fake_redis, 17, FkLogSink()).read()
-
-
-async def test_write(fake_redis):
-    await AyatTextSearchQuery(fake_redis, 84395, FkLogSink()).write('query')
-
-    assert await fake_redis.get('84395:ayat_search_query') == b'query'
+    assert got[0].url.params['text'] == 'Пожалуйста, введите запрос для поиска:'
