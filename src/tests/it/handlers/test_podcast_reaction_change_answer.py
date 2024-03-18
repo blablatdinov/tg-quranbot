@@ -51,13 +51,13 @@ async def _db_podcast(pgsql):
 
 
 @pytest.mark.usefixtures('_db_podcast')
-async def test_without_message_text(pgsql, rds):
+async def test_without_message_text(pgsql, fake_redis):
     """Случай без текста в update.
 
     Почему-то телеграм не присылает текст сообщения спустя время
     """
     debug = False
-    got = await PodcastReactionChangeAnswer(debug, FkAnswer(), rds, pgsql, FkLogSink()).build(
+    got = await PodcastReactionChangeAnswer(debug, FkAnswer(), fake_redis, pgsql, FkLogSink()).build(
         FkUpdate(json.dumps({
             'callback_query': {
                 'from': {'id': 905},
@@ -82,9 +82,9 @@ async def test_without_message_text(pgsql, rds):
 
 
 @pytest.mark.usefixtures('_db_podcast')
-async def test_without_message_with_audio(pgsql, rds):
+async def test_without_message_with_audio(pgsql, fake_redis):
     debug = False
-    got = await PodcastReactionChangeAnswer(debug, FkAnswer(), rds, pgsql, FkLogSink()).build(
+    got = await PodcastReactionChangeAnswer(debug, FkAnswer(), fake_redis, pgsql, FkLogSink()).build(
         FkUpdate(json.dumps({
             'callback_query': {
                 'from': {'id': 905},

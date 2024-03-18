@@ -75,10 +75,10 @@ async def _existed_reaction(pgsql):
     (3, 'like', '👍 1', '👎 0'),
     (3, 'dislike', '👍 0', '👎 1'),
 ])
-async def test(pgsql, rds, reaction, podcast_id, button1, button2):
+async def test(pgsql, fake_redis, reaction, podcast_id, button1, button2):
     debug = True
     got = await PodcastReactionChangeAnswer(
-        debug, FkAnswer(), rds, pgsql, FkLogSink(),
+        debug, FkAnswer(), fake_redis, pgsql, FkLogSink(),
     ).build(FkUpdate(
         json.dumps({
             'chat': {'id': 1},
