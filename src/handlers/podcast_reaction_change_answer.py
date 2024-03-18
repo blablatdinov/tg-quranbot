@@ -28,7 +28,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
-from app_types.intable import SyncToAsyncIntable
+from app_types.intable import FkAsyncIntable
 from app_types.logger import LogSink
 from app_types.stringable import SupportsStr
 from app_types.supports_bool import SupportsBool
@@ -145,7 +145,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
         """
         reaction = PodcastReaction(CallbackQueryData(update))
         podcast = PgPodcast(
-            SyncToAsyncIntable(reaction.podcast_id()),
+            FkAsyncIntable(reaction.podcast_id()),
             self._pgsql,
         )
         await self._apply_reaction(int(TgChatId(update)), reaction)

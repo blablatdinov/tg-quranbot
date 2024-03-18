@@ -28,7 +28,7 @@ import httpx
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import SyncToAsyncIntable
+from app_types.intable import FkAsyncIntable
 from app_types.update import Update
 from exceptions.user import UserAlreadyActiveError, UserAlreadyExistsError
 from integrations.tg.chat_id import TgChatId
@@ -60,7 +60,7 @@ class UserAlreadyExistsAnswer(TgAnswer):
         """
         with suppress(UserAlreadyExistsError):
             return await self._origin.build(update)
-        user = PgUser(SyncToAsyncIntable(TgChatId(update)), self._pgsql)
+        user = PgUser(FkAsyncIntable(TgChatId(update)), self._pgsql)
         await self._update_and_push_event(update)
         if await user.is_active():
             raise UserAlreadyActiveError
