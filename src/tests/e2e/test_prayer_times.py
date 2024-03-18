@@ -53,13 +53,23 @@ def expected_message():
             return '\n'.join([
                 'Время намаза для г. Казань ({0})'.format(date.strftime('%d.%m.%Y')),
                 '',
-                'Иртәнге: {0}'.format(datetime.datetime.strptime(elems[1], '%H:%M').strftime('%H:%M')),
-                'Восход: {0}'.format(datetime.datetime.strptime(elems[3], '%H:%M').strftime('%H:%M')),
-                'Өйлә: {0}'.format(datetime.datetime.strptime(elems[5], '%H:%M').strftime('%H:%M')),
-                'Икенде: {0}'.format(datetime.datetime.strptime(elems[6], '%H:%M').strftime('%H:%M')),
-                'Ахшам: {0}'.format(datetime.datetime.strptime(elems[7], '%H:%M').strftime('%H:%M')),
-                'Ястү: {0}'.format(datetime.datetime.strptime(elems[8], '%H:%M').strftime('%H:%M')),
-            ])
+                'Иртәнге: {0}',
+                'Восход: {1}',
+                'Өйлә: {2}',
+                'Икенде: {3}',
+                'Ахшам: {4}',
+                'Ястү: {5}',
+            ]).format(
+                *[
+                    (
+                        datetime.datetime
+                        .strptime(elems[idx], '%H:%M')
+                        .astimezone(pytz.timezone('Europe/Moscow'))
+                        .strftime('%H:%M')
+                    )
+                    for idx in (1, 3, 5, 6, 7, 8)
+                ],
+            )
     msg = 'Prayers on dumrt not found'
     raise ValueError(msg)
 

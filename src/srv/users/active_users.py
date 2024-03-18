@@ -24,6 +24,7 @@ import datetime
 from typing import Protocol, final, override
 
 import attrs
+import pytz
 from databases import Database
 from pyeo import elegant
 
@@ -153,7 +154,7 @@ class UpdatedUsersStatusEvent(UpdatedUsersStatus):
                 'qbot_admin.users',
                 {
                     'user_id': await user.chat_id(),
-                    'date_time': str(datetime.datetime.now()),
+                    'date_time': str(datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))),
                 },
                 'User.Unsubscribed',
                 1,

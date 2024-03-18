@@ -24,6 +24,7 @@ import datetime
 import uuid
 
 import pytest
+import pytz
 
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat_id_by_sura_ayat import AyatIdByPublicId, AyatIdBySuraAyatNum
@@ -32,7 +33,7 @@ from srv.ayats.search_query import FkSearchQuery
 
 @pytest.fixture()
 async def _db_ayat(pgsql):
-    created_at = datetime.datetime.now()
+    created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
     await pgsql.execute(
         '\n'.join([
             'INSERT INTO files (file_id, telegram_file_id, link, created_at)',

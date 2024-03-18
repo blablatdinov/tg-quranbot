@@ -24,6 +24,7 @@ import datetime
 import json
 
 import pytest
+import pytz
 
 from app_types.logger import FkLogSink
 from app_types.update import FkUpdate
@@ -33,7 +34,7 @@ from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
 
 @pytest.fixture()
 async def _db_ayat(pgsql):
-    created_at = datetime.datetime.now()
+    created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
     await pgsql.execute(
         '\n'.join([
             'INSERT INTO files (file_id, telegram_file_id, link, created_at)',

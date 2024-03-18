@@ -25,6 +25,7 @@ import json
 from pathlib import Path
 
 import pytest
+import pytz
 
 from app_types.update import FkUpdate
 from handlers.decrement_skipped_prayer_answer import DecrementSkippedPrayerAnswer
@@ -52,9 +53,13 @@ async def _prayers(pgsql):
             {
                 'prayer_id': int(line[0]),
                 'name': line[1],
-                'time': datetime.datetime.strptime(line[2], '%H:%M:%S'),
+                'time': datetime.datetime.strptime(line[2], '%H:%M:%S').astimezone(
+                    pytz.timezone('Europe/Moscow'),
+                ),
                 'city_id': line[3],
-                'day': datetime.datetime.strptime(line[4], '%Y-%m-%d'),
+                'day': datetime.datetime.strptime(line[4], '%Y-%m-%d').astimezone(
+                    pytz.timezone('Europe/Moscow'),
+                ),
             }
             for line in lines
         ],

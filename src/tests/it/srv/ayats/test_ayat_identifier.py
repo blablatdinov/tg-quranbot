@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import datetime
 
 import pytest
+import pytz
 
 from app_types.intable import ThroughAsyncIntable
 from exceptions.content_exceptions import AyatNotFoundError
@@ -31,7 +32,7 @@ from srv.ayats.ayat_identifier import PgAyatIdentifier
 
 @pytest.fixture()
 async def _db_ayat(pgsql):
-    created_at = datetime.datetime.now()
+    created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
     await pgsql.execute(
         '\n'.join([
             'INSERT INTO files (file_id, telegram_file_id, link, created_at)',

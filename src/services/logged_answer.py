@@ -26,6 +26,7 @@ import uuid
 from typing import Final, final, override
 
 import attrs
+import pytz
 from pyeo import elegant
 
 from app_types.update import Update
@@ -81,7 +82,7 @@ class LoggedAnswer(SendableInterface):
                 UPDATES_LOG,
                 {
                     'json': str(update),
-                    'timestamp': datetime.datetime.now().isoformat(),
+                    'timestamp': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).isoformat(),
                 },
                 'Button.Pushed',
                 1,

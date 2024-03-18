@@ -24,6 +24,7 @@ import datetime
 import uuid
 
 import pytest
+import pytz
 
 from exceptions.content_exceptions import BotFileNotFoundError
 from srv.files.pg_file import PgFile
@@ -40,7 +41,7 @@ async def db_file_id(pgsql):
         'file_id': str(file_id),
         'tg_file_id': 'adsf',
         'link': 'https://link.domain',
-        'created_at': datetime.datetime.now(),
+        'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
     })
     return file_id
 
