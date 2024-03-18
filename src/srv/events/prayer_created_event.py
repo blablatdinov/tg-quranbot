@@ -21,9 +21,10 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
-from typing import TypeAlias, final, override
+from typing import final, override
 
 import attrs
+import pytz
 from databases import Database
 from eljson.json import Json
 from loguru import logger
@@ -31,13 +32,11 @@ from pyeo import elegant
 
 from srv.events.recieved_event import ReceivedEvent
 
-PrayerCreatedEvent: TypeAlias = ReceivedEvent
-
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class RbmqPrayerCreatedEvent(PrayerCreatedEvent):
+class PrayerCreatedEvent(ReceivedEvent):
     """Событие создания аята из rabbitmq."""
 
     _pgsql: Database
@@ -52,16 +51,17 @@ class RbmqPrayerCreatedEvent(PrayerCreatedEvent):
             'INSERT INTO prayers (name, time, city_id, day) VALUES',
             '(:name, :time, :city_id, :day)',
         ])
-        await self._pgsql.execute_many(
+        await self._pgsql.execute(
             query,
-            [
-                {
-                    'name': elem['name'],
-                    'time': datetime.datetime.strptime(elem['time'], '%H:%M'),
-                    'city_id': elem['city_id'],
-                    'day': datetime.datetime.strptime(elem['day'], '%Y-%m-%d'),
-                }
-                for elem in json.path('$.data.prayers')[0]
-            ],
+            {
+                'name': json.path('$.data.name')[0],
+                'time': datetime.datetime.strptime(json.path('$.data.time')[0], '%H:%M').replace(
+                    tzinfo=pytz.timezone('Europe/Moscow'),
+                ),
+                'city_id': json.path('$.data.city_id')[0],
+                'day': datetime.datetime.strptime(json.path('$.data.day')[0], '%Y-%m-%d').astimezone(
+                    pytz.timezone('Europe/Moscow'),
+                ),
+            },
         )
         logger.info('Prayer created')

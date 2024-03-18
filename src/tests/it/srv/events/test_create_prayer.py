@@ -20,44 +20,41 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, TypeAlias, TypeVar, final, override
+import datetime
 
-import attrs
-from eljson.json import Json
-from pyeo import elegant
+import pytest
+from eljson.json_doc import JsonDoc
 
-JsonPathQuery: TypeAlias = str
-JsonPathReturnType_co = TypeVar('JsonPathReturnType_co', covariant=True)
+from srv.events.prayer_created_event import PrayerCreatedEvent
 
 
-@elegant
-class ReceivedEvent(Protocol[JsonPathReturnType_co]):
-    """Событие."""
-
-    async def process(self, json_doc: Json) -> None:
-        """Обработать событие.
-
-        :param json_doc: Json
-        """
+@pytest.fixture()
+async def _city(pgsql):
+    await pgsql.execute('\n'.join([
+        'INSERT INTO cities',
+        '(city_id)',
+        "VALUES ('6a4e14a7-b05d-4769-b801-e0c0dbf3c923')",
+    ]))
 
 
-@elegant
-@attrs.define(frozen=True)
-@final
-class EventFork(ReceivedEvent):
-    """Событие."""
+@pytest.mark.usefixtures('_city')
+async def test(pgsql):
+    await PrayerCreatedEvent(pgsql).process(JsonDoc({
+        'data': {
+            'name': 'fajr',
+            'time': '5:36',
+            'city_id': '6a4e14a7-b05d-4769-b801-e0c0dbf3c923',
+            'day': '2023-01-02',
+        },
+    }))
 
-    _name: str
-    _version: int
-    _origin: ReceivedEvent
-
-    @override
-    async def process(self, json_doc: Json) -> None:
-        """Обработать событие.
-
-        :param json_doc: Json
-        """
-        name_match = json_doc.path('$.event_name')[0] == self._name
-        version_match = json_doc.path('$.event_version')[0] == self._version
-        if name_match and version_match:
-            await self._origin.process(json_doc)
+    row = await pgsql.fetch_one('SELECT name, time, city_id, day FROM prayers')
+    assert {
+        key: row[key]
+        for key in ('name', 'time', 'city_id', 'day')
+    } == {
+        'name': 'fajr',
+        'time': datetime.time(5, 36),
+        'city_id': '6a4e14a7-b05d-4769-b801-e0c0dbf3c923',
+        'day': datetime.date(2023, 1, 2),
+    }

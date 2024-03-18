@@ -47,15 +47,11 @@ from settings.settings import BASE_DIR
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.check_user_status import CheckUsersStatus
 from srv.events.event_hook import EventHookApp, RbmqEventHook
-<<<<<<< HEAD
 from srv.events.mailing_created import MailingCreatedEvent
 from srv.events.message_deleted import MessageDeleted
 from srv.events.morning_content_published import MorningContentPublishedEvent
+from srv.events.prayer_created_event import PrayerCreatedEvent
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
-||||||| parent of cfe77a6 (Create prayer via event)
-=======
-from srv.events.prayer_created_event import RbmqPrayerCreatedEvent
->>>>>>> cfe77a6 (Create prayer via event)
 from srv.events.recieved_event import EventFork
 from srv.events.sink import RabbitmqSink
 
@@ -157,7 +153,7 @@ def main(sys_args: list[str]) -> None:
                         rabbitmq_sink,
                         logger,
                     )),
-                    EventFork('Prayers.Created', 1, RbmqPrayerCreatedEvent(pgsql)),
+                    EventFork('Prayers.Created', 2, PrayerCreatedEvent(pgsql)),
                 ),
             ),
         ),
