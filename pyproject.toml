@@ -84,9 +84,7 @@ skip-string-normalization = true
 
 [tool.pytest.ini_options]
 filterwarnings = [
-  # TODO #360:30min включить проверку warnings
-  #  Рассскомаентировать следующую строку
-  # "error::DeprecationWarning",
+  "error::DeprecationWarning",
   "error::pytest.PytestUnknownMarkWarning",
   "error::pytest.PytestUnraisableExceptionWarning",
 ]
