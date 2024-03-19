@@ -65,6 +65,6 @@ def query_search_update():
     lf('query_search_update'),
 ])
 def test(update):
-    chat_id = TgChatId(TgUpdate(update))
+    chat_id = TgChatId(TgUpdate.str_ctor(update))
 
     assert int(chat_id) == 358610865

@@ -34,7 +34,7 @@ def callback_update():
 
 async def test_on_message_update(message_update_factory):
     got = await TgMessageRegexAnswer(r'\d+:\d+', FkAnswer()).build(
-        TgUpdate(message_update_factory('1:1', 1)),
+        TgUpdate.str_ctor(message_update_factory('1:1', 1)),
     )
 
     assert got

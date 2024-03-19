@@ -36,7 +36,7 @@ def coordinates_json():
 
 
 def test(coordinates_json):
-    coordinates = TgMessageCoordinates(TgUpdate(coordinates_json))
+    coordinates = TgMessageCoordinates(TgUpdate.str_ctor(coordinates_json))
 
     assert coordinates.latitude() == 40.329649
     assert coordinates.longitude() == -93.599524

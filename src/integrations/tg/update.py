@@ -34,12 +34,18 @@ from app_types.update import Update
 @attrs.define(frozen=True)
 @elegant
 class TgUpdate(Update):
-    """Объект обновления от телеграмма.
+    """Объект обновления от телеграмма."""
 
-    _raw_udpate: Stringable - сырая json строка
-    """
+    _update_dict: dict
 
-    _raw_update: SupportsStr
+    @classmethod
+    def str_ctor(cls, raw_update: SupportsStr) -> Update:
+        """Конструктор для строки.
+
+        :param raw_update: SupportsStr
+        :return: TgUpdate
+        """
+        return cls(ujson.loads(str(raw_update)))
 
     @override
     def __str__(self) -> str:
@@ -47,7 +53,7 @@ class TgUpdate(Update):
 
         :return: str
         """
-        return str(self._raw_update)
+        return ujson.dumps(self._update_dict)
 
     @override
     def asdict(self) -> dict:
@@ -58,7 +64,7 @@ class TgUpdate(Update):
 
         :return: dict
         """
-        return ujson.loads(str(self._raw_update))
+        return self._update_dict
 
 
 @final

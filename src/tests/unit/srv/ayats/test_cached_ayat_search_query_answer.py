@@ -69,6 +69,8 @@ def update():
 
 async def test(update, fake_redis):
     with suppress(FakeError):
-        await CachedAyatSearchQueryAnswer(TgAnswerFake(), fake_redis, FkLogSink()).build(TgUpdate(update))
+        await CachedAyatSearchQueryAnswer(
+            TgAnswerFake(), fake_redis, FkLogSink(),
+        ).build(TgUpdate.str_ctor(update))
 
     assert await fake_redis.get('358610865:ayat_search_query') == 'камни'.encode()

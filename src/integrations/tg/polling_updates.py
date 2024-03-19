@@ -148,9 +148,6 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
     async def __anext__(self) -> list[Update]:
         """Вернуть следующий элемент.
 
-        # TODO #360:30min мы парсим json, потом обратно перегоняем его в строку.
-        #  Проверить насколько это вредит производительности
-
         :return: list[Update]
         """
         async with httpx.AsyncClient() as client:
@@ -169,4 +166,4 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
             if not parsed_result:
                 return []
             self._offset = parsed_result[-1]['update_id'] + 1  # noqa: WPS601
-            return [TgUpdate(ujson.dumps(elem, ensure_ascii=False)) for elem in parsed_result]
+            return [TgUpdate(elem) for elem in parsed_result]

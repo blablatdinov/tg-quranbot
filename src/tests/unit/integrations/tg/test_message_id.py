@@ -43,6 +43,6 @@ def stringable_callback_update(callback_update_factory):
     (lf('stringable_callback_update'), 22627),
 ])
 def test(update, expected):
-    message_id = TgMessageId(TgUpdate(update))
+    message_id = TgMessageId(TgUpdate.str_ctor(update))
 
     assert int(message_id) == expected
