@@ -40,7 +40,7 @@ async def _db_cities(pgsql):
 
 
 @pytest.mark.usefixtures('_db_cities')
-async def test(pgsql, unquote):
+async def test(pgsql):
     got = await InlineQueryAnswer(FkAnswer(), pgsql).build(
         FkUpdate(ujson.dumps({
             'update_id': 1,
@@ -61,7 +61,7 @@ async def test(pgsql, unquote):
 
 
 @pytest.mark.usefixtures('_db_cities')
-async def test_not_processable(pgsql, unquote):
+async def test_not_processable(pgsql):
     with pytest.raises(NotProcessableUpdateError):
         await InlineQueryAnswer(FkAnswer(), pgsql).build(
             FkUpdate(ujson.dumps({

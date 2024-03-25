@@ -63,7 +63,7 @@ def test_not_found(env_file):
         assert EnvFileSettings(env_file).unknown == 'bar'
 
 
-def test_or_settings(env_file):
+def test_or_settings():
     settings = OsOrFileSettings(
         FkSettings({'FOO': 'foo_value'}),
         FkSettings({'BAR': 'bar_value'}),

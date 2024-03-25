@@ -69,7 +69,7 @@ async def _db_ayat(pgsql):
 
 
 @pytest.mark.usefixtures('_db_ayat')
-async def test_add(pgsql, fake_redis, unquote):
+async def test_add(pgsql, fake_redis):
     got = await ChangeFavoriteAyatAnswer(
         pgsql, FkAnswer(), fake_redis, FkLogSink(),
     ).build(FkUpdate(
@@ -89,7 +89,7 @@ async def test_add(pgsql, fake_redis, unquote):
 
 
 @pytest.mark.usefixtures('_db_ayat')
-async def test_remove(pgsql, fake_redis, unquote):
+async def test_remove(pgsql, fake_redis):
     got = await ChangeFavoriteAyatAnswer(
         pgsql, FkAnswer(), fake_redis, FkLogSink(),
     ).build(FkUpdate(

@@ -45,15 +45,13 @@ async def test_exception():
     assert got[0].url == 'https://some.domain'
 
 
-async def test_invite_set_city_answer(fake_redis, unquote):
+async def test_invite_set_city_answer(fake_redis):
     got = await InviteSetCityAnswer(
         FkAnswer(), fake_redis, FkLogSink(),
     ).build(FkUpdate('{"chat":{"id":1}}'))
 
-    assert unquote(got[0].url) == 'https://some.domain?reply_markup={0}'.format(
-        ujson.dumps({
-            'inline_keyboard': [[
-                {'text': 'Поиск города', 'switch_inline_query_current_chat': ''},
-            ]],
-        }),
-    )
+    assert got[0].url.params['reply_markup'] == ujson.dumps({
+        'inline_keyboard': [[
+            {'text': 'Поиск города', 'switch_inline_query_current_chat': ''},
+        ]],
+    })

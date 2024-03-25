@@ -133,7 +133,7 @@ async def test_today(pgsql, fake_redis, time_machine):
 
 
 @pytest.mark.usefixtures('_generated_prayers')
-async def test_before(pgsql, fake_redis, time_machine, unquote):
+async def test_before(pgsql, fake_redis, time_machine):
     time_machine.move_to('2023-12-19')
     got = await UserPrayerStatusChangeAnswer(
         FkAnswer(), pgsql, fake_redis, FkLogSink(), FkSettings({'RAMADAN_MODE': 'off'}),

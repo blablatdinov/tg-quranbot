@@ -143,7 +143,7 @@ async def users(pgsql):
 
 
 @pytest.mark.usefixtures('_mock_http')
-async def test(pgsql, users, fake_redis, time_machine):
+async def test(pgsql, fake_redis, time_machine):
     time_machine.move_to('2024-03-06')
     settings = FkSettings(
         {
