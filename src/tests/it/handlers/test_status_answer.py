@@ -25,7 +25,7 @@ from handlers.status_answer import StatusAnswer
 from integrations.tg.tg_answers import FkAnswer
 
 
-async def test(pgsql, fake_redis, unquote):
+async def test(pgsql, fake_redis):
     got = await StatusAnswer(FkAnswer(), pgsql, fake_redis).build(
         FkUpdate('{"chat":{"id":1}}'),
     )

@@ -28,7 +28,7 @@ from handlers.favorites_answer import FavoriteAyatsAnswer
 from integrations.tg.tg_answers import FkAnswer
 
 
-async def test_favorite_ayats_answer(pgsql, fake_redis, unquote):
+async def test_favorite_ayats_answer(pgsql, fake_redis):
     debug = False
     got = await FavoriteAyatsAnswer(debug, pgsql, fake_redis, FkAnswer(), FkLogSink()).build(
         FkUpdate(ujson.dumps({

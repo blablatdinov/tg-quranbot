@@ -194,7 +194,7 @@ async def test_with_referrer(pgsql, fake_redis, unquote):
 
 @pytest.mark.usefixtures('_db_ayat', '_existed_user')
 @pytest.mark.parametrize('referrer_id', [85, 3001])
-async def test_fake_referrer(pgsql, fake_redis, unquote, referrer_id):
+async def test_fake_referrer(pgsql, fake_redis, referrer_id):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), fake_redis, FkSettings(), FkLogSink(),
     ).build(FkUpdate(ujson.dumps({

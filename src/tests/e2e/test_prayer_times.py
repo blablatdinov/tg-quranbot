@@ -84,7 +84,7 @@ def test_prayer_times(tg_client, bot_name, expected_message, wait_until):
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')
 @pytest.mark.tg_button()
-def test_mark_as_readed(tg_client, bot_name, expected_message, wait_until):
+def test_mark_as_readed(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     messages = wait_until(tg_client, 5)
     list(chain.from_iterable(
@@ -107,7 +107,7 @@ def test_mark_as_readed(tg_client, bot_name, expected_message, wait_until):
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')
 @pytest.mark.tg_button()
-def test_mark_not_readed(tg_client, bot_name, expected_message, wait_until):
+def test_mark_not_readed(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     messages = wait_until(tg_client, 5)
     list(chain.from_iterable(
@@ -133,7 +133,7 @@ def test_mark_not_readed(tg_client, bot_name, expected_message, wait_until):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
-def test_with_set_city_by_name(tg_client, bot_name, expected_message, wait_until):
+def test_with_set_city_by_name(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     wait_until(tg_client, 2)
     tg_client.send_message(bot_name, 'Казань')
@@ -143,7 +143,7 @@ def test_with_set_city_by_name(tg_client, bot_name, expected_message, wait_until
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
-def test_with_set_city_by_location(tg_client, bot_name, expected_message, wait_until):
+def test_with_set_city_by_location(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     wait_until(tg_client, 2)
     tg_client(

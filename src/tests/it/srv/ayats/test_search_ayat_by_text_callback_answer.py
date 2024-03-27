@@ -78,7 +78,7 @@ def search_answer(pgsql, fake_redis):
 
 
 @pytest.mark.usefixtures('_db_ayat')
-async def test(fake_redis, pgsql, unquote, search_answer):
+async def test(fake_redis, unquote, search_answer):
     await AyatTextSearchQuery(fake_redis, FkChatId(1758), FkLogSink()).write('Content')
     got = await search_answer.build(FkUpdate('{"callback_query": {"data": "1"}, "chat": {"id": 1758}}'))
 
@@ -105,7 +105,7 @@ async def test(fake_redis, pgsql, unquote, search_answer):
 
 
 @pytest.mark.usefixtures('_db_ayat')
-async def test_unknown_target_ayat(fake_redis, pgsql, unquote, search_answer):
+async def test_unknown_target_ayat(fake_redis, search_answer):
     await AyatTextSearchQuery(fake_redis, 1758, FkLogSink()).write('Content')
     with pytest.raises(AyatNotFoundError):
         await search_answer.build(FkUpdate('{"callback_query": {"data": "2"}, "chat": {"id": 1758}}'))
