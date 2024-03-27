@@ -21,6 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import datetime
+import time
 from itertools import chain
 
 import httpx
@@ -78,6 +79,8 @@ def expected_message():
 def test_prayer_times(tg_client, bot_name, expected_message, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     messages = wait_until(tg_client, 5)
+    tg_client.send_message(bot_name, 'Время намаза')
+    messages = wait_until(tg_client, 7)
 
     assert messages[0].message == expected_message
 
