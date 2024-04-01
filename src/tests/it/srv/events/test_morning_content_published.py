@@ -143,7 +143,7 @@ async def users(pgsql):
 
 @pytest.mark.usefixtures('_ayats', '_mock_http')
 async def test(pgsql, users, settings_ctor):
-    settings = settings_ctor(
+    settings = settings_ctor(  # noqa: S106. Not secure issue
         rabbitmq_host='localhost',
         rabbitmq_user='guest',
         rabbitmq_pass='guest',  # noqa: S106. Not secure issue

@@ -55,4 +55,7 @@ class Settings(BaseSettings):
 
         :return: list[int]
         """
-        return [int(chat_id.strip()) for chat_id in self.ADMIN_CHAT_IDS.strip().split(',')]
+        return [
+            int(chat_id.strip())
+            for chat_id in self.ADMIN_CHAT_IDS.strip().split(',')
+        ]

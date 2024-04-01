@@ -31,7 +31,9 @@ from tests.creating_test_db import apply_migrations, create_db, drop_db
 @pytest.fixture(scope='session')
 def _migrate():
     create_db()
-    connection = psycopg2.connect(str(Settings(_env_file=BASE_DIR.parent / '.env').DATABASE_URL))
+    connection = psycopg2.connect(
+        str(Settings(_env_file=BASE_DIR.parent / '.env').DATABASE_URL),
+    )
     connection.autocommit = True
     cursor = connection.cursor()
     apply_migrations(cursor)
