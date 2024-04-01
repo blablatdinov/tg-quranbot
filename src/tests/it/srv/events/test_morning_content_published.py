@@ -146,7 +146,7 @@ async def test(pgsql, users, settings_ctor):
     settings = settings_ctor(
         rabbitmq_host='localhost',
         rabbitmq_user='guest',
-        rabbitmq_pass='guest',
+        rabbitmq_pass='guest',  # noqa: S106. Not secure issue
         rabbitmq_vhost='',
         daily_ayats='on',
     )

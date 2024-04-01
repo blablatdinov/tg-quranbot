@@ -75,7 +75,7 @@ def fk_logger():
 
 @pytest.fixture()
 def settings_ctor(faker):
-    def _settings_ctor(
+    def _settings_ctor(  # noqa: PLR0917, its settings ctor
         redis_dsn='redis://default@localhost:6379/15',
         debug=True,
         database_url='postgresql://almazilaletdinov@localhost:5432/quranbot_test',

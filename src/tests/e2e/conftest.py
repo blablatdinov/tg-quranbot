@@ -33,10 +33,10 @@ import psycopg2
 import pytest
 import ujson
 from loguru import logger
-from settings import Settings, BASE_DIR
 from telethon.sync import TelegramClient
 
 from main import main
+from settings import BASE_DIR, Settings
 from tests.creating_test_db import create_db, drop_db, fill_test_db
 
 # Костыль, для сохранения одного сообщения в чате.

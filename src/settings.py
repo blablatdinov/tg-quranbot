@@ -23,9 +23,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from pathlib import Path
 from typing import final
 
-from pydantic import RedisDsn, PostgresDsn
+from pydantic import PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings
-from typing import List
 
 BASE_DIR = Path(__file__).parent  # Path to src dir
 
@@ -52,4 +51,8 @@ class Settings(BaseSettings):
     BASE_DIR: Path = BASE_DIR
 
     def admin_chat_ids(self) -> list[int]:
+        """Список идентификаторов админов.
+
+        :return: list[int]
+        """
         return [int(chat_id.strip()) for chat_id in self.ADMIN_CHAT_IDS.strip().split(',')]

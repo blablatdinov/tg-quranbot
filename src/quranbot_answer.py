@@ -26,7 +26,6 @@ import httpx
 from databases import Database
 from redis.asyncio import Redis
 
-
 from app_types.logger import LogSink
 from app_types.update import Update
 from handlers.concrete_podcast_answer import ConcretePodcastAnswer

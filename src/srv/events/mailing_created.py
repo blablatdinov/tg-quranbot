@@ -36,11 +36,11 @@ from integrations.tg.sendable import SendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer, TgHtmlParseAnswer, TgTextAnswer
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from services.logged_answer import LoggedAnswer
+from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import SinkInterface
 from srv.users.active_users import PgUpdatedUsersStatus, UpdatedUsersStatusEvent
 from srv.users.pg_user import FkUser, User
-from settings import Settings
 
 
 @final

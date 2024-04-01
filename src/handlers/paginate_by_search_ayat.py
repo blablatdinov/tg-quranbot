@@ -28,7 +28,6 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
-
 from app_types.logger import LogSink
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId

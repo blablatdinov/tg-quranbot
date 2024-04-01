@@ -27,7 +27,8 @@ import pika
 import psycopg2
 import pytest
 import ujson
-from settings import Settings, BASE_DIR
+
+from settings import BASE_DIR, Settings
 
 
 @pytest.fixture()

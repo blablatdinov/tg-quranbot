@@ -23,7 +23,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from pathlib import Path
 
 import psycopg2
-from settings import Settings, BASE_DIR
+
+from settings import BASE_DIR, Settings
 
 settings = Settings(_env_file=BASE_DIR.parent / '.env')
 

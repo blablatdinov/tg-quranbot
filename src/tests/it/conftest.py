@@ -23,8 +23,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import psycopg2
 import pytest
 from databases import Database
-from settings import Settings, BASE_DIR
 
+from settings import BASE_DIR, Settings
 from tests.creating_test_db import apply_migrations, create_db, drop_db
 
 
