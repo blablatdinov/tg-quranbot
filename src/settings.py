@@ -20,31 +20,32 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final, override
+from pathlib import Path
+from typing import final
 
-import attrs
-from pyeo import elegant
+from pydantic import (
+    RedisDsn,
+)
+from pydantic_settings import BaseSettings
 
-from settings.settings import Settings
+BASE_DIR = Path(__file__).parent.parent  # Path to src dir
 
 
 @final
-@elegant
-@attrs.define(frozen=True)
-class OsOrFileSettings(Settings):
-    """Объект, который достает настройки из переменных окружения или файла."""
+class Settings(BaseSettings):
+    """Настройки приложения."""
 
-    _os_envs: Settings
-    _env_file: Settings
-
-    @override
-    def __getattr__(self, attr_name: str) -> str:
-        """Получить аттрибут.
-
-        :param attr_name: str
-        :return: str
-        """
-        try:
-            return getattr(self._os_envs, attr_name)
-        except ValueError:
-            return getattr(self._env_file, attr_name)
+    REDIS_DSN: RedisDsn
+    API_TOKEN: str
+    RABBITMQ_USER: str
+    RABBITMQ_PASS: str
+    RABBITMQ_HOST: str
+    RABBITMQ_VHOST: str
+    DAILY_AYATS: bool
+    DAILY_PRAYERS: bool
+    RAMADAN_MODE: bool
+    SENTRY_DSN: str
+    ADMIN_CHAT_IDS: list[int]
+    TELEGRAM_CLIENT_ID: str
+    TELEGRAM_CLIENT_HASH: str
+    BASE_DIR: Path = BASE_DIR
