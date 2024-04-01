@@ -31,7 +31,7 @@ settings = Settings(_env_file=BASE_DIR.parent / '.env')
 
 def create_db() -> None:
     connection = psycopg2.connect(
-        str(str(settings.DATABASE_URL)).replace('quranbot_test', 'postgres'),
+        str(settings.DATABASE_URL).replace('quranbot_test', 'postgres'),
     )
     connection.autocommit = True
     cursor = connection.cursor()

@@ -74,7 +74,7 @@ def fk_logger():
 
 
 @pytest.fixture()
-def settings_ctor(faker):
+def settings_ctor():
     def _settings_ctor(  # noqa: PLR0917, S107, WPS430, its settings ctor, not secure issue, pytest fixture specific
         redis_dsn='redis://default@localhost:6379/15',
         debug=True,
