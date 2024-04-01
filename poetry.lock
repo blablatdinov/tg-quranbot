@@ -625,6 +625,20 @@ files = [
 tests = ["asttokens (>=2.1.0)", "coverage", "coverage-enable-subprocess", "ipython", "littleutils", "pytest", "rich"]
 
 [[package]]
+name = "faker"
+version = "24.4.0"
+description = "Faker is a Python package that generates fake data for you."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "Faker-24.4.0-py3-none-any.whl", hash = "sha256:998c29ee7d64429bd59204abffa9ba11f784fb26c7b9df4def78d1a70feb36a7"},
+    {file = "Faker-24.4.0.tar.gz", hash = "sha256:a5ddccbe97ab691fad6bd8036c31f5697cfaa550e62e000078d1935fa8a7ec2e"},
+]
+
+[package.dependencies]
+python-dateutil = ">=2.4"
+
+[[package]]
 name = "fakeredis"
 version = "2.21.3"
 description = "Python implementation of redis API, can be used for testing purposes."
@@ -2963,17 +2977,6 @@ doc = ["cairosvg (>=2.5.2,<3.0.0)", "mdx-include (>=1.4.1,<2.0.0)", "mkdocs (>=1
 test = ["black (>=22.3.0,<23.0.0)", "coverage (>=6.2,<7.0)", "isort (>=5.0.6,<6.0.0)", "mypy (==0.910)", "pytest (>=4.4.0,<8.0.0)", "pytest-cov (>=2.10.0,<5.0.0)", "pytest-sugar (>=0.9.4,<0.10.0)", "pytest-xdist (>=1.32.0,<4.0.0)", "rich (>=10.11.0,<14.0.0)", "shellingham (>=1.3.0,<2.0.0)"]
 
 [[package]]
-name = "types-psycopg2"
-version = "2.9.21.20240311"
-description = "Typing stubs for psycopg2"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "types-psycopg2-2.9.21.20240311.tar.gz", hash = "sha256:722945dffa6a729bebc660f14137f37edfcead5a2c15eb234212a7d017ee8072"},
-    {file = "types_psycopg2-2.9.21.20240311-py3-none-any.whl", hash = "sha256:2e137ae2b516ee0dbaab6f555086b6cfb723ba4389d67f551b0336adf4efcf1b"},
-]
-
-[[package]]
 name = "types-pyopenssl"
 version = "23.3.0.20240106"
 description = "Typing stubs for pyOpenSSL"
@@ -3379,10 +3382,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-<<<<<<< HEAD
-content-hash = "189034a4e8f43ec72d4dfb1218bfb2a6e81a6cf01f28efbf0c24459519abce4c"
-||||||| parent of 8a59004 (Setup pydantic settings)
-content-hash = "a24b00371a9476ae2aee86d06e19cd5543473a463d4243795ef4584dfca2b36e"
-=======
-content-hash = "87cd0f4e533b592323e86d5c453a1499642c41c26f070babc131c4717d60d234"
->>>>>>> 8a59004 (Setup pydantic settings)
+content-hash = "811bc826ad01bfae87769590adb62ebd728a2499e565c18c09bf581a7a856526"

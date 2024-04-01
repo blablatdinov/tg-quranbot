@@ -30,7 +30,6 @@ from furl import furl
 from loguru import logger
 
 from integrations.tg.tg_answers import TgEmptyAnswer
-from settings.settings import FkSettings
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
 from srv.events.sink import RabbitmqSink
 from srv.users.pg_user import PgUser
@@ -143,18 +142,16 @@ async def users(pgsql):
 
 
 @pytest.mark.usefixtures('_mock_http')
-async def test(pgsql, fake_redis, time_machine):
+async def test(pgsql, fake_redis, time_machine, settings_ctor):
     time_machine.move_to('2024-03-06')
-    settings = FkSettings(
-        {
-            'RABBITMQ_HOST': 'localhost',
-            'RABBITMQ_USER': 'guest',
-            'RABBITMQ_PASS': 'guest',
-            'RABBITMQ_VHOST': '',
-            'DAILY_PRAYERS': 'on',
-            'ADMIN_CHAT_IDS': '358610865',
-            'RAMADAN_MODE': 'off',
-        },
+    settings = settings_ctor(
+        rabbitmq_host='localhost',
+        rabbitmq_user='guest',
+        rabbitmq_pass='guest',
+        rabbitmq_vhost='',
+        daily_prayers=True,
+        admin_chat_ids='358610865',
+        ramadan_mode=False,
     )
     await PrayersMailingPublishedEvent(
         TgEmptyAnswer('fakeToken'),

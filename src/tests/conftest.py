@@ -28,7 +28,7 @@ from fakeredis import aioredis
 from jinja2 import Template
 
 from app_types.logger import FkLogSink
-from settings.settings import BASE_DIR
+from settings import BASE_DIR, Settings
 
 
 @pytest.fixture()
@@ -71,3 +71,44 @@ def callback_update_factory():
 @pytest.fixture()
 def fk_logger():
     return FkLogSink()
+
+
+@pytest.fixture()
+def settings_ctor(faker):
+    def _settings_ctor(
+        redis_dsn='redis://default@localhost:6379/15',
+        debug=True,
+        database_url='postgresql://almazilaletdinov@localhost:5432/quranbot_test',
+        api_token='',
+        rabbitmq_user='',
+        rabbitmq_pass='',
+        rabbitmq_host='',
+        rabbitmq_vhost='',
+        daily_ayats=False,
+        daily_prayers=False,
+        ramadan_mode=False,
+        sentry_dsn='',
+        admin_chat_ids='1',
+        telegram_client_id='',
+        telegram_client_hash='',
+        base_dir='',
+    ):
+        return Settings(
+            REDIS_DSN=redis_dsn,
+            DEBUG=debug,
+            DATABASE_URL=database_url,
+            API_TOKEN=api_token,
+            RABBITMQ_USER=rabbitmq_user,
+            RABBITMQ_PASS=rabbitmq_pass,
+            RABBITMQ_HOST=rabbitmq_host,
+            RABBITMQ_VHOST=rabbitmq_vhost,
+            DAILY_AYATS=daily_ayats,
+            DAILY_PRAYERS=daily_prayers,
+            RAMADAN_MODE=ramadan_mode,
+            SENTRY_DSN=sentry_dsn,
+            ADMIN_CHAT_IDS=admin_chat_ids,
+            TELEGRAM_CLIENT_ID=telegram_client_id,
+            TELEGRAM_CLIENT_HASH=telegram_client_hash,
+            BASE_DIR=base_dir,
+        )
+    return _settings_ctor

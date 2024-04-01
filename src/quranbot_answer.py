@@ -26,6 +26,7 @@ import httpx
 from databases import Database
 from redis.asyncio import Redis
 
+
 from app_types.logger import LogSink
 from app_types.update import Update
 from handlers.concrete_podcast_answer import ConcretePodcastAnswer
@@ -58,9 +59,7 @@ from services.answers.safe_fork import SafeFork
 from services.help_answer import HelpAnswer
 from services.state_answer import StepAnswer
 from services.user_state import UserStep
-from settings.admin_chat_ids import AdminChatIds
-from settings.debug_mode import DebugMode
-from settings.settings import Settings
+from settings import Settings
 from srv.admin_messages.pg_admin_message import PgAdminMessage
 from srv.ayats.ayat_by_id_answer import AyatByIdAnswer
 from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
@@ -115,7 +114,7 @@ class QuranbotAnswer(TgAnswer):
                 TgMessageRegexAnswer(
                     'Подкасты',
                     RandomPodcastAnswer(
-                        DebugMode(self._settings),
+                        self._settings.DEBUG,
                         empty_answer,
                         self._redis,
                         self._pgsql,
@@ -125,7 +124,7 @@ class QuranbotAnswer(TgAnswer):
                 TgMessageRegexAnswer(
                     r'/podcast\d+',
                     ConcretePodcastAnswer(
-                        DebugMode(self._settings),
+                        self._settings.DEBUG,
                         empty_answer,
                         self._redis,
                         self._pgsql,
@@ -137,7 +136,7 @@ class QuranbotAnswer(TgAnswer):
                     PrayerTimeAnswer.new_prayers_ctor(
                         self._pgsql,
                         empty_answer,
-                        AdminChatIds(self._settings),
+                        self._settings.admin_chat_ids(),
                         self._redis,
                         self._logger,
                         self._settings,
@@ -150,13 +149,13 @@ class QuranbotAnswer(TgAnswer):
                 TgMessageRegexAnswer(
                     'Избранное',
                     FavoriteAyatsAnswer(
-                        DebugMode(self._settings), self._pgsql, self._redis, empty_answer, self._logger,
+                        self._settings.DEBUG, self._pgsql, self._redis, empty_answer, self._logger,
                     ),
                 ),
                 TgMessageRegexAnswer(
                     r'\d+:\d+',
                     SearchAyatByNumbersAnswer(
-                        DebugMode(self._settings),
+                        self._settings.DEBUG,
                         empty_answer,
                         self._redis,
                         self._pgsql,
@@ -205,7 +204,7 @@ class QuranbotAnswer(TgAnswer):
                 StepAnswer(
                     UserStep.ayat_search.value,
                     SearchAyatByKeywordAnswer(
-                        DebugMode(self._settings),
+                        self._settings.DEBUG,
                         empty_answer,
                         self._redis,
                         self._pgsql,
@@ -221,7 +220,7 @@ class QuranbotAnswer(TgAnswer):
                 TgCallbackQueryRegexAnswer(
                     '(like|dislike)',
                     PodcastReactionChangeAnswer(
-                        DebugMode(self._settings),
+                        self._settings.DEBUG,
                         empty_answer,
                         self._redis,
                         self._pgsql,
@@ -230,7 +229,7 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getAyat',
-                    AyatByIdAnswer(DebugMode(self._settings), empty_answer, self._pgsql),
+                    AyatByIdAnswer(self._settings.DEBUG, empty_answer, self._pgsql),
                 ),
                 TgCallbackQueryRegexAnswer(
                     'decr',
@@ -247,13 +246,13 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 StepAnswer(
                     UserStep.city_search.value,
-                    SearchCityAnswer(self._pgsql, empty_answer, DebugMode(self._settings), self._redis, self._logger),
+                    SearchCityAnswer(self._pgsql, empty_answer, self._settings.DEBUG, self._redis, self._logger),
                     self._redis,
                     self._logger,
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getFAyat',
-                    FavoriteAyatPage(DebugMode(self._settings), empty_answer, self._pgsql),
+                    FavoriteAyatPage(self._settings.DEBUG, empty_answer, self._pgsql),
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(addToFavor|removeFromFavor)',

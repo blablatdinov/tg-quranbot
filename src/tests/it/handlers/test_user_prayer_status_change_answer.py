@@ -32,7 +32,6 @@ from app_types.update import FkUpdate
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
 from integrations.tg.tg_answers import FkAnswer
-from settings.settings import FkSettings
 from srv.prayers.prayer_date import FkPrayerDate
 from srv.prayers.prayers_text import PrayersText
 
@@ -68,10 +67,10 @@ async def _generated_prayers(pgsql, _prayers):
 
 
 @pytest.mark.usefixtures('_prayers')
-async def test_new_prayer_times(pgsql, fake_redis, time_machine):
+async def test_new_prayer_times(pgsql, fake_redis, time_machine, settings_ctor):
     time_machine.move_to('2023-12-19')
     got = await PrayerTimeAnswer.new_prayers_ctor(
-        pgsql, FkAnswer(), [123], fake_redis, FkLogSink(), FkSettings({'RAMADAN_MODE': 'off'}),
+        pgsql, FkAnswer(), [123], fake_redis, FkLogSink(), settings_ctor(),
     ).build(
         FkUpdate(ujson.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
@@ -95,10 +94,10 @@ async def test_new_prayer_times(pgsql, fake_redis, time_machine):
 
 
 @pytest.mark.usefixtures('_generated_prayers')
-async def test_today(pgsql, fake_redis, time_machine):
+async def test_today(pgsql, fake_redis, time_machine, settings_ctor):
     time_machine.move_to('2023-12-19')
     got = await UserPrayerStatusChangeAnswer(
-        FkAnswer(), pgsql, fake_redis, FkLogSink(), FkSettings({'RAMADAN_MODE': 'off'}),
+        FkAnswer(), pgsql, fake_redis, FkLogSink(), settings_ctor(),
     ).build(
         FkUpdate(ujson.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
@@ -133,10 +132,10 @@ async def test_today(pgsql, fake_redis, time_machine):
 
 
 @pytest.mark.usefixtures('_generated_prayers')
-async def test_before(pgsql, fake_redis, time_machine):
+async def test_before(pgsql, fake_redis, time_machine, settings_ctor):
     time_machine.move_to('2023-12-19')
     got = await UserPrayerStatusChangeAnswer(
-        FkAnswer(), pgsql, fake_redis, FkLogSink(), FkSettings({'RAMADAN_MODE': 'off'}),
+        FkAnswer(), pgsql, fake_redis, FkLogSink(), settings_ctor(),
     ).build(
         FkUpdate(ujson.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
@@ -171,7 +170,7 @@ async def test_before(pgsql, fake_redis, time_machine):
 
 
 @pytest.mark.usefixtures('_generated_prayers')
-async def test_prayers_text(pgsql):
+async def test_prayers_text(pgsql, settings_ctor):
     got = await PrayersText(
         pgsql,
         FkPrayerDate(datetime.datetime(2023, 12, 19, tzinfo=pytz.timezone('Europe/Moscow'))),
@@ -191,13 +190,13 @@ async def test_prayers_text(pgsql):
 
 
 @pytest.mark.usefixtures('_generated_prayers')
-async def test_without_message_text(pgsql, fake_redis):
+async def test_without_message_text(pgsql, fake_redis, settings_ctor):
     """Случай без текста в update.
 
     Почему-то телеграм не присылает текст сообщения спустя время
     """
     got = await UserPrayerStatusChangeAnswer(
-        FkAnswer(), pgsql, fake_redis, FkLogSink(), FkSettings({'RAMADAN_MODE': 'off'}),
+        FkAnswer(), pgsql, fake_redis, FkLogSink(), settings_ctor(),
     ).build(
         FkUpdate(ujson.dumps({
             'callback_query': {

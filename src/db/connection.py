@@ -18,8 +18,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from databases import Database
+from settings import Settings, BASE_DIR
 
-from settings.env_file_settings import EnvFileSettings
-from settings.settings import BASE_DIR
-
-pgsql = Database(EnvFileSettings(BASE_DIR.parent / '.env').DATABASE_URL)
+pgsql = Database(str(Settings(_env_file=BASE_DIR.parent / '.env').DATABASE_URL))

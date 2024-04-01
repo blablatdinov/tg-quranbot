@@ -23,13 +23,14 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from pathlib import Path
 
 import psycopg2
+from settings import Settings, BASE_DIR
 
-from settings.env_file_settings import EnvFileSettings
+settings = Settings(_env_file=BASE_DIR.parent / '.env')
 
 
 def create_db() -> None:
     connection = psycopg2.connect(
-        EnvFileSettings.from_filename('../.env').DATABASE_URL.replace('quranbot_test', 'postgres'),
+        str(str(settings.DATABASE_URL)).replace('quranbot_test', 'postgres'),
     )
     connection.autocommit = True
     cursor = connection.cursor()
@@ -55,7 +56,7 @@ def apply_migrations(cursor) -> None:
 
 
 def fill_test_db() -> None:
-    qbot_connection = psycopg2.connect(EnvFileSettings.from_filename('../.env').DATABASE_URL)
+    qbot_connection = psycopg2.connect(str(settings.DATABASE_URL))
     qbot_connection.autocommit = True
     qbot_cursor = qbot_connection.cursor()
     apply_migrations(qbot_cursor)
@@ -75,7 +76,7 @@ def fill_test_db() -> None:
 
 def drop_db() -> None:
     connection = psycopg2.connect(
-        EnvFileSettings.from_filename('../.env').DATABASE_URL.replace('quranbot_test', 'postgres'),
+        str(settings.DATABASE_URL).replace('quranbot_test', 'postgres'),
     )
     connection.autocommit = True
     cursor = connection.cursor()

@@ -23,12 +23,11 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 from pathlib import Path
 from typing import final
 
-from pydantic import (
-    RedisDsn,
-)
+from pydantic import RedisDsn, PostgresDsn
 from pydantic_settings import BaseSettings
+from typing import List
 
-BASE_DIR = Path(__file__).parent.parent  # Path to src dir
+BASE_DIR = Path(__file__).parent  # Path to src dir
 
 
 @final
@@ -36,6 +35,8 @@ class Settings(BaseSettings):
     """Настройки приложения."""
 
     REDIS_DSN: RedisDsn
+    DEBUG: bool
+    DATABASE_URL: PostgresDsn
     API_TOKEN: str
     RABBITMQ_USER: str
     RABBITMQ_PASS: str
@@ -45,7 +46,10 @@ class Settings(BaseSettings):
     DAILY_PRAYERS: bool
     RAMADAN_MODE: bool
     SENTRY_DSN: str
-    ADMIN_CHAT_IDS: list[int]
+    ADMIN_CHAT_IDS: str
     TELEGRAM_CLIENT_ID: str
     TELEGRAM_CLIENT_HASH: str
     BASE_DIR: Path = BASE_DIR
+
+    def admin_chat_ids(self) -> list[int]:
+        return [int(chat_id.strip()) for chat_id in self.ADMIN_CHAT_IDS.strip().split(',')]

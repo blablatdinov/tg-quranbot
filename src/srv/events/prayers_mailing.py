@@ -49,8 +49,7 @@ from integrations.tg.tg_answers import (
 )
 from services.logged_answer import LoggedAnswer
 from services.user_prayer_keyboard import UserPrayersKeyboard
-from settings.admin_chat_ids import AdminChatIds
-from settings.settings import Settings
+from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import SinkInterface
 from srv.prayers.prayer_date import FkPrayerDate
@@ -86,7 +85,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
             'FROM users AS u',
             "WHERE u.is_active = 't' {0}".format(
                 'AND u.chat_id IN ({0})'.format(
-                    ','.join([str(chat_id) for chat_id in list(AdminChatIds(self._settings))]),
+                    ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
                 )
                 if self._settings.DAILY_PRAYERS == 'off' else '',
             ),

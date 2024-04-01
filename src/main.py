@@ -58,7 +58,7 @@ def main(sys_args: list[str]) -> None:
 
     :param sys_args: list[str]
     """
-    settings = Settings(_env_file=Settings.BASE_DIR / '.env')
+    settings = Settings(_env_file=Settings.BASE_DIR.parent / '.env')
     rabbitmq_sink = RabbitmqSink(settings, logger)
     redis = aioredis.from_url(str(settings.REDIS_DSN))
     if settings.SENTRY_DSN:
@@ -136,7 +136,7 @@ def main(sys_args: list[str]) -> None:
                         pgsql,
                         rabbitmq_sink,
                         logger,
-                        settings.ADMIN_CHAT_IDS,
+                        settings,
                     )),
                     EventFork('User.CheckStatus', 1, CheckUsersStatus(
                         TgEmptyAnswer(settings.API_TOKEN),

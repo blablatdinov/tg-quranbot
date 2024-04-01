@@ -28,8 +28,6 @@ from eljson.json_doc import JsonDoc
 
 from app_types.logger import FkLogSink
 from integrations.tg.tg_answers import TgEmptyAnswer
-from settings.admin_chat_ids import AdminChatIds
-from settings.settings import FkSettings
 from srv.events.mailing_created import MailingCreatedEvent
 from srv.events.sink import FkSink
 
@@ -77,13 +75,13 @@ async def _users(pgsql):
 
 
 @pytest.mark.usefixtures('_mock_http', '_users')
-async def test(pgsql):
+async def test(pgsql, settings_ctor):
     await MailingCreatedEvent(
         TgEmptyAnswer('token'),
         pgsql,
         FkSink(),
         FkLogSink(),
-        AdminChatIds(FkSettings({'ADMIN_CHAT_IDS': '93754'})),
+        settings_ctor(admin_chat_ids='93754').ADMIN_CHAT_IDS,
     ).process(
         JsonDoc({'data': {
             'mailing_id': str(uuid.uuid4()),

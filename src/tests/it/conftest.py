@@ -23,15 +23,15 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 import psycopg2
 import pytest
 from databases import Database
+from settings import Settings, BASE_DIR
 
-from settings.env_file_settings import EnvFileSettings
 from tests.creating_test_db import apply_migrations, create_db, drop_db
 
 
 @pytest.fixture(scope='session')
 def _migrate():
     create_db()
-    connection = psycopg2.connect(EnvFileSettings.from_filename('../.env').DATABASE_URL)
+    connection = psycopg2.connect(str(Settings(_env_file=BASE_DIR.parent / '.env').DATABASE_URL))
     connection.autocommit = True
     cursor = connection.cursor()
     apply_migrations(cursor)
@@ -42,7 +42,7 @@ def _migrate():
 
 @pytest.fixture()
 async def pgsql(_migrate):
-    db_url = EnvFileSettings.from_filename('../.env').DATABASE_URL
+    db_url = str(Settings(_env_file=BASE_DIR.parent / '.env').DATABASE_URL)
     database = Database(db_url)
     await database.connect()
     yield database

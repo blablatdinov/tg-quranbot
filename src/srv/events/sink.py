@@ -32,7 +32,7 @@ from pyeo import elegant
 from quranbot_schema_registry import validate_schema
 
 from app_types.logger import LogSink
-from settings.settings import Settings
+from settings import Settings
 
 
 @elegant
