@@ -23,11 +23,8 @@
 name: Test and release
 
 on:
-  pull_request:
-    branches: [ "master" ]
-# on:
-#   push:
-#     tags: "*"
+  push:
+    tags: "*"
 
 jobs:
   checks:
@@ -90,8 +87,7 @@ jobs:
     - name: Create telethon session
       run: echo "${{ secrets.TELETHON_SESSION }}" | base64 --decode > me.session
     - name: Run e2e tests
-      # run: .venv/bin/pytest src/tests/e2e -vv -m 'not tg_button'  # TODO #360:30min Включить тесты с маркером "tg_button"
-      run: .venv/bin/pytest src/tests/e2e/test_prayer_times.py::test_prayer_times
+      run: .venv/bin/pytest src/tests/e2e -vv -m 'not tg_button'  # TODO #360:30min Включить тесты с маркером "tg_button"
 
   build-and-push:
     needs: checks

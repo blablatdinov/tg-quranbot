@@ -141,7 +141,7 @@ def rbmq_channel(queues):
     channel = connection.channel()
     for queue in queues:
         channel.queue_declare(queue)
-    yield channel
+    return channel
 
 
 @pytest.fixture()
