@@ -41,14 +41,14 @@ class Settings(BaseSettings):
     RABBITMQ_PASS: str
     RABBITMQ_HOST: str
     RABBITMQ_VHOST: str
-    DAILY_AYATS: bool
-    DAILY_PRAYERS: bool
-    RAMADAN_MODE: bool
     SENTRY_DSN: str
     ADMIN_CHAT_IDS: str
     TELEGRAM_CLIENT_ID: str
     TELEGRAM_CLIENT_HASH: str
     BASE_DIR: Path = BASE_DIR
+    DAILY_AYATS: bool = False
+    DAILY_PRAYERS: bool = False
+    RAMADAN_MODE: bool = False
 
     def admin_chat_ids(self) -> list[int]:
         """Список идентификаторов админов.
