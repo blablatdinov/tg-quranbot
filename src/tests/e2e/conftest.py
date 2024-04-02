@@ -45,7 +45,7 @@ from tests.creating_test_db import create_db, drop_db, fill_test_db
 UGGLY_OFFSET: Final = 1
 
 
-@pytest.fixture()
+@pytest.fixture(scope='session')
 def settings():
     return Settings(_env_file=BASE_DIR.parent / '.env')
 

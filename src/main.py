@@ -40,7 +40,7 @@ from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer
 from quranbot_answer import QuranbotAnswer
 from services.cli_app import CliApp, CommandCliApp, ForkCliApp
 from services.logged_answer import LoggedAnswer
-from settings import Settings
+from settings import Settings, BASE_DIR
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.check_user_status import CheckUsersStatus
 from srv.events.event_hook import EventHookApp, RbmqEventHook
@@ -58,7 +58,7 @@ def main(sys_args: list[str]) -> None:
 
     :param sys_args: list[str]
     """
-    settings = Settings(_env_file=Settings.BASE_DIR.parent / '.env')
+    settings = Settings(_env_file=BASE_DIR.parent / '.env')
     rabbitmq_sink = RabbitmqSink(settings, logger)
     redis = aioredis.from_url(str(settings.REDIS_DSN))
     if settings.SENTRY_DSN:

@@ -43,8 +43,8 @@ class Settings(BaseSettings):
     RABBITMQ_VHOST: str
     SENTRY_DSN: str
     ADMIN_CHAT_IDS: str
-    TELEGRAM_CLIENT_ID: str
-    TELEGRAM_CLIENT_HASH: str
+    TELEGRAM_CLIENT_ID: str = ''
+    TELEGRAM_CLIENT_HASH: str = ''
     BASE_DIR: Path = BASE_DIR
     DAILY_AYATS: bool = False
     DAILY_PRAYERS: bool = False

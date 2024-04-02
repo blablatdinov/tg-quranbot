@@ -32,11 +32,6 @@ from settings import BASE_DIR, Settings
 
 
 @pytest.fixture()
-def settings():
-    return Settings(_env_file=BASE_DIR.parent / '.env')
-
-
-@pytest.fixture()
 def _revert_changes(settings):
     yield
     qbot_connection = psycopg2.connect(str(settings.DATABASE_URL))
