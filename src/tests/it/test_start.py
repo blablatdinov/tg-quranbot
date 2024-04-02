@@ -32,7 +32,6 @@ from app_types.update import FkUpdate
 from handlers.full_start_answer import FullStartAnswer
 from integrations.tg.tg_answers import FkAnswer
 from srv.events.sink import FkSink
-from tests.unit.settings.test_amdin_chat_ids import FkSettings
 
 
 @pytest.fixture()
@@ -82,9 +81,9 @@ async def _existed_user(pgsql):
     )
 
 
-async def test(pgsql, fake_redis, _db_ayat, unquote):
+async def test(pgsql, fake_redis, _db_ayat, unquote, settings_ctor):
     got = await FullStartAnswer(
-        pgsql, FkAnswer(), FkSink(), fake_redis, FkSettings(), FkLogSink(),
+        pgsql, FkAnswer(), FkSink(), fake_redis, settings_ctor(), FkLogSink(),
     ).build(FkUpdate('{"message":{"text":"/start"},"chat":{"id":321},"date":0}'))
 
     assert len(got) == 3
@@ -128,9 +127,9 @@ async def test(pgsql, fake_redis, _db_ayat, unquote):
 
 
 @pytest.mark.usefixtures('_db_ayat', '_existed_user')
-async def test_exists_user(pgsql, fake_redis, unquote):
+async def test_exists_user(pgsql, fake_redis, unquote, settings_ctor):
     got = await FullStartAnswer(
-        pgsql, FkAnswer(), FkSink(), fake_redis, FkSettings(), FkLogSink(),
+        pgsql, FkAnswer(), FkSink(), fake_redis, settings_ctor(), FkLogSink(),
     ).build(FkUpdate('{"message":{"text":"/start"},"chat":{"id":321},"date":0}'))
 
     assert len(got) == 1
@@ -152,9 +151,9 @@ async def test_exists_user(pgsql, fake_redis, unquote):
 
 
 @pytest.mark.usefixtures('_db_ayat', '_existed_user')
-async def test_with_referrer(pgsql, fake_redis, unquote):
+async def test_with_referrer(pgsql, fake_redis, unquote, settings_ctor):
     got = await FullStartAnswer(
-        pgsql, FkAnswer(), FkSink(), fake_redis, FkSettings(), FkLogSink(),
+        pgsql, FkAnswer(), FkSink(), fake_redis, settings_ctor(), FkLogSink(),
     ).build(FkUpdate('{"message":{"text":"/start 1"},"chat":{"id":1},"date":1670581213}'))
 
     assert len(got) == 4
@@ -194,9 +193,9 @@ async def test_with_referrer(pgsql, fake_redis, unquote):
 
 @pytest.mark.usefixtures('_db_ayat', '_existed_user')
 @pytest.mark.parametrize('referrer_id', [85, 3001])
-async def test_fake_referrer(pgsql, fake_redis, referrer_id):
+async def test_fake_referrer(pgsql, fake_redis, referrer_id, settings_ctor):
     got = await FullStartAnswer(
-        pgsql, FkAnswer(), FkSink(), fake_redis, FkSettings(), FkLogSink(),
+        pgsql, FkAnswer(), FkSink(), fake_redis, settings_ctor(), FkLogSink(),
     ).build(FkUpdate(ujson.dumps({
         'message': {'text': '/start {0}'.format(referrer_id)},
         'chat': {'id': 1},

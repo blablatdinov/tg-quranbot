@@ -40,8 +40,7 @@ from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer, TgHtmlParseAnsw
 from integrations.tg.tg_answers.link_preview_options import TgLinkPreviewOptions
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from services.logged_answer import LoggedAnswer
-from settings.admin_chat_ids import AdminChatIds
-from settings.settings import Settings
+from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import SinkInterface
 from srv.users.active_users import PgUpdatedUsersStatus, UpdatedUsersStatusEvent
@@ -82,7 +81,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
             'JOIN suras AS s ON a.sura_id = s.sura_id',
             "WHERE u.is_active = 't' {0}".format(
                 'AND u.chat_id IN ({0})'.format(
-                    ','.join([str(chat_id) for chat_id in list(AdminChatIds(self._settings))]),
+                    ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
                 )
                 if self._settings.DAILY_AYATS == 'off' else '',
             ),

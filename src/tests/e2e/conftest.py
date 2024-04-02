@@ -36,7 +36,7 @@ from loguru import logger
 from telethon.sync import TelegramClient
 
 from main import main
-from settings.env_file_settings import EnvFileSettings
+from settings import BASE_DIR, Settings
 from tests.creating_test_db import create_db, drop_db, fill_test_db
 
 # Костыль, для сохранения одного сообщения в чате.
@@ -45,14 +45,19 @@ from tests.creating_test_db import create_db, drop_db, fill_test_db
 UGGLY_OFFSET: Final = 1
 
 
+@pytest.fixture()
+def settings():
+    return Settings(_env_file=BASE_DIR.parent / '.env')
+
+
 @pytest.fixture(scope='session')
 def bot_name():
     return '@WokeUpSmiled_bot'
 
 
 @pytest.fixture()
-def _clear_db():
-    qbot_connection = psycopg2.connect(EnvFileSettings.from_filename('../.env').DATABASE_URL)
+def _clear_db(settings):
+    qbot_connection = psycopg2.connect(str(settings.DATABASE_URL))
     qbot_connection.autocommit = True
     cursor = qbot_connection.cursor()
     tables = (
@@ -67,8 +72,8 @@ def _clear_db():
 
 
 @pytest.fixture()
-def db_conn():
-    connection = psycopg2.connect(EnvFileSettings.from_filename('../.env').DATABASE_URL)
+def db_conn(settings):
+    connection = psycopg2.connect(str(settings.DATABASE_URL))
     connection.autocommit = True
     yield connection
     connection.close()
@@ -131,8 +136,7 @@ def queues():
 
 
 @pytest.fixture(scope='session')
-def rbmq_channel(queues):
-    settings = EnvFileSettings.from_filename('../.env')
+def rbmq_channel(queues, settings):
     connection = pika.BlockingConnection(pika.ConnectionParameters(
         host='localhost',
         port=5672,
@@ -171,7 +175,7 @@ def wait_event(rbmq_channel, queues):
 @pytest.fixture()
 def tg_client(bot_name):
     asyncio.set_event_loop(asyncio.new_event_loop())
-    settings = EnvFileSettings.from_filename('../.env')
+    settings = Settings(_env_file=BASE_DIR.parent / '.env')
     with TelegramClient('me', settings.TELEGRAM_CLIENT_ID, settings.TELEGRAM_CLIENT_HASH) as client:
         all_messages = [message.id for message in client.iter_messages('@WokeUpSmiled_bot')]
         client.delete_messages(entity=bot_name, message_ids=all_messages[UGGLY_OFFSET:])

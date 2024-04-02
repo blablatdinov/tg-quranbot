@@ -20,31 +20,42 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import final, override
+from pathlib import Path
+from typing import final
 
-import attrs
-from pyeo import elegant
+from pydantic import PostgresDsn, RedisDsn
+from pydantic_settings import BaseSettings
 
-from settings.settings import Settings
+BASE_DIR = Path(__file__).parent  # Path to src dir
 
 
 @final
-@elegant
-@attrs.define(frozen=True)
-class OsOrFileSettings(Settings):
-    """Объект, который достает настройки из переменных окружения или файла."""
+class Settings(BaseSettings):
+    """Настройки приложения."""
 
-    _os_envs: Settings
-    _env_file: Settings
+    REDIS_DSN: RedisDsn
+    DEBUG: bool
+    DATABASE_URL: PostgresDsn
+    API_TOKEN: str
+    RABBITMQ_USER: str
+    RABBITMQ_PASS: str
+    RABBITMQ_HOST: str
+    RABBITMQ_VHOST: str
+    SENTRY_DSN: str
+    ADMIN_CHAT_IDS: str
+    TELEGRAM_CLIENT_ID: str
+    TELEGRAM_CLIENT_HASH: str
+    BASE_DIR: Path = BASE_DIR
+    DAILY_AYATS: bool = False
+    DAILY_PRAYERS: bool = False
+    RAMADAN_MODE: bool = False
 
-    @override
-    def __getattr__(self, attr_name: str) -> str:
-        """Получить аттрибут.
+    def admin_chat_ids(self) -> list[int]:
+        """Список идентификаторов админов.
 
-        :param attr_name: str
-        :return: str
+        :return: list[int]
         """
-        try:
-            return getattr(self._os_envs, attr_name)
-        except ValueError:
-            return getattr(self._env_file, attr_name)
+        return [
+            int(chat_id.strip())
+            for chat_id in self.ADMIN_CHAT_IDS.strip().split(',')
+        ]

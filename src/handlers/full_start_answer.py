@@ -38,8 +38,7 @@ from services.start.start_answer import StartAnswer
 from services.start.user_already_active import UserAlreadyActiveSafeAnswer
 from services.start.user_already_exists import UserAlreadyExistsAnswer
 from services.user_state import CachedUserState, RedisUserState
-from settings.admin_chat_ids import AdminChatIds
-from settings.settings import Settings
+from settings import Settings
 from srv.admin_messages.pg_admin_message import PgAdminMessage
 from srv.events.sink import SinkInterface
 
@@ -75,7 +74,7 @@ class FullStartAnswer(TgAnswer):
                             ),
                             PgAdminMessage('start', self._pgsql),
                             self._pgsql,
-                            AdminChatIds(self._settings),
+                            self._settings.admin_chat_ids(),
                             self._logger,
                             self._event_sink,
                         ),

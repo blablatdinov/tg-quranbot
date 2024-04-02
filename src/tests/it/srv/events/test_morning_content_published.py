@@ -31,7 +31,6 @@ from furl import furl
 from loguru import logger
 
 from integrations.tg.tg_answers import TgEmptyAnswer
-from settings.settings import FkSettings
 from srv.events.morning_content_published import MorningContentPublishedEvent
 from srv.events.sink import RabbitmqSink
 from srv.users.pg_user import PgUser
@@ -143,15 +142,13 @@ async def users(pgsql):
 
 
 @pytest.mark.usefixtures('_ayats', '_mock_http')
-async def test(pgsql, users):
-    settings = FkSettings(
-        {
-            'RABBITMQ_HOST': 'localhost',
-            'RABBITMQ_USER': 'guest',
-            'RABBITMQ_PASS': 'guest',
-            'RABBITMQ_VHOST': '',
-            'DAILY_AYATS': 'on',
-        },
+async def test(pgsql, users, settings_ctor):
+    settings = settings_ctor(  # noqa: S106. Not secure issue
+        rabbitmq_host='localhost',
+        rabbitmq_user='guest',
+        rabbitmq_pass='guest',  # noqa: S106. Not secure issue
+        rabbitmq_vhost='',
+        daily_ayats='on',
     )
     await MorningContentPublishedEvent(
         TgEmptyAnswer('fakeToken'),

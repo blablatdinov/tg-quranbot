@@ -34,7 +34,7 @@ from quranbot_schema_registry import validate_schema
 
 from app_types.logger import LogSink
 from app_types.runable import SyncRunable
-from settings.settings import Settings
+from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 
 

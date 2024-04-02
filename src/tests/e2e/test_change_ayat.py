@@ -28,13 +28,18 @@ import psycopg2
 import pytest
 import ujson
 
-from settings.env_file_settings import EnvFileSettings
+from settings import BASE_DIR, Settings
 
 
 @pytest.fixture()
-def _revert_changes():
+def settings():
+    return Settings(_env_file=BASE_DIR.parent / '.env')
+
+
+@pytest.fixture()
+def _revert_changes(settings):
     yield
-    qbot_connection = psycopg2.connect(EnvFileSettings.from_filename('../.env').DATABASE_URL)
+    qbot_connection = psycopg2.connect(str(settings.DATABASE_URL))
     qbot_connection.autocommit = True
     cursor = qbot_connection.cursor()
     cursor.execute('DELETE FROM ayats WHERE ayat_id = 1')
@@ -47,8 +52,7 @@ def _revert_changes():
 
 
 @pytest.mark.usefixtures('_bot_process', '_revert_changes', '_clear_db')
-def test_change_ayat(db_query_vals):
-    settings = EnvFileSettings.from_filename('../.env')
+def test_change_ayat(db_query_vals, settings):
     connection = pika.BlockingConnection(pika.ConnectionParameters(
         host='localhost',
         port=5672,

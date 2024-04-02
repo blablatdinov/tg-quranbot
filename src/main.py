@@ -40,10 +40,7 @@ from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer
 from quranbot_answer import QuranbotAnswer
 from services.cli_app import CliApp, CommandCliApp, ForkCliApp
 from services.logged_answer import LoggedAnswer
-from settings.admin_chat_ids import AdminChatIds
-from settings.cached_settings import CachedSettings
-from settings.env_file_settings import EnvFileSettings
-from settings.settings import BASE_DIR
+from settings import Settings
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.check_user_status import CheckUsersStatus
 from srv.events.event_hook import EventHookApp, RbmqEventHook
@@ -61,7 +58,7 @@ def main(sys_args: list[str]) -> None:
 
     :param sys_args: list[str]
     """
-    settings = CachedSettings(EnvFileSettings(BASE_DIR.parent / '.env'))
+    settings = Settings(_env_file=Settings.BASE_DIR.parent / '.env')
     rabbitmq_sink = RabbitmqSink(settings, logger)
     redis = aioredis.from_url(str(settings.REDIS_DSN))
     if settings.SENTRY_DSN:
@@ -139,7 +136,7 @@ def main(sys_args: list[str]) -> None:
                         pgsql,
                         rabbitmq_sink,
                         logger,
-                        AdminChatIds(settings),
+                        settings,
                     )),
                     EventFork('User.CheckStatus', 1, CheckUsersStatus(
                         TgEmptyAnswer(settings.API_TOKEN),

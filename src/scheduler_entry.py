@@ -28,14 +28,12 @@ from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from loguru import logger
 
-from settings.cached_settings import CachedSettings
-from settings.env_file_settings import EnvFileSettings
-from settings.settings import BASE_DIR
+from settings import BASE_DIR, Settings
 from srv.events.sink import RabbitmqSink
 
 logging.basicConfig()
 logging.getLogger('apscheduler').setLevel(logging.DEBUG)
-settings = CachedSettings(EnvFileSettings(BASE_DIR.parent / '.env'))
+settings = Settings(_env_file=BASE_DIR.parent / '.env')
 
 
 async def _morning_ayats_task() -> None:
@@ -67,7 +65,7 @@ async def _daily_check_user_status() -> None:
 
 async def main() -> None:
     """Entrypoint."""
-    redis_settings = httpx.URL(settings.REDIS_DSN)
+    redis_settings = httpx.URL(str(settings.REDIS_DSN))
     jobstores = {
         'default': RedisJobStore(
             host=redis_settings.host,

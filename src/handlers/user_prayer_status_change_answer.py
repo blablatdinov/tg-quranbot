@@ -32,7 +32,7 @@ from app_types.logger import LogSink
 from app_types.update import Update
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
-from settings.settings import Settings
+from settings import Settings
 from srv.prayers.prayer_status import PrayerStatus, UserPrayerStatus
 
 

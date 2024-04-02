@@ -33,8 +33,7 @@ from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgMessageAnswer, TgTextAnswer
 from integrations.tg.tg_answers.answer_to_sender import TgAnswerToSender
-from settings.debug_mode import DebugMode
-from settings.settings import Settings
+from settings import Settings
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer
 from srv.ayats.search_ayat_by_text_callback_answer import SearchAyatByTextCallbackAnswer
@@ -63,7 +62,7 @@ class PaginateBySearchAyat(TgAnswer):
         return await UserHasNotSearchQuerySafeAnswer(
             HighlightedSearchAnswer(
                 SearchAyatByTextCallbackAnswer(
-                    DebugMode(self._settings),
+                    self._settings.DEBUG,
                     self._empty_answer,
                     self._redis,
                     self._pgsql,

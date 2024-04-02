@@ -36,7 +36,7 @@ from integrations.tg.sendable import SendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer, TgHtmlParseAnswer, TgTextAnswer
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from services.logged_answer import LoggedAnswer
-from settings.admin_chat_ids import AdminChatIds
+from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import SinkInterface
 from srv.users.active_users import PgUpdatedUsersStatus, UpdatedUsersStatusEvent
@@ -53,7 +53,7 @@ class MailingCreatedEvent(ReceivedEvent):
     _pgsql: Database
     _events_sink: SinkInterface
     _log_sink: LogSink
-    _admin_chat_ids: AdminChatIds
+    _settings: Settings
 
     @override
     async def process(self, json_doc: Json) -> None:
@@ -72,7 +72,7 @@ class MailingCreatedEvent(ReceivedEvent):
                 ]))
             ]
         elif json_doc.path('$.data.group')[0] == 'admins':
-            chat_ids = list(self._admin_chat_ids)
+            chat_ids = self._settings.admin_chat_ids()
         else:
             raise UnreacheableError
         unsubscribed_users: list[User] = []

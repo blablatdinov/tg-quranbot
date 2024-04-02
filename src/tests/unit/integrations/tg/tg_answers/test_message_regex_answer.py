@@ -24,7 +24,7 @@ import pytest
 
 from integrations.tg.tg_answers import FkAnswer, TgMessageRegexAnswer
 from integrations.tg.update import TgUpdate
-from settings.settings import BASE_DIR
+from settings import BASE_DIR
 
 
 @pytest.fixture()
