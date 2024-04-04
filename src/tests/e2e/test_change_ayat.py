@@ -28,8 +28,6 @@ import psycopg2
 import pytest
 import ujson
 
-from settings import BASE_DIR, Settings
-
 
 @pytest.fixture()
 def _revert_changes(settings):
