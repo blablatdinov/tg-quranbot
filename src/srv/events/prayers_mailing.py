@@ -112,7 +112,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                                         UserCityId(self._pgsql, row[CHAT_ID]),
                                         FkUpdate(),
                                     ),
-                                    ramadan_mode=self._settings.RAMADAN_MODE == 'on',
+                                    self._settings.RAMADAN_MODE,
                                 ),
                             ),
                             row[CHAT_ID],
