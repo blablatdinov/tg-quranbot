@@ -36,7 +36,7 @@ from srv.users.pg_user import PgUser
 
 
 @pytest.fixture()
-def _mock_http(respx_mock):
+def mock_http_routes(respx_mock):
     rv = {
         'return_value': httpx.Response(
             200, text=ujson.dumps({'ok': True, 'result': True}),
@@ -53,7 +53,7 @@ def _mock_http(respx_mock):
             'Ястү: 09:30',
         ]),
     }
-    for chat_id, text in chat_content.items():
+    return [
         respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add({
             'text': text,
             'chat_id': chat_id,
@@ -68,6 +68,39 @@ def _mock_http(respx_mock):
             }),
             'parse_mode': 'html',
         }))).mock(**rv)
+        for chat_id, text in chat_content.items()
+    ]
+
+
+@pytest.fixture()
+def mock_http_ramadan_mode(respx_mock):
+    rv = {
+        'return_value': httpx.Response(
+            200, text=ujson.dumps({'ok': True, 'result': True}),
+        ),
+    }
+    return respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add({
+        'text': '\n'.join([
+            'Время намаза для г. Kazan (07.03.2024)\n',
+            'Иртәнге: 04:30 <i>- Конец сухура</i>',
+            'Восход: 05:30',
+            'Өйлә: 06:30',
+            'Икенде: 07:30',
+            'Ахшам: 08:30 <i>- Ифтар</i>',
+            'Ястү: 09:30',
+        ]),
+        'chat_id': '358610865',
+        'reply_markup': ujson.dumps({
+            'inline_keyboard': [[
+                {'text': '\u274c', 'callback_data': 'mark_readed(1)'},
+                {'text': '\u274c', 'callback_data': 'mark_readed(2)'},
+                {'text': '\u274c', 'callback_data': 'mark_readed(3)'},
+                {'text': '\u274c', 'callback_data': 'mark_readed(4)'},
+                {'text': '\u274c', 'callback_data': 'mark_readed(5)'},
+            ]],
+        }),
+        'parse_mode': 'html',
+    }))).mock(**rv)
 
 
 @pytest.fixture()
@@ -141,8 +174,8 @@ async def users(pgsql):
     ]
 
 
-@pytest.mark.usefixtures('_mock_http')
-async def test(pgsql, fake_redis, time_machine, settings_ctor):
+@pytest.mark.usefixtures('users')
+async def test(pgsql, fake_redis, time_machine, settings_ctor, mock_http_routes):
     time_machine.move_to('2024-03-06')
     settings = settings_ctor(  # noqa: S106. Not secure issue
         rabbitmq_host='localhost',
@@ -161,3 +194,29 @@ async def test(pgsql, fake_redis, time_machine, settings_ctor):
         logger,
         fake_redis,
     ).process(JsonDoc({}))
+
+    assert all(route.called for route in mock_http_routes)
+
+
+@pytest.mark.usefixtures('users')
+async def test_ramadan_mode(pgsql, fake_redis, time_machine, settings_ctor, mock_http_ramadan_mode):
+    time_machine.move_to('2024-03-06')
+    settings = settings_ctor(  # noqa: S106. Not secure issue
+        rabbitmq_host='localhost',
+        rabbitmq_user='guest',
+        rabbitmq_pass='guest',  # noqa: S106. Not secure issue
+        rabbitmq_vhost='',
+        daily_prayers=True,
+        admin_chat_ids='358610865',
+        ramadan_mode=True,
+    )
+    await PrayersMailingPublishedEvent(
+        TgEmptyAnswer('fakeToken'),
+        pgsql,
+        settings,
+        RabbitmqSink(settings, logger),
+        logger,
+        fake_redis,
+    ).process(JsonDoc({}))
+
+    assert mock_http_ramadan_mode.called

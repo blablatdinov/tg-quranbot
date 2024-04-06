@@ -80,7 +80,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
 
         :param json_doc: Json
         """
-        rows = await self._pgsql.fetch_all('\n'.join([
+        active_users = await self._pgsql.fetch_all('\n'.join([
             'SELECT u.chat_id',
             'FROM users AS u',
             "WHERE u.is_active = 't' {0}".format(
@@ -98,7 +98,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                 datetime.timedelta(days=1),
             ).date(),
         )
-        for row in rows:
+        for active_user in active_users:
             await self._iteration(
                 TgHtmlParseAnswer(
                     TgAnswerMarkup(
@@ -109,22 +109,22 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                                     PrayersText(
                                         self._pgsql,
                                         date,
-                                        UserCityId(self._pgsql, row[CHAT_ID]),
+                                        UserCityId(self._pgsql, active_user[CHAT_ID]),
                                         FkUpdate(),
                                     ),
-                                    ramadan_mode=self._settings.RAMADAN_MODE == 'on',
+                                    self._settings.RAMADAN_MODE,
                                 ),
                             ),
-                            row[CHAT_ID],
+                            active_user[CHAT_ID],
                         ),
                         UserPrayersKeyboard(
                             self._pgsql,
                             date,
-                            TgChatId(FkUpdate(ujson.dumps({'chat': {'id': row[CHAT_ID]}}))),
+                            TgChatId(FkUpdate(ujson.dumps({'chat': {'id': active_user[CHAT_ID]}}))),
                         ),
                     ),
                 ),
-                row[CHAT_ID],
+                active_user[CHAT_ID],
                 unsubscribed_users,
             )
         await UpdatedUsersStatusEvent(

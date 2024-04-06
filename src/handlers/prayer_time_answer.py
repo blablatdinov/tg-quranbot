@@ -184,7 +184,7 @@ class PrayerTimeAnswer(TgAnswer):
                                         UserCityId(self._pgsql, TgChatId(update)),
                                         update,
                                     ),
-                                    ramadan_mode=self._settings.RAMADAN_MODE == 'on',
+                                    self._settings.RAMADAN_MODE,
                                 ),
                             ),
                             UserPrayersKeyboard(
