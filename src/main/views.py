@@ -20,14 +20,12 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from django.contrib import admin
-from django.http.response import JsonResponse
-from django.urls import path
-
-from main.views import healthcheck
+from django.shortcuts import render
+from django.http import JsonResponse
 
 
-urlpatterns = [
-    path('health-check/', healthcheck),
-    path('admin/', admin.site.urls),
-]
+def healthcheck(request):
+    """Endpoint for checking app."""
+    return JsonResponse({
+        'app': 'ok',
+    })
