@@ -28,7 +28,7 @@ from pyeo import elegant
 
 @final
 @elegant
-class AyatCallbackTemplateEnum(str, enum.Enum):  # noqa: WPS600
+class AyatCallbackTemplateEnum(enum.StrEnum):
     """Шаблон для метаинформации кнопки."""
 
     get_ayat = 'getAyat({0})'
