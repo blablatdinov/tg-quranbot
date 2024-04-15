@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 import uuid
 from operator import add
@@ -80,17 +81,20 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
 
         :param json_doc: Json
         """
-        active_users = await self._pgsql.fetch_all('\n'.join([
-            'SELECT u.chat_id',
-            'FROM users AS u',
-            "WHERE u.is_active = 't' {0}".format(
-                'AND u.chat_id IN ({0})'.format(
-                    ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
-                )
-                if self._settings.DAILY_PRAYERS == 'off' else '',
-            ),
-            'ORDER BY u.chat_id',
-        ]))
+        active_users = await self._pgsql.fetch_all(
+            '\n'.join([
+                'SELECT u.chat_id',
+                'FROM users AS u',
+                "WHERE u.is_active = 't' {0}".format(
+                    'AND u.chat_id IN ({0})'.format(
+                        ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
+                    )
+                    if self._settings.DAILY_PRAYERS == 'off'
+                    else '',
+                ),
+                'ORDER BY u.chat_id',
+            ])
+        )
         unsubscribed_users: list[User] = []
         date = FkPrayerDate(
             add(

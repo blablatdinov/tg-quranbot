@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import pytest
 from pytest_lazy_fixtures import lf
 
@@ -38,11 +39,14 @@ def stringable_callback_update(callback_update_factory):
     return callback_update_factory()
 
 
-@pytest.mark.parametrize(('update', 'expected'), [
-    (lf('stringable_update'), 'afwe'),
-    (lf('stringable_callback_update'), 'awef'),
-    ('{"message":{"text":"hello"}}', 'hello'),
-])
+@pytest.mark.parametrize(
+    ('update', 'expected'),
+    [
+        (lf('stringable_update'), 'afwe'),
+        (lf('stringable_callback_update'), 'awef'),
+        ('{"message":{"text":"hello"}}', 'hello'),
+    ],
+)
 def test(update, expected):
     got = MessageText(TgUpdate.str_ctor(update))
 

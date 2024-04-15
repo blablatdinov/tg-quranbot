@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import pytest
 from pytest_lazy_fixtures import lf
 
@@ -27,10 +28,13 @@ from integrations.tg.update import TgUpdate
 from integrations.tg.update_id import UpdateId
 
 
-@pytest.mark.parametrize(('update_factory', 'expected'), [
-    (lf('message_update_factory'), 637463103),
-    (lf('callback_update_factory'), 637463104),
-])
+@pytest.mark.parametrize(
+    ('update_factory', 'expected'),
+    [
+        (lf('message_update_factory'), 637463103),
+        (lf('callback_update_factory'), 637463104),
+    ],
+)
 def test(update_factory, expected):
     update_id = UpdateId(TgUpdate.str_ctor(update_factory()))
 

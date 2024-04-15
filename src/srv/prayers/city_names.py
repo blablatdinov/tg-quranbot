@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import attrs
@@ -50,7 +51,4 @@ class CityNames(AsyncListable):
             'FROM cities',
             'WHERE name ILIKE :search_query',
         ])
-        return [
-            row['name']
-            for row in await self._pgsql.fetch_all(db_query, {'search_query': search_query})
-        ]
+        return [row['name'] for row in await self._pgsql.fetch_all(db_query, {'search_query': search_query})]

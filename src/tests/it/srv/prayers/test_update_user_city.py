@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import uuid
 
 import pytest
@@ -43,9 +44,12 @@ async def test(pgsql):
         pgsql,
     ).update()
 
-    assert await pgsql.fetch_val(
-        'SELECT city_id FROM users WHERE chat_id = 849357',
-    ) == '080fd3f4-678e-4a1c-97d2-4460700fe7ac'
+    assert (
+        await pgsql.fetch_val(
+            'SELECT city_id FROM users WHERE chat_id = 849357',
+        )
+        == '080fd3f4-678e-4a1c-97d2-4460700fe7ac'
+    )
 
 
 @pytest.mark.usefixtures('_city')

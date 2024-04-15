@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import Protocol, SupportsInt, final, override
 
 import attrs
@@ -108,10 +109,12 @@ class UpdatesLongPollingURL(UpdatesURLInterface):
         :param update_id: int
         :return: str
         """
-        return str(httpx.URL(self._origin.generate(update_id)).copy_add_param(
-            'timeout',
-            int(self._long_polling_timeout),
-        ))
+        return str(
+            httpx.URL(self._origin.generate(update_id)).copy_add_param(
+                'timeout',
+                int(self._long_polling_timeout),
+            )
+        )
 
 
 @elegant

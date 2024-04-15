@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import uuid
 from collections.abc import Iterator
 from typing import final, override
@@ -65,29 +66,32 @@ class MorningContentPublishedEvent(ReceivedEvent):
 
         :param json_doc: Json
         """
-        rows = await self._pgsql.fetch_all('\n'.join([
-            'SELECT',
-            '    u.chat_id,',
-            "    STRING_AGG(a.sura_id::character varying, ',') as sura_ids,",
-            "    STRING_AGG(a.ayat_number, '|' ORDER BY a.ayat_id) as ayat_nums,",
-            '    STRING_AGG(',
-            '        a.content,',
-            "        '|sep|'",
-            '        ORDER BY a.ayat_id',
-            '    ) AS content,',
-            "    STRING_AGG(s.link, '|sep|' ORDER BY a.ayat_id) AS sura_link",
-            'FROM public.ayats AS a',
-            'JOIN public.users AS u ON a.day = u.day',
-            'JOIN suras AS s ON a.sura_id = s.sura_id',
-            "WHERE u.is_active = 't' {0}".format(
-                'AND u.chat_id IN ({0})'.format(
-                    ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
-                )
-                if self._settings.DAILY_AYATS == 'off' else '',
-            ),
-            'GROUP BY u.chat_id',
-            'ORDER BY u.chat_id',
-        ]))
+        rows = await self._pgsql.fetch_all(
+            '\n'.join([
+                'SELECT',
+                '    u.chat_id,',
+                "    STRING_AGG(a.sura_id::character varying, ',') as sura_ids,",
+                "    STRING_AGG(a.ayat_number, '|' ORDER BY a.ayat_id) as ayat_nums,",
+                '    STRING_AGG(',
+                '        a.content,',
+                "        '|sep|'",
+                '        ORDER BY a.ayat_id',
+                '    ) AS content,',
+                "    STRING_AGG(s.link, '|sep|' ORDER BY a.ayat_id) AS sura_link",
+                'FROM public.ayats AS a',
+                'JOIN public.users AS u ON a.day = u.day',
+                'JOIN suras AS s ON a.sura_id = s.sura_id',
+                "WHERE u.is_active = 't' {0}".format(
+                    'AND u.chat_id IN ({0})'.format(
+                        ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
+                    )
+                    if self._settings.DAILY_AYATS == 'off'
+                    else '',
+                ),
+                'GROUP BY u.chat_id',
+                'ORDER BY u.chat_id',
+            ])
+        )
         unsubscribed_users: list[User] = []
         for answer, chat_id in self._zipped_ans_chat_ids(rows):
             await self._iteration(answer, chat_id, unsubscribed_users)
@@ -96,11 +100,13 @@ class MorningContentPublishedEvent(ReceivedEvent):
             FkAsyncListable(unsubscribed_users),
             self._events_sink,
         ).update(to=False)
-        await self._pgsql.execute('\n'.join([
-            'UPDATE users',
-            'SET day = day + 1',
-            "WHERE is_active = 't' AND chat_id IN ({0})".format(','.join([str(row['chat_id']) for row in rows])),
-        ]))
+        await self._pgsql.execute(
+            '\n'.join([
+                'UPDATE users',
+                'SET day = day + 1',
+                "WHERE is_active = 't' AND chat_id IN ({0})".format(','.join([str(row['chat_id']) for row in rows])),
+            ])
+        )
 
     def _zipped_ans_chat_ids(self, rows: list[Record]) -> Iterator[tuple[TgAnswer, int]]:
         return zip(
@@ -112,12 +118,14 @@ class MorningContentPublishedEvent(ReceivedEvent):
                                 TgMessageAnswer(self._empty_answer),
                                 row['chat_id'],
                             ),
-                            Template(''.join([
-                                '{% for ayat in ayats %}',
-                                '<b>{{ ayat.sura_id }}:{{ ayat.ayat_number }})</b> {{ ayat.content }}\n',
-                                '{% endfor %}',
-                                '\nhttps://umma.ru{{ sura_link }}',
-                            ])).render({
+                            Template(
+                                ''.join([
+                                    '{% for ayat in ayats %}',
+                                    '<b>{{ ayat.sura_id }}:{{ ayat.ayat_number }})</b> {{ ayat.content }}\n',
+                                    '{% endfor %}',
+                                    '\nhttps://umma.ru{{ sura_link }}',
+                                ])
+                            ).render({
                                 'ayats': [
                                     {
                                         'sura_id': sura_id,

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import Protocol, final, override
 
 import attrs
@@ -106,7 +107,10 @@ class UserPrayerStatus(UserPrayerStatusInterface):
             'SET is_read = :is_read',
             'WHERE prayer_at_user_id = :prayer_id',
         ])
-        await self._pgsql.execute(query, {
-            'is_read': prayer_status.change_to(),
-            'prayer_id': prayer_status.user_prayer_id(),
-        })
+        await self._pgsql.execute(
+            query,
+            {
+                'is_read': prayer_status.change_to(),
+                'prayer_id': prayer_status.user_prayer_id(),
+            },
+        )

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 
 import pytest
@@ -46,10 +47,12 @@ async def _db_ayat(pgsql):
         ]),
         {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at},
     )
-    await pgsql.execute('\n'.join([
-        'INSERT INTO suras (sura_id, link) VALUES',
-        "(1, 'https://link-to-sura.domain')",
-    ]))
+    await pgsql.execute(
+        '\n'.join([
+            'INSERT INTO suras (sura_id, link) VALUES',
+            "(1, 'https://link-to-sura.domain')",
+        ])
+    )
     await pgsql.execute(
         '\n'.join([
             'INSERT INTO ayats',
@@ -83,8 +86,7 @@ async def test(fake_redis, unquote, search_answer):
     got = await search_answer.build(FkUpdate('{"callback_query": {"data": "1"}, "chat": {"id": 1758}}'))
 
     assert unquote(got[0].url) == unquote(
-        furl('https://some.domain/sendMessage')
-        .add({
+        furl('https://some.domain/sendMessage').add({
             'parse_mode': 'html',
             'chat_id': '1758',
             'text': '\n'.join([

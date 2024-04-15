@@ -20,15 +20,19 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import pytest
 
 from handlers.podcast_reaction_change_answer import PodcastReaction
 
 
-@pytest.mark.parametrize(('callback_data', 'prayer_id', 'status'), [
-    ('like(123)', 123, 'like'),
-    ('dislike(7854)', 7854, 'dislike'),
-])
+@pytest.mark.parametrize(
+    ('callback_data', 'prayer_id', 'status'),
+    [
+        ('like(123)', 123, 'like'),
+        ('dislike(7854)', 7854, 'dislike'),
+    ],
+)
 def test(callback_data, prayer_id, status):
     reaction = PodcastReaction(callback_data)
 

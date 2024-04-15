@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 from itertools import chain
 
@@ -62,8 +63,7 @@ def expected_message():
             ]).format(
                 *[
                     (
-                        datetime.datetime
-                        .strptime(elems[idx], '%H:%M')
+                        datetime.datetime.strptime(elems[idx], '%H:%M')
                         .replace(tzinfo=pytz.timezone('Europe/Moscow'))
                         .strftime('%H:%M')
                     )
@@ -88,16 +88,10 @@ def test_prayer_times(tg_client, bot_name, expected_message, wait_until):
 def test_mark_as_readed(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     messages = wait_until(tg_client, 5)
-    list(chain.from_iterable(
-        button_row for button_row in messages[0].get_buttons()
-    ))[1].click()
+    list(chain.from_iterable(button_row for button_row in messages[0].get_buttons()))[1].click()
     messages = wait_until(tg_client, 5)
 
-    assert [
-        (button.text, button.data)
-        for button_row in messages[0].get_buttons()
-        for button in button_row
-    ] == [
+    assert [(button.text, button.data) for button_row in messages[0].get_buttons() for button in button_row] == [
         ('❌', b'mark_readed(1)'),
         ('✅', b'mark_not_readed(2)'),
         ('❌', b'mark_readed(3)'),
@@ -111,20 +105,12 @@ def test_mark_as_readed(tg_client, bot_name, wait_until):
 def test_mark_not_readed(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
     messages = wait_until(tg_client, 5)
-    list(chain.from_iterable(
-        button_row for button_row in messages[0].get_buttons()
-    ))[1].click()
+    list(chain.from_iterable(button_row for button_row in messages[0].get_buttons()))[1].click()
     messages = wait_until(tg_client, 5)
-    list(chain.from_iterable(
-        button_row for button_row in messages[0].get_buttons()
-    ))[1].click()
+    list(chain.from_iterable(button_row for button_row in messages[0].get_buttons()))[1].click()
     messages = wait_until(tg_client, 5)
 
-    assert [
-        (button.text, button.data)
-        for button_row in messages[0].get_buttons()
-        for button in button_row
-    ] == [
+    assert [(button.text, button.data) for button_row in messages[0].get_buttons() for button in button_row] == [
         ('❌', b'mark_readed(1)'),
         ('❌', b'mark_readed(2)'),
         ('❌', b'mark_readed(3)'),

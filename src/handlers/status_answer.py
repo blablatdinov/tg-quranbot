@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import time
 from typing import final, override
 
@@ -64,19 +65,23 @@ class StatusAnswer(TgAnswer):
     async def _measure_pgsql(self) -> str:
         db_start = time.time()
         await self._pgsql.execute('SELECT 1')
-        return 'DB: {0} ms'.format(float(
-            RoundedFloat(
-                Millis.seconds_ctor(time.time() - db_start),
-                2,
-            ),
-        ))
+        return 'DB: {0} ms'.format(
+            float(
+                RoundedFloat(
+                    Millis.seconds_ctor(time.time() - db_start),
+                    2,
+                ),
+            )
+        )
 
     async def _measure_redis(self) -> str:
         redis_start = time.time()
         await self._redis.ping()
-        return 'Redis: {0} ms'.format(float(
-            RoundedFloat(
-                Millis.seconds_ctor(time.time() - redis_start),
-                2,
-            ),
-        ))
+        return 'Redis: {0} ms'.format(
+            float(
+                RoundedFloat(
+                    Millis.seconds_ctor(time.time() - redis_start),
+                    2,
+                ),
+            )
+        )

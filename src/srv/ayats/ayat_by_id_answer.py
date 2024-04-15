@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import attrs
@@ -58,7 +59,9 @@ class AyatByIdAnswer(TgAnswer):
         result_ayat = PgAyat.from_callback_query(CallbackQueryData(update), self._pgsql)
         return await TgAnswerList(
             AyatByIdMessageAnswer(
-                result_ayat, TgHtmlMessageAnswerToSender(self._empty_answer), self._pgsql,
+                result_ayat,
+                TgHtmlMessageAnswerToSender(self._empty_answer),
+                self._pgsql,
             ),
             FileAnswer(
                 self._debug_mode,

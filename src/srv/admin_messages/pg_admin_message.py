@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import attrs
@@ -47,7 +48,8 @@ class PgAdminMessage(AdminMessage):
         :return: str
         """
         record = await self._pgsql.fetch_one(
-            'SELECT text FROM admin_messages m WHERE m.key = :key', {'key': self._key},
+            'SELECT text FROM admin_messages m WHERE m.key = :key',
+            {'key': self._key},
         )
         if not record:
             msg = 'Не найдено административное сообщение с ключом {0}'.format(self._key)

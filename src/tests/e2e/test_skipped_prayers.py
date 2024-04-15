@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from itertools import chain
 from pathlib import Path
 
@@ -28,16 +29,10 @@ import pytest
 
 @pytest.fixture()
 def _prayers(db_conn):
-    lines = [
-        line.split(';')
-        for line in Path('src/tests/fixtures/prayers.csv').read_text().splitlines()
-    ]
+    lines = [line.split(';') for line in Path('src/tests/fixtures/prayers.csv').read_text().splitlines()]
     cursor = db_conn.cursor()
     cursor.execute("INSERT INTO users (chat_id, city_id) VALUES (5354079702, 'bc932b25-707e-4af1-8b6e-facb5e6dfa9b')")
-    lines = [
-        line.split(';')
-        for line in Path('src/tests/fixtures/prayers_at_user.csv').read_text().splitlines()
-    ]
+    lines = [line.split(';') for line in Path('src/tests/fixtures/prayers_at_user.csv').read_text().splitlines()]
     query = '\n'.join([
         'INSERT INTO prayers_at_user (prayer_at_user_id, user_id, prayer_id, is_read)',
         'VALUES',
@@ -66,11 +61,7 @@ def test_skipped_prayers(tg_client, bot_name, wait_until):
         'Ахшам: 19',
         'Ястү: 20',
     ])
-    assert [
-        (button.text, button.data)
-        for button_row in messages[0].get_buttons()
-        for button in button_row
-    ] == [
+    assert [(button.text, button.data) for button_row in messages[0].get_buttons() for button in button_row] == [
         ('Иртәнге: (-1)', b'decr(fajr)'),
         ('Өйлә: (-1)', b'decr(dhuhr)'),
         ('Икенде: (-1)', b'decr(asr)'),
@@ -84,9 +75,7 @@ def test_skipped_prayers(tg_client, bot_name, wait_until):
 def test_mark_readed(tg_client, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, '/skipped_prayers')
     messages = wait_until(tg_client, 2)
-    next(chain.from_iterable(
-        button_row for button_row in messages[0].get_buttons()
-    )).click()
+    next(chain.from_iterable(button_row for button_row in messages[0].get_buttons())).click()
     messages = wait_until(tg_client, 2)
 
     assert db_query_vals(
@@ -100,11 +89,7 @@ def test_mark_readed(tg_client, bot_name, wait_until, db_query_vals):
         'Ахшам: 19',
         'Ястү: 20',
     ])
-    assert [
-        (button.text, button.data)
-        for button_row in messages[0].get_buttons()
-        for button in button_row
-    ] == [
+    assert [(button.text, button.data) for button_row in messages[0].get_buttons() for button in button_row] == [
         ('Иртәнге: (-1)', b'decr(fajr)'),
         ('Өйлә: (-1)', b'decr(dhuhr)'),
         ('Икенде: (-1)', b'decr(asr)'),

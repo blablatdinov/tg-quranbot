@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final
 
 import attrs
@@ -64,12 +65,15 @@ class DecrementSkippedPrayerAnswer(TgAnswer):
             ')',
             'RETURNING *',
         ])
-        await self._pgsql.execute(query, {
-            'chat_id': int(TgChatId(update)),
-            'prayer_name': str(
-                CallbackQueryData(update),
-            ).split('(')[1][:-1],
-        })
+        await self._pgsql.execute(
+            query,
+            {
+                'chat_id': int(TgChatId(update)),
+                'prayer_name': str(
+                    CallbackQueryData(update),
+                ).split('(')[1][:-1],
+            },
+        )
         return await TgAnswerMarkup(
             TgMessageIdAnswer(
                 TgTextAnswer(

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import time
 from pathlib import Path
 
@@ -46,11 +47,13 @@ def _revert_changes(settings):
 
 @pytest.mark.usefixtures('_bot_process', '_revert_changes', '_clear_db')
 def test_change_ayat(db_query_vals, settings):
-    connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='localhost',
-        port=5672,
-        credentials=pika.PlainCredentials(settings.RABBITMQ_USER, settings.RABBITMQ_PASS),
-    ))
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(
+            host='localhost',
+            port=5672,
+            credentials=pika.PlainCredentials(settings.RABBITMQ_USER, settings.RABBITMQ_PASS),
+        )
+    )
     channel = connection.channel()
     channel.basic_publish(
         exchange='',

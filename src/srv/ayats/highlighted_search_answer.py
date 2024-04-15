@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import attrs
@@ -57,14 +58,16 @@ class HighlightedSearchAnswer(TgAnswer):
                 new_requests.append(request)
                 continue
             if search_query in text:
-                new_requests.append(httpx.Request(
-                    method=request.method,
-                    url=request.url.copy_set_param(
-                        'text',
-                        text.replace('+', ' ') .replace(search_query, '<b>{0}</b>'.format(search_query)),
-                    ),
-                    headers=request.headers,
-                ))
+                new_requests.append(
+                    httpx.Request(
+                        method=request.method,
+                        url=request.url.copy_set_param(
+                            'text',
+                            text.replace('+', ' ').replace(search_query, '<b>{0}</b>'.format(search_query)),
+                        ),
+                        headers=request.headers,
+                    )
+                )
             else:
                 new_requests.append(request)
         return new_requests

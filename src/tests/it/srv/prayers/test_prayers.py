@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import urllib
 import uuid
 
@@ -45,7 +46,12 @@ async def _user(pgsql):
 async def test_not_found_prayer(pgsql, fake_redis, time_machine, settings_ctor):
     time_machine.move_to('2023-08-30')
     got = await PrayerTimeAnswer.new_prayers_ctor(
-        pgsql, FkAnswer(), [321], fake_redis, FkLogSink(), settings_ctor(ramadan_mode=True),
+        pgsql,
+        FkAnswer(),
+        [321],
+        fake_redis,
+        FkLogSink(),
+        settings_ctor(ramadan_mode=True),
     ).build(FkUpdate('{"chat":{"id":123},"message":{"message_id":1,"text":"Время намаза"}}'))
 
     assert len(got) == 2

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 from app_types.update import Update
@@ -28,7 +29,6 @@ from integrations.tg.update import CachedTgUpdate
 
 @final
 class SeUpdate(Update):
-
     def __init__(self) -> None:
         self._str_call_count = 0
         self._asdict_call_count = 0

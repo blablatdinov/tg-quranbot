@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 import uuid
 from typing import Protocol, final, override
@@ -63,7 +64,8 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
         """
         prayer_group_id = str(uuid.uuid4())
         await self._pgsql.fetch_val(
-            'INSERT INTO prayers_at_user_groups VALUES (:prayer_group_id)', {'prayer_group_id': prayer_group_id},
+            'INSERT INTO prayers_at_user_groups VALUES (:prayer_group_id)',
+            {'prayer_group_id': prayer_group_id},
         )
         query = '\n'.join([
             'INSERT INTO prayers_at_user',
@@ -80,11 +82,14 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
             'ORDER BY',
             "    ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
         ])
-        await self._pgsql.execute(query, {
-            'chat_id': int(self._chat_id),
-            'prayer_group_id': prayer_group_id,
-            'date': date,
-        })
+        await self._pgsql.execute(
+            query,
+            {
+                'chat_id': int(self._chat_id),
+                'prayer_group_id': prayer_group_id,
+                'date': date,
+            },
+        )
 
 
 @final
@@ -112,15 +117,19 @@ class UserPrayersKeyboard(KeyboardInterface):
             ).create(await self._date.parse(update))
             prayers = await self._exists_prayers(update)
         return ujson.dumps({
-            'inline_keyboard': [[
-                {
-                    'text': '✅' if user_prayer['is_read'] else '❌',
-                    'callback_data': ('mark_not_readed({0})' if user_prayer['is_read'] else 'mark_readed({0})').format(
-                        user_prayer['prayer_at_user_id'],
-                    ),
-                }
-                for user_prayer in prayers
-            ]],
+            'inline_keyboard': [
+                [
+                    {
+                        'text': '✅' if user_prayer['is_read'] else '❌',
+                        'callback_data': (
+                            'mark_not_readed({0})' if user_prayer['is_read'] else 'mark_readed({0})'
+                        ).format(
+                            user_prayer['prayer_at_user_id'],
+                        ),
+                    }
+                    for user_prayer in prayers
+                ]
+            ],
         })
 
     async def _exists_prayers(self, update: Update) -> list[Record]:
@@ -133,7 +142,10 @@ class UserPrayersKeyboard(KeyboardInterface):
             "WHERE p.day = :date AND pau.user_id = :chat_id AND p.name <> 'sunrise'",
             'ORDER BY pau.prayer_at_user_id',
         ])
-        return await self._pgsql.fetch_all(select_query, {
-            'date': await self._date.parse(update),
-            'chat_id': int(self._chat_id),
-        })
+        return await self._pgsql.fetch_all(
+            select_query,
+            {
+                'date': await self._date.parse(update),
+                'chat_id': int(self._chat_id),
+            },
+        )

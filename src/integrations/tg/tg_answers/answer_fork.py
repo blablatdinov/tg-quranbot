@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from contextlib import suppress
 from typing import final, override
 
@@ -63,7 +64,10 @@ class TgAnswerFork(TgAnswer):
         """
         for answer in self._answers:
             with suppress(
-                CoordinatesNotFoundError, CallbackQueryNotFoundError, MessageIdNotFoundError, InlineQueryNotFoundError,
+                CoordinatesNotFoundError,
+                CallbackQueryNotFoundError,
+                MessageIdNotFoundError,
+                InlineQueryNotFoundError,
             ):
                 origin_requests = await answer.build(update)
                 if origin_requests:

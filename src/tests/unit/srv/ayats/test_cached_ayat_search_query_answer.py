@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from contextlib import suppress
 from typing import final, override
 
@@ -40,7 +41,6 @@ class FakeError(Exception):
 @elegant
 @final
 class TgAnswerFake(TgAnswer):
-
     @override
     async def build(self, update):
         raise FakeError
@@ -70,7 +70,9 @@ def update():
 async def test(update, fake_redis):
     with suppress(FakeError):
         await CachedAyatSearchQueryAnswer(
-            TgAnswerFake(), fake_redis, FkLogSink(),
+            TgAnswerFake(),
+            fake_redis,
+            FkLogSink(),
         ).build(TgUpdate.str_ctor(update))
 
     assert await fake_redis.get('358610865:ayat_search_query') == 'камни'.encode()

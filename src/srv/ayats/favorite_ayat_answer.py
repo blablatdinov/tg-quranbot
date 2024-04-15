@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import attrs
@@ -69,7 +70,8 @@ class FavoriteAyatAnswer(TgAnswer):
             AyatAnswerKeyboard(
                 result_ayat,
                 FavoriteNeighborAyats(
-                    await result_ayat.identifier().ayat_id(), UserFavoriteAyats(self._pgsql, TgChatId(update)),
+                    await result_ayat.identifier().ayat_id(),
+                    UserFavoriteAyats(self._pgsql, TgChatId(update)),
                 ),
                 AyatCallbackTemplateEnum.get_favorite_ayat,
                 self._pgsql,

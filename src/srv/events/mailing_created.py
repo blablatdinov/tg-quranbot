@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import uuid
 from typing import final, override
 
@@ -65,11 +66,13 @@ class MailingCreatedEvent(ReceivedEvent):
         if json_doc.path('$.data.group')[0] == 'all':
             chat_ids = [
                 row['chat_id']
-                for row in await self._pgsql.fetch_all('\n'.join([
-                    'SELECT chat_id',
-                    'FROM users',
-                    "WHERE is_active = 't'",
-                ]))
+                for row in await self._pgsql.fetch_all(
+                    '\n'.join([
+                        'SELECT chat_id',
+                        'FROM users',
+                        "WHERE is_active = 't'",
+                    ])
+                )
             ]
         elif json_doc.path('$.data.group')[0] == 'admins':
             chat_ids = self._settings.admin_chat_ids()

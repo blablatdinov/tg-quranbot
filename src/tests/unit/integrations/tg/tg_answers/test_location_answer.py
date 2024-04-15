@@ -20,15 +20,18 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 
 
 async def test():
-    got = await TgLocationAnswer(FkAnswer()).build(FkUpdate(
-        '{"latitude": 0, "longitude": 0}',
-    ))
+    got = await TgLocationAnswer(FkAnswer()).build(
+        FkUpdate(
+            '{"latitude": 0, "longitude": 0}',
+        )
+    )
 
     assert got[0].url == 'https://some.domain'
 

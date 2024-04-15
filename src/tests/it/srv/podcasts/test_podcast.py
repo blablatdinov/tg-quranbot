@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 # flake8: noqa: WPS202
 import datetime
 import uuid
@@ -112,40 +113,45 @@ async def _db_podcast_without_telegram_file_id(pgsql):
     )
 
 
-@pytest.mark.parametrize(('debug_mode', 'expected'), [
-    (
-        False,
+@pytest.mark.parametrize(
+    ('debug_mode', 'expected'),
+    [
         (
-            truediv(furl('https://some.domain'), 'sendAudio')
-            .add({
-                'chat_id': '123',
-                'audio': 'aoiejf298jr9p23u8qr3',
-                'reply_markup': ujson.dumps({
-                    'inline_keyboard': [[
-                        {'text': '👍 0', 'callback_data': 'like(1)'},
-                        {'text': '👎 0', 'callback_data': 'dislike(1)'},
-                    ]],
-                }),
-            })
+            False,
+            (
+                truediv(furl('https://some.domain'), 'sendAudio').add({
+                    'chat_id': '123',
+                    'audio': 'aoiejf298jr9p23u8qr3',
+                    'reply_markup': ujson.dumps({
+                        'inline_keyboard': [
+                            [
+                                {'text': '👍 0', 'callback_data': 'like(1)'},
+                                {'text': '👎 0', 'callback_data': 'dislike(1)'},
+                            ]
+                        ],
+                    }),
+                })
+            ),
         ),
-    ),
-    (
-        True,
         (
-            truediv(furl('https://some.domain'), 'sendMessage')
-            .add({
-                'chat_id': '123',
-                'text': 'https://link-to-file.domain',
-                'reply_markup': ujson.dumps({
-                    'inline_keyboard': [[
-                        {'text': '👍 0', 'callback_data': 'like(1)'},
-                        {'text': '👎 0', 'callback_data': 'dislike(1)'},
-                    ]],
-                }),
-            })
+            True,
+            (
+                truediv(furl('https://some.domain'), 'sendMessage').add({
+                    'chat_id': '123',
+                    'text': 'https://link-to-file.domain',
+                    'reply_markup': ujson.dumps({
+                        'inline_keyboard': [
+                            [
+                                {'text': '👍 0', 'callback_data': 'like(1)'},
+                                {'text': '👎 0', 'callback_data': 'dislike(1)'},
+                            ]
+                        ],
+                    }),
+                })
+            ),
         ),
-    ),
-])
+    ],
+)
 @pytest.mark.usefixtures('_db_podcast')
 async def test_random_podcast(pgsql, fake_redis, debug_mode, expected, unquote):
     got = await RandomPodcastAnswer(
@@ -209,9 +215,12 @@ async def test_ignore_showed_podcasts(fake_redis, pgsql, unquote):
         FkLogSink(),
     ).build(FkUpdate('{"chat":{"id":937584}}'))
 
-    assert unquote(
-        got[0].url.query.decode('utf-8'),
-    )[20:] == '/podcast3'
+    assert (
+        unquote(
+            got[0].url.query.decode('utf-8'),
+        )[20:]
+        == '/podcast3'
+    )
 
 
 @pytest.mark.usefixtures('_podcast_reactions')

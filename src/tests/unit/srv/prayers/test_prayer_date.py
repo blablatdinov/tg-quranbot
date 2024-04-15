@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 import re
 
@@ -37,14 +38,19 @@ async def test(time_machine):
     assert got == datetime.date(2023, 10, 11)
 
 
-@pytest.mark.parametrize(('query', 'expected'), [
-    ('Время намаза 10.10.2023', datetime.date(2023, 10, 10)),
-    ('Время намаза 15-10-2023', datetime.date(2023, 10, 15)),
-])
+@pytest.mark.parametrize(
+    ('query', 'expected'),
+    [
+        ('Время намаза 10.10.2023', datetime.date(2023, 10, 10)),
+        ('Время намаза 15-10-2023', datetime.date(2023, 10, 15)),
+    ],
+)
 async def test_with_date(query, expected):
-    got = await PrayersRequestDate().parse(FkUpdate(
-        ujson.dumps({'message': {'text': query}}),
-    ))
+    got = await PrayersRequestDate().parse(
+        FkUpdate(
+            ujson.dumps({'message': {'text': query}}),
+        )
+    )
 
     assert got == expected
 

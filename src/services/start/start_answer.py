@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from collections.abc import Sequence
 from typing import final, override
 
@@ -102,7 +103,10 @@ class StartAnswer(TgAnswer):
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
         if referrer_chat_id_calculated:
             return await self._create_with_referrer(
-                update, start_message, ayat_message, referrer_chat_id_calculated,
+                update,
+                start_message,
+                ayat_message,
+                referrer_chat_id_calculated,
             )
         return TgAnswerList(
             TgAnswerToSender(
@@ -133,7 +137,11 @@ class StartAnswer(TgAnswer):
         )
 
     async def _create_with_referrer(
-        self, update: Update, start_message: str, ayat_message: str, referrer_id: int,
+        self,
+        update: Update,
+        start_message: str,
+        ayat_message: str,
+        referrer_id: int,
     ) -> TgAnswer:
         return TgAnswerList(
             TgAnswerToSender(

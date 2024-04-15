@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 import uuid
 from typing import Final, final, override
@@ -66,13 +67,15 @@ class LoggedAnswer(SendableInterface):
             await self._event_sink.send(
                 UPDATES_LOG,
                 {
-                    MESSAGES: [{
-                        MESSAGE_JSON: ujson.dumps(update.asdict()[MESSAGE_LITERAL]),
-                        IS_UNKNOWN: False,
-                        TRIGGER_MESSAGE_ID: None,
-                        TRIGGER_CALLBACK_ID: None,
-                        MAILING_ID: str(self._mailing_id) if self._mailing_id else None,
-                    }],
+                    MESSAGES: [
+                        {
+                            MESSAGE_JSON: ujson.dumps(update.asdict()[MESSAGE_LITERAL]),
+                            IS_UNKNOWN: False,
+                            TRIGGER_MESSAGE_ID: None,
+                            TRIGGER_CALLBACK_ID: None,
+                            MAILING_ID: str(self._mailing_id) if self._mailing_id else None,
+                        }
+                    ],
                 },
                 MESSAGES_CREATED,
                 1,

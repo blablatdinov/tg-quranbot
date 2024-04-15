@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import pytest
 
 from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
@@ -41,12 +42,15 @@ def test_fail_sura(sura_id):
         query.sura()
 
 
-@pytest.mark.parametrize('ayat_num', [
-    '0',
-    '1iw',
-    '1,5',
-    '1-5',
-])
+@pytest.mark.parametrize(
+    'ayat_num',
+    [
+        '0',
+        '1iw',
+        '1,5',
+        '1-5',
+    ],
+)
 def test_fail(ayat_num):
     query = ValidatedSearchQuery(FkSearchQuery(1, ayat_num))
     with pytest.raises(AyatNotFoundError):

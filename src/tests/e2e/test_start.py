@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from pathlib import Path
 
 import pytest
@@ -43,9 +44,12 @@ def test_generated_events(tg_client, bot_name, wait_event):
 
     assert not JsonDoc(events[0]).path('$.data.messages[0].is_unknown')[0]
     assert not JsonDoc(events[1]).path('$.data.messages[0].is_unknown')[0]
-    assert ujson.loads(
-        JsonDoc(events[0]).path('$.data.messages[0].message_json')[0],
-    )['text'] == '/start'
+    assert (
+        ujson.loads(
+            JsonDoc(events[0]).path('$.data.messages[0].message_json')[0],
+        )['text']
+        == '/start'
+    )
     assert (
         JsonDoc(events[1]).path('$.data.messages[0].trigger_message_id')[0]
         == ujson.loads(

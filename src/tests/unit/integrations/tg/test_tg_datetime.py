@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 
 import pytest
@@ -41,16 +42,19 @@ def stringable_callback_update(callback_update_factory):
     return callback_update_factory()
 
 
-@pytest.mark.parametrize(('update', 'expected'), [
-    (
-        lf('message_update'),
-        datetime.datetime(2022, 12, 9, 10, 20, 13, tzinfo=pytz.timezone('UTC')),
-    ),
-    (
-        lf('stringable_callback_update'),
-        datetime.datetime(2022, 10, 30, 15, 54, 34, tzinfo=pytz.timezone('UTC')),
-    ),
-])
+@pytest.mark.parametrize(
+    ('update', 'expected'),
+    [
+        (
+            lf('message_update'),
+            datetime.datetime(2022, 12, 9, 10, 20, 13, tzinfo=pytz.timezone('UTC')),
+        ),
+        (
+            lf('stringable_callback_update'),
+            datetime.datetime(2022, 10, 30, 15, 54, 34, tzinfo=pytz.timezone('UTC')),
+        ),
+    ],
+)
 def test(update, expected):
     tg_datetime = TgDateTime(TgUpdate.str_ctor(update))
 

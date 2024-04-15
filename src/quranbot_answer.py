@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import httpx
@@ -148,7 +149,11 @@ class QuranbotAnswer(TgAnswer):
                 TgMessageRegexAnswer(
                     'Избранное',
                     FavoriteAyatsAnswer(
-                        self._settings.DEBUG, self._pgsql, self._redis, empty_answer, self._logger,
+                        self._settings.DEBUG,
+                        self._pgsql,
+                        self._redis,
+                        empty_answer,
+                        self._logger,
                     ),
                 ),
                 TgMessageRegexAnswer(
@@ -184,7 +189,12 @@ class QuranbotAnswer(TgAnswer):
                 TgMessageRegexAnswer(
                     '/start',
                     FullStartAnswer(
-                        self._pgsql, empty_answer, self._event_sink, self._redis, self._settings, self._logger,
+                        self._pgsql,
+                        empty_answer,
+                        self._event_sink,
+                        self._redis,
+                        self._settings,
+                        self._logger,
                     ),
                 ),
                 TgMessageRegexAnswer(

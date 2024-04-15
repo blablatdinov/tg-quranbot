@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import time
 import uuid
 from typing import Protocol, final, override
@@ -100,9 +101,12 @@ class RabbitmqSink(SinkInterface):
                 version,
             )
         except TypeError as err:
-            logger.error('Schema of event: {0} invalid. {1}'.format(
-                body_json, str(err),
-            ))
+            logger.error(
+                'Schema of event: {0} invalid. {1}'.format(
+                    body_json,
+                    str(err),
+                )
+            )
             return
         connection = await aio_pika.connect_robust(
             'amqp://{0}:{1}@{2}:5672/{3}'.format(

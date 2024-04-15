@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import TypedDict, final, override
 
 import attrs
@@ -33,7 +34,6 @@ from srv.podcasts.podcast import Podcast
 
 
 class _Row(TypedDict):
-
     like_count: int
     dislike_count: int
 
@@ -75,14 +75,16 @@ class PodcastKeyboard(KeyboardInterface):
                 dislike_count=0,
             )
         return ujson.dumps({
-            'inline_keyboard': [[
-                {
-                    'text': '👍 {0}'.format(likes_count_map['like_count']),
-                    'callback_data': 'like({0})'.format(podcast_id),
-                },
-                {
-                    'text': '👎 {0}'.format(likes_count_map['dislike_count']),
-                    'callback_data': 'dislike({0})'.format(podcast_id),
-                },
-            ]],
+            'inline_keyboard': [
+                [
+                    {
+                        'text': '👍 {0}'.format(likes_count_map['like_count']),
+                        'callback_data': 'like({0})'.format(podcast_id),
+                    },
+                    {
+                        'text': '👎 {0}'.format(likes_count_map['dislike_count']),
+                        'callback_data': 'dislike({0})'.format(podcast_id),
+                    },
+                ]
+            ],
         })

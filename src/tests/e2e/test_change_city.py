@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import pytest
 from telethon.sync import TelegramClient
 
@@ -54,11 +55,7 @@ def test_change_city_by_name(tg_client, bot_name, wait_until, db_query_vals):
 def test_change_city_by_search(tg_client: TelegramClient, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, 'Поменять город')
     messages = wait_until(tg_client, 5)
-    buttons = [
-        button.text
-        for button_row in messages[0].get_buttons()
-        for button in button_row
-    ]
+    buttons = [button.text for button_row in messages[0].get_buttons() for button in button_row]
     cities = tg_client.inline_query(bot_name, 'Набережные')
     cities[0].click(bot_name)
     messages = wait_until(tg_client, 7)

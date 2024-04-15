@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 import uuid
 
@@ -36,19 +37,26 @@ from integrations.tg.tg_answers import FkAnswer
 @pytest.fixture()
 async def _db_podcast(pgsql):
     file_ids = [uuid.uuid4() for _ in range(3)]
-    await pgsql.execute_many('INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)', [
-        {
-            'file_id': str(file_id),
-            'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
-        }
-        for file_id in file_ids
-    ])
-    await pgsql.execute_many('INSERT INTO podcasts (podcast_id, file_id) VALUES (:podcast_id, :file_id)', [
-        {
-            'podcast_id': podcast_id,
-            'file_id': str(file_id),
-        } for podcast_id, file_id in enumerate(file_ids, start=1)
-    ])
+    await pgsql.execute_many(
+        'INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)',
+        [
+            {
+                'file_id': str(file_id),
+                'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
+            }
+            for file_id in file_ids
+        ],
+    )
+    await pgsql.execute_many(
+        'INSERT INTO podcasts (podcast_id, file_id) VALUES (:podcast_id, :file_id)',
+        [
+            {
+                'podcast_id': podcast_id,
+                'file_id': str(file_id),
+            }
+            for podcast_id, file_id in enumerate(file_ids, start=1)
+        ],
+    )
     await pgsql.execute('INSERT INTO users (chat_id) VALUES (1)')
 
 
@@ -67,30 +75,41 @@ async def _existed_reaction(pgsql):
 
 
 @pytest.mark.usefixtures('_db_podcast', '_existed_reaction')
-@pytest.mark.parametrize(('podcast_id', 'reaction', 'button1', 'button2'), [
-    (1, 'like', '👍 0', '👎 0'),
-    (1, 'dislike', '👍 0', '👎 1'),
-    (2, 'like', '👍 1', '👎 0'),
-    (2, 'dislike', '👍 0', '👎 0'),
-    (3, 'like', '👍 1', '👎 0'),
-    (3, 'dislike', '👍 0', '👎 1'),
-])
+@pytest.mark.parametrize(
+    ('podcast_id', 'reaction', 'button1', 'button2'),
+    [
+        (1, 'like', '👍 0', '👎 0'),
+        (1, 'dislike', '👍 0', '👎 1'),
+        (2, 'like', '👍 1', '👎 0'),
+        (2, 'dislike', '👍 0', '👎 0'),
+        (3, 'like', '👍 1', '👎 0'),
+        (3, 'dislike', '👍 0', '👎 1'),
+    ],
+)
 async def test(pgsql, fake_redis, reaction, podcast_id, button1, button2):
     debug = True
     got = await PodcastReactionChangeAnswer(
-        debug, FkAnswer(), fake_redis, pgsql, FkLogSink(),
-    ).build(FkUpdate(
-        ujson.dumps({
-            'chat': {'id': 1},
-            'callback_query': {'data': '{0}({1})'.format(reaction, podcast_id)},
-            'message': {'message_id': 1, 'text': '/podcast{0}'.format(podcast_id)},
-        }),
-    ))
+        debug,
+        FkAnswer(),
+        fake_redis,
+        pgsql,
+        FkLogSink(),
+    ).build(
+        FkUpdate(
+            ujson.dumps({
+                'chat': {'id': 1},
+                'callback_query': {'data': '{0}({1})'.format(reaction, podcast_id)},
+                'message': {'message_id': 1, 'text': '/podcast{0}'.format(podcast_id)},
+            }),
+        )
+    )
 
     assert len(got) == 1
     assert ujson.loads(got[0].url.params['reply_markup']) == {
-        'inline_keyboard': [[
-            {'callback_data': 'like({0})'.format(podcast_id), 'text': button1},
-            {'callback_data': 'dislike({0})'.format(podcast_id), 'text': button2},
-        ]],
+        'inline_keyboard': [
+            [
+                {'callback_data': 'like({0})'.format(podcast_id), 'text': button1},
+                {'callback_data': 'dislike({0})'.format(podcast_id), 'text': button2},
+            ]
+        ],
     }

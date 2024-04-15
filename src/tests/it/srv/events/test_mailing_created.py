@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import uuid
 
 import httpx
@@ -83,9 +84,11 @@ async def test(pgsql, settings_ctor):
         FkLogSink(),
         settings_ctor(admin_chat_ids='93754').ADMIN_CHAT_IDS,
     ).process(
-        JsonDoc({'data': {
-            'mailing_id': str(uuid.uuid4()),
-            'text': 'Hello',
-            'group': 'all',
-        }}),
+        JsonDoc({
+            'data': {
+                'mailing_id': str(uuid.uuid4()),
+                'text': 'Hello',
+                'group': 'all',
+            }
+        }),
     )

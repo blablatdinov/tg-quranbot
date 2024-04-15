@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import pytest
 import ujson
 from pytest_lazy_fixtures import lf
@@ -59,11 +60,14 @@ def query_search_update():
     })
 
 
-@pytest.mark.parametrize('update', [
-    lf('stringable_update'),
-    lf('stringable_callback_update'),
-    lf('query_search_update'),
-])
+@pytest.mark.parametrize(
+    'update',
+    [
+        lf('stringable_update'),
+        lf('stringable_callback_update'),
+        lf('query_search_update'),
+    ],
+)
 def test(update):
     chat_id = TgChatId(TgUpdate.str_ctor(update))
 

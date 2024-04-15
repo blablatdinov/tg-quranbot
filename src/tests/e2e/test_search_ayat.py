@@ -20,16 +20,20 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from pathlib import Path
 
 import pytest
 
 
-@pytest.mark.parametrize(('query', 'expected'), [
-    ('8:7', 'src/tests/e2e/fixtures/8_7_ayat.txt'),
-    ('2:1', 'src/tests/e2e/fixtures/2_1_ayat.txt'),
-    ('2:3', 'src/tests/e2e/fixtures/2_1_ayat.txt'),
-])
+@pytest.mark.parametrize(
+    ('query', 'expected'),
+    [
+        ('8:7', 'src/tests/e2e/fixtures/8_7_ayat.txt'),
+        ('2:1', 'src/tests/e2e/fixtures/2_1_ayat.txt'),
+        ('2:3', 'src/tests/e2e/fixtures/2_1_ayat.txt'),
+    ],
+)
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
 def test_search_by_sura_ayat(tg_client, bot_name, query, expected, wait_until):
     tg_client.send_message(bot_name, query)
@@ -44,10 +48,7 @@ def test_paginate_in_search_by_sura_ayat(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '8:7')
     last_messages = wait_until(tg_client, 3)
     next(
-        button
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-        if button.text == '8:8 ->'
+        button for button_row in last_messages[1].get_buttons() for button in button_row if button.text == '8:8 ->'
     ).click()
     last_messages = wait_until(tg_client, 5)
 
@@ -63,11 +64,7 @@ def test_by_word(tg_client, bot_name, wait_until):
 
     assert last_messages[1].message == Path('src/tests/e2e/fixtures/2_24_ayat.txt').read_text()
     assert last_messages[0].message == 'https://umma.ru/audio/Ozvucjka-statei/Quran/audio/Husary_64/2/002024.mp3'
-    assert [
-        (button.text, button.data)
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-    ] == [
+    assert [(button.text, button.data) for button_row in last_messages[1].get_buttons() for button in button_row] == [
         ('стр. 1/5', b'fake'),
         ('11:83 ->', b'getSAyat(1533)'),
         ('Добавить в избранное', b'addToFavor(17)'),
@@ -82,10 +79,7 @@ def test_search_pagination_forward(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'камни')
     last_messages = wait_until(tg_client, 5)
     next(
-        button
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-        if button.text == '11:83 ->'
+        button for button_row in last_messages[1].get_buttons() for button in button_row if button.text == '11:83 ->'
     ).click()
     last_messages = wait_until(tg_client, 7)
 
@@ -101,17 +95,11 @@ def test_search_pagination_backward(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'камни')
     last_messages = wait_until(tg_client, 5)
     next(
-        button
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-        if button.text == '11:83 ->'
+        button for button_row in last_messages[1].get_buttons() for button in button_row if button.text == '11:83 ->'
     ).click()
     last_messages = wait_until(tg_client, 7)
     next(
-        button
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-        if button.text == '<- 2:24'
+        button for button_row in last_messages[1].get_buttons() for button in button_row if button.text == '<- 2:24'
     ).click()
     last_messages = wait_until(tg_client, 9)
 
@@ -136,11 +124,7 @@ def test_add_to_favor_from_search(tg_client, bot_name, wait_until):
     last_messages = wait_until(tg_client, 8)
 
     assert last_messages[1].message == Path('src/tests/e2e/fixtures/2_24_ayat.txt').read_text()
-    assert [
-        (button.text, button.data)
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-    ] == [
+    assert [(button.text, button.data) for button_row in last_messages[1].get_buttons() for button in button_row] == [
         ('стр. 1/5', b'fake'),
         ('11:83 ->', b'getSAyat(1533)'),
         ('Удалить из избранного', b'removeFromFavor(17)'),

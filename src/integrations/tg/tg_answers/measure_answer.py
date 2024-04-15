@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import time
 from typing import SupportsFloat, final, override
 
@@ -95,15 +96,17 @@ class TgMeasureAnswer(TgAnswer):
         start = time.time()
         self._logger.info('Start process update <{0}>'.format(int(UpdateId(update))))
         requests = await self._origin.build(update)
-        self._logger.info('Update <{0}> process time: {1:.2f} ms'.format(
-            int(UpdateId(update)),
-            float(
-                RoundedFloat(
-                    Millis.seconds_ctor(
-                        time.time() - start,
+        self._logger.info(
+            'Update <{0}> process time: {1:.2f} ms'.format(
+                int(UpdateId(update)),
+                float(
+                    RoundedFloat(
+                        Millis.seconds_ctor(
+                            time.time() - start,
+                        ),
+                        2,
                     ),
-                    2,
                 ),
-            ),
-        ))
+            )
+        )
         return requests

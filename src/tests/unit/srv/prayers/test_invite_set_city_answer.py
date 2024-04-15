@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import override
 
 import httpx
@@ -33,7 +34,6 @@ from srv.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutC
 
 
 class FkOrigin(TgAnswer):
-
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
         raise UserHasNotCityIdError
@@ -47,11 +47,15 @@ async def test_exception():
 
 async def test_invite_set_city_answer(fake_redis):
     got = await InviteSetCityAnswer(
-        FkAnswer(), fake_redis, FkLogSink(),
+        FkAnswer(),
+        fake_redis,
+        FkLogSink(),
     ).build(FkUpdate('{"chat":{"id":1}}'))
 
     assert got[0].url.params['reply_markup'] == ujson.dumps({
-        'inline_keyboard': [[
-            {'text': 'Поиск города', 'switch_inline_query_current_chat': ''},
-        ]],
+        'inline_keyboard': [
+            [
+                {'text': 'Поиск города', 'switch_inline_query_current_chat': ''},
+            ]
+        ],
     })

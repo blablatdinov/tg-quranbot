@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import uuid
 from typing import override
 
@@ -34,7 +35,6 @@ from srv.prayers.update_user_city import FkUpdateUserCity
 
 
 class _Answer(TgAnswer):
-
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
         raise CityNotSupportedError

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 import enum
 from itertools import batched
@@ -43,7 +44,6 @@ IS_READ_LITERAL: Final = 'is_read'
 
 
 class _PrayerNames(enum.Enum):
-
     fajr = ('fajr', 'Иртәнге')
     dhuhr = ('dhuhr', 'Өйлә')
     asr = ('asr', 'Икенде')
@@ -69,10 +69,12 @@ class SkippedPrayersKeyboard(KeyboardInterface):
         """
         return ujson.dumps({
             'inline_keyboard': [
-                [{
-                    'text': '{0}: (-1)'.format(field.value[1]),
-                    'callback_data': 'decr({0})'.format(field.name),
-                }]
+                [
+                    {
+                        'text': '{0}: (-1)'.format(field.value[1]),
+                        'callback_data': 'decr({0})'.format(field.name),
+                    }
+                ]
                 for field in _PrayerNames
             ],
         })
@@ -131,12 +133,17 @@ class PrayersStatistic(AsyncSupportsStr):
             'WHERE pau.user_id = :chat_id',
             "ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
         ])
-        return list(batched(
-            await self._pgsql.fetch_all(query, {
-                'chat_id': int(self._chat_id),
-            }),
-            5,
-        ))
+        return list(
+            batched(
+                await self._pgsql.fetch_all(
+                    query,
+                    {
+                        'chat_id': int(self._chat_id),
+                    },
+                ),
+                5,
+            )
+        )
 
     async def _dates_range(self) -> list[datetime.date]:
         query = '\n'.join([

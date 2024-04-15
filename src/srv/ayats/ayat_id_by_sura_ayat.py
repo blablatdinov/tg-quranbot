@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import uuid
 from typing import final, override
 
@@ -63,13 +64,16 @@ class AyatIdBySuraAyatNum(AsyncIntable):
             '        )',
             '    )',
         ])
-        row = await self._pgsql.fetch_one(query, {
-            'sura_id': self._query.sura(),
-            'ayat_comma_prefix': '%,{0}'.format(self._query.ayat()),
-            'ayat_comma_postfix': '%{0},'.format(self._query.ayat()),
-            'ayat_num': int(self._query.ayat()),
-            'ayat_num_str': self._query.ayat(),
-        })
+        row = await self._pgsql.fetch_one(
+            query,
+            {
+                'sura_id': self._query.sura(),
+                'ayat_comma_prefix': '%,{0}'.format(self._query.ayat()),
+                'ayat_comma_postfix': '%{0},'.format(self._query.ayat()),
+                'ayat_num': int(self._query.ayat()),
+                'ayat_num_str': self._query.ayat(),
+            },
+        )
         if not row:
             raise AyatNotFoundError
         return row['ayat_id']
@@ -95,9 +99,12 @@ class AyatIdByPublicId(AsyncIntable):
             'SELECT ayat_id FROM ayats',
             'WHERE public_id = :public_id',
         ])
-        row = await self._pgsql.fetch_one(query, {
-            'public_id': str(self._public_id),
-        })
+        row = await self._pgsql.fetch_one(
+            query,
+            {
+                'public_id': str(self._public_id),
+            },
+        )
         if not row:
             raise AyatNotFoundError
         return row['ayat_id']

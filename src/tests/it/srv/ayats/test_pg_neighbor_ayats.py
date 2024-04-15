@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 
 import pytest
@@ -43,11 +44,13 @@ async def _db_ayat(pgsql):
             {'file_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba', 'created_at': created_at},
         ],
     )
-    await pgsql.execute('\n'.join([
-        'INSERT INTO suras (sura_id, link) VALUES',
-        "(1, 'https://link-to-sura.domain'),",
-        "(2, 'https://link-to-sura.domain')",
-    ]))
+    await pgsql.execute(
+        '\n'.join([
+            'INSERT INTO suras (sura_id, link) VALUES',
+            "(1, 'https://link-to-sura.domain'),",
+            "(2, 'https://link-to-sura.domain')",
+        ])
+    )
     await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO ayats',

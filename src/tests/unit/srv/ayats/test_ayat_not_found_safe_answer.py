@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import attrs
@@ -36,7 +37,6 @@ from srv.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 @elegant
 @final
 class ThroughDomainAnswer(TgAnswer):
-
     _domain: str
 
     @override
@@ -47,7 +47,6 @@ class ThroughDomainAnswer(TgAnswer):
 @elegant
 @final
 class AyatNotFoundAnswer(TgAnswer):
-
     @override
     async def build(self, update):
         raise AyatNotFoundError

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import attrs
@@ -65,8 +66,7 @@ class InlineQueryAnswer(TgAnswer):
                 origin_requests[0].method,
                 (
                     origin_requests[0]
-                    .url
-                    .join('answerInlineQuery')
+                    .url.join('answerInlineQuery')
                     .copy_add_param('inline_query_id', int(InlineQueryId(update)))
                     .copy_add_param(
                         'results',

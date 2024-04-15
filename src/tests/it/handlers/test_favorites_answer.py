@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import ujson
 
 from app_types.logger import FkLogSink
@@ -31,9 +32,11 @@ from integrations.tg.tg_answers import FkAnswer
 async def test_favorite_ayats_answer(pgsql, fake_redis):
     debug = False
     got = await FavoriteAyatsAnswer(debug, pgsql, fake_redis, FkAnswer(), FkLogSink()).build(
-        FkUpdate(ujson.dumps({
-            'chat': {'id': 74359},
-        })),
+        FkUpdate(
+            ujson.dumps({
+                'chat': {'id': 74359},
+            })
+        ),
     )
 
     assert got[0].url.params['text'] == 'Вы еще не добавляли аятов в избранное'

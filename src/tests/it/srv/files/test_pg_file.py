@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 import uuid
 
@@ -37,12 +38,15 @@ async def db_file_id(pgsql):
         'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
         'VALUES (:file_id, :tg_file_id, :link, :created_at)',
     ])
-    await pgsql.execute(query, {
-        'file_id': str(file_id),
-        'tg_file_id': 'adsf',
-        'link': 'https://link.domain',
-        'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
-    })
+    await pgsql.execute(
+        query,
+        {
+            'file_id': str(file_id),
+            'tg_file_id': 'adsf',
+            'link': 'https://link.domain',
+            'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
+        },
+    )
     return file_id
 
 

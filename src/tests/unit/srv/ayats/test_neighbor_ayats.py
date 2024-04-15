@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import override
 
 import pytest
@@ -32,7 +33,6 @@ from srv.files.file import FkFile
 
 
 class FkFavoriteAyats(AsyncListable[Ayat]):
-
     @override
     async def to_list(self) -> list[Ayat]:
         return [
@@ -42,14 +42,18 @@ class FkFavoriteAyats(AsyncListable[Ayat]):
         ]
 
 
-@pytest.mark.parametrize(('ayat_id', 'expected'), [
-    (1, 'стр. 1/3'),
-    (2, 'стр. 2/3'),
-    (3, 'стр. 3/3'),
-])
+@pytest.mark.parametrize(
+    ('ayat_id', 'expected'),
+    [
+        (1, 'стр. 1/3'),
+        (2, 'стр. 2/3'),
+        (3, 'стр. 3/3'),
+    ],
+)
 async def test_page(ayat_id, expected):
     got = await FavoriteNeighborAyats(
-        ayat_id, FkFavoriteAyats(),
+        ayat_id,
+        FkFavoriteAyats(),
     ).page()
 
     assert got == expected

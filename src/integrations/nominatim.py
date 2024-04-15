@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import TypeAlias, final, override
 
 import attrs
@@ -48,9 +49,12 @@ class CityNameById(CityName):
 
         :return: str
         """
-        return await self._pgsql.fetch_val('SELECT name FROM cities WHERE city_id = :city_id', {
-            'city_id': await self._city_id.to_str(),
-        })
+        return await self._pgsql.fetch_val(
+            'SELECT name FROM cities WHERE city_id = :city_id',
+            {
+                'city_id': await self._city_id.to_str(),
+            },
+        )
 
 
 @final

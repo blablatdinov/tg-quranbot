@@ -20,15 +20,19 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import pytest
 
 from srv.prayers.prayer_status import PrayerStatus
 
 
-@pytest.mark.parametrize(('input_', 'prayer_id', 'change_to'), [
-    ('mark_readed(324)', 324, True),
-    ('mark_not_readed(1050)', 1050, False),
-])
+@pytest.mark.parametrize(
+    ('input_', 'prayer_id', 'change_to'),
+    [
+        ('mark_readed(324)', 324, True),
+        ('mark_not_readed(1050)', 1050, False),
+    ],
+)
 def test(input_, prayer_id, change_to):
     prayer_status = PrayerStatus(input_)
 

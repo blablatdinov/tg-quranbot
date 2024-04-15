@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import attrs
@@ -53,6 +54,8 @@ class ChangeStateAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         await RedisUserState(
-            self._redis, TgChatId(update), self._logger,
+            self._redis,
+            TgChatId(update),
+            self._logger,
         ).change_step(self._step)
         return await self._origin.build(update)

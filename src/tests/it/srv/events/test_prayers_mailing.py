@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 
 import httpx
@@ -39,7 +40,8 @@ from srv.users.pg_user import PgUser
 def mock_http_routes(respx_mock):
     rv = {
         'return_value': httpx.Response(
-            200, text=ujson.dumps({'ok': True, 'result': True}),
+            200,
+            text=ujson.dumps({'ok': True, 'result': True}),
         ),
     }
     chat_content = {
@@ -54,20 +56,26 @@ def mock_http_routes(respx_mock):
         ]),
     }
     return [
-        respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add({
-            'text': text,
-            'chat_id': chat_id,
-            'reply_markup': ujson.dumps({
-                'inline_keyboard': [[
-                    {'text': '\u274c', 'callback_data': 'mark_readed(1)'},
-                    {'text': '\u274c', 'callback_data': 'mark_readed(2)'},
-                    {'text': '\u274c', 'callback_data': 'mark_readed(3)'},
-                    {'text': '\u274c', 'callback_data': 'mark_readed(4)'},
-                    {'text': '\u274c', 'callback_data': 'mark_readed(5)'},
-                ]],
-            }),
-            'parse_mode': 'html',
-        }))).mock(**rv)
+        respx_mock.get(
+            str(
+                furl('https://api.telegram.org/botfakeToken/sendMessage').add({
+                    'text': text,
+                    'chat_id': chat_id,
+                    'reply_markup': ujson.dumps({
+                        'inline_keyboard': [
+                            [
+                                {'text': '\u274c', 'callback_data': 'mark_readed(1)'},
+                                {'text': '\u274c', 'callback_data': 'mark_readed(2)'},
+                                {'text': '\u274c', 'callback_data': 'mark_readed(3)'},
+                                {'text': '\u274c', 'callback_data': 'mark_readed(4)'},
+                                {'text': '\u274c', 'callback_data': 'mark_readed(5)'},
+                            ]
+                        ],
+                    }),
+                    'parse_mode': 'html',
+                })
+            )
+        ).mock(**rv)
         for chat_id, text in chat_content.items()
     ]
 
@@ -76,41 +84,45 @@ def mock_http_routes(respx_mock):
 def mock_http_ramadan_mode(respx_mock):
     rv = {
         'return_value': httpx.Response(
-            200, text=ujson.dumps({'ok': True, 'result': True}),
+            200,
+            text=ujson.dumps({'ok': True, 'result': True}),
         ),
     }
-    return respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add({
-        'text': '\n'.join([
-            'Время намаза для г. Kazan (07.03.2024)\n',
-            'Иртәнге: 04:30 <i>- Конец сухура</i>',
-            'Восход: 05:30',
-            'Өйлә: 06:30',
-            'Икенде: 07:30',
-            'Ахшам: 08:30 <i>- Ифтар</i>',
-            'Ястү: 09:30',
-        ]),
-        'chat_id': '358610865',
-        'reply_markup': ujson.dumps({
-            'inline_keyboard': [[
-                {'text': '\u274c', 'callback_data': 'mark_readed(1)'},
-                {'text': '\u274c', 'callback_data': 'mark_readed(2)'},
-                {'text': '\u274c', 'callback_data': 'mark_readed(3)'},
-                {'text': '\u274c', 'callback_data': 'mark_readed(4)'},
-                {'text': '\u274c', 'callback_data': 'mark_readed(5)'},
-            ]],
-        }),
-        'parse_mode': 'html',
-    }))).mock(**rv)
+    return respx_mock.get(
+        str(
+            furl('https://api.telegram.org/botfakeToken/sendMessage').add({
+                'text': '\n'.join([
+                    'Время намаза для г. Kazan (07.03.2024)\n',
+                    'Иртәнге: 04:30 <i>- Конец сухура</i>',
+                    'Восход: 05:30',
+                    'Өйлә: 06:30',
+                    'Икенде: 07:30',
+                    'Ахшам: 08:30 <i>- Ифтар</i>',
+                    'Ястү: 09:30',
+                ]),
+                'chat_id': '358610865',
+                'reply_markup': ujson.dumps({
+                    'inline_keyboard': [
+                        [
+                            {'text': '\u274c', 'callback_data': 'mark_readed(1)'},
+                            {'text': '\u274c', 'callback_data': 'mark_readed(2)'},
+                            {'text': '\u274c', 'callback_data': 'mark_readed(3)'},
+                            {'text': '\u274c', 'callback_data': 'mark_readed(4)'},
+                            {'text': '\u274c', 'callback_data': 'mark_readed(5)'},
+                        ]
+                    ],
+                }),
+                'parse_mode': 'html',
+            })
+        )
+    ).mock(**rv)
 
 
 @pytest.fixture()
 async def users(pgsql):
     await pgsql.execute_many(
         'INSERT INTO cities (city_id, name) VALUES (:city_id, :name)',
-        [
-            {'city_id': city_id, 'name': 'Kazan'}
-            for city_id in ('e22d9142-a39b-4e99-92f7-2082766f0987',)
-        ],
+        [{'city_id': city_id, 'name': 'Kazan'} for city_id in ('e22d9142-a39b-4e99-92f7-2082766f0987',)],
     )
     await pgsql.execute_many(
         '\n'.join([
@@ -168,10 +180,7 @@ async def users(pgsql):
             {'chat_id': 358610865, 'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987'},
         ],
     )
-    return [
-        PgUser.int_ctor(row['chat_id'], pgsql)
-        for row in await pgsql.fetch_all('SELECT chat_id FROM users')
-    ]
+    return [PgUser.int_ctor(row['chat_id'], pgsql) for row in await pgsql.fetch_all('SELECT chat_id FROM users')]
 
 
 @pytest.mark.usefixtures('users')

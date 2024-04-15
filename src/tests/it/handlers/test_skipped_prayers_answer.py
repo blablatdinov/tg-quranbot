@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 from pathlib import Path
 
@@ -34,10 +35,7 @@ from integrations.tg.tg_answers import FkAnswer
 
 @pytest.fixture()
 async def _prayers(pgsql):
-    lines = [
-        line.split(';')
-        for line in Path('src/tests/fixtures/prayers.csv').read_text().splitlines()
-    ]
+    lines = [line.split(';') for line in Path('src/tests/fixtures/prayers.csv').read_text().splitlines()]
     await pgsql.execute("INSERT INTO cities (city_id, name) VALUES ('bc932b25-707e-4af1-8b6e-facb5e6dfa9b', 'Казань')")
     await pgsql.execute(
         "INSERT INTO users (chat_id, city_id) VALUES (358610865, 'bc932b25-707e-4af1-8b6e-facb5e6dfa9b')",
@@ -64,10 +62,7 @@ async def _prayers(pgsql):
             for line in lines
         ],
     )
-    lines = [
-        line.split(';')
-        for line in Path('src/tests/fixtures/prayers_at_user.csv').read_text().splitlines()
-    ]
+    lines = [line.split(';') for line in Path('src/tests/fixtures/prayers_at_user.csv').read_text().splitlines()]
     query = '\n'.join([
         'INSERT INTO prayers_at_user (prayer_at_user_id, user_id, prayer_id, is_read)',
         'VALUES',
@@ -102,13 +97,16 @@ async def test(message_update_factory, pgsql):
         'Ахшам: 19',
         'Ястү: 20',
     ])
-    assert await pgsql.fetch_val(
-        '\n'.join([
-            'SELECT COUNT(*)',
-            'FROM prayers_at_user AS pau',
-            'WHERE pau.user_id = 358610865',
-        ]),
-    ) == 160
+    assert (
+        await pgsql.fetch_val(
+            '\n'.join([
+                'SELECT COUNT(*)',
+                'FROM prayers_at_user AS pau',
+                'WHERE pau.user_id = 358610865',
+            ]),
+        )
+        == 160
+    )
     assert ujson.loads(got[0].url.params['reply_markup']) == {
         'inline_keyboard': [
             [{'callback_data': 'decr(fajr)', 'text': 'Иртәнге: (-1)'}],

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 # flake8: noqa: WPS202
 from pathlib import Path
 
@@ -47,15 +48,8 @@ def test_get_favors(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Избранное')
     last_messages = wait_until(tg_client, 6)
 
-    assert (
-        last_messages[1].message.strip()
-        == Path('src/tests/e2e/fixtures/3_133_ayat.txt').read_text().strip()
-    )
-    assert [
-        (button.text, button.data)
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-    ] == [
+    assert last_messages[1].message.strip() == Path('src/tests/e2e/fixtures/3_133_ayat.txt').read_text().strip()
+    assert [(button.text, button.data) for button_row in last_messages[1].get_buttons() for button in button_row] == [
         ('стр. 1/4', b'fake'),
         ('5:19 ->', b'getFAyat(671)'),
         ('Удалить из избранного', b'removeFromFavor(409)'),
@@ -68,18 +62,11 @@ def test_paginate_forward(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Избранное')
     last_messages = wait_until(tg_client, 6)
     next(
-        button
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-        if button.text == '5:19 ->'
+        button for button_row in last_messages[1].get_buttons() for button in button_row if button.text == '5:19 ->'
     ).click()
     last_messages = wait_until(tg_client, 8)
 
-    assert [
-        (button.text, button.data)
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-    ] == [
+    assert [(button.text, button.data) for button_row in last_messages[1].get_buttons() for button in button_row] == [
         ('<- 3:133', b'getFAyat(409)'),
         ('стр. 2/4', b'fake'),
         ('15:85 ->', b'getFAyat(1829)'),
@@ -93,25 +80,15 @@ def test_paginate_backward(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Избранное')
     last_messages = wait_until(tg_client, 6)
     next(
-        button
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-        if button.text == '5:19 ->'
+        button for button_row in last_messages[1].get_buttons() for button in button_row if button.text == '5:19 ->'
     ).click()
     last_messages = wait_until(tg_client, 8)
     next(
-        button
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-        if button.text == '<- 3:133'
+        button for button_row in last_messages[1].get_buttons() for button in button_row if button.text == '<- 3:133'
     ).click()
     last_messages = wait_until(tg_client, 10)
 
-    assert [
-        (button.text, button.data)
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-    ] == [
+    assert [(button.text, button.data) for button_row in last_messages[1].get_buttons() for button in button_row] == [
         ('стр. 1/4', b'fake'),
         ('5:19 ->', b'getFAyat(671)'),
         ('Удалить из избранного', b'removeFromFavor(409)'),
@@ -126,11 +103,7 @@ def test_add_to_favor(tg_client, bot_name, wait_until, db_query_vals):
     last_messages[1].get_buttons()[1][0].click()
     last_messages = wait_until(tg_client, 6)
 
-    assert [
-        (button.text, button.data)
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-    ] == [
+    assert [(button.text, button.data) for button_row in last_messages[1].get_buttons() for button in button_row] == [
         ('<- 8:6', b'getAyat(1144)'),
         ('стр. 1145/5737', b'fake'),
         ('8:8 ->', b'getAyat(1146)'),
@@ -147,11 +120,7 @@ def test_remove_from_favor(tg_client, bot_name, wait_until, db_query_vals):
     last_messages[1].get_buttons()[1][0].click()
     last_messages = wait_until(tg_client, 6)
 
-    assert [
-        (button.text, button.data)
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-    ] == [
+    assert [(button.text, button.data) for button_row in last_messages[1].get_buttons() for button in button_row] == [
         ('<- 3:132', b'getAyat(408)'),
         ('стр. 409/5737', b'fake'),
         ('3:134 ->', b'getAyat(410)'),
@@ -165,11 +134,7 @@ def test_remove_from_favor(tg_client, bot_name, wait_until, db_query_vals):
 def test_remove_from_favor_in_favor_pagination(tg_client, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, 'Избранное')
     last_messages = wait_until(tg_client, 6)
-    assert [
-        (button.text, button.data)
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-    ] == [
+    assert [(button.text, button.data) for button_row in last_messages[1].get_buttons() for button in button_row] == [
         ('стр. 1/4', b'fake'),
         ('5:19 ->', b'getFAyat(671)'),
         ('Удалить из избранного', b'removeFromFavor(409)'),
@@ -178,11 +143,7 @@ def test_remove_from_favor_in_favor_pagination(tg_client, bot_name, wait_until, 
     last_messages = wait_until(tg_client, 6)
 
     assert len(db_query_vals('SELECT * FROM favorite_ayats')) == 3
-    assert [
-        (button.text, button.data)
-        for button_row in last_messages[1].get_buttons()
-        for button in button_row
-    ] == [
+    assert [(button.text, button.data) for button_row in last_messages[1].get_buttons() for button in button_row] == [
         ('стр. 1/4', b'fake'),
         ('5:19 ->', b'getFAyat(671)'),
         ('Добавить в избранное', b'addToFavor(409)'),

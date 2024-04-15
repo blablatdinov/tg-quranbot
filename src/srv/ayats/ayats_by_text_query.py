@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import attrs
@@ -53,9 +54,12 @@ class AyatsByTextQuery(AsyncListable):
             'WHERE a.content ILIKE :search_query',
             'ORDER BY a.ayat_id',
         ])
-        rows = await self._pgsql.fetch_all(query, {
-            'search_query': '%{0}%'.format(self._query),
-        })
+        rows = await self._pgsql.fetch_all(
+            query,
+            {
+                'search_query': '%{0}%'.format(self._query),
+            },
+        )
         return [
             PgAyat(
                 FkAsyncIntable(row['id']),

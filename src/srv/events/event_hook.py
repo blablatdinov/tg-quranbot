@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import asyncio
 from typing import Protocol, final, override
 
@@ -136,9 +137,12 @@ class RbmqEventHook(EventHook):
                 body_json.path('$.event_version')[0],
             )
         except TypeError as err:
-            self._logger.error('Schema of event: {0} invalid. {1}'.format(
-                body_json.path('$.event_id')[0], str(err),
-            ))
+            self._logger.error(
+                'Schema of event: {0} invalid. {1}'.format(
+                    body_json.path('$.event_id')[0],
+                    str(err),
+                )
+            )
             return
         for event in self._events:
             await event.process(body_json)

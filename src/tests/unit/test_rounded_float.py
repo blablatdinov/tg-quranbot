@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import SupportsFloat, final, override
 
 import attrs
@@ -32,7 +33,6 @@ from integrations.tg.tg_answers.measure_answer import RoundedFloat
 @elegant
 @final
 class FloatableFake(SupportsFloat):
-
     _origin: float
 
     @override
@@ -43,7 +43,8 @@ class FloatableFake(SupportsFloat):
 def test():
     got = float(
         RoundedFloat(
-            FloatableFake(0.222), 1,
+            FloatableFake(0.222),
+            1,
         ),
     )
 

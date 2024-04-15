@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import attrs
@@ -184,12 +185,15 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
             '    transliteration = :transliteration',
             'WHERE ayat_id = :ayat_id',
         ])
-        await self._pgsql.execute(query, {
-            'ayat_id': await self._ayat_id.to_int(),
-            'day': event_body.path('$.data.day')[0],
-            'audio_id': event_body.path('$.data.audio_id')[0],
-            'ayat_number': event_body.path('$.data.ayat_number')[0],
-            'content': event_body.path('$.data.content')[0],
-            'arab_text': event_body.path('$.data.arab_text')[0],
-            'transliteration': event_body.path('$.data.transliteration')[0],
-        })
+        await self._pgsql.execute(
+            query,
+            {
+                'ayat_id': await self._ayat_id.to_int(),
+                'day': event_body.path('$.data.day')[0],
+                'audio_id': event_body.path('$.data.audio_id')[0],
+                'ayat_number': event_body.path('$.data.ayat_number')[0],
+                'content': event_body.path('$.data.content')[0],
+                'arab_text': event_body.path('$.data.arab_text')[0],
+                'transliteration': event_body.path('$.data.transliteration')[0],
+            },
+        )

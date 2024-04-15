@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import attrs
@@ -51,10 +52,12 @@ class AyatFavoriteKeyboardButton(KeyboardInterface):
         """
         keyboard = ujson.loads(await self._origin.generate(update))
         is_favor = await self._is_favor.to_bool()
-        keyboard['inline_keyboard'].append([{
-            'text': 'Удалить из избранного' if is_favor else 'Добавить в избранное',
-            'callback_data': ('removeFromFavor({0})' if is_favor else 'addToFavor({0})').format(
-                await self._ayat.identifier().ayat_id(),
-            ),
-        }])
+        keyboard['inline_keyboard'].append([
+            {
+                'text': 'Удалить из избранного' if is_favor else 'Добавить в избранное',
+                'callback_data': ('removeFromFavor({0})' if is_favor else 'addToFavor({0})').format(
+                    await self._ayat.identifier().ayat_id(),
+                ),
+            }
+        ])
         return ujson.dumps(keyboard)

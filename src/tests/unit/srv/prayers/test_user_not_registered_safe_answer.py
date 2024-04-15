@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import httpx
@@ -33,7 +34,6 @@ from srv.users.new_user import FkNewUser
 
 @final
 class UserNotFoundAnswer(TgAnswer):
-
     def __init__(self, origin: TgAnswer):
         self._origin = origin
         self._counter = 0

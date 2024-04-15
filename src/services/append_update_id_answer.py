@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 from typing import Protocol, final, override
 
@@ -73,10 +74,7 @@ class AppendDebugInfoAnswer(TgAnswer):
             return origin_requests
         return self._build_new_requests(
             origin_requests,
-            [
-                await debug_param.debug_value(update)
-                for debug_param in self._debug_params
-            ],
+            [await debug_param.debug_value(update) for debug_param in self._debug_params],
         )
 
     def _build_new_requests(self, origin_requests: list[httpx.Request], debug_params: list[str]) -> list[httpx.Request]:
@@ -87,14 +85,16 @@ class AppendDebugInfoAnswer(TgAnswer):
         for request in origin_requests:
             if 'sendMessage' in str(request.url):
                 text = request.url.params['text']
-                new_requests.append(httpx.Request(
-                    method=request.method,
-                    url=request.url.copy_set_param(
-                        'text',
-                        '{0}{1}'.format(text, debug_str),
-                    ),
-                    headers=request.headers,
-                ))
+                new_requests.append(
+                    httpx.Request(
+                        method=request.method,
+                        url=request.url.copy_set_param(
+                            'text',
+                            '{0}{1}'.format(text, debug_str),
+                        ),
+                        headers=request.headers,
+                    )
+                )
             else:
                 new_requests.append(request)
         return new_requests

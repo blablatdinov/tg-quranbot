@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import asyncio
 import urllib
 
@@ -37,6 +38,7 @@ def unquote():
         return urllib.parse.unquote(
             str(url),
         ).replace('+', ' ')
+
     return _unquote
 
 
@@ -56,6 +58,7 @@ def message_update_factory():
         return Template(
             (BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),
         ).render({'message_text': '"{0}"'.format(text), 'chat_id': chat_id})
+
     return _message_update_factory
 
 
@@ -65,6 +68,7 @@ def callback_update_factory():
         return Template(
             (BASE_DIR / 'tests/fixtures/button_callback.json').read_text(),
         ).render({'chat_id': chat_id, 'callback_data': callback_data})
+
     return _message_update_factory
 
 
@@ -111,4 +115,5 @@ def settings_ctor():
             TELEGRAM_CLIENT_HASH=telegram_client_hash,
             BASE_DIR=base_dir,
         )
+
     return _settings_ctor

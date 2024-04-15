@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import attrs
@@ -51,9 +52,11 @@ class TgAnswerMarkup(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                furl(request.url).add(
+                furl(request.url)
+                .add(
                     {'reply_markup': await self._keyboard.generate(update)},
-                ).url,
+                )
+                .url,
                 stream=request.stream,
                 headers=request.headers,
             )

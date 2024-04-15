@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import urllib
 
 from app_types.update import FkUpdate
@@ -35,26 +36,36 @@ async def test():
     ).build(FkUpdate())
 
     assert len(got) == 1
-    assert urllib.parse.unquote(
-        str(got[0].url),
-    ) == 'https://some.domain?text=<b>How to write tests</b> in python?'
+    assert (
+        urllib.parse.unquote(
+            str(got[0].url),
+        )
+        == 'https://some.domain?text=<b>How to write tests</b> in python?'
+    )
 
 
 async def test_key_error():
     got = await HighlightedSearchAnswer(FkAnswer(), FkTextSearchQuery('How to write tests')).build(FkUpdate())
 
     assert len(got) == 1
-    assert urllib.parse.unquote(
-        str(got[0].url),
-    ) == 'https://some.domain'
+    assert (
+        urllib.parse.unquote(
+            str(got[0].url),
+        )
+        == 'https://some.domain'
+    )
 
 
 async def test_other_text():
     got = await HighlightedSearchAnswer(
-        FkAnswer('https://some.domain?text=How to write documentation'), FkTextSearchQuery('How to write tests'),
+        FkAnswer('https://some.domain?text=How to write documentation'),
+        FkTextSearchQuery('How to write tests'),
     ).build(FkUpdate())
 
     assert len(got) == 1
-    assert urllib.parse.unquote(
-        str(got[0].url),
-    ) == 'https://some.domain?text=How to write documentation'
+    assert (
+        urllib.parse.unquote(
+            str(got[0].url),
+        )
+        == 'https://some.domain?text=How to write documentation'
+    )

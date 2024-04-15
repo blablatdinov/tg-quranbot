@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 from contextlib import suppress
 from typing import Protocol, final, override
@@ -83,9 +84,13 @@ class PrayersRequestDate(PrayerDate):
         formats = ('%d.%m.%Y', '%d-%m-%Y')  # noqa: WPS323 not string formatting
         for fmt in formats:
             with suppress(ValueError):
-                return datetime.datetime.strptime(date, fmt).astimezone(
-                    pytz.timezone('Europe/Moscow'),
-                ).date()
+                return (
+                    datetime.datetime.strptime(date, fmt)
+                    .astimezone(
+                        pytz.timezone('Europe/Moscow'),
+                    )
+                    .date()
+                )
         msg = "time data '{0}' does not match formats {1}".format(date, formats)
         raise ValueError(msg)
 
@@ -106,8 +111,7 @@ class PrayersMarkAsDate(PrayerDate):
         msg_first_line = str(MessageText(update)).split('\n')[0]
         date = msg_first_line.split(' ')[-1][1:-1]
         return (
-            datetime.datetime
-            .strptime(date, '%d.%m.%Y')  # noqa: WPS323 not string formatting
+            datetime.datetime.strptime(date, '%d.%m.%Y')  # noqa: WPS323 not string formatting
             .astimezone(pytz.timezone('Europe/Moscow'))
             .date()
         )
@@ -134,6 +138,9 @@ class DateFromUserPrayerId(PrayerDate):
             'INNER JOIN prayers ON prayers_at_user.prayer_id = prayers.prayer_id',
             'WHERE prayer_at_user_id = :prayer_at_user_id',
         ])
-        return await self._pgsql.fetch_val(query, {
-            'prayer_at_user_id': PrayerStatus.update_ctor(update).user_prayer_id(),
-        })
+        return await self._pgsql.fetch_val(
+            query,
+            {
+                'prayer_at_user_id': PrayerStatus.update_ctor(update).user_prayer_id(),
+            },
+        )

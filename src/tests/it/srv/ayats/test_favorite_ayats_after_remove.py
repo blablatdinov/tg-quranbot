@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 
 import pytest
@@ -91,7 +92,8 @@ async def _db_ayat(pgsql):
         'INSERT INTO users (chat_id) VALUES (1)',
     )
     await pgsql.execute_many(
-        'INSERT INTO favorite_ayats (user_id, ayat_id) VALUES (:user_id, :ayat_id)', [
+        'INSERT INTO favorite_ayats (user_id, ayat_id) VALUES (:user_id, :ayat_id)',
+        [
             {'user_id': 1, 'ayat_id': 1},
             {'user_id': 1, 'ayat_id': 2},
             {'user_id': 1, 'ayat_id': 3},

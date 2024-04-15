@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from collections.abc import Sequence
 from typing import final, override
 
@@ -63,7 +64,8 @@ class PrayersExpiredAnswer(TgAnswer):
                 TgTextAnswer.str_ctor(
                     TgAnswerToSender(TgMessageAnswer(self._empty_answer)),
                     'Время намаза на {0} для города {1} не найдено'.format(
-                        err.date.strftime('%d.%m.%Y'), err.city_name or '',
+                        err.date.strftime('%d.%m.%Y'),
+                        err.city_name or '',
                     ),
                 ),
                 TgTextAnswer.str_ctor(
@@ -72,7 +74,8 @@ class PrayersExpiredAnswer(TgAnswer):
                         self._admin_chat_ids[0],
                     ),
                     'Время намаза на {0} для города {1} не найдено'.format(
-                        err.date.strftime('%d.%m.%Y'), err.city_name or '',
+                        err.date.strftime('%d.%m.%Y'),
+                        err.city_name or '',
                     ),
                 ),
             ).build(update)

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import sys
 
 import sentry_sdk
@@ -116,40 +117,60 @@ def main(sys_args: list[str]) -> None:
                     pgsql,
                     logger,
                     EventFork('Ayat.Changed', 1, RbmqAyatChangedEvent(pgsql)),
-                    EventFork('Mailing.DailyAyats', 1, MorningContentPublishedEvent(
-                        TgEmptyAnswer(settings.API_TOKEN),
-                        pgsql,
-                        settings,
-                        rabbitmq_sink,
-                        logger,
-                    )),
-                    EventFork('Mailing.DailyPrayers', 1, PrayersMailingPublishedEvent(
-                        TgEmptyAnswer(settings.API_TOKEN),
-                        pgsql,
-                        settings,
-                        rabbitmq_sink,
-                        logger,
-                        redis,
-                    )),
-                    EventFork('Mailing.Created', 1, MailingCreatedEvent(
-                        TgEmptyAnswer(settings.API_TOKEN),
-                        pgsql,
-                        rabbitmq_sink,
-                        logger,
-                        settings,
-                    )),
-                    EventFork('User.CheckStatus', 1, CheckUsersStatus(
-                        TgEmptyAnswer(settings.API_TOKEN),
-                        pgsql,
-                        rabbitmq_sink,
-                        logger,
-                    )),
-                    EventFork('Messages.Deleted', 2, MessageDeleted(
-                        TgEmptyAnswer(settings.API_TOKEN),
-                        pgsql,
-                        rabbitmq_sink,
-                        logger,
-                    )),
+                    EventFork(
+                        'Mailing.DailyAyats',
+                        1,
+                        MorningContentPublishedEvent(
+                            TgEmptyAnswer(settings.API_TOKEN),
+                            pgsql,
+                            settings,
+                            rabbitmq_sink,
+                            logger,
+                        ),
+                    ),
+                    EventFork(
+                        'Mailing.DailyPrayers',
+                        1,
+                        PrayersMailingPublishedEvent(
+                            TgEmptyAnswer(settings.API_TOKEN),
+                            pgsql,
+                            settings,
+                            rabbitmq_sink,
+                            logger,
+                            redis,
+                        ),
+                    ),
+                    EventFork(
+                        'Mailing.Created',
+                        1,
+                        MailingCreatedEvent(
+                            TgEmptyAnswer(settings.API_TOKEN),
+                            pgsql,
+                            rabbitmq_sink,
+                            logger,
+                            settings,
+                        ),
+                    ),
+                    EventFork(
+                        'User.CheckStatus',
+                        1,
+                        CheckUsersStatus(
+                            TgEmptyAnswer(settings.API_TOKEN),
+                            pgsql,
+                            rabbitmq_sink,
+                            logger,
+                        ),
+                    ),
+                    EventFork(
+                        'Messages.Deleted',
+                        2,
+                        MessageDeleted(
+                            TgEmptyAnswer(settings.API_TOKEN),
+                            pgsql,
+                            rabbitmq_sink,
+                            logger,
+                        ),
+                    ),
                     EventFork('Prayers.Created', 2, PrayerCreatedEvent(pgsql)),
                 ),
             ),

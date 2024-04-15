@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 from typing import Protocol, final, override
 
@@ -54,10 +55,7 @@ class ActiveUsers(AsyncListable):
             "WHERE is_active = 't'",
         ])
         rows = await self._pgsql.fetch_all(query)
-        return [
-            PgUser(FkAsyncIntable(row['chat_id']), self._pgsql)
-            for row in rows
-        ]
+        return [PgUser(FkAsyncIntable(row['chat_id']), self._pgsql) for row in rows]
 
 
 @final
@@ -86,10 +84,7 @@ class PgUsers(AsyncListable):
             ','.join(list(map(str, self._chat_ids))),
         )
         rows = await self._pgsql.fetch_all(query)
-        return [
-            PgUser(FkAsyncIntable(row['chat_id']), self._pgsql)
-            for row in rows
-        ]
+        return [PgUser(FkAsyncIntable(row['chat_id']), self._pgsql) for row in rows]
 
 
 @elegant
@@ -126,10 +121,7 @@ class PgUpdatedUsersStatus(UpdatedUsersStatus):
         users = await self._users.to_list()
         if not users:
             return
-        query = query_template.format(','.join([
-            str(await user.chat_id())
-            for user in users
-        ]))
+        query = query_template.format(','.join([str(await user.chat_id()) for user in users]))
         await self._pgsql.execute(query, {'to': to})
 
 

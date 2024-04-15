@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import httpx
@@ -34,7 +35,6 @@ from srv.files.file_id_answer import TelegramFileIdAnswer
 @elegant
 @final
 class FakeAnswer(TgAnswer):
-
     @override
     async def build(self, update):
         return [
@@ -44,7 +44,8 @@ class FakeAnswer(TgAnswer):
 
 async def test():
     got = await TelegramFileIdAnswer(
-        FkAnswer(), FkFile('file_id', ''),
+        FkAnswer(),
+        FkFile('file_id', ''),
     ).build(FkUpdate())
 
     assert got[0].url.query.decode('utf-8') == 'audio=file_id'

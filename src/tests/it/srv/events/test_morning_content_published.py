@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 
 import httpx
@@ -40,7 +41,8 @@ from srv.users.pg_user import PgUser
 def _mock_http(respx_mock):
     rv = {
         'return_value': httpx.Response(
-            200, text=ujson.dumps({'ok': True, 'result': True}),
+            200,
+            text=ujson.dumps({'ok': True, 'result': True}),
         ),
     }
     url = furl('https://api.telegram.org/botfakeToken/sendMessage').add({
@@ -60,12 +62,16 @@ def _mock_http(respx_mock):
         '206497847': '<b>2:1-4)</b> Third ayat content\n\nhttps://umma.ru/sura-2',
     }
     for chat_id, text in chat_content.items():
-        respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add({
-            'text': text,
-            'chat_id': chat_id,
-            'parse_mode': 'html',
-            'link_preview_options': '{"is_disabled":true}',
-        }))).mock(**rv)
+        respx_mock.get(
+            str(
+                furl('https://api.telegram.org/botfakeToken/sendMessage').add({
+                    'text': text,
+                    'chat_id': chat_id,
+                    'parse_mode': 'html',
+                    'link_preview_options': '{"is_disabled":true}',
+                })
+            )
+        ).mock(**rv)
 
 
 @pytest.fixture()
@@ -105,21 +111,24 @@ async def _ayats(pgsql):
                 'ayat_number': '1',
                 'content': 'First ayat content',
                 'day': 2,
-            } | common,
+            }
+            | common,
             {
                 'ayat_id': 2,
                 'sura_id': 1,
                 'ayat_number': '2',
                 'content': 'Second ayat content',
                 'day': 2,
-            } | common,
+            }
+            | common,
             {
                 'ayat_id': 3,
                 'sura_id': 2,
                 'ayat_number': '1-4',
                 'content': 'Third ayat content',
                 'day': 3,
-            } | common,
+            }
+            | common,
         ],
     )
 
@@ -135,10 +144,7 @@ async def users(pgsql):
             {'chat_id': 24391797, 'is_active': True, 'day': 2},
         ],
     )
-    return [
-        PgUser.int_ctor(row['chat_id'], pgsql)
-        for row in await pgsql.fetch_all('SELECT chat_id FROM users')
-    ]
+    return [PgUser.int_ctor(row['chat_id'], pgsql) for row in await pgsql.fetch_all('SELECT chat_id FROM users')]
 
 
 @pytest.mark.usefixtures('_ayats', '_mock_http')
@@ -158,10 +164,7 @@ async def test(pgsql, users, settings_ctor):
         logger,
     ).process(JsonDoc({}))
 
-    assert [
-        (await user.chat_id(), await user.is_active(), await user.day())
-        for user in users
-    ] == [
+    assert [(await user.chat_id(), await user.is_active(), await user.day()) for user in users] == [
         (358610865, False, 2),
         (206497847, True, 4),
         (827078672, False, 5),

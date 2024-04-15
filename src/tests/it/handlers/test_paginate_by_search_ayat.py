@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import ujson
 
 from app_types.logger import FkLogSink
@@ -35,11 +36,15 @@ async def test(fake_redis, pgsql, settings_ctor):
         pgsql,
         settings_ctor(),
         FkLogSink(),
-    ).build(FkUpdate(ujson.dumps({
-        'chat': {'id': 843759},
-        'callback_query': {
-            'data': '1',
-        },
-    })))
+    ).build(
+        FkUpdate(
+            ujson.dumps({
+                'chat': {'id': 843759},
+                'callback_query': {
+                    'data': '1',
+                },
+            })
+        )
+    )
 
     assert got[0].url.params['text'] == 'Пожалуйста, введите запрос для поиска:'

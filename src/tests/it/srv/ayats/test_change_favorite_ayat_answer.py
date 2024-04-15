@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 
 import pytest
@@ -42,10 +43,12 @@ async def _db_ayat(pgsql):
         ]),
         {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at},
     )
-    await pgsql.execute('\n'.join([
-        'INSERT INTO suras (sura_id, link) VALUES',
-        "(1, 'https://link-to-sura.domain')",
-    ]))
+    await pgsql.execute(
+        '\n'.join([
+            'INSERT INTO suras (sura_id, link) VALUES',
+            "(1, 'https://link-to-sura.domain')",
+        ])
+    )
     await pgsql.execute(
         '\n'.join([
             'INSERT INTO ayats',
@@ -71,14 +74,19 @@ async def _db_ayat(pgsql):
 @pytest.mark.usefixtures('_db_ayat')
 async def test_add(pgsql, fake_redis):
     got = await ChangeFavoriteAyatAnswer(
-        pgsql, FkAnswer(), fake_redis, FkLogSink(),
-    ).build(FkUpdate(
-        ujson.dumps({
-            'callback_query': {'data': 'addToFavor(1)'},
-            'chat': {'id': 1},
-            'message': {'message_id': 1},
-        }),
-    ))
+        pgsql,
+        FkAnswer(),
+        fake_redis,
+        FkLogSink(),
+    ).build(
+        FkUpdate(
+            ujson.dumps({
+                'callback_query': {'data': 'addToFavor(1)'},
+                'chat': {'id': 1},
+                'message': {'message_id': 1},
+            }),
+        )
+    )
 
     assert ujson.loads(got[0].url.params['reply_markup']) == {
         'inline_keyboard': [
@@ -91,14 +99,19 @@ async def test_add(pgsql, fake_redis):
 @pytest.mark.usefixtures('_db_ayat')
 async def test_remove(pgsql, fake_redis):
     got = await ChangeFavoriteAyatAnswer(
-        pgsql, FkAnswer(), fake_redis, FkLogSink(),
-    ).build(FkUpdate(
-        ujson.dumps({
-            'callback_query': {'data': 'removeFromFavor(1)'},
-            'chat': {'id': 1},
-            'message': {'message_id': 1},
-        }),
-    ))
+        pgsql,
+        FkAnswer(),
+        fake_redis,
+        FkLogSink(),
+    ).build(
+        FkUpdate(
+            ujson.dumps({
+                'callback_query': {'data': 'removeFromFavor(1)'},
+                'chat': {'id': 1},
+                'message': {'message_id': 1},
+            }),
+        )
+    )
 
     assert ujson.loads(got[0].url.params['reply_markup']) == {
         'inline_keyboard': [

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import datetime
 
 import pytest
@@ -38,10 +39,12 @@ async def _db_ayat(pgsql):
         ]),
         {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at},
     )
-    await pgsql.execute('\n'.join([
-        'INSERT INTO suras (sura_id, link) VALUES',
-        "(1, 'https://link-to-sura.domain')",
-    ]))
+    await pgsql.execute(
+        '\n'.join([
+            'INSERT INTO suras (sura_id, link) VALUES',
+            "(1, 'https://link-to-sura.domain')",
+        ])
+    )
     await pgsql.execute(
         '\n'.join([
             'INSERT INTO ayats',
@@ -61,14 +64,18 @@ async def _db_ayat(pgsql):
             'transliteration': 'Transliteration',
         },
     )
-    await pgsql.execute('\n'.join([
-        'INSERT INTO users (chat_id) VALUES',
-        '(49573)',
-    ]))
-    await pgsql.execute('\n'.join([
-        'INSERT INTO favorite_ayats (user_id, ayat_id) VALUES',
-        '(49573, 1)',
-    ]))
+    await pgsql.execute(
+        '\n'.join([
+            'INSERT INTO users (chat_id) VALUES',
+            '(49573)',
+        ])
+    )
+    await pgsql.execute(
+        '\n'.join([
+            'INSERT INTO favorite_ayats (user_id, ayat_id) VALUES',
+            '(49573, 1)',
+        ])
+    )
 
 
 @pytest.mark.usefixtures('_db_ayat')

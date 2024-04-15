@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import attrs
@@ -51,5 +52,6 @@ class SafeFork(TgAnswer):
             return await self._origin.build(update)
         except NotProcessableUpdateError:
             return await TgTextAnswer.str_ctor(
-                self._message_answer, 'Я не знаю как отвечать на такое сообщение',
+                self._message_answer,
+                'Я не знаю как отвечать на такое сообщение',
             ).build(update)

@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 from typing import final, override
 
 import attrs
@@ -56,6 +57,4 @@ class UserFavoriteAyats(AsyncListable[Ayat]):
             'ORDER BY a.ayat_id',
         ])
         rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
-        return [
-            PgAyat.from_int(row['id'], self._pgsql) for row in rows
-        ]
+        return [PgAyat.from_int(row['id'], self._pgsql) for row in rows]

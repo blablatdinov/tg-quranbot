@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 # flake8: noqa: WPS202
 import asyncio
 import datetime
@@ -88,6 +89,7 @@ def db_query_vals(db_conn):
         cursor.close()
         db_conn.close()
         return returned_values
+
     return _db_query_vals
 
 
@@ -116,11 +118,14 @@ def wait_until(bot_name):
                 break
             if len(last_messages) == messages_count + UGGLY_OFFSET:
                 return last_messages
-        logger.debug('Taked messages: {0}, count: {1}'.format(
-            pformat([mess.message for mess in last_messages], width=99999),
-            len(last_messages),
-        ))
+        logger.debug(
+            'Taked messages: {0}, count: {1}'.format(
+                pformat([mess.message for mess in last_messages], width=99999),
+                len(last_messages),
+            )
+        )
         raise TimeoutError
+
     return _wait_until
 
 
@@ -137,11 +142,13 @@ def queues():
 
 @pytest.fixture(scope='session')
 def rbmq_channel(queues, settings):
-    connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='localhost',
-        port=5672,
-        credentials=pika.PlainCredentials(settings.RABBITMQ_USER, settings.RABBITMQ_PASS),
-    ))
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(
+            host='localhost',
+            port=5672,
+            credentials=pika.PlainCredentials(settings.RABBITMQ_USER, settings.RABBITMQ_PASS),
+        )
+    )
     channel = connection.channel()
     for queue in queues:
         channel.queue_declare(queue)
@@ -169,6 +176,7 @@ def wait_event(rbmq_channel, queues):
                 )
         logger.debug('Taked event: {0}'.format(body))
         raise TimeoutError
+
     return _wait_event
 
 

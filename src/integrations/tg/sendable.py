@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import asyncio
 from itertools import batched, chain
 from typing import Protocol, final, override
@@ -86,9 +87,11 @@ class SendableAnswer(SendableInterface):
         success_status = 200
         async with httpx.AsyncClient() as client:
             for request in await self._answer.build(update):
-                self._logger.debug('Try send request to: {0}'.format(
-                    url_parse.unquote(str(request.url)),
-                ))
+                self._logger.debug(
+                    'Try send request to: {0}'.format(
+                        url_parse.unquote(str(request.url)),
+                    )
+                )
                 resp = await client.send(request)
                 responses.append(resp.text)
                 if resp.status_code != success_status:

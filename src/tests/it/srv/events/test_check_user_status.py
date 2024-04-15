@@ -20,6 +20,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import httpx
 import pytest
 import ujson
@@ -35,7 +36,8 @@ from srv.events.sink import FkSink
 def _mock_actives(respx_mock):
     rv = {
         'return_value': httpx.Response(
-            200, text=ujson.dumps({'ok': True, 'result': True}),
+            200,
+            text=ujson.dumps({'ok': True, 'result': True}),
         ),
     }
     respx_mock.get('https://some.domain/sendChatAction?chat_id=1&action=typing').mock(**rv)
@@ -47,7 +49,8 @@ def _mock_actives(respx_mock):
 def _mock_unsubscribed(respx_mock):
     rv = {
         'return_value': httpx.Response(
-            400, text='{"ok":false,"error_code":400,"description":"Bad Request: chat not found"}',
+            400,
+            text='{"ok":false,"error_code":400,"description":"Bad Request: chat not found"}',
         ),
     }
     respx_mock.get('https://some.domain/sendChatAction?chat_id=1&action=typing').mock(**rv)
@@ -59,29 +62,35 @@ def _mock_unsubscribed(respx_mock):
 
 @pytest.fixture()
 async def _users(pgsql):
-    await pgsql.execute_many('INSERT INTO users (chat_id) VALUES (:chat_id)', [
-        {'chat_id': 1},
-        {'chat_id': 2},
-        {'chat_id': 3},
-    ])
+    await pgsql.execute_many(
+        'INSERT INTO users (chat_id) VALUES (:chat_id)',
+        [
+            {'chat_id': 1},
+            {'chat_id': 2},
+            {'chat_id': 3},
+        ],
+    )
 
 
 @pytest.mark.usefixtures('_users', '_mock_actives')
 async def test_user_status(pgsql):
     await CheckUsersStatus(
-        FkAnswer(), pgsql, FkSink(), FkLogSink(),
+        FkAnswer(),
+        pgsql,
+        FkSink(),
+        FkLogSink(),
     ).process(JsonDoc({}))
 
-    assert [
-        row['is_active']
-        for row in await pgsql.fetch_all('SELECT is_active FROM users')
-    ] == [True, True, True]
+    assert [row['is_active'] for row in await pgsql.fetch_all('SELECT is_active FROM users')] == [True, True, True]
 
 
 @pytest.mark.usefixtures('_users', '_mock_unsubscribed')
 async def test_unsubscribed(pgsql):
     await CheckUsersStatus(
-        FkAnswer(), pgsql, FkSink(), FkLogSink(),
+        FkAnswer(),
+        pgsql,
+        FkSink(),
+        FkLogSink(),
     ).process(JsonDoc({}))
 
     assert [
