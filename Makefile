@@ -32,6 +32,7 @@ fmt:
 
 lint:
 	poetry run isort src
+	poetry run ruff format src --diff
 	poetry run ruff check src --fix --output-format=concise
 	poetry run flake8 src
 	poetry run refurb src

@@ -177,3 +177,6 @@ fail_on_max = 180
 paths_to_mutate="src/app_types/,src/db/,src/exceptions/,src/handlers/,src/integrations/,main.py,quranbot_answer.py,schedule_app.py,src/services/,src/settings/,src/srv/"
 runner="pytest src/tests/unit src/tests/it -x -q --tb=no -o addopts=''"
 tests_dir="src/tests/unit,src/tests/it"
+
+[tool.ruff.format]
+quote-style = "single"
