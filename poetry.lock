@@ -626,13 +626,13 @@ tests = ["asttokens (>=2.1.0)", "coverage", "coverage-enable-subprocess", "ipyth
 
 [[package]]
 name = "fakeredis"
-version = "2.21.3"
+version = "2.22.0"
 description = "Python implementation of redis API, can be used for testing purposes."
 optional = false
-python-versions = ">=3.7,<4.0"
+python-versions = "<4.0,>=3.7"
 files = [
-    {file = "fakeredis-2.21.3-py3-none-any.whl", hash = "sha256:033fe5882a20ec308ed0cf67a86c1cd982a1bffa63deb0f52eaa625bd8ce305f"},
-    {file = "fakeredis-2.21.3.tar.gz", hash = "sha256:e9e1c309d49d83c4ce1ab6f3ee2e56787f6a5573a305109017bf140334dd396d"},
+    {file = "fakeredis-2.22.0-py3-none-any.whl", hash = "sha256:13ac8bd57c852d8b3c0684fa6755fac4abb4feab6483a52212b932d11c795bf3"},
+    {file = "fakeredis-2.22.0.tar.gz", hash = "sha256:d063085fe962d16637cfe21044f277cfc54d6fb456d12a7c87514990c3fac98e"},
 ]
 
 [package.dependencies]
@@ -2129,6 +2129,7 @@ files = [
     {file = "PyYAML-6.0.1-cp311-cp311-win_amd64.whl", hash = "sha256:bf07ee2fef7014951eeb99f56f39c9bb4af143d8aa3c21b1677805985307da34"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:855fb52b0dc35af121542a76b9a84f8d1cd886ea97c84703eaa6d88e37a2ad28"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:40df9b996c2b73138957fe23a16a4f0ba614f4c0efce1e9406a184b6d07fa3a9"},
+    {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a08c6f0fe150303c1c6b71ebcd7213c2858041a7e01975da3a99aed1e7a378ef"},
     {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6c22bec3fbe2524cde73d7ada88f6566758a8f7227bfbf93a408a9d86bcc12a0"},
     {file = "PyYAML-6.0.1-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:8d4e9c88387b0f5c7d5f281e55304de64cf7f9c0021a3525bd3b1c542da3b0e4"},
     {file = "PyYAML-6.0.1-cp312-cp312-win32.whl", hash = "sha256:d483d2cdf104e7c9fa60c544d92981f12ad66a457afae824d146093b8c294c54"},
@@ -3368,4 +3369,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "2817259b60fb12c6bcc65e1b0efe7a6a179f5c582bda0642b4ec77f54b0367d9"
+content-hash = "8f191f9b793371a02993660d03c38372b8d3883e29847f6fe2f9f1910c294add"
