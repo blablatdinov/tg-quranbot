@@ -30,5 +30,5 @@ async def test():
     assert got[0].url == 'https://api.telegram.org/bottoken/'
 
 
-async def test_str():
+def test_str():
     assert 'superSecret' not in str(TgEmptyAnswer('superSecret'))
