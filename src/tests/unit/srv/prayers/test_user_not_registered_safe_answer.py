@@ -31,12 +31,14 @@ from srv.prayers.user_not_registered_safe_answer import UserNotRegisteredSafeAns
 from srv.users.new_user import FkNewUser
 
 
+@final
 class UserNotFoundAnswer(TgAnswer):
 
     def __init__(self, origin: TgAnswer):
         self._origin = origin
         self._counter = 0
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         if self._counter == 0:
             self._counter += 1

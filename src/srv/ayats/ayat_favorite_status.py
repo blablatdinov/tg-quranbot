@@ -33,7 +33,9 @@ from srv.ayats.favorite_ayat_status import FavoriteAyatStatus
 _ChangeAyatStatusCommand: TypeAlias = str
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class AyatFavoriteStatus(FavoriteAyatStatus):
     """Пользовательский ввод статуса аята в избранном.
 
@@ -52,6 +54,7 @@ class AyatFavoriteStatus(FavoriteAyatStatus):
 
     _source: _ChangeAyatStatusCommand
 
+    @override
     def ayat_id(self) -> AyatId:
         """Идентификатор аята.
 
@@ -59,6 +62,7 @@ class AyatFavoriteStatus(FavoriteAyatStatus):
         """
         return int(IntableRegularExpression(self._source))
 
+    @override
     def change_to(self) -> bool:
         """Целевое значение.
 

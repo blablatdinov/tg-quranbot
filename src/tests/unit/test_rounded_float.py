@@ -29,10 +29,13 @@ from integrations.tg.tg_answers.measure_answer import RoundedFloat
 
 
 @attrs.define(frozen=True)
+@elegant
+@final
 class FloatableFake(SupportsFloat):
 
     _origin: float
 
+    @override
     def __float__(self):
         return self._origin
 

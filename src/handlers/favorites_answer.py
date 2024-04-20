@@ -38,7 +38,9 @@ from srv.ayats.favorite_ayat_answer import FavoriteAyatAnswer
 from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class FavoriteAyatsAnswer(TgAnswer):
     """Ответ с временами намаза."""
 
@@ -48,6 +50,7 @@ class FavoriteAyatsAnswer(TgAnswer):
     _empty_answer: TgAnswer
     _logger: LogSink
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

@@ -33,12 +33,15 @@ from exceptions.base_exception import InternalBotError
 from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class TgDateTime(DateTimeInterface):
     """Время сообщения."""
 
     _update: Update
 
+    @override
     def datetime(self) -> datetime.datetime:
         """Дата/время.
 

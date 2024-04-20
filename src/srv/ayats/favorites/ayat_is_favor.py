@@ -31,7 +31,9 @@ from integrations.tg.chat_id import ChatId
 from srv.ayats.ayat import Ayat
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class AyatIsFavor(AsyncSupportsBool):
     """Является ли аят избранным."""
 
@@ -39,6 +41,7 @@ class AyatIsFavor(AsyncSupportsBool):
     _chat_id: ChatId
     _pgsql: Database
 
+    @override
     async def to_bool(self) -> bool:
         """Приведение к булевому значению.
 

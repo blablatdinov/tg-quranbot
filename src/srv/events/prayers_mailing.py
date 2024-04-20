@@ -61,7 +61,9 @@ from srv.users.pg_user import FkUser, User
 CHAT_ID: Final = 'chat_id'
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class PrayersMailingPublishedEvent(ReceivedEvent):
     """Обработка события о рассылке времени намаза на следующий день."""
 
@@ -72,6 +74,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
     _log_sink: LogSink
     _redis: Redis
 
+    @override
     async def process(self, json_doc: Json) -> None:
         """Обработка события.
 

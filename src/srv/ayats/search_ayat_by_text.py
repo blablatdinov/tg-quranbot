@@ -43,7 +43,9 @@ from srv.ayats.ayats_by_text_query import AyatsByTextQuery
 from srv.ayats.neighbor_ayats import TextSearchNeighborAyats
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class SearchAyatByTextAnswer(TgAnswer):
     """Поиск аята по тексту."""
 
@@ -53,6 +55,7 @@ class SearchAyatByTextAnswer(TgAnswer):
     _pgsql: Database
     _logger: LogSink
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

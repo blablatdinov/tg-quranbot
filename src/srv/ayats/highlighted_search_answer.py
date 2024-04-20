@@ -31,13 +31,16 @@ from integrations.tg.tg_answers import TgAnswer
 from srv.ayats.text_search_query import TextSearchQuery
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class HighlightedSearchAnswer(TgAnswer):
     """Ответ с подсвеченным поисковым текстом."""
 
     _origin: TgAnswer
     _search_query: TextSearchQuery
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

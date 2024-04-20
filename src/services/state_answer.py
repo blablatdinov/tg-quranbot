@@ -34,7 +34,9 @@ from integrations.tg.tg_answers import TgAnswer
 from services.user_state import RedisUserState
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class StepAnswer(TgAnswer):
     """Роутинг ответа по состоянию пользователя."""
 
@@ -43,6 +45,7 @@ class StepAnswer(TgAnswer):
     _redis: Redis
     _logger: LogSink
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

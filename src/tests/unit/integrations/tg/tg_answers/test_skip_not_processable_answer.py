@@ -32,6 +32,7 @@ from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 
 class _NotProcessableAnswer(TgAnswer):
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         raise NotProcessableUpdateError
 

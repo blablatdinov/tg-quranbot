@@ -29,13 +29,16 @@ from pyeo import elegant
 from app_types.listable import AsyncListable
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class CityNames(AsyncListable):
     """Имена городов."""
 
     _pgsql: Database
     _query: str
 
+    @override
     async def to_list(self) -> list[str]:
         """Список строк.
 

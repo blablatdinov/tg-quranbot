@@ -29,6 +29,7 @@ from pyeo import elegant
 from app_types.intable import AsyncIntable, FkAsyncIntable
 
 
+@elegant
 class User(Protocol):
     """Интерфейс пользователя."""
 
@@ -42,7 +43,9 @@ class User(Protocol):
         """Статус активности пользователя."""
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class FkUser(User):
     """Фейковый пользователь."""
 
@@ -72,7 +75,9 @@ class FkUser(User):
         return self._is_active
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class ChatIdByLegacyId(AsyncIntable):
     """Идентификатор чата по старому идентификатору в БД.
 
@@ -82,6 +87,7 @@ class ChatIdByLegacyId(AsyncIntable):
     _pgsql: Database
     _legacy_id: AsyncIntable
 
+    @override
     async def to_int(self) -> int:
         """Числовое представление.
 
@@ -95,7 +101,9 @@ class ChatIdByLegacyId(AsyncIntable):
         return await self._pgsql.fetch_val(query, {'legacy_id': await self._legacy_id.to_int()})
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class PgUser(User):
     """Пользователь в БД postgres."""
 
@@ -122,6 +130,7 @@ class PgUser(User):
         """
         return cls(FkAsyncIntable(chat_id), pgsql)
 
+    @override
     async def chat_id(self) -> int:
         """Идентификатор чата.
 
@@ -129,6 +138,7 @@ class PgUser(User):
         """
         return await self._chat_id.to_int()
 
+    @override
     async def day(self) -> int:
         """День для рассылки утреннего контента.
 
@@ -141,6 +151,7 @@ class PgUser(User):
         ])
         return await self._pgsql.fetch_val(query, {'chat_id': await self._chat_id.to_int()})
 
+    @override
     async def is_active(self) -> bool:
         """Статус пользователя.
 

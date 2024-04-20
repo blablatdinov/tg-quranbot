@@ -32,9 +32,11 @@ from integrations.tg.coordinates import Coordinates
 
 class FkCoordinates(Coordinates):
 
+    @override
     def latitude(self) -> float:
         return 55.7887
 
+    @override
     def longitude(self) -> float:
         return 49.1221
 

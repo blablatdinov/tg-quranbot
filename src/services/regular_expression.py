@@ -30,12 +30,15 @@ from app_types.stringable import SupportsStr
 from exceptions.base_exception import BaseAppError
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class IntableRegularExpression(SupportsInt):
     """Регулярное выражение, которое можно привести к числу."""
 
     _text_for_searching: SupportsStr
 
+    @override
     def __int__(self) -> int:
         """Приведение к числу.
 

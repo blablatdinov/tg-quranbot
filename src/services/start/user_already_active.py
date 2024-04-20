@@ -31,13 +31,16 @@ from exceptions.user import UserAlreadyActiveError
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class UserAlreadyActiveSafeAnswer(TgAnswer):
     """Ответ для случаев когда пользователь уже активен."""
 
     _origin: TgAnswer
     _sender_answer: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

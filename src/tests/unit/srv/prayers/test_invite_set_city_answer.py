@@ -34,6 +34,7 @@ from srv.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutC
 
 class FkOrigin(TgAnswer):
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         raise UserHasNotCityIdError
 

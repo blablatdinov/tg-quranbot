@@ -38,7 +38,9 @@ from srv.ayats.neighbor_ayat_keyboard import NeighborAyatKeyboard
 from srv.ayats.neighbor_ayats import PgNeighborAyats
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class AyatByIdMessageAnswer(TgAnswer):
     """Текстовый ответ на поиск аята."""
 
@@ -46,6 +48,7 @@ class AyatByIdMessageAnswer(TgAnswer):
     _message_answer: TgAnswer
     _pgsql: Database
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

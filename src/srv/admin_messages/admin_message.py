@@ -25,6 +25,7 @@ from typing import Protocol
 from pyeo import elegant
 
 
+@elegant
 class AdminMessage(Protocol):
     """Интерфейс административного сообщения."""
 

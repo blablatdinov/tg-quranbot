@@ -31,6 +31,7 @@ from app_types.logger import LogSink
 from integrations.tg.chat_id import ChatId
 
 
+@final
 class UserStep(enum.Enum):
     """Перечисление возможных состояний пользователя."""
 
@@ -40,6 +41,7 @@ class UserStep(enum.Enum):
     ayat_favor = 'ayat_favor'
 
 
+@elegant
 class UserState(Protocol):
     """Интерфейс для работы с состоянием пользователя."""
 
@@ -53,9 +55,12 @@ class UserState(Protocol):
         """
 
 
+@final
+@elegant
 class CachedUserState(UserState):
     """Кэширующий декоратор."""
 
+    @override
     def __init__(self, origin: UserState) -> None:
         """Ctor.
 
@@ -64,6 +69,7 @@ class CachedUserState(UserState):
         self._origin = origin
         self._cache: UserStep | None = None
 
+    @override
     async def step(self) -> UserStep:
         """Состояние пользователя.
 
@@ -74,6 +80,7 @@ class CachedUserState(UserState):
         self._cache = await self._origin.step()
         return self._cache
 
+    @override
     async def change_step(self, step: UserStep) -> None:
         """Изменение, состояние пользователя.
 
@@ -83,7 +90,9 @@ class CachedUserState(UserState):
         self._cache = step
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class RedisUserState(UserState):
     """Объект, работающий с состоянием пользователя."""
 
@@ -91,6 +100,7 @@ class RedisUserState(UserState):
     _chat_id: ChatId
     _logger: LogSink
 
+    @override
     async def step(self) -> UserStep:
         """Состояние пользователя.
 
@@ -102,6 +112,7 @@ class RedisUserState(UserState):
         self._logger.info('User state: {0}'.format(redis_state_data.decode('utf-8')))
         return UserStep[redis_state_data.decode('utf-8')]
 
+    @override
     async def change_step(self, step: UserStep) -> None:
         """Изменение, состояние пользователя.
 

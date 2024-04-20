@@ -32,13 +32,16 @@ from integrations.tg.tg_answers import TgAnswer
 from srv.files.file import TgFile
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class TelegramFileIdAnswer(TgAnswer):
     """Класс ответа с файлом."""
 
     _origin: TgAnswer
     _tg_file: TgFile
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Отправка.
 

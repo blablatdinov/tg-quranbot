@@ -34,6 +34,7 @@ from integrations.tg.message_text import MessageText
 from srv.prayers.prayer_status import PrayerStatus
 
 
+@elegant
 class PrayerDate(Protocol):
     """Дата времен намаза."""
 
@@ -44,12 +45,15 @@ class PrayerDate(Protocol):
         """
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class FkPrayerDate(PrayerDate):
     """Фейковая дата времен намаза."""
 
     _origin: datetime.date
 
+    @override
     async def parse(self, update: Update) -> datetime.date:
         """Парсинг из текста сообщения.
 
@@ -59,10 +63,13 @@ class FkPrayerDate(PrayerDate):
         return self._origin
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class PrayersRequestDate(PrayerDate):
     """Дата намаза."""
 
+    @override
     async def parse(self, update: Update) -> datetime.date:
         """Парсинг из текста сообщения.
 
@@ -83,10 +90,13 @@ class PrayersRequestDate(PrayerDate):
         raise ValueError(msg)
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class PrayersMarkAsDate(PrayerDate):
     """Дата намаза при редактировании."""
 
+    @override
     async def parse(self, update: Update) -> datetime.date:
         """Парсинг из текста сообщения.
 
@@ -103,12 +113,15 @@ class PrayersMarkAsDate(PrayerDate):
         )
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class DateFromUserPrayerId(PrayerDate):
     """Дата намаза по идентификатору времени намаза."""
 
     _pgsql: Database
 
+    @override
     async def parse(self, update: Update) -> datetime.date:
         """Парсинг из идентификатора времени намаза.
 

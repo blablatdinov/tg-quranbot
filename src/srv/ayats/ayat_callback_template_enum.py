@@ -26,6 +26,8 @@ from typing import final
 from pyeo import elegant
 
 
+@final
+@elegant
 class AyatCallbackTemplateEnum(enum.StrEnum):
     """Шаблон для метаинформации кнопки."""
 

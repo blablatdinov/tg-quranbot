@@ -29,6 +29,7 @@ from pydantic_settings import BaseSettings
 BASE_DIR = Path(__file__).parent  # Path to src dir
 
 
+@final
 class Settings(BaseSettings):
     """Настройки приложения."""
 

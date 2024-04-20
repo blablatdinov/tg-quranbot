@@ -26,18 +26,21 @@ from app_types.update import Update
 from integrations.tg.update import CachedTgUpdate
 
 
+@final
 class SeUpdate(Update):
 
     def __init__(self) -> None:
         self._str_call_count = 0
         self._asdict_call_count = 0
 
+    @override
     def __str__(self) -> str:
         if self._str_call_count == 0:
             self._str_call_count += 1
             return 'value'
         raise Exception  # noqa: TRY002, WPS454
 
+    @override
     def asdict(self) -> dict:
         if self._asdict_call_count == 0:
             self._asdict_call_count += 1

@@ -36,6 +36,7 @@ from services.answers.answer import KeyboardInterface
 from srv.prayers.prayer_date import PrayerDate
 
 
+@elegant
 class NewPrayersAtUser(Protocol):
     """Новые записи о статусе намаза."""
 
@@ -46,7 +47,9 @@ class NewPrayersAtUser(Protocol):
         """
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class PgNewPrayersAtUser(NewPrayersAtUser):
     """Новые записи о статусе намаза."""
 
@@ -84,7 +87,9 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
         })
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class UserPrayersKeyboard(KeyboardInterface):
     """Клавиатура времен намаза."""
 
@@ -92,6 +97,7 @@ class UserPrayersKeyboard(KeyboardInterface):
     _date: PrayerDate
     _chat_id: ChatId
 
+    @override
     async def generate(self, update: Update) -> str:
         """Генерация.
 

@@ -39,7 +39,9 @@ from srv.podcasts.podcast import PgPodcast
 from srv.podcasts.podcast_answer import MarkuppedPodcastAnswer, PodcastAnswer
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class ConcretePodcastAnswer(TgAnswer):
     """Ответ с подкастом."""
 
@@ -49,6 +51,7 @@ class ConcretePodcastAnswer(TgAnswer):
     _pgsql: Database
     _logger: LogSink
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Трансформация в ответ.
 

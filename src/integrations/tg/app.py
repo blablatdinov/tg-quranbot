@@ -35,7 +35,9 @@ from integrations.tg.polling_updates import PollingUpdatesIterator
 from integrations.tg.sendable import SendableInterface
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class PollingApp(Runable):
     """Приложение на long polling."""
 
@@ -43,6 +45,7 @@ class PollingApp(Runable):
     _sendable: SendableInterface
     _logger: LogSink
 
+    @override
     async def run(self) -> None:
         """Запуск."""
         self._logger.info('Start app on polling')
@@ -56,7 +59,9 @@ class PollingApp(Runable):
                 await asyncio.sleep(0.1)
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class AppWithGetMe(Runable):
     """Объект для запуска с предварительным запросом getMe."""
 
@@ -64,6 +69,7 @@ class AppWithGetMe(Runable):
     _token: str
     _logger: LogSink
 
+    @override
     async def run(self) -> None:
         """Запуск.
 
@@ -77,13 +83,16 @@ class AppWithGetMe(Runable):
         await self._origin.run()
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class DatabaseConnectedApp(Runable):
     """Декоратор для подключения к БД."""
 
     _pgsql: Database
     _app: Runable
 
+    @override
     async def run(self) -> None:
         """Запуск."""
         await self._pgsql.connect()

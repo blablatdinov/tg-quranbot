@@ -29,12 +29,15 @@ from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
 from srv.ayats.search_query import AyatNum, SearchQuery, SuraId
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class ValidatedSearchQuery(SearchQuery):
     """Декоратор, валидирующий запрос для поиска."""
 
     _origin: SearchQuery
 
+    @override
     def sura(self) -> SuraId:
         """Номер суры.
 
@@ -48,6 +51,7 @@ class ValidatedSearchQuery(SearchQuery):
             raise SuraNotFoundError
         return sura_num
 
+    @override
     def ayat(self) -> AyatNum:
         """Номер аята.
 

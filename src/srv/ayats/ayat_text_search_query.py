@@ -31,9 +31,11 @@ from integrations.tg.chat_id import ChatId
 from srv.ayats.text_search_query import TextSearchQuery
 
 
+@final
 class CachedTextSearchQuery(TextSearchQuery):
     """Закэшированный запрос."""
 
+    @override
     def __init__(self, origin: TextSearchQuery) -> None:
         """Ctor.
 
@@ -42,6 +44,7 @@ class CachedTextSearchQuery(TextSearchQuery):
         self._origin = origin
         self._cached = ''
 
+    @override
     async def write(self, query: str) -> None:
         """Запись.
 
@@ -50,6 +53,7 @@ class CachedTextSearchQuery(TextSearchQuery):
         await self._origin.write(query)
         self._cached = query
 
+    @override
     async def read(self) -> str:
         """Чтение.
 
@@ -61,6 +65,7 @@ class CachedTextSearchQuery(TextSearchQuery):
         return self._cached
 
 
+@final
 @attrs.define(frozen=True)
 class AyatTextSearchQuery(TextSearchQuery):
     """Запрос поиска аята."""
@@ -71,6 +76,7 @@ class AyatTextSearchQuery(TextSearchQuery):
 
     _key_template = '{0}:ayat_search_query'
 
+    @override
     async def write(self, query: str) -> None:
         """Запись.
 
@@ -83,6 +89,7 @@ class AyatTextSearchQuery(TextSearchQuery):
             self._key_template.format(int(self._chat_id)),
         ))
 
+    @override
     async def read(self) -> str:
         """Чтение.
 

@@ -68,9 +68,11 @@ from srv.prayers.inline_query_answer import InlineQueryAnswer
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 
 
+@final
 class QuranbotAnswer(TgAnswer):
     """Ответ бота quranbot."""
 
+    @override
     def __init__(
         self,
         database: Database,
@@ -94,6 +96,7 @@ class QuranbotAnswer(TgAnswer):
         self._logger = logger
         self._pre_build()
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

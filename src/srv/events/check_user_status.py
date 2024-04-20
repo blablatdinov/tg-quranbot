@@ -40,12 +40,15 @@ from srv.users.active_users import ActiveUsers, PgUpdatedUsersStatus, PgUsers, U
 from srv.users.pg_user import User
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class TypingAction(TgAnswer):
     """Действие с печатью."""
 
     _origin: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
@@ -60,7 +63,9 @@ class TypingAction(TgAnswer):
         ]
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class CheckUsersStatus(ReceivedEvent):
     """Статусы пользователей."""
 
@@ -69,6 +74,7 @@ class CheckUsersStatus(ReceivedEvent):
     _events_sink: SinkInterface
     _logger: LogSink
 
+    @override
     async def process(self, json_doc: Json) -> None:
         """Обработка события.
 

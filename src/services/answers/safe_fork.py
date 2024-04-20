@@ -31,13 +31,16 @@ from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class SafeFork(TgAnswer):
     """Безопасный Fork."""
 
     _origin: TgAnswer
     _message_answer: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

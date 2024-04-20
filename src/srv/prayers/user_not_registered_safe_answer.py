@@ -32,13 +32,16 @@ from integrations.tg.tg_answers.interface import TgAnswer
 from srv.users.new_user import NewUser
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class UserNotRegisteredSafeAnswer(TgAnswer):
     """Декоратор для обработки ошибки с незарегистрированным пользователем."""
 
     _new_user: NewUser
     _origin: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Обработка запроса.
 

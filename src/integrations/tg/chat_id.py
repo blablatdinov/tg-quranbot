@@ -32,12 +32,15 @@ from services.json_path_value import ErrRedirectJsonPath, MatchManyJsonPath
 ChatId: TypeAlias = SupportsInt
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class FkChatId(ChatId):
     """Фейк идентификатора чата."""
 
     _origin: int
 
+    @override
     def __int__(self) -> int:
         """Числовое представление.
 
@@ -46,12 +49,15 @@ class FkChatId(ChatId):
         return self._origin
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class TgChatId(ChatId):
     """Идентификатор чата."""
 
     _update: Update
 
+    @override
     def __int__(self) -> int:
         """Числовое представление.
 

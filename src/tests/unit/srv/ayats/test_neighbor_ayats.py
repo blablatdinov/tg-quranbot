@@ -33,6 +33,7 @@ from srv.files.file import FkFile
 
 class FkFavoriteAyats(AsyncListable[Ayat]):
 
+    @override
     async def to_list(self) -> list[Ayat]:
         return [
             FkAyat(FkIdentifier(1, 1, '1-7'), '', FkFile('', '')),

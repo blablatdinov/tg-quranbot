@@ -33,6 +33,7 @@ from app_types.stringable import SupportsStr
 _ET_co = TypeVar('_ET_co', covariant=True)
 
 
+@elegant
 class JsonPath(Protocol[_ET_co]):
     """Интерфейс объектов, получающих значение по jsonpath."""
 
@@ -40,7 +41,9 @@ class JsonPath(Protocol[_ET_co]):
         """Получить значение."""
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class JsonPathValue(JsonPath, Generic[_ET_co]):
     """Объект, получающий значение по jsonpath.
 
@@ -62,6 +65,7 @@ class JsonPathValue(JsonPath, Generic[_ET_co]):
     _json: dict
     _json_path: SupportsStr
 
+    @override
     def evaluate(self) -> _ET_co:
         """Получить значение.
 
@@ -74,13 +78,16 @@ class JsonPathValue(JsonPath, Generic[_ET_co]):
         return match[0].value
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class MatchManyJsonPath(JsonPath, Generic[_ET_co]):
     """Поиск по нескольким jsonpath."""
 
     _json: dict
     _json_paths: Iterable[SupportsStr]
 
+    @override
     def evaluate(self) -> _ET_co:
         """Получить значение.
 
@@ -96,13 +103,16 @@ class MatchManyJsonPath(JsonPath, Generic[_ET_co]):
         raise ValueError
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class ErrRedirectJsonPath(JsonPath, Generic[_ET_co]):
     """JsonPath с преобразованием исключений."""
 
     _origin: JsonPath
     _to_error: Exception
 
+    @override
     def evaluate(self) -> _ET_co:
         """Получить значение.
 

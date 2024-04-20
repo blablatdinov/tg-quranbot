@@ -33,13 +33,16 @@ from srv.prayers.city import City
 from srv.prayers.update_user_city import UpdatedUserCity
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class CityNotSupportedAnswer(TgAnswer):
     """Ответ о неподдерживаемом городе."""
 
     _origin: TgAnswer
     _error_answer: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
@@ -55,7 +58,9 @@ class CityNotSupportedAnswer(TgAnswer):
             ).build(update)
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class ChangeCityAnswer(TgAnswer):
     """Ответ со сменой города."""
 
@@ -63,6 +68,7 @@ class ChangeCityAnswer(TgAnswer):
     _user_city: UpdatedUserCity
     _city: City
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

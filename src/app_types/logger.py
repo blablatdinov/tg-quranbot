@@ -25,6 +25,7 @@ from typing import Protocol, final
 from pyeo import elegant
 
 
+@elegant
 class LogSink(Protocol):
     """Интерфейс объектов для логгирования."""
 
@@ -57,6 +58,8 @@ class LogSink(Protocol):
         """
 
 
+@final
+@elegant
 class FkLogSink(LogSink):
     """Фейковый логгер."""
 

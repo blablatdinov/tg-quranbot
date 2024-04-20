@@ -31,6 +31,7 @@ from integrations.tg.callback_query import CallbackQueryData
 from services.regular_expression import IntableRegularExpression
 
 
+@elegant
 class PrayerStatusInterface(Protocol):
     """Объект, рассчитывающий данные кнопки для изменения статуса прочитанности намаза."""
 
@@ -41,7 +42,9 @@ class PrayerStatusInterface(Protocol):
         """Рассчитать статус времени намаза пользователя."""
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class PrayerStatus(PrayerStatusInterface):
     """Объект, рассчитывающий данные кнопки для изменения статуса прочитанности намаза."""
 
@@ -56,6 +59,7 @@ class PrayerStatus(PrayerStatusInterface):
         """
         return cls(str(CallbackQueryData(update)))
 
+    @override
     def user_prayer_id(self) -> int:
         """Рассчитать идентификатор времени намаза пользователя.
 
@@ -63,6 +67,7 @@ class PrayerStatus(PrayerStatusInterface):
         """
         return int(IntableRegularExpression(self._source))
 
+    @override
     def change_to(self) -> bool:
         """Рассчитать статус времени намаза пользователя.
 
@@ -71,6 +76,7 @@ class PrayerStatus(PrayerStatusInterface):
         return 'not' not in self._source.split('(')[0]
 
 
+@elegant
 class UserPrayerStatusInterface(Protocol):
     """Интерфейс статуса прочитанности намаза."""
 
@@ -81,12 +87,15 @@ class UserPrayerStatusInterface(Protocol):
         """
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class UserPrayerStatus(UserPrayerStatusInterface):
     """Статус прочитанности намаза."""
 
     _pgsql: Database
 
+    @override
     async def change(self, prayer_status: PrayerStatusInterface) -> None:
         """Изменить статус прочитанности.
 

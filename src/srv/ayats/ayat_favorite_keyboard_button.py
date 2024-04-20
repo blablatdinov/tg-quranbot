@@ -32,7 +32,9 @@ from integrations.tg.keyboard import KeyboardInterface
 from srv.ayats.ayat import Ayat
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class AyatFavoriteKeyboardButton(KeyboardInterface):
     """Кнопка с добавлением аята в избранные."""
 
@@ -40,6 +42,7 @@ class AyatFavoriteKeyboardButton(KeyboardInterface):
     _is_favor: AsyncSupportsBool
     _ayat: Ayat
 
+    @override
     async def generate(self, update: Update) -> str:
         """Генерация клавиатуры.
 

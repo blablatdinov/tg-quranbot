@@ -35,6 +35,7 @@ from services.regular_expression import IntableRegularExpression
 from srv.users.pg_user import PgUser
 
 
+@elegant
 class AsyncIntOrNone(Protocol):
     """AsyncIntOrNone."""
 
@@ -42,12 +43,15 @@ class AsyncIntOrNone(Protocol):
         """Числовое представление."""
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class FkAsyncIntOrNone(AsyncIntOrNone):
     """FkAsyncIntOrNone."""
 
     _origin_value: int | None
 
+    @override
     async def to_int(self) -> int | None:
         """Числовое представление.
 
@@ -56,13 +60,16 @@ class FkAsyncIntOrNone(AsyncIntOrNone):
         return self._origin_value
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class ReferrerChatId(AsyncIntable):
     """Идентификатор чата пригласившего."""
 
     _message: str
     _pgsql: Database
 
+    @override
     async def to_int(self) -> int:
         """Получить идентификатор пригласившего.
 
@@ -84,12 +91,15 @@ class ReferrerChatId(AsyncIntable):
         return await PgUser(FkAsyncIntable(IntableRegularExpression(self._message)), self._pgsql).chat_id()
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class ReferrerIdOrNone(AsyncIntOrNone):
     """Идентификатор чата пригласившего."""
 
     _origin: AsyncIntable
 
+    @override
     async def to_int(self) -> int | None:
         """Получить идентификатор пригласившего.
 

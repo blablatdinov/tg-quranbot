@@ -31,12 +31,15 @@ from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class TgHtmlParseAnswer(TgAnswer):
     """Ответ с HTML элементами."""
 
     _origin: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

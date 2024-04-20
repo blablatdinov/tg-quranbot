@@ -32,6 +32,7 @@ from exceptions.content_exceptions import TelegramFileIdNotFilledError
 from srv.files.file import FileLink, TgFile, TgFileId
 
 
+@elegant
 class Podcast(TgFile, Protocol):
     """Интерфейс подкаста."""
 
@@ -39,13 +40,16 @@ class Podcast(TgFile, Protocol):
         """Идентификатор аята."""
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class PgPodcast(Podcast):
     """Объект подкаста."""
 
     _podcast_id: AsyncIntable
     _pgsql: Database
 
+    @override
     async def podcast_id(self) -> int:
         """Идентификатор подкаста.
 
@@ -53,6 +57,7 @@ class PgPodcast(Podcast):
         """
         return await self._podcast_id.to_int()
 
+    @override
     async def tg_file_id(self) -> TgFileId:
         """Получить идентификатор файла.
 
@@ -77,6 +82,7 @@ class PgPodcast(Podcast):
             raise TelegramFileIdNotFilledError
         return row['telegram_file_id']
 
+    @override
     async def file_link(self) -> FileLink:
         """Получить ссылку на файл.
 

@@ -33,13 +33,16 @@ from integrations.tg.exceptions.update_parse_exceptions import CallbackQueryNotF
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class TgCallbackQueryRegexAnswer(TgAnswer):
     """Маршрутизация ответов по регулярному выражению."""
 
     _pattern: str
     _answer: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

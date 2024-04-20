@@ -30,7 +30,9 @@ from app_types.stringable import SupportsStr
 from app_types.update import Update
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class TgUpdate(Update):
     """Объект обновления от телеграмма."""
 
@@ -45,6 +47,7 @@ class TgUpdate(Update):
         """
         return cls(ujson.loads(str(raw_update)))
 
+    @override
     def __str__(self) -> str:
         """Приведение к строке.
 
@@ -52,6 +55,7 @@ class TgUpdate(Update):
         """
         return ujson.dumps(self._update_dict)
 
+    @override
     def asdict(self) -> dict:
         """Словарь.
 
@@ -63,7 +67,9 @@ class TgUpdate(Update):
         return self._update_dict
 
 
+@final
 @attrs.define()
+@elegant
 class CachedTgUpdate(Update):
     """Декоратор, для избежания повторной десериализации.
 
@@ -77,6 +83,7 @@ class CachedTgUpdate(Update):
         'asdict': None,
     }
 
+    @override
     def __str__(self) -> str:
         """Приведение к строке.
 
@@ -87,6 +94,7 @@ class CachedTgUpdate(Update):
             self._cache[str_cache_key] = str(self._origin)
         return self._cache[str_cache_key]
 
+    @override
     def asdict(self) -> dict:
         """Словарь.
 

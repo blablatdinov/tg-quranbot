@@ -34,7 +34,9 @@ from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgMessageAnsw
 from integrations.tg.tg_answers.measure_answer import Millis, RoundedFloat
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class StatusAnswer(TgAnswer):
     """Ответ со статусом системы."""
 
@@ -42,6 +44,7 @@ class StatusAnswer(TgAnswer):
     _pgsql: Database
     _redis: Redis
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

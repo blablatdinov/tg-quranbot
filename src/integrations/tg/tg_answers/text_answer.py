@@ -32,7 +32,9 @@ from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class TgTextAnswer(TgAnswer):
     """Ответ пользователю с текстом."""
 
@@ -51,6 +53,7 @@ class TgTextAnswer(TgAnswer):
             origin, FkAsyncStr(text),
         )
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

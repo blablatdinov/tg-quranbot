@@ -36,13 +36,16 @@ from services.switch_inline_query_answer import SwitchInlineQueryKeyboard
 from services.user_state import RedisUserState, UserStep
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class UserWithoutCitySafeAnswer(TgAnswer):
     """Объект для обработки случаев когда пользователь запрашивает время намаза без установленного города."""
 
     _origin: TgAnswer
     _invite_set_city_answer: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
@@ -55,7 +58,9 @@ class UserWithoutCitySafeAnswer(TgAnswer):
             return await self._invite_set_city_answer.build(update)
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class InviteSetCityAnswer(TgAnswer):
     """Ответ с приглашением ввести город."""
 
@@ -63,6 +68,7 @@ class InviteSetCityAnswer(TgAnswer):
     _redis: Redis
     _logger: LogSink
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

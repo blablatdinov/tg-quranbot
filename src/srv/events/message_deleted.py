@@ -35,7 +35,9 @@ from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import SinkInterface
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class MessageDeleted(ReceivedEvent):
     """Удаление сообщения."""
 
@@ -44,6 +46,7 @@ class MessageDeleted(ReceivedEvent):
     _events_sink: SinkInterface
     _logger: LogSink
 
+    @override
     async def process(self, json_doc: Json) -> None:
         """Обработка события.
 

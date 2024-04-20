@@ -38,7 +38,9 @@ from srv.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 from srv.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class SearchAyatByNumbersAnswer(TgAnswer):
     """Поиск аята по номеру суры/аята."""
 
@@ -48,6 +50,7 @@ class SearchAyatByNumbersAnswer(TgAnswer):
     _pgsql: Database
     _logger: LogSink
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

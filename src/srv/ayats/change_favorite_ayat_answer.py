@@ -55,7 +55,9 @@ from srv.ayats.neighbor_ayats import FavoriteNeighborAyats, PgNeighborAyats, Tex
 from srv.ayats.pg_ayat import PgAyat
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class ChangeFavoriteAyatAnswer(TgAnswer):
     """Ответ на запрос о смене аята в избранном."""
 
@@ -64,6 +66,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
     _redis: Redis
     _logger: LogSink
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

@@ -40,6 +40,7 @@ from srv.files.file import TgFile
 from srv.files.pg_file import PgFile
 
 
+@final
 @attrs.define(frozen=True)
 class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 method
     """Аят."""
@@ -103,6 +104,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
             pgsql,
         )
 
+    @override
     def identifier(self) -> PgAyatIdentifier:
         """Идентификатор аята.
 
@@ -110,6 +112,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         """
         return PgAyatIdentifier(self._ayat_id, self._pgsql)
 
+    @override
     async def text(self) -> AyatText:
         """Текст аята.
 
@@ -144,6 +147,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
             transliteration=row['transliteration'],
         )
 
+    @override
     async def audio(self) -> TgFile:
         """Получить аудио аята.
 
@@ -163,6 +167,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
             raise AyatNotFoundError(msg)
         return PgFile(row['file_id'], self._pgsql)
 
+    @override
     async def change(self, event_body: Json) -> None:
         """Изменить содержимое аята.
 

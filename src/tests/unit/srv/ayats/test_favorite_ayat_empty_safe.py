@@ -31,6 +31,7 @@ from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
 
 class IndexErrorAnswer(TgAnswer):
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         raise IndexError
 

@@ -45,7 +45,9 @@ MAILING_ID: Final = 'mailing_id'
 MESSAGES_CREATED: Final = 'Messages.Created'
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class LoggedAnswer(SendableInterface):
     """Декоратор логирующий сообщения."""
 
@@ -53,6 +55,7 @@ class LoggedAnswer(SendableInterface):
     _event_sink: SinkInterface
     _mailing_id: uuid.UUID | None = None
 
+    @override
     async def send(self, update: Update) -> list[dict]:  # noqa: WPS217, WPS231
         """Отправка.
 

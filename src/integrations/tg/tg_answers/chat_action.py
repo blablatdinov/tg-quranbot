@@ -31,7 +31,9 @@ from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class TgChatAction(TgAnswer):
     """Запрос на API телеграма с действием.
 
@@ -40,6 +42,7 @@ class TgChatAction(TgAnswer):
 
     _origin: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Формирование запросов.
 

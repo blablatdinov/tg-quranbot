@@ -30,6 +30,7 @@ from integrations.tg.exceptions.update_parse_exceptions import CoordinatesNotFou
 from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
+@elegant
 class Coordinates(Protocol):
     """Интерфейс координат."""
 
@@ -40,13 +41,16 @@ class Coordinates(Protocol):
         """Долгота."""
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class FkCoordinates(Coordinates):
     """Стаб для координат."""
 
     _latitude: float
     _longitude: float
 
+    @override
     def latitude(self) -> float:
         """Широта.
 
@@ -54,6 +58,7 @@ class FkCoordinates(Coordinates):
         """
         return self._latitude
 
+    @override
     def longitude(self) -> float:
         """Долгота.
 
@@ -62,12 +67,15 @@ class FkCoordinates(Coordinates):
         return self._longitude
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class TgMessageCoordinates(Coordinates):
     """Координаты, принятые из чата."""
 
     _update: Update
 
+    @override
     def latitude(self) -> float:
         """Ширина.
 
@@ -83,6 +91,7 @@ class TgMessageCoordinates(Coordinates):
             ).evaluate(),
         )
 
+    @override
     def longitude(self) -> float:
         """Долгота.
 

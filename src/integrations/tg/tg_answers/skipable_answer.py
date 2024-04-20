@@ -30,13 +30,16 @@ from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class SkipableAnswer(TgAnswer):
     """Декоратор для пропуска сообщения."""
 
     _skip: bool
     _origin: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

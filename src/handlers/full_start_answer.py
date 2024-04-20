@@ -44,6 +44,8 @@ from srv.events.sink import SinkInterface
 
 
 @attrs.define(frozen=True)
+@final
+@elegant
 class FullStartAnswer(TgAnswer):
     """Ответ на команду /start."""
 
@@ -54,6 +56,7 @@ class FullStartAnswer(TgAnswer):
     _settings: Settings
     _logger: LogSink
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

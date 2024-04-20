@@ -32,12 +32,15 @@ from integrations.tg.exceptions.update_parse_exceptions import CoordinatesNotFou
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class TgLocationAnswer(TgAnswer):
     """Ответ на присланную геопозицию."""
 
     _answer: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

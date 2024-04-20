@@ -39,7 +39,9 @@ from srv.ayats.favorites.user_favorite_ayats import UserFavoriteAyats
 from srv.ayats.neighbor_ayats import FavoriteNeighborAyats
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class FavoriteAyatAnswer(TgAnswer):
     """Ответ с избранными аятами."""
 
@@ -47,6 +49,7 @@ class FavoriteAyatAnswer(TgAnswer):
     _empty_answer: TgAnswer
     _pgsql: Database
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

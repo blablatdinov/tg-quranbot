@@ -31,12 +31,15 @@ from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class TgSkipNotProcessable(TgAnswer):
     """Обработка и пропуск ответа, возбудившего NotProcessableUpdateError."""
 
     _answer: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

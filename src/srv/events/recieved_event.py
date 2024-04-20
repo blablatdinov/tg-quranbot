@@ -30,6 +30,7 @@ JsonPathQuery: TypeAlias = str
 JsonPathReturnType_co = TypeVar('JsonPathReturnType_co', covariant=True)
 
 
+@elegant
 class ReceivedEvent(Protocol[JsonPathReturnType_co]):
     """Событие."""
 
@@ -40,7 +41,9 @@ class ReceivedEvent(Protocol[JsonPathReturnType_co]):
         """
 
 
+@elegant
 @attrs.define(frozen=True)
+@final
 class EventFork(ReceivedEvent):
     """Событие."""
 
@@ -48,6 +51,7 @@ class EventFork(ReceivedEvent):
     _version: int
     _origin: ReceivedEvent
 
+    @override
     async def process(self, json_doc: Json) -> None:
         """Обработать событие.
 

@@ -31,13 +31,16 @@ from integrations.tg.tg_answers import TgAnswer
 from services.user_state import UserState, UserStep
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class ResetStateAnswer(TgAnswer):
     """Декоратор для обнуления состояния пользователя."""
 
     _origin: TgAnswer
     _user_state: UserState
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

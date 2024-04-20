@@ -35,7 +35,9 @@ from integrations.tg.tg_answers import TgAnswer
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class CachedAyatSearchQueryAnswer(TgAnswer):
     """Объект кэширует запрос на поиск аятов, для использования в пагинации."""
 
@@ -43,6 +45,7 @@ class CachedAyatSearchQueryAnswer(TgAnswer):
     _redis: Redis
     _logger: LogSink
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

@@ -37,8 +37,11 @@ class FakeError(Exception):
     pass
 
 
+@elegant
+@final
 class TgAnswerFake(TgAnswer):
 
+    @override
     async def build(self, update):
         raise FakeError
 

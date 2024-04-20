@@ -33,16 +33,22 @@ from srv.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 
 
 @attrs.define(frozen=True)
+@elegant
+@final
 class ThroughDomainAnswer(TgAnswer):
 
     _domain: str
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         return [httpx.Request('GET', self._domain)]
 
 
+@elegant
+@final
 class AyatNotFoundAnswer(TgAnswer):
 
+    @override
     async def build(self, update):
         raise AyatNotFoundError
 

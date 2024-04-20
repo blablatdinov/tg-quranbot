@@ -38,13 +38,16 @@ class _Row(TypedDict):
     dislike_count: int
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class PodcastKeyboard(KeyboardInterface):
     """Клавиатура подкаста."""
 
     _pgsql: Database
     _podcast: Podcast
 
+    @override
     async def generate(self, update: Update) -> str:
         """Генерация клавиатуры.
 

@@ -33,13 +33,16 @@ from srv.ayats.ayat_identifier import AyatId
 from srv.ayats.search_query import SearchQuery
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class AyatIdBySuraAyatNum(AsyncIntable):
     """Поиск аятов по номеру суры, аята."""
 
     _query: SearchQuery
     _pgsql: Database
 
+    @override
     async def to_int(self) -> AyatId:
         """Числовое представление.
 
@@ -72,13 +75,16 @@ class AyatIdBySuraAyatNum(AsyncIntable):
         return row['ayat_id']
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class AyatIdByPublicId(AsyncIntable):
     """Поиск аятов по номеру суры, аята."""
 
     _public_id: uuid.UUID
     _pgsql: Database
 
+    @override
     async def to_int(self) -> AyatId:
         """Числовое представление.
 

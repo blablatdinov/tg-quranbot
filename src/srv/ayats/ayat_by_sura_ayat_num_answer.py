@@ -38,7 +38,9 @@ from srv.ayats.neighbor_ayats import PgNeighborAyats
 from srv.ayats.pg_ayat import PgAyat
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class AyatBySuraAyatNumAnswer(TgAnswer):
     """Ответ на поиск аята по номеру суры, аята."""
 
@@ -47,6 +49,7 @@ class AyatBySuraAyatNumAnswer(TgAnswer):
     _file_answer: TgAnswer
     _pgsql: Database
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

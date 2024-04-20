@@ -37,7 +37,9 @@ from srv.ayats.neighbor_ayat_keyboard import NeighborAyatKeyboard
 from srv.ayats.neighbor_ayats import NeighborAyats
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class AyatAnswerKeyboard(KeyboardInterface):
     """Клавиатура аята."""
 
@@ -46,6 +48,7 @@ class AyatAnswerKeyboard(KeyboardInterface):
     _ayat_callback_template: AyatCallbackTemplateEnum
     _pgsql: Database
 
+    @override
     async def generate(self, update: Update) -> str:
         """Генерация.
 

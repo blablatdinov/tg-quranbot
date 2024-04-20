@@ -25,17 +25,20 @@ from typing import final
 from exceptions.base_exception import BaseAppError
 
 
+@final
 class UserAlreadyExistsError(BaseAppError):
     """Пользователь уже зарегистрирован."""
 
     admin_message = ''
 
 
+@final
 class StartMessageNotContainReferrerError(BaseAppError):
     """Стартовое сообщение не содержит информации о пригласившем."""
 
     admin_message = ''
 
 
+@final
 class UserAlreadyActiveError(BaseAppError):
     """Пользователь уже активен."""

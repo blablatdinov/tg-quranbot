@@ -27,30 +27,35 @@ import attrs
 from exceptions.base_exception import BaseAppError
 
 
+@final
 class NotFoundReferrerIdError(BaseAppError):
     """Исключение возбуждается в случае если невозможно зарегистрировать пользователя с рефералом."""
 
     user_message = 'Невозможно зарегистрировать пользователя с рефералом'
 
 
+@final
 class UserNotFoundError(BaseAppError):
     """Исключение возбуждается в случае если пользователь не найден."""
 
     user_message = 'Пользователь не найден'
 
 
+@final
 class UserHasNotGeneratedPrayersError(BaseAppError):
     """У пользователя нет сгенерированных времен намаза на текущий день."""
 
     admin_message = ''
 
 
+@final
 class NotProcessableUpdateError(BaseAppError):
     """Исключение, вызываемое если бот не знает как обработать запрос."""
 
     admin_message = ''
 
 
+@final
 @attrs.define(frozen=True)
 class TelegramIntegrationsError(BaseAppError):
     """Исключение, возбуждаемое при некорректном ответе от API телеграмма."""
@@ -58,6 +63,7 @@ class TelegramIntegrationsError(BaseAppError):
     _message: str
     admin_message = 'Ошибка интеграции telegram'
 
+    @override
     def __str__(self) -> str:
         """Строковое представление.
 
@@ -66,6 +72,7 @@ class TelegramIntegrationsError(BaseAppError):
         return self._message
 
 
+@final
 @attrs.define(frozen=True)
 class UnreacheableError(BaseAppError):
     """Ошибка непредвиденного состояния."""

@@ -43,13 +43,16 @@ class City(Protocol):
         """Имя города."""
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class FkCity(City):
     """Стаб города."""
 
     _city_id: uuid.UUID
     _name: str
 
+    @override
     async def city_id(self) -> uuid.UUID:
         """Идентификатор города.
 
@@ -57,6 +60,7 @@ class FkCity(City):
         """
         return self._city_id
 
+    @override
     async def name(self) -> str:
         """Имя города.
 
@@ -65,13 +69,16 @@ class FkCity(City):
         return self._name
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class CityIdByName(AsyncSupportsStr):
     """Идентификатор города по имени."""
 
     _name: AsyncSupportsStr
     _pgsql: Database
 
+    @override
     async def to_str(self) -> str:
         """Строковое представление.
 
@@ -88,7 +95,9 @@ class CityIdByName(AsyncSupportsStr):
         return city_id
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class PgCity(City):
     """Город в БД postgres."""
 
@@ -115,6 +124,7 @@ class PgCity(City):
         """
         return cls(CityIdByName(NominatimCityName(location), pgsql), pgsql)
 
+    @override
     async def city_id(self) -> uuid.UUID:
         """Идентификатор города.
 
@@ -122,6 +132,7 @@ class PgCity(City):
         """
         return uuid.UUID(await self._city_id.to_str())
 
+    @override
     async def name(self) -> str:
         """Имя города.
 

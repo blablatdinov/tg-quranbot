@@ -39,7 +39,9 @@ from integrations.tg.tg_answers import (
 )
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class PrayersExpiredAnswer(TgAnswer):
     """Декоратор для обработки случаев с отсутствием времени намаза на эту дату."""
 
@@ -47,6 +49,7 @@ class PrayersExpiredAnswer(TgAnswer):
     _empty_answer: TgAnswer
     _admin_chat_ids: Sequence[int]
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

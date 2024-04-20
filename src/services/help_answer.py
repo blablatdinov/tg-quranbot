@@ -37,7 +37,9 @@ from services.user_state import CachedUserState, RedisUserState
 from srv.admin_messages.admin_message import AdminMessage
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class HelpAnswer(TgAnswer):
     """Ответ на команду /help."""
 
@@ -46,6 +48,7 @@ class HelpAnswer(TgAnswer):
     _redis: Redis
     _logger: LogSink
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

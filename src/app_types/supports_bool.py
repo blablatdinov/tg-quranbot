@@ -25,6 +25,7 @@ from typing import Protocol
 from pyeo import elegant
 
 
+@elegant
 class SupportsBool(Protocol):
     """Интерфейс объектов, которые можно привести к булевому значению."""
 
@@ -32,6 +33,7 @@ class SupportsBool(Protocol):
         """Приведение к булевому значению."""
 
 
+@elegant
 class AsyncSupportsBool(Protocol):
     """Интерфейс объектов, которые можно привести к булевому значению."""
 

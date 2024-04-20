@@ -31,13 +31,16 @@ from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 
 
+@final
 @attrs.define(frozen=True)
+@elegant
 class AyatNotFoundSafeAnswer(TgAnswer):
     """Объект обрабатывающий ошибку с не найденным аятом."""
 
     _origin: TgAnswer
     _error_answer: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
