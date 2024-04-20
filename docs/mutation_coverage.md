@@ -4,7 +4,9 @@
 в `mypy`, поэтому при поиске мутантов их можно удалить:
 
 ```bash
-sd '@attrs.define(.+)' '@attrs.define' **/*.py
+sd '@elegant\n' '' **/*.py
+sd '@final\n' '' **/*.py
+sd '    @override\n' '' **/*.py
 ```
 
 Также мы можем не мутировать код в декораторе `@attrs.define(frozen=True)`, т. к. в проекте нет кода и тестов, мутирующих
