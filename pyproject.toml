@@ -76,6 +76,7 @@ fakeredis = "2.22.0"
 refurb = "2.0.0"
 types-python-dateutil = "2.9.0.20240316"
 types-ujson = "5.9.0.0"
+mutmut = "^2.4.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -174,5 +175,5 @@ fail_on_max = 180
 
 [tool.mutmut]
 paths_to_mutate="src/app_types/,src/db/,src/exceptions/,src/handlers/,src/integrations/,main.py,quranbot_answer.py,schedule_app.py,src/services/,src/settings/,src/srv/"
-runner="pytest src/tests/unit -x -q --tb=no -o addopts=''"
-tests_dir="src/tests/unit"
+runner="pytest src/tests/unit src/tests/it -x -q --tb=no -o addopts=''"
+tests_dir="src/tests/unit,src/tests/it"

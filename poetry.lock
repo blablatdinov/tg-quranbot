@@ -877,6 +877,16 @@ orderedmultidict = ">=1.0.1"
 six = ">=1.8.0"
 
 [[package]]
+name = "glob2"
+version = "0.7"
+description = "Version of the glob module that can capture patterns and supports recursive wildcards"
+optional = false
+python-versions = "*"
+files = [
+    {file = "glob2-0.7.tar.gz", hash = "sha256:85c3dbd07c8aa26d63d7aacee34fa86e9a91a3873bc30bf62ec46e531f92ab8c"},
+]
+
+[[package]]
 name = "greenlet"
 version = "3.0.3"
 description = "Lightweight in-process concurrent programming"
@@ -1180,6 +1190,20 @@ files = [
 referencing = ">=0.31.0"
 
 [[package]]
+name = "junit-xml"
+version = "1.9"
+description = "Creates JUnit XML test result documents that can be read by tools such as Jenkins"
+optional = false
+python-versions = "*"
+files = [
+    {file = "junit-xml-1.9.tar.gz", hash = "sha256:de16a051990d4e25a3982b2dd9e89d671067548718866416faec14d9de56db9f"},
+    {file = "junit_xml-1.9-py2.py3-none-any.whl", hash = "sha256:ec5ca1a55aefdd76d28fcc0b135251d156c7106fa979686a4b48d62b761b4732"},
+]
+
+[package.dependencies]
+six = "*"
+
+[[package]]
 name = "loguru"
 version = "0.7.2"
 description = "Python logging made (stupidly) simple"
@@ -1426,6 +1450,29 @@ files = [
 ]
 
 [[package]]
+name = "mutmut"
+version = "2.4.5"
+description = "mutation testing for Python 3"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "mutmut-2.4.5.tar.gz", hash = "sha256:cd4455074569fb7b66720b6ecf262a08c6fec13689beb4efe528388f596ab52d"},
+]
+
+[package.dependencies]
+click = "*"
+glob2 = "*"
+junit-xml = ">=1.8,<2"
+parso = "*"
+pony = "*"
+toml = "*"
+
+[package.extras]
+coverage = ["coverage"]
+patch = ["whatthepatch (==0.0.6)"]
+pytest = ["pytest", "pytest-cov"]
+
+[[package]]
 name = "mypy"
 version = "1.9.0"
 description = "Optional static typing for Python"
@@ -1627,6 +1674,17 @@ python-versions = "*"
 files = [
     {file = "ply-3.11-py2.py3-none-any.whl", hash = "sha256:096f9b8350b65ebd2fd1346b12452efe5b9607f7482813ffca50c22722a807ce"},
     {file = "ply-3.11.tar.gz", hash = "sha256:00c7c1aaa88358b9c765b6d3000c6eec0ba42abca5351b095321aef446081da3"},
+]
+
+[[package]]
+name = "pony"
+version = "0.7.17"
+description = "Pony Object-Relational Mapper"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pony-0.7.17-py3-none-any.whl", hash = "sha256:c37e9b44f975d147b79cf56925b16b0e40b2b47ba5958d0c01579f37a5a24f7c"},
+    {file = "pony-0.7.17.tar.gz", hash = "sha256:b72172d57abd5e0846cd8d71231572da20f526327bf0d33348a9276f624d8aa7"},
 ]
 
 [[package]]
@@ -2129,7 +2187,6 @@ files = [
     {file = "PyYAML-6.0.1-cp311-cp311-win_amd64.whl", hash = "sha256:bf07ee2fef7014951eeb99f56f39c9bb4af143d8aa3c21b1677805985307da34"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:855fb52b0dc35af121542a76b9a84f8d1cd886ea97c84703eaa6d88e37a2ad28"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:40df9b996c2b73138957fe23a16a4f0ba614f4c0efce1e9406a184b6d07fa3a9"},
-    {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a08c6f0fe150303c1c6b71ebcd7213c2858041a7e01975da3a99aed1e7a378ef"},
     {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6c22bec3fbe2524cde73d7ada88f6566758a8f7227bfbf93a408a9d86bcc12a0"},
     {file = "PyYAML-6.0.1-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:8d4e9c88387b0f5c7d5f281e55304de64cf7f9c0021a3525bd3b1c542da3b0e4"},
     {file = "PyYAML-6.0.1-cp312-cp312-win32.whl", hash = "sha256:d483d2cdf104e7c9fa60c544d92981f12ad66a457afae824d146093b8c294c54"},
@@ -3369,4 +3426,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "8f191f9b793371a02993660d03c38372b8d3883e29847f6fe2f9f1910c294add"
+content-hash = "b3967e1b7f8378c24f18be8c360fac25f4169b5bee00176505b9d730d7a41e0e"
