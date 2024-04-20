@@ -31,11 +31,8 @@ from srv.files.file import FkFile
 from srv.files.file_id_answer import TelegramFileIdAnswer
 
 
-@elegant
-@final
 class FakeAnswer(TgAnswer):
 
-    @override
     async def build(self, update):
         return [
             httpx.Request('GET', 'https://some.domain'),

@@ -32,16 +32,13 @@ from app_types.stringable import SupportsStr
 from srv.ayats.pg_ayat import PgAyat
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class AyatsByTextQuery(AsyncListable):
     """Список аятов, найденных по текстовому запросу."""
 
     _query: SupportsStr
     _pgsql: Database
 
-    @override
     async def to_list(self) -> list[PgAyat]:
         """Список.
 

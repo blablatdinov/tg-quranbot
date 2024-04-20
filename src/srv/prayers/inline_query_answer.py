@@ -37,16 +37,13 @@ from services.debug_answer import DebugAnswer
 from srv.prayers.city_names import CityNames
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class InlineQueryAnswer(TgAnswer):
     """Ответ на инлайн поиск."""
 
     _origin: TgAnswer
     _pgsql: Database
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

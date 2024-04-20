@@ -34,15 +34,12 @@ JsonPathQuery: TypeAlias = str
 AyatChangedEvent: TypeAlias = ReceivedEvent
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class RbmqAyatChangedEvent(AyatChangedEvent):
     """Событие изменения аята из rabbitmq."""
 
     _pgsql: Database
 
-    @override
     async def process(self, json_doc: Json) -> None:
         """Обработка события.
 

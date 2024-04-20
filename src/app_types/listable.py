@@ -28,7 +28,6 @@ from pyeo import elegant
 ListElemT = TypeVar('ListElemT')
 
 
-@elegant
 class AsyncListable(Protocol[ListElemT]):
     """Объект, имеющий корутину представляющую его в кач-ве списка."""
 
@@ -36,9 +35,7 @@ class AsyncListable(Protocol[ListElemT]):
         """Список."""
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FkAsyncListable(AsyncListable, Generic[ListElemT]):
     """Фейковый список."""
 

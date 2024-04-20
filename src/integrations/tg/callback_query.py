@@ -31,15 +31,12 @@ from integrations.tg.exceptions.update_parse_exceptions import CallbackQueryNotF
 from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class CallbackQueryData(SupportsStr):
     """Информация с кнопки."""
 
     _update: Update
 
-    @override
     def __str__(self) -> str:
         """Строковое представление.
 

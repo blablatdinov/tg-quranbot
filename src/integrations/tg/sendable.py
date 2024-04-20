@@ -36,7 +36,6 @@ from exceptions.internal_exceptions import TelegramIntegrationsError
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
-@elegant
 class SendableInterface(Protocol):
     """Интерфейс объекта, отправляющего ответы в API."""
 
@@ -47,15 +46,12 @@ class SendableInterface(Protocol):
         """
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FkSendable(SendableInterface):
     """Фейковый объект для отправки ответов."""
 
     _origin: list[dict]
 
-    @override
     async def send(self, update: Update) -> list[dict]:
         """Отправка.
 
@@ -65,16 +61,13 @@ class FkSendable(SendableInterface):
         return self._origin
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class SendableAnswer(SendableInterface):
     """Объект, отправляющий ответы в API."""
 
     _answer: TgAnswer
     _logger: LogSink
 
-    @override
     async def send(self, update: Update) -> list[dict]:
         """Отправка.
 
@@ -96,15 +89,12 @@ class SendableAnswer(SendableInterface):
             return [ujson.loads(response) for response in responses]
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class UserNotSubscribedSafeSendable(SendableInterface):
     """Декоратор для обработки отписанных пользователей."""
 
     _origin: SendableInterface
 
-    @override
     async def send(self, update: Update) -> list[dict]:
         """Отправка.
 
@@ -129,16 +119,13 @@ class UserNotSubscribedSafeSendable(SendableInterface):
         return responses
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class BulkSendableAnswer(SendableInterface):
     """Массовая отправка."""
 
     _answers: list[TgAnswer]
     _logger: LogSink
 
-    @override
     async def send(self, update: Update) -> list[dict]:
         """Отправка.
 

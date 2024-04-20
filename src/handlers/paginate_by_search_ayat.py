@@ -40,9 +40,7 @@ from srv.ayats.search_ayat_by_text_callback_answer import SearchAyatByTextCallba
 from srv.ayats.user_has_not_search_query_safe_answer import UserHasNotSearchQuerySafeAnswer
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PaginateBySearchAyat(TgAnswer):
     """Пагинация по поиску аятов."""
 
@@ -52,7 +50,6 @@ class PaginateBySearchAyat(TgAnswer):
     _settings: Settings
     _logger: LogSink
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

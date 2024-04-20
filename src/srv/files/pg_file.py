@@ -31,16 +31,13 @@ from exceptions.content_exceptions import BotFileNotFoundError
 from srv.files.file import FileLink, TgFile, TgFileId
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PgFile(TgFile):
     """Объект файла в postgres."""
 
     _file_id: uuid.UUID
     _pgsql: Database
 
-    @override
     async def tg_file_id(self) -> TgFileId:
         """Идентификатор файла в телеграм.
 
@@ -57,7 +54,6 @@ class PgFile(TgFile):
             raise BotFileNotFoundError
         return row['telegram_file_id']
 
-    @override
     async def file_link(self) -> FileLink:
         """Ссылка на файл.
 

@@ -39,9 +39,7 @@ from srv.users.active_users import PgUpdatedUsersStatus, PgUsers
 from srv.users.pg_user import PgUser
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class UserAlreadyExistsAnswer(TgAnswer):
     """Декоратор обработчика стартового сообщение с предохранением от UserAlreadyExists."""
 
@@ -50,7 +48,6 @@ class UserAlreadyExistsAnswer(TgAnswer):
     _pgsql: Database
     _event_sink: SinkInterface
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

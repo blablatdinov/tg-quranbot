@@ -30,15 +30,12 @@ from app_types.update import Update
 from integrations.tg.keyboard import KeyboardInterface
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class ResizedKeyboard(KeyboardInterface):
     """Сжатая в высоту клавиатура."""
 
     _origin: KeyboardInterface
 
-    @override
     async def generate(self, update: Update) -> str:
         """Генерация.
 
@@ -51,12 +48,9 @@ class ResizedKeyboard(KeyboardInterface):
         return ujson.dumps(keyboard_as_dict)
 
 
-@final
-@elegant
 class DefaultKeyboard(KeyboardInterface):
     """Класс клавиатуры по умолчанию."""
 
-    @override
     async def generate(self, update: Update) -> str:
         """Генерация.
 

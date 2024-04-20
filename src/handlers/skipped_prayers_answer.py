@@ -55,9 +55,7 @@ class _PrayerNames(enum.Enum):
         return tuple(field.name for field in cls)
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class SkippedPrayersKeyboard(KeyboardInterface):
     """Клавиатура для пропущеных намазов."""
 
@@ -78,9 +76,7 @@ class SkippedPrayersKeyboard(KeyboardInterface):
         })
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PrayersStatistic(AsyncSupportsStr):
     """Статистика непрочитанных намазов."""
 
@@ -159,9 +155,7 @@ class PrayersStatistic(AsyncSupportsStr):
         ]
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class SkippedPrayersAnswer(TgAnswer):
     """Пропущенные намазы."""
 

@@ -29,7 +29,6 @@ from pyeo import elegant
 from app_types.stringable import SupportsStr
 
 
-@elegant
 class Update(SupportsStr, Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
@@ -40,15 +39,12 @@ class Update(SupportsStr, Protocol):
         """Словарь."""
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FkUpdate(Update):
     """Подделка обновления."""
 
     _raw: SupportsStr | None = '{}'  # noqa: P103. Empty json
 
-    @override
     def __str__(self) -> str:
         """Приведение к строке.
 
@@ -56,7 +52,6 @@ class FkUpdate(Update):
         """
         return str(self._raw)
 
-    @override
     def asdict(self) -> dict:
         """Словарь.
 

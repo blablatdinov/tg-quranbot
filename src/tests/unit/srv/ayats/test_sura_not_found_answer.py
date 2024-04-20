@@ -33,22 +33,16 @@ from srv.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 
 
 @attrs.define(frozen=True)
-@elegant
-@final
 class ThroughDomainAnswer(TgAnswer):
 
     _domain: str
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         return [httpx.Request('GET', self._domain)]
 
 
-@elegant
-@final
 class SuraNotFoundAnswer(TgAnswer):
 
-    @override
     async def build(self, update):
         raise SuraNotFoundError
 

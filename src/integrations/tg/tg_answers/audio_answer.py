@@ -31,15 +31,12 @@ from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class TgAudioAnswer(TgAnswer):
     """Ответ с аудио файлом."""
 
     _origin: TgAnswer
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Создание.
 

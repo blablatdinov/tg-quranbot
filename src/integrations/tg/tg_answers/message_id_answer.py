@@ -32,16 +32,13 @@ from integrations.tg.message_id import MessageId
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class TgMessageIdAnswer(TgAnswer):
     """Ответ с идентификатором сообщения."""
 
     _origin: TgAnswer
     _message_id: MessageId
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

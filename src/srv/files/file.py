@@ -39,16 +39,13 @@ class TgFile(Protocol):
         """Ссылка на файл."""
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FkFile(TgFile):
     """Фейковый файл."""
 
     _file_id: str
     _link: str
 
-    @override
     async def tg_file_id(self) -> TgFileId:
         """Идентификатор файла в телеграм.
 
@@ -56,7 +53,6 @@ class FkFile(TgFile):
         """
         return self._file_id
 
-    @override
     async def file_link(self) -> FileLink:
         """Идентификатор файла в телеграм.
 

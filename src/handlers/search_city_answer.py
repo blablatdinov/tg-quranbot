@@ -48,9 +48,7 @@ from srv.prayers.user_not_registered_safe_answer import UserNotRegisteredSafeAns
 from srv.users.new_user import PgNewUser
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class SearchCityAnswer(TgAnswer):
     """Ответ со списком городов для выбора."""
 
@@ -60,7 +58,6 @@ class SearchCityAnswer(TgAnswer):
     _redis: Redis
     _logger: LogSink
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Обработка запроса.
 

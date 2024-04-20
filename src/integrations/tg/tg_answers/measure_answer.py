@@ -33,7 +33,6 @@ from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.update_id import UpdateId
 
 
-@final
 @attrs.define(frozen=True)
 class Millis(SupportsFloat):
     """Миллисекунды."""
@@ -49,7 +48,6 @@ class Millis(SupportsFloat):
         """
         return Millis(seconds * 1000)
 
-    @override
     def __float__(self) -> float:
         """Представление в форме числа с плавающей запятой.
 
@@ -58,16 +56,13 @@ class Millis(SupportsFloat):
         return self._millis
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class RoundedFloat(SupportsFloat):
     """Округленное дробное число."""
 
     _origin: SupportsFloat
     _shift_comma: int
 
-    @override
     def __float__(self) -> float:
         """Представление в форме числа с плавающей запятой.
 
@@ -76,16 +71,13 @@ class RoundedFloat(SupportsFloat):
         return round(float(self._origin), self._shift_comma)
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class TgMeasureAnswer(TgAnswer):
     """Замеренный ответ."""
 
     _origin: TgAnswer
     _logger: LogSink
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

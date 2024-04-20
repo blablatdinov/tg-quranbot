@@ -28,14 +28,12 @@ import attrs
 from exceptions.base_exception import BaseAppError
 
 
-@final
 class UserPrayersNotFoundError(BaseAppError):
     """У пользователя нет сгенерированных времен намазов."""
 
     admin_message = ''
 
 
-@final
 @attrs.define(frozen=True)
 class PrayersNotFoundError(BaseAppError):
     """Не найдены времена намазов."""

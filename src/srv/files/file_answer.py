@@ -32,16 +32,13 @@ from exceptions.content_exceptions import TelegramFileIdNotFilledError
 from integrations.tg.tg_answers import TgAnswer
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class TgFileIdNotFilledSafeAnswer(TgAnswer):
     """Декоратор для обработки файлов с незаполненным идентификатором файла."""
 
     _file_id_answer: TgAnswer
     _text_answer: TgAnswer
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
@@ -54,9 +51,7 @@ class TgFileIdNotFilledSafeAnswer(TgAnswer):
             return await self._text_answer.build(update)
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FileAnswer(TgAnswer):
     """Класс ответа с файлом."""
 
@@ -64,7 +59,6 @@ class FileAnswer(TgAnswer):
     _telegram_file_id_answer: TgAnswer
     _file_link_answer: TgAnswer
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Отправка.
 

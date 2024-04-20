@@ -35,7 +35,6 @@ from srv.prayers.update_user_city import FkUpdateUserCity
 
 class _Answer(TgAnswer):
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         raise CityNotSupportedError
 

@@ -31,7 +31,6 @@ from integrations.tg.chat_id import ChatId
 from srv.prayers.city import City
 
 
-@elegant
 class UpdatedUserCity(Protocol):
     """Обновленный город у пользователя."""
 
@@ -39,20 +38,15 @@ class UpdatedUserCity(Protocol):
         """Обновление."""
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FkUpdateUserCity(UpdatedUserCity):
     """Стаб для обновления города."""
 
-    @override
     async def update(self) -> None:
         """Обновление."""
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PgUpdatedUserCity(UpdatedUserCity):
     """Обновленный город у пользователя в БД postgres."""
 
@@ -60,7 +54,6 @@ class PgUpdatedUserCity(UpdatedUserCity):
     _chat_id: ChatId
     _pgsql: Database
 
-    @override
     async def update(self) -> None:
         """Обновление.
 

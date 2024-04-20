@@ -38,9 +38,7 @@ from srv.files.file_answer import FileAnswer
 from srv.files.file_id_answer import TelegramFileIdAnswer
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class AyatByIdAnswer(TgAnswer):
     """Ответ на аят по идентификатору."""
 
@@ -48,7 +46,6 @@ class AyatByIdAnswer(TgAnswer):
     _empty_answer: TgAnswer
     _pgsql: Database
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

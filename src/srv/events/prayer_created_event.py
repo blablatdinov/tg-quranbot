@@ -33,15 +33,12 @@ from pyeo import elegant
 from srv.events.recieved_event import ReceivedEvent
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PrayerCreatedEvent(ReceivedEvent):
     """Событие создания аята из rabbitmq."""
 
     _pgsql: Database
 
-    @override
     async def process(self, json: Json) -> None:
         """Обработка события.
 

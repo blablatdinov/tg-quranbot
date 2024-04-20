@@ -34,15 +34,12 @@ from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from integrations.tg.update_id import UpdateId
 
 
-@final
 @attrs.define
-@elegant
 class DebugAnswer(TgAnswer):
     """Ответ для отладки."""
 
     _origin: TgAnswer
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

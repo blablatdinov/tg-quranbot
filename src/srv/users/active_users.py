@@ -34,15 +34,12 @@ from srv.events.sink import SinkInterface
 from srv.users.pg_user import PgUser, User
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class ActiveUsers(AsyncListable):
     """Активные пользователи."""
 
     _pgsql: Database
 
-    @override
     async def to_list(self) -> list[User]:
         """Список пользователей.
 
@@ -60,16 +57,13 @@ class ActiveUsers(AsyncListable):
         ]
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PgUsers(AsyncListable):
     """Пользователи из БД postgres."""
 
     _pgsql: Database
     _chat_ids: list[int]
 
-    @override
     async def to_list(self) -> list[User]:
         """Список пользователей.
 
@@ -92,7 +86,6 @@ class PgUsers(AsyncListable):
         ]
 
 
-@elegant
 class UpdatedUsersStatus(Protocol):
     """Обновление статусов пользователей."""
 
@@ -103,16 +96,13 @@ class UpdatedUsersStatus(Protocol):
         """
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PgUpdatedUsersStatus(UpdatedUsersStatus):
     """Обновление статусов пользователей."""
 
     _pgsql: Database
     _users: AsyncListable[User]
 
-    @override
     async def update(self, to: bool) -> None:
         """Обновление.
 
@@ -133,9 +123,7 @@ class PgUpdatedUsersStatus(UpdatedUsersStatus):
         await self._pgsql.execute(query, {'to': to})
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class UpdatedUsersStatusEvent(UpdatedUsersStatus):
     """Событие об отписке."""
 
@@ -143,7 +131,6 @@ class UpdatedUsersStatusEvent(UpdatedUsersStatus):
     _users: AsyncListable[User]
     _events_sink: SinkInterface
 
-    @override
     async def update(self, to: bool) -> None:
         """Обновление.
 

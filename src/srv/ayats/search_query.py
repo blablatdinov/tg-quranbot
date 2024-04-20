@@ -29,7 +29,6 @@ SuraId: TypeAlias = int
 AyatNum: TypeAlias = str
 
 
-@elegant
 class SearchQuery(Protocol):
     """Интерфейс объекта с запросом для поиска."""
 
@@ -40,16 +39,13 @@ class SearchQuery(Protocol):
         """Номер аята."""
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FkSearchQuery(SearchQuery):
     """Фейковый запрос для поиска аятов."""
 
     _sura: SuraId
     _ayat: AyatNum
 
-    @override
     def sura(self) -> SuraId:
         """Идентификатор суры.
 
@@ -57,7 +53,6 @@ class FkSearchQuery(SearchQuery):
         """
         return self._sura
 
-    @override
     def ayat(self) -> AyatNum:
         """Номер аята.
 

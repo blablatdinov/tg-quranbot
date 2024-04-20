@@ -28,7 +28,6 @@ from pyeo import elegant
 from app_types.update import Update
 
 
-@elegant
 class KeyboardInterface(Protocol):
     """Интерфейс клавиатуры."""
 
@@ -39,13 +38,10 @@ class KeyboardInterface(Protocol):
         """
 
 
-@elegant
-@final
 @attrs.define(frozen=True)
 class FkKeyboard(KeyboardInterface):
     """Фейковая клавиатура."""
 
-    @override
     async def generate(self, update: Update) -> str:
         """Генерация.
 

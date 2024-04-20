@@ -37,9 +37,7 @@ from integrations.tg.tg_answers.edit_message_text import TgEditMessageText
 from services.user_prayer_keyboard import PgNewPrayersAtUser
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class DecrementSkippedPrayerAnswer(TgAnswer):
     """Уменьшение кол-ва пропущенных намазов."""
 

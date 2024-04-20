@@ -32,14 +32,12 @@ from integrations.tg.tg_answers import TgHtmlParseAnswer, TgMessageAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
-@final
 @attrs.define(frozen=True)
 class TgHtmlMessageAnswerToSender(TgAnswer):
     """Ответ пользователю, от которого пришло сообщение."""
 
     _origin: TgAnswer
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

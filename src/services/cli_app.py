@@ -29,15 +29,12 @@ from pyeo import elegant
 from app_types.runable import Runable, SyncRunable
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class CliApp(SyncRunable):
     """CLI приложение."""
 
     _origin: Runable
 
-    @override
     def run(self, args: list[str]) -> int:
         """Запуск.
 
@@ -51,12 +48,9 @@ class CliApp(SyncRunable):
         return 0
 
 
-@final
-@elegant
 class ForkCliApp(SyncRunable):
     """Маршрутизация для CLI приложения."""
 
-    @override
     def __init__(self, *apps: SyncRunable) -> None:
         """Конструктор класса.
 
@@ -64,7 +58,6 @@ class ForkCliApp(SyncRunable):
         """
         self._apps = apps
 
-    @override
     def run(self, args: list[str]) -> int:
         """Запуск.
 
@@ -76,16 +69,13 @@ class ForkCliApp(SyncRunable):
         return 0
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class CommandCliApp(SyncRunable):
     """CLI команда."""
 
     _command: str
     _app: SyncRunable
 
-    @override
     def run(self, args: list[str]) -> int:
         """Запуск.
 

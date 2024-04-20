@@ -32,16 +32,13 @@ from srv.ayats.ayat import Ayat
 from srv.ayats.pg_ayat import PgAyat
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class UserFavoriteAyats(AsyncListable[Ayat]):
     """Избранные аяты пользователя."""
 
     _pgsql: Database
     _chat_id: ChatId
 
-    @override
     async def to_list(self) -> list[Ayat]:
         """Списковое представление.
 

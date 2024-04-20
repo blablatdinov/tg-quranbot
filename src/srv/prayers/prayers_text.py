@@ -37,16 +37,13 @@ from srv.prayers.prayer_date import PrayerDate
 TIME_LITERAL: Final = 'time'
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class UserCityId(AsyncSupportsStr):
     """Идентификатор города."""
 
     _pgsql: Database
     _chat_id: ChatId
 
-    @override
     async def to_str(self) -> str:
         """Строковое представление.
 
@@ -65,9 +62,7 @@ class UserCityId(AsyncSupportsStr):
         return city_name
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PrayersText(AsyncSupportsStr):
     """Текст сообщения с намазами."""
 
@@ -76,7 +71,6 @@ class PrayersText(AsyncSupportsStr):
     _city_id: AsyncSupportsStr
     _update: Update
 
-    @override
     async def to_str(self) -> str:
         """Строковое представление.
 

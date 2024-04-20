@@ -36,7 +36,6 @@ from srv.ayats.text_search_query import TextSearchQuery
 AYAT_ID: Final = 'ayat_id'
 
 
-@elegant
 class NeighborAyats(Protocol):
     """Интерфейс для работы с соседними аятами в хранилище."""
 
@@ -50,16 +49,13 @@ class NeighborAyats(Protocol):
         """Информация о странице."""
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FavoriteNeighborAyats(NeighborAyats):
     """Класс для работы с соседними аятами в хранилище."""
 
     _ayat_id: int
     _favorite_ayats: AsyncListable[Ayat]
 
-    @override
     async def left_neighbor(self) -> Ayat:
         """Получить левый аят.
 
@@ -75,7 +71,6 @@ class FavoriteNeighborAyats(NeighborAyats):
                 return fayats[ayat_index - 1]
         raise AyatNotFoundError
 
-    @override
     async def right_neighbor(self) -> Ayat:
         """Получить правый аят.
 
@@ -91,7 +86,6 @@ class FavoriteNeighborAyats(NeighborAyats):
                 return fayats[ayat_index + 1]
         raise AyatNotFoundError
 
-    @override
     async def page(self) -> str:
         """Информация о странице.
 
@@ -110,16 +104,13 @@ class FavoriteNeighborAyats(NeighborAyats):
         raise BaseAppError(msg)
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PgNeighborAyats(NeighborAyats):
     """Класс для работы с соседними аятами в хранилище."""
 
     _pgsql: Database
     _ayat_id: int
 
-    @override
     async def left_neighbor(self) -> Ayat:
         """Получить левый аят.
 
@@ -136,7 +127,6 @@ class PgNeighborAyats(NeighborAyats):
             raise AyatNotFoundError
         return PgAyat.from_int(row[AYAT_ID], self._pgsql)
 
-    @override
     async def right_neighbor(self) -> Ayat:
         """Получить правый аят.
 
@@ -153,7 +143,6 @@ class PgNeighborAyats(NeighborAyats):
             raise AyatNotFoundError
         return PgAyat.from_int(row[AYAT_ID], self._pgsql)
 
-    @override
     async def page(self) -> str:
         """Информация о странице.
 
@@ -167,9 +156,7 @@ class PgNeighborAyats(NeighborAyats):
         return 'стр. {0}/{1}'.format(actual_page_num, ayats_count)
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class TextSearchNeighborAyats(NeighborAyats):
     """Класс для работы с сосденими аятами, при текстовом поиске."""
 
@@ -183,7 +170,6 @@ class TextSearchNeighborAyats(NeighborAyats):
         'ORDER BY ayats.ayat_id',
     ])
 
-    @override
     async def left_neighbor(self) -> Ayat:
         """Получить левый аят.
 
@@ -197,7 +183,6 @@ class TextSearchNeighborAyats(NeighborAyats):
                 return PgAyat.from_int(rows[idx - 1][AYAT_ID], self._pgsql)
         raise AyatNotFoundError
 
-    @override
     async def right_neighbor(self) -> Ayat:
         """Получить правый аят.
 
@@ -211,7 +196,6 @@ class TextSearchNeighborAyats(NeighborAyats):
                 return PgAyat.from_int(rows[idx + 1][AYAT_ID], self._pgsql)
         raise AyatNotFoundError
 
-    @override
     async def page(self) -> str:
         """Информация о странице.
 

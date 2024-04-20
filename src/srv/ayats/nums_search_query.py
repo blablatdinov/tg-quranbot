@@ -29,9 +29,7 @@ from app_types.stringable import SupportsStr
 from srv.ayats.search_query import AyatNum, SearchQuery, SuraId
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class NumsSearchQuery(SearchQuery):
     """Запросом для поиска.
 
@@ -44,7 +42,6 @@ class NumsSearchQuery(SearchQuery):
 
     _query: SupportsStr
 
-    @override
     def sura(self) -> SuraId:
         """Номер суры.
 
@@ -52,7 +49,6 @@ class NumsSearchQuery(SearchQuery):
         """
         return int(str(self._query).split(':')[0])
 
-    @override
     def ayat(self) -> AyatNum:
         """Номер аята.
 

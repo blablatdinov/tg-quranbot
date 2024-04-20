@@ -29,12 +29,9 @@ from app_types.update import Update
 from services.answers.answer import KeyboardInterface
 
 
-@final
-@elegant
 class SwitchInlineQueryKeyboard(KeyboardInterface):
     """Переключение на инлайн поиск."""
 
-    @override
     async def generate(self, update: Update) -> str:
         """Сборка клавиатуры.
 

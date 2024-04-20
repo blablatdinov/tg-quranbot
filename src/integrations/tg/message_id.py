@@ -32,15 +32,12 @@ from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 MessageId: TypeAlias = SupportsInt
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class TgMessageId(MessageId):
     """Идентификатор сообщения."""
 
     _update: Update
 
-    @override
     def __int__(self) -> int:
         """Числовое представление.
 

@@ -43,9 +43,7 @@ from srv.events.sink import SinkInterface
 from srv.users.new_user import PgNewUser, PgNewUserWithEvent
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class StartAnswer(TgAnswer):
     """Обработчик стартового сообщения."""
 
@@ -56,7 +54,6 @@ class StartAnswer(TgAnswer):
     _logger: LogSink
     _event_sink: SinkInterface
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

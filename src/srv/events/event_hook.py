@@ -38,7 +38,6 @@ from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 
 
-@elegant
 class EventHook(Protocol):
     """Обработчик событий из очереди."""
 
@@ -46,15 +45,12 @@ class EventHook(Protocol):
         """Запуск обработки."""
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class EventHookApp(SyncRunable):
     """Запускаемый объект."""
 
     _event_hook: EventHook
 
-    @override
     def run(self, args: list[str]) -> int:
         """Запуск.
 
@@ -65,8 +61,6 @@ class EventHookApp(SyncRunable):
         return 0
 
 
-@final
-@elegant
 class RbmqEventHook(EventHook):
     """Обработчик событий из RabbitMQ."""
 
@@ -89,7 +83,6 @@ class RbmqEventHook(EventHook):
         self._logger = logger
         self._events = events
 
-    @override
     async def catch(self) -> None:  # noqa: WPS217
         """Запуск обработки."""
         await self._pgsql.connect()

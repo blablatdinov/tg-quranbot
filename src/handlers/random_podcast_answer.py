@@ -38,15 +38,12 @@ from srv.podcasts.podcast import PgPodcast
 from srv.podcasts.podcast_answer import MarkuppedPodcastAnswer, PodcastAnswer
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class _PodcastId(AsyncIntable):
 
     _pgsql: Database
     _chat_id: ChatId
 
-    @override
     async def to_int(self) -> int:
         query = '\n'.join([
             'SELECT p.podcast_id',
@@ -69,9 +66,7 @@ class _PodcastId(AsyncIntable):
         return podcast_id
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class RandomPodcastAnswer(TgAnswer):
     """Ответ с подкастом."""
 
@@ -81,7 +76,6 @@ class RandomPodcastAnswer(TgAnswer):
     _pgsql: Database
     _logger: LogSink
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Трансформация в ответ.
 

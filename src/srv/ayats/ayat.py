@@ -32,7 +32,6 @@ from srv.files.file import TgFile
 AyatText: TypeAlias = str
 
 
-@elegant
 class Ayat(Protocol):
     """Интерфейс аята."""
 
@@ -60,7 +59,6 @@ class FkAyat(Ayat):
     _text: str
     _audio: TgFile
 
-    @override
     def identifier(self) -> AyatIdentifier:
         """Идентификатор.
 
@@ -68,7 +66,6 @@ class FkAyat(Ayat):
         """
         return self._id
 
-    @override
     async def text(self) -> str:
         """Текст.
 
@@ -76,7 +73,6 @@ class FkAyat(Ayat):
         """
         return self._text
 
-    @override
     async def audio(self) -> TgFile:
         """Аудио.
 
@@ -84,7 +80,6 @@ class FkAyat(Ayat):
         """
         return self._audio
 
-    @override
     async def change(self, event_body: Json) -> None:
         """Изменить содержимое аята.
 

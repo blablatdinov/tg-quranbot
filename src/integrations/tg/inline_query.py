@@ -31,15 +31,12 @@ from integrations.tg.exceptions.update_parse_exceptions import InlineQueryNotFou
 from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class InlineQuery(SupportsStr):
     """Данные с инлайн поиска."""
 
     _update: Update
 
-    @override
     def __str__(self) -> str:
         """Строковое представление.
 
@@ -56,15 +53,12 @@ class InlineQuery(SupportsStr):
         )
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class InlineQueryId(SupportsInt):
     """Идентификатор инлайн поиска."""
 
     _update: Update
 
-    @override
     def __int__(self) -> int:
         """Числовое представление.
 

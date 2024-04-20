@@ -26,7 +26,6 @@ import attrs
 from pyeo import elegant
 
 
-@elegant
 class AsyncIntable(Protocol):
     """Интерфейс объектов, которые можно привести к числу."""
 
@@ -34,15 +33,12 @@ class AsyncIntable(Protocol):
         """Приведение к числу с возможностью переключения контекста."""
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FkIntable(SupportsInt):
     """Сквозное число."""
 
     _source: int
 
-    @override
     def __int__(self) -> int:
         """Приведение к числу.
 
@@ -51,15 +47,12 @@ class FkIntable(SupportsInt):
         return self._source
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FkAsyncIntable(AsyncIntable):
     """Сквозное число."""
 
     _source: SupportsInt
 
-    @override
     async def to_int(self) -> int:
         """Приведение к числу с возможностью переключения контекста.
 
@@ -68,8 +61,6 @@ class FkAsyncIntable(AsyncIntable):
         return int(self._source)
 
 
-@final
-@elegant
 class CachedAsyncIntable(AsyncIntable):
     """Кэшируемое число."""
 
@@ -82,7 +73,6 @@ class CachedAsyncIntable(AsyncIntable):
         self._cached = False
         self._cached_value = 0
 
-    @override
     async def to_int(self) -> int:
         """Числовое представление.
 

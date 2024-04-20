@@ -32,12 +32,9 @@ from app_types.update import Update
 from integrations.tg.update import TgUpdate
 
 
-@final
-@elegant
 class UpdatesTimeout(SupportsInt):
     """Таймаут для обновлений."""
 
-    @override
     def __int__(self) -> int:
         """Числовое представление.
 
@@ -46,7 +43,6 @@ class UpdatesTimeout(SupportsInt):
         return 5
 
 
-@elegant
 class UpdatesURLInterface(Protocol):
     """Интерфейс URL запроса для получения уведомлений."""
 
@@ -57,15 +53,12 @@ class UpdatesURLInterface(Protocol):
         """
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class UpdatesURL(SupportsStr):
     """Базовый URL обновлений из телеграма."""
 
     _token: str
 
-    @override
     def __str__(self) -> str:
         """Строчное представление.
 
@@ -74,15 +67,12 @@ class UpdatesURL(SupportsStr):
         return 'https://api.telegram.org/bot{0}/getUpdates'.format(self._token)
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class UpdatesWithOffsetURL(UpdatesURLInterface):
     """URL для получения только новых обновлений."""
 
     _updates_url: SupportsStr
 
-    @override
     def generate(self, update_id: int) -> str:
         """Генерация.
 
@@ -92,16 +82,13 @@ class UpdatesWithOffsetURL(UpdatesURLInterface):
         return '{0}?offset={1}'.format(self._updates_url, update_id)
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class UpdatesLongPollingURL(UpdatesURLInterface):
     """URL обновлений с таймаутом."""
 
     _origin: UpdatesURLInterface
     _long_polling_timeout: SupportsInt
 
-    @override
     def generate(self, update_id: int) -> str:
         """Генерация.
 
@@ -114,7 +101,6 @@ class UpdatesLongPollingURL(UpdatesURLInterface):
         ))
 
 
-@elegant
 class UpdatesIteratorInterface(Protocol):
     """Интерфейс итератора по обновлениям."""
 
@@ -125,9 +111,7 @@ class UpdatesIteratorInterface(Protocol):
         """Вернуть следующий элемент."""
 
 
-@final
 @attrs.define(slots=True)
-@elegant
 class PollingUpdatesIterator(UpdatesIteratorInterface):
     """Итератор по обновлениям."""
 
@@ -136,7 +120,6 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
 
     _offset: int = 0
 
-    @override
     def __aiter__(self) -> 'UpdatesIteratorInterface':
         """Точка входа в итератор.
 
@@ -144,7 +127,6 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
         """
         return self
 
-    @override
     async def __anext__(self) -> list[Update]:
         """Вернуть следующий элемент.
 

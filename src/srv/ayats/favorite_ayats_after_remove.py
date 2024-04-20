@@ -33,9 +33,7 @@ from srv.ayats.ayat_identifier import AyatId
 from srv.ayats.pg_ayat import PgAyat
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FavoriteAyatsAfterRemove(AsyncListable):
     """Избранные аяты."""
 
@@ -43,7 +41,6 @@ class FavoriteAyatsAfterRemove(AsyncListable):
     _ayat_id: AyatId
     _pgsql: Database
 
-    @override
     async def to_list(self) -> list[Ayat]:
         """Получить избранные аяты.
 

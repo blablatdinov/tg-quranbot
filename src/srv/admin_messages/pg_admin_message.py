@@ -30,16 +30,13 @@ from exceptions.base_exception import InternalBotError
 from srv.admin_messages.admin_message import AdminMessage
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PgAdminMessage(AdminMessage):
     """Административное сообщение."""
 
     _key: str
     _pgsql: Database
 
-    @override
     async def text(self) -> str:
         """Текст административного сообщения.
 

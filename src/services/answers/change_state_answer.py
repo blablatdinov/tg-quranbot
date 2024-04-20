@@ -34,9 +34,7 @@ from integrations.tg.tg_answers import TgAnswer
 from services.user_state import RedisUserState, UserStep
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class ChangeStateAnswer(TgAnswer):
     """Ответ, с изменением шага пользователя."""
 
@@ -45,7 +43,6 @@ class ChangeStateAnswer(TgAnswer):
     _step: UserStep
     _logger: LogSink
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

@@ -31,15 +31,12 @@ from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
-@final
 @attrs.define(frozen=True, repr=False)
-@elegant
 class TgEmptyAnswer(TgAnswer, SupportsStr):
     """Пустой ответ."""
 
     _token: str
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Создать ответ с токеном.
 
@@ -48,7 +45,6 @@ class TgEmptyAnswer(TgAnswer, SupportsStr):
         """
         return [httpx.Request('GET', httpx.URL('https://api.telegram.org/bot{0}/'.format(self._token)))]
 
-    @override
     def __str__(self) -> str:
         """Приведение к строке.
 

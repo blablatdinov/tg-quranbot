@@ -30,8 +30,6 @@ from app_types.stringable import SupportsStr
 _AyatNum: TypeAlias = str
 
 
-@final
-@elegant
 @attrs.define(frozen=True)
 class AyatLink(SupportsStr):
     """Ссылка на аят.
@@ -48,7 +46,6 @@ class AyatLink(SupportsStr):
     _sura_num: int
     _ayat_num: _AyatNum
 
-    @override
     def __str__(self) -> str:
         """Формирование ссылки с якорем на аят.
 

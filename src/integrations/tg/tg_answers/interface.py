@@ -29,7 +29,6 @@ from pyeo import elegant
 from app_types.update import Update
 
 
-@elegant
 class TgAnswer(Protocol):
     """Интерфейс ответа пользователю."""
 
@@ -40,15 +39,12 @@ class TgAnswer(Protocol):
         """
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FkAnswer(TgAnswer):
     """Фейковый ответ."""
 
     _url: str | None = 'https://some.domain'
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

@@ -38,12 +38,9 @@ from integrations.tg.exceptions.update_parse_exceptions import (
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
-@final
-@elegant
 class TgAnswerFork(TgAnswer):
     """Маршрутизация ответов."""
 
-    @override
     def __init__(self, logger: LogSink, *answers: TgAnswer) -> None:
         """Конструктор класса.
 
@@ -53,7 +50,6 @@ class TgAnswerFork(TgAnswer):
         self._answers = answers
         self._logger = logger
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

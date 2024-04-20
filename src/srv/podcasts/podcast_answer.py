@@ -48,9 +48,7 @@ from srv.podcasts.podcast import Podcast
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PodcastAnswer(TgAnswer):
     """Ответ с подкастом."""
 
@@ -61,7 +59,6 @@ class PodcastAnswer(TgAnswer):
     _logger: LogSink
     _show_podcast_id: bool
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Трансформация в ответ.
 
@@ -89,9 +86,7 @@ class PodcastAnswer(TgAnswer):
         ).build(update)
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class MarkuppedPodcastAnswer(TgAnswer):
     """Ответ с подкастом."""
 
@@ -101,7 +96,6 @@ class MarkuppedPodcastAnswer(TgAnswer):
     _pgsql: Database
     _podcast: Podcast
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Трансформация в ответ.
 

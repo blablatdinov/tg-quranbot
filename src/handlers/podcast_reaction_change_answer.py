@@ -51,7 +51,6 @@ PODCAST_ID_LITERAL: Final = 'podcast_id'
 USER_ID_LITERAL: Final = 'user_id'
 
 
-@elegant
 class PodcastReactionsT(Protocol):
     """Реакция на подкаст."""
 
@@ -62,9 +61,7 @@ class PodcastReactionsT(Protocol):
         """Реакция."""
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PodcastReaction(PodcastReactionsT):
     """Реакция на подкаст.
 
@@ -77,7 +74,6 @@ class PodcastReaction(PodcastReactionsT):
 
     _callback_query: SupportsStr
 
-    @override
     def podcast_id(self) -> int:
         """Идентификатор подкаста.
 
@@ -85,7 +81,6 @@ class PodcastReaction(PodcastReactionsT):
         """
         return int(IntableRegularExpression(str(self._callback_query)))
 
-    @override
     def status(self) -> Literal['like', 'dislike']:
         """Реакция.
 
@@ -96,9 +91,7 @@ class PodcastReaction(PodcastReactionsT):
         return 'like'
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PodcastMessageTextNotExistsSafeAnswer(TgAnswer):
     """В случаи нажатия на кнопку с отсутствующем текстом сообщения."""
 
@@ -124,9 +117,7 @@ class PodcastMessageTextNotExistsSafeAnswer(TgAnswer):
         return await self._edited_markup_answer.build(update)
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PodcastReactionChangeAnswer(TgAnswer):
     """Ответ с подкастом."""
 
@@ -136,7 +127,6 @@ class PodcastReactionChangeAnswer(TgAnswer):
     _pgsql: Database
     _logger: LogSink
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Трансформация в ответ.
 

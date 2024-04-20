@@ -26,7 +26,6 @@ import attrs
 from pyeo import elegant
 
 
-@elegant
 class TextSearchQuery(Protocol):
     """Интерфейс запроса для поиска аятов."""
 
@@ -40,22 +39,18 @@ class TextSearchQuery(Protocol):
         """Чтение."""
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FkTextSearchQuery(TextSearchQuery):
     """Фейковый запрос для поиска аятов."""
 
     _query: str
 
-    @override
     async def write(self, query: str) -> None:
         """Запись.
 
         :param query: str
         """
 
-    @override
     async def read(self) -> str:
         """Чтение.
 

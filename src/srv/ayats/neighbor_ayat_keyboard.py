@@ -34,16 +34,13 @@ from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.neighbor_ayats import NeighborAyats
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class NeighborAyatKeyboard(KeyboardInterface):
     """Клавиатура с соседними аятами."""
 
     _ayats_neighbors: NeighborAyats
     _callback_template: AyatCallbackTemplateEnum
 
-    @override
     async def generate(self, update: Update) -> str:
         """Генерация клавиатуры.
 

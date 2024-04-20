@@ -44,8 +44,6 @@ from srv.files.file_answer import FileAnswer
 from srv.files.file_id_answer import TelegramFileIdAnswer
 
 
-@final
-@elegant
 @attrs.define(frozen=True)
 class AyatAnswer(TgAnswer):
     """Ответ с аятом."""
@@ -55,7 +53,6 @@ class AyatAnswer(TgAnswer):
     _ayat: Ayat
     _ayat_answer_keyboard: KeyboardInterface
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

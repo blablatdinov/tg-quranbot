@@ -34,7 +34,6 @@ from integrations.tg.tg_answers import TgAnswer
 from integrations.tg.update_id import UpdateId
 
 
-@elegant
 class DebugParamInterface(Protocol):
     """Интерфейс отладочной информации."""
 
@@ -45,8 +44,6 @@ class DebugParamInterface(Protocol):
         """
 
 
-@final
-@elegant
 class AppendDebugInfoAnswer(TgAnswer):
     """Ответ с отладочной информацией."""
 
@@ -61,7 +58,6 @@ class AppendDebugInfoAnswer(TgAnswer):
         self._origin = answer
         self._debug_params = debug_params
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 
@@ -100,12 +96,9 @@ class AppendDebugInfoAnswer(TgAnswer):
         return new_requests
 
 
-@final
-@elegant
 class UpdateIdDebugParam(DebugParamInterface):
     """Отладочная информация с идентификатором обновления."""
 
-    @override
     async def debug_value(self, update: Update) -> str:
         """Идентификатор обновления.
 
@@ -115,12 +108,9 @@ class UpdateIdDebugParam(DebugParamInterface):
         return 'Update id: {0}'.format(int(UpdateId(update)))
 
 
-@final
-@elegant
 class TimeDebugParam(DebugParamInterface):
     """Отладочная информация с временем."""
 
-    @override
     async def debug_value(self, update: Update) -> str:
         """Время.
 
@@ -130,12 +120,9 @@ class TimeDebugParam(DebugParamInterface):
         return 'Time: {0}'.format(datetime.datetime.now(pytz.timezone('Europe/Moscow')))
 
 
-@final
-@elegant
 class ChatIdDebugParam(DebugParamInterface):
     """Отладочная информация с идентификатором чата."""
 
-    @override
     async def debug_value(self, update: Update) -> str:
         """Идентификатор чата.
 
@@ -145,15 +132,12 @@ class ChatIdDebugParam(DebugParamInterface):
         return 'Chat id: {0}'.format(int(TgChatId(update)))
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class CommitHashDebugParam(DebugParamInterface):
     """Отладочная информация с хэшом коммита."""
 
     _commit_hash: str
 
-    @override
     async def debug_value(self, update: Update) -> str:
         """Хэш коммита.
 

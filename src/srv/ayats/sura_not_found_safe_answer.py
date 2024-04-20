@@ -31,16 +31,13 @@ from exceptions.content_exceptions import SuraNotFoundError
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class SuraNotFoundSafeAnswer(TgAnswer):
     """Объект обрабатывающий ошибку с не найденной сурой."""
 
     _origin: TgAnswer
     _error_answer: TgAnswer
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

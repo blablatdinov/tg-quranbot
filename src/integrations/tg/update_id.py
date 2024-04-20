@@ -30,15 +30,12 @@ from exceptions.base_exception import InternalBotError
 from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class UpdateId(SupportsInt):
     """Идентификатор обновления."""
 
     _update: Update
 
-    @override
     def __int__(self) -> int:
         """Числовое представление.
 

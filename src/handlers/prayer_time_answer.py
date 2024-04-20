@@ -54,9 +54,7 @@ from srv.prayers.prayers_text import PrayersText, UserCityId
 from srv.prayers.ramadan_prayer_text import RamadanPrayerText
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class _MessageNotFoundSafeAnswer(TgAnswer):
 
     _origin: TgAnswer
@@ -69,9 +67,7 @@ class _MessageNotFoundSafeAnswer(TgAnswer):
             return await self._new_message_answer.build(update)
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PrayerTimeAnswer(TgAnswer):
     """Ответ с временами намаза.
 
@@ -163,7 +159,6 @@ class PrayerTimeAnswer(TgAnswer):
             ),
         )
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Сборка ответа.
 

@@ -43,9 +43,7 @@ from srv.users.active_users import PgUpdatedUsersStatus, UpdatedUsersStatusEvent
 from srv.users.pg_user import FkUser, User
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class MailingCreatedEvent(ReceivedEvent):
     """Обработка события об утренней рассылки с аятми."""
 
@@ -55,7 +53,6 @@ class MailingCreatedEvent(ReceivedEvent):
     _log_sink: LogSink
     _settings: Settings
 
-    @override
     async def process(self, json_doc: Json) -> None:
         """Обработка события.
 

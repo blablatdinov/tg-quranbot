@@ -26,16 +26,13 @@ import attrs
 from pyeo import elegant
 
 
-@elegant
 class SupportsStr(Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
-    @override
     def __str__(self) -> str:
         """Приведение к строке."""
 
 
-@elegant
 class AsyncSupportsStr(Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 
@@ -43,15 +40,12 @@ class AsyncSupportsStr(Protocol):
         """Приведение к строке."""
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FkAsyncStr(AsyncSupportsStr):
     """Обертка для строки."""
 
     _source: str
 
-    @override
     async def to_str(self) -> str:
         """Строковое представление.
 
@@ -60,15 +54,12 @@ class FkAsyncStr(AsyncSupportsStr):
         return self._source
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class ThroughString(SupportsStr):
     """Обертка для строки."""
 
     _source: str
 
-    @override
     def __str__(self) -> str:
         """Строковое представление.
 
@@ -77,15 +68,12 @@ class ThroughString(SupportsStr):
         return self._source
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class UnwrappedString(SupportsStr):
     """Строки без переноса."""
 
     _origin: SupportsStr
 
-    @override
     def __str__(self) -> str:
         """Строковое представление.
 

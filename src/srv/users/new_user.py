@@ -36,7 +36,6 @@ from services.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone
 from srv.events.sink import SinkInterface
 
 
-@elegant
 class NewUser(Protocol):
     """Новый пользователь."""
 
@@ -44,20 +43,15 @@ class NewUser(Protocol):
         """Создание."""
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FkNewUser(NewUser):
     """Фейк нового пользователя."""
 
-    @override
     async def create(self) -> None:
         """Создание."""
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PgNewUserWithEvent(NewUser):
     """Создание пользователя с событием."""
 
@@ -66,7 +60,6 @@ class PgNewUserWithEvent(NewUser):
     _new_user_chat_id: ChatId
     _datetime: DateTimeInterface
 
-    @override
     async def create(self) -> None:
         """Создание."""
         await self._origin.create()
@@ -82,9 +75,7 @@ class PgNewUserWithEvent(NewUser):
         )
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class PgNewUser(NewUser):
     """Новый пользователь в БД postgres."""
 
@@ -109,7 +100,6 @@ class PgNewUser(NewUser):
             logger,
         )
 
-    @override
     async def create(self) -> None:
         """Создание.
 

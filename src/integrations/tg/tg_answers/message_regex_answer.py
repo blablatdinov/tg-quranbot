@@ -34,16 +34,13 @@ from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class TgMessageRegexAnswer(TgAnswer, SupportsStr):
     """Маршрутизация ответов по регулярному выражению."""
 
     _pattern: str
     _answer: TgAnswer
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 
@@ -60,7 +57,6 @@ class TgMessageRegexAnswer(TgAnswer, SupportsStr):
             return []
         return await self._answer.build(update)
 
-    @override
     def __str__(self) -> str:
         """Строковое представление.
 

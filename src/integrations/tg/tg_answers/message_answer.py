@@ -31,15 +31,12 @@ from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class TgMessageAnswer(TgAnswer):
     """Текстовое сообщение."""
 
     _origin: TgAnswer
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Формирование запросов.
 

@@ -35,7 +35,6 @@ from app_types.logger import LogSink
 from settings import Settings
 
 
-@elegant
 class SinkInterface(Protocol):
     """Интерфейс отправщика событий."""
 
@@ -49,13 +48,10 @@ class SinkInterface(Protocol):
         """
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class FkSink(SinkInterface):
     """Фейковый слив для событий."""
 
-    @override
     async def send(self, queue_name: str, event_data: dict, event_name: str, version: int) -> None:
         """Отправить событие.
 
@@ -66,16 +62,13 @@ class FkSink(SinkInterface):
         """
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class RabbitmqSink(SinkInterface):
     """События в rabbitmq."""
 
     _settings: Settings
     _logger: LogSink
 
-    @override
     async def send(self, queue_name: str, event_data: dict, event_name: str, version: int) -> None:
         """Отправить событие.
 

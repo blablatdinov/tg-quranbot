@@ -33,16 +33,13 @@ from integrations.tg.coordinates import Coordinates
 CityName: TypeAlias = AsyncSupportsStr
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class CityNameById(CityName):
     """Имя города по id."""
 
     _pgsql: Database
     _city_id: AsyncSupportsStr
 
-    @override
     async def to_str(self) -> str:
         """Поиск.
 
@@ -53,15 +50,12 @@ class CityNameById(CityName):
         })
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class NominatimCityName(CityName):
     """Интеграция с https://nominatim.openstreetmap.org ."""
 
     _coordinates: Coordinates
 
-    @override
     async def to_str(self) -> str:
         """Поиск по координатам.
 

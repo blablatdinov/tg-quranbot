@@ -32,16 +32,13 @@ from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class TgLinkPreviewOptions(TgAnswer):
     """Опции превью ссылок."""
 
     _origin: TgAnswer
     _disabled: bool
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Формирование запросов.
 

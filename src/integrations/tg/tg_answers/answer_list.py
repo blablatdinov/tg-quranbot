@@ -29,12 +29,9 @@ from app_types.update import Update
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
-@final
-@elegant
 class TgAnswerList(TgAnswer):
     """Список ответов пользователю."""
 
-    @override
     def __init__(self, *answers: TgAnswer) -> None:
         """Конструктор класса.
 
@@ -42,7 +39,6 @@ class TgAnswerList(TgAnswer):
         """
         self._answers = answers
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

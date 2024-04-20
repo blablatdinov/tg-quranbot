@@ -47,9 +47,7 @@ from srv.users.active_users import PgUpdatedUsersStatus, UpdatedUsersStatusEvent
 from srv.users.pg_user import FkUser, User
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class MorningContentPublishedEvent(ReceivedEvent):
     """Обработка события об утренней рассылки с аятми."""
 
@@ -59,7 +57,6 @@ class MorningContentPublishedEvent(ReceivedEvent):
     _events_sink: SinkInterface
     _log_sink: LogSink
 
-    @override
     async def process(self, json_doc: Json) -> None:
         """Обработка события.
 

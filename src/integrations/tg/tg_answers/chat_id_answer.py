@@ -32,16 +32,13 @@ from integrations.tg.chat_id import ChatId
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class TgChatIdAnswer(TgAnswer):
     """Ответ пользователю на конкретный идентификатор чата."""
 
     _origin: TgAnswer
     _chat_id: ChatId
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Собрать ответ.
 

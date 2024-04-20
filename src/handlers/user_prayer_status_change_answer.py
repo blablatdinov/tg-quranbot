@@ -36,9 +36,7 @@ from settings import Settings
 from srv.prayers.prayer_status import PrayerStatus, UserPrayerStatus
 
 
-@final
 @attrs.define(frozen=True)
-@elegant
 class UserPrayerStatusChangeAnswer(TgAnswer):
     """Ответ с изменением статуса прочитанности намаза."""
 
@@ -48,7 +46,6 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
     _logger: LogSink
     _settings: Settings
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Обработка запроса.
 
