@@ -99,7 +99,10 @@ class StartAnswer(TgAnswer):
 
     async def _answer(self, update: Update, referrer_chat_id: AsyncIntOrNone) -> TgAnswer:
         # TODO #802 Удалить или задокументировать необходимость приватного метода "_answer"
-        start_message, ayat_message = await self._start_answers()
+        start_message, ayat_message = (
+            await self._admin_message.text(),
+            await PgAyat(FkAsyncIntable(1), self._pgsql).text(),
+        )
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
         if referrer_chat_id_calculated:
             return TgAnswerList(
@@ -150,11 +153,4 @@ class StartAnswer(TgAnswer):
                 ),
                 self._admin_chat_ids[0],
             ),
-        )
-
-    async def _start_answers(self) -> tuple[str, str]:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_start_answers"
-        return (
-            await self._admin_message.text(),
-            await PgAyat(FkAsyncIntable(1), self._pgsql).text(),
         )
