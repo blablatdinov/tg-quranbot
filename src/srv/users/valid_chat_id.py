@@ -64,7 +64,6 @@ class FkValidChatId(ValidChatId):
         """Числовое представление.
 
         :return: int
-        :raises UserNotFoundError: если пользователь не найден
         """
         return await self._origin.to_int()
 
