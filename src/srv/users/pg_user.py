@@ -20,13 +20,14 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, final, override
+from typing import Protocol, SupportsInt, final, override
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
 from app_types.intable import AsyncIntable, FkAsyncIntable
+from exceptions.internal_exceptions import UserNotFoundError
 
 
 @elegant
@@ -43,6 +44,69 @@ class User(Protocol):
         """Статус активности пользователя."""
 
 
+@elegant
+class ValidChatId(AsyncIntable, Protocol):
+    """Проверенный идентификатор чата."""
+
+    async def to_int(self) -> int:
+        """Числовое представление."""
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class FkValidChatId(ValidChatId):
+    """Фейковый объект с валидным идентификатором чата.
+
+    Использовать для случаев создания пользователя если мы уверены в наличии идентификатора в хранилище.
+    Например: srv.users.active_users.ActiveUsers
+    """
+
+    _origin: AsyncIntable
+
+    @override
+    async def to_int(self) -> int:
+        """Числовое представление.
+
+        :return: int
+        :raises UserNotFoundError: если пользователь не найден
+        """
+        return await self._origin.to_int()
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class PgValidChatId(ValidChatId):
+    """Проверенный идентификатор чата в БД postgres."""
+
+    _pgsql: Database
+    _unreliable: AsyncIntable
+
+    @classmethod
+    def int_ctor(cls, pgsql: Database, int_value: SupportsInt):
+        return cls(pgsql, FkAsyncIntable(int_value))
+
+    @override
+    async def to_int(self) -> int:
+        """Числовое представление.
+
+        :return: int
+        :raises UserNotFoundError: если пользователь не найден
+        """
+        chat_id = await self._pgsql.fetch_val(
+            '\n'.join([
+                'SELECT chat_id',
+                'FROM users',
+                'WHERE chat_id = :chat_id'
+            ]),
+            {'chat_id': self._unreliable.to_int()}
+        )
+        if not chat_id:
+            raise UserNotFoundError
+        return chat_id
+
+
 @final
 @attrs.define(frozen=True)
 @elegant
@@ -53,6 +117,7 @@ class FkUser(User):
     _day: int
     _is_active: bool
 
+    @override
     async def chat_id(self) -> int:
         """Идентификатор чата.
 
@@ -60,6 +125,7 @@ class FkUser(User):
         """
         return self._chat_id
 
+    @override
     async def day(self) -> int:
         """День для рассылки утреннего контента.
 
@@ -67,6 +133,7 @@ class FkUser(User):
         """
         return self._day
 
+    @override
     async def is_active(self) -> bool:
         """Статус пользователя.
 
@@ -107,7 +174,7 @@ class ChatIdByLegacyId(AsyncIntable):
 class PgUser(User):
     """Пользователь в БД postgres."""
 
-    _chat_id: AsyncIntable
+    _chat_id: ValidChatId
     _pgsql: Database
 
     @classmethod
@@ -118,7 +185,7 @@ class PgUser(User):
         :param pgsql: Database
         :return: User
         """
-        return cls(ChatIdByLegacyId(pgsql, legacy_id), pgsql)
+        return cls(PgValidChatId(ChatIdByLegacyId(pgsql, legacy_id), pgsql))
 
     @classmethod
     def int_ctor(cls, chat_id: int, pgsql: Database) -> User:
@@ -128,7 +195,7 @@ class PgUser(User):
         :param pgsql: Database
         :return: User
         """
-        return cls(FkAsyncIntable(chat_id), pgsql)
+        return cls(PgValidChatId(FkAsyncIntable(chat_id), pgsql))
 
     @override
     async def chat_id(self) -> int:
