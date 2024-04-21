@@ -20,14 +20,14 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from typing import Protocol, SupportsInt, final, override
+from typing import Protocol, final, override
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
 from app_types.intable import AsyncIntable, FkAsyncIntable
-from exceptions.internal_exceptions import UserNotFoundError
+from srv.users.valid_chat_id import PgValidChatId, ValidChatId
 
 
 @elegant
@@ -42,84 +42,6 @@ class User(Protocol):
 
     async def is_active(self) -> bool:
         """Статус активности пользователя."""
-
-
-@elegant
-class ValidChatId(AsyncIntable, Protocol):
-    """Проверенный идентификатор чата."""
-
-    async def to_int(self) -> int:
-        """Числовое представление."""
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkValidChatId(ValidChatId):
-    """Фейковый объект с валидным идентификатором чата.
-
-    Использовать для случаев создания пользователя если мы уверены в наличии идентификатора в хранилище.
-    Например: srv.users.active_users.ActiveUsers
-    """
-
-    _origin: AsyncIntable
-
-    @classmethod
-    def int_ctor(cls, int_value: SupportsInt) -> ValidChatId:
-        """Числовой конструктор.
-
-        :param int_value: SupportsInt
-        :return: FkValidChatId
-        """
-        return cls(FkAsyncIntable(int_value))
-
-    @override
-    async def to_int(self) -> int:
-        """Числовое представление.
-
-        :return: int
-        :raises UserNotFoundError: если пользователь не найден
-        """
-        return await self._origin.to_int()
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class PgValidChatId(ValidChatId):
-    """Проверенный идентификатор чата в БД postgres."""
-
-    _pgsql: Database
-    _unreliable: AsyncIntable
-
-    @classmethod
-    def int_ctor(cls, pgsql: Database, int_value: SupportsInt) -> ValidChatId:
-        """Числовой конструктор.
-
-        :param pgsql: Database
-        :param int_value: SupportsInt
-        :return: FkValidChatId
-        """
-        return cls(pgsql, FkAsyncIntable(int_value))
-
-    @override
-    async def to_int(self) -> int:
-        """Числовое представление.
-
-        :return: int
-        :raises UserNotFoundError: если пользователь не найден
-        """
-        chat_id = await self._pgsql.fetch_val(
-            '\n'.join([
-                'SELECT chat_id',
-                'FROM users',
-                'WHERE chat_id = :chat_id',
-            ]),
-            {'chat_id': await self._unreliable.to_int()},
-        )
-        if not chat_id:
-            raise UserNotFoundError
-        return chat_id
 
 
 @final

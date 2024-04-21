@@ -32,7 +32,8 @@ from exceptions.base_exception import BaseAppError
 from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import StartMessageNotContainReferrerError
 from services.regular_expression import IntableRegularExpression
-from srv.users.pg_user import PgUser, PgValidChatId
+from srv.users.pg_user import PgUser
+from srv.users.valid_chat_id import PgValidChatId
 
 
 @elegant

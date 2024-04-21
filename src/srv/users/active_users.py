@@ -31,7 +31,8 @@ from pyeo import elegant
 from app_types.intable import FkAsyncIntable
 from app_types.listable import AsyncListable
 from srv.events.sink import SinkInterface
-from srv.users.pg_user import FkValidChatId, PgUser, User
+from srv.users.valid_chat_id import FkValidChatId
+from srv.users.pg_user import PgUser, PgUser, User
 
 
 @final
