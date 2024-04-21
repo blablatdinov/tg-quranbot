@@ -22,7 +22,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import pytest
 
-from handlers.podcast_reaction_change_answer import PodcastReaction
+from srv.reactions.podcast_reaction import PodcastReaction
 
 
 @pytest.mark.parametrize(('callback_data', 'prayer_id', 'status'), [
