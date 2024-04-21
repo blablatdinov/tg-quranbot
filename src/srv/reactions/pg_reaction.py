@@ -27,7 +27,7 @@ from databases import Database
 from pyeo import elegant
 
 from integrations.tg.chat_id import ChatId
-from srv.reactions.podcast_reactions import PodcastReactionsT
+from srv.reactions.podcast_reaction import PodcastReactionsT
 
 PODCAST_ID_LITERAL: Final = 'podcast_id'
 USER_ID_LITERAL: Final = 'user_id'

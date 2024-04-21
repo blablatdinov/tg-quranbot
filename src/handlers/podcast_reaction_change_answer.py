@@ -45,7 +45,7 @@ from srv.podcasts.podcast import PgPodcast
 from srv.podcasts.podcast_answer import MarkuppedPodcastAnswer, PodcastAnswer
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
 from srv.reactions.podcast_reaction import PodcastReaction
-from srv.reactions.reaction import PgReaction
+from srv.reactions.pg_reaction import PgReaction
 
 
 @final
