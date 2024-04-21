@@ -102,8 +102,33 @@ class StartAnswer(TgAnswer):
         start_message, ayat_message = await self._start_answers()
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
         if referrer_chat_id_calculated:
-            return await self._create_with_referrer(
-                update, start_message, ayat_message, referrer_chat_id_calculated,
+            return TgAnswerList(
+                TgAnswerToSender(
+                    TgTextAnswer.str_ctor(
+                        self._origin,
+                        start_message,
+                    ),
+                ),
+                TgAnswerToSender(
+                    TgTextAnswer.str_ctor(
+                        self._origin,
+                        ayat_message,
+                    ),
+                ),
+                TgChatIdAnswer(
+                    TgTextAnswer.str_ctor(
+                        self._origin,
+                        'По вашей реферальной ссылке произошла регистрация',
+                    ),
+                    referrer_chat_id_calculated,
+                ),
+                TgChatIdAnswer(
+                    TgTextAnswer.str_ctor(
+                        self._origin,
+                        'Зарегистрировался новый пользователь',
+                    ),
+                    self._admin_chat_ids[0],
+                ),
             )
         return TgAnswerList(
             TgAnswerToSender(
@@ -132,37 +157,4 @@ class StartAnswer(TgAnswer):
         return (
             await self._admin_message.text(),
             await PgAyat(FkAsyncIntable(1), self._pgsql).text(),
-        )
-
-    async def _create_with_referrer(
-        self, update: Update, start_message: str, ayat_message: str, referrer_id: int,
-    ) -> TgAnswer:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_create_with_referrer"
-        return TgAnswerList(
-            TgAnswerToSender(
-                TgTextAnswer.str_ctor(
-                    self._origin,
-                    start_message,
-                ),
-            ),
-            TgAnswerToSender(
-                TgTextAnswer.str_ctor(
-                    self._origin,
-                    ayat_message,
-                ),
-            ),
-            TgChatIdAnswer(
-                TgTextAnswer.str_ctor(
-                    self._origin,
-                    'По вашей реферальной ссылке произошла регистрация',
-                ),
-                referrer_id,
-            ),
-            TgChatIdAnswer(
-                TgTextAnswer.str_ctor(
-                    self._origin,
-                    'Зарегистрировался новый пользователь',
-                ),
-                self._admin_chat_ids[0],
-            ),
         )
