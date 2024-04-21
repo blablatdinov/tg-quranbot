@@ -117,6 +117,7 @@ class PodcastMessageTextNotExistsSafeAnswer(TgAnswer):
             return await self._new_podcast_message_answer.build(update)
 
     async def _message_text_exists_case(self, update: Update) -> list[httpx.Request]:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_message_text_exists_case"
         MatchManyJsonPath(
             update.asdict(),
             ('$..message.text', '$..message.audio'),
@@ -181,6 +182,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
         ).build(update)
 
     async def _apply_reaction(self, chat_id: ChatId, reaction: PodcastReactionsT) -> None:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_apply_reaction"
         query = '\n'.join([
             'SELECT reaction',
             'FROM podcast_reactions',

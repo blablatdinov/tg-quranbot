@@ -103,6 +103,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
         ]))
 
     def _zipped_ans_chat_ids(self, rows: list[Record]) -> Iterator[tuple[TgAnswer, int]]:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_zipped_ans_chat_ids"
         return zip(
             [
                 TgLinkPreviewOptions(
@@ -144,6 +145,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
         )
 
     async def _iteration(self, answer: TgAnswer, chat_id: int, unsubscribed_users: list[User]) -> None:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_iteration" Класса `MorningContentPublishedEvent`
         try:
             await LoggedAnswer(
                 SendableAnswer(

@@ -124,6 +124,7 @@ class UserPrayersKeyboard(KeyboardInterface):
         })
 
     async def _exists_prayers(self, update: Update) -> list[Record]:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_exists_prayers"
         select_query = '\n'.join([
             'SELECT',
             '    pau.prayer_at_user_id,',

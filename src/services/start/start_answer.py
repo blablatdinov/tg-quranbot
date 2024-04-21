@@ -98,6 +98,7 @@ class StartAnswer(TgAnswer):
         return await answer.build(update)
 
     async def _answer(self, update: Update, referrer_chat_id: AsyncIntOrNone) -> TgAnswer:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_answer"
         start_message, ayat_message = await self._start_answers()
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
         if referrer_chat_id_calculated:
@@ -127,6 +128,7 @@ class StartAnswer(TgAnswer):
         )
 
     async def _start_answers(self) -> tuple[str, str]:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_start_answers"
         return (
             await self._admin_message.text(),
             await PgAyat(FkAsyncIntable(1), self._pgsql).text(),
@@ -135,6 +137,7 @@ class StartAnswer(TgAnswer):
     async def _create_with_referrer(
         self, update: Update, start_message: str, ayat_message: str, referrer_id: int,
     ) -> TgAnswer:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_create_with_referrer"
         return TgAnswerList(
             TgAnswerToSender(
                 TgTextAnswer.str_ctor(

@@ -107,6 +107,7 @@ class MailingCreatedEvent(ReceivedEvent):
         unsubscribed_users: list[User],
         mailing_id: uuid.UUID,
     ) -> None:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_iteration"
         try:
             await LoggedAnswer(
                 SendableAnswer(

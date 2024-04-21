@@ -62,6 +62,7 @@ class StatusAnswer(TgAnswer):
         ).build(update)
 
     async def _measure_pgsql(self) -> str:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_measure_pgsql"
         db_start = time.time()
         await self._pgsql.execute('SELECT 1')
         return 'DB: {0} ms'.format(float(
@@ -72,6 +73,7 @@ class StatusAnswer(TgAnswer):
         ))
 
     async def _measure_redis(self) -> str:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_measure_redis"
         redis_start = time.time()
         await self._redis.ping()
         return 'Redis: {0} ms'.format(float(
