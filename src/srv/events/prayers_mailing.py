@@ -134,6 +134,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
         ).update(to=False)
 
     async def _iteration(self, answer: TgAnswer, chat_id: int, unsubscribed_users: list[User]) -> None:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_iteration" класса `PrayersMailingPublishedEvent`
         try:
             await LoggedAnswer(
                 SendableAnswer(

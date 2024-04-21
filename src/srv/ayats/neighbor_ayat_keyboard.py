@@ -66,6 +66,7 @@ class NeighborAyatKeyboard(KeyboardInterface):
         })
 
     async def _generate_left_button(self) -> dict[str, str] | None:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_generate_left_button"
         with suppress(AyatNotFoundError):
             left = await self._ayats_neighbors.left_neighbor()
             return {
@@ -78,6 +79,7 @@ class NeighborAyatKeyboard(KeyboardInterface):
         return None
 
     async def _generate_right_button(self) -> dict[str, str] | None:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_generate_right_button"
         with suppress(AyatNotFoundError):
             right = await self._ayats_neighbors.right_neighbor()
             return {

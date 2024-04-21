@@ -106,6 +106,7 @@ class QuranbotAnswer(TgAnswer):
         return await self._answer.build(update)
 
     def _pre_build(self) -> None:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_pre_build"
         empty_answer = TgEmptyAnswer(self._settings.API_TOKEN)
         self._answer = SafeFork(
             TgAnswerFork(

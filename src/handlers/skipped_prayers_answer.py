@@ -112,15 +112,18 @@ class PrayersStatistic(AsyncSupportsStr):
         ])
 
     def _exist_prayer_case(self, prayers_per_day: list[tuple], res: dict, idx: int) -> None:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_exist_prayer_case"
         for prayer_idx, prayer_name in enumerate(_PrayerNames.names()):
             res[prayer_name] += int(not prayers_per_day[idx][prayer_idx][IS_READ_LITERAL])
 
     async def _new_prayer_at_user_case(self, res: dict, date: datetime.date) -> None:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_new_prayer_at_user_case"
         await self._prayers_at_user.create(date)
         for prayer_name in _PrayerNames.names():
             res[prayer_name] += 1
 
     async def _prayers_per_day(self) -> list[tuple]:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_prayers_per_day"
         query = '\n'.join([
             'SELECT',
             '    pau.is_read,',
@@ -139,6 +142,7 @@ class PrayersStatistic(AsyncSupportsStr):
         ))
 
     async def _dates_range(self) -> list[datetime.date]:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_dates_range"
         query = '\n'.join([
             'SELECT p.day',
             'FROM prayers_at_user AS pau',

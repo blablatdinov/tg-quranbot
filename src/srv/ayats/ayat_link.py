@@ -63,6 +63,7 @@ class AyatLink(SupportsStr):
         )
 
     def _ayat_first_digit(self, ayat_num: _AyatNum) -> str:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_ayat_first_digit"
         num = ''
         for char in ayat_num:
             if not char.isdigit():
