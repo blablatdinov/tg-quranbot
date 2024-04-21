@@ -64,6 +64,15 @@ class FkValidChatId(ValidChatId):
 
     _origin: AsyncIntable
 
+    @classmethod
+    def int_ctor(cls, int_value: SupportsInt) -> ValidChatId:
+        """Числовой конструктор.
+
+        :param int_value: SupportsInt
+        :return: FkValidChatId
+        """
+        return cls(FkAsyncIntable(int_value))
+
     @override
     async def to_int(self) -> int:
         """Числовое представление.
@@ -84,7 +93,13 @@ class PgValidChatId(ValidChatId):
     _unreliable: AsyncIntable
 
     @classmethod
-    def int_ctor(cls, pgsql: Database, int_value: SupportsInt):
+    def int_ctor(cls, pgsql: Database, int_value: SupportsInt) -> ValidChatId:
+        """Числовой конструктор.
+
+        :param pgsql: Database
+        :param int_value: SupportsInt
+        :return: FkValidChatId
+        """
         return cls(pgsql, FkAsyncIntable(int_value))
 
     @override
@@ -98,9 +113,9 @@ class PgValidChatId(ValidChatId):
             '\n'.join([
                 'SELECT chat_id',
                 'FROM users',
-                'WHERE chat_id = :chat_id'
+                'WHERE chat_id = :chat_id',
             ]),
-            {'chat_id': self._unreliable.to_int()}
+            {'chat_id': await self._unreliable.to_int()},
         )
         if not chat_id:
             raise UserNotFoundError
@@ -185,7 +200,7 @@ class PgUser(User):
         :param pgsql: Database
         :return: User
         """
-        return cls(PgValidChatId(ChatIdByLegacyId(pgsql, legacy_id), pgsql))
+        return cls(PgValidChatId(pgsql, ChatIdByLegacyId(pgsql, legacy_id)), pgsql)
 
     @classmethod
     def int_ctor(cls, chat_id: int, pgsql: Database) -> User:
@@ -195,7 +210,7 @@ class PgUser(User):
         :param pgsql: Database
         :return: User
         """
-        return cls(PgValidChatId(FkAsyncIntable(chat_id), pgsql))
+        return cls(PgValidChatId(pgsql, FkAsyncIntable(chat_id)), pgsql)
 
     @override
     async def chat_id(self) -> int:

@@ -59,7 +59,7 @@ class UserAlreadyExistsAnswer(TgAnswer):
         """
         with suppress(UserAlreadyExistsError):
             return await self._origin.build(update)
-        user = PgUser(PgValidChatId.int_ctor(TgChatId(update)), self._pgsql)
+        user = PgUser(PgValidChatId.int_ctor(self._pgsql, TgChatId(update)), self._pgsql)
         await self._update_and_push_event(update)
         if await user.is_active():
             raise UserAlreadyActiveError

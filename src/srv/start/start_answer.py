@@ -126,7 +126,6 @@ class StartAnswer(TgAnswer):
         ayat_message = PgAyat(FkAsyncIntable(1), self._pgsql)
         await self._new_tg_user.create(referrer_chat_id)
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
-        assert False, referrer_chat_id_calculated
         if referrer_chat_id_calculated:
             return await TgAnswerList(
                 TgAnswerToSender(
