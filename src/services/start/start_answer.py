@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from collections.abc import Sequence
-from typing import final, override
+from typing import Protocol, final, override
 
 import attrs
 import httpx
@@ -43,21 +43,33 @@ from srv.events.sink import SinkInterface
 from srv.users.new_user import PgNewUser, PgNewUserWithEvent
 
 
+class NewTgUserT(Protocol):
+    """Registration of user."""
+
+    async def create(self, referrer_chat_id: AsyncIntOrNone) -> None:
+        """Creation.
+
+        :param referrer_chat_id: AsyncIntOrNone
+        """
+
+
 @final
 @attrs.define(frozen=True)
 @elegant
-class NewTgUser:
+class NewTgUser(NewTgUserT):
     """Registration of user by tg."""
 
     _pgsql: Database
     _logger: LogSink
     _event_sink: SinkInterface
     _update: Update
-    _referrer_chat_id: AsyncIntOrNone
 
     @override
-    async def create(self) -> None:
-        """Creation."""
+    async def create(self, referrer_chat_id: AsyncIntOrNone) -> None:
+        """Creation.
+
+        :param referrer_chat_id: AsyncIntOrNone
+        """
         try:
             await PgNewUserWithEvent(
                 PgNewUser(
@@ -93,10 +105,9 @@ class StartAnswer(TgAnswer):
 
     _origin: TgAnswer
     _admin_message: AdminMessage
+    _new_tg_user: NewTgUserT
     _pgsql: Database
     _admin_chat_ids: Sequence[int]
-    _logger: LogSink
-    _event_sink: SinkInterface
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -113,7 +124,7 @@ class StartAnswer(TgAnswer):
         )
         start_message = self._admin_message
         ayat_message = PgAyat(FkAsyncIntable(1), self._pgsql)
-        await NewTgUser(self._pgsql, self._logger, self._event_sink, update, referrer_chat_id).create()
+        await self._new_tg_user.create(referrer_chat_id)
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
         if referrer_chat_id_calculated:
             return await TgAnswerList(

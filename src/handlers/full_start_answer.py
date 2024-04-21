@@ -34,7 +34,7 @@ from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgHtmlParseAnswer, TgMessageAnswer
 from services.answers.answer import DefaultKeyboard, ResizedKeyboard
 from services.reset_state_answer import ResetStateAnswer
-from services.start.start_answer import StartAnswer
+from services.start.start_answer import NewTgUser, StartAnswer
 from services.start.user_already_active import UserAlreadyActiveSafeAnswer
 from services.start.user_already_exists import UserAlreadyExistsAnswer
 from services.user_state import CachedUserState, RedisUserState
@@ -73,10 +73,14 @@ class FullStartAnswer(TgAnswer):
                                 TgMessageAnswer(self._empty_answer),
                             ),
                             PgAdminMessage('start', self._pgsql),
+                            NewTgUser(
+                                self._pgsql,
+                                self._logger,
+                                self._event_sink,
+                                update,
+                            ),
                             self._pgsql,
                             self._settings.admin_chat_ids(),
-                            self._logger,
-                            self._event_sink,
                         ),
                         answer_to_sender,
                         self._pgsql,
