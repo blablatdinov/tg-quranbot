@@ -73,7 +73,7 @@ class NewTgUser(NewTgUserT):
         try:
             await PgNewUserWithEvent(
                 PgNewUser(
-                    self._referrer_chat_id,
+                    referrer_chat_id,
                     TgChatId(self._update),
                     self._pgsql,
                     self._logger,
