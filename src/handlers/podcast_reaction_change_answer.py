@@ -44,7 +44,7 @@ from services.user_state import CachedUserState, RedisUserState
 from srv.podcasts.podcast import PgPodcast
 from srv.podcasts.podcast_answer import MarkuppedPodcastAnswer, PodcastAnswer
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
-from srv.reactions.podcast_reactions import PodcastReaction
+from srv.reactions.podcast_reaction import PodcastReaction
 from srv.reactions.reaction import PgReaction
 
 
