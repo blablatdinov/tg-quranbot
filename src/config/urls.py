@@ -21,11 +21,9 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from django.contrib import admin
-from django.http.response import JsonResponse
 from django.urls import path
 
 from main.views import healthcheck
-
 
 urlpatterns = [
     path('health-check/', healthcheck),

@@ -15,6 +15,7 @@ gunicorn = "21.2.0"
 psycopg2-binary = "2.9.9"
 django = "5.0.1"
 django-environ = "^0.11.2"
+time-machine = "2.14.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "7.4.0"
@@ -24,6 +25,7 @@ wemake-python-styleguide = "0.18.0"
 refurb = "1.27.0"
 pytest-cov = "4.1.0"
 pytest-django = "4.7.0"
+faker = "24.11.0"
 
 [build-system]
 requires = ["poetry-core"]
