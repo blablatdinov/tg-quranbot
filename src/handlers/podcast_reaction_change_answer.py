@@ -101,7 +101,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
             FkAsyncIntable(reaction.podcast_id()),
             self._pgsql,
         )
-        await self._apply_reaction(int(), reaction)
+        await self._apply_reaction(TgChatId(update), reaction)
         await PgReaction(
             self._pgsql,
             TgChatId(update),

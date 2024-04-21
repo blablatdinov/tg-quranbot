@@ -145,7 +145,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
         )
 
     async def _iteration(self, answer: TgAnswer, chat_id: int, unsubscribed_users: list[User]) -> None:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_iteration" Класса `MorningContentPublishedEvent`
+        # TODO #802 Удалить или обосновать необходимость метода `MorningContentPublishedEvent._iteration`
         try:
             await LoggedAnswer(
                 SendableAnswer(

@@ -35,6 +35,7 @@ USER_ID_LITERAL: Final = 'user_id'
 
 @elegant
 class Reaction(Protocol):
+    """Реакция на подкаст."""
 
     async def apply(self) -> None:
         """Применить."""
@@ -44,6 +45,7 @@ class Reaction(Protocol):
 @attrs.define(frozen=True)
 @elegant
 class PgReaction(Reaction):
+    """Реакция на подкаст в БД postgres."""
 
     _pgsql: Database
     _chat_id: ChatId
