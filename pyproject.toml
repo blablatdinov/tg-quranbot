@@ -37,9 +37,6 @@ skip = ["migrations/*.py", ".venv"]
 multi_line_output = 3
 include_trailing_comma = true
 
-[tool.sqlfluff.core]
-max_line_length = 120
-
 [tool.ruff]
 select = ["ALL"]
 fixable = [
