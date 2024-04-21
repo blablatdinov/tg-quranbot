@@ -26,6 +26,7 @@ import attrs
 from eljson.json import Json
 from pyeo import elegant
 
+from app_types.stringable import AsyncSupportsStr
 from srv.ayats.ayat_identifier import AyatIdentifier
 from srv.files.file import TgFile
 
@@ -33,13 +34,13 @@ AyatText: TypeAlias = str
 
 
 @elegant
-class Ayat(Protocol):
+class Ayat(AsyncSupportsStr, Protocol):
     """Интерфейс аята."""
 
     def identifier(self) -> AyatIdentifier:
         """Идентификатор аята."""
 
-    async def text(self) -> AyatText:
+    async def to_str(self) -> AyatText:
         """Строковое представление."""
 
     async def audio(self) -> TgFile:
@@ -69,7 +70,7 @@ class FkAyat(Ayat):
         return self._id
 
     @override
-    async def text(self) -> str:
+    async def to_str(self) -> str:
         """Текст.
 
         :return: str

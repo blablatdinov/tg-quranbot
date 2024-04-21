@@ -40,7 +40,7 @@ class PgAdminMessage(AdminMessage):
     _pgsql: Database
 
     @override
-    async def text(self) -> str:
+    async def to_str(self) -> str:
         """Текст административного сообщения.
 
         :raises InternalBotError: возбуждается если административное сообщение с переданным ключом не найдено

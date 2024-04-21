@@ -21,7 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from collections.abc import Sequence
-from typing import final, override
+from typing import Protocol, final, override
 
 import attrs
 import httpx
@@ -36,11 +36,65 @@ from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
 from integrations.tg.tg_datetime import TgDateTime
-from services.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone, ReferrerChatId, ReferrerIdOrNone
 from srv.admin_messages.admin_message import AdminMessage
 from srv.ayats.pg_ayat import PgAyat
 from srv.events.sink import SinkInterface
+from srv.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone, ReferrerChatId, ReferrerIdOrNone
 from srv.users.new_user import PgNewUser, PgNewUserWithEvent
+
+
+class NewTgUserT(Protocol):
+    """Registration of user."""
+
+    async def create(self, referrer_chat_id: AsyncIntOrNone) -> None:
+        """Creation.
+
+        :param referrer_chat_id: AsyncIntOrNone
+        """
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class NewTgUser(NewTgUserT):
+    """Registration of user by tg."""
+
+    _pgsql: Database
+    _logger: LogSink
+    _event_sink: SinkInterface
+    _update: Update
+
+    @override
+    async def create(self, referrer_chat_id: AsyncIntOrNone) -> None:
+        """Creation.
+
+        :param referrer_chat_id: AsyncIntOrNone
+        """
+        try:
+            await PgNewUserWithEvent(
+                PgNewUser(
+                    referrer_chat_id,
+                    TgChatId(self._update),
+                    self._pgsql,
+                    self._logger,
+                ),
+                self._event_sink,
+                TgChatId(self._update),
+                TgDateTime(self._update),
+            ).create()
+        except UserNotFoundError:
+            referrer_chat_id = FkAsyncIntOrNone(None)
+            await PgNewUserWithEvent(
+                PgNewUser(
+                    referrer_chat_id,
+                    TgChatId(self._update),
+                    self._pgsql,
+                    self._logger,
+                ),
+                self._event_sink,
+                TgChatId(self._update),
+                TgDateTime(self._update),
+            ).create()
 
 
 @final
@@ -51,10 +105,9 @@ class StartAnswer(TgAnswer):
 
     _origin: TgAnswer
     _admin_message: AdminMessage
+    _new_tg_user: NewTgUserT
     _pgsql: Database
     _admin_chat_ids: Sequence[int]
-    _logger: LogSink
-    _event_sink: SinkInterface
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -69,51 +122,48 @@ class StartAnswer(TgAnswer):
                 self._pgsql,
             ),
         )
-        try:
-            await PgNewUserWithEvent(
-                PgNewUser(
-                    referrer_chat_id,
-                    TgChatId(update),
-                    self._pgsql,
-                    self._logger,
-                ),
-                self._event_sink,
-                TgChatId(update),
-                TgDateTime(update),
-            ).create()
-        except UserNotFoundError:
-            referrer_chat_id = FkAsyncIntOrNone(None)
-            await PgNewUserWithEvent(
-                PgNewUser(
-                    referrer_chat_id,
-                    TgChatId(update),
-                    self._pgsql,
-                    self._logger,
-                ),
-                self._event_sink,
-                TgChatId(update),
-                TgDateTime(update),
-            ).create()
-        answer = await self._answer(update, referrer_chat_id)
-        return await answer.build(update)
-
-    async def _answer(self, update: Update, referrer_chat_id: AsyncIntOrNone) -> TgAnswer:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_answer"
-        start_message, ayat_message = await self._start_answers()
+        start_message = self._admin_message
+        ayat_message = PgAyat(FkAsyncIntable(1), self._pgsql)
+        await self._new_tg_user.create(referrer_chat_id)
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
         if referrer_chat_id_calculated:
-            return await self._create_with_referrer(
-                update, start_message, ayat_message, referrer_chat_id_calculated,
-            )
-        return TgAnswerList(
+            return await TgAnswerList(
+                TgAnswerToSender(
+                    TgTextAnswer(
+                        self._origin,
+                        start_message,
+                    ),
+                ),
+                TgAnswerToSender(
+                    TgTextAnswer(
+                        self._origin,
+                        ayat_message,
+                    ),
+                ),
+                TgChatIdAnswer(
+                    TgTextAnswer.str_ctor(
+                        self._origin,
+                        'По вашей реферальной ссылке произошла регистрация',
+                    ),
+                    referrer_chat_id_calculated,
+                ),
+                TgChatIdAnswer(
+                    TgTextAnswer.str_ctor(
+                        self._origin,
+                        'Зарегистрировался новый пользователь',
+                    ),
+                    self._admin_chat_ids[0],
+                ),
+            ).build(update)
+        return await TgAnswerList(
             TgAnswerToSender(
-                TgTextAnswer.str_ctor(
+                TgTextAnswer(
                     self._origin,
                     start_message,
                 ),
             ),
             TgAnswerToSender(
-                TgTextAnswer.str_ctor(
+                TgTextAnswer(
                     self._origin,
                     ayat_message,
                 ),
@@ -125,44 +175,4 @@ class StartAnswer(TgAnswer):
                 ),
                 self._admin_chat_ids[0],
             ),
-        )
-
-    async def _start_answers(self) -> tuple[str, str]:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_start_answers"
-        return (
-            await self._admin_message.text(),
-            await PgAyat(FkAsyncIntable(1), self._pgsql).text(),
-        )
-
-    async def _create_with_referrer(
-        self, update: Update, start_message: str, ayat_message: str, referrer_id: int,
-    ) -> TgAnswer:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_create_with_referrer"
-        return TgAnswerList(
-            TgAnswerToSender(
-                TgTextAnswer.str_ctor(
-                    self._origin,
-                    start_message,
-                ),
-            ),
-            TgAnswerToSender(
-                TgTextAnswer.str_ctor(
-                    self._origin,
-                    ayat_message,
-                ),
-            ),
-            TgChatIdAnswer(
-                TgTextAnswer.str_ctor(
-                    self._origin,
-                    'По вашей реферальной ссылке произошла регистрация',
-                ),
-                referrer_id,
-            ),
-            TgChatIdAnswer(
-                TgTextAnswer.str_ctor(
-                    self._origin,
-                    'Зарегистрировался новый пользователь',
-                ),
-                self._admin_chat_ids[0],
-            ),
-        )
+        ).build(update)

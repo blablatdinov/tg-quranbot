@@ -113,7 +113,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         return PgAyatIdentifier(self._ayat_id, self._pgsql)
 
     @override
-    async def text(self) -> AyatText:
+    async def to_str(self) -> AyatText:
         """Текст аята.
 
         :return: str

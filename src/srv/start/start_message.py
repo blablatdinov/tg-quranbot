@@ -33,6 +33,7 @@ from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import StartMessageNotContainReferrerError
 from services.regular_expression import IntableRegularExpression
 from srv.users.pg_user import PgUser
+from srv.users.valid_chat_id import PgValidChatId
 
 
 @elegant
@@ -88,7 +89,13 @@ class ReferrerChatId(AsyncIntable):
                 ),
                 self._pgsql,
             ).chat_id()
-        return await PgUser(FkAsyncIntable(IntableRegularExpression(self._message)), self._pgsql).chat_id()
+        return await PgUser(
+            PgValidChatId.int_ctor(
+                self._pgsql,
+                IntableRegularExpression(self._message),
+            ),
+            self._pgsql,
+        ).chat_id()
 
 
 @final

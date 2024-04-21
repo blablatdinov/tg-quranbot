@@ -32,6 +32,7 @@ from app_types.intable import FkAsyncIntable
 from app_types.listable import AsyncListable
 from srv.events.sink import SinkInterface
 from srv.users.pg_user import PgUser, User
+from srv.users.valid_chat_id import FkValidChatId
 
 
 @final
@@ -55,7 +56,7 @@ class ActiveUsers(AsyncListable):
         ])
         rows = await self._pgsql.fetch_all(query)
         return [
-            PgUser(FkAsyncIntable(row['chat_id']), self._pgsql)
+            PgUser(FkValidChatId.int_ctor(row['chat_id']), self._pgsql)
             for row in rows
         ]
 

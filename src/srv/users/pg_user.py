@@ -27,6 +27,7 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.intable import AsyncIntable, FkAsyncIntable
+from srv.users.valid_chat_id import PgValidChatId, ValidChatId
 
 
 @elegant
@@ -53,6 +54,7 @@ class FkUser(User):
     _day: int
     _is_active: bool
 
+    @override
     async def chat_id(self) -> int:
         """Идентификатор чата.
 
@@ -60,6 +62,7 @@ class FkUser(User):
         """
         return self._chat_id
 
+    @override
     async def day(self) -> int:
         """День для рассылки утреннего контента.
 
@@ -67,6 +70,7 @@ class FkUser(User):
         """
         return self._day
 
+    @override
     async def is_active(self) -> bool:
         """Статус пользователя.
 
@@ -107,7 +111,7 @@ class ChatIdByLegacyId(AsyncIntable):
 class PgUser(User):
     """Пользователь в БД postgres."""
 
-    _chat_id: AsyncIntable
+    _chat_id: ValidChatId
     _pgsql: Database
 
     @classmethod
@@ -118,7 +122,7 @@ class PgUser(User):
         :param pgsql: Database
         :return: User
         """
-        return cls(ChatIdByLegacyId(pgsql, legacy_id), pgsql)
+        return cls(PgValidChatId(pgsql, ChatIdByLegacyId(pgsql, legacy_id)), pgsql)
 
     @classmethod
     def int_ctor(cls, chat_id: int, pgsql: Database) -> User:
@@ -128,7 +132,7 @@ class PgUser(User):
         :param pgsql: Database
         :return: User
         """
-        return cls(FkAsyncIntable(chat_id), pgsql)
+        return cls(PgValidChatId(pgsql, FkAsyncIntable(chat_id)), pgsql)
 
     @override
     async def chat_id(self) -> int:

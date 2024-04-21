@@ -56,9 +56,9 @@ class HelpAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         return await ResetStateAnswer(
-            TgTextAnswer.str_ctor(
+            TgTextAnswer(
                 TgHtmlMessageAnswerToSender(self._origin),
-                await self._admin_message.text(),
+                self._admin_message,
             ),
             CachedUserState(
                 RedisUserState(self._redis, TgChatId(update), self._logger),

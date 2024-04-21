@@ -24,10 +24,12 @@ from typing import Protocol
 
 from pyeo import elegant
 
+from app_types.stringable import AsyncSupportsStr
+
 
 @elegant
-class AdminMessage(Protocol):
+class AdminMessage(AsyncSupportsStr, Protocol):
     """Интерфейс административного сообщения."""
 
-    async def text(self) -> str:
+    async def to_str(self) -> str:
         """Чтение содержимого административного сообщения."""
