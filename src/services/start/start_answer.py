@@ -46,6 +46,48 @@ from srv.users.new_user import PgNewUser, PgNewUserWithEvent
 @final
 @attrs.define(frozen=True)
 @elegant
+class NewTgUser:
+    """Registration of user by tg."""
+
+    _pgsql: Database
+    _logger: LogSink
+    _event_sink: SinkInterface
+    _update: Update
+    _referrer_chat_id: AsyncIntOrNone
+
+    @override
+    async def create(self) -> None:
+        """Creation."""
+        try:
+            await PgNewUserWithEvent(
+                PgNewUser(
+                    self._referrer_chat_id,
+                    TgChatId(self._update),
+                    self._pgsql,
+                    self._logger,
+                ),
+                self._event_sink,
+                TgChatId(self._update),
+                TgDateTime(self._update),
+            ).create()
+        except UserNotFoundError:
+            referrer_chat_id = FkAsyncIntOrNone(None)
+            await PgNewUserWithEvent(
+                PgNewUser(
+                    referrer_chat_id,
+                    TgChatId(self._update),
+                    self._pgsql,
+                    self._logger,
+                ),
+                self._event_sink,
+                TgChatId(self._update),
+                TgDateTime(self._update),
+            ).create()
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
 class StartAnswer(TgAnswer):
     """Обработчик стартового сообщения."""
 
@@ -69,51 +111,20 @@ class StartAnswer(TgAnswer):
                 self._pgsql,
             ),
         )
-        try:
-            await PgNewUserWithEvent(
-                PgNewUser(
-                    referrer_chat_id,
-                    TgChatId(update),
-                    self._pgsql,
-                    self._logger,
-                ),
-                self._event_sink,
-                TgChatId(update),
-                TgDateTime(update),
-            ).create()
-        except UserNotFoundError:
-            referrer_chat_id = FkAsyncIntOrNone(None)
-            await PgNewUserWithEvent(
-                PgNewUser(
-                    referrer_chat_id,
-                    TgChatId(update),
-                    self._pgsql,
-                    self._logger,
-                ),
-                self._event_sink,
-                TgChatId(update),
-                TgDateTime(update),
-            ).create()
-        answer = await self._answer(update, referrer_chat_id)
-        return await answer.build(update)
-
-    async def _answer(self, update: Update, referrer_chat_id: AsyncIntOrNone) -> TgAnswer:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_answer"
-        start_message, ayat_message = (
-            await self._admin_message.text(),
-            await PgAyat(FkAsyncIntable(1), self._pgsql).text(),
-        )
+        start_message = self._admin_message
+        ayat_message = PgAyat(FkAsyncIntable(1), self._pgsql)
+        await NewTgUser(self._pgsql, self._logger, self._event_sink, update, referrer_chat_id).create()
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
         if referrer_chat_id_calculated:
-            return TgAnswerList(
+            return await TgAnswerList(
                 TgAnswerToSender(
-                    TgTextAnswer.str_ctor(
+                    TgTextAnswer(
                         self._origin,
                         start_message,
                     ),
                 ),
                 TgAnswerToSender(
-                    TgTextAnswer.str_ctor(
+                    TgTextAnswer(
                         self._origin,
                         ayat_message,
                     ),
@@ -132,16 +143,16 @@ class StartAnswer(TgAnswer):
                     ),
                     self._admin_chat_ids[0],
                 ),
-            )
-        return TgAnswerList(
+            ).build(update)
+        return await TgAnswerList(
             TgAnswerToSender(
-                TgTextAnswer.str_ctor(
+                TgTextAnswer(
                     self._origin,
                     start_message,
                 ),
             ),
             TgAnswerToSender(
-                TgTextAnswer.str_ctor(
+                TgTextAnswer(
                     self._origin,
                     ayat_message,
                 ),
@@ -153,4 +164,4 @@ class StartAnswer(TgAnswer):
                 ),
                 self._admin_chat_ids[0],
             ),
-        )
+        ).build(update)

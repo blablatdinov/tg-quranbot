@@ -56,9 +56,9 @@ class AyatByIdMessageAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         return await TgAnswerMarkup(
-            TgTextAnswer.str_ctor(
+            TgTextAnswer(
                 self._message_answer,
-                await self._result_ayat.text(),
+                self._result_ayat,
             ),
             AyatFavoriteKeyboardButton(
                 NeighborAyatKeyboard(

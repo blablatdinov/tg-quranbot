@@ -65,9 +65,9 @@ class AyatAnswer(TgAnswer):
         return await TgAnswerList(
             TgLinkPreviewOptions(
                 TgAnswerMarkup(
-                    TgTextAnswer.str_ctor(
+                    TgTextAnswer(
                         TgHtmlMessageAnswerToSender(self._empty_answer),
-                        await self._ayat.text(),
+                        self._ayat,
                     ),
                     self._ayat_answer_keyboard,
                 ),
