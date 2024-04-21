@@ -34,9 +34,9 @@ from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgHtmlParseAnswer, TgMessageAnswer
 from services.answers.answer import DefaultKeyboard, ResizedKeyboard
 from services.reset_state_answer import ResetStateAnswer
-from services.start.start_answer import NewTgUser, StartAnswer
-from services.start.user_already_active import UserAlreadyActiveSafeAnswer
-from services.start.user_already_exists import UserAlreadyExistsAnswer
+from srv.start.start_answer import NewTgUser, StartAnswer
+from srv.start.user_already_active import UserAlreadyActiveSafeAnswer
+from srv.start.user_already_exists import UserAlreadyExistsAnswer
 from services.user_state import CachedUserState, RedisUserState
 from settings import Settings
 from srv.admin_messages.pg_admin_message import PgAdminMessage

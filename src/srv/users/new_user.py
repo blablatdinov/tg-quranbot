@@ -32,7 +32,7 @@ from app_types.logger import LogSink
 from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import UserAlreadyExistsError
 from integrations.tg.chat_id import ChatId
-from services.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone
+from srv.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone
 from srv.events.sink import SinkInterface
 
 
