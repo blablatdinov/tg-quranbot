@@ -35,8 +35,8 @@ from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from integrations.tg.tg_datetime import TgDateTime
 from srv.events.sink import SinkInterface
 from srv.users.active_users import PgUpdatedUsersStatus, PgUsers
-from srv.users.valid_chat_id import PgValidChatId
 from srv.users.pg_user import PgUser
+from srv.users.valid_chat_id import PgValidChatId
 
 
 @final
