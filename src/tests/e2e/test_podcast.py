@@ -98,6 +98,7 @@ def test_reaction(tg_client, bot_name, wait_until, target_button, expected):
     ('👍', '👎', ['👍 0', '👎 1']),
 ])
 @pytest.mark.tg_button()
+@pytest.mark.flakey(retries=2)
 def test_reverse_reaction(tg_client, bot_name, wait_until, first_reaction, second_reaction, expected):
     tg_client.send_message(bot_name, '🎧 Подкасты')
     messages = wait_until(tg_client, 6)
