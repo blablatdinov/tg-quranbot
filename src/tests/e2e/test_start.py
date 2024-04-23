@@ -37,7 +37,6 @@ def test_start(tg_client, bot_name, wait_until):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
-@pytest.mark.flaky(retries=2)
 def test_generated_events(tg_client, bot_name, wait_event):
     tg_client.send_message(bot_name, '/start')
     events = wait_event(2, delay=5)
