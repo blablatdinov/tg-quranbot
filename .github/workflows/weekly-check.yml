@@ -3,6 +3,7 @@ name: Weekly check
 on:
   schedule:
     - cron: '17 13 * * 2'
+  workflow_dispatch:
 
 jobs:
   checks:
