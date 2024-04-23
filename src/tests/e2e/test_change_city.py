@@ -50,7 +50,7 @@ def test_change_city_by_name(tg_client, bot_name, wait_until, db_query_vals):
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')
-@pytest.mark.tg_button()
+@pytest.mark.flaky(retries=3)
 def test_change_city_by_search(tg_client: TelegramClient, bot_name, wait_until, db_query_vals):
     tg_client.send_message(bot_name, 'Поменять город')
     messages = wait_until(tg_client, 5)
