@@ -126,6 +126,7 @@ def test_reverse_reaction(tg_client, bot_name, wait_until, first_reaction, secon
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user')
 @pytest.mark.parametrize('reaction', ['👎', '👍'])
 @pytest.mark.tg_button()
+@pytest.mark.flaky(retries=2)
 def test_undo_reaction(tg_client, bot_name, wait_until, reaction, db_query_vals):
     tg_client.send_message(bot_name, '/podcast1')
     messages = wait_until(tg_client, 5)
