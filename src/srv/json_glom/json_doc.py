@@ -1,4 +1,6 @@
+import ujson
 import attrs
+from app_types.dictable import Dictable, JsonDict
 from typing import Protocol, final
 from pyeo import elegant
 from glom import glom
@@ -9,18 +11,19 @@ from glom import glom
 @elegant
 class Json(Protocol):
 
-    _json_dict: dict
-
-    def path(self, pth: str):
-        return glom(self._json_dict, pth)
+    def path(self, pth: str): ...
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class GlomJson(json):
+class GlomJson(Json):
 
-    _json_dict: dict
+    _json_dict: Dictable
+
+    @classmethod
+    def json_ctor(cls, raw_json: str) -> Json:
+        return cls(JsonDict(raw_json))
 
     def path(self, pth: str):
-        return glom(self._json_dict, pth)
+        return glom(self._json_dict.to_dict(), pth)
