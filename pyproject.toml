@@ -126,6 +126,8 @@ ignore = [
   "ANN102",  # Missing type annotation for `cls` in classmethod
   "ARG001",  # Unused function argument
   "ARG002",  # Unused method argument
+  "D100",    # Missing docstring in public module
+  "D104",    # Missing docstring in public package
   "D203",    # no-blank-line-before-class
   "D213",    # multi-line-summary-first-line
   "D418",    # Function decorated with `@overload` shouldn't contain a docstring
