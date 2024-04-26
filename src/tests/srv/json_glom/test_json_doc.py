@@ -1,5 +1,5 @@
-from srv.json_glom.json_doc import GlomJson
 from app_types.dictable import FkDict
+from srv.json_glom.json_doc import GlomJson
 
 
 def test():

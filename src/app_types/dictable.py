@@ -1,7 +1,8 @@
-import ujson
-import attrs
-from pyeo import elegant
 from typing import Protocol, final
+
+import attrs
+import ujson
+from pyeo import elegant
 
 
 class Dictable(Protocol):

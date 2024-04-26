@@ -1,9 +1,10 @@
-import ujson
-import attrs
-from app_types.dictable import Dictable, JsonDict
 from typing import Protocol, final
-from pyeo import elegant
+
+import attrs
 from glom import glom
+from pyeo import elegant
+
+from app_types.dictable import Dictable, JsonDict
 
 
 @final
