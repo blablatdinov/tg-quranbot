@@ -22,6 +22,7 @@
 
 import datetime
 import enum
+from copy import copy
 from typing import Final, Protocol, final
 
 import attrs
@@ -37,7 +38,7 @@ from integrations.tg.chat_id import ChatId, TgChatId
 from integrations.tg.keyboard import KeyboardInterface
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
 from services.user_prayer_keyboard import NewPrayersAtUser, PgNewPrayersAtUser
-from srv.prayers.prayers_per_day import PgPrayersPerDay
+from srv.prayers.prayers_per_day import PgPrayersPerDay, PrayerPerDay, PrayersPerDay
 
 IS_READ_LITERAL: Final = 'is_read'
 
@@ -123,6 +124,41 @@ class PrayersDatesRange(DatesRange):
         ]
 
 
+@elegant
+class PrayerStatistic(Protocol):
+
+    async def statistic(self) -> dict: ...
+    async def exists(self) -> bool: ...
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class OneDayPrayerStatistic(PrayerStatistic):
+
+    _origin: dict
+    _date: datetime.date
+    _prayer: tuple[PrayerPerDay, PrayerPerDay, PrayerPerDay, PrayerPerDay, PrayerPerDay]
+    _prayers_at_user: NewPrayersAtUser
+
+    async def statistic(self) -> dict:
+        res = copy(self._origin)
+        if await self.exists():
+            # Prayer already exists for user
+            for prayer_idx, prayer_name in enumerate(_PrayerNames.names()):
+                res[prayer_name] += int(
+                    not self._prayer[prayer_idx][IS_READ_LITERAL],
+                )
+        else:
+            await self._prayers_at_user.create(self._date)
+            for prayer_name in _PrayerNames.names():
+                res[prayer_name] += 1
+        return res
+
+    async def exists(self) -> bool:
+        return self._date == self._prayer[0]['day']
+
+
 @final
 @attrs.define(frozen=True)
 @elegant
@@ -132,6 +168,8 @@ class PrayersStatistic(AsyncSupportsStr):
     _prayers_at_user: NewPrayersAtUser
     _chat_id: ChatId
     _pgsql: Database
+    _prayers_per_day: PrayersPerDay
+    _prayers_date_range: DatesRange
 
     async def to_str(self) -> str:
         """Приведение к строке.
@@ -140,13 +178,16 @@ class PrayersStatistic(AsyncSupportsStr):
         """
         idx = 0
         res = dict.fromkeys(_PrayerNames.names(), 0)
-        prayers_per_day = await PgPrayersPerDay(self._pgsql, self._chat_id).prayers()
-        for date in await PrayersDatesRange(self._pgsql, self._chat_id).range():
-            if date == prayers_per_day[idx][0]['day']:
-                self._exist_prayer_case(prayers_per_day, res, idx)
-                idx += 1
-            else:
-                await self._new_prayer_at_user_case(res, date)
+        prayers_per_day = await self._prayers_per_day.prayers()
+        for date in await self._prayers_date_range.range():
+            prayer_stat = OneDayPrayerStatistic(
+                res,
+                date,
+                prayers_per_day[idx],
+                self._prayers_at_user,
+            )
+            res = await prayer_stat.statistic()
+            idx += int(await prayer_stat.exists())
         return '\n'.join([
             'Кол-во непрочитанных намазов:\n',
             'Иртәнге: {0}'.format(res[_PrayerNames.fajr.name]),
@@ -155,17 +196,6 @@ class PrayersStatistic(AsyncSupportsStr):
             'Ахшам: {0}'.format(res[_PrayerNames.maghrib.name]),
             'Ястү: {0}'.format(res[_PrayerNames.isha.name]),
         ])
-
-    def _exist_prayer_case(self, prayers_per_day: list[tuple], res: dict, idx: int) -> None:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_exist_prayer_case"
-        for prayer_idx, prayer_name in enumerate(_PrayerNames.names()):
-            res[prayer_name] += int(not prayers_per_day[idx][prayer_idx][IS_READ_LITERAL])
-
-    async def _new_prayer_at_user_case(self, res: dict, date: datetime.date) -> None:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_new_prayer_at_user_case"
-        await self._prayers_at_user.create(date)
-        for prayer_name in _PrayerNames.names():
-            res[prayer_name] += 1
 
 
 @final
@@ -192,6 +222,8 @@ class SkippedPrayersAnswer(TgAnswer):
                     PgNewPrayersAtUser(TgChatId(update), self._pgsql),
                     TgChatId(update),
                     self._pgsql,
+                    PgPrayersPerDay(self._pgsql, TgChatId(update)),
+                    PrayersDatesRange(self._pgsql, TgChatId(update)),
                 ),
             ),
             SkippedPrayersKeyboard(),

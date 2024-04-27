@@ -61,25 +61,35 @@ class PgPrayersPerDay(PrayersPerDay):
 
         :return: list[tuple[PrayerPerDay, PrayerPerDay, PrayerPerDay, PrayerPerDay, PrayerPerDay]]
         """
-        return list(
-            batched(
-                await self._pgsql.fetch_all(
-                    '\n'.join([
-                        'SELECT',
-                        '    pau.is_read,',
-                        '    p.day,',
-                        '    p.name',
-                        'FROM prayers_at_user AS pau',
-                        'INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id',
-                        'WHERE pau.user_id = :chat_id',
-                        'ORDER BY',
-                        '    p.day, ARRAY_POSITION(',
-                        "        ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[],",
-                        '        p.name::text',
-                        '    )',
-                    ]),
-                    {'chat_id': int(self._chat_id)},
-                ),
-                5,
+        prayers_at_day = batched(
+            await self._pgsql.fetch_all(
+                '\n'.join([
+                    'SELECT',
+                    '    pau.is_read,',
+                    '    p.day,',
+                    '    p.name',
+                    'FROM prayers_at_user AS pau',
+                    'INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id',
+                    'WHERE pau.user_id = :chat_id',
+                    'ORDER BY',
+                    '    p.day, ARRAY_POSITION(',
+                    "        ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[],",
+                    '        p.name::text',
+                    '    )',
+                ]),
+                {'chat_id': int(self._chat_id)},
             ),
+            5,
         )
+        res = []
+        for x in prayers_at_day:
+            res.append(
+                (
+                    PrayerPerDay({'is_read': x[0]['is_read'], 'day': x[0]['day'], 'name': x[0]['name']}),
+                    PrayerPerDay({'is_read': x[1]['is_read'], 'day': x[1]['day'], 'name': x[1]['name']}),
+                    PrayerPerDay({'is_read': x[2]['is_read'], 'day': x[2]['day'], 'name': x[2]['name']}),
+                    PrayerPerDay({'is_read': x[3]['is_read'], 'day': x[3]['day'], 'name': x[3]['name']}),
+                    PrayerPerDay({'is_read': x[4]['is_read'], 'day': x[4]['day'], 'name': x[4]['name']}),
+                ),
+            )
+        return res
