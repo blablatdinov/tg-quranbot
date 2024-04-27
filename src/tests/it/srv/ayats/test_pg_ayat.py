@@ -83,7 +83,6 @@ async def test_str(pgsql):
     ])
 
 
-@pytest.mark.usefixtures('_db_ayat')
 async def test_text_len_safe_ayat(pgsql):
     got = await TextLenSafeAyat(
         FkAyat(
