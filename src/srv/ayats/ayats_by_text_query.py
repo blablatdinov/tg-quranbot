@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
+from typing import final, override, Sequence, Generic
 
 import attrs
 from databases import Database
@@ -29,7 +29,8 @@ from pyeo import elegant
 from app_types.intable import FkAsyncIntable
 from app_types.listable import AsyncListable
 from app_types.stringable import SupportsStr
-from srv.ayats.pg_ayat import PgAyat
+from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
+from srv.ayats.ayat import Ayat
 
 
 @final
@@ -42,7 +43,7 @@ class AyatsByTextQuery(AsyncListable):
     _pgsql: Database
 
     @override
-    async def to_list(self) -> list[PgAyat]:
+    async def to_list(self) -> Sequence[Ayat]:
         """Список.
 
         :return: list[QAyat]
@@ -57,9 +58,11 @@ class AyatsByTextQuery(AsyncListable):
             'search_query': '%{0}%'.format(self._query),
         })
         return [
-            PgAyat(
-                FkAsyncIntable(row['id']),
-                self._pgsql,
+            TextLenSafeAyat(
+                PgAyat(
+                    FkAsyncIntable(row['id']),
+                    self._pgsql,
+                ),
             )
             for row in rows
         ]

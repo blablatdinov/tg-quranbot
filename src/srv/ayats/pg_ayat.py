@@ -25,6 +25,7 @@ from typing import final, override
 import attrs
 from databases import Database
 from eljson.json import Json
+from pyeo import elegant
 
 from app_types.intable import AsyncIntable, FkAsyncIntable
 from app_types.stringable import SupportsStr
@@ -38,6 +39,44 @@ from srv.ayats.nums_search_query import NumsSearchQuery
 from srv.ayats.validated_search_query import ValidatedSearchQuery
 from srv.files.file import TgFile
 from srv.files.pg_file import PgFile
+from srv.ayats.ayat_identifier import AyatIdentifier
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class TextLenSafeAyat(Ayat):
+    """Декоратор для обрезания текста аята.
+
+    Максимальная длина текстового сообщения: 4096
+    https://core.telegram.org/bots/api#sendmessage
+    """
+
+    _origin: Ayat
+
+    def identifier(self) -> AyatIdentifier:
+        """Идентификатор аята."""
+        return self._origin.identifier()
+
+    async def to_str(self) -> AyatText:
+        """Строковое представление."""
+        origin_val = await self._origin.to_str()
+        if len(origin_val) > 4096:
+            return '\n'.join(
+                origin_val.split('\n')[:-1]
+            ).strip()
+        return origin_val
+
+    async def audio(self) -> TgFile:
+        """Аудио файл."""
+        return await self._origin.audio()
+
+    async def change(self, event_body: Json) -> None:
+        """Изменить содержимое аята.
+
+        :param event_body: Json
+        """
+        return await self._origin.change(event_body)
 
 
 @final
@@ -49,7 +88,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
     _pgsql: Database
 
     @classmethod
-    async def by_sura_ayat_num(cls, sura_ayat_num: SupportsStr, database: Database) -> Ayat:
+    def by_sura_ayat_num(cls, sura_ayat_num: SupportsStr, database: Database) -> Ayat:
         """Конструктор для поиска по номеру суры, аята.
 
         :param sura_ayat_num: Stringable

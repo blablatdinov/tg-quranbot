@@ -20,19 +20,20 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Generic, Protocol, TypeVar, final
+from typing import Generic, Protocol, TypeVar, final, Sequence
 
 import attrs
 from pyeo import elegant
 
-ListElemT = TypeVar('ListElemT')
+ListElemT = TypeVar('ListElemT', covariant=True)
 
 
 @elegant
-class AsyncListable(Protocol[ListElemT]):
+class AsyncListable(Generic[ListElemT], Protocol):
     """Объект, имеющий корутину представляющую его в кач-ве списка."""
 
-    async def to_list(self) -> list[ListElemT]:
+    # async def to_list(self) -> list[ListElemT]:
+    async def to_list(self) -> Sequence[ListElemT]:
         """Список."""
 
 

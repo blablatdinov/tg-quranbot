@@ -29,7 +29,7 @@ from pyeo import elegant
 from app_types.listable import AsyncListable
 from integrations.tg.chat_id import ChatId
 from srv.ayats.ayat import Ayat
-from srv.ayats.pg_ayat import PgAyat
+from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
 
 
 @final
@@ -57,5 +57,5 @@ class UserFavoriteAyats(AsyncListable[Ayat]):
         ])
         rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
         return [
-            PgAyat.from_int(row['id'], self._pgsql) for row in rows
+            TextLenSafeAyat(PgAyat.from_int(row['id'], self._pgsql)) for row in rows
         ]

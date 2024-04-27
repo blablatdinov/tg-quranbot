@@ -21,12 +21,17 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
+from pathlib import Path
 
 import pytest
 import pytz
 from eljson.json_doc import JsonDoc
 
-from srv.ayats.pg_ayat import PgAyat
+from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
+from srv.ayats.ayat import FkAyat
+from srv.ayats.ayat_identifier import FkIdentifier
+from settings import BASE_DIR
+from srv.files.file import FkFile
 
 
 @pytest.fixture()
@@ -64,6 +69,26 @@ async def _db_ayat(pgsql):
             'transliteration': 'Transliteration',
         },
     )
+
+
+@pytest.mark.usefixtures('_db_ayat')
+async def test_str(pgsql):
+    got = await PgAyat.from_int(1, pgsql).to_str()
+
+    assert got == ''
+
+
+@pytest.mark.usefixtures('_db_ayat')
+async def test_text_len_safe_ayat(pgsql):
+    got = await TextLenSafeAyat(
+        FkAyat(
+            FkIdentifier(272, 2, '282'),
+            Path(BASE_DIR / 'tests/fixtures/2_282_ayat_rendered.txt').read_text().strip(),
+            FkFile('', ''),
+        ),
+    ).to_str()
+
+    assert got == Path(BASE_DIR / 'tests/fixtures/2_282_ayat_without_transliteration.txt').read_text().strip()
 
 
 @pytest.mark.usefixtures('_db_ayat')

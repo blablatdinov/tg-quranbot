@@ -30,7 +30,7 @@ from app_types.listable import AsyncListable
 from exceptions.base_exception import BaseAppError
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat import Ayat
-from srv.ayats.pg_ayat import PgAyat
+from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
 from srv.ayats.text_search_query import TextSearchQuery
 
 AYAT_ID: Final = 'ayat_id'
@@ -134,7 +134,7 @@ class PgNeighborAyats(NeighborAyats):
         row = await self._pgsql.fetch_one(query, {AYAT_ID: self._ayat_id - 1})
         if not row:
             raise AyatNotFoundError
-        return PgAyat.from_int(row[AYAT_ID], self._pgsql)
+        return TextLenSafeAyat(PgAyat.from_int(row[AYAT_ID], self._pgsql))
 
     @override
     async def right_neighbor(self) -> Ayat:
@@ -151,7 +151,7 @@ class PgNeighborAyats(NeighborAyats):
         row = await self._pgsql.fetch_one(query, {AYAT_ID: self._ayat_id + 1})
         if not row:
             raise AyatNotFoundError
-        return PgAyat.from_int(row[AYAT_ID], self._pgsql)
+        return TextLenSafeAyat(PgAyat.from_int(row[AYAT_ID], self._pgsql))
 
     @override
     async def page(self) -> str:
@@ -194,7 +194,7 @@ class TextSearchNeighborAyats(NeighborAyats):
         rows = await self._pgsql.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[1:], start=1):
             if row['ayat_id'] == self._ayat_id:
-                return PgAyat.from_int(rows[idx - 1][AYAT_ID], self._pgsql)
+                return TextLenSafeAyat(PgAyat.from_int(rows[idx - 1][AYAT_ID], self._pgsql))
         raise AyatNotFoundError
 
     @override
@@ -208,7 +208,7 @@ class TextSearchNeighborAyats(NeighborAyats):
         rows = await self._pgsql.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[:-1]):
             if row['ayat_id'] == self._ayat_id:
-                return PgAyat.from_int(rows[idx + 1][AYAT_ID], self._pgsql)
+                return TextLenSafeAyat(PgAyat.from_int(rows[idx + 1][AYAT_ID], self._pgsql))
         raise AyatNotFoundError
 
     @override
