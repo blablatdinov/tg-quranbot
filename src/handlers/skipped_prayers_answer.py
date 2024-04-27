@@ -22,7 +22,6 @@
 
 import datetime
 import enum
-from itertools import batched
 from typing import Final, Protocol, final
 
 import attrs
@@ -38,6 +37,7 @@ from integrations.tg.chat_id import ChatId, TgChatId
 from integrations.tg.keyboard import KeyboardInterface
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
 from services.user_prayer_keyboard import NewPrayersAtUser, PgNewPrayersAtUser
+from srv.prayers.prayers_per_day import PgPrayersPerDay
 
 IS_READ_LITERAL: Final = 'is_read'
 
@@ -140,28 +140,7 @@ class PrayersStatistic(AsyncSupportsStr):
         """
         idx = 0
         res = dict.fromkeys(_PrayerNames.names(), 0)
-        prayers_per_day = list(
-            batched(
-                await self._pgsql.fetch_all(
-                    '\n'.join([
-                        'SELECT',
-                        '    pau.is_read,',
-                        '    p.day,',
-                        '    p.name',
-                        'FROM prayers_at_user AS pau',
-                        'INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id',
-                        'WHERE pau.user_id = :chat_id',
-                        'ORDER BY',
-                        '    p.day, ARRAY_POSITION(',
-                        "        ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[],",
-                        '        p.name::text',
-                        '    )',
-                    ]),
-                    {'chat_id': int(self._chat_id)},
-                ),
-                5,
-            ),
-        )
+        prayers_per_day = await PgPrayersPerDay(self._pgsql, self._chat_id).prayers()
         for date in await PrayersDatesRange(self._pgsql, self._chat_id).range():
             if date == prayers_per_day[idx][0]['day']:
                 self._exist_prayer_case(prayers_per_day, res, idx)
