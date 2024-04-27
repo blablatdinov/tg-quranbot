@@ -95,7 +95,30 @@ class PrayersStatistic(AsyncSupportsStr):
         """
         idx = 0
         res = dict.fromkeys(_PrayerNames.names(), 0)
-        prayers_per_day = await self._prayers_per_day()
+        prayers_per_day = list(
+            batched(
+                await self._pgsql.fetch_all(
+                    '\n'.join([
+                        'SELECT',
+                        '    pau.is_read,',
+                        '    p.day,',
+                        '    p.name',
+                        'FROM prayers_at_user AS pau',
+                        'INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id',
+                        'WHERE pau.user_id = :chat_id',
+                        'ORDER BY',
+                        '    p.day, ARRAY_POSITION(',
+                        "        ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[],",
+                        '        p.name::text',
+                        '    )',
+                    ]),
+                    {
+                        'chat_id': int(self._chat_id),
+                    },
+                ),
+                5,
+            ),
+        )
         for date in await self._dates_range():
             if date == prayers_per_day[idx][0]['day']:
                 self._exist_prayer_case(prayers_per_day, res, idx)
@@ -121,25 +144,6 @@ class PrayersStatistic(AsyncSupportsStr):
         await self._prayers_at_user.create(date)
         for prayer_name in _PrayerNames.names():
             res[prayer_name] += 1
-
-    async def _prayers_per_day(self) -> list[tuple]:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_prayers_per_day"
-        query = '\n'.join([
-            'SELECT',
-            '    pau.is_read,',
-            '    p.day,',
-            '    p.name',
-            'FROM prayers_at_user AS pau',
-            'INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id',
-            'WHERE pau.user_id = :chat_id',
-            "ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
-        ])
-        return list(batched(
-            await self._pgsql.fetch_all(query, {
-                'chat_id': int(self._chat_id),
-            }),
-            5,
-        ))
 
     async def _dates_range(self) -> list[datetime.date]:
         # TODO #802 Удалить или задокументировать необходимость приватного метода "_dates_range"
