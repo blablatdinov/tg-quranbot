@@ -21,7 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 from contextlib import suppress
-from typing import final, override, Protocol
+from typing import Protocol, final, override
 
 import attrs
 import ujson
@@ -35,20 +35,30 @@ from srv.ayats.neighbor_ayats import NeighborAyats
 
 
 @elegant
-class Button(Protocol):
+class NeighborAyatsButtons(Protocol):
+    """Кнопки для клавиатуры с соседними аятами."""
 
-    async def generate(self) -> dict[str, str] | None: ...
+    async def left(self) -> dict[str, str] | None:
+        """Левая кнопка."""
+
+    async def right(self) -> dict[str, str] | None:
+        """Правая кнопка."""
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class LeftButton(Button):
+class NeighborAyatsBtns(NeighborAyatsButtons):
+    """Кнопки для клавиатуры с соседними аятами."""
 
     _ayats_neighbors: NeighborAyats
     _callback_template: AyatCallbackTemplateEnum
 
-    async def generate(self) -> dict[str, str] | None:
+    async def left(self) -> dict[str, str] | None:
+        """Левая кнопка.
+
+        :return: dict[str, str] | None
+        """
         with suppress(AyatNotFoundError):
             left = await self._ayats_neighbors.left_neighbor()
             return {
@@ -60,16 +70,11 @@ class LeftButton(Button):
             }
         return None
 
+    async def right(self) -> dict[str, str] | None:
+        """Правая кнопка.
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class RightButton(Button):
-
-    _ayats_neighbors: NeighborAyats
-    _callback_template: AyatCallbackTemplateEnum
-
-    async def generate(self) -> dict[str, str] | None:
+        :return: dict[str, str] | None
+        """
         with suppress(AyatNotFoundError):
             right = await self._ayats_neighbors.right_neighbor()
             return {
@@ -99,14 +104,15 @@ class NeighborAyatKeyboard(KeyboardInterface):
         :return: str
         """
         buttons = []
-        left_button = await LeftButton(self._ayats_neighbors, self._callback_template).generate()
+        btns = NeighborAyatsBtns(self._ayats_neighbors, self._callback_template)
+        left_button = await btns.left()
         if left_button:
             buttons.append(left_button)
         buttons.append({
             'text': await self._ayats_neighbors.page(),
             'callback_data': 'fake',
         })
-        right_button = await RightButton(self._ayats_neighbors, self._callback_template).generate()
+        right_button = await btns.right()
         if right_button:
             buttons.append(right_button)
         return ujson.dumps({
