@@ -20,31 +20,33 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+from collections.abc import Sequence
 from typing import Generic, Protocol, TypeVar, final
 
 import attrs
 from pyeo import elegant
 
-ListElemT = TypeVar('ListElemT')
+ListElemT_co = TypeVar('ListElemT_co', covariant=True)
 
 
 @elegant
-class AsyncListable(Protocol[ListElemT]):
+class AsyncListable(Generic[ListElemT_co], Protocol):
     """Объект, имеющий корутину представляющую его в кач-ве списка."""
 
-    async def to_list(self) -> list[ListElemT]:
+    # async def to_list(self) -> list[ListElemT]:
+    async def to_list(self) -> Sequence[ListElemT_co]:
         """Список."""
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class FkAsyncListable(AsyncListable, Generic[ListElemT]):
+class FkAsyncListable(AsyncListable, Generic[ListElemT_co]):
     """Фейковый список."""
 
-    _origin: list[ListElemT]
+    _origin: list[ListElemT_co]
 
-    async def to_list(self) -> list[ListElemT]:
+    async def to_list(self) -> list[ListElemT_co]:
         """Список.
 
         :return: list[ListElemT]

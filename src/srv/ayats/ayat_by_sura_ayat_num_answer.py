@@ -35,7 +35,7 @@ from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.neighbor_ayats import PgNeighborAyats
-from srv.ayats.pg_ayat import PgAyat
+from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
 
 
 @final
@@ -56,7 +56,7 @@ class AyatBySuraAyatNumAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        result_ayat = await PgAyat.by_sura_ayat_num(MessageText(update), self._pgsql)
+        result_ayat = TextLenSafeAyat(PgAyat.by_sura_ayat_num(MessageText(update), self._pgsql))
         return await AyatAnswer(
             self._debug_mode,
             self._empty_answer,

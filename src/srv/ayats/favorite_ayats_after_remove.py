@@ -20,6 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+from collections.abc import Sequence
 from typing import final, override
 
 import attrs
@@ -30,7 +31,7 @@ from app_types.listable import AsyncListable
 from integrations.tg.chat_id import ChatId
 from srv.ayats.ayat import Ayat
 from srv.ayats.ayat_identifier import AyatId
-from srv.ayats.pg_ayat import PgAyat
+from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
 
 
 @final
@@ -44,7 +45,7 @@ class FavoriteAyatsAfterRemove(AsyncListable):
     _pgsql: Database
 
     @override
-    async def to_list(self) -> list[Ayat]:
+    async def to_list(self) -> Sequence[Ayat]:
         """Получить избранные аяты.
 
         :returns: list[QAyat]
@@ -63,7 +64,7 @@ class FavoriteAyatsAfterRemove(AsyncListable):
         flag = True
         for row in rows:
             if row['ayat_id'] > self._ayat_id and flag:
-                ayats.append(PgAyat.from_int(self._ayat_id, self._pgsql))
+                ayats.append(TextLenSafeAyat(PgAyat.from_int(self._ayat_id, self._pgsql)))
                 flag = False
-            ayats.append(PgAyat.from_int(row['ayat_id'], self._pgsql))
+            ayats.append(TextLenSafeAyat(PgAyat.from_int(row['ayat_id'], self._pgsql)))
         return ayats

@@ -52,7 +52,7 @@ from srv.ayats.ayat_favorite_status import AyatFavoriteStatus
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.favorite_ayats_after_remove import FavoriteAyatsAfterRemove
 from srv.ayats.neighbor_ayats import FavoriteNeighborAyats, PgNeighborAyats, TextSearchNeighborAyats
-from srv.ayats.pg_ayat import PgAyat
+from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
 
 
 @final
@@ -74,13 +74,15 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         status = AyatFavoriteStatus(str(CallbackQueryData(update)))
-        result_ayat = PgAyat(
-            FkAsyncIntable(
-                IntableRegularExpression(
-                    str(CallbackQueryData(update)),
+        result_ayat = TextLenSafeAyat(
+            PgAyat(
+                FkAsyncIntable(
+                    IntableRegularExpression(
+                        str(CallbackQueryData(update)),
+                    ),
                 ),
+                self._pgsql,
             ),
-            self._pgsql,
         )
         if status.change_to():
             query = '\n'.join([

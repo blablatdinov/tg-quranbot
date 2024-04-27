@@ -33,7 +33,7 @@ from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgAudioAnswer, TgTextAnswer
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from srv.ayats.ayat_by_id_message_answer import AyatByIdMessageAnswer
-from srv.ayats.pg_ayat import PgAyat
+from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
 from srv.files.file_answer import FileAnswer
 from srv.files.file_id_answer import TelegramFileIdAnswer
 
@@ -55,7 +55,7 @@ class AyatByIdAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        result_ayat = PgAyat.from_callback_query(CallbackQueryData(update), self._pgsql)
+        result_ayat = TextLenSafeAyat(PgAyat.from_callback_query(CallbackQueryData(update), self._pgsql))
         return await TgAnswerList(
             AyatByIdMessageAnswer(
                 result_ayat, TgHtmlMessageAnswerToSender(self._empty_answer), self._pgsql,
