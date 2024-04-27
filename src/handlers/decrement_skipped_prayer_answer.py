@@ -28,14 +28,13 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
-from handlers.skipped_prayers_answer import PrayersDatesRange, PrayersStatistic, SkippedPrayersKeyboard
+from handlers.skipped_prayers_answer import PrayersStatistic, SkippedPrayersKeyboard
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_id import TgMessageId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgMessageIdAnswer, TgTextAnswer
 from integrations.tg.tg_answers.edit_message_text import TgEditMessageText
 from services.user_prayer_keyboard import PgNewPrayersAtUser
-from srv.prayers.prayers_per_day import PgPrayersPerDay
 
 
 @final
@@ -83,8 +82,6 @@ class DecrementSkippedPrayerAnswer(TgAnswer):
                         PgNewPrayersAtUser(TgChatId(update), self._pgsql),
                         TgChatId(update),
                         self._pgsql,
-                        PgPrayersPerDay(self._pgsql, TgChatId(update)),
-                        PrayersDatesRange(self._pgsql, TgChatId(update)),
                     ),
                 ),
                 TgMessageId(update),
