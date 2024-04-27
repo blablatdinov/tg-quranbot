@@ -21,7 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 from contextlib import suppress
-from typing import final, override
+from typing import final, override, Protocol
 
 import attrs
 import ujson
@@ -32,6 +32,54 @@ from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.keyboard import KeyboardInterface
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.neighbor_ayats import NeighborAyats
+
+
+@elegant
+class Button(Protocol):
+
+    async def generate(self) -> dict[str, str] | None: ...
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class LeftButton(Button):
+
+    _ayats_neighbors: NeighborAyats
+    _callback_template: AyatCallbackTemplateEnum
+
+    async def generate(self) -> dict[str, str] | None:
+        with suppress(AyatNotFoundError):
+            left = await self._ayats_neighbors.left_neighbor()
+            return {
+                'text': '<- {0}:{1}'.format(
+                    await left.identifier().sura_num(),
+                    await left.identifier().ayat_num(),
+                ),
+                'callback_data': self._callback_template.format(await left.identifier().ayat_id()),
+            }
+        return None
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class RightButton(Button):
+
+    _ayats_neighbors: NeighborAyats
+    _callback_template: AyatCallbackTemplateEnum
+
+    async def generate(self) -> dict[str, str] | None:
+        with suppress(AyatNotFoundError):
+            right = await self._ayats_neighbors.right_neighbor()
+            return {
+                'text': '{0}:{1} ->'.format(
+                    await right.identifier().sura_num(),
+                    await right.identifier().ayat_num(),
+                ),
+                'callback_data': self._callback_template.format(await right.identifier().ayat_id()),
+            }
+        return None
 
 
 @final
@@ -51,42 +99,16 @@ class NeighborAyatKeyboard(KeyboardInterface):
         :return: str
         """
         buttons = []
-        left_button = await self._generate_left_button()
+        left_button = await LeftButton(self._ayats_neighbors, self._callback_template).generate()
         if left_button:
             buttons.append(left_button)
         buttons.append({
             'text': await self._ayats_neighbors.page(),
             'callback_data': 'fake',
         })
-        right_button = await self._generate_right_button()
+        right_button = await RightButton(self._ayats_neighbors, self._callback_template).generate()
         if right_button:
             buttons.append(right_button)
         return ujson.dumps({
             'inline_keyboard': [buttons],
         })
-
-    async def _generate_left_button(self) -> dict[str, str] | None:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_generate_left_button"
-        with suppress(AyatNotFoundError):
-            left = await self._ayats_neighbors.left_neighbor()
-            return {
-                'text': '<- {0}:{1}'.format(
-                    await left.identifier().sura_num(),
-                    await left.identifier().ayat_num(),
-                ),
-                'callback_data': self._callback_template.format(await left.identifier().ayat_id()),
-            }
-        return None
-
-    async def _generate_right_button(self) -> dict[str, str] | None:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_generate_right_button"
-        with suppress(AyatNotFoundError):
-            right = await self._ayats_neighbors.right_neighbor()
-            return {
-                'text': '{0}:{1} ->'.format(
-                    await right.identifier().sura_num(),
-                    await right.identifier().ayat_num(),
-                ),
-                'callback_data': self._callback_template.format(await right.identifier().ayat_id()),
-            }
-        return None
