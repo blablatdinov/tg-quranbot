@@ -23,7 +23,7 @@
 import datetime
 import enum
 from itertools import batched
-from typing import Final, final
+from typing import Final, Protocol, final
 
 import attrs
 import httpx
@@ -78,6 +78,51 @@ class SkippedPrayersKeyboard(KeyboardInterface):
         })
 
 
+@elegant
+class DatesRange(Protocol):
+    """Диапазон дат."""
+
+    async def range(self) -> list[datetime.date]:
+        """Расчет диапазона."""
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class PrayersDatesRange(DatesRange):
+    """Диапазон дат намазов для пользователя."""
+
+    _pgsql: Database
+    _chat_id: ChatId
+
+    async def range(self) -> list[datetime.date]:
+        """Расчет диапазона.
+
+        :return: list[datetim.date]
+        """
+        query = '\n'.join([
+            'SELECT p.day',
+            'FROM prayers_at_user AS pau',
+            'INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id',
+            'WHERE pau.user_id = :chat_id',
+            "ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
+        ])
+        rows = await self._pgsql.fetch_all(
+            query,
+            {'chat_id': int(self._chat_id)},
+        )
+        if not rows:
+            return []
+        return [
+            dt.date()
+            for dt in rrule.rrule(
+                rrule.DAILY,
+                dtstart=rows[0]['day'],
+                until=rows[-1]['day'],
+            )
+        ]
+
+
 @final
 @attrs.define(frozen=True)
 @elegant
@@ -112,14 +157,12 @@ class PrayersStatistic(AsyncSupportsStr):
                         '        p.name::text',
                         '    )',
                     ]),
-                    {
-                        'chat_id': int(self._chat_id),
-                    },
+                    {'chat_id': int(self._chat_id)},
                 ),
                 5,
             ),
         )
-        for date in await self._dates_range():
+        for date in await PrayersDatesRange(self._pgsql, self._chat_id).range():
             if date == prayers_per_day[idx][0]['day']:
                 self._exist_prayer_case(prayers_per_day, res, idx)
                 idx += 1
@@ -144,27 +187,6 @@ class PrayersStatistic(AsyncSupportsStr):
         await self._prayers_at_user.create(date)
         for prayer_name in _PrayerNames.names():
             res[prayer_name] += 1
-
-    async def _dates_range(self) -> list[datetime.date]:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_dates_range"
-        query = '\n'.join([
-            'SELECT p.day',
-            'FROM prayers_at_user AS pau',
-            'INNER JOIN prayers AS p ON pau.prayer_id = p.prayer_id',
-            'WHERE pau.user_id = :chat_id',
-            "ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
-        ])
-        rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
-        if not rows:
-            return []
-        return [
-            dt.date()
-            for dt in rrule.rrule(
-                rrule.DAILY,
-                dtstart=rows[0]['day'],
-                until=rows[-1]['day'],
-            )
-        ]
 
 
 @final
