@@ -27,10 +27,10 @@ import pytest
 import pytz
 from eljson.json_doc import JsonDoc
 
-from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
+from settings import BASE_DIR
 from srv.ayats.ayat import FkAyat
 from srv.ayats.ayat_identifier import FkIdentifier
-from settings import BASE_DIR
+from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
 from srv.files.file import FkFile
 
 
@@ -75,7 +75,12 @@ async def _db_ayat(pgsql):
 async def test_str(pgsql):
     got = await PgAyat.from_int(1, pgsql).to_str()
 
-    assert got == ''
+    assert got == '\n'.join([
+        '<a href="https://umma.ruhttps://link-to-sura.domain#1-1">1:1-7)</a>',
+        'Arab text\n',
+        'Ayat content\n',
+        '<i>Transliteration</i>',
+    ])
 
 
 @pytest.mark.usefixtures('_db_ayat')

@@ -194,7 +194,9 @@ class TextSearchNeighborAyats(NeighborAyats):
         rows = await self._pgsql.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[1:], start=1):
             if row['ayat_id'] == self._ayat_id:
-                return TextLenSafeAyat(PgAyat.from_int(rows[idx - 1][AYAT_ID], self._pgsql))
+                return TextLenSafeAyat(
+                    PgAyat.from_int(rows[idx - 1][AYAT_ID], self._pgsql),
+                )
         raise AyatNotFoundError
 
     @override
@@ -208,7 +210,9 @@ class TextSearchNeighborAyats(NeighborAyats):
         rows = await self._pgsql.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[:-1]):
             if row['ayat_id'] == self._ayat_id:
-                return TextLenSafeAyat(PgAyat.from_int(rows[idx + 1][AYAT_ID], self._pgsql))
+                return TextLenSafeAyat(
+                    PgAyat.from_int(rows[idx + 1][AYAT_ID], self._pgsql),
+                )
         raise AyatNotFoundError
 
     @override

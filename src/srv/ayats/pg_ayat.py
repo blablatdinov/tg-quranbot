@@ -33,13 +33,12 @@ from exceptions.content_exceptions import AyatNotFoundError
 from services.regular_expression import IntableRegularExpression
 from srv.ayats.ayat import Ayat, AyatText
 from srv.ayats.ayat_id_by_sura_ayat import AyatIdByPublicId, AyatIdBySuraAyatNum
-from srv.ayats.ayat_identifier import PgAyatIdentifier
+from srv.ayats.ayat_identifier import AyatIdentifier, PgAyatIdentifier
 from srv.ayats.ayat_link import AyatLink
 from srv.ayats.nums_search_query import NumsSearchQuery
 from srv.ayats.validated_search_query import ValidatedSearchQuery
 from srv.files.file import TgFile
 from srv.files.pg_file import PgFile
-from srv.ayats.ayat_identifier import AyatIdentifier
 
 
 @final
@@ -55,20 +54,30 @@ class TextLenSafeAyat(Ayat):
     _origin: Ayat
 
     def identifier(self) -> AyatIdentifier:
-        """Идентификатор аята."""
+        """Идентификатор аята.
+
+        :return: AyatIdentifier
+        """
         return self._origin.identifier()
 
     async def to_str(self) -> AyatText:
-        """Строковое представление."""
+        """Строковое представление.
+
+        :return: AyatText
+        """
         origin_val = await self._origin.to_str()
-        if len(origin_val) > 4096:
+        max_len_of_telegram_message = 4096
+        if len(origin_val) > max_len_of_telegram_message:
             return '\n'.join(
-                origin_val.split('\n')[:-1]
+                origin_val.split('\n')[:-1],
             ).strip()
         return origin_val
 
     async def audio(self) -> TgFile:
-        """Аудио файл."""
+        """Аудио файл.
+
+        :return: TgFile
+        """
         return await self._origin.audio()
 
     async def change(self, event_body: Json) -> None:
@@ -76,7 +85,7 @@ class TextLenSafeAyat(Ayat):
 
         :param event_body: Json
         """
-        return await self._origin.change(event_body)
+        await self._origin.change(event_body)
 
 
 @final

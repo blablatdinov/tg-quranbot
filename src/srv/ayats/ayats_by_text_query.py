@@ -20,7 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override, Sequence, Generic
+from collections.abc import Sequence
+from typing import final, override
 
 import attrs
 from databases import Database
@@ -29,8 +30,8 @@ from pyeo import elegant
 from app_types.intable import FkAsyncIntable
 from app_types.listable import AsyncListable
 from app_types.stringable import SupportsStr
-from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
 from srv.ayats.ayat import Ayat
+from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
 
 
 @final
