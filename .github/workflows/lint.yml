@@ -38,16 +38,16 @@ jobs:
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-      # - name: Lint via ruff
-      #   run: .venv/bin/ruff check src
-      # - name: Lint via flake8
-      #   run: .venv/bin/flake8 src
-      # - name: Lint via refurb
-      #   run: .venv/bin/refurb src
-      # - name: Check types with mypy
-      #   run: .venv/bin/mypy src
-      # - name: sqlfluff
-      #   run: .venv/bin/sqlfluff lint migrations --dialect postgres
+      - name: Lint via ruff
+        run: .venv/bin/ruff check src
+      - name: Lint via flake8
+        run: .venv/bin/flake8 src
+      - name: Lint via refurb
+        run: .venv/bin/refurb src
+      - name: Check types with mypy
+        run: .venv/bin/mypy src
+      - name: sqlfluff
+        run: .venv/bin/sqlfluff lint migrations --dialect postgres
       - name: Checking files for compliance with editorconfig
         run: |
           VERSION="v3.0.1"

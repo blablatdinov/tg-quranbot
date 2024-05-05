@@ -29,7 +29,7 @@ from redis import asyncio as aioredis
 from db.connection import pgsql
 from integrations.tg.app import AppWithGetMe, DatabaseConnectedApp, PollingApp
 from integrations.tg.polling_updates import (
-	PollingUpdatesIterator,
+    PollingUpdatesIterator,
     UpdatesLongPollingURL,
     UpdatesTimeout,
     UpdatesURL,
