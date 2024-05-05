@@ -51,8 +51,7 @@ jobs:
       - name: Checking files for compliance with editorconfig
         run: |
           VERSION="v3.0.1"
-          OS="linux"
-          ARCH="amd64"
-          curl -O -L -C - https://github.com/editorconfig-checker/editorconfig-checker/releases/download/$VERSION/ec-$OS-$ARCH.tar.gz
-          tar xzf ec-$OS-$ARCH.tar.gz
-          ./bin/ec-$OS-$ARCH
+          curl -O -L -C - https://github.com/editorconfig-checker/editorconfig-checker/releases/download/$VERSION/ec-linux-amd64.tar.gz
+          tar xzf ec-linux-amd64.tar.gz
+          tree bin
+          ./bin/ec-linux-amd64
