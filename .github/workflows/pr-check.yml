@@ -91,4 +91,4 @@ jobs:
 
   lint:
     needs: setup
-    uses: blablatdinov/quranbot-aiogram/.github/workflows/lint.yml@master
+    uses: blablatdinov/quranbot-aiogram/.github/workflows/lint.yml@check-editorconfig
