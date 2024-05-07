@@ -626,13 +626,13 @@ tests = ["asttokens (>=2.1.0)", "coverage", "coverage-enable-subprocess", "ipyth
 
 [[package]]
 name = "fakeredis"
-version = "2.22.0"
+version = "2.23.0"
 description = "Python implementation of redis API, can be used for testing purposes."
 optional = false
 python-versions = "<4.0,>=3.7"
 files = [
-    {file = "fakeredis-2.22.0-py3-none-any.whl", hash = "sha256:13ac8bd57c852d8b3c0684fa6755fac4abb4feab6483a52212b932d11c795bf3"},
-    {file = "fakeredis-2.22.0.tar.gz", hash = "sha256:d063085fe962d16637cfe21044f277cfc54d6fb456d12a7c87514990c3fac98e"},
+    {file = "fakeredis-2.23.0-py3-none-any.whl", hash = "sha256:619b4433dd8321f9f45a9e2714de088f0eec4c817e876532b15163c0a29619bd"},
+    {file = "fakeredis-2.23.0.tar.gz", hash = "sha256:7babb853a9a42ebe46acd89294bd7fc462dad619a870601f36c27dea007a0019"},
 ]
 
 [package.dependencies]
@@ -643,7 +643,7 @@ sortedcontainers = ">=2,<3"
 bf = ["pyprobables (>=0.6,<0.7)"]
 cf = ["pyprobables (>=0.6,<0.7)"]
 json = ["jsonpath-ng (>=1.6,<2.0)"]
-lua = ["lupa (>=1.14,<3.0)"]
+lua = ["lupa (>=2.1,<3.0)"]
 probabilistic = ["pyprobables (>=0.6,<0.7)"]
 
 [[package]]
@@ -3447,4 +3447,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "9e8e3df9efaffec0c43433deb9205535cc88a5a708ff4ae4b83e6914df24ce1d"
+content-hash = "c827e866ba5861d6f5fa625ed7bc0d6ebdce301e1f80358153a39d85ac2b9910"
