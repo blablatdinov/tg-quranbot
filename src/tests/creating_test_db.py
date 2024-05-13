@@ -71,7 +71,7 @@ def fill_test_db() -> None:
         'src/tests/e2e/db-fixtures/bot/admin_messages.sql',
     )
     for fixture in fixtures:
-        qbot_cursor.execute(Path(fixture).read_text())
+        qbot_cursor.execute(Path(fixture).read_text(encoding='utf-8'))
     qbot_connection.close()
 
 

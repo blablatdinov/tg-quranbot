@@ -49,7 +49,7 @@ def test_get_favors(tg_client, bot_name, wait_until):
 
     assert (
         last_messages[1].message.strip()
-        == Path('src/tests/e2e/fixtures/3_133_ayat.txt').read_text().strip()
+        == Path('src/tests/e2e/fixtures/3_133_ayat.txt').read_text(encoding='utf-8').strip()
     )
     assert [
         (button.text, button.data)

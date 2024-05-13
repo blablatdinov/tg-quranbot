@@ -36,7 +36,7 @@ def _revert_changes(settings):
     qbot_connection.autocommit = True
     cursor = qbot_connection.cursor()
     cursor.execute('DELETE FROM ayats WHERE ayat_id = 1')
-    for line in Path('src/tests/e2e/db-fixtures/bot/ayats.sql').read_text().strip().split('\n'):
+    for line in Path('src/tests/e2e/db-fixtures/bot/ayats.sql').read_text(encoding='utf-8').strip().split('\n'):
         if '0acec6b6-4b3c-4ce9-8d11-3985f52a1c03' in line:
             cursor.execute(line)
             break
