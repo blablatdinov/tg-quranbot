@@ -157,7 +157,7 @@ jobs:
               restart: always
               volumes:
                 - .env:/.env
-          
+
             event_receiver:
               image: blablatdinov/quranbot-aiogram:${{ steps.tag_name.outputs.TAG_NAME }}
               command: .venv/bin/python main.py receive_events
@@ -177,7 +177,7 @@ jobs:
         run: |
           ssh www@87.249.49.217 'echo "Connected!"'
           scp docker-compose.yml www@87.249.49.217:/home/www/code/quranbot-aiogram/docker-compose.yml
-          ssh www@87.249.49.217 'cd /home/www/code/quranbot-aiogram/ && docker-compose up -d'
+          ssh www@87.249.49.217 'cd /home/www/code/quranbot-aiogram/ && docker compose up -d'
 
   change-pyproject-version:
     needs: checks
