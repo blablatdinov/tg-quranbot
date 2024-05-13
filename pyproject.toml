@@ -1,17 +1,17 @@
 # The MIT License (MIT).
-# 
+#
 # Copyright (c) 2018-2024 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -66,18 +66,19 @@ flake8-copyright = "0.2.4"
 pytest-randomly = "3.15.0"
 telethon = "1.35.0"
 yoyo-migrations = "8.2.0"
-sqlfluff = "3.0.6"
+sqlfluff = "3.0.5"
 respx = "0.21.1"
 psycopg2-binary = "2.9.9"
 time-machine = "2.14.1"
 pika = "1.3.2"
-ruff = "0.4.3"
-fakeredis = "2.23.1"
+ruff = "0.4.4"
+fakeredis = "2.22.0"
 refurb = "2.0.0"
 types-python-dateutil = "2.9.0.20240316"
 types-ujson = "5.9.0.0"
 mutmut = "2.4.5"
 pytest-retry = "1.6.2"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

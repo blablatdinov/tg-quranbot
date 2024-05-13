@@ -30,13 +30,13 @@ import pytest
 def _prayers(db_conn):
     lines = [
         line.split(';')
-        for line in Path('src/tests/fixtures/prayers.csv').read_text().splitlines()
+        for line in Path('src/tests/fixtures/prayers.csv').read_text(encoding='utf-8').splitlines()
     ]
     cursor = db_conn.cursor()
     cursor.execute("INSERT INTO users (chat_id, city_id) VALUES (5354079702, 'bc932b25-707e-4af1-8b6e-facb5e6dfa9b')")
     lines = [
         line.split(';')
-        for line in Path('src/tests/fixtures/prayers_at_user.csv').read_text().splitlines()
+        for line in Path('src/tests/fixtures/prayers_at_user.csv').read_text(encoding='utf-8').splitlines()
     ]
     query = '\n'.join([
         'INSERT INTO prayers_at_user (prayer_at_user_id, user_id, prayer_id, is_read)',

@@ -87,12 +87,14 @@ async def test_text_len_safe_ayat(pgsql):
     got = await TextLenSafeAyat(
         FkAyat(
             FkIdentifier(272, 2, '282'),
-            Path(BASE_DIR / 'tests/fixtures/2_282_ayat_rendered.txt').read_text().strip(),
+            Path(BASE_DIR / 'tests/fixtures/2_282_ayat_rendered.txt').read_text(encoding='utf-8').strip(),
             FkFile('', ''),
         ),
     ).to_str()
 
-    assert got == Path(BASE_DIR / 'tests/fixtures/2_282_ayat_without_transliteration.txt').read_text().strip()
+    assert got == Path(BASE_DIR / 'tests/fixtures/2_282_ayat_without_transliteration.txt').read_text(
+        encoding='utf-8',
+    ).strip()
 
 
 @pytest.mark.usefixtures('_db_ayat')

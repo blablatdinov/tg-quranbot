@@ -35,7 +35,7 @@ def test_search_by_sura_ayat(tg_client, bot_name, query, expected, wait_until):
     tg_client.send_message(bot_name, query)
     last_messages = wait_until(tg_client, 3)
 
-    assert last_messages[1].message == Path(expected).read_text()
+    assert last_messages[1].message == Path(expected).read_text(encoding='utf-8')
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
@@ -51,7 +51,7 @@ def test_paginate_in_search_by_sura_ayat(tg_client, bot_name, wait_until):
     ).click()
     last_messages = wait_until(tg_client, 5)
 
-    assert last_messages[1].message == Path('src/tests/e2e/fixtures/8_8_ayat.txt').read_text()
+    assert last_messages[1].message == Path('src/tests/e2e/fixtures/8_8_ayat.txt').read_text(encoding='utf-8')
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
@@ -61,7 +61,7 @@ def test_by_word(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'камни')
     last_messages = wait_until(tg_client, 5)
 
-    assert last_messages[1].message == Path('src/tests/e2e/fixtures/2_24_ayat.txt').read_text()
+    assert last_messages[1].message == Path('src/tests/e2e/fixtures/2_24_ayat.txt').read_text(encoding='utf-8')
     assert last_messages[0].message == 'https://umma.ru/audio/Ozvucjka-statei/Quran/audio/Husary_64/2/002024.mp3'
     assert [
         (button.text, button.data)
@@ -89,7 +89,7 @@ def test_search_pagination_forward(tg_client, bot_name, wait_until):
     ).click()
     last_messages = wait_until(tg_client, 7)
 
-    assert last_messages[1].message == Path('src/tests/e2e/fixtures/11_83_ayat.txt').read_text()
+    assert last_messages[1].message == Path('src/tests/e2e/fixtures/11_83_ayat.txt').read_text(encoding='utf-8')
     assert last_messages[0].message == 'https://umma.ru/audio/Ozvucjka-statei/Quran/audio/Husary_64/11/011083.mp3'
 
 
@@ -115,7 +115,7 @@ def test_search_pagination_backward(tg_client, bot_name, wait_until):
     ).click()
     last_messages = wait_until(tg_client, 9)
 
-    assert last_messages[1].message == Path('src/tests/e2e/fixtures/2_24_ayat.txt').read_text()
+    assert last_messages[1].message == Path('src/tests/e2e/fixtures/2_24_ayat.txt').read_text(encoding='utf-8')
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
@@ -135,7 +135,7 @@ def test_add_to_favor_from_search(tg_client, bot_name, wait_until):
     ).click()
     last_messages = wait_until(tg_client, 8)
 
-    assert last_messages[1].message == Path('src/tests/e2e/fixtures/2_24_ayat.txt').read_text()
+    assert last_messages[1].message == Path('src/tests/e2e/fixtures/2_24_ayat.txt').read_text(encoding='utf-8')
     assert [
         (button.text, button.data)
         for button_row in last_messages[1].get_buttons()

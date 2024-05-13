@@ -32,8 +32,8 @@ def test_start(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/start')
     last_messages = wait_until(tg_client, 3)
 
-    assert last_messages[1].message == Path('src/tests/e2e/fixtures/start.txt').read_text()
-    assert last_messages[0].message == Path('src/tests/e2e/fixtures/1_1_ayat.txt').read_text()
+    assert last_messages[1].message == Path('src/tests/e2e/fixtures/start.txt').read_text(encoding='utf-8')
+    assert last_messages[0].message == Path('src/tests/e2e/fixtures/1_1_ayat.txt').read_text(encoding='utf-8')
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db')
