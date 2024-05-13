@@ -30,7 +30,7 @@ ListElemT_co = TypeVar('ListElemT_co', covariant=True)
 
 
 @elegant
-class AsyncListable(Protocol, Generic[ListElemT_co]):
+class AsyncListable(Protocol, Generic[ListElemT_co]):  # type: ignore [misc]
     """Объект, имеющий корутину представляющую его в кач-ве списка."""
 
     async def to_list(self) -> Sequence[ListElemT_co]:
