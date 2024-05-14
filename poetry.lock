@@ -2125,13 +2125,13 @@ pytest = "*"
 
 [[package]]
 name = "pytest-retry"
-version = "1.6.2"
+version = "1.6.3"
 description = "Adds the ability to retry flaky tests in CI environments"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "pytest-retry-1.6.2.tar.gz", hash = "sha256:8278634e21b0e8afa2b8bf85615700b9ae1a5da78463b13576b6c05aed2dbf5e"},
-    {file = "pytest_retry-1.6.2-py3-none-any.whl", hash = "sha256:85cfd067ee30735b23df37e80761ad00fb3a367941d8dbeb90977373e4fcf575"},
+    {file = "pytest_retry-1.6.3-py3-none-any.whl", hash = "sha256:e96f7df77ee70b0838d1085f9c3b8b5b7d74bf8947a0baf32e2b8c71b27683c8"},
+    {file = "pytest_retry-1.6.3.tar.gz", hash = "sha256:36ccfa11c8c8f9ddad5e20375182146d040c20c4a791745139c5a99ddf1b557d"},
 ]
 
 [package.dependencies]
@@ -3447,4 +3447,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "d38c4d0dde3ede3c31f809c6b2a12d51949109bcacc93b03e07d4363d309f07a"
+content-hash = "99e05488a3a0991d7ada0c872aa4c06dac8b212d2dca0830e68b2e626288191a"
