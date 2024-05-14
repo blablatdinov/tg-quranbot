@@ -45,7 +45,7 @@ python-dateutil = "2.9.0.post0"
 aio-pika = "9.4.1"
 apscheduler = "3.10.4"
 jinja2 = "3.1.4"
-ujson = "5.9.0"
+ujson = "5.10.0"
 pydantic-settings = "2.2.1"
 
 [tool.poetry.group.dev.dependencies]
