@@ -75,7 +75,7 @@ ruff = "0.4.4"
 fakeredis = "2.23.1"
 refurb = "2.0.0"
 types-python-dateutil = "2.9.0.20240316"
-types-ujson = "5.9.0.0"
+types-ujson = "5.10.0.20240515"
 mutmut = "2.5.0"
 pytest-retry = "1.6.3"
 
