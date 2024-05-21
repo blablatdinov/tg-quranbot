@@ -44,6 +44,8 @@ jobs:
         run: .venv/bin/flake8 src
       - name: Lint via refurb
         run: .venv/bin/refurb src
+      - name: Lint via fixit
+        run: .venv/bin/fixit lint src
       - name: Check types with mypy
         run: .venv/bin/mypy src
       - name: sqlfluff
