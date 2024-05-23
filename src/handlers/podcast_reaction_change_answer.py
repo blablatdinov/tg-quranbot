@@ -72,7 +72,7 @@ class PodcastMessageTextNotExistsSafeAnswer(TgAnswer):
         # TODO #802 Удалить или задокументировать необходимость приватного метода "_message_text_exists_case"
         MatchManyJsonPath(
             update.asdict(),
-            ('$..message.text', '$..message.audio'),
+            ('message.text', 'message.audio'),
         ).evaluate()
         return await self._edited_markup_answer.build(update)
 

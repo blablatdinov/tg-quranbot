@@ -43,20 +43,20 @@ def test_generated_events(tg_client, bot_name, wait_event):
     tg_client.send_message(bot_name, '/start')
     events = wait_event(2, delay=5)
 
-    assert not GlomJson(events[0]).path('$.data.messages[0].is_unknown')[0]
-    assert not GlomJson(events[1]).path('$.data.messages[0].is_unknown')[0]
+    assert not GlomJson(events[0]).path('data.messages[0].is_unknown')[0]
+    assert not GlomJson(events[1]).path('data.messages[0].is_unknown')[0]
     assert ujson.loads(
-        GlomJson(events[0]).path('$.data.messages[0].message_json')[0],
+        GlomJson(events[0]).path('data.messages[0].message_json')[0],
     )['text'] == '/start'
     assert (
-        GlomJson(events[1]).path('$.data.messages[0].trigger_message_id')[0]
+        GlomJson(events[1]).path('data.messages[0].trigger_message_id')[0]
         == ujson.loads(
-            GlomJson(events[0]).path('$.data.messages[0].message_json')[0],
+            GlomJson(events[0]).path('data.messages[0].message_json')[0],
         )['message_id']
     )
     assert (
-        GlomJson(events[1]).path('$.data.messages[1].trigger_message_id')[0]
+        GlomJson(events[1]).path('data.messages[1].trigger_message_id')[0]
         == ujson.loads(
-            GlomJson(events[0]).path('$.data.messages[0].message_json')[0],
+            GlomJson(events[0]).path('data.messages[0].message_json')[0],
         )['message_id']
     )

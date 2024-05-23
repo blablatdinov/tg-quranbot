@@ -67,7 +67,7 @@ class TgChatId(ChatId):
             ErrRedirectJsonPath(
                 MatchManyJsonPath(
                     self._update.asdict(),
-                    ('$..chat.id', '$..from.id'),
+                    ('chat.id', 'from.id'),
                 ),
                 InternalBotError(),
             ).evaluate(),

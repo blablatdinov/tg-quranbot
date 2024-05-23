@@ -52,7 +52,7 @@ class TgDateTime(DateTimeInterface):
                 ErrRedirectJsonPath(
                     JsonPathValue(
                         self._update.asdict(),
-                        '$..date',
+                        'date',
                     ),
                     InternalBotError(),
                 ).evaluate(),

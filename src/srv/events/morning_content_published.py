@@ -27,7 +27,7 @@ from typing import final, override
 import attrs
 from databases import Database
 from databases.interfaces import Record
-from eljson.json import Json
+from srv.json_glom.json_doc import Json
 from jinja2 import Template
 from pyeo import elegant
 

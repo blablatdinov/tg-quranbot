@@ -134,14 +134,14 @@ class RbmqEventHook(EventHook):
         try:
             validate_schema(
                 ujson.loads(decoded_body),
-                body_json.path('$.event_name')[0],
-                body_json.path('$.event_version')[0],
+                body_json.path('event_name')[0],
+                body_json.path('event_version')[0],
             )
         except TypeError as err:
             self._logger.error('Schema of event: {0} invalid. {1}'.format(
-                body_json.path('$.event_id')[0], str(err),
+                body_json.path('event_id')[0], str(err),
             ))
             return
         for event in self._events:
             await event.process(body_json)
-        self._logger.info('Event {0} processed'.format(body_json.path('$.event_id')[0]))
+        self._logger.info('Event {0} processed'.format(body_json.path('event_id')[0]))

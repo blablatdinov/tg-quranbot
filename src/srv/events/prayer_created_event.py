@@ -26,7 +26,7 @@ from typing import final, override
 import attrs
 import pytz
 from databases import Database
-from eljson.json import Json
+from srv.json_glom.json_doc import Json
 from loguru import logger
 from pyeo import elegant
 

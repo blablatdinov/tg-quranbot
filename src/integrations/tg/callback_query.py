@@ -49,7 +49,7 @@ class CallbackQueryData(SupportsStr):
             ErrRedirectJsonPath(
                 JsonPathValue(
                     self._update.asdict(),
-                    '$..callback_query.data',
+                    'callback_query.data',
                 ),
                 CallbackQueryNotFoundError(),
             ).evaluate(),

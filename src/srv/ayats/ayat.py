@@ -23,7 +23,7 @@
 from typing import Protocol, TypeAlias, override
 
 import attrs
-from eljson.json import Json
+from srv.json_glom.json_doc import Json
 from pyeo import elegant
 
 from app_types.stringable import AsyncSupportsStr

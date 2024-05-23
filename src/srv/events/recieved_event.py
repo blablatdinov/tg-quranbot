@@ -23,7 +23,7 @@
 from typing import Protocol, TypeAlias, TypeVar, final, override
 
 import attrs
-from eljson.json import Json
+from srv.json_glom.json_doc import Json
 from pyeo import elegant
 
 JsonPathQuery: TypeAlias = str
@@ -57,7 +57,7 @@ class EventFork(ReceivedEvent):
 
         :param json_doc: Json
         """
-        name_match = json_doc.path('$.event_name')[0] == self._name
-        version_match = json_doc.path('$.event_version')[0] == self._version
+        name_match = json_doc.path('event_name')[0] == self._name
+        version_match = json_doc.path('event_version')[0] == self._version
         if name_match and version_match:
             await self._origin.process(json_doc)

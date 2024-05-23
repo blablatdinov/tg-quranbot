@@ -49,7 +49,7 @@ class MessageText(SupportsStr):
             ErrRedirectJsonPath(
                 JsonPathValue(
                     self._update.asdict(),
-                    '$..message.text',
+                    'message.text',
                 ),
                 MessageTextNotFoundError(),
             ).evaluate(),

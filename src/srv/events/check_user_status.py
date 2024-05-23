@@ -25,7 +25,7 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from eljson.json import Json
+from srv.json_glom.json_doc import Json
 from pyeo import elegant
 
 from app_types.listable import AsyncListable

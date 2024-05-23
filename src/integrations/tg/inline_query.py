@@ -49,7 +49,7 @@ class InlineQuery(SupportsStr):
             ErrRedirectJsonPath(
                 JsonPathValue(
                     self._update.asdict(),
-                    '$..query',
+                    'query',
                 ),
                 InlineQueryNotFoundError(),
             ).evaluate(),
@@ -74,7 +74,7 @@ class InlineQueryId(SupportsInt):
             ErrRedirectJsonPath(
                 JsonPathValue(
                     self._update.asdict(),
-                    '$..inline_query.id',
+                    'inline_query.id',
                 ),
                 InlineQueryNotFoundError(),
             ).evaluate(),

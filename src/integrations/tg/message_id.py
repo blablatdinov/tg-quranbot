@@ -50,7 +50,7 @@ class TgMessageId(MessageId):
             ErrRedirectJsonPath(
                 JsonPathValue(
                     self._update.asdict(),
-                    '$..message.message_id',
+                    'message.message_id',
                 ),
                 MessageIdNotFoundError(),
             ).evaluate(),

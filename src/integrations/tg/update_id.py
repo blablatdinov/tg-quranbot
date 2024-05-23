@@ -48,7 +48,7 @@ class UpdateId(SupportsInt):
             ErrRedirectJsonPath(
                 JsonPathValue(
                     self._update.asdict(),
-                    '$..update_id',
+                    'update_id',
                 ),
                 InternalBotError(),
             ).evaluate(),

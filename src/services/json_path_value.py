@@ -25,8 +25,8 @@ from contextlib import suppress
 from typing import Generic, Protocol, TypeVar, final, override
 
 import attrs
-import jsonpath_ng
 from pyeo import elegant
+from glom import glom
 
 from app_types.stringable import SupportsStr
 
@@ -55,7 +55,7 @@ class JsonPathValue(JsonPath, Generic[_ET_co]):
             SafeJsonPathValue(
                 MatchManyJsonPath(
                     self._update.asdict(),
-                    ('$..chat.id', '$..from.id'),
+                    ('chat.id', 'from.id'),
                 ),
                 InternalBotError(),
             ).evaluate(),
@@ -72,10 +72,7 @@ class JsonPathValue(JsonPath, Generic[_ET_co]):
         :return: T
         :raises ValueError: если поиск не дал результатов
         """
-        match = jsonpath_ng.parse(self._json_path).find(self._json)
-        if not match:
-            raise ValueError
-        return match[0].value
+        return glom(self._json, self._json_path)
 
 
 @final

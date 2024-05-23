@@ -24,7 +24,7 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from eljson.json import Json
+from srv.json_glom.json_doc import Json
 from pyeo import elegant
 
 from app_types.intable import AsyncIntable, FkAsyncIntable
