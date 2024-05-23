@@ -23,9 +23,9 @@
 import datetime
 
 import pytest
-from eljson.json_doc import JsonDoc
 
 from srv.events.prayer_created_event import PrayerCreatedEvent
+from srv.json_glom.json_doc import GlomJson
 
 
 @pytest.fixture()
@@ -39,7 +39,7 @@ async def _city(pgsql):
 
 @pytest.mark.usefixtures('_city')
 async def test(pgsql):
-    await PrayerCreatedEvent(pgsql).process(JsonDoc({
+    await PrayerCreatedEvent(pgsql).process(GlomJson({
         'data': {
             'name': 'fajr',
             'time': '5:36',

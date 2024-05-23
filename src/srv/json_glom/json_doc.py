@@ -29,8 +29,6 @@ from pyeo import elegant
 from app_types.dictable import Dictable, JsonDict
 
 
-@final
-@attrs.define(frozen=True)
 @elegant
 class Json(Protocol):
     """Json объект."""
