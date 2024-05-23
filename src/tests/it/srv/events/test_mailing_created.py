@@ -83,7 +83,7 @@ async def test(pgsql, settings_ctor):
         FkLogSink(),
         settings_ctor(admin_chat_ids='93754').ADMIN_CHAT_IDS,
     ).process(
-        GlomJson({'data': {
+        GlomJson.dict_ctor({'data': {
             'mailing_id': str(uuid.uuid4()),
             'text': 'Hello',
             'group': 'all',

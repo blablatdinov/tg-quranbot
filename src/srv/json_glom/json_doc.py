@@ -26,7 +26,7 @@ import attrs
 from glom import glom
 from pyeo import elegant
 
-from app_types.dictable import Dictable, JsonDict
+from app_types.dictable import Dictable, JsonDict, FkDict
 
 
 @elegant
@@ -53,6 +53,16 @@ class GlomJson(Json):
         :return: Json
         """
         return cls(JsonDict(raw_json))
+
+    @classmethod
+    def dict_ctor(cls, dict_: dict) -> Json:
+        """Конструктор для словарей.
+
+        :param dict_: dict
+        :return: Json
+        """
+        return cls(FkDict(dict_))
+
 
     def path(self, pth: str) -> Any:
         """Получить значение по пути при помощи glom.

@@ -115,7 +115,7 @@ async def test_change(pgsql):
             'transliteration': 'Updated arab transliteration',
         },
     }
-    await PgAyat.ayat_changed_event_ctor(GlomJson(event), pgsql).change(GlomJson(event))
+    await PgAyat.ayat_changed_event_ctor(GlomJson.dict_ctor(event), pgsql).change(GlomJson.dict_ctor(event))
 
     changed_record = await pgsql.fetch_one('SELECT * FROM ayats WHERE ayat_id = 1')
 

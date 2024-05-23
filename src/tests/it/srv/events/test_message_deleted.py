@@ -47,4 +47,4 @@ async def test(pgsql):
         pgsql,
         FkSink(),
         FkLogSink(),
-    ).process(GlomJson({'data': {'chat_id': 37945, 'message_id': 893457}}))
+    ).process(GlomJson.dict_ctor({'data': {'chat_id': 37945, 'message_id': 893457}}))

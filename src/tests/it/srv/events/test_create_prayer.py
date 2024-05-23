@@ -39,7 +39,7 @@ async def _city(pgsql):
 
 @pytest.mark.usefixtures('_city')
 async def test(pgsql):
-    await PrayerCreatedEvent(pgsql).process(GlomJson({
+    await PrayerCreatedEvent(pgsql).process(GlomJson.dict_ctor({
         'data': {
             'name': 'fajr',
             'time': '5:36',
