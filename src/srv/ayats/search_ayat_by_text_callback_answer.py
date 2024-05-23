@@ -46,7 +46,7 @@ from srv.ayats.neighbor_ayats import TextSearchNeighborAyats
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class SearchAyatByTextCallbackAnswer(TgAnswer):
     """Поиск аята по тексту для обработки нажатия кнопки."""

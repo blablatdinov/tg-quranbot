@@ -66,7 +66,7 @@ class CachedTextSearchQuery(TextSearchQuery):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 class AyatTextSearchQuery(TextSearchQuery):
     """Запрос поиска аята."""
 

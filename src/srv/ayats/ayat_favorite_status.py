@@ -34,7 +34,7 @@ _ChangeAyatStatusCommand: TypeAlias = str
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class AyatFavoriteStatus(FavoriteAyatStatus):
     """Пользовательский ввод статуса аята в избранном.

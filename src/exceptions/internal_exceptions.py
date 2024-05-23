@@ -56,7 +56,7 @@ class NotProcessableUpdateError(BaseAppError):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 class TelegramIntegrationsError(BaseAppError):
     """Исключение, возбуждаемое при некорректном ответе от API телеграмма."""
 
@@ -73,6 +73,6 @@ class TelegramIntegrationsError(BaseAppError):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 class UnreacheableError(BaseAppError):
     """Ошибка непредвиденного состояния."""

@@ -44,7 +44,7 @@ class AsyncSupportsStr(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class FkAsyncStr(AsyncSupportsStr):
     """Обертка для строки."""
@@ -61,7 +61,7 @@ class FkAsyncStr(AsyncSupportsStr):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class ThroughString(SupportsStr):
     """Обертка для строки."""
@@ -78,7 +78,7 @@ class ThroughString(SupportsStr):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class UnwrappedString(SupportsStr):
     """Строки без переноса."""

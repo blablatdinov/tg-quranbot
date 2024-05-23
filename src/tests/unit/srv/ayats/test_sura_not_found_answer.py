@@ -32,7 +32,7 @@ from integrations.tg.tg_answers import TgAnswer
 from srv.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 
 
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 @final
 class ThroughDomainAnswer(TgAnswer):

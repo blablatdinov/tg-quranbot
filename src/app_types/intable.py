@@ -35,7 +35,7 @@ class AsyncIntable(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class FkIntable(SupportsInt):
     """Сквозное число."""
@@ -52,7 +52,7 @@ class FkIntable(SupportsInt):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class FkAsyncIntable(AsyncIntable):
     """Сквозное число."""

@@ -34,7 +34,7 @@ from srv.prayers.update_user_city import UpdatedUserCity
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class CityNotSupportedAnswer(TgAnswer):
     """Ответ о неподдерживаемом городе."""
@@ -59,7 +59,7 @@ class CityNotSupportedAnswer(TgAnswer):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class ChangeCityAnswer(TgAnswer):
     """Ответ со сменой города."""

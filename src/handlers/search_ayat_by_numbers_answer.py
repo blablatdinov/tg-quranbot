@@ -42,7 +42,7 @@ from srv.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class SearchAyatByNumbersAnswer(TgAnswer):
     """Поиск аята по номеру суры/аята."""

@@ -37,7 +37,7 @@ from services.user_state import RedisUserState, UserStep
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class UserWithoutCitySafeAnswer(TgAnswer):
     """Объект для обработки случаев когда пользователь запрашивает время намаза без установленного города."""
@@ -59,7 +59,7 @@ class UserWithoutCitySafeAnswer(TgAnswer):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class InviteSetCityAnswer(TgAnswer):
     """Ответ с приглашением ввести город."""

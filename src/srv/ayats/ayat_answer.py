@@ -46,7 +46,7 @@ from srv.files.file_id_answer import TelegramFileIdAnswer
 
 @final
 @elegant
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 class AyatAnswer(TgAnswer):
     """Ответ с аятом."""
 

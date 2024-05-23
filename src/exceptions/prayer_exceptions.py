@@ -36,7 +36,7 @@ class UserPrayersNotFoundError(BaseAppError):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 class PrayersNotFoundError(BaseAppError):
     """Не найдены времена намазов."""
 

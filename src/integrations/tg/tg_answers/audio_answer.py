@@ -32,7 +32,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class TgAudioAnswer(TgAnswer):
     """Ответ с аудио файлом."""

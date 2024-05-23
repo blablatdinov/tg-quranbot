@@ -32,7 +32,7 @@ from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class UserAlreadyActiveSafeAnswer(TgAnswer):
     """Ответ для случаев когда пользователь уже активен."""

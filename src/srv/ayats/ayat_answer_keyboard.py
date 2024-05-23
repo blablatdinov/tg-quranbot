@@ -38,7 +38,7 @@ from srv.ayats.neighbor_ayats import NeighborAyats
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class AyatAnswerKeyboard(KeyboardInterface):
     """Клавиатура аята."""

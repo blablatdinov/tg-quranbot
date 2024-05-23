@@ -38,7 +38,7 @@ from services.user_prayer_keyboard import PgNewPrayersAtUser
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class DecrementSkippedPrayerAnswer(TgAnswer):
     """Уменьшение кол-ва пропущенных намазов."""

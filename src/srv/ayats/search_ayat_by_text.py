@@ -44,7 +44,7 @@ from srv.ayats.neighbor_ayats import TextSearchNeighborAyats
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class SearchAyatByTextAnswer(TgAnswer):
     """Поиск аята по тексту."""

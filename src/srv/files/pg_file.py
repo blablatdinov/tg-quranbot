@@ -32,7 +32,7 @@ from srv.files.file import FileLink, TgFile, TgFileId
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class PgFile(TgFile):
     """Объект файла в postgres."""

@@ -31,7 +31,7 @@ from integrations.tg.keyboard import KeyboardInterface
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class ResizedKeyboard(KeyboardInterface):
     """Сжатая в высоту клавиатура."""

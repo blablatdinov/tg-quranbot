@@ -38,7 +38,7 @@ class AsyncListable(Protocol, Generic[ListElemT_co]):  # type: ignore [misc]
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class FkAsyncListable(AsyncListable, Generic[ListElemT_co]):
     """Фейковый список."""

@@ -33,7 +33,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class TgMessageIdAnswer(TgAnswer):
     """Ответ с идентификатором сообщения."""

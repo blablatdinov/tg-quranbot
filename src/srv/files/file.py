@@ -40,7 +40,7 @@ class TgFile(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class FkFile(TgFile):
     """Фейковый файл."""

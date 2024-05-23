@@ -30,7 +30,7 @@ from srv.ayats.search_query import AyatNum, SearchQuery, SuraId
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class ValidatedSearchQuery(SearchQuery):
     """Декоратор, валидирующий запрос для поиска."""

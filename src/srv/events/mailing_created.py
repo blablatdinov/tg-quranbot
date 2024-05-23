@@ -44,7 +44,7 @@ from srv.users.pg_user import FkUser, User
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class MailingCreatedEvent(ReceivedEvent):
     """Обработка события об утренней рассылки с аятми."""

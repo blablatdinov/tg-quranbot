@@ -42,7 +42,7 @@ from srv.files.pg_file import PgFile
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class TextLenSafeAyat(Ayat):
     """Декоратор для обрезания текста аята.
@@ -89,7 +89,7 @@ class TextLenSafeAyat(Ayat):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 method
     """Аят."""
 

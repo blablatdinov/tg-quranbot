@@ -35,7 +35,7 @@ from integrations.tg.tg_answers.measure_answer import Millis, RoundedFloat
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class StatusAnswer(TgAnswer):
     """Ответ со статусом системы."""

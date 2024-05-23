@@ -35,7 +35,7 @@ AyatChangedEvent: TypeAlias = ReceivedEvent
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class RbmqAyatChangedEvent(AyatChangedEvent):
     """Событие изменения аята из rabbitmq."""

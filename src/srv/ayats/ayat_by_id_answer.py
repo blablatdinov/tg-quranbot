@@ -39,7 +39,7 @@ from srv.files.file_id_answer import TelegramFileIdAnswer
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class AyatByIdAnswer(TgAnswer):
     """Ответ на аят по идентификатору."""

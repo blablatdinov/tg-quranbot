@@ -40,7 +40,7 @@ from srv.ayats.neighbor_ayats import FavoriteNeighborAyats
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class FavoriteAyatAnswer(TgAnswer):
     """Ответ с избранными аятами."""
