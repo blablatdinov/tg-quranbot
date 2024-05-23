@@ -32,7 +32,7 @@ from integrations.tg.tg_answers import TgAnswer
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class TgReplySourceAnswer(TgAnswer):
     """Ответ на сообщение."""

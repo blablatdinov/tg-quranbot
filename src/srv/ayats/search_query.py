@@ -41,7 +41,7 @@ class SearchQuery(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class FkSearchQuery(SearchQuery):
     """Фейковый запрос для поиска аятов."""

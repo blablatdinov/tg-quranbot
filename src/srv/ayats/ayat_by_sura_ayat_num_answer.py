@@ -39,7 +39,7 @@ from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class AyatBySuraAyatNumAnswer(TgAnswer):
     """Ответ на поиск аята по номеру суры, аята."""

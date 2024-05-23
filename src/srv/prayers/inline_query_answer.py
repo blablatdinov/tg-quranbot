@@ -38,7 +38,7 @@ from srv.prayers.city_names import CityNames
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class InlineQueryAnswer(TgAnswer):
     """Ответ на инлайн поиск."""

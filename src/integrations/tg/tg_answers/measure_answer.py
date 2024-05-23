@@ -34,7 +34,7 @@ from integrations.tg.update_id import UpdateId
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 class Millis(SupportsFloat):
     """Миллисекунды."""
 
@@ -59,7 +59,7 @@ class Millis(SupportsFloat):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class RoundedFloat(SupportsFloat):
     """Округленное дробное число."""
@@ -77,7 +77,7 @@ class RoundedFloat(SupportsFloat):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class TgMeasureAnswer(TgAnswer):
     """Замеренный ответ."""

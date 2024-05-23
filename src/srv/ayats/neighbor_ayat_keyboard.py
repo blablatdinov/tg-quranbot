@@ -46,7 +46,7 @@ class NeighborAyatsButtons(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class NeighborAyatsBtns(NeighborAyatsButtons):
     """Кнопки для клавиатуры с соседними аятами."""
@@ -88,7 +88,7 @@ class NeighborAyatsBtns(NeighborAyatsButtons):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class NeighborAyatKeyboard(KeyboardInterface):
     """Клавиатура с соседними аятами."""

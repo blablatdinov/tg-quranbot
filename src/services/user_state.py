@@ -91,7 +91,7 @@ class CachedUserState(UserState):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class RedisUserState(UserState):
     """Объект, работающий с состоянием пользователя."""

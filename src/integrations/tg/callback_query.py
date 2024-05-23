@@ -32,7 +32,7 @@ from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class CallbackQueryData(SupportsStr):
     """Информация с кнопки."""

@@ -42,7 +42,7 @@ class Reaction(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class PgReaction(Reaction):
     """Реакция на подкаст в БД postgres."""

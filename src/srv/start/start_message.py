@@ -45,7 +45,7 @@ class AsyncIntOrNone(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class FkAsyncIntOrNone(AsyncIntOrNone):
     """FkAsyncIntOrNone."""
@@ -62,7 +62,7 @@ class FkAsyncIntOrNone(AsyncIntOrNone):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class ReferrerChatId(AsyncIntable):
     """Идентификатор чата пригласившего."""
@@ -99,7 +99,7 @@ class ReferrerChatId(AsyncIntable):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class ReferrerIdOrNone(AsyncIntOrNone):
     """Идентификатор чата пригласившего."""

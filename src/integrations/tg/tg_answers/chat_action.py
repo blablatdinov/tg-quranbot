@@ -32,7 +32,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class TgChatAction(TgAnswer):
     """Запрос на API телеграма с действием.

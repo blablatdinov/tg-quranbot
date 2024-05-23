@@ -32,7 +32,7 @@ from srv.ayats.ayat import Ayat
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class AyatIsFavor(AsyncSupportsBool):
     """Является ли аят избранным."""

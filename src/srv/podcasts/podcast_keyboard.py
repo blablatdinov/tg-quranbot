@@ -39,7 +39,7 @@ class _Row(TypedDict):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class PodcastKeyboard(KeyboardInterface):
     """Клавиатура подкаста."""

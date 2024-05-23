@@ -47,7 +47,7 @@ class EventHook(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class EventHookApp(SyncRunable):
     """Запускаемый объект."""

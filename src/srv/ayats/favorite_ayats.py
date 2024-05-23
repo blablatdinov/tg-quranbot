@@ -34,7 +34,7 @@ from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class FavoriteAyats(AsyncListable):
     """Избранные аяты."""

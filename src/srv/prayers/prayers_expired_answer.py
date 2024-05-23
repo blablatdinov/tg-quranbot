@@ -40,7 +40,7 @@ from integrations.tg.tg_answers import (
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class PrayersExpiredAnswer(TgAnswer):
     """Декоратор для обработки случаев с отсутствием времени намаза на эту дату."""

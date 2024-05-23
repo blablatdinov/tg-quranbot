@@ -32,7 +32,7 @@ _AyatNum: TypeAlias = str
 
 @final
 @elegant
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 class AyatLink(SupportsStr):
     """Ссылка на аят.
 

@@ -36,7 +36,7 @@ from srv.events.sink import SinkInterface
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class MessageDeleted(ReceivedEvent):
     """Удаление сообщения."""

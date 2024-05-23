@@ -41,7 +41,7 @@ from srv.users.pg_user import User
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class TypingAction(TgAnswer):
     """Действие с печатью."""
@@ -64,7 +64,7 @@ class TypingAction(TgAnswer):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class CheckUsersStatus(ReceivedEvent):
     """Статусы пользователей."""

@@ -51,7 +51,7 @@ class NeighborAyats(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class FavoriteNeighborAyats(NeighborAyats):
     """Класс для работы с соседними аятами в хранилище."""
@@ -111,7 +111,7 @@ class FavoriteNeighborAyats(NeighborAyats):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class PgNeighborAyats(NeighborAyats):
     """Класс для работы с соседними аятами в хранилище."""
@@ -168,7 +168,7 @@ class PgNeighborAyats(NeighborAyats):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class TextSearchNeighborAyats(NeighborAyats):
     """Класс для работы с сосденими аятами, при текстовом поиске."""

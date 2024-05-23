@@ -35,7 +35,7 @@ from services.user_state import RedisUserState
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class StepAnswer(TgAnswer):
     """Роутинг ответа по состоянию пользователя."""

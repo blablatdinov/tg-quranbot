@@ -41,7 +41,7 @@ class Update(SupportsStr, Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class FkUpdate(Update):
     """Подделка обновления."""

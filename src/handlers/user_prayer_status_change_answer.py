@@ -37,7 +37,7 @@ from srv.prayers.prayer_status import PrayerStatus, UserPrayerStatus
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class UserPrayerStatusChangeAnswer(TgAnswer):
     """Ответ с изменением статуса прочитанности намаза."""

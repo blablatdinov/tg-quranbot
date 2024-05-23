@@ -46,7 +46,7 @@ class PrayerDate(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class FkPrayerDate(PrayerDate):
     """Фейковая дата времен намаза."""
@@ -64,7 +64,7 @@ class FkPrayerDate(PrayerDate):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class PrayersRequestDate(PrayerDate):
     """Дата намаза."""
@@ -91,7 +91,7 @@ class PrayersRequestDate(PrayerDate):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class PrayersMarkAsDate(PrayerDate):
     """Дата намаза при редактировании."""
@@ -114,7 +114,7 @@ class PrayersMarkAsDate(PrayerDate):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class DateFromUserPrayerId(PrayerDate):
     """Дата намаза по идентификатору времени намаза."""

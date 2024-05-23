@@ -46,7 +46,7 @@ class AyatIdentifier(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 class PgAyatIdentifier(AyatIdentifier):
     """Информация для идентификации аята."""
 
@@ -98,7 +98,7 @@ class PgAyatIdentifier(AyatIdentifier):
         return row['ayat_number']
 
 
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 class FkIdentifier(AyatIdentifier):
     """Identifier stub."""
 

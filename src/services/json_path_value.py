@@ -42,7 +42,7 @@ class JsonPath(Protocol[_ET_co]):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class JsonPathValue(JsonPath, Generic[_ET_co]):
     """Объект, получающий значение по jsonpath.
@@ -79,7 +79,7 @@ class JsonPathValue(JsonPath, Generic[_ET_co]):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class MatchManyJsonPath(JsonPath, Generic[_ET_co]):
     """Поиск по нескольким jsonpath."""
@@ -104,7 +104,7 @@ class MatchManyJsonPath(JsonPath, Generic[_ET_co]):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class ErrRedirectJsonPath(JsonPath, Generic[_ET_co]):
     """JsonPath с преобразованием исключений."""

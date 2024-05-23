@@ -41,7 +41,7 @@ class Podcast(TgFile, Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class PgPodcast(Podcast):
     """Объект подкаста."""

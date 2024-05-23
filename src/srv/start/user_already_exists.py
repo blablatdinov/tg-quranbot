@@ -40,7 +40,7 @@ from srv.users.valid_chat_id import PgValidChatId
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class UserAlreadyExistsAnswer(TgAnswer):
     """Декоратор обработчика стартового сообщение с предохранением от UserAlreadyExists."""

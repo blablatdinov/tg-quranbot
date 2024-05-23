@@ -49,7 +49,7 @@ from srv.users.new_user import PgNewUser
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class SearchCityAnswer(TgAnswer):
     """Ответ со списком городов для выбора."""

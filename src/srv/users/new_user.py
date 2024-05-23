@@ -45,7 +45,7 @@ class NewUser(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class FkNewUser(NewUser):
     """Фейк нового пользователя."""
@@ -56,7 +56,7 @@ class FkNewUser(NewUser):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class PgNewUserWithEvent(NewUser):
     """Создание пользователя с событием."""
@@ -83,7 +83,7 @@ class PgNewUserWithEvent(NewUser):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class PgNewUser(NewUser):
     """Новый пользователь в БД postgres."""

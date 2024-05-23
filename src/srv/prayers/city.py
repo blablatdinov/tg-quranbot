@@ -44,7 +44,7 @@ class City(Protocol):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class FkCity(City):
     """Стаб города."""
@@ -70,7 +70,7 @@ class FkCity(City):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class CityIdByName(AsyncSupportsStr):
     """Идентификатор города по имени."""
@@ -96,7 +96,7 @@ class CityIdByName(AsyncSupportsStr):
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class PgCity(City):
     """Город в БД postgres."""

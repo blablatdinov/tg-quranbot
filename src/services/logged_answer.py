@@ -46,7 +46,7 @@ MESSAGES_CREATED: Final = 'Messages.Created'
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, slots=True)
 @elegant
 class LoggedAnswer(SendableInterface):
     """Декоратор логирующий сообщения."""
