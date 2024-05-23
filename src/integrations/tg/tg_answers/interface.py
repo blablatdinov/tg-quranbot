@@ -41,7 +41,7 @@ class TgAnswer(Protocol):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class FkAnswer(TgAnswer):
     """Фейковый ответ."""

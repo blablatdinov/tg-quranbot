@@ -30,7 +30,7 @@ from app_types.listable import AsyncListable
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class CityNames(AsyncListable):
     """Имена городов."""

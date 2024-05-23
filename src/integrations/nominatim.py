@@ -34,7 +34,7 @@ CityName: TypeAlias = AsyncSupportsStr
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class CityNameById(CityName):
     """Имя города по id."""
@@ -54,7 +54,7 @@ class CityNameById(CityName):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class NominatimCityName(CityName):
     """Интеграция с https://nominatim.openstreetmap.org ."""

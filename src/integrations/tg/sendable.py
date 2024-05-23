@@ -48,7 +48,7 @@ class SendableInterface(Protocol):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class FkSendable(SendableInterface):
     """Фейковый объект для отправки ответов."""
@@ -66,7 +66,7 @@ class FkSendable(SendableInterface):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class SendableAnswer(SendableInterface):
     """Объект, отправляющий ответы в API."""
@@ -97,7 +97,7 @@ class SendableAnswer(SendableInterface):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class UserNotSubscribedSafeSendable(SendableInterface):
     """Декоратор для обработки отписанных пользователей."""
@@ -130,7 +130,7 @@ class UserNotSubscribedSafeSendable(SendableInterface):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class BulkSendableAnswer(SendableInterface):
     """Массовая отправка."""

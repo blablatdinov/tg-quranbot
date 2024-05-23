@@ -54,7 +54,7 @@ class NewTgUserT(Protocol):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class NewTgUser(NewTgUserT):
     """Registration of user by tg."""
@@ -98,7 +98,7 @@ class NewTgUser(NewTgUserT):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class StartAnswer(TgAnswer):
     """Обработчик стартового сообщения."""

@@ -40,7 +40,7 @@ from srv.ayats.search_ayat_by_text import SearchAyatByTextAnswer
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class SearchAyatByKeywordAnswer(TgAnswer):
     """Ответ с временами намаза."""

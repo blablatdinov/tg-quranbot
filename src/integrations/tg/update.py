@@ -31,7 +31,7 @@ from app_types.update import Update
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class TgUpdate(Update):
     """Объект обновления от телеграмма."""

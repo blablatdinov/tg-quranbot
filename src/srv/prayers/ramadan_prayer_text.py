@@ -29,7 +29,7 @@ from app_types.stringable import AsyncSupportsStr
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class RamadanPrayerText(AsyncSupportsStr):
     """Изменяющий декоратор для обозначения времени сухура и ифтара."""

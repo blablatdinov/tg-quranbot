@@ -33,7 +33,7 @@ ChatId: TypeAlias = SupportsInt
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class FkChatId(ChatId):
     """Фейк идентификатора чата."""
@@ -50,7 +50,7 @@ class FkChatId(ChatId):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class TgChatId(ChatId):
     """Идентификатор чата."""

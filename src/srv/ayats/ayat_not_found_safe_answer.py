@@ -32,7 +32,7 @@ from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class AyatNotFoundSafeAnswer(TgAnswer):
     """Объект обрабатывающий ошибку с не найденным аятом."""

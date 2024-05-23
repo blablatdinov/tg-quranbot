@@ -42,7 +42,7 @@ class Coordinates(Protocol):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class FkCoordinates(Coordinates):
     """Стаб для координат."""
@@ -68,7 +68,7 @@ class FkCoordinates(Coordinates):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class TgMessageCoordinates(Coordinates):
     """Координаты, принятые из чата."""

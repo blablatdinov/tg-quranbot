@@ -32,7 +32,7 @@ from srv.ayats.text_search_query import TextSearchQuery
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class HighlightedSearchAnswer(TgAnswer):
     """Ответ с подсвеченным поисковым текстом."""

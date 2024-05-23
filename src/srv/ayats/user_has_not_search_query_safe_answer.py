@@ -32,7 +32,7 @@ from integrations.tg.tg_answers import TgAnswer
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class UserHasNotSearchQuerySafeAnswer(TgAnswer):
     """Обработка исключения с отсутствием запроса к поиску аятов."""

@@ -34,7 +34,7 @@ from srv.ayats.search_query import SearchQuery
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class AyatIdBySuraAyatNum(AsyncIntable):
     """Поиск аятов по номеру суры, аята."""
@@ -76,7 +76,7 @@ class AyatIdBySuraAyatNum(AsyncIntable):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class AyatIdByPublicId(AsyncIntable):
     """Поиск аятов по номеру суры, аята."""

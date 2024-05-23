@@ -39,7 +39,7 @@ from srv.podcasts.podcast_answer import MarkuppedPodcastAnswer, PodcastAnswer
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class _PodcastId(AsyncIntable):
 
@@ -70,7 +70,7 @@ class _PodcastId(AsyncIntable):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class RandomPodcastAnswer(TgAnswer):
     """Ответ с подкастом."""

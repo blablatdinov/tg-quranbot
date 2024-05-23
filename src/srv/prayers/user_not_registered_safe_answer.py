@@ -33,7 +33,7 @@ from srv.users.new_user import NewUser
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class UserNotRegisteredSafeAnswer(TgAnswer):
     """Декоратор для обработки ошибки с незарегистрированным пользователем."""

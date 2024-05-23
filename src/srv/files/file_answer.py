@@ -33,7 +33,7 @@ from integrations.tg.tg_answers import TgAnswer
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class TgFileIdNotFilledSafeAnswer(TgAnswer):
     """Декоратор для обработки файлов с незаполненным идентификатором файла."""
@@ -55,7 +55,7 @@ class TgFileIdNotFilledSafeAnswer(TgAnswer):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class FileAnswer(TgAnswer):
     """Класс ответа с файлом."""

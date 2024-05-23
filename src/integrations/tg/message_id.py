@@ -33,7 +33,7 @@ MessageId: TypeAlias = SupportsInt
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class TgMessageId(MessageId):
     """Идентификатор сообщения."""

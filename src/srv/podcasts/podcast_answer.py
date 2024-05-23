@@ -49,7 +49,7 @@ from srv.podcasts.podcast_keyboard import PodcastKeyboard
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class PodcastAnswer(TgAnswer):
     """Ответ с подкастом."""
@@ -90,7 +90,7 @@ class PodcastAnswer(TgAnswer):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class MarkuppedPodcastAnswer(TgAnswer):
     """Ответ с подкастом."""

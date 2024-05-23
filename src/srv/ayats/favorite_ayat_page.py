@@ -42,7 +42,7 @@ from srv.ayats.neighbor_ayats import FavoriteNeighborAyats
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class FavoriteAyatPage(TgAnswer):
     """Страница с избранным аятом."""

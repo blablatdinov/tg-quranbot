@@ -35,7 +35,7 @@ from services.user_state import RedisUserState, UserStep
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class ChangeStateAnswer(TgAnswer):
     """Ответ, с изменением шага пользователя."""

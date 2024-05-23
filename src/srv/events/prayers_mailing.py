@@ -62,7 +62,7 @@ CHAT_ID: Final = 'chat_id'
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class PrayersMailingPublishedEvent(ReceivedEvent):
     """Обработка события о рассылке времени намаза на следующий день."""

@@ -45,7 +45,7 @@ class User(Protocol):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class FkUser(User):
     """Фейковый пользователь."""
@@ -80,7 +80,7 @@ class FkUser(User):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class ChatIdByLegacyId(AsyncIntable):
     """Идентификатор чата по старому идентификатору в БД.
@@ -106,7 +106,7 @@ class ChatIdByLegacyId(AsyncIntable):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class PgUser(User):
     """Пользователь в БД postgres."""

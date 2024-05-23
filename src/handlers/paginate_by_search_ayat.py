@@ -41,7 +41,7 @@ from srv.ayats.user_has_not_search_query_safe_answer import UserHasNotSearchQuer
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class PaginateBySearchAyat(TgAnswer):
     """Пагинация по поиску аятов."""

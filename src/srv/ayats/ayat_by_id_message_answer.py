@@ -39,7 +39,7 @@ from srv.ayats.neighbor_ayats import PgNeighborAyats
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class AyatByIdMessageAnswer(TgAnswer):
     """Текстовый ответ на поиск аята."""

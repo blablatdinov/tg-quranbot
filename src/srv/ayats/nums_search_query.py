@@ -30,7 +30,7 @@ from srv.ayats.search_query import AyatNum, SearchQuery, SuraId
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class NumsSearchQuery(SearchQuery):
     """Запросом для поиска.

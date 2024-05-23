@@ -41,7 +41,7 @@ class PodcastReactionsT(Protocol):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class PodcastReaction(PodcastReactionsT):
     """Реакция на подкаст.

@@ -39,7 +39,7 @@ from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class FavoriteAyatsAnswer(TgAnswer):
     """Ответ с временами намаза."""

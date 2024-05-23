@@ -36,7 +36,7 @@ from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class CachedAyatSearchQueryAnswer(TgAnswer):
     """Объект кэширует запрос на поиск аятов, для использования в пагинации."""

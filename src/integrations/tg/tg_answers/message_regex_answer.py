@@ -35,7 +35,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class TgMessageRegexAnswer(TgAnswer, SupportsStr):
     """Маршрутизация ответов по регулярному выражению."""

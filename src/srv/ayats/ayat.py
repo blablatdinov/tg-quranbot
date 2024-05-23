@@ -53,7 +53,7 @@ class Ayat(AsyncSupportsStr, Protocol):
         """
 
 
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 class FkAyat(Ayat):
     """Ayat stub."""
 

@@ -58,7 +58,7 @@ class UpdatesURLInterface(Protocol):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class UpdatesURL(SupportsStr):
     """Базовый URL обновлений из телеграма."""
@@ -75,7 +75,7 @@ class UpdatesURL(SupportsStr):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class UpdatesWithOffsetURL(UpdatesURLInterface):
     """URL для получения только новых обновлений."""
@@ -93,7 +93,7 @@ class UpdatesWithOffsetURL(UpdatesURLInterface):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class UpdatesLongPollingURL(UpdatesURLInterface):
     """URL обновлений с таймаутом."""

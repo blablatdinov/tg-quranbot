@@ -35,7 +35,7 @@ from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class AyatsByTextQuery(AsyncListable):
     """Список аятов, найденных по текстовому запросу."""

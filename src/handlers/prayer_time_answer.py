@@ -55,7 +55,7 @@ from srv.prayers.ramadan_prayer_text import RamadanPrayerText
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class _MessageNotFoundSafeAnswer(TgAnswer):
 
@@ -70,7 +70,7 @@ class _MessageNotFoundSafeAnswer(TgAnswer):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class PrayerTimeAnswer(TgAnswer):
     """Ответ с временами намаза.

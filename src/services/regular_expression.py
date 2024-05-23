@@ -31,7 +31,7 @@ from exceptions.base_exception import BaseAppError
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class IntableRegularExpression(SupportsInt):
     """Регулярное выражение, которое можно привести к числу."""

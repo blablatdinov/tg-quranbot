@@ -147,7 +147,7 @@ class ChatIdDebugParam(DebugParamInterface):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class CommitHashDebugParam(DebugParamInterface):
     """Отладочная информация с хэшом коммита."""

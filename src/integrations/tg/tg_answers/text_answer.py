@@ -33,7 +33,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class TgTextAnswer(TgAnswer):
     """Ответ пользователю с текстом."""

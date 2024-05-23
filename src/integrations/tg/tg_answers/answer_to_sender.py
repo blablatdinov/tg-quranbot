@@ -32,7 +32,7 @@ from integrations.tg.tg_answers.interface import TgAnswer
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 class TgAnswerToSender(TgAnswer):
     """Ответ пользователю, от которого пришло сообщение."""
 

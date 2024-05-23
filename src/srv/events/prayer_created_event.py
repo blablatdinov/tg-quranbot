@@ -34,7 +34,7 @@ from srv.events.recieved_event import ReceivedEvent
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class PrayerCreatedEvent(ReceivedEvent):
     """Событие создания аята из rabbitmq."""

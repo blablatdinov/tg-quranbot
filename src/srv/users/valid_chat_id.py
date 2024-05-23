@@ -39,7 +39,7 @@ class ValidChatId(AsyncIntable, Protocol):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class FkValidChatId(ValidChatId):
     """Фейковый объект с валидным идентификатором чата.
@@ -69,7 +69,7 @@ class FkValidChatId(ValidChatId):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class PgValidChatId(ValidChatId):
     """Проверенный идентификатор чата в БД postgres."""

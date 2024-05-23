@@ -32,7 +32,7 @@ from services.user_state import UserState, UserStep
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class ResetStateAnswer(TgAnswer):
     """Декоратор для обнуления состояния пользователя."""

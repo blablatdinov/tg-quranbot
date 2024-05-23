@@ -31,7 +31,7 @@ from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class UpdateId(SupportsInt):
     """Идентификатор обновления."""

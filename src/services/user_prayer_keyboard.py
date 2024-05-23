@@ -48,7 +48,7 @@ class NewPrayersAtUser(Protocol):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class PgNewPrayersAtUser(NewPrayersAtUser):
     """Новые записи о статусе намаза."""
@@ -88,7 +88,7 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class UserPrayersKeyboard(KeyboardInterface):
     """Клавиатура времен намаза."""

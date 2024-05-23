@@ -41,7 +41,7 @@ class KeyboardInterface(Protocol):
 
 @elegant
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 class FkKeyboard(KeyboardInterface):
     """Фейковая клавиатура."""
 

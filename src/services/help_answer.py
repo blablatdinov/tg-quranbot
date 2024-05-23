@@ -38,7 +38,7 @@ from srv.admin_messages.admin_message import AdminMessage
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class HelpAnswer(TgAnswer):
     """Ответ на команду /help."""

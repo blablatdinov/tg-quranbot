@@ -36,7 +36,7 @@ from srv.users.valid_chat_id import FkValidChatId
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class ActiveUsers(AsyncListable):
     """Активные пользователи."""
@@ -62,7 +62,7 @@ class ActiveUsers(AsyncListable):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class PgUsers(AsyncListable):
     """Пользователи из БД postgres."""
@@ -105,7 +105,7 @@ class UpdatedUsersStatus(Protocol):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class PgUpdatedUsersStatus(UpdatedUsersStatus):
     """Обновление статусов пользователей."""
@@ -135,7 +135,7 @@ class PgUpdatedUsersStatus(UpdatedUsersStatus):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class UpdatedUsersStatusEvent(UpdatedUsersStatus):
     """Событие об отписке."""

@@ -38,7 +38,7 @@ TIME_LITERAL: Final = 'time'
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class UserCityId(AsyncSupportsStr):
     """Идентификатор города."""
@@ -66,7 +66,7 @@ class UserCityId(AsyncSupportsStr):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class PrayersText(AsyncSupportsStr):
     """Текст сообщения с намазами."""

@@ -33,7 +33,7 @@ from srv.files.file import TgFile
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class TelegramFileIdAnswer(TgAnswer):
     """Класс ответа с файлом."""

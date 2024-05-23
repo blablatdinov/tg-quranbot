@@ -50,7 +50,7 @@ class SinkInterface(Protocol):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class FkSink(SinkInterface):
     """Фейковый слив для событий."""
@@ -67,7 +67,7 @@ class FkSink(SinkInterface):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class RabbitmqSink(SinkInterface):
     """События в rabbitmq."""

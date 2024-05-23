@@ -49,7 +49,7 @@ from srv.reactions.podcast_reaction import PodcastReaction
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class PodcastMessageTextNotExistsSafeAnswer(TgAnswer):
     """В случаи нажатия на кнопку с отсутствующем текстом сообщения."""
@@ -78,7 +78,7 @@ class PodcastMessageTextNotExistsSafeAnswer(TgAnswer):
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class PodcastReactionChangeAnswer(TgAnswer):
     """Ответ с подкастом."""

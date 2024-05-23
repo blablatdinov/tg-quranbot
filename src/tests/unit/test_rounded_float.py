@@ -28,7 +28,7 @@ from pyeo import elegant
 from integrations.tg.tg_answers.measure_answer import RoundedFloat
 
 
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 @final
 class FloatableFake(SupportsFloat):

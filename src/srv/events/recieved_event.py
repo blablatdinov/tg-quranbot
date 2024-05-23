@@ -42,7 +42,7 @@ class ReceivedEvent(Protocol[JsonPathReturnType_co]):
 
 
 @elegant
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @final
 class EventFork(ReceivedEvent):
     """Событие."""

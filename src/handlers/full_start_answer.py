@@ -43,7 +43,7 @@ from srv.start.user_already_active import UserAlreadyActiveSafeAnswer
 from srv.start.user_already_exists import UserAlreadyExistsAnswer
 
 
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @final
 @elegant
 class FullStartAnswer(TgAnswer):

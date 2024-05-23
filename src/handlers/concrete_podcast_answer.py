@@ -40,7 +40,7 @@ from srv.podcasts.podcast_answer import MarkuppedPodcastAnswer, PodcastAnswer
 
 
 @final
-@attrs.define(frozen=True, slots=True)
+@attrs.define(frozen=True)
 @elegant
 class ConcretePodcastAnswer(TgAnswer):
     """Ответ с подкастом."""
