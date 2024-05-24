@@ -238,3 +238,6 @@ me.session-journal
 
 # Deltaver cache dir
 .deltaver_cache
+
+# Visual studio code
+.vscode
