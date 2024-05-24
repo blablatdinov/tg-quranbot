@@ -1,0 +1,11 @@
+{
+  "Exclude": [
+    "src/tests/e2e/fixtures/11_83_ayat.txt",
+    "src/tests/e2e/fixtures/1_1_ayat.txt",
+    "src/tests/e2e/fixtures/2_1_ayat.txt",
+    "src/tests/e2e/fixtures/2_24_ayat.txt",
+    "src/tests/e2e/fixtures/8_7_ayat.txt",
+    "src/tests/e2e/fixtures/8_8_ayat.txt",
+    "src/tests/e2e/fixtures/start.txt"
+  ]
+}
