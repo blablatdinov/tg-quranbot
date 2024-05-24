@@ -30,7 +30,7 @@ jobs:
   checks:
     env:
       TZ: "Europe/Moscow"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     services:
       postgres:
         image: postgres:latest
@@ -91,7 +91,7 @@ jobs:
 
   build-and-push:
     needs: checks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
@@ -113,7 +113,7 @@ jobs:
 
   apply-migrations:
     needs: build-and-push
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -137,7 +137,7 @@ jobs:
 
   update-remote-container:
     needs: build-and-push
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
@@ -181,7 +181,7 @@ jobs:
 
   change-pyproject-version:
     needs: checks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - run: |

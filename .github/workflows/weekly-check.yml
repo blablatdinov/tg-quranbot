@@ -9,7 +9,7 @@ jobs:
   checks:
     env:
       TZ: "Europe/Moscow"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     services:
       postgres:
         image: postgres:latest
