@@ -20,7 +20,7 @@
 -- OR OTHER DEALINGS IN THE SOFTWARE.
 
 -- Init migration.
--- depends: 
+-- depends:
 
 CREATE TABLE public.admin_messages (
     key character varying NOT NULL,

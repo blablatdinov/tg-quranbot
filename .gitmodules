@@ -21,5 +21,5 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 [submodule "src/tests/e2e/db-fixtures"]
-	path = src/tests/e2e/db-fixtures
-	url = https://github.com/blablatdinov/quranbot-fixtures
+    path = src/tests/e2e/db-fixtures
+    url = https://github.com/blablatdinov/quranbot-fixtures
