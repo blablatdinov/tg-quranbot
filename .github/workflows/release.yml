@@ -30,10 +30,10 @@ jobs:
   checks:
     env:
       TZ: "Europe/Moscow"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     services:
       postgres:
-        image: postgres:latest
+        image: postgres:13.3
         env:
           POSTGRES_USER: almazilaletdinov
           POSTGRES_DB: postgres
@@ -42,12 +42,12 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
       redis:
-        image: redis:latest
+        image: redis:6
         ports:
           - 6379:6379
         options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
       rabbitmq:
-        image: rabbitmq:latest
+        image: rabbitmq:3.12.4
         ports:
           - 5672:5672
           - 15672:15672
@@ -91,7 +91,7 @@ jobs:
 
   build-and-push:
     needs: checks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
@@ -113,7 +113,7 @@ jobs:
 
   apply-migrations:
     needs: build-and-push
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -137,7 +137,7 @@ jobs:
 
   update-remote-container:
     needs: build-and-push
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
@@ -181,7 +181,7 @@ jobs:
 
   change-pyproject-version:
     needs: checks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - run: |
