@@ -78,7 +78,7 @@ ruff = "0.4.5"
 refurb = "2.0.0"
 fixit = "2.1.0"
 # other
-deltaver = "0.2.1"
+deltaver = "0.2.2"
 yoyo-migrations = "8.2.0"
 sqlfluff = "3.0.7"
 
