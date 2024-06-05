@@ -104,6 +104,7 @@ class UserPrayersKeyboard(KeyboardInterface):
 
         :param update: Update
         :return: str
+        :raises ValueError: Пользователь запросил времена дважды
         """
         async with self._pgsql.transaction():
             prayers = await self._exists_prayers(update)
@@ -113,8 +114,10 @@ class UserPrayersKeyboard(KeyboardInterface):
                     self._pgsql,
                 ).create(await self._date.parse(update))
                 prayers = await self._exists_prayers(update)
-                if len(prayers) != 5:
-                    raise ValueError
+                expected_prayers_count = 5
+                if len(prayers) != expected_prayers_count:
+                    msg = 'Prayers doubled'
+                    raise ValueError(msg)
         return ujson.dumps({
             'inline_keyboard': [[
                 {

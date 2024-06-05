@@ -26,9 +26,9 @@ import datetime
 import pytest
 
 from app_types.update import FkUpdate
-from services.user_prayer_keyboard import PgNewPrayersAtUser, UserPrayersKeyboard
-from srv.users.pg_user import PgUser
+from services.user_prayer_keyboard import UserPrayersKeyboard
 from srv.prayers.prayer_date import FkPrayerDate
+from srv.users.pg_user import PgUser
 
 
 @pytest.fixture()
@@ -111,7 +111,7 @@ async def test(pgsql, user):
         ).generate(FkUpdate())
         for _ in range(2)
     ]
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='Prayers doubled'):
         await asyncio.gather(*tasks)
 
     assert len(await pgsql.fetch_all('SELECT * FROM prayers_at_user')) == 5
