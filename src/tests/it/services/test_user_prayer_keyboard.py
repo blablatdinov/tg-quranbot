@@ -111,6 +111,7 @@ async def test(pgsql, user):
         ).generate(FkUpdate())
         for _ in range(2)
     ]
-    await asyncio.gather(*tasks)
+    with pytest.raises(ValueError):
+        await asyncio.gather(*tasks)
 
     assert len(await pgsql.fetch_all('SELECT * FROM prayers_at_user')) == 5

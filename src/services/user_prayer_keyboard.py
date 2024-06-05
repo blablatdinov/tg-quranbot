@@ -105,13 +105,16 @@ class UserPrayersKeyboard(KeyboardInterface):
         :param update: Update
         :return: str
         """
-        prayers = await self._exists_prayers(update)
-        if not prayers:
-            await PgNewPrayersAtUser(
-                self._chat_id,
-                self._pgsql,
-            ).create(await self._date.parse(update))
+        async with self._pgsql.transaction():
             prayers = await self._exists_prayers(update)
+            if not prayers:
+                await PgNewPrayersAtUser(
+                    self._chat_id,
+                    self._pgsql,
+                ).create(await self._date.parse(update))
+                prayers = await self._exists_prayers(update)
+                if len(prayers) != 5:
+                    raise ValueError
         return ujson.dumps({
             'inline_keyboard': [[
                 {
