@@ -21,20 +21,25 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-from typing import final, override, Protocol
+from typing import final, override, Protocol, TypedDict
 
 import attrs
 from databases import Database
-from databases.interfaces import Record
 from pyeo import elegant
 
 from integrations.tg.chat_id import ChatId
 
 
+class _ExistUserPrayersDict(TypedDict):
+
+    date: datetime.date
+    chat_id: ChatId
+
+
 class ExistUserPrayers(Protocol):
     """Существующие времена намаза у пользователя."""
 
-    async def fetch(self) -> list[Record]:
+    async def fetch(self) -> list[_ExistUserPrayersDict]:
         """Получить."""
 
 
@@ -49,7 +54,7 @@ class PgExistUserPrayers(ExistUserPrayers):
     _date: datetime.date
 
     @override
-    async def fetch(self) -> list[Record]:
+    async def fetch(self) -> list[_ExistUserPrayersDict]:
         """Получить.
 
         :return: list[Record]
