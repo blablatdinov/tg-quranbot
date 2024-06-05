@@ -91,6 +91,54 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
 @final
 @attrs.define(frozen=True)
 @elegant
+class PrayersProtectDouble(KeyboardInterface):
+
+    _origin: KeyboardInterface
+    _pgsql: Database
+    _chat_id: ChatId
+    _date: PrayerDate
+
+    @override
+    async def generate(self, update: Update) -> str:
+        exist_prayers = ExistUserPrayers(self._pgsql, self._chat_id, await self._date.parse(update))
+        async with self._pgsql.transaction():
+            origin_val = await self._origin.generate(update)
+            expected_prayers_count = 5
+            if len(await exist_prayers.fetch()) > expected_prayers_count:
+                msg = 'Prayers doubled'
+                raise ValueError(msg)
+        return origin_val
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class ExistUserPrayers(object):
+
+    _pgsql: Database
+    _chat_id: ChatId
+    _date: datetime.date
+
+    @override
+    async def fetch(self) -> list[Record]:
+        select_query = '\n'.join([
+            'SELECT',
+            '    pau.prayer_at_user_id,',
+            '    pau.is_read',
+            'FROM prayers_at_user AS pau',
+            'INNER JOIN prayers AS p on pau.prayer_id = p.prayer_id',
+            "WHERE p.day = :date AND pau.user_id = :chat_id AND p.name <> 'sunrise'",
+            'ORDER BY pau.prayer_at_user_id',
+        ])
+        return await self._pgsql.fetch_all(select_query, {
+            'date': self._date,
+            'chat_id': int(self._chat_id),
+        })
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
 class UserPrayersKeyboard(KeyboardInterface):
     """Клавиатура времен намаза."""
 
@@ -106,18 +154,13 @@ class UserPrayersKeyboard(KeyboardInterface):
         :return: str
         :raises ValueError: Пользователь запросил времена дважды
         """
-        async with self._pgsql.transaction():
-            prayers = await self._exists_prayers(update)
-            if not prayers:
-                await PgNewPrayersAtUser(
-                    self._chat_id,
-                    self._pgsql,
-                ).create(await self._date.parse(update))
-                prayers = await self._exists_prayers(update)
-                expected_prayers_count = 5
-                if len(prayers) != expected_prayers_count:
-                    msg = 'Prayers doubled'
-                    raise ValueError(msg)
+        exist_prayers = ExistUserPrayers(self._pgsql, self._chat_id, await self._date.parse(update))
+        if not await exist_prayers.fetch():
+            await PgNewPrayersAtUser(
+                self._chat_id,
+                self._pgsql,
+            ).create(await self._date.parse(update))
+            prayers = await exist_prayers.fetch()
         return ujson.dumps({
             'inline_keyboard': [[
                 {
@@ -128,20 +171,4 @@ class UserPrayersKeyboard(KeyboardInterface):
                 }
                 for user_prayer in prayers
             ]],
-        })
-
-    async def _exists_prayers(self, update: Update) -> list[Record]:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_exists_prayers"
-        select_query = '\n'.join([
-            'SELECT',
-            '    pau.prayer_at_user_id,',
-            '    pau.is_read',
-            'FROM prayers_at_user AS pau',
-            'INNER JOIN prayers AS p on pau.prayer_id = p.prayer_id',
-            "WHERE p.day = :date AND pau.user_id = :chat_id AND p.name <> 'sunrise'",
-            'ORDER BY pau.prayer_at_user_id',
-        ])
-        return await self._pgsql.fetch_all(select_query, {
-            'date': await self._date.parse(update),
-            'chat_id': int(self._chat_id),
         })

@@ -26,7 +26,7 @@ import datetime
 import pytest
 
 from app_types.update import FkUpdate
-from services.user_prayer_keyboard import UserPrayersKeyboard
+from services.user_prayer_keyboard import UserPrayersKeyboard, PrayersProtectDouble
 from srv.prayers.prayer_date import FkPrayerDate
 from srv.users.pg_user import PgUser
 
@@ -102,12 +102,18 @@ async def user(pgsql):
     ]
 
 
-async def test(pgsql, user):
+@pytest.mark.parametrize('execution_number', range(10))
+async def test(pgsql, user, execution_number):
     tasks = [
-        UserPrayersKeyboard(
+        PrayersProtectDouble(
+            UserPrayersKeyboard(
+                pgsql,
+                FkPrayerDate(datetime.date(2024, 6, 5)),
+                849375,
+            ),
             pgsql,
-            FkPrayerDate(datetime.date(2024, 6, 5)),
             849375,
+            FkPrayerDate(datetime.date(2024, 6, 5)),
         ).generate(FkUpdate())
         for _ in range(10)
     ]
