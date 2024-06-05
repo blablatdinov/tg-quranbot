@@ -21,7 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-from typing import final, override, Protocol, TypedDict
+from typing import Protocol, TypedDict, final, override
 
 import attrs
 from databases import Database
