@@ -26,7 +26,8 @@ import datetime
 import pytest
 
 from app_types.update import FkUpdate
-from services.user_prayer_keyboard import UserPrayersKeyboard, PrayersProtectDouble
+from srv.prayers.prayers_protect_double import PrayersProtectDouble
+from services.user_prayer_keyboard import UserPrayersKeyboard
 from srv.prayers.prayer_date import FkPrayerDate
 from srv.users.pg_user import PgUser
 

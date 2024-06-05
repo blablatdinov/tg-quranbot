@@ -37,7 +37,8 @@ from app_types.update import Update
 from integrations.tg.chat_id import ChatId, TgChatId
 from integrations.tg.keyboard import KeyboardInterface
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
-from services.user_prayer_keyboard import NewPrayersAtUser, PgNewPrayersAtUser
+from srv.prayers.new_prayers_at_user import NewPrayersAtUser
+from srv.prayers.pg_new_prayers_at_user import PgNewPrayersAtUser
 
 IS_READ_LITERAL: Final = 'is_read'
 
