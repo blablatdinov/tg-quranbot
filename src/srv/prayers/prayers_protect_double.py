@@ -29,7 +29,7 @@ from pyeo import elegant
 from app_types.update import Update
 from integrations.tg.chat_id import ChatId
 from services.answers.answer import KeyboardInterface
-from srv.prayers.exist_user_prayers import ExistUserPrayers
+from srv.prayers.exist_user_prayers import PgExistUserPrayers
 from srv.prayers.prayer_date import PrayerDate
 
 
@@ -52,7 +52,7 @@ class PrayersProtectDouble(KeyboardInterface):
         :return: str
         :raises ValueError: Пользователь запросил времена дважды
         """
-        exist_prayers = ExistUserPrayers(self._pgsql, self._chat_id, await self._date.parse(update))
+        exist_prayers = PgExistUserPrayers(self._pgsql, self._chat_id, await self._date.parse(update))
         async with self._pgsql.transaction():
             origin_val = await self._origin.generate(update)
             expected_prayers_count = 5

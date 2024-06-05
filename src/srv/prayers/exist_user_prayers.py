@@ -21,7 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-from typing import final, override
+from typing import final, override, Protocol
 
 import attrs
 from databases import Database
@@ -31,10 +31,17 @@ from pyeo import elegant
 from integrations.tg.chat_id import ChatId
 
 
+class ExistUserPrayers(Protocol):
+    """Существующие времена намаза у пользователя."""
+
+    async def fetch(self) -> list[Record]:
+        """Получить."""
+
+
 @final
 @attrs.define(frozen=True)
 @elegant
-class ExistUserPrayers:
+class PgExistUserPrayers(ExistUserPrayers):
     """Существующие времена намаза у пользователя."""
 
     _pgsql: Database
