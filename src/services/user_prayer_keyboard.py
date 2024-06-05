@@ -29,9 +29,9 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.chat_id import ChatId
+from services.answers.answer import KeyboardInterface
 from srv.prayers.exist_user_prayers import ExistUserPrayers
 from srv.prayers.pg_new_prayers_at_user import PgNewPrayersAtUser
-from services.answers.answer import KeyboardInterface
 from srv.prayers.prayer_date import PrayerDate
 
 
@@ -51,7 +51,6 @@ class UserPrayersKeyboard(KeyboardInterface):
 
         :param update: Update
         :return: str
-        :raises ValueError: Пользователь запросил времена дважды
         """
         exist_prayers = ExistUserPrayers(self._pgsql, self._chat_id, await self._date.parse(update))
         prayers = await exist_prayers.fetch()
