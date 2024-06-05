@@ -109,7 +109,7 @@ async def test(pgsql, user):
             FkPrayerDate(datetime.date(2024, 6, 5)),
             849375,
         ).generate(FkUpdate())
-        for _ in range(2)
+        for _ in range(10)
     ]
     with pytest.raises(ValueError, match='Prayers doubled'):
         await asyncio.gather(*tasks)
