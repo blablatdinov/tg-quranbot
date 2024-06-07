@@ -20,71 +20,21 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
-import uuid
-from typing import Protocol, final, override
+from contextlib import suppress
+from typing import final, override
 
 import attrs
 import ujson
 from databases import Database
-from databases.interfaces import Record
 from pyeo import elegant
 
 from app_types.update import Update
+from exceptions.internal_exceptions import PrayerAtUserAlreadyExistsError
 from integrations.tg.chat_id import ChatId
 from services.answers.answer import KeyboardInterface
+from srv.prayers.exist_user_prayers import PgExistUserPrayers
+from srv.prayers.pg_new_prayers_at_user import PgNewPrayersAtUser
 from srv.prayers.prayer_date import PrayerDate
-
-
-@elegant
-class NewPrayersAtUser(Protocol):
-    """Новые записи о статусе намаза."""
-
-    async def create(self, date: datetime.date) -> None:
-        """Создать.
-
-        :param date: datetime.date
-        """
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class PgNewPrayersAtUser(NewPrayersAtUser):
-    """Новые записи о статусе намаза."""
-
-    _chat_id: ChatId
-    _pgsql: Database
-
-    async def create(self, date: datetime.date) -> None:
-        """Создать.
-
-        :param date: datetime.date
-        """
-        prayer_group_id = str(uuid.uuid4())
-        await self._pgsql.fetch_val(
-            'INSERT INTO prayers_at_user_groups VALUES (:prayer_group_id)', {'prayer_group_id': prayer_group_id},
-        )
-        query = '\n'.join([
-            'INSERT INTO prayers_at_user',
-            '(user_id, prayer_id, is_read, prayer_group_id)',
-            'SELECT',
-            '    :chat_id,',
-            '    p.prayer_id,',
-            '    false,',
-            '    :prayer_group_id',
-            'FROM prayers AS p',
-            'INNER JOIN cities AS c ON p.city_id = c.city_id',
-            'INNER JOIN users AS u ON u.city_id = c.city_id',
-            "WHERE p.day = :date AND u.chat_id = :chat_id AND p.name <> 'sunrise'",
-            'ORDER BY',
-            "    ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
-        ])
-        await self._pgsql.execute(query, {
-            'chat_id': int(self._chat_id),
-            'prayer_group_id': prayer_group_id,
-            'date': date,
-        })
 
 
 @final
@@ -104,13 +54,16 @@ class UserPrayersKeyboard(KeyboardInterface):
         :param update: Update
         :return: str
         """
-        prayers = await self._exists_prayers(update)
-        if not prayers:
+        with suppress(PrayerAtUserAlreadyExistsError):
             await PgNewPrayersAtUser(
                 self._chat_id,
                 self._pgsql,
             ).create(await self._date.parse(update))
-            prayers = await self._exists_prayers(update)
+        prayers = await PgExistUserPrayers(
+            self._pgsql,
+            self._chat_id,
+            await self._date.parse(update),
+        ).fetch()
         return ujson.dumps({
             'inline_keyboard': [[
                 {
@@ -121,20 +74,4 @@ class UserPrayersKeyboard(KeyboardInterface):
                 }
                 for user_prayer in prayers
             ]],
-        })
-
-    async def _exists_prayers(self, update: Update) -> list[Record]:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_exists_prayers"
-        select_query = '\n'.join([
-            'SELECT',
-            '    pau.prayer_at_user_id,',
-            '    pau.is_read',
-            'FROM prayers_at_user AS pau',
-            'INNER JOIN prayers AS p on pau.prayer_id = p.prayer_id',
-            "WHERE p.day = :date AND pau.user_id = :chat_id AND p.name <> 'sunrise'",
-            'ORDER BY pau.prayer_at_user_id',
-        ])
-        return await self._pgsql.fetch_all(select_query, {
-            'date': await self._date.parse(update),
-            'chat_id': int(self._chat_id),
         })

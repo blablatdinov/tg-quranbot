@@ -34,7 +34,7 @@ from integrations.tg.chat_id import TgChatId
 from integrations.tg.message_id import TgMessageId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgMessageIdAnswer, TgTextAnswer
 from integrations.tg.tg_answers.edit_message_text import TgEditMessageText
-from services.user_prayer_keyboard import PgNewPrayersAtUser
+from srv.prayers.pg_new_prayers_at_user import PgNewPrayersAtUser
 
 
 @final
