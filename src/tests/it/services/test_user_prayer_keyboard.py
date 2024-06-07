@@ -33,16 +33,17 @@ from srv.users.pg_user import PgUser
 
 
 @pytest.fixture()
-def city_id():
-    return 'e22d9142-a39b-4e99-92f7-2082766f0987'
+async def city_id(pgsql):
+    city = 'e22d9142-a39b-4e99-92f7-2082766f0987'
+    await pgsql.execute(
+        'INSERT INTO cities (city_id, name) VALUES (:city_id, :name)',
+        {'city_id': city, 'name': 'Kazan'},
+    )
+    return city
 
 
 @pytest.fixture()
 async def user(pgsql, city_id):
-    await pgsql.execute(
-        'INSERT INTO cities (city_id, name) VALUES (:city_id, :name)',
-        {'city_id': city_id, 'name': 'Kazan'},
-    )
     await pgsql.execute(
         'INSERT INTO users (chat_id, is_active, day, city_id) VALUES (:chat_id, :is_active, :day, :city_id)',
         {'chat_id': 849375, 'is_active': True, 'day': 2, 'city_id': city_id},
