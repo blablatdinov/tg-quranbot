@@ -24,9 +24,9 @@ import datetime
 import uuid
 from contextlib import suppress
 from typing import final
-from asyncpg.exceptions import UniqueViolationError
 
 import attrs
+from asyncpg.exceptions import UniqueViolationError
 from databases import Database
 from pyeo import elegant
 
