@@ -22,7 +22,9 @@
 
 import datetime
 import uuid
+from contextlib import suppress
 from typing import final
+from asyncpg.exceptions import UniqueViolationError
 
 import attrs
 from databases import Database
@@ -66,8 +68,9 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
             'ORDER BY',
             "    ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
         ])
-        await self._pgsql.execute(query, {
-            'chat_id': int(self._chat_id),
-            'prayer_group_id': prayer_group_id,
-            'date': date,
-        })
+        with suppress(UniqueViolationError):
+            await self._pgsql.execute(query, {
+                'chat_id': int(self._chat_id),
+                'prayer_group_id': prayer_group_id,
+                'date': date,
+            })

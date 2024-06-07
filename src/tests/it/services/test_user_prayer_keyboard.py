@@ -28,7 +28,6 @@ import pytest
 from app_types.update import FkUpdate
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from srv.prayers.prayer_date import FkPrayerDate
-from srv.prayers.prayers_protect_double import PrayersProtectDouble
 from srv.users.pg_user import PgUser
 
 
@@ -106,19 +105,13 @@ async def user(pgsql):
 @pytest.mark.parametrize('execution_number', range(10))
 async def test(pgsql, user, execution_number):
     tasks = [
-        PrayersProtectDouble(
-            UserPrayersKeyboard(
-                pgsql,
-                FkPrayerDate(datetime.date(2024, 6, 5)),
-                849375,
-            ),
+        UserPrayersKeyboard(
             pgsql,
-            849375,
             FkPrayerDate(datetime.date(2024, 6, 5)),
+            849375,
         ).generate(FkUpdate())
         for _ in range(10)
     ]
-    with pytest.raises(ValueError, match='Prayers doubled'):
-        await asyncio.gather(*tasks)
+    await asyncio.gather(*tasks)
 
     assert len(await pgsql.fetch_all('SELECT * FROM prayers_at_user')) == 5
