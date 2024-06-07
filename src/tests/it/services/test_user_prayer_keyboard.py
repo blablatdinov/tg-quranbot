@@ -34,7 +34,7 @@ from srv.users.pg_user import PgUser
 
 @pytest.fixture()
 def city_id():
-    return city_id
+    return 'e22d9142-a39b-4e99-92f7-2082766f0987'
 
 
 @pytest.fixture()
