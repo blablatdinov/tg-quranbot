@@ -26,6 +26,7 @@ import datetime
 import pytest
 
 from app_types.update import FkUpdate
+from exceptions.internal_exceptions import PrayerAtUserNotCreatedError
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from srv.prayers.prayer_date import FkPrayerDate
 from srv.users.pg_user import PgUser
@@ -46,6 +47,14 @@ async def user(pgsql):
             {'chat_id': 849375, 'is_active': True, 'day': 2, 'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987'},
         ],
     )
+    return [
+        PgUser.int_ctor(row['chat_id'], pgsql)
+        for row in await pgsql.fetch_all('SELECT chat_id FROM users')
+    ]
+
+
+@pytest.fixture()
+async def _prayers(pgsql):
     await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO prayers (prayer_id, name, time, city_id, day)',
@@ -96,13 +105,10 @@ async def user(pgsql):
             },
         ],
     )
-    return [
-        PgUser.int_ctor(row['chat_id'], pgsql)
-        for row in await pgsql.fetch_all('SELECT chat_id FROM users')
-    ]
 
 
 @pytest.mark.parametrize('execution_number', range(10))
+@pytest.mark.usefixtures('_prayers')
 async def test(pgsql, user, execution_number):
     tasks = [
         UserPrayersKeyboard(
@@ -115,3 +121,12 @@ async def test(pgsql, user, execution_number):
     await asyncio.gather(*tasks)
 
     assert len(await pgsql.fetch_all('SELECT * FROM prayers_at_user')) == 5
+
+
+async def test_empty(pgsql, user):
+    with pytest.raises(PrayerAtUserNotCreatedError):
+        await UserPrayersKeyboard(
+            pgsql,
+            FkPrayerDate(datetime.date(2024, 6, 5)),
+            849375,
+        ).generate(FkUpdate())

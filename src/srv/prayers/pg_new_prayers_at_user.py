@@ -22,7 +22,6 @@
 
 import datetime
 import uuid
-from contextlib import suppress
 from typing import final
 
 import attrs
@@ -30,6 +29,7 @@ from asyncpg.exceptions import UniqueViolationError
 from databases import Database
 from pyeo import elegant
 
+from exceptions.internal_exceptions import PrayerAtUserAlreadyExistsError, PrayerAtUserNotCreatedError
 from integrations.tg.chat_id import ChatId
 from srv.prayers.new_prayers_at_user import NewPrayersAtUser
 
@@ -67,10 +67,15 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
             "WHERE p.day = :date AND u.chat_id = :chat_id AND p.name <> 'sunrise'",
             'ORDER BY',
             "    ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
+            'RETURNING *',
         ])
-        with suppress(UniqueViolationError):
-            await self._pgsql.execute(query, {
+        try:
+            val = await self._pgsql.fetch_all(query, {
                 'chat_id': int(self._chat_id),
                 'prayer_group_id': prayer_group_id,
                 'date': date,
             })
+        except UniqueViolationError as err:
+            raise PrayerAtUserAlreadyExistsError from err
+        if not val:
+            raise PrayerAtUserNotCreatedError

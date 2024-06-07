@@ -76,3 +76,15 @@ class TelegramIntegrationsError(BaseAppError):
 @attrs.define(frozen=True)
 class UnreacheableError(BaseAppError):
     """Ошибка непредвиденного состояния."""
+
+
+@final
+@attrs.define(frozen=True)
+class PrayerAtUserAlreadyExistsError(BaseAppError):
+    """У пользователя уже сгенерированы времена намазов."""
+
+
+@final
+@attrs.define(frozen=True)
+class PrayerAtUserNotCreatedError(BaseAppError):
+    """"""

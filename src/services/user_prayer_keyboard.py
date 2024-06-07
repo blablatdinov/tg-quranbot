@@ -20,6 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+from contextlib import suppress
 from typing import final, override
 
 import attrs
@@ -28,6 +29,7 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
+from exceptions.internal_exceptions import PrayerAtUserAlreadyExistsError
 from integrations.tg.chat_id import ChatId
 from services.answers.answer import KeyboardInterface
 from srv.prayers.exist_user_prayers import PgExistUserPrayers
@@ -52,14 +54,16 @@ class UserPrayersKeyboard(KeyboardInterface):
         :param update: Update
         :return: str
         """
-        exist_prayers = PgExistUserPrayers(self._pgsql, self._chat_id, await self._date.parse(update))
-        prayers = await exist_prayers.fetch()
-        if not prayers:
+        with suppress(PrayerAtUserAlreadyExistsError):
             await PgNewPrayersAtUser(
                 self._chat_id,
                 self._pgsql,
             ).create(await self._date.parse(update))
-            prayers = await exist_prayers.fetch()
+        prayers = await PgExistUserPrayers(
+            self._pgsql,
+            self._chat_id,
+            await self._date.parse(update),
+        ).fetch()
         return ujson.dumps({
             'inline_keyboard': [[
                 {
