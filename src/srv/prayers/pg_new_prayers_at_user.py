@@ -47,8 +47,9 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
         """Создать.
 
         :param date: datetime.date
+        :raises PrayerAtUserAlreadyExistsError: у пользователя уже созданы времена намазов
+        :raises PrayerAtUserNotCreatedError: не удалось создать времена намазов
         """
-        # TODO: must fail on not create
         prayer_group_id = str(uuid.uuid4())
         await self._pgsql.fetch_val(
             'INSERT INTO prayers_at_user_groups VALUES (:prayer_group_id)', {'prayer_group_id': prayer_group_id},
@@ -70,12 +71,12 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
             'RETURNING *',
         ])
         try:
-            val = await self._pgsql.fetch_all(query, {
+            created_prayers = await self._pgsql.fetch_all(query, {
                 'chat_id': int(self._chat_id),
                 'prayer_group_id': prayer_group_id,
                 'date': date,
             })
         except UniqueViolationError as err:
             raise PrayerAtUserAlreadyExistsError from err
-        if not val:
+        if not created_prayers:
             raise PrayerAtUserNotCreatedError

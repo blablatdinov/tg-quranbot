@@ -20,6 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+# flake8: noqa: WPS202
+
 from typing import final, override
 
 import attrs
@@ -87,4 +89,4 @@ class PrayerAtUserAlreadyExistsError(BaseAppError):
 @final
 @attrs.define(frozen=True)
 class PrayerAtUserNotCreatedError(BaseAppError):
-    """"""
+    """Времена намазов не созданы."""
