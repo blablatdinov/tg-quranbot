@@ -32,8 +32,8 @@ from integrations.tg.chat_id import ChatId
 
 class _ExistUserPrayersDict(TypedDict):
 
-    date: datetime.date
-    chat_id: ChatId
+    prayer_at_user_id: int
+    is_read: bool
 
 
 class ExistUserPrayers(Protocol):
@@ -68,7 +68,13 @@ class PgExistUserPrayers(ExistUserPrayers):
             "WHERE p.day = :date AND pau.user_id = :chat_id AND p.name <> 'sunrise'",
             'ORDER BY pau.prayer_at_user_id',
         ])
-        return await self._pgsql.fetch_all(select_query, {
-            'date': self._date,
-            'chat_id': int(self._chat_id),
-        })
+        return [
+            {
+                'prayer_at_user_id': record['prayer_at_user_id'],
+                'is_read': record['is_read'],
+            }
+            for record in await self._pgsql.fetch_all(select_query, {
+                'date': self._date,
+                'chat_id': int(self._chat_id),
+            })
+        ]
