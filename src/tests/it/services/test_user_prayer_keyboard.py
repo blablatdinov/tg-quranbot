@@ -33,28 +33,25 @@ from srv.users.pg_user import PgUser
 
 
 @pytest.fixture()
-async def user(pgsql):
-    await pgsql.execute_many(
-        'INSERT INTO cities (city_id, name) VALUES (:city_id, :name)',
-        [
-            {'city_id': city_id, 'name': 'Kazan'}
-            for city_id in ('e22d9142-a39b-4e99-92f7-2082766f0987',)
-        ],
-    )
-    await pgsql.execute_many(
-        'INSERT INTO users (chat_id, is_active, day, city_id) VALUES (:chat_id, :is_active, :day, :city_id)',
-        [
-            {'chat_id': 849375, 'is_active': True, 'day': 2, 'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987'},
-        ],
-    )
-    return [
-        PgUser.int_ctor(row['chat_id'], pgsql)
-        for row in await pgsql.fetch_all('SELECT chat_id FROM users')
-    ]
+def city_id():
+    return city_id
 
 
 @pytest.fixture()
-async def _prayers(pgsql):
+async def user(pgsql, city_id):
+    await pgsql.execute(
+        'INSERT INTO cities (city_id, name) VALUES (:city_id, :name)',
+        {'city_id': city_id, 'name': 'Kazan'},
+    )
+    await pgsql.execute(
+        'INSERT INTO users (chat_id, is_active, day, city_id) VALUES (:chat_id, :is_active, :day, :city_id)',
+        {'chat_id': 849375, 'is_active': True, 'day': 2, 'city_id': city_id},
+    )
+    return PgUser.int_ctor(849375, pgsql)
+
+
+@pytest.fixture()
+async def _prayers(pgsql, city_id):
     await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO prayers (prayer_id, name, time, city_id, day)',
@@ -65,42 +62,42 @@ async def _prayers(pgsql):
                 'prayer_id': 1,
                 'prayer_name': 'fajr',
                 'time': datetime.time(4, 30),
-                'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
+                'city_id': city_id,
                 'day': datetime.date(2024, 6, 5),
             },
             {
                 'prayer_id': 2,
                 'prayer_name': 'sunrise',
                 'time': datetime.time(5, 30),
-                'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
+                'city_id': city_id,
                 'day': datetime.date(2024, 6, 5),
             },
             {
                 'prayer_id': 3,
                 'prayer_name': 'dhuhr',
                 'time': datetime.time(6, 30),
-                'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
+                'city_id': city_id,
                 'day': datetime.date(2024, 6, 5),
             },
             {
                 'prayer_id': 4,
                 'prayer_name': 'asr',
                 'time': datetime.time(7, 30),
-                'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
+                'city_id': city_id,
                 'day': datetime.date(2024, 6, 5),
             },
             {
                 'prayer_id': 5,
                 'prayer_name': 'maghrib',
                 'time': datetime.time(8, 30),
-                'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
+                'city_id': city_id,
                 'day': datetime.date(2024, 6, 5),
             },
             {
                 'prayer_id': 6,
                 'prayer_name': "isha'a",
                 'time': datetime.time(9, 30),
-                'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
+                'city_id': city_id,
                 'day': datetime.date(2024, 6, 5),
             },
         ],
@@ -114,7 +111,7 @@ async def test(pgsql, user, execution_number):
         UserPrayersKeyboard(
             pgsql,
             FkPrayerDate(datetime.date(2024, 6, 5)),
-            849375,
+            await user.chat_id(),
         ).generate(FkUpdate())
         for _ in range(10)
     ]
@@ -128,5 +125,5 @@ async def test_empty(pgsql, user):
         await UserPrayersKeyboard(
             pgsql,
             FkPrayerDate(datetime.date(2024, 6, 5)),
-            849375,
+            await user.chat_id(),
         ).generate(FkUpdate())
