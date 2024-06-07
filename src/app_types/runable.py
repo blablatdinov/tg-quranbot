@@ -20,6 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+# TODO #899 Перенести классы в отдельные файлы
+
 from typing import Protocol
 
 from pyeo import elegant
