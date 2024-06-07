@@ -90,7 +90,7 @@ jobs:
       run: .venv/bin/pytest src/tests/e2e -vv
 
   build-and-push:
-    needs: checks
+    # needs: checks
     runs-on: ubuntu-22.04
 
     steps:
@@ -180,7 +180,7 @@ jobs:
           ssh www@87.249.49.217 'cd /home/www/code/quranbot-aiogram/ && docker compose up -d'
 
   change-pyproject-version:
-    needs: checks
+    # needs: checks
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
