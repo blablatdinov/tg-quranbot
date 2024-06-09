@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы
+# TODO #899 Перенести классы в отдельные файлы 19
 
 from typing import SupportsInt, TypeAlias, final, override
 
