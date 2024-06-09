@@ -20,6 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+# TODO #899 Перенести классы в отдельные файлы 1
+
 from typing import TypeAlias, final, override
 
 import attrs
