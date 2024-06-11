@@ -23,13 +23,14 @@
 # TODO #899 Перенести классы в отдельные файлы 21
 
 import asyncio
-from itertools import batched, chain
+from itertools import chain
 from typing import Protocol, final, override
 from urllib import parse as url_parse
 
 import attrs
 import httpx
 import ujson
+from more_itertools import distribute
 from pyeo import elegant
 
 from app_types.logger import LogSink
@@ -154,7 +155,7 @@ class BulkSendableAnswer(SendableInterface):
             for answer in self._answers
         ]
         responses: list[dict] = []
-        for sendable_slice in batched(tasks, 10):
+        for sendable_slice in distribute(10, tasks):
             res_list = await asyncio.gather(*sendable_slice)
             for res in chain.from_iterable(res_list):
                 responses.append(res)  # noqa: PERF402
