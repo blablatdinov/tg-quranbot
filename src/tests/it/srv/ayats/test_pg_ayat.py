@@ -28,8 +28,8 @@ import pytz
 from eljson.json_doc import JsonDoc
 
 from settings import BASE_DIR
-from srv.ayats.ayat import FkAyat
 from srv.ayats.ayat_identifier import FkIdentifier
+from srv.ayats.fk_ayat import FkAyat
 from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
 from srv.files.file import FkFile
 

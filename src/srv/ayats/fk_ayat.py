@@ -20,31 +20,52 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Protocol, TypeAlias
+from typing import final, override
 
+import attrs
 from eljson.json import Json
 from pyeo import elegant
 
-from app_types.stringable import AsyncSupportsStr
+from srv.ayats.ayat import Ayat
 from srv.ayats.ayat_identifier import AyatIdentifier
 from srv.files.file import TgFile
 
-AyatText: TypeAlias = str
 
-
+@final
+@attrs.define(frozen=True)
 @elegant
-class Ayat(AsyncSupportsStr, Protocol):
-    """Интерфейс аята."""
+class FkAyat(Ayat):
+    """Ayat stub."""
 
+    _id: AyatIdentifier
+    _text: str
+    _audio: TgFile
+
+    @override
     def identifier(self) -> AyatIdentifier:
-        """Идентификатор аята."""
+        """Идентификатор.
 
-    async def to_str(self) -> AyatText:
-        """Строковое представление."""
+        :return: AyatIdentifier
+        """
+        return self._id
 
+    @override
+    async def to_str(self) -> str:
+        """Текст.
+
+        :return: str
+        """
+        return self._text
+
+    @override
     async def audio(self) -> TgFile:
-        """Аудио файл."""
+        """Аудио.
 
+        :return: TgFile
+        """
+        return self._audio
+
+    @override
     async def change(self, event_body: Json) -> None:
         """Изменить содержимое аята.
 
