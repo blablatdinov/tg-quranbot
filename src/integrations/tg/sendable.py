@@ -31,6 +31,7 @@ import attrs
 import httpx
 import ujson
 from pyeo import elegant
+from more_itertools import distribute
 
 from app_types.logger import LogSink
 from app_types.update import Update
@@ -154,7 +155,7 @@ class BulkSendableAnswer(SendableInterface):
             for answer in self._answers
         ]
         responses: list[dict] = []
-        for sendable_slice in batched(tasks, 10):
+        for sendable_slice in distribute(tasks, 10):
             res_list = await asyncio.gather(*sendable_slice)
             for res in chain.from_iterable(res_list):
                 responses.append(res)  # noqa: PERF402
