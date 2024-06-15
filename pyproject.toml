@@ -82,6 +82,7 @@ fixit = "2.1.0"
 deltaver = "0.2.2"
 yoyo-migrations = "8.2.0"
 sqlfluff = "3.0.7"
+pylint = "^3.2.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
