@@ -28,6 +28,8 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+      - name: Checkout master
+        run: git fetch origin master:master
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
@@ -46,6 +48,8 @@ jobs:
         run: .venv/bin/refurb src
       - name: Lint via fixit
         run: .venv/bin/fixit lint src
+      - name: Lint via pylint
+        run: .venv/bin/pylint src | .venv/bin/ondivi
       - name: Check types with mypy
         run: .venv/bin/mypy src
       - name: sqlfluff
