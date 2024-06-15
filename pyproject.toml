@@ -181,6 +181,14 @@ ignore = [184]
 [tool.deltaver]
 fail_on_avg = 50
 fail_on_max = 180
+excluded = [
+  "smmap",  # https://github.com/gitpython-developers/gitdb
+  # ondivi 0.4.1
+  # └── gitpython >=2.1.15
+  #     └── gitdb >=4.0.1,<5
+  #         └── smmap >=3.0.1,<6
+]
+
 
 [tool.mutmut]
 paths_to_mutate="src/app_types/,src/db/,src/exceptions/,src/handlers/,src/integrations/,main.py,quranbot_answer.py,schedule_app.py,src/services/,src/settings/,src/srv/"
