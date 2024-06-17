@@ -27,8 +27,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 <a href="https://codeclimate.com/github/blablatdinov/quranbot-aiogram/maintainability"><img src="https://api.codeclimate.com/v1/badges/e4206df635326574026e/maintainability" /></a>
 [![codecov](https://codecov.io/gh/blablatdinov/quranbot-aiogram/graph/badge.svg?token=4862UGV4AB)](https://codecov.io/gh/blablatdinov/quranbot-aiogram)
 [![wemake-python-styleguide](https://img.shields.io/badge/style-wemake-000000.svg)](https://github.com/wemake-services/wemake-python-styleguide)
-![](https://tokei.rs/b1/github/blablatdinov/quranbot-aiogram)
-[![Hits-of-Code](https://hitsofcode.com/github/blablatdinov/quranbot-aiogram)](https://hitsofcode.com/github/blablatdinov/quranbot-aiogram/view)
+![](https://tokei.rs/b1/github/blablatdinov/tg-quranbot)
+[![Hits-of-Code](https://hitsofcode.com/github/blablatdinov/tg-quranbot)](https://hitsofcode.com/github/blablatdinov/tg-quranbot/view)
 ![Custom badge](https://img.shields.io/endpoint?style=flat&url=https://quranbot.ilaletdinov.ru/api/v1/count-github-badge)
 
 [Документация](docs)
