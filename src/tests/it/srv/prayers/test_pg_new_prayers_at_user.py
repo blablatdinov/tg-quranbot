@@ -21,6 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
+import uuid
 
 import pytest
 
@@ -44,11 +45,11 @@ async def cities(pgsql):
     )
     return (
         FkCity(
-            'e22d9142-a39b-4e99-92f7-2082766f0987',
+            uuid.UUID('e22d9142-a39b-4e99-92f7-2082766f0987'),
             'Kazan',
         ),
         FkCity(
-            '4bd2af2a-aec9-4660-b710-405940f6e578',
+            uuid.UUID('4bd2af2a-aec9-4660-b710-405940f6e578'),
             'NabChelny',
         ),
     )
