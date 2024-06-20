@@ -24,10 +24,10 @@ import datetime
 
 import pytest
 
+from srv.prayers.city import FkCity
 from srv.prayers.pg_new_prayers_at_user import PgNewPrayersAtUser
 from srv.prayers.update_user_city import PgUpdatedUserCity
 from srv.users.pg_user import PgUser
-from srv.prayers.city import FkCity
 
 
 @pytest.fixture()
@@ -49,7 +49,7 @@ async def cities(pgsql):
         ),
         FkCity(
             '4bd2af2a-aec9-4660-b710-405940f6e578',
-            'NabChelny'
+            'NabChelny',
         ),
     )
 
@@ -63,8 +63,9 @@ async def user(pgsql, cities):
     return PgUser.int_ctor(849375, pgsql)
 
 
+# TODO #979 Исправить noqa WPS217 Found too many await expressions: 13 > 5
 @pytest.fixture()
-async def _prayers(pgsql, cities):
+async def _prayers(pgsql, cities):  # noqa: WPS217
     await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO prayers (prayer_id, name, time, city_id, day)',
@@ -159,9 +160,10 @@ async def _prayers(pgsql, cities):
     )
 
 
+# TODO #979 Исправить для test noqa WPS217 Found too many await expressions: 13 > 5
 @pytest.mark.usefixtures('_prayers')
 @pytest.mark.skip()
-async def test(pgsql, user, cities):
+async def test(pgsql, user, cities):  # noqa: WPS217
     await PgNewPrayersAtUser(
         await user.chat_id(),
         pgsql,
