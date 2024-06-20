@@ -56,8 +56,8 @@ jobs:
           RABBITMQ_DEFAULT_PASS: pass
         options: --health-cmd "rabbitmqctl status" --health-interval 10s --health-timeout 5s --health-retries 5
 
-    # uses: blablatdinov/quranbot-aiogram/.github/workflows/installing-dependencies.yml@master
-    # uses: blablatdinov/quranbot-aiogram/.github/workflows/lint.yml@master
+    # uses: blablatdinov/tg-quranbot/.github/workflows/installing-dependencies.yml@master
+    # uses: blablatdinov/tg-quranbot/.github/workflows/lint.yml@master
 
     steps:
     - uses: actions/checkout@v4
@@ -109,7 +109,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: blablatdinov/quranbot-aiogram:${{ steps.tag_name.outputs.TAG_NAME }}
+          tags: blablatdinov/tg-quranbot:${{ steps.tag_name.outputs.TAG_NAME }}
 
   apply-migrations:
     needs: build-and-push
@@ -152,21 +152,21 @@ jobs:
           echo 'version: "3.3"
           services:
             qbot:
-              image: blablatdinov/quranbot-aiogram:${{ steps.tag_name.outputs.TAG_NAME }}
+              image: blablatdinov/tg-quranbot:${{ steps.tag_name.outputs.TAG_NAME }}
               command: .venv/bin/python main.py run_polling
               restart: always
               volumes:
                 - .env:/.env
 
             event_receiver:
-              image: blablatdinov/quranbot-aiogram:${{ steps.tag_name.outputs.TAG_NAME }}
+              image: blablatdinov/tg-quranbot:${{ steps.tag_name.outputs.TAG_NAME }}
               command: .venv/bin/python main.py receive_events
               restart: always
               volumes:
                 - .env:/.env
 
             scheduler:
-              image: blablatdinov/quranbot-aiogram:${{ steps.tag_name.outputs.TAG_NAME }}
+              image: blablatdinov/tg-quranbot:${{ steps.tag_name.outputs.TAG_NAME }}
               command: .venv/bin/python scheduler_entry.py
               restart: always
               volumes:
@@ -176,8 +176,8 @@ jobs:
       - name: Deploy with docker-compose on remote server
         run: |
           ssh www@87.249.49.217 'echo "Connected!"'
-          scp docker-compose.yml www@87.249.49.217:/home/www/code/quranbot-aiogram/docker-compose.yml
-          ssh www@87.249.49.217 'cd /home/www/code/quranbot-aiogram/ && docker compose up -d'
+          scp docker-compose.yml www@87.249.49.217:/home/www/code/tg-quranbot/docker-compose.yml
+          ssh www@87.249.49.217 'cd /home/www/code/tg-quranbot/ && docker compose up -d'
 
   change-pyproject-version:
     # needs: checks

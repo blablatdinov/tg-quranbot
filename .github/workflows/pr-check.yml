@@ -33,7 +33,7 @@ permissions:
 
 jobs:
   setup:
-    uses: blablatdinov/quranbot-aiogram/.github/workflows/installing-dependencies.yml@master
+    uses: blablatdinov/tg-quranbot/.github/workflows/installing-dependencies.yml@master
 
   tests:
     needs: setup
@@ -91,4 +91,4 @@ jobs:
 
   lint:
     needs: setup
-    uses: blablatdinov/quranbot-aiogram/.github/workflows/lint.yml@master
+    uses: blablatdinov/tg-quranbot/.github/workflows/lint.yml@master
