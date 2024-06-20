@@ -49,7 +49,7 @@ jobs:
       - name: Lint via fixit
         run: .venv/bin/fixit lint src
       - name: Lint via pylint
-        run: .venv/bin/pylint src | .venv/bin/ondivi
+        run: .venv/bin/pylint src | .venv/bin/ondivi --only-violations
       - name: Check types with mypy
         run: .venv/bin/mypy src
       - name: sqlfluff
