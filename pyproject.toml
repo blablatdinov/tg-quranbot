@@ -612,7 +612,7 @@ timeout-methods = [
 
 [tool.pylint.miscellaneous]
 # List of note tags to take in consideration, separated by a comma.
-notes = ["FIXME", "XXX", "TODO"]
+notes = ["FIXME", "XXX"]
 
 # Regular expression of note tags to take in consideration.
 # notes-rgx =
@@ -773,5 +773,5 @@ redefining-builtins-modules = ["six.moves", "past.builtins", "future.builtins", 
 
 [tool.pylint.'MESSAGES CONTROL']
 per-file-ignores = [
-  "tests:redefined-outer-name",
+  "src/tests:redefined-outer-name",
 ]
