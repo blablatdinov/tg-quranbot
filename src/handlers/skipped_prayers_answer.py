@@ -48,6 +48,7 @@ IS_READ_LITERAL: Final = 'is_read'
 class PrayerNames(enum.Enum):
 
     fajr = ('fajr', 'Иртәнге')
+    sunrise = ('sunrise', 'Рассвет')
     dhuhr = ('dhuhr', 'Өйлә')
     asr = ('asr', 'Икенде')
     maghrib = ('maghrib', 'Ахшам')
@@ -55,7 +56,11 @@ class PrayerNames(enum.Enum):
 
     @classmethod
     def names(cls) -> tuple[str, ...]:
-        return tuple(field.name for field in cls)
+        return tuple(field.name for field in cls.fields_without_sunrise())
+
+    @classmethod
+    def fields_without_sunrise(cls) -> tuple['PrayerNames', ...]:
+        return tuple(field for field in cls if field.value[0] != 'sunrise')
 
 
 @final
@@ -76,7 +81,7 @@ class SkippedPrayersKeyboard(KeyboardInterface):
                     'text': '{0}: (-1)'.format(field.value[1]),
                     'callback_data': 'decr({0})'.format(field.name),
                 }]
-                for field in PrayerNames
+                for field in PrayerNames.fields_without_sunrise()
             ],
         })
 

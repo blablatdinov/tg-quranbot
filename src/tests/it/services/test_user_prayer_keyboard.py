@@ -30,6 +30,7 @@ import pytest
 from app_types.update import FkUpdate
 from exceptions.internal_exceptions import PrayerAtUserNotCreatedError
 from services.user_prayer_keyboard import UserPrayersKeyboard
+from handlers.skipped_prayers_answer import PrayerNames
 from srv.prayers.city import FkCity
 from srv.prayers.prayer_date import FkPrayerDate
 from srv.prayers.update_user_city import PgUpdatedUserCity
@@ -91,14 +92,7 @@ async def _prayers(pgsql, cities):
             for pr_id, pr_name, pr_time, city in zip(
                 range(1, 13),
                 chain.from_iterable(repeat(
-                    [  # TODO #979 must be from PrayerNames
-                        'fajr',
-                        'sunrise',
-                        'dhuhr',
-                        'asr',
-                        'maghrib',
-                        "isha'a",
-                    ],
+                    [field.value[0] for field in PrayerNames],
                     2,
                 )),
                 chain.from_iterable(repeat(prayer_times, 2)),
