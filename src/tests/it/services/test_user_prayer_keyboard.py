@@ -31,8 +31,9 @@ from exceptions.internal_exceptions import PrayerAtUserNotCreatedError
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from srv.prayers.city import FkCity
 from srv.prayers.prayer_date import FkPrayerDate
-from srv.users.pg_user import PgUser
 from srv.prayers.update_user_city import PgUpdatedUserCity
+from srv.users.pg_user import PgUser
+# from handlers.skipped_prayers_answer import PrayerNames
 
 
 @pytest.fixture()
@@ -71,6 +72,7 @@ async def user(pgsql, cities):
 # TODO #979 Исправить noqa WPS217 Found too many await expressions: 13 > 5
 @pytest.fixture()
 async def _prayers(pgsql, cities):  # noqa: WPS217
+    # prayer_names = 
     await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO prayers (prayer_id, name, time, city_id, day)',
@@ -165,6 +167,21 @@ async def _prayers(pgsql, cities):  # noqa: WPS217
     )
 
 
+@pytest.fixture()
+async def user_with_changed_city(user, pgsql, cities):
+    await UserPrayersKeyboard(
+        pgsql,
+        FkPrayerDate(datetime.date(2024, 6, 5)),
+        await user.chat_id(),
+    ).generate(FkUpdate())
+    await PgUpdatedUserCity(
+        cities[1],
+        await user.chat_id(),
+        pgsql,
+    ).update()
+    return user
+
+
 @pytest.mark.parametrize('execution_number', range(10))
 @pytest.mark.usefixtures('_prayers')
 async def test(pgsql, user, execution_number):
@@ -190,23 +207,12 @@ async def test_empty(pgsql, user):
         ).generate(FkUpdate())
 
 
-# TODO #979 Исправить для test noqa WPS217 Found too many await expressions: 13 > 5
 @pytest.mark.usefixtures('_prayers')
-async def test_change_city(pgsql, user, cities):  # noqa: WPS217
+async def test_change_city(pgsql, user_with_changed_city):
     await UserPrayersKeyboard(
         pgsql,
         FkPrayerDate(datetime.date(2024, 6, 5)),
-        await user.chat_id(),
-    ).generate(FkUpdate())
-    await PgUpdatedUserCity(
-        cities[1],
-        await user.chat_id(),
-        pgsql,
-    ).update()
-    await UserPrayersKeyboard(
-        pgsql,
-        FkPrayerDate(datetime.date(2024, 6, 5)),
-        await user.chat_id(),
+        await user_with_changed_city.chat_id(),
     ).generate(FkUpdate())
 
     assert await pgsql.fetch_val('SELECT COUNT(*) FROM prayers_at_user') == 5

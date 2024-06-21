@@ -34,6 +34,10 @@ from srv.prayers.new_prayers_at_user import NewPrayersAtUser
 @attrs.define(frozen=True)
 @elegant
 class PgCityChangeSafeUserPrayers(NewPrayersAtUser):
+    """Предохранитель от создания времени намаза при смене города.
+
+    https://github.com/blablatdinov/tg-quranbot/issues/979
+    """
 
     _origin: NewPrayersAtUser
     _exist_user_prayers: ExistUserPrayers
@@ -44,6 +48,7 @@ class PgCityChangeSafeUserPrayers(NewPrayersAtUser):
         :param date: datetime.date
         """
         exist_user_prayers = await self._exist_user_prayers.fetch()
-        if len(exist_user_prayers) == 5:
+        prayers_count = 5
+        if len(exist_user_prayers) == prayers_count:
             return
         await self._origin.create(date)
