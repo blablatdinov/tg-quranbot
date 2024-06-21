@@ -23,6 +23,7 @@
 import asyncio
 import datetime
 import uuid
+from itertools import chain, repeat
 
 import pytest
 
@@ -33,7 +34,6 @@ from srv.prayers.city import FkCity
 from srv.prayers.prayer_date import FkPrayerDate
 from srv.prayers.update_user_city import PgUpdatedUserCity
 from srv.users.pg_user import PgUser
-# from handlers.skipped_prayers_answer import PrayerNames
 
 
 @pytest.fixture()
@@ -69,10 +69,12 @@ async def user(pgsql, cities):
     return PgUser.int_ctor(849375, pgsql)
 
 
-# TODO #979 Исправить noqa WPS217 Found too many await expressions: 13 > 5
 @pytest.fixture()
-async def _prayers(pgsql, cities):  # noqa: WPS217
-    # prayer_names = 
+async def _prayers(pgsql, cities):
+    prayer_times = [
+        datetime.time(hour, 30)
+        for hour in range(4, 10)
+    ]
     await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO prayers (prayer_id, name, time, city_id, day)',
@@ -80,89 +82,29 @@ async def _prayers(pgsql, cities):  # noqa: WPS217
         ]),
         [
             {
-                'prayer_id': 1,
-                'prayer_name': 'fajr',
-                'time': datetime.time(4, 30),
-                'city_id': await cities[0].city_id(),
+                'prayer_id': pr_id,
+                'prayer_name': pr_name,
+                'time': pr_time,
+                'city_id': await city.city_id(),
                 'day': datetime.date(2024, 6, 5),
-            },
-            {
-                'prayer_id': 2,
-                'prayer_name': 'sunrise',
-                'time': datetime.time(5, 30),
-                'city_id': await cities[0].city_id(),
-                'day': datetime.date(2024, 6, 5),
-            },
-            {
-                'prayer_id': 3,
-                'prayer_name': 'dhuhr',
-                'time': datetime.time(6, 30),
-                'city_id': await cities[0].city_id(),
-                'day': datetime.date(2024, 6, 5),
-            },
-            {
-                'prayer_id': 4,
-                'prayer_name': 'asr',
-                'time': datetime.time(7, 30),
-                'city_id': await cities[0].city_id(),
-                'day': datetime.date(2024, 6, 5),
-            },
-            {
-                'prayer_id': 5,
-                'prayer_name': 'maghrib',
-                'time': datetime.time(8, 30),
-                'city_id': await cities[0].city_id(),
-                'day': datetime.date(2024, 6, 5),
-            },
-            {
-                'prayer_id': 6,
-                'prayer_name': "isha'a",
-                'time': datetime.time(9, 30),
-                'city_id': await cities[0].city_id(),
-                'day': datetime.date(2024, 6, 5),
-            },
-            {
-                'prayer_id': 7,
-                'prayer_name': 'fajr',
-                'time': datetime.time(4, 30),
-                'city_id': await cities[1].city_id(),
-                'day': datetime.date(2024, 6, 5),
-            },
-            {
-                'prayer_id': 8,
-                'prayer_name': 'sunrise',
-                'time': datetime.time(5, 30),
-                'city_id': await cities[1].city_id(),
-                'day': datetime.date(2024, 6, 5),
-            },
-            {
-                'prayer_id': 9,
-                'prayer_name': 'dhuhr',
-                'time': datetime.time(6, 30),
-                'city_id': await cities[1].city_id(),
-                'day': datetime.date(2024, 6, 5),
-            },
-            {
-                'prayer_id': 10,
-                'prayer_name': 'asr',
-                'time': datetime.time(7, 30),
-                'city_id': await cities[1].city_id(),
-                'day': datetime.date(2024, 6, 5),
-            },
-            {
-                'prayer_id': 11,
-                'prayer_name': 'maghrib',
-                'time': datetime.time(8, 30),
-                'city_id': await cities[1].city_id(),
-                'day': datetime.date(2024, 6, 5),
-            },
-            {
-                'prayer_id': 12,
-                'prayer_name': "isha'a",
-                'time': datetime.time(9, 30),
-                'city_id': await cities[1].city_id(),
-                'day': datetime.date(2024, 6, 5),
-            },
+            }
+            for pr_id, pr_name, pr_time, city in zip(
+                range(1, 13),
+                chain.from_iterable(repeat(
+                    [  # TODO #979 must be from PrayerNames
+                        'fajr',
+                        'sunrise',
+                        'dhuhr',
+                        'asr',
+                        'maghrib',
+                        "isha'a",
+                    ],
+                    2,
+                )),
+                chain.from_iterable(repeat(prayer_times, 2)),
+                chain(repeat(cities[0], 6), repeat(cities[1], 6)),
+                strict=True,
+            )
         ],
     )
 
