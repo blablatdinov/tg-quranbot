@@ -22,37 +22,55 @@
 
 import asyncio
 import datetime
+import uuid
 
 import pytest
 
 from app_types.update import FkUpdate
 from exceptions.internal_exceptions import PrayerAtUserNotCreatedError
 from services.user_prayer_keyboard import UserPrayersKeyboard
+from srv.prayers.city import FkCity
 from srv.prayers.prayer_date import FkPrayerDate
 from srv.users.pg_user import PgUser
+from srv.prayers.update_user_city import PgUpdatedUserCity
 
 
 @pytest.fixture()
-async def city_id(pgsql):
-    city = 'e22d9142-a39b-4e99-92f7-2082766f0987'
-    await pgsql.execute(
+async def cities(pgsql):
+    await pgsql.execute_many(
         'INSERT INTO cities (city_id, name) VALUES (:city_id, :name)',
-        {'city_id': city, 'name': 'Kazan'},
+        [
+            {'city_id': city_id, 'name': city_name}
+            for city_id, city_name in (
+                ('e22d9142-a39b-4e99-92f7-2082766f0987', 'Kazan'),
+                ('4bd2af2a-aec9-4660-b710-405940f6e578', 'NabChelny'),
+            )
+        ],
     )
-    return city
+    return (
+        FkCity(
+            uuid.UUID('e22d9142-a39b-4e99-92f7-2082766f0987'),
+            'Kazan',
+        ),
+        FkCity(
+            uuid.UUID('4bd2af2a-aec9-4660-b710-405940f6e578'),
+            'NabChelny',
+        ),
+    )
 
 
 @pytest.fixture()
-async def user(pgsql, city_id):
+async def user(pgsql, cities):
     await pgsql.execute(
         'INSERT INTO users (chat_id, is_active, day, city_id) VALUES (:chat_id, :is_active, :day, :city_id)',
-        {'chat_id': 849375, 'is_active': True, 'day': 2, 'city_id': city_id},
+        {'chat_id': 849375, 'is_active': True, 'day': 2, 'city_id': await cities[0].city_id()},
     )
     return PgUser.int_ctor(849375, pgsql)
 
 
+# TODO #979 Исправить noqa WPS217 Found too many await expressions: 13 > 5
 @pytest.fixture()
-async def _prayers(pgsql, city_id):
+async def _prayers(pgsql, cities):  # noqa: WPS217
     await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO prayers (prayer_id, name, time, city_id, day)',
@@ -63,42 +81,84 @@ async def _prayers(pgsql, city_id):
                 'prayer_id': 1,
                 'prayer_name': 'fajr',
                 'time': datetime.time(4, 30),
-                'city_id': city_id,
+                'city_id': await cities[0].city_id(),
                 'day': datetime.date(2024, 6, 5),
             },
             {
                 'prayer_id': 2,
                 'prayer_name': 'sunrise',
                 'time': datetime.time(5, 30),
-                'city_id': city_id,
+                'city_id': await cities[0].city_id(),
                 'day': datetime.date(2024, 6, 5),
             },
             {
                 'prayer_id': 3,
                 'prayer_name': 'dhuhr',
                 'time': datetime.time(6, 30),
-                'city_id': city_id,
+                'city_id': await cities[0].city_id(),
                 'day': datetime.date(2024, 6, 5),
             },
             {
                 'prayer_id': 4,
                 'prayer_name': 'asr',
                 'time': datetime.time(7, 30),
-                'city_id': city_id,
+                'city_id': await cities[0].city_id(),
                 'day': datetime.date(2024, 6, 5),
             },
             {
                 'prayer_id': 5,
                 'prayer_name': 'maghrib',
                 'time': datetime.time(8, 30),
-                'city_id': city_id,
+                'city_id': await cities[0].city_id(),
                 'day': datetime.date(2024, 6, 5),
             },
             {
                 'prayer_id': 6,
                 'prayer_name': "isha'a",
                 'time': datetime.time(9, 30),
-                'city_id': city_id,
+                'city_id': await cities[0].city_id(),
+                'day': datetime.date(2024, 6, 5),
+            },
+            {
+                'prayer_id': 7,
+                'prayer_name': 'fajr',
+                'time': datetime.time(4, 30),
+                'city_id': await cities[1].city_id(),
+                'day': datetime.date(2024, 6, 5),
+            },
+            {
+                'prayer_id': 8,
+                'prayer_name': 'sunrise',
+                'time': datetime.time(5, 30),
+                'city_id': await cities[1].city_id(),
+                'day': datetime.date(2024, 6, 5),
+            },
+            {
+                'prayer_id': 9,
+                'prayer_name': 'dhuhr',
+                'time': datetime.time(6, 30),
+                'city_id': await cities[1].city_id(),
+                'day': datetime.date(2024, 6, 5),
+            },
+            {
+                'prayer_id': 10,
+                'prayer_name': 'asr',
+                'time': datetime.time(7, 30),
+                'city_id': await cities[1].city_id(),
+                'day': datetime.date(2024, 6, 5),
+            },
+            {
+                'prayer_id': 11,
+                'prayer_name': 'maghrib',
+                'time': datetime.time(8, 30),
+                'city_id': await cities[1].city_id(),
+                'day': datetime.date(2024, 6, 5),
+            },
+            {
+                'prayer_id': 12,
+                'prayer_name': "isha'a",
+                'time': datetime.time(9, 30),
+                'city_id': await cities[1].city_id(),
                 'day': datetime.date(2024, 6, 5),
             },
         ],
@@ -128,3 +188,25 @@ async def test_empty(pgsql, user):
             FkPrayerDate(datetime.date(2024, 6, 5)),
             await user.chat_id(),
         ).generate(FkUpdate())
+
+
+# TODO #979 Исправить для test noqa WPS217 Found too many await expressions: 13 > 5
+@pytest.mark.usefixtures('_prayers')
+async def test_change_city(pgsql, user, cities):  # noqa: WPS217
+    await UserPrayersKeyboard(
+        pgsql,
+        FkPrayerDate(datetime.date(2024, 6, 5)),
+        await user.chat_id(),
+    ).generate(FkUpdate())
+    await PgUpdatedUserCity(
+        cities[1],
+        await user.chat_id(),
+        pgsql,
+    ).update()
+    await UserPrayersKeyboard(
+        pgsql,
+        FkPrayerDate(datetime.date(2024, 6, 5)),
+        await user.chat_id(),
+    ).generate(FkUpdate())
+
+    assert await pgsql.fetch_val('SELECT COUNT(*) FROM prayers_at_user') == 5

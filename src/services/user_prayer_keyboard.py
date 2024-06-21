@@ -33,6 +33,7 @@ from exceptions.internal_exceptions import PrayerAtUserAlreadyExistsError
 from integrations.tg.chat_id import ChatId
 from services.answers.answer import KeyboardInterface
 from srv.prayers.exist_user_prayers import PgExistUserPrayers
+from srv.prayers.pg_city_change_safe_user_prayers import PgCityChangeSafeUserPrayers
 from srv.prayers.pg_new_prayers_at_user import PgNewPrayersAtUser
 from srv.prayers.prayer_date import PrayerDate
 
@@ -55,9 +56,16 @@ class UserPrayersKeyboard(KeyboardInterface):
         :return: str
         """
         with suppress(PrayerAtUserAlreadyExistsError):
-            await PgNewPrayersAtUser(
-                self._chat_id,
-                self._pgsql,
+            await PgCityChangeSafeUserPrayers(
+                PgNewPrayersAtUser(
+                    self._chat_id,
+                    self._pgsql,
+                ),
+                PgExistUserPrayers(
+                    self._pgsql,
+                    self._chat_id,
+                    await self._date.parse(update),
+                ),
             ).create(await self._date.parse(update))
         prayers = await PgExistUserPrayers(
             self._pgsql,
