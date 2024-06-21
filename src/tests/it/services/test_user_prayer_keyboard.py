@@ -29,8 +29,8 @@ import pytest
 
 from app_types.update import FkUpdate
 from exceptions.internal_exceptions import PrayerAtUserNotCreatedError
-from services.user_prayer_keyboard import UserPrayersKeyboard
 from handlers.skipped_prayers_answer import PrayerNames
+from services.user_prayer_keyboard import UserPrayersKeyboard
 from srv.prayers.city import FkCity
 from srv.prayers.prayer_date import FkPrayerDate
 from srv.prayers.update_user_city import PgUpdatedUserCity
