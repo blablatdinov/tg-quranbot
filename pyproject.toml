@@ -588,6 +588,7 @@ disable = [
   "consider-using-f-string",
   "missing-function-docstring",  # Check via ruff
   "redefined-outer-name",  # Check via WPS
+  "invalid-name", # conflict with WPS115
 ]
 
 # Enable the message, report, category or checker with the given id(s). You can

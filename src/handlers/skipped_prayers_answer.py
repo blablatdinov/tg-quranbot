@@ -45,9 +45,11 @@ from srv.prayers.pg_new_prayers_at_user import PgNewPrayersAtUser
 IS_READ_LITERAL: Final = 'is_read'
 
 
-class _PrayerNames(enum.Enum):
+class PrayerNames(enum.Enum):
+    """Имена намазов."""
 
     fajr = ('fajr', 'Иртәнге')
+    sunrise = ('sunrise', 'Рассвет')
     dhuhr = ('dhuhr', 'Өйлә')
     asr = ('asr', 'Икенде')
     maghrib = ('maghrib', 'Ахшам')
@@ -55,7 +57,22 @@ class _PrayerNames(enum.Enum):
 
     @classmethod
     def names(cls) -> tuple[str, ...]:
-        return tuple(field.name for field in cls)
+        """Названия полей.
+
+        :return: tuple[str, ...]
+        """
+        return tuple(field.name for field in cls.fields_without_sunrise())
+
+    @classmethod
+    def fields_without_sunrise(cls) -> tuple['PrayerNames', ...]:
+        """Намазы без рассвета.
+
+        Время рассвета важно, т.к. это время завершения периода утреннего намаза
+        Однако рассветного намаза нет и отмечать его прочитанность не нужно
+
+        :return: tuple[str, ...]
+        """
+        return tuple(field for field in cls if field.value[0] != 'sunrise')
 
 
 @final
@@ -76,7 +93,7 @@ class SkippedPrayersKeyboard(KeyboardInterface):
                     'text': '{0}: (-1)'.format(field.value[1]),
                     'callback_data': 'decr({0})'.format(field.name),
                 }]
-                for field in _PrayerNames
+                for field in PrayerNames.fields_without_sunrise()
             ],
         })
 
@@ -97,32 +114,32 @@ class PrayersStatistic(AsyncSupportsStr):
         :return: str
         """
         idx = 0
-        res = dict.fromkeys(_PrayerNames.names(), 0)
+        prayer_unread_dict = dict.fromkeys(PrayerNames.names(), 0)
         prayers_per_day = await self._prayers_per_day()
         for date in await self._dates_range():
             if date == prayers_per_day[idx][0]['day']:
-                self._exist_prayer_case(prayers_per_day, res, idx)
+                self._exist_prayer_case(prayers_per_day, prayer_unread_dict, idx)
                 idx += 1
             else:
-                await self._new_prayer_at_user_case(res, date)
+                await self._new_prayer_at_user_case(prayer_unread_dict, date)
         return '\n'.join([
             'Кол-во непрочитанных намазов:\n',
-            'Иртәнге: {0}'.format(res[_PrayerNames.fajr.name]),
-            'Өйлә: {0}'.format(res[_PrayerNames.dhuhr.name]),
-            'Икенде: {0}'.format(res[_PrayerNames.asr.name]),
-            'Ахшам: {0}'.format(res[_PrayerNames.maghrib.name]),
-            'Ястү: {0}'.format(res[_PrayerNames.isha.name]),
+            'Иртәнге: {0}'.format(prayer_unread_dict[PrayerNames.fajr.name]),
+            'Өйлә: {0}'.format(prayer_unread_dict[PrayerNames.dhuhr.name]),
+            'Икенде: {0}'.format(prayer_unread_dict[PrayerNames.asr.name]),
+            'Ахшам: {0}'.format(prayer_unread_dict[PrayerNames.maghrib.name]),
+            'Ястү: {0}'.format(prayer_unread_dict[PrayerNames.isha.name]),
         ])
 
     def _exist_prayer_case(self, prayers_per_day: list[tuple], res: dict, idx: int) -> None:
         # TODO #802 Удалить или задокументировать необходимость приватного метода "_exist_prayer_case"
-        for prayer_idx, prayer_name in enumerate(_PrayerNames.names()):
+        for prayer_idx, prayer_name in enumerate(PrayerNames.names()):
             res[prayer_name] += int(not prayers_per_day[idx][prayer_idx][IS_READ_LITERAL])
 
     async def _new_prayer_at_user_case(self, res: dict, date: datetime.date) -> None:
         # TODO #802 Удалить или задокументировать необходимость приватного метода "_new_prayer_at_user_case"
         await self._prayers_at_user.create(date)
-        for prayer_name in _PrayerNames.names():
+        for prayer_name in PrayerNames.names():
             res[prayer_name] += 1
 
     async def _prayers_per_day(self) -> list[tuple]:

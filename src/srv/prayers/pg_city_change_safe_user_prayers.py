@@ -20,29 +20,35 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-run:
-	poetry run python src/main.py run_polling
+import datetime
+from typing import final
 
-events:
-	poetry run python src/main.py receive_events
+import attrs
+from pyeo import elegant
 
-fmt:
-	poetry run isort src
-	poetry run ruff check src --fix-only
+from srv.prayers.exist_user_prayers import ExistUserPrayers
+from srv.prayers.new_prayers_at_user import NewPrayersAtUser
 
-lint:
-	poetry run isort src
-	poetry run ruff check src --fix --output-format=concise
-	poetry run flake8 src
-	poetry run refurb src
-	poetry run fixit src
-	poetry run pylint src | poetry run ondivi --only-violations
-	poetry run mypy src
-	poetry run sqlfluff lint migrations --dialect postgres
 
-test:
-	poetry run mypy src
-	poetry run pytest src --ignore=src/tests/e2e --cov=src --cov-report html --cov-fail-under=95
+@final
+@attrs.define(frozen=True)
+@elegant
+class PgCityChangeSafeUserPrayers(NewPrayersAtUser):
+    """Предохранитель от создания времени намаза при смене города.
 
-e2e:
-	poetry run pytest src/tests/e2e -m 'not tg_button'
+    https://github.com/blablatdinov/tg-quranbot/issues/979
+    """
+
+    _origin: NewPrayersAtUser
+    _exist_user_prayers: ExistUserPrayers
+
+    async def create(self, date: datetime.date) -> None:
+        """Создать.
+
+        :param date: datetime.date
+        """
+        exist_user_prayers = await self._exist_user_prayers.fetch()
+        prayers_count = 5
+        if len(exist_user_prayers) == prayers_count:
+            return
+        await self._origin.create(date)
