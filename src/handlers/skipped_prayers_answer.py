@@ -114,21 +114,21 @@ class PrayersStatistic(AsyncSupportsStr):
         :return: str
         """
         idx = 0
-        res = dict.fromkeys(PrayerNames.names(), 0)
+        prayer_unread_dict = dict.fromkeys(PrayerNames.names(), 0)
         prayers_per_day = await self._prayers_per_day()
         for date in await self._dates_range():
             if date == prayers_per_day[idx][0]['day']:
-                self._exist_prayer_case(prayers_per_day, res, idx)
+                self._exist_prayer_case(prayers_per_day, prayer_unread_dict, idx)
                 idx += 1
             else:
-                await self._new_prayer_at_user_case(res, date)
+                await self._new_prayer_at_user_case(prayer_unread_dict, date)
         return '\n'.join([
             'Кол-во непрочитанных намазов:\n',
-            'Иртәнге: {0}'.format(res[PrayerNames.fajr.name]),
-            'Өйлә: {0}'.format(res[PrayerNames.dhuhr.name]),
-            'Икенде: {0}'.format(res[PrayerNames.asr.name]),
-            'Ахшам: {0}'.format(res[PrayerNames.maghrib.name]),
-            'Ястү: {0}'.format(res[PrayerNames.isha.name]),
+            'Иртәнге: {0}'.format(prayer_unread_dict[PrayerNames.fajr.name]),
+            'Өйлә: {0}'.format(prayer_unread_dict[PrayerNames.dhuhr.name]),
+            'Икенде: {0}'.format(prayer_unread_dict[PrayerNames.asr.name]),
+            'Ахшам: {0}'.format(prayer_unread_dict[PrayerNames.maghrib.name]),
+            'Ястү: {0}'.format(prayer_unread_dict[PrayerNames.isha.name]),
         ])
 
     def _exist_prayer_case(self, prayers_per_day: list[tuple], res: dict, idx: int) -> None:

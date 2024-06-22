@@ -35,6 +35,8 @@ lint:
 	poetry run ruff check src --fix --output-format=concise
 	poetry run flake8 src
 	poetry run refurb src
+	poetry run fixit src
+	poetry run pylint src | poetry run ondivi --only-violations
 	poetry run mypy src
 	poetry run sqlfluff lint migrations --dialect postgres
 
