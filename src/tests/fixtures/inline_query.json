@@ -1,0 +1,17 @@
+{
+    "update_id": 637463119,
+    "inline_query": {
+        "id": "1540221937896102808",
+        "from": {
+            "id": 358610865,
+            "is_bot": false,
+            "first_name": "Almaz",
+            "last_name": "Ilaletdinov",
+            "username": "ilaletdinov",
+            "language_code": "ru"
+        },
+        "chat_type": "sender",
+        "query": "{{ query }}",
+        "offset": ""
+    }
+}

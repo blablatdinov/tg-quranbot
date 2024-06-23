@@ -69,6 +69,15 @@ def callback_update_factory():
 
 
 @pytest.fixture()
+def inline_query_update_factory():
+    def _inline_query_update_factory(query=''):  # noqa: WPS430
+        return Template(
+            (BASE_DIR / 'tests/fixtures/inline_query.json').read_text(),
+        ).render({'query': query})
+    return _inline_query_update_factory
+
+
+@pytest.fixture()
 def fk_logger():
     return FkLogSink()
 

@@ -39,24 +39,8 @@ def stringable_callback_update(callback_update_factory):
 
 
 @pytest.fixture()
-def query_search_update():
-    return ujson.dumps({
-        'update_id': 637463119,
-        'inline_query': {
-            'id': '1540221937896102808',
-            'from': {
-                'id': 358610865,
-                'is_bot': False,
-                'first_name': 'Almaz',
-                'last_name': 'Ilaletdinov',
-                'username': 'ilaletdinov',
-                'language_code': 'ru',
-            },
-            'chat_type': 'sender',
-            'query': 'adsfawef',
-            'offset': '',
-        },
-    })
+def query_search_update(inline_query_update_factory):
+    return inline_query_update_factory('adsfawef')
 
 
 @pytest.mark.parametrize('update', [
