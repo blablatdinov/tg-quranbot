@@ -22,26 +22,12 @@
 
 from typing import final, override
 
-import attrs
-import httpx
 from pyeo import elegant
 
-from app_types.update import FkUpdate, Update
+from app_types.update import FkUpdate
 from exceptions.content_exceptions import AyatNotFoundError
-from integrations.tg.tg_answers import TgAnswer
+from integrations.tg.tg_answers import TgAnswer, FkAnswer
 from srv.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
-
-
-@attrs.define(frozen=True)
-@elegant
-@final
-class ThroughDomainAnswer(TgAnswer):
-
-    _domain: str
-
-    @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        return [httpx.Request('GET', self._domain)]
 
 
 @elegant
@@ -55,8 +41,8 @@ class AyatNotFoundAnswer(TgAnswer):
 
 async def test_normal_flow():
     got = await AyatNotFoundSafeAnswer(
-        ThroughDomainAnswer('https://normal.flow'),
-        ThroughDomainAnswer('https://error.flow'),
+        FkAnswer('https://normal.flow'),
+        FkAnswer('https://error.flow'),
     ).build(FkUpdate())
 
     assert got[0].url == 'https://normal.flow'
@@ -65,7 +51,7 @@ async def test_normal_flow():
 async def test_error_flow():
     got = await AyatNotFoundSafeAnswer(
         AyatNotFoundAnswer(),
-        ThroughDomainAnswer('https://error.flow'),
+        FkAnswer('https://error.flow'),
     ).build(FkUpdate())
 
     assert 'error.flow' in str(got[0].url)

@@ -30,18 +30,7 @@ from app_types.update import FkUpdate, Update
 from exceptions.content_exceptions import SuraNotFoundError
 from integrations.tg.tg_answers import TgAnswer
 from srv.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
-
-
-@attrs.define(frozen=True)
-@elegant
-@final
-class ThroughDomainAnswer(TgAnswer):
-
-    _domain: str
-
-    @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        return [httpx.Request('GET', self._domain)]
+from integrations.tg.tg_answers import FkAnswer
 
 
 @elegant
@@ -55,8 +44,8 @@ class SuraNotFoundAnswer(TgAnswer):
 
 async def test_normal_flow():
     got = await SuraNotFoundSafeAnswer(
-        ThroughDomainAnswer('https://normal.flow'),
-        ThroughDomainAnswer('https://error.flow'),
+        FkAnswer('https://normal.flow'),
+        FkAnswer('https://error.flow'),
     ).build(FkUpdate())
 
     assert got[0].url == 'https://normal.flow'
@@ -65,7 +54,7 @@ async def test_normal_flow():
 async def test_error_flow():
     got = await SuraNotFoundSafeAnswer(
         SuraNotFoundAnswer(),
-        ThroughDomainAnswer('https://error.flow'),
+        FkAnswer('https://error.flow'),
     ).build(FkUpdate())
 
     assert 'error.flow' in str(got[0].url)
