@@ -31,6 +31,7 @@ from app_types.logger import FkLogSink
 from settings import BASE_DIR, Settings
 
 
+# flake8: noqa: WPS202
 @pytest.fixture()
 def unquote():
     def _unquote(url):  # noqa: WPS430
@@ -66,6 +67,15 @@ def callback_update_factory():
             (BASE_DIR / 'tests/fixtures/button_callback.json').read_text(),
         ).render({'chat_id': chat_id, 'callback_data': callback_data})
     return _message_update_factory
+
+
+@pytest.fixture()
+def inline_query_update_factory():
+    def _inline_query_update_factory(query=''):  # noqa: WPS430
+        return Template(
+            (BASE_DIR / 'tests/fixtures/inline_query.json').read_text(),
+        ).render({'query': query})
+    return _inline_query_update_factory
 
 
 @pytest.fixture()
