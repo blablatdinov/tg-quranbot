@@ -20,11 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
-from pathlib import Path
 
 import pytest
-import pytz
 import ujson
 
 from app_types.update import FkUpdate

@@ -26,7 +26,7 @@ from pyeo import elegant
 
 from app_types.update import FkUpdate
 from exceptions.content_exceptions import AyatNotFoundError
-from integrations.tg.tg_answers import TgAnswer, FkAnswer
+from integrations.tg.tg_answers import FkAnswer, TgAnswer
 from srv.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 
 

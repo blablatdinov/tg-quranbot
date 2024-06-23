@@ -25,11 +25,6 @@ from pathlib import Path
 
 import pytest
 import pytz
-import ujson
-
-from app_types.update import FkUpdate
-from handlers.decrement_skipped_prayer_answer import DecrementSkippedPrayerAnswer
-from integrations.tg.tg_answers import FkAnswer
 
 
 @pytest.fixture()

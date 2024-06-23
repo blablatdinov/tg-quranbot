@@ -31,6 +31,7 @@ from app_types.logger import FkLogSink
 from settings import BASE_DIR, Settings
 
 
+# flake8: noqa: WPS202
 @pytest.fixture()
 def unquote():
     def _unquote(url):  # noqa: WPS430

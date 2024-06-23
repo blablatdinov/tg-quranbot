@@ -21,7 +21,6 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import pytest
-import ujson
 from pytest_lazy_fixtures import lf
 
 from integrations.tg.chat_id import TgChatId
