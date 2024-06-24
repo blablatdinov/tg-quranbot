@@ -21,10 +21,10 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 from typing import override
+from pathlib import Path
 
 import httpx
 import pytest
-import ujson
 
 from integrations.nominatim import NominatimCityName
 from integrations.tg.coordinates import Coordinates
@@ -47,41 +47,8 @@ def _mock_nominatim(respx_mock):
         'https://nominatim.openstreetmap.org/reverse.php?lat=55.7887&lon=49.1221&format=jsonv2',
     ).mock(return_value=httpx.Response(
         200,
-        text=ujson.dumps({
-            'address': {
-                'ISO3166-2-lvl4': 'RU-TA',
-                'city': 'Казань',
-                'city_district': 'Вахитовский район',
-                'country': 'Россия',
-                'country_code': 'ru',
-                'county': 'городской округ Казань',
-                'house_number': '12',
-                'postcode': '420111',
-                'region': 'Приволжский федеральный округ',
-                'road': 'Университетская улица',
-                'state': 'Татарстан',
-                'suburb': 'Старо-Татарская слобода',
-            },
-            'addresstype': 'building',
-            'boundingbox': ['55.7886681', '55.7889864', '49.1218618', '49.1223806'],
-            'category': 'building',
-            'display_name': ' '.join([
-                '12, Университетская улица, Старо-Татарская слобода,',
-                'Вахитовский район, Казань, городской округ Казань,',
-                'Татарстан, Приволжский федеральный округ, 420111, Россия',
-            ]),
-            'importance': 9.9,
-            'lat': '55.7888272',
-            'licence': 'Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright',
-            'lon': '49.12212116815689',
-            'name': '',
-            'osm_id': 105336438,
-            'osm_type': 'way',
-            'place_id': 128743364,
-            'place_rank': 30,
-            'type': 'apartments',
-        }),
-    ))
+        text=Path('src/tests/fixtures/nominatim_response.json').read_text(encoding='utf-8')),
+    )
 
 
 @pytest.mark.usefixtures('_mock_nominatim')
