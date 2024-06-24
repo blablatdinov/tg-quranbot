@@ -1,3 +1,11 @@
+from typing import final, override
+
+import attrs
+import httpx
+from databases import Database
+from pyeo import elegant
+from redis.asyncio import Redis
+
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
@@ -11,16 +19,6 @@ from srv.files.file_answer import FileAnswer
 from srv.files.file_id_answer import TelegramFileIdAnswer
 from srv.podcasts.podcast import Podcast
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
-
-
-import attrs
-import httpx
-from databases import Database
-from pyeo import elegant
-from redis.asyncio import Redis
-
-
-from typing import final, override
 
 
 @final

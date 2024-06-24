@@ -34,5 +34,3 @@ class AsyncListable(Protocol, Generic[ListElemT_co]):  # type: ignore [misc]
 
     async def to_list(self) -> Sequence[ListElemT_co]:
         """Список."""
-
-

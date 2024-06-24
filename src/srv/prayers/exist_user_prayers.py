@@ -22,7 +22,6 @@
 
 from typing import Protocol
 
-
 from srv.prayers.ExistUserPrayersDict import ExistUserPrayersDict
 
 
@@ -31,5 +30,3 @@ class ExistUserPrayers(Protocol):
 
     async def fetch(self) -> list[ExistUserPrayersDict]:
         """Получить."""
-
-

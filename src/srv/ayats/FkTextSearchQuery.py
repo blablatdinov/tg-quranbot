@@ -1,11 +1,9 @@
-from srv.ayats.text_search_query import TextSearchQuery
-
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-from typing import final, override
+from srv.ayats.text_search_query import TextSearchQuery
 
 
 @final

@@ -33,5 +33,3 @@ class ValidChatId(AsyncInt, Protocol):
 
     async def to_int(self) -> int:
         """Числовое представление."""
-
-

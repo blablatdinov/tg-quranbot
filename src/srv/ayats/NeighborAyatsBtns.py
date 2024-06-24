@@ -1,15 +1,13 @@
-from exceptions.content_exceptions import AyatNotFoundError
-from srv.ayats.NeighborAyatsButtons import NeighborAyatsButtons
-from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
-from srv.ayats.neighbor_ayats import NeighborAyats
-
+from contextlib import suppress
+from typing import final
 
 import attrs
 from pyeo import elegant
 
-
-from contextlib import suppress
-from typing import final
+from exceptions.content_exceptions import AyatNotFoundError
+from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
+from srv.ayats.neighbor_ayats import NeighborAyats
+from srv.ayats.NeighborAyatsButtons import NeighborAyatsButtons
 
 
 @final

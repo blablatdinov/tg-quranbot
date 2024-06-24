@@ -20,14 +20,12 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from app_types.listable import AsyncListable, ListElemT_co
-
+from typing import Generic, final
 
 import attrs
 from pyeo import elegant
 
-
-from typing import Generic, final
+from app_types.listable import AsyncListable, ListElemT_co
 
 
 @final

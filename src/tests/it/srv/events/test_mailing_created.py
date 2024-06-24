@@ -28,8 +28,8 @@ from eljson.json_doc import JsonDoc
 
 from app_types.fk_log_sink import FkLogSink
 from integrations.tg.tg_answers import TgEmptyAnswer
-from srv.events.mailing_created import MailingCreatedEvent
 from srv.events.FkSink import FkSink
+from srv.events.mailing_created import MailingCreatedEvent
 
 
 @pytest.fixture()

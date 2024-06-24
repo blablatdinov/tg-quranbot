@@ -36,11 +36,11 @@ from integrations.tg.tg_answers.chat_action import TgChatAction
 from integrations.tg.TypingAction import TypingAction
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import Sink
+from srv.users.pg_active_users import ActiveUsers
+from srv.users.pg_user import User
 from srv.users.PgUpdatedUsersStatus import PgUpdatedUsersStatus
 from srv.users.PgUsers import PgUsers
 from srv.users.UpdatedUsersStatusEvent import UpdatedUsersStatusEvent
-from srv.users.pg_active_users import ActiveUsers
-from srv.users.pg_user import User
 
 
 @final

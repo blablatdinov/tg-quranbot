@@ -27,9 +27,9 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.listable import AsyncListable
-from srv.users.PgUser import PgUser
-from srv.users.pg_user import User
 from srv.users.FkValidChatId import FkValidChatId
+from srv.users.pg_user import User
+from srv.users.PgUser import PgUser
 
 
 @final
@@ -56,5 +56,3 @@ class PgActiveUsers(AsyncListable):
             PgUser(FkValidChatId.int_ctor(row['chat_id']), self._pgsql)
             for row in rows
         ]
-
-

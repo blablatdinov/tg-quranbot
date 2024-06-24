@@ -1,14 +1,12 @@
-from app_types.listable import AsyncListable
-from srv.users.UpdatedUsersStatus import UpdatedUsersStatus
-from srv.users.pg_user import User
-
+from typing import final, override
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
-
-from typing import final, override
+from app_types.listable import AsyncListable
+from srv.users.pg_user import User
+from srv.users.UpdatedUsersStatus import UpdatedUsersStatus
 
 
 @final

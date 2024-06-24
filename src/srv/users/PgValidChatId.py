@@ -1,15 +1,13 @@
-from app_types.fk_async_int import FkAsyncInt
-from app_types.intable import AsyncInt
-from exceptions.internal_exceptions import UserNotFoundError
-from srv.users.valid_chat_id import ValidChatId
-
+from typing import SupportsInt, final, override
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
-
-from typing import SupportsInt, final, override
+from app_types.fk_async_int import FkAsyncInt
+from app_types.intable import AsyncInt
+from exceptions.internal_exceptions import UserNotFoundError
+from srv.users.valid_chat_id import ValidChatId
 
 
 @final

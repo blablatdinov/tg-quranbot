@@ -1,13 +1,11 @@
-from srv.prayers.PrayerStts import PrayerStts
-from srv.prayers.UserPrayerStts import UserPrayerStts
-
+from typing import final, override
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
-
-from typing import final, override
+from srv.prayers.PrayerStts import PrayerStts
+from srv.prayers.UserPrayerStts import UserPrayerStts
 
 
 @final

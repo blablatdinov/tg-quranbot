@@ -1,19 +1,17 @@
-from app_types.logger import LogSink
-from exceptions.internal_exceptions import UserNotFoundError
-from exceptions.user import UserAlreadyExistsError
-from integrations.tg.chat_id import ChatId
-from app_types.AsyncIntOrNone import AsyncIntOrNone
-from app_types.FkAsyncIntOrNone import FkAsyncIntOrNone
-from srv.users.new_user import NewUser
-
+from typing import final, override
 
 import attrs
 from asyncpg import ForeignKeyViolationError, UniqueViolationError
 from databases import Database
 from pyeo import elegant
 
-
-from typing import final, override
+from app_types.AsyncIntOrNone import AsyncIntOrNone
+from app_types.FkAsyncIntOrNone import FkAsyncIntOrNone
+from app_types.logger import LogSink
+from exceptions.internal_exceptions import UserNotFoundError
+from exceptions.user import UserAlreadyExistsError
+from integrations.tg.chat_id import ChatId
+from srv.users.new_user import NewUser
 
 
 @final

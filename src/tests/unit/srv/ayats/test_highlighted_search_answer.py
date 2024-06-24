@@ -24,8 +24,8 @@ import urllib
 
 from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer
-from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer
 from srv.ayats.FkTextSearchQuery import FkTextSearchQuery
+from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer
 
 
 async def test():

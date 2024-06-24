@@ -38,5 +38,3 @@ class ReceivedEvent(Protocol[JsonPathReturnType_co]):
 
         :param json_doc: Json
         """
-
-

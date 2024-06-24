@@ -1,11 +1,9 @@
-from app_types.AsyncIntOrNone import AsyncIntOrNone
-
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-from typing import final, override
+from app_types.AsyncIntOrNone import AsyncIntOrNone
 
 
 @final

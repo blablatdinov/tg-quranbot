@@ -1,16 +1,14 @@
-from app_types.listable import AsyncListable
-from srv.events.sink import Sink
-from srv.users.UpdatedUsersStatus import UpdatedUsersStatus
-from srv.users.pg_user import User
-
+import datetime
+from typing import final, override
 
 import attrs
 import pytz
 from pyeo import elegant
 
-
-import datetime
-from typing import final, override
+from app_types.listable import AsyncListable
+from srv.events.sink import Sink
+from srv.users.pg_user import User
+from srv.users.UpdatedUsersStatus import UpdatedUsersStatus
 
 
 @final

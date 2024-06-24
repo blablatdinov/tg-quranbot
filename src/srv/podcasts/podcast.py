@@ -33,5 +33,3 @@ class Podcast(TgFile, Protocol):
 
     async def podcast_id(self) -> int:
         """Идентификатор аята."""
-
-

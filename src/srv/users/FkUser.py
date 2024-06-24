@@ -1,11 +1,9 @@
-from srv.users.pg_user import User
-
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-from typing import final, override
+from srv.users.pg_user import User
 
 
 @final

@@ -22,7 +22,6 @@
 
 from typing import Protocol, TypeAlias
 
-
 TgFileId: TypeAlias = str
 FileLink: TypeAlias = str
 
@@ -35,5 +34,3 @@ class TgFile(Protocol):
 
     async def file_link(self) -> FileLink:
         """Ссылка на файл."""
-
-

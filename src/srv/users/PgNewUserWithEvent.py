@@ -1,14 +1,12 @@
-from app_types.date_time import DateTime
-from integrations.tg.chat_id import ChatId
-from srv.events.sink import Sink
-from srv.users.new_user import NewUser
-
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-from typing import final, override
+from app_types.date_time import DateTime
+from integrations.tg.chat_id import ChatId
+from srv.events.sink import Sink
+from srv.users.new_user import NewUser
 
 
 @final

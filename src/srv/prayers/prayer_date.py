@@ -37,5 +37,3 @@ class PrayerDate(Protocol):
 
         :param update: Update
         """
-
-

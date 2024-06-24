@@ -40,8 +40,8 @@ from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from services.reset_state_answer import ResetStateAnswer
-from srv.prayers.CityNotSupportedAnswer import CityNotSupportedAnswer
 from srv.prayers.change_city_answer import ChangeCityAnswer
+from srv.prayers.CityNotSupportedAnswer import CityNotSupportedAnswer
 from srv.prayers.PgCity import PgCity
 from srv.prayers.PgUpdatedUserCity import PgUpdatedUserCity
 from srv.prayers.user_not_registered_safe_answer import UserNotRegisteredSafeAnswer

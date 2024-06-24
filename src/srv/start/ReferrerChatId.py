@@ -1,3 +1,9 @@
+from typing import final, override
+
+import attrs
+from databases import Database
+from pyeo import elegant
+
 from app_types.fk_async_int import FkAsyncInt
 from app_types.intable import AsyncInt
 from exceptions.base_exception import BaseAppError
@@ -5,14 +11,6 @@ from exceptions.user import StartMessageNotContainReferrerError
 from services.regular_expression import IntableRegularExpression
 from srv.users.PgUser import PgUser
 from srv.users.PgValidChatId import PgValidChatId
-
-
-import attrs
-from databases import Database
-from pyeo import elegant
-
-
-from typing import final, override
 
 
 @final

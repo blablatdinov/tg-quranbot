@@ -44,9 +44,9 @@ from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import Sink
 from srv.users.FkUser import FkUser
+from srv.users.pg_user import User
 from srv.users.PgUpdatedUsersStatus import PgUpdatedUsersStatus
 from srv.users.UpdatedUsersStatusEvent import UpdatedUsersStatusEvent
-from srv.users.pg_user import User
 
 
 @final

@@ -81,5 +81,3 @@ class PodcastAnswer(TgAnswer):
             ),
             CachedUserState(RedisUserState(self._redis, TgChatId(update), self._logger)),
         ).build(update)
-
-

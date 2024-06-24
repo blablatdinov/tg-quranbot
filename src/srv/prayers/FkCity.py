@@ -1,12 +1,10 @@
-from srv.prayers.city import City
-
+import uuid
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-import uuid
-from typing import final, override
+from srv.prayers.city import City
 
 
 @final

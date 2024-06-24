@@ -1,11 +1,9 @@
-from srv.prayers.updated_user_city import UpdatedUserCity
-
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-from typing import final, override
+from srv.prayers.updated_user_city import UpdatedUserCity
 
 
 @final

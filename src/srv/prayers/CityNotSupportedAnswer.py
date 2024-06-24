@@ -1,14 +1,12 @@
-from app_types.update import Update
-from exceptions.content_exceptions import CityNotSupportedError
-from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
-
+from typing import final, override
 
 import attrs
 import httpx
 from pyeo import elegant
 
-
-from typing import final, override
+from app_types.update import Update
+from exceptions.content_exceptions import CityNotSupportedError
+from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 
 
 @final

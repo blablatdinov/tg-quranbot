@@ -28,9 +28,9 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.keyboard import KeyboardInterface
-from srv.ayats.NeighborAyatsBtns import NeighborAyatsBtns
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.neighbor_ayats import NeighborAyats
+from srv.ayats.NeighborAyatsBtns import NeighborAyatsBtns
 
 
 @final

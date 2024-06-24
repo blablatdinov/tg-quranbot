@@ -24,8 +24,6 @@ import uuid
 from typing import Protocol
 
 
-
-
 class City(Protocol):
     """Интерфейс города."""
 
@@ -34,5 +32,3 @@ class City(Protocol):
 
     async def name(self) -> str:
         """Имя города."""
-
-

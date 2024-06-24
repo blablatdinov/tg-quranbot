@@ -63,5 +63,3 @@ class PrayerStatus(PrayerStts):
         :return: bool
         """
         return 'not' not in self._source.split('(')[0]
-
-

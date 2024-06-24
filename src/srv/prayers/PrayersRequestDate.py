@@ -1,16 +1,14 @@
-from app_types.update import Update
-from integrations.tg.message_text import MessageText
-from srv.prayers.prayer_date import PrayerDate
-
+import datetime
+from contextlib import suppress
+from typing import final, override
 
 import attrs
 import pytz
 from pyeo import elegant
 
-
-import datetime
-from contextlib import suppress
-from typing import final, override
+from app_types.update import Update
+from integrations.tg.message_text import MessageText
+from srv.prayers.prayer_date import PrayerDate
 
 
 @final

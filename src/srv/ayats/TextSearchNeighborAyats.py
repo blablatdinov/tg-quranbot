@@ -1,17 +1,15 @@
+from typing import final, override
+
+import attrs
+from databases import Database
+from pyeo import elegant
+
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat import Ayat
 from srv.ayats.neighbor_ayats import NeighborAyats
 from srv.ayats.pg_ayat import PgAyat
 from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
 from srv.ayats.text_search_query import TextSearchQuery
-
-
-import attrs
-from databases import Database
-from pyeo import elegant
-
-
-from typing import final, override
 
 
 @final

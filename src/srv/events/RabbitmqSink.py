@@ -1,7 +1,6 @@
-from app_types.logger import LogSink
-from settings import Settings
-from srv.events.sink import Sink
-
+import time
+import uuid
+from typing import final, override
 
 import aio_pika
 import attrs
@@ -10,10 +9,9 @@ from loguru import logger
 from pyeo import elegant
 from quranbot_schema_registry import validate_schema
 
-
-import time
-import uuid
-from typing import final, override
+from app_types.logger import LogSink
+from settings import Settings
+from srv.events.sink import Sink
 
 
 @final

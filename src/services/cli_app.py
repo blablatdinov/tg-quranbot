@@ -28,8 +28,8 @@ from typing import final, override
 import attrs
 from pyeo import elegant
 
-from app_types.sync_runable import SyncRunable
 from app_types.runable import Runable
+from app_types.sync_runable import SyncRunable
 
 
 @final

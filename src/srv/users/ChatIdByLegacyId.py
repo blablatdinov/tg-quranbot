@@ -1,12 +1,10 @@
-from app_types.intable import AsyncInt
-
+from typing import final, override
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
-
-from typing import final, override
+from app_types.intable import AsyncInt
 
 
 @final

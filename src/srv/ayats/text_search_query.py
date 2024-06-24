@@ -37,5 +37,3 @@ class TextSearchQuery(Protocol):
 
     async def read(self) -> str:
         """Чтение."""
-
-

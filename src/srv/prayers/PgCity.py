@@ -1,17 +1,15 @@
-from app_types.stringable import AsyncSupportsStr, FkAsyncStr
-from integrations.nominatim import NominatimCityName
-from integrations.tg.coordinates import Coordinates
-from srv.prayers.CityIdByName import CityIdByName
-from srv.prayers.city import City
-
+import uuid
+from typing import final, override
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
-
-import uuid
-from typing import final, override
+from app_types.stringable import AsyncSupportsStr, FkAsyncStr
+from integrations.nominatim import NominatimCityName
+from integrations.tg.coordinates import Coordinates
+from srv.prayers.city import City
+from srv.prayers.CityIdByName import CityIdByName
 
 
 @final

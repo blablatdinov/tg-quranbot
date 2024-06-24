@@ -1,11 +1,9 @@
-from srv.users.new_user import NewUser
-
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-from typing import final, override
+from srv.users.new_user import NewUser
 
 
 @final

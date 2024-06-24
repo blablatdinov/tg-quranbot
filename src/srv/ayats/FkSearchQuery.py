@@ -1,11 +1,9 @@
-from srv.ayats.search_query import AyatNum, SearchQuery, SuraId
-
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-from typing import final, override
+from srv.ayats.search_query import AyatNum, SearchQuery, SuraId
 
 
 @final

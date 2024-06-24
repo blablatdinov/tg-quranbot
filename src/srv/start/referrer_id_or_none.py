@@ -26,10 +26,10 @@ from typing import final, override
 import attrs
 from pyeo import elegant
 
+from app_types.AsyncIntOrNone import AsyncIntOrNone
 from app_types.intable import AsyncInt
 from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import StartMessageNotContainReferrerError
-from app_types.AsyncIntOrNone import AsyncIntOrNone
 
 
 @final

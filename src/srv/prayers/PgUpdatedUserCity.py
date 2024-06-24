@@ -1,15 +1,13 @@
-from exceptions.internal_exceptions import UserNotFoundError
-from integrations.tg.chat_id import ChatId
-from srv.prayers.city import City
-from srv.prayers.updated_user_city import UpdatedUserCity
-
+from typing import final, override
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
-
-from typing import final, override
+from exceptions.internal_exceptions import UserNotFoundError
+from integrations.tg.chat_id import ChatId
+from srv.prayers.city import City
+from srv.prayers.updated_user_city import UpdatedUserCity
 
 
 @final

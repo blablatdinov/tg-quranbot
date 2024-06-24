@@ -25,12 +25,9 @@ from typing import Protocol
 from pyeo import elegant
 
 
-
 @elegant
 class NewUser(Protocol):
     """Новый пользователь."""
 
     async def create(self) -> None:
         """Создание."""
-
-

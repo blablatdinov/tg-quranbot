@@ -25,7 +25,6 @@ from typing import Protocol
 from pyeo import elegant
 
 
-
 @elegant
 class User(Protocol):
     """Интерфейс пользователя."""
@@ -38,9 +37,3 @@ class User(Protocol):
 
     async def is_active(self) -> bool:
         """Статус активности пользователя."""
-
-
-
-
-
-

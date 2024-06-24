@@ -32,9 +32,9 @@ from app_types.update import Update
 from exceptions.internal_exceptions import PrayerAtUserAlreadyExistsError
 from integrations.tg.chat_id import ChatId
 from services.answers.answer import KeyboardInterface
-from srv.prayers.PgExistUserPrayers import PgExistUserPrayers
 from srv.prayers.pg_city_change_safe_user_prayers import PgCityChangeSafeUserPrayers
 from srv.prayers.pg_new_prayers_at_user import PgNewPrayersAtUser
+from srv.prayers.PgExistUserPrayers import PgExistUserPrayers
 from srv.prayers.prayer_date import PrayerDate
 
 

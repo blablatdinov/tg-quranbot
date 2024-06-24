@@ -25,7 +25,6 @@ from typing import Protocol
 from pyeo import elegant
 
 
-
 @elegant
 class Sink(Protocol):
     """Интерфейс отправщика событий."""
@@ -38,5 +37,3 @@ class Sink(Protocol):
         :param event_name: str
         :param version: int
         """
-
-

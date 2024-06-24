@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Final, Protocol
+from typing import Protocol
 
 from pyeo import elegant
 
@@ -39,5 +39,3 @@ class NeighborAyats(Protocol):
 
     async def page(self) -> str:
         """Информация о странице."""
-
-

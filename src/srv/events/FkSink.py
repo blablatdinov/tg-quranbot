@@ -1,11 +1,9 @@
-from srv.events.sink import Sink
-
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-from typing import final, override
+from srv.events.sink import Sink
 
 
 @final

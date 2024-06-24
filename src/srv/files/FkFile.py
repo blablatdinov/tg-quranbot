@@ -1,11 +1,9 @@
-from srv.files.tg_file import FileLink, TgFile, TgFileId
-
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-from typing import final, override
+from srv.files.tg_file import FileLink, TgFile, TgFileId
 
 
 @final

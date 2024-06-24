@@ -31,5 +31,3 @@ class Runable(Protocol):
 
     async def run(self) -> None:
         """Запуск."""
-
-

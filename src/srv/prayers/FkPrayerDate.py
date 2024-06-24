@@ -1,13 +1,11 @@
-from app_types.update import Update
-from srv.prayers.prayer_date import PrayerDate
-
+import datetime
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-import datetime
-from typing import final, override
+from app_types.update import Update
+from srv.prayers.prayer_date import PrayerDate
 
 
 @final

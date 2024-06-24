@@ -1,13 +1,11 @@
-from app_types.stringable import AsyncSupportsStr
-from exceptions.content_exceptions import CityNotSupportedError
-
+from typing import final, override
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
-
-from typing import final, override
+from app_types.stringable import AsyncSupportsStr
+from exceptions.content_exceptions import CityNotSupportedError
 
 
 @final

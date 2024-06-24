@@ -37,5 +37,3 @@ class SearchQuery(Protocol):
 
     def ayat(self) -> AyatNum:
         """Номер аята."""
-
-

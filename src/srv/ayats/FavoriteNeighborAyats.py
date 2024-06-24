@@ -1,15 +1,13 @@
+from typing import final, override
+
+import attrs
+from pyeo import elegant
+
 from app_types.listable import AsyncListable
 from exceptions.base_exception import BaseAppError
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat import Ayat
 from srv.ayats.neighbor_ayats import NeighborAyats
-
-
-import attrs
-from pyeo import elegant
-
-
-from typing import final, override
 
 
 @final
