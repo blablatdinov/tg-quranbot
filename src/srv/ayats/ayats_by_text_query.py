@@ -31,7 +31,8 @@ from app_types.intable import FkAsyncIntable
 from app_types.listable import AsyncListable
 from app_types.stringable import SupportsStr
 from srv.ayats.ayat import Ayat
-from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
+from srv.ayats.pg_ayat import PgAyat
+from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
 
 
 @final

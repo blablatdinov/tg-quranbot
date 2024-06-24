@@ -51,7 +51,8 @@ from srv.ayats.ayat_favorite_status import AyatFavoriteStatus
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.favorite_ayats_after_remove import FavoriteAyatsAfterRemove
 from srv.ayats.neighbor_ayats import FavoriteNeighborAyats, PgNeighborAyats, TextSearchNeighborAyats
-from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
+from srv.ayats.pg_ayat import PgAyat
+from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
 from srv.users.user_step import UserStep
 
 

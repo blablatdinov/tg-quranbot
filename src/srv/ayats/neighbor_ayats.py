@@ -32,7 +32,8 @@ from app_types.listable import AsyncListable
 from exceptions.base_exception import BaseAppError
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat import Ayat
-from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
+from srv.ayats.pg_ayat import PgAyat
+from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
 from srv.ayats.text_search_query import TextSearchQuery
 
 AYAT_ID: Final = 'ayat_id'
