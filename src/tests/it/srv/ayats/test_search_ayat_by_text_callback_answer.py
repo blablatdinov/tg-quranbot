@@ -20,12 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
-
 import pytest
-import pytz
 import ujson
-from furl import furl
 
 from app_types.logger import FkLogSink
 from app_types.update import FkUpdate
@@ -34,41 +30,6 @@ from integrations.tg.chat_id import FkChatId
 from integrations.tg.tg_answers import FkAnswer
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.search_ayat_by_text_callback_answer import SearchAyatByTextCallbackAnswer
-
-
-@pytest.fixture()
-async def _db_ayat(pgsql):
-    created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
-    await pgsql.execute(
-        '\n'.join([
-            'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
-            "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
-        ]),
-        {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at},
-    )
-    await pgsql.execute('\n'.join([
-        'INSERT INTO suras (sura_id, link) VALUES',
-        "(1, 'https://link-to-sura.domain')",
-    ]))
-    await pgsql.execute(
-        '\n'.join([
-            'INSERT INTO ayats',
-            '(ayat_id, sura_id, public_id, day, audio_id, ayat_number, content, arab_text, transliteration)',
-            'VALUES',
-            '(:ayat_id, :sura_id, :public_id, :day, :audio_id, :ayat_number, :content, :arab_text, :transliteration)',
-        ]),
-        {
-            'ayat_id': 1,
-            'sura_id': 1,
-            'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
-            'day': 1,
-            'audio_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90',
-            'ayat_number': '1-7',
-            'content': 'Content',
-            'arab_text': 'Arab text',
-            'transliteration': 'Transliteration',
-        },
-    )
 
 
 @pytest.fixture()
@@ -82,26 +43,24 @@ async def test(fake_redis, unquote, search_answer):
     await AyatTextSearchQuery(fake_redis, FkChatId(1758), FkLogSink()).write('Content')
     got = await search_answer.build(FkUpdate('{"callback_query": {"data": "1"}, "chat": {"id": 1758}}'))
 
-    assert unquote(got[0].url) == unquote(
-        furl('https://some.domain/sendMessage')
-        .add({
-            'parse_mode': 'html',
-            'chat_id': '1758',
-            'text': '\n'.join([
-                '<a href="https://umma.ruhttps://link-to-sura.domain#1-1">1:1-7)</a>',
-                'Arab text\n',
-                'Content\n',
-                '<i>Transliteration</i>',
-            ]),
-            'reply_markup': ujson.dumps({
-                'inline_keyboard': [
-                    [{'text': 'стр. 1/1', 'callback_data': 'fake'}],
-                    [{'text': 'Добавить в избранное', 'callback_data': 'addToFavor(1)'}],
-                ],
-            }),
-            'link_preview_options': '{"is_disabled":true}',
+    assert got[0].url.path == '/sendMessage'
+    assert dict(got[0].url.params) == {
+        'parse_mode': 'html',
+        'chat_id': '1758',
+        'text': '\n'.join([
+            '<a href="https://umma.ruhttps://link-to-sura.domain#1-1">1:1-7)</a>',
+            'Arab text\n',
+            'Content\n',
+            '<i>Transliteration</i>',
+        ]),
+        'reply_markup': ujson.dumps({
+            'inline_keyboard': [
+                [{'text': 'стр. 1/1', 'callback_data': 'fake'}],
+                [{'text': 'Добавить в избранное', 'callback_data': 'addToFavor(1)'}],
+            ],
         }),
-    )
+        'link_preview_options': '{"is_disabled":true}',
+    }
 
 
 @pytest.mark.usefixtures('_db_ayat')

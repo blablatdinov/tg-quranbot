@@ -454,7 +454,7 @@ valid-metaclass-classmethod-first-arg = ["mcs"]
 # ignored-parents =
 
 # Maximum number of arguments for function / method.
-max-args = 5
+max-args = 6
 
 # Maximum number of attributes for a class (see R0902).
 max-attributes = 7
@@ -588,7 +588,8 @@ disable = [
   "consider-using-f-string",
   "missing-function-docstring",  # Check via ruff
   "redefined-outer-name",  # Check via WPS
-  "invalid-name", # conflict with WPS115
+  "invalid-name",  # conflict with WPS115
+  "c-extension-no-member",  # Module 'ujson' has no 'dumps' member
 ]
 
 # Enable the message, report, category or checker with the given id(s). You can

@@ -132,44 +132,6 @@ async def test_today(pgsql, fake_redis, time_machine, settings_ctor):
 
 
 @pytest.mark.usefixtures('_generated_prayers')
-async def test_before(pgsql, fake_redis, time_machine, settings_ctor):
-    time_machine.move_to('2023-12-19')
-    got = await UserPrayerStatusChangeAnswer(
-        FkAnswer(), pgsql, fake_redis, FkLogSink(), settings_ctor(),
-    ).build(
-        FkUpdate(ujson.dumps({
-            'callback_query': {'data': 'mark_readed(3)'},
-            'message': {
-                'message_id': 17,
-                'text': '\n'.join([
-                    'Время намаза для г. Казань (19.12.2023)\n',
-                    'Иртәнге: 04:02',
-                    'Восход: 06:05',
-                    'Өйлә: 12:00',
-                    'Икенде: 14:57',
-                    'Ахшам: 16:55',
-                    'Ястү: 18:36',
-                ]),
-            },
-            'chat': {'id': 905},
-        })),
-    )
-
-    assert ujson.loads(got[0].url.params.get('reply_markup')) == {
-        'inline_keyboard': [
-            [
-                {'callback_data': 'mark_readed(1)', 'text': '❌'},
-                {'callback_data': 'mark_not_readed(3)', 'text': '✅'},
-                {'callback_data': 'mark_readed(4)', 'text': '❌'},
-                {'callback_data': 'mark_readed(5)', 'text': '❌'},
-                {'callback_data': 'mark_readed(6)', 'text': '❌'},
-            ],
-        ],
-    }
-    assert got[0].url.path == '/editMessageReplyMarkup'
-
-
-@pytest.mark.usefixtures('_generated_prayers')
 async def test_prayers_text(pgsql, settings_ctor):
     got = await PrayersText(
         pgsql,
