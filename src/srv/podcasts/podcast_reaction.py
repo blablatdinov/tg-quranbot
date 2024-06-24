@@ -46,7 +46,7 @@ class PodcastReactions(Protocol):
 class ParsedPodcastReaction(PodcastReactions):
     """Реакция на подкаст.
 
-    >>> prayer_reaction = PodcastReaction('like(17)')
+    >>> prayer_reaction = ParsedPodcastReaction('like(17)')
     >>> prayer_reaction.podcast_id()
     17
     >>> prayer_reaction.status()
