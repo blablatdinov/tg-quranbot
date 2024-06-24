@@ -1,0 +1,35 @@
+{
+    "place_id": 210826905,
+    "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+    "osm_type": "way",
+    "osm_id": 105336438,
+    "lat": "55.7888272",
+    "lon": "49.12212116815689",
+    "category": "building",
+    "type": "apartments",
+    "place_rank": 30,
+    "importance": 9.99999999995449e-06,
+    "addresstype": "building",
+    "name": "",
+    "display_name": "12, Университетская улица, Старо-Татарская слобода, Вахитовский район, Казань, городской округ Казань, Татарстан, Приволжский федеральный округ, 420111, Россия",
+    "address": {
+        "house_number": "12",
+        "road": "Университетская улица",
+        "suburb": "Старо-Татарская слобода",
+        "city_district": "Вахитовский район",
+        "city": "Казань",
+        "county": "городской округ Казань",
+        "state": "Татарстан",
+        "ISO3166-2-lvl4": "RU-TA",
+        "region": "Приволжский федеральный округ",
+        "postcode": "420111",
+        "country": "Россия",
+        "country_code": "ru"
+    },
+    "boundingbox": [
+        "55.7886681",
+        "55.7889864",
+        "49.1218618",
+        "49.1223806"
+    ]
+}
