@@ -9,7 +9,7 @@ from app_types.stringable import AsyncSupportsStr, FkAsyncStr
 from integrations.nominatim import NominatimCityName
 from integrations.tg.coordinates import Coordinates
 from srv.prayers.city import City
-from srv.prayers.CityIdByName import CityIdByName
+from srv.prayers.city_id_by_name import CityIdByName
 
 
 @final

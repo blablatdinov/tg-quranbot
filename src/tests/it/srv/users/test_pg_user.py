@@ -22,7 +22,7 @@
 
 import pytest
 
-from srv.users.PgUser import PgUser
+from srv.users.pg_user import PgUser
 
 
 @pytest.fixture()

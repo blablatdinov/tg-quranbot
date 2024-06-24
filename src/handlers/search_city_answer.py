@@ -41,12 +41,12 @@ from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from services.reset_state_answer import ResetStateAnswer
 from srv.prayers.change_city_answer import ChangeCityAnswer
-from srv.prayers.CityNotSupportedAnswer import CityNotSupportedAnswer
-from srv.prayers.PgCity import PgCity
-from srv.prayers.PgUpdatedUserCity import PgUpdatedUserCity
+from srv.prayers.city_not_supported_answer import CityNotSupportedAnswer
+from srv.prayers.pg_city import PgCity
+from srv.prayers.pg_updated_user_city import PgUpdatedUserCity
 from srv.prayers.user_not_registered_safe_answer import UserNotRegisteredSafeAnswer
 from srv.users.cached_user_state import CachedUserState
-from srv.users.PgNewUser import PgNewUser
+from srv.users.pg_new_user import PgNewUser
 from srv.users.redis_user_state import RedisUserState
 
 

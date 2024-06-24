@@ -25,7 +25,7 @@ from typing import final, override
 import attrs
 from databases import Database
 
-from app_types.intable import AsyncIntable
+from app_types.intable import AsyncInt
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat_identifier import AyatId, AyatIdentifier
 from srv.ayats.search_query import AyatNum, SuraId
@@ -36,7 +36,7 @@ from srv.ayats.search_query import AyatNum, SuraId
 class PgAyatIdentifier(AyatIdentifier):
     """Информация для идентификации аята."""
 
-    _ayat_id: AsyncIntable
+    _ayat_id: AsyncInt
     _pgsql: Database
 
     @override

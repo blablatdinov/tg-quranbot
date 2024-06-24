@@ -52,14 +52,14 @@ from services.user_prayer_keyboard import UserPrayersKeyboard
 from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import Sink
-from srv.prayers.FkPrayerDate import FkPrayerDate
+from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.prayers_text import PrayersText
 from srv.prayers.ramadan_prayer_text import RamadanPrayerText
-from srv.prayers.UserCityId import UserCityId
-from srv.users.FkUser import FkUser
-from srv.users.pg_user import User
-from srv.users.PgUpdatedUsersStatus import PgUpdatedUsersStatus
-from srv.users.UpdatedUsersStatusEvent import UpdatedUsersStatusEvent
+from srv.prayers.user_city_id import UserCityId
+from srv.users.fk_user import FkUser
+from srv.users.pg_updated_users_status import PgUpdatedUsersStatus
+from srv.users.updated_users_status_event import UpdatedUsersStatusEvent
+from srv.users.user import User
 
 CHAT_ID: Final = 'chat_id'
 

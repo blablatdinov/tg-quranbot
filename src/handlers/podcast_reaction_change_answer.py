@@ -42,9 +42,9 @@ from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from services.json_path_value import MatchManyJsonPath
 from services.reset_state_answer import ResetStateAnswer
-from srv.podcasts.MarkuppedPodcastAnswer import MarkuppedPodcastAnswer
+from srv.podcasts.markupped_podcast_answer import MarkuppedPodcastAnswer
 from srv.podcasts.pg_changed_podcast_reaction import PgChangedPoodcastReaction
-from srv.podcasts.PgPodcast import PgPodcast
+from srv.podcasts.pg_podcast import PgPodcast
 from srv.podcasts.podcast_answer import PodcastAnswer
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
 from srv.podcasts.podcast_reaction import ParsedPodcastReaction

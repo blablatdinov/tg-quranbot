@@ -29,9 +29,9 @@ from app_types.update import FkUpdate, Update
 from exceptions.content_exceptions import CityNotSupportedError
 from integrations.tg.tg_answers import FkAnswer, TgAnswer
 from srv.prayers.change_city_answer import ChangeCityAnswer
-from srv.prayers.CityNotSupportedAnswer import CityNotSupportedAnswer
-from srv.prayers.FkCity import FkCity
-from srv.prayers.FkUpdateUserCity import FkUpdateUserCity
+from srv.prayers.city_not_supported_answer import CityNotSupportedAnswer
+from srv.prayers.fk_city import FkCity
+from srv.prayers.fk_updated_user_city import FkUpdateUserCity
 
 
 class _Answer(TgAnswer):

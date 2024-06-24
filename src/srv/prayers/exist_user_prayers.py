@@ -22,7 +22,7 @@
 
 from typing import Protocol
 
-from srv.prayers.ExistUserPrayersDict import ExistUserPrayersDict
+from srv.prayers.exist_user_prayers_dict import ExistUserPrayersDict
 
 
 class ExistUserPrayers(Protocol):

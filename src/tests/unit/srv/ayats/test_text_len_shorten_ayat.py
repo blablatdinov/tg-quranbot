@@ -27,7 +27,7 @@ from settings import BASE_DIR
 from srv.ayats.fk_ayat import FkAyat
 from srv.ayats.fk_identifier import FkIdentifier
 from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
-from srv.files.FkFile import FkFile
+from srv.files.fk_file import FkFile
 
 
 async def test_text_len_safe_ayat():

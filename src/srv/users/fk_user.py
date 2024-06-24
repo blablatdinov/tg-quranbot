@@ -3,7 +3,7 @@ from typing import final, override
 import attrs
 from pyeo import elegant
 
-from srv.users.pg_user import User
+from srv.users.user import User
 
 
 @final

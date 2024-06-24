@@ -25,8 +25,8 @@ import uuid
 import pytest
 
 from exceptions.internal_exceptions import UserNotFoundError
-from srv.prayers.FkCity import FkCity
-from srv.prayers.PgUpdatedUserCity import PgUpdatedUserCity
+from srv.prayers.fk_city import FkCity
+from srv.prayers.pg_updated_user_city import PgUpdatedUserCity
 
 
 @pytest.fixture()

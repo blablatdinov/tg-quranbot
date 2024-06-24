@@ -28,7 +28,7 @@ from pyeo import elegant
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
 from services.regular_expression import IntableRegularExpression
-from srv.prayers.PrayerStts import PrayerStts
+from srv.prayers.prayers_stts import PrayerStts
 
 
 @final

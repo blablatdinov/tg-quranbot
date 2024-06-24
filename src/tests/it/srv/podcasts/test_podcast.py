@@ -37,7 +37,7 @@ from exceptions.base_exception import InternalBotError
 from handlers.concrete_podcast_answer import ConcretePodcastAnswer
 from handlers.random_podcast_answer import RandomPodcastAnswer
 from integrations.tg.tg_answers import FkAnswer
-from srv.podcasts.PgPodcast import PgPodcast
+from srv.podcasts.pg_podcast import PgPodcast
 
 
 @pytest.fixture()

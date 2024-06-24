@@ -9,8 +9,8 @@ from app_types.intable import AsyncInt
 from exceptions.base_exception import BaseAppError
 from exceptions.user import StartMessageNotContainReferrerError
 from services.regular_expression import IntableRegularExpression
-from srv.users.PgUser import PgUser
-from srv.users.PgValidChatId import PgValidChatId
+from srv.users.pg_user import PgUser
+from srv.users.pg_valid_chat_id import PgValidChatId
 
 
 @final

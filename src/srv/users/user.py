@@ -20,39 +20,20 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import override
+from typing import Protocol
 
-import httpx
-import ujson
-
-from app_types.fk_log_sink import FkLogSink
-from app_types.update import FkUpdate, Update
-from exceptions.content_exceptions import UserHasNotCityIdError
-from integrations.tg.tg_answers import FkAnswer, TgAnswer
-from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
-from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
+from pyeo import elegant
 
 
-class FkOrigin(TgAnswer):
+@elegant
+class User(Protocol):
+    """Интерфейс пользователя."""
 
-    @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        raise UserHasNotCityIdError
+    async def chat_id(self) -> int:
+        """Идентификатор чата."""
 
+    async def day(self) -> int:
+        """День для рассылки утреннего контента."""
 
-async def test_exception():
-    got = await UserWithoutCitySafeAnswer(FkOrigin(), FkAnswer()).build(FkUpdate())
-
-    assert got[0].url == 'https://some.domain'
-
-
-async def test_invite_set_city_answer(fake_redis):
-    got = await InviteSetCityAnswer(
-        FkAnswer(), fake_redis, FkLogSink(),
-    ).build(FkUpdate('{"chat":{"id":1}}'))
-
-    assert got[0].url.params['reply_markup'] == ujson.dumps({
-        'inline_keyboard': [[
-            {'text': 'Поиск города', 'switch_inline_query_current_chat': ''},
-        ]],
-    })
+    async def is_active(self) -> bool:
+        """Статус активности пользователя."""

@@ -34,10 +34,10 @@ from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from integrations.tg.tg_datetime import TgDateTime
 from srv.events.sink import Sink
-from srv.users.PgUpdatedUsersStatus import PgUpdatedUsersStatus
-from srv.users.PgUser import PgUser
-from srv.users.PgUsers import PgUsers
-from srv.users.PgValidChatId import PgValidChatId
+from srv.users.pg_updated_users_status import PgUpdatedUsersStatus
+from srv.users.pg_user import PgUser
+from srv.users.pg_users import PgUsers
+from srv.users.pg_valid_chat_id import PgValidChatId
 
 
 @final

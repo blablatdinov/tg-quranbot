@@ -49,16 +49,16 @@ from integrations.tg.tg_answers import (
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from settings import Settings
-from srv.prayers.DateFromUserPrayerId import DateFromUserPrayerId
+from srv.prayers.date_from_user_prayer_id import DateFromUserPrayerId
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
+from srv.prayers.prayers_mark_as_date import PrayersMarkAsDate
+from srv.prayers.prayers_request_date import PrayersRequestDate
 from srv.prayers.prayers_text import PrayersText
-from srv.prayers.PrayersMarkAsDate import PrayersMarkAsDate
-from srv.prayers.PrayersRequestDate import PrayersRequestDate
 from srv.prayers.ramadan_prayer_text import RamadanPrayerText
-from srv.prayers.UserCityId import UserCityId
-from srv.prayers.UserWithoutCitySafeAnswer import UserWithoutCitySafeAnswer
+from srv.prayers.user_city_id import UserCityId
+from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
 
 
 @final

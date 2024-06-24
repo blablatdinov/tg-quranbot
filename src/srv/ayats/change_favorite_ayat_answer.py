@@ -50,11 +50,11 @@ from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.ayat_favorite_status import AyatFavoriteStatus
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.favorite_ayats_after_remove import FavoriteAyatsAfterRemove
-from srv.ayats.FavoriteNeighborAyats import FavoriteNeighborAyats
+from srv.ayats.favorite_neighbor_ayats import FavoriteNeighborAyats
 from srv.ayats.pg_ayat import PgAyat
-from srv.ayats.PgNeighborAyats import PgNeighborAyats
+from srv.ayats.pg_neighbor_ayats import PgNeighborAyats
 from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
-from srv.ayats.TextSearchNeighborAyats import TextSearchNeighborAyats
+from srv.ayats.text_search_neighbor_ayats import TextSearchNeighborAyats
 from srv.users.user_step import UserStep
 
 

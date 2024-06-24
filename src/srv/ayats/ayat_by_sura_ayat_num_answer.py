@@ -35,7 +35,7 @@ from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.pg_ayat import PgAyat
-from srv.ayats.PgNeighborAyats import PgNeighborAyats
+from srv.ayats.pg_neighbor_ayats import PgNeighborAyats
 from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
 
 

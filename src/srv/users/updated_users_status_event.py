@@ -7,8 +7,8 @@ from pyeo import elegant
 
 from app_types.listable import AsyncListable
 from srv.events.sink import Sink
-from srv.users.pg_user import User
-from srv.users.UpdatedUsersStatus import UpdatedUsersStatus
+from srv.users.updated_users_status import UpdatedUsersStatus
+from srv.users.user import User
 
 
 @final

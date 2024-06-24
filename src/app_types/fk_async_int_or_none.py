@@ -3,7 +3,7 @@ from typing import final, override
 import attrs
 from pyeo import elegant
 
-from app_types.AsyncIntOrNone import AsyncIntOrNone
+from app_types.async_int_or_none import AsyncIntOrNone
 
 
 @final

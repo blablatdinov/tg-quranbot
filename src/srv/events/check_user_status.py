@@ -33,14 +33,14 @@ from app_types.update import FkUpdate
 from integrations.tg.sendable import BulkSendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer
 from integrations.tg.tg_answers.chat_action import TgChatAction
-from integrations.tg.TypingAction import TypingAction
+from integrations.tg.typing_action import TypingAction
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import Sink
-from srv.users.pg_active_users import ActiveUsers
-from srv.users.pg_user import User
-from srv.users.PgUpdatedUsersStatus import PgUpdatedUsersStatus
-from srv.users.PgUsers import PgUsers
-from srv.users.UpdatedUsersStatusEvent import UpdatedUsersStatusEvent
+from srv.users.pg_active_users import PgActiveUsers
+from srv.users.pg_updated_users_status import PgUpdatedUsersStatus
+from srv.users.pg_users import PgUsers
+from srv.users.updated_users_status_event import UpdatedUsersStatusEvent
+from srv.users.user import User
 
 
 @final
@@ -60,7 +60,7 @@ class CheckUsersStatus(ReceivedEvent):
 
         :param json_doc: Json
         """
-        users = ActiveUsers(self._pgsql)
+        users = PgActiveUsers(self._pgsql)
         zipped_user_responses = zip(
             await users.to_list(),
             await BulkSendableAnswer(await self._answers(users), self._logger).send(FkUpdate()),

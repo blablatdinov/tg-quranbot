@@ -26,9 +26,9 @@ import pytest
 import pytz
 
 from exceptions.content_exceptions import AyatNotFoundError
-from srv.ayats.FkTextSearchQuery import FkTextSearchQuery
-from srv.ayats.PgNeighborAyats import PgNeighborAyats
-from srv.ayats.TextSearchNeighborAyats import TextSearchNeighborAyats
+from srv.ayats.fk_text_search_query import FkTextSearchQuery
+from srv.ayats.pg_neighbor_ayats import PgNeighborAyats
+from srv.ayats.text_search_neighbor_ayats import TextSearchNeighborAyats
 
 
 @pytest.fixture()

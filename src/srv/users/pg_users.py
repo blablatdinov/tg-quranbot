@@ -6,8 +6,8 @@ from pyeo import elegant
 
 from app_types.fk_async_int import FkAsyncInt
 from app_types.listable import AsyncListable
-from srv.users.pg_user import User
-from srv.users.PgUser import PgUser
+from srv.users.pg_user import PgUser
+from srv.users.user import User
 
 
 @final

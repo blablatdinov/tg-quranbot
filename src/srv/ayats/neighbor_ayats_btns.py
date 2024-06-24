@@ -7,7 +7,7 @@ from pyeo import elegant
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.neighbor_ayats import NeighborAyats
-from srv.ayats.NeighborAyatsButtons import NeighborAyatsButtons
+from srv.ayats.neighbor_ayats_buttons import NeighborAyatsButtons
 
 
 @final

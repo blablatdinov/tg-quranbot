@@ -43,14 +43,14 @@ from services.logged_answer import LoggedAnswer
 from settings import BASE_DIR, Settings
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.check_user_status import CheckUsersStatus
+from srv.events.event_fork import EventFork
 from srv.events.event_hook import EventHookApp, RbmqEventHook
-from srv.events.EventFork import EventFork
 from srv.events.mailing_created import MailingCreatedEvent
 from srv.events.message_deleted import MessageDeleted
 from srv.events.morning_content_published import MorningContentPublishedEvent
 from srv.events.prayer_created_event import PrayerCreatedEvent
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
-from srv.events.RabbitmqSink import RabbitmqSink
+from srv.events.rabbitmq_sink import RabbitmqSink
 
 
 def main(sys_args: list[str]) -> None:

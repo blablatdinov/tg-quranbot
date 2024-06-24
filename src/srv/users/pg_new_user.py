@@ -5,8 +5,8 @@ from asyncpg import ForeignKeyViolationError, UniqueViolationError
 from databases import Database
 from pyeo import elegant
 
-from app_types.AsyncIntOrNone import AsyncIntOrNone
-from app_types.FkAsyncIntOrNone import FkAsyncIntOrNone
+from app_types.async_int_or_none import AsyncIntOrNone
+from app_types.fk_async_int_or_none import FkAsyncIntOrNone
 from app_types.logger import LogSink
 from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import UserAlreadyExistsError

@@ -4,8 +4,8 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from srv.prayers.PrayerStts import PrayerStts
-from srv.prayers.UserPrayerStts import UserPrayerStts
+from srv.prayers.prayers_stts import PrayerStts
+from srv.prayers.user_prayer_stts import UserPrayerStts
 
 
 @final

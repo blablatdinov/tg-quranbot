@@ -25,8 +25,8 @@ import pytest
 from app_types.stringable import FkAsyncStr
 from exceptions.content_exceptions import CityNotSupportedError
 from integrations.tg.coordinates import FkCoordinates
-from srv.prayers.CityIdByName import CityIdByName
-from srv.prayers.PgCity import PgCity
+from srv.prayers.city_id_by_name import CityIdByName
+from srv.prayers.pg_city import PgCity
 
 
 @pytest.fixture()

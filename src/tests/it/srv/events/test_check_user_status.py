@@ -28,7 +28,7 @@ from eljson.json_doc import JsonDoc
 from app_types.fk_log_sink import FkLogSink
 from integrations.tg.tg_answers import FkAnswer
 from srv.events.check_user_status import CheckUsersStatus
-from srv.events.FkSink import FkSink
+from srv.events.fk_sink import FkSink
 
 
 @pytest.fixture()

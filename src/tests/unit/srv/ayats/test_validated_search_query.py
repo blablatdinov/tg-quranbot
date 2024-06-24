@@ -23,7 +23,7 @@
 import pytest
 
 from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
-from srv.ayats.FkSearchQuery import FkSearchQuery
+from srv.ayats.fk_search_query import FkSearchQuery
 from srv.ayats.validated_search_query import ValidatedSearchQuery
 
 

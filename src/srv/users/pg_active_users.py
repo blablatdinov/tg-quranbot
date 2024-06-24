@@ -27,9 +27,9 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.listable import AsyncListable
-from srv.users.FkValidChatId import FkValidChatId
-from srv.users.pg_user import User
-from srv.users.PgUser import PgUser
+from srv.users.fk_valid_chat_id import FkValidChatId
+from srv.users.pg_user import PgUser
+from srv.users.user import User
 
 
 @final
