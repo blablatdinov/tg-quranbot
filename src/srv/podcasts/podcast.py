@@ -28,7 +28,7 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import AsyncIntable
+from app_types.intable import AsyncInt
 from exceptions.base_exception import InternalBotError
 from exceptions.content_exceptions import TelegramFileIdNotFilledError
 from srv.files.file import FileLink, TgFile, TgFileId
@@ -48,7 +48,7 @@ class Podcast(TgFile, Protocol):
 class PgPodcast(Podcast):
     """Объект подкаста."""
 
-    _podcast_id: AsyncIntable
+    _podcast_id: AsyncInt
     _pgsql: Database
 
     @override

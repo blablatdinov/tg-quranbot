@@ -28,7 +28,8 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import AsyncIntable, FkAsyncIntable
+from app_types.fk_async_int import FkAsyncInt
+from app_types.intable import AsyncInt
 from srv.users.valid_chat_id import PgValidChatId, ValidChatId
 
 
@@ -84,14 +85,14 @@ class FkUser(User):
 @final
 @attrs.define(frozen=True)
 @elegant
-class ChatIdByLegacyId(AsyncIntable):
+class ChatIdByLegacyId(AsyncInt):
     """Идентификатор чата по старому идентификатору в БД.
 
     Остались реферальные ссылки, сгенерированные на предыдущей версии бота
     """
 
     _pgsql: Database
-    _legacy_id: AsyncIntable
+    _legacy_id: AsyncInt
 
     @override
     async def to_int(self) -> int:
@@ -117,7 +118,7 @@ class PgUser(User):
     _pgsql: Database
 
     @classmethod
-    def legacy_id_ctor(cls, legacy_id: AsyncIntable, pgsql: Database) -> User:
+    def legacy_id_ctor(cls, legacy_id: AsyncInt, pgsql: Database) -> User:
         """Конструктор по старому идентификатору в БД.
 
         :param legacy_id: int
@@ -134,7 +135,7 @@ class PgUser(User):
         :param pgsql: Database
         :return: User
         """
-        return cls(PgValidChatId(pgsql, FkAsyncIntable(chat_id)), pgsql)
+        return cls(PgValidChatId(pgsql, FkAsyncInt(chat_id)), pgsql)
 
     @override
     async def chat_id(self) -> int:

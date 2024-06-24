@@ -30,7 +30,7 @@ import httpx
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import FkAsyncIntable
+from app_types.fk_async_int import FkAsyncInt
 from app_types.logger import LogSink
 from app_types.update import Update
 from exceptions.internal_exceptions import UserNotFoundError
@@ -125,7 +125,7 @@ class StartAnswer(TgAnswer):
             ),
         )
         start_message = self._admin_message
-        ayat_message = PgAyat(FkAsyncIntable(1), self._pgsql)
+        ayat_message = PgAyat(FkAsyncInt(1), self._pgsql)
         await self._new_tg_user.create(referrer_chat_id)
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
         if referrer_chat_id_calculated:

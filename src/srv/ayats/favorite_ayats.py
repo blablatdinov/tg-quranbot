@@ -26,7 +26,7 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import FkAsyncIntable
+from app_types.fk_async_int import FkAsyncInt
 from app_types.listable import AsyncListable
 from integrations.tg.chat_id import ChatId
 from srv.ayats.ayat import Ayat
@@ -58,6 +58,6 @@ class FavoriteAyats(AsyncListable):
         ])
         rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
         return [
-            TextLenSafeAyat(PgAyat(FkAsyncIntable(row['ayat_id']), self._pgsql))
+            TextLenSafeAyat(PgAyat(FkAsyncInt(row['ayat_id']), self._pgsql))
             for row in rows
         ]

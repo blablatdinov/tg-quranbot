@@ -28,12 +28,13 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import AsyncIntable, FkAsyncIntable
+from app_types.fk_async_int import FkAsyncInt
+from app_types.intable import AsyncInt
 from exceptions.internal_exceptions import UserNotFoundError
 
 
 @elegant
-class ValidChatId(AsyncIntable, Protocol):
+class ValidChatId(AsyncInt, Protocol):
     """Проверенный идентификатор чата."""
 
     async def to_int(self) -> int:
@@ -50,7 +51,7 @@ class FkValidChatId(ValidChatId):
     Например: srv.users.active_users.ActiveUsers
     """
 
-    _origin: AsyncIntable
+    _origin: AsyncInt
 
     @classmethod
     def int_ctor(cls, int_value: SupportsInt) -> ValidChatId:
@@ -59,7 +60,7 @@ class FkValidChatId(ValidChatId):
         :param int_value: SupportsInt
         :return: FkValidChatId
         """
-        return cls(FkAsyncIntable(int_value))
+        return cls(FkAsyncInt(int_value))
 
     @override
     async def to_int(self) -> int:
@@ -77,7 +78,7 @@ class PgValidChatId(ValidChatId):
     """Проверенный идентификатор чата в БД postgres."""
 
     _pgsql: Database
-    _unreliable: AsyncIntable
+    _unreliable: AsyncInt
 
     @classmethod
     def int_ctor(cls, pgsql: Database, int_value: SupportsInt) -> ValidChatId:
@@ -87,7 +88,7 @@ class PgValidChatId(ValidChatId):
         :param int_value: SupportsInt
         :return: FkValidChatId
         """
-        return cls(pgsql, FkAsyncIntable(int_value))
+        return cls(pgsql, FkAsyncInt(int_value))
 
     @override
     async def to_int(self) -> int:

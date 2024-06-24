@@ -29,7 +29,7 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import AsyncIntable
+from app_types.intable import AsyncInt
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat_identifier import AyatId
 from srv.ayats.search_query import SearchQuery
@@ -38,7 +38,7 @@ from srv.ayats.search_query import SearchQuery
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatIdBySuraAyatNum(AsyncIntable):
+class AyatIdBySuraAyatNum(AsyncInt):
     """Поиск аятов по номеру суры, аята."""
 
     _query: SearchQuery
@@ -80,7 +80,7 @@ class AyatIdBySuraAyatNum(AsyncIntable):
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatIdByPublicId(AsyncIntable):
+class AyatIdByPublicId(AsyncInt):
     """Поиск аятов по номеру суры, аята."""
 
     _public_id: uuid.UUID

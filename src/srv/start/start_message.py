@@ -29,7 +29,8 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import AsyncIntable, FkAsyncIntable
+from app_types.fk_async_int import FkAsyncInt
+from app_types.intable import AsyncInt
 from exceptions.base_exception import BaseAppError
 from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import StartMessageNotContainReferrerError
@@ -66,7 +67,7 @@ class FkAsyncIntOrNone(AsyncIntOrNone):
 @final
 @attrs.define(frozen=True)
 @elegant
-class ReferrerChatId(AsyncIntable):
+class ReferrerChatId(AsyncInt):
     """Идентификатор чата пригласившего."""
 
     _message: str
@@ -86,7 +87,7 @@ class ReferrerChatId(AsyncIntable):
         max_legacy_id = 3000
         if message_meta < max_legacy_id:
             return await PgUser.legacy_id_ctor(
-                FkAsyncIntable(
+                FkAsyncInt(
                     IntableRegularExpression(self._message),
                 ),
                 self._pgsql,
@@ -106,7 +107,7 @@ class ReferrerChatId(AsyncIntable):
 class ReferrerIdOrNone(AsyncIntOrNone):
     """Идентификатор чата пригласившего."""
 
-    _origin: AsyncIntable
+    _origin: AsyncInt
 
     @override
     async def to_int(self) -> int | None:

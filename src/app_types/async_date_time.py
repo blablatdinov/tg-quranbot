@@ -20,26 +20,15 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import pytest
+import datetime
+from typing import Protocol
 
-from app_types.fk_async_int import FkAsyncInt
-from exceptions.content_exceptions import AyatNotFoundError
-from srv.ayats.pg_ayat_identifier import PgAyatIdentifier
-
-
-@pytest.mark.usefixtures('db_ayat')
-async def test(pgsql):
-    identifier = PgAyatIdentifier(FkAsyncInt(1), pgsql)
-
-    assert await identifier.ayat_id() == 1
-    assert await identifier.sura_num() == 1
-    assert await identifier.ayat_num() == '1-7'
+from pyeo import elegant
 
 
-async def test_not_found(pgsql):
-    identifier = PgAyatIdentifier(FkAsyncInt(1), pgsql)
+@elegant
+class AsyncDateTime(Protocol):
+    """Интерфейс даты/времени для вычисления с возможностью переключения контекста."""
 
-    with pytest.raises(AyatNotFoundError):
-        await identifier.sura_num()
-    with pytest.raises(AyatNotFoundError):
-        await identifier.ayat_num()
+    async def datetime(self) -> datetime.datetime:
+        """Дата/время."""

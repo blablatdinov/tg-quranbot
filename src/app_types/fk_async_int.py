@@ -20,51 +20,26 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from collections.abc import Sequence
-from typing import final, override
+from typing import SupportsInt, final, override
 
 import attrs
-from databases import Database
 from pyeo import elegant
 
-from app_types.fk_async_int import FkAsyncInt
-from app_types.listable import AsyncListable
-from app_types.stringable import SupportsStr
-from srv.ayats.ayat import Ayat
-from srv.ayats.pg_ayat import PgAyat
-from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
+from app_types.intable import AsyncInt
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatsByTextQuery(AsyncListable):
-    """Список аятов, найденных по текстовому запросу."""
+class FkAsyncInt(AsyncInt):
+    """Фейковое число."""
 
-    _query: SupportsStr
-    _pgsql: Database
+    _source: SupportsInt
 
     @override
-    async def to_list(self) -> Sequence[Ayat]:
-        """Список.
+    async def to_int(self) -> int:
+        """Приведение к числу с возможностью переключения контекста.
 
-        :return: list[QAyat]
+        :return: int
         """
-        query = '\n'.join([
-            'SELECT a.ayat_id AS id',
-            'FROM ayats AS a',
-            'WHERE a.content ILIKE :search_query',
-            'ORDER BY a.ayat_id',
-        ])
-        rows = await self._pgsql.fetch_all(query, {
-            'search_query': '%{0}%'.format(self._query),
-        })
-        return [
-            TextLenSafeAyat(
-                PgAyat(
-                    FkAsyncInt(row['id']),
-                    self._pgsql,
-                ),
-            )
-            for row in rows
-        ]
+        return int(self._source)

@@ -30,7 +30,7 @@ import pytz
 import ujson
 from furl import furl
 
-from app_types.intable import FkAsyncIntable
+from app_types.fk_async_int import FkAsyncInt
 from app_types.logger import FkLogSink
 from app_types.update import FkUpdate
 from exceptions.base_exception import InternalBotError
@@ -178,9 +178,9 @@ async def test_concrete_podcast(pgsql, fake_redis):
 
 async def test_podcast_not_found(pgsql):
     with pytest.raises(InternalBotError):
-        await PgPodcast(FkAsyncIntable(1), pgsql).tg_file_id()
+        await PgPodcast(FkAsyncInt(1), pgsql).tg_file_id()
     with pytest.raises(InternalBotError):
-        await PgPodcast(FkAsyncIntable(1), pgsql).file_link()
+        await PgPodcast(FkAsyncInt(1), pgsql).file_link()
 
 
 @pytest.mark.usefixtures('_db_podcast_without_telegram_file_id')

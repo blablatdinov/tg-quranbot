@@ -27,7 +27,7 @@ import attrs
 import pytz
 from pyeo import elegant
 
-from app_types.date_time import DateTimeInterface
+from app_types.date_time import DateTime
 from app_types.update import Update
 from exceptions.base_exception import InternalBotError
 from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
@@ -36,7 +36,7 @@ from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
 @final
 @attrs.define(frozen=True)
 @elegant
-class TgDateTime(DateTimeInterface):
+class TgDateTime(DateTime):
     """Время сообщения."""
 
     _update: Update

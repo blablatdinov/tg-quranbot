@@ -26,14 +26,14 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import AsyncIntable
+from app_types.intable import AsyncInt
 from integrations.tg.chat_id import ChatId
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class PodcastId(AsyncIntable):
+class PodcastId(AsyncInt):
     """Идентификатор подкаста.
 
     Достаем случайный идентификатор подкаста, который пользователю еще не попадался

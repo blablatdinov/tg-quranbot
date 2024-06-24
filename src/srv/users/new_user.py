@@ -29,7 +29,7 @@ from asyncpg import ForeignKeyViolationError, UniqueViolationError
 from databases import Database
 from pyeo import elegant
 
-from app_types.date_time import DateTimeInterface
+from app_types.date_time import DateTime
 from app_types.logger import LogSink
 from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import UserAlreadyExistsError
@@ -66,7 +66,7 @@ class PgNewUserWithEvent(NewUser):
     _origin: NewUser
     _event_sink: SinkInterface
     _new_user_chat_id: ChatId
-    _datetime: DateTimeInterface
+    _datetime: DateTime
 
     @override
     async def create(self) -> None:

@@ -28,7 +28,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
-from app_types.intable import FkAsyncIntable
+from app_types.fk_async_int import FkAsyncInt
 from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
@@ -59,7 +59,7 @@ class ConcretePodcastAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         podcast = PgPodcast(
-            FkAsyncIntable(IntableRegularExpression(str(MessageText(update)))),
+            FkAsyncInt(IntableRegularExpression(str(MessageText(update)))),
             self._pgsql,
         )
         return await PodcastAnswer(

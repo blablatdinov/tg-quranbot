@@ -28,7 +28,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
-from app_types.intable import FkAsyncIntable
+from app_types.fk_async_int import FkAsyncInt
 from app_types.logger import LogSink
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
@@ -77,7 +77,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
         status = AyatFavoriteStatus(str(CallbackQueryData(update)))
         result_ayat = TextLenSafeAyat(
             PgAyat(
-                FkAsyncIntable(
+                FkAsyncInt(
                     IntableRegularExpression(
                         str(CallbackQueryData(update)),
                     ),

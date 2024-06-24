@@ -20,79 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 13
+from typing import Protocol
 
-from typing import Protocol, SupportsInt, final, override
-
-import attrs
 from pyeo import elegant
 
 
 @elegant
-class AsyncIntable(Protocol):
+class AsyncInt(Protocol):
     """Интерфейс объектов, которые можно привести к числу."""
 
     async def to_int(self) -> int:
         """Приведение к числу с возможностью переключения контекста."""
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkIntable(SupportsInt):
-    """Сквозное число."""
-
-    _source: int
-
-    @override
-    def __int__(self) -> int:
-        """Приведение к числу.
-
-        :return: int
-        """
-        return self._source
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkAsyncIntable(AsyncIntable):
-    """Сквозное число."""
-
-    _source: SupportsInt
-
-    @override
-    async def to_int(self) -> int:
-        """Приведение к числу с возможностью переключения контекста.
-
-        :return: int
-        """
-        return int(self._source)
-
-
-@final
-@elegant
-class CachedAsyncIntable(AsyncIntable):
-    """Кэшируемое число."""
-
-    def __init__(self, origin: AsyncIntable) -> None:
-        """Конструктор.
-
-        :param origin: AsyncIntable
-        """
-        self._origin = origin
-        self._cached = False
-        self._cached_value = 0
-
-    @override
-    async def to_int(self) -> int:
-        """Числовое представление.
-
-        :return: int
-        """
-        if self._cached:
-            return self._cached_value
-        int_val = await self._origin.to_int()
-        self._cached = True
-        self._cached_value = int_val
-        return int_val
