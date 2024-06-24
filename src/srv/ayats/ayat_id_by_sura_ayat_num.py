@@ -74,5 +74,3 @@ class AyatIdBySuraAyatNum(AsyncInt):
         if not row:
             raise AyatNotFoundError
         return row['ayat_id']
-
-
