@@ -20,10 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
-
 import pytest
-import pytz
 import ujson
 from furl import furl
 
@@ -35,53 +32,21 @@ from srv.events.sink import FkSink
 
 
 @pytest.fixture()
-async def _db_ayat(pgsql):
-    created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
-    await pgsql.execute_many(
-        '\n'.join([
-            'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
-            "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
-        ]),
-        [
-            {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at},
-            {'file_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba', 'created_at': created_at},
-        ],
-    )
-    await pgsql.execute(
-        "INSERT INTO suras (sura_id, link)\nVALUES (1, '/link-to-sura.domain')",
-    )
-    await pgsql.execute(
-        "INSERT INTO admin_messages (key, text)\nVALUES ('start', 'start admin message')",
-    )
-    await pgsql.execute(
-        '\n'.join([
-            'INSERT INTO ayats',
-            '(ayat_id, sura_id, public_id, day, audio_id, ayat_number, content, arab_text, transliteration)',
-            'VALUES',
-            '(:ayat_id, :sura_id, :public_id, :day, :audio_id, :ayat_number, :content, :arab_text, :transliteration)',
-        ]),
-        {
-            'ayat_id': 1,
-            'sura_id': 1,
-            'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
-            'day': 1,
-            'audio_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90',
-            'ayat_number': '1-7',
-            'content': 'Ayat content',
-            'arab_text': 'Arab text',
-            'transliteration': 'Transliteration',
-        },
-    )
-
-
-@pytest.fixture()
 async def _existed_user(pgsql):
     await pgsql.execute(
         'INSERT INTO users (chat_id, day, legacy_id) VALUES (321, 2, 1)',
     )
 
 
-async def test(pgsql, fake_redis, _db_ayat, unquote, settings_ctor):
+@pytest.fixture()
+async def _admin_message(pgsql):
+    await pgsql.execute(
+        "INSERT INTO admin_messages (key, text) VALUES ('start', 'start admin message')",
+    )
+
+
+@pytest.mark.usefixtures('_db_ayat', '_admin_message')
+async def test(pgsql, fake_redis, unquote, settings_ctor):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), fake_redis, settings_ctor(), FkLogSink(),
     ).build(FkUpdate('{"message":{"text":"/start"},"chat":{"id":321},"date":0}'))
@@ -108,9 +73,9 @@ async def test(pgsql, fake_redis, _db_ayat, unquote, settings_ctor):
         .add({
             'parse_mode': 'html',
             'text': '\n'.join([
-                '<a href="https://umma.ru/link-to-sura.domain#1-1">1:1-7)</a>',
+                '<a href="https://umma.ru/link-to-sura#1-1">1:1-7)</a>',
                 'Arab text\n',
-                'Ayat content\n',
+                'Content\n',
                 '<i>Transliteration</i>',
             ]),
             'chat_id': 321,
@@ -126,7 +91,7 @@ async def test(pgsql, fake_redis, _db_ayat, unquote, settings_ctor):
     )
 
 
-@pytest.mark.usefixtures('_db_ayat', '_existed_user')
+@pytest.mark.usefixtures('_db_ayat', '_existed_user', '_admin_message')
 async def test_exists_user(pgsql, fake_redis, unquote, settings_ctor):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), fake_redis, settings_ctor(), FkLogSink(),
@@ -150,7 +115,7 @@ async def test_exists_user(pgsql, fake_redis, unquote, settings_ctor):
     )
 
 
-@pytest.mark.usefixtures('_db_ayat', '_existed_user')
+@pytest.mark.usefixtures('_db_ayat', '_existed_user', '_admin_message')
 async def test_with_referrer(pgsql, fake_redis, unquote, settings_ctor):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), fake_redis, settings_ctor(), FkLogSink(),
@@ -191,7 +156,7 @@ async def test_with_referrer(pgsql, fake_redis, unquote, settings_ctor):
     )
 
 
-@pytest.mark.usefixtures('_db_ayat', '_existed_user')
+@pytest.mark.usefixtures('_db_ayat', '_existed_user', '_admin_message')
 @pytest.mark.parametrize('referrer_id', [85, 3001])
 async def test_fake_referrer(pgsql, fake_redis, referrer_id, settings_ctor):
     got = await FullStartAnswer(

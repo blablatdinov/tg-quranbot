@@ -83,7 +83,7 @@ async def _db_ayat(pgsql):
     )
     await pgsql.execute('\n'.join([
         'INSERT INTO suras (sura_id, link) VALUES',
-        "(1, 'https://link-to-sura.domain')",
+        "(1, '/link-to-sura')",
     ]))
     await pgsql.execute(
         '\n'.join([
