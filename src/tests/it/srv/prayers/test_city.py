@@ -37,7 +37,7 @@ async def _db_city(pgsql):
 
 @pytest.mark.usefixtures('_db_city')
 async def test_city_id_by_name(pgsql):
-    got = await CityIdByName(FkAsyncStr('Kazan'), pgsql).to_str()
+    got = await CityIdByName(FkAsyncStr('Казань'), pgsql).to_str()
 
     assert got == 'e9fa0fff-4e6a-47c8-8654-09adf913734a'
 
@@ -53,7 +53,7 @@ async def test_pg_city(pgsql):
     city = PgCity(FkAsyncStr('e9fa0fff-4e6a-47c8-8654-09adf913734a'), pgsql)
 
     assert str(await city.city_id()) == 'e9fa0fff-4e6a-47c8-8654-09adf913734a'
-    assert await city.name() == 'Kazan'
+    assert await city.name() == 'Казань'
 
 
 @pytest.mark.usefixtures('_db_city', '_mock_nominatim')
