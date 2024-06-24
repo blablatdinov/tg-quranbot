@@ -24,7 +24,7 @@ import httpx
 import pytest
 from eljson.json_doc import JsonDoc
 
-from app_types.logger import FkLogSink
+from app_types.fk_log_sink import FkLogSink
 from integrations.tg.tg_answers import TgEmptyAnswer
 from srv.events.message_deleted import MessageDeleted
 from srv.events.sink import FkSink

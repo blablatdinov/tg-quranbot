@@ -22,7 +22,7 @@
 
 import pytest
 
-from app_types.logger import FkLogSink
+from app_types.fk_log_sink import FkLogSink
 from app_types.update import FkUpdate
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.tg_answers.empty_answer import TgEmptyAnswer

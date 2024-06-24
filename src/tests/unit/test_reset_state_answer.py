@@ -23,7 +23,7 @@
 import pytest
 from fakeredis import aioredis
 
-from app_types.logger import FkLogSink
+from app_types.fk_log_sink import FkLogSink
 from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer
 from integrations.tg.update import TgUpdate

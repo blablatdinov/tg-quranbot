@@ -27,7 +27,7 @@ import pytest
 import pytz
 import ujson
 
-from app_types.logger import FkLogSink
+from app_types.fk_log_sink import FkLogSink
 from app_types.update import FkUpdate
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
 from integrations.tg.tg_answers import FkAnswer

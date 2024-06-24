@@ -20,8 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 17
-
 from typing import Protocol
 
 from pyeo import elegant
@@ -35,12 +33,3 @@ class Runable(Protocol):
         """Запуск."""
 
 
-@elegant
-class SyncRunable(Protocol):
-    """Интерфейс блокирующего запускаемого объекта."""
-
-    def run(self, args: list[str]) -> int:
-        """Запуск.
-
-        :param args: list[str]
-        """

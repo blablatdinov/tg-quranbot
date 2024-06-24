@@ -20,14 +20,25 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Protocol
+from app_types.logger import LogSink
+
 
 from pyeo import elegant
 
 
+from typing import final
+
+
+@final
 @elegant
-class LogSink(Protocol):
-    """Интерфейс объектов для логгирования."""
+class FkLogSink(LogSink):
+    """Фейковый логгер."""
+
+    stack: list[str]
+
+    def __init__(self) -> None:
+        """Ctor."""
+        self.stack = []
 
     def info(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003, WPS110
         """Информационный уровень.
@@ -35,6 +46,7 @@ class LogSink(Protocol):
         :param args: tuple[object]
         :param kwargs: dict[object, object]
         """
+        self.stack.append('INFO {0}'.format(args[0]))
 
     def debug(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         """Уровень для отладки.
@@ -42,6 +54,7 @@ class LogSink(Protocol):
         :param args: tuple[object]
         :param kwargs: dict[object, object]
         """
+        self.stack.append('DEBUG {0}'.format(args[0]))
 
     def error(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         """Уровень для ошибок.
@@ -49,6 +62,7 @@ class LogSink(Protocol):
         :param args: tuple[object]
         :param kwargs: dict[object, object]
         """
+        self.stack.append('ERROR {0}'.format(args[0]))
 
     def exception(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         """Уровень для исключений.
@@ -56,3 +70,4 @@ class LogSink(Protocol):
         :param args: tuple[object]
         :param kwargs: dict[object, object]
         """
+        self.stack.append('ERROR {0}'.format(args[0]))

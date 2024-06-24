@@ -31,7 +31,7 @@ import ujson
 from furl import furl
 
 from app_types.fk_async_int import FkAsyncInt
-from app_types.logger import FkLogSink
+from app_types.fk_log_sink import FkLogSink
 from app_types.update import FkUpdate
 from exceptions.base_exception import InternalBotError
 from handlers.concrete_podcast_answer import ConcretePodcastAnswer
