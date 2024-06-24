@@ -20,6 +20,9 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import datetime
+
+import pytz
 import psycopg2
 import pytest
 from databases import Database
@@ -66,3 +69,38 @@ async def pgsql(_migrate):
     await database.execute("SELECT setval('podcasts_podcast_id_seq', 1, false)")
     await database.execute("SELECT setval('prayers_at_user_prayer_at_user_id_seq', 1, false)")
     await database.disconnect()
+
+
+@pytest.fixture()
+async def _db_ayat(pgsql):
+    created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
+    await pgsql.execute(
+        '\n'.join([
+            'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
+            "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
+        ]),
+        {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at},
+    )
+    await pgsql.execute('\n'.join([
+        'INSERT INTO suras (sura_id, link) VALUES',
+        "(1, 'https://link-to-sura.domain')",
+    ]))
+    await pgsql.execute(
+        '\n'.join([
+            'INSERT INTO ayats',
+            '(ayat_id, sura_id, public_id, day, audio_id, ayat_number, content, arab_text, transliteration)',
+            'VALUES',
+            '(:ayat_id, :sura_id, :public_id, :day, :audio_id, :ayat_number, :content, :arab_text, :transliteration)',
+        ]),
+        {
+            'ayat_id': 1,
+            'sura_id': 1,
+            'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
+            'day': 1,
+            'audio_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90',
+            'ayat_number': '1-7',
+            'content': 'Content',
+            'arab_text': 'Arab text',
+            'transliteration': 'Transliteration',
+        },
+    )
