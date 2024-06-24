@@ -103,4 +103,4 @@ jobs:
       - name: Install jscpd
         run: npm i jscpd -g
       - name: Run jscpd
-        run: jscpd -p '**/*.py' -l 40 -t 0
+        run: jscpd -p '**/*.py' -l 35 -t 0
