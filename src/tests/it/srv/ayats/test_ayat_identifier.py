@@ -24,7 +24,7 @@ import pytest
 
 from app_types.intable import FkAsyncIntable
 from exceptions.content_exceptions import AyatNotFoundError
-from srv.ayats.ayat_identifier import PgAyatIdentifier
+from srv.ayats.pg_ayat_identifier import PgAyatIdentifier
 
 
 @pytest.mark.usefixtures('db_ayat')

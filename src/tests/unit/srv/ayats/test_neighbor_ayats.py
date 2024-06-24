@@ -26,8 +26,8 @@ import pytest
 
 from app_types.listable import AsyncListable
 from srv.ayats.ayat import Ayat
-from srv.ayats.ayat_identifier import FkIdentifier
 from srv.ayats.fk_ayat import FkAyat
+from srv.ayats.fk_identifier import FkIdentifier
 from srv.ayats.neighbor_ayats import FavoriteNeighborAyats
 from srv.files.file import FkFile
 

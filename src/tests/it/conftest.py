@@ -28,8 +28,8 @@ import pytz
 from databases import Database
 
 from settings import BASE_DIR, Settings
-from srv.ayats.ayat_identifier import FkIdentifier
 from srv.ayats.fk_ayat import FkAyat
+from srv.ayats.fk_identifier import FkIdentifier
 from srv.files.file import FkFile
 from tests.creating_test_db import apply_migrations, create_db, drop_db
 

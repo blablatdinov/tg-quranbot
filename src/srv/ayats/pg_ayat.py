@@ -32,9 +32,9 @@ from exceptions.content_exceptions import AyatNotFoundError
 from services.regular_expression import IntableRegularExpression
 from srv.ayats.ayat import Ayat, AyatText
 from srv.ayats.ayat_id_by_sura_ayat import AyatIdByPublicId, AyatIdBySuraAyatNum
-from srv.ayats.ayat_identifier import PgAyatIdentifier
 from srv.ayats.ayat_link import AyatLink
 from srv.ayats.nums_search_query import NumsSearchQuery
+from srv.ayats.pg_ayat_identifier import PgAyatIdentifier
 from srv.ayats.validated_search_query import ValidatedSearchQuery
 from srv.files.file import TgFile
 from srv.files.pg_file import PgFile
