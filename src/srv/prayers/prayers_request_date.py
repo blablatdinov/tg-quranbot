@@ -47,7 +47,7 @@ class PrayersRequestDate(PrayerDate):
         :return: datetime.date
         :raises ValueError: время намаза не соответствует формату
         """
-        date = str(MessageText(update)).split(' ')[-1]
+        date = str(MessageText(update)).rsplit(' ', maxsplit=1)[-1]
         if date == 'намаза':
             return datetime.datetime.now(pytz.timezone('Europe/Moscow')).date()
         formats = ('%d.%m.%Y', '%d-%m-%Y')  # noqa: WPS323 not string formatting

@@ -45,7 +45,7 @@ class PrayersMarkAsDate(PrayerDate):
         :param update: Update
         :return: datetime.date
         """
-        msg_first_line = str(MessageText(update)).split('\n')[0]
+        msg_first_line = str(MessageText(update)).split('\n', maxsplit=1)[0]
         date = msg_first_line.split(' ')[-1][1:-1]
         return (
             datetime.datetime

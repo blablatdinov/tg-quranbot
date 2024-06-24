@@ -53,10 +53,10 @@ class FavoriteNeighborAyats(NeighborAyats):
         fayats = await self._favorite_ayats.to_list()
         for ayat_index, ayat in enumerate(fayats):
             ayat_id = await ayat.identifier().ayat_id()
+            if ayat_id == self._ayat_id:
+                return fayats[ayat_index - 1]
             if ayat_id == self._ayat_id and ayat_index == 0:
                 raise AyatNotFoundError
-            elif ayat_id == self._ayat_id:
-                return fayats[ayat_index - 1]
         raise AyatNotFoundError
 
     @override
@@ -69,10 +69,10 @@ class FavoriteNeighborAyats(NeighborAyats):
         fayats = await self._favorite_ayats.to_list()
         for ayat_index, ayat in enumerate(fayats):
             ayat_id = await ayat.identifier().ayat_id()
+            if ayat_id == self._ayat_id:
+                return fayats[ayat_index + 1]
             if ayat_id == self._ayat_id and ayat_index + 1 == len(fayats):
                 raise AyatNotFoundError
-            elif ayat_id == self._ayat_id:
-                return fayats[ayat_index + 1]
         raise AyatNotFoundError
 
     @override
@@ -86,9 +86,9 @@ class FavoriteNeighborAyats(NeighborAyats):
         for ayat_idx, ayat in enumerate(fayats, start=1):
             if self._ayat_id == 1:
                 return 'стр. 1/{0}'.format(len(fayats))
-            elif await ayat.identifier().ayat_id() == len(fayats):
+            if await ayat.identifier().ayat_id() == len(fayats):
                 return 'стр. {0}/{0}'.format(len(fayats))
-            elif self._ayat_id == await ayat.identifier().ayat_id():
+            if self._ayat_id == await ayat.identifier().ayat_id():
                 return 'стр. {0}/{1}'.format(ayat_idx, len(fayats))
         msg = 'Page info not generated'
         raise BaseAppError(msg)
