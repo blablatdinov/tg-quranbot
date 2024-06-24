@@ -28,10 +28,10 @@ import pytz
 from databases import Database
 
 from settings import BASE_DIR, Settings
-from tests.creating_test_db import apply_migrations, create_db, drop_db
-from srv.ayats.fk_ayat import FkAyat
 from srv.ayats.ayat_identifier import FkIdentifier
+from srv.ayats.fk_ayat import FkAyat
 from srv.files.file import FkFile
+from tests.creating_test_db import apply_migrations, create_db, drop_db
 
 
 @pytest.fixture(scope='session')
@@ -75,7 +75,7 @@ async def pgsql(_migrate):
 
 
 @pytest.fixture()
-async def _db_ayat(pgsql):
+async def db_ayat(pgsql):
     created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
     await pgsql.execute(
         '\n'.join([
@@ -108,7 +108,7 @@ async def _db_ayat(pgsql):
         },
     )
     return FkAyat(
-        FkIdentifier(1, '1', '1-7'),
+        FkIdentifier(1, 1, '1-7'),
         '',
         FkFile('', ''),
     )

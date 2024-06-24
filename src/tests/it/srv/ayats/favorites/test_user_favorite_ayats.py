@@ -20,16 +20,13 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
-
 import pytest
-import pytz
 
 from srv.ayats.favorites.user_favorite_ayats import UserFavoriteAyats
 
 
 @pytest.fixture()
-async def _favorite_ayats(_db_ayat, pgsql):
+async def _favorite_ayats(db_ayat, pgsql):
     await pgsql.execute('\n'.join([
         'INSERT INTO users (chat_id) VALUES',
         '(49573)',
@@ -39,7 +36,7 @@ async def _favorite_ayats(_db_ayat, pgsql):
             'INSERT INTO favorite_ayats (user_id, ayat_id) VALUES',
             '(49573, :ayat_id)',
         ]),
-        {'ayat_id': await _db_ayat.identifier().ayat_id()},
+        {'ayat_id': await db_ayat.identifier().ayat_id()},
     )
 
 

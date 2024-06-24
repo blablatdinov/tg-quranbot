@@ -34,7 +34,7 @@ async def _user(pgsql):
     await pgsql.execute('INSERT INTO users (chat_id) VALUES (1)')
 
 
-@pytest.mark.usefixtures('_db_ayat', '_user')
+@pytest.mark.usefixtures('db_ayat', '_user')
 async def test_add(pgsql, fake_redis):
     got = await ChangeFavoriteAyatAnswer(
         pgsql, FkAnswer(), fake_redis, FkLogSink(),
@@ -54,7 +54,7 @@ async def test_add(pgsql, fake_redis):
     }
 
 
-@pytest.mark.usefixtures('_db_ayat', '_user')
+@pytest.mark.usefixtures('db_ayat', '_user')
 async def test_remove(pgsql, fake_redis):
     got = await ChangeFavoriteAyatAnswer(
         pgsql, FkAnswer(), fake_redis, FkLogSink(),

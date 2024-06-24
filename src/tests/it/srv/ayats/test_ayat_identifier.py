@@ -20,7 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-
 import pytest
 
 from app_types.intable import FkAsyncIntable
@@ -28,7 +27,7 @@ from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat_identifier import PgAyatIdentifier
 
 
-@pytest.mark.usefixtures('_db_ayat')
+@pytest.mark.usefixtures('db_ayat')
 async def test(pgsql):
     identifier = PgAyatIdentifier(FkAsyncIntable(1), pgsql)
 

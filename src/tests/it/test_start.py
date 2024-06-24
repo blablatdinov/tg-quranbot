@@ -45,7 +45,7 @@ async def _admin_message(pgsql):
     )
 
 
-@pytest.mark.usefixtures('_db_ayat', '_admin_message')
+@pytest.mark.usefixtures('db_ayat', '_admin_message')
 async def test(pgsql, fake_redis, unquote, settings_ctor):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), fake_redis, settings_ctor(), FkLogSink(),
@@ -91,7 +91,7 @@ async def test(pgsql, fake_redis, unquote, settings_ctor):
     )
 
 
-@pytest.mark.usefixtures('_db_ayat', '_existed_user', '_admin_message')
+@pytest.mark.usefixtures('db_ayat', '_existed_user', '_admin_message')
 async def test_exists_user(pgsql, fake_redis, unquote, settings_ctor):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), fake_redis, settings_ctor(), FkLogSink(),
@@ -115,7 +115,7 @@ async def test_exists_user(pgsql, fake_redis, unquote, settings_ctor):
     )
 
 
-@pytest.mark.usefixtures('_db_ayat', '_existed_user', '_admin_message')
+@pytest.mark.usefixtures('db_ayat', '_existed_user', '_admin_message')
 async def test_with_referrer(pgsql, fake_redis, unquote, settings_ctor):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), fake_redis, settings_ctor(), FkLogSink(),
@@ -156,7 +156,7 @@ async def test_with_referrer(pgsql, fake_redis, unquote, settings_ctor):
     )
 
 
-@pytest.mark.usefixtures('_db_ayat', '_existed_user', '_admin_message')
+@pytest.mark.usefixtures('db_ayat', '_existed_user', '_admin_message')
 @pytest.mark.parametrize('referrer_id', [85, 3001])
 async def test_fake_referrer(pgsql, fake_redis, referrer_id, settings_ctor):
     got = await FullStartAnswer(

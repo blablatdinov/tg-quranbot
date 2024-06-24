@@ -26,7 +26,7 @@ import attrs
 import httpx
 
 from app_types.update import Update
-from integrations.tg.tg_answers import TgHtmlParseAnswer, TgMessageAnswer, TgAnswerToSender
+from integrations.tg.tg_answers import TgAnswerToSender, TgHtmlParseAnswer, TgMessageAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
