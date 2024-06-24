@@ -20,57 +20,12 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import httpx
 import pytest
-import ujson
 
 from app_types.stringable import FkAsyncStr
 from exceptions.content_exceptions import CityNotSupportedError
 from integrations.tg.coordinates import FkCoordinates
 from srv.prayers.city import CityIdByName, PgCity
-
-
-@pytest.fixture()
-def _mock_nominatim(respx_mock):
-    respx_mock.get(
-        'https://nominatim.openstreetmap.org/reverse.php?lat=55.7887&lon=49.1221&format=jsonv2',
-    ).mock(return_value=httpx.Response(
-        200,
-        text=ujson.dumps({
-            'address': {
-                'ISO3166-2-lvl4': 'RU-TA',
-                'city': 'Kazan',
-                'city_district': 'Вахитовский район',
-                'country': 'Россия',
-                'country_code': 'ru',
-                'county': 'городской округ Казань',
-                'house_number': '12',
-                'postcode': '420111',
-                'region': 'Приволжский федеральный округ',
-                'road': 'Университетская улица',
-                'state': 'Татарстан',
-                'suburb': 'Старо-Татарская слобода',
-            },
-            'addresstype': 'building',
-            'boundingbox': ['55.7886681', '55.7889864', '49.1218618', '49.1223806'],
-            'category': 'building',
-            'display_name': ' '.join([
-                '12, Университетская улица, Старо-Татарская слобода,',
-                'Вахитовский район, Казань, городской округ Казань,',
-                'Татарстан, Приволжский федеральный округ, 420111, Россия',
-            ]),
-            'importance': 9.9,
-            'lat': '55.7888272',
-            'licence': 'Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright',
-            'lon': '49.12212116815689',
-            'name': '',
-            'osm_id': 105336438,
-            'osm_type': 'way',
-            'place_id': 128743364,
-            'place_rank': 30,
-            'type': 'apartments',
-        }),
-    ))
 
 
 @pytest.fixture()

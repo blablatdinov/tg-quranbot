@@ -22,7 +22,9 @@
 
 import asyncio
 import urllib
+from pathlib import Path
 
+import httpx
 import pytest
 from fakeredis import aioredis
 from jinja2 import Template
@@ -122,3 +124,13 @@ def settings_ctor():
             BASE_DIR=base_dir,
         )
     return _settings_ctor
+
+
+@pytest.fixture()
+def _mock_nominatim(respx_mock):
+    respx_mock.get(
+        'https://nominatim.openstreetmap.org/reverse.php?lat=55.7887&lon=49.1221&format=jsonv2',
+    ).mock(return_value=httpx.Response(
+        200,
+        text=Path('src/tests/fixtures/nominatim_response.json').read_text(encoding='utf-8'),
+    ))
