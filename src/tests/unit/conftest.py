@@ -20,36 +20,17 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+from pathlib import Path
+
+import httpx
 import pytest
-import ujson
-
-from app_types.logger import FkLogSink
-from app_types.update import FkUpdate
-from handlers.search_city_answer import SearchCityAnswer
-from integrations.tg.tg_answers import FkAnswer
 
 
-async def test_message(pgsql, fake_redis):
-    debug = False
-    got = await SearchCityAnswer(pgsql, FkAnswer(), debug, fake_redis, FkLogSink()).build(
-        FkUpdate(ujson.dumps({
-            'message': {'text': 'Kazan'},
-            'chat': {'id': 384957},
-        })),
-    )
-
-    assert got[0].url.params['text'] == 'Этот город не поддерживается'
-
-
-@pytest.mark.usefixtures('_mock_nominatim')
-async def test_location(pgsql, fake_redis):
-    debug = False
-    got = await SearchCityAnswer(pgsql, FkAnswer(), debug, fake_redis, FkLogSink()).build(
-        FkUpdate(ujson.dumps({
-            'chat': {'id': 34847935},
-            'latitude': 55.7887,
-            'longitude': 49.1221,
-        })),
-    )
-
-    assert got[0].url.params['text'] == 'Этот город не поддерживается'
+@pytest.fixture()
+def _mock_nominatim(respx_mock):
+    respx_mock.get(
+        'https://nominatim.openstreetmap.org/reverse.php?lat=55.7887&lon=49.1221&format=jsonv2',
+    ).mock(return_value=httpx.Response(
+        200,
+        text=Path('src/tests/fixtures/nominatim_response.json').read_text(encoding='utf-8'),
+    ))

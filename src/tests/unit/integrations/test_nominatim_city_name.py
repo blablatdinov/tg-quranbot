@@ -20,39 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import override
-from pathlib import Path
-
-import httpx
 import pytest
 
 from integrations.nominatim import NominatimCityName
-from integrations.tg.coordinates import Coordinates
-
-
-class FkCoordinates(Coordinates):
-
-    @override
-    def latitude(self) -> float:
-        return 55.7887
-
-    @override
-    def longitude(self) -> float:
-        return 49.1221
-
-
-@pytest.fixture()
-def _mock_nominatim(respx_mock):
-    respx_mock.get(
-        'https://nominatim.openstreetmap.org/reverse.php?lat=55.7887&lon=49.1221&format=jsonv2',
-    ).mock(return_value=httpx.Response(
-        200,
-        text=Path('src/tests/fixtures/nominatim_response.json').read_text(encoding='utf-8')),
-    )
+from integrations.tg.coordinates import FkCoordinates
 
 
 @pytest.mark.usefixtures('_mock_nominatim')
 async def test():
-    got = await NominatimCityName(FkCoordinates()).to_str()
+    got = await NominatimCityName(FkCoordinates(55.7887, 49.1221)).to_str()
 
     assert got == 'Казань'
