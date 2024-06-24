@@ -20,39 +20,15 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
-
-import attrs
-import httpx
-from pyeo import elegant
-from redis.asyncio import Redis
-
-from app_types.logger import LogSink
-from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers import TgAnswer
-from srv.users.redis_user_state import RedisUserState
+import enum
+from typing import final
 
 
 @final
-@attrs.define(frozen=True)
-@elegant
-class StepAnswer(TgAnswer):
-    """Роутинг ответа по состоянию пользователя."""
+class UserStep(enum.Enum):
+    """Перечисление возможных состояний пользователя."""
 
-    _step: str
-    _origin: TgAnswer
-    _redis: Redis
-    _logger: LogSink
-
-    @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
-
-        :param update: Update
-        :return: list[httpx.Request]
-        """
-        step = await RedisUserState(self._redis, TgChatId(update), self._logger).step()
-        if step.value != self._step:
-            return []
-        return await self._origin.build(update)
+    city_search = 'city_search'
+    nothing = 'nothing'
+    ayat_search = 'ayat_search'
+    ayat_favor = 'ayat_favor'

@@ -42,12 +42,13 @@ from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from services.json_path_value import MatchManyJsonPath
 from services.reset_state_answer import ResetStateAnswer
-from services.user_state import CachedUserState, RedisUserState
 from srv.podcasts.podcast import PgPodcast
 from srv.podcasts.podcast_answer import MarkuppedPodcastAnswer, PodcastAnswer
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
 from srv.reactions.pg_reaction import PgReaction
 from srv.reactions.podcast_reaction import PodcastReaction
+from srv.users.cached_user_state import CachedUserState
+from srv.users.redis_user_state import RedisUserState
 
 
 @final

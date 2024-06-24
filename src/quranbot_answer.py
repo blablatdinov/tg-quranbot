@@ -57,7 +57,6 @@ from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
 from services.help_answer import HelpAnswer
 from services.state_answer import StepAnswer
-from services.user_state import UserStep
 from settings import Settings
 from srv.admin_messages.pg_admin_message import PgAdminMessage
 from srv.ayats.ayat_by_id_answer import AyatByIdAnswer
@@ -66,6 +65,7 @@ from srv.ayats.favorite_ayat_page import FavoriteAyatPage
 from srv.events.sink import SinkInterface
 from srv.prayers.inline_query_answer import InlineQueryAnswer
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
+from srv.users.user_step import UserStep
 
 
 @final

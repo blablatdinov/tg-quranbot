@@ -20,39 +20,22 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
+from typing import Protocol
 
-import attrs
-import httpx
 from pyeo import elegant
-from redis.asyncio import Redis
 
-from app_types.logger import LogSink
-from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers import TgAnswer
-from srv.users.redis_user_state import RedisUserState
+from srv.users.user_step import UserStep
 
 
-@final
-@attrs.define(frozen=True)
 @elegant
-class StepAnswer(TgAnswer):
-    """Роутинг ответа по состоянию пользователя."""
+class UserState(Protocol):
+    """Интерфейс для работы с состоянием пользователя."""
 
-    _step: str
-    _origin: TgAnswer
-    _redis: Redis
-    _logger: LogSink
+    async def step(self) -> UserStep:
+        """Состояние пользователя."""
 
-    @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
+    async def change_step(self, step: UserStep) -> None:
+        """Изменение, состояние пользователя.
 
-        :param update: Update
-        :return: list[httpx.Request]
+        :param step: UserStep
         """
-        step = await RedisUserState(self._redis, TgChatId(update), self._logger).step()
-        if step.value != self._step:
-            return []
-        return await self._origin.build(update)
