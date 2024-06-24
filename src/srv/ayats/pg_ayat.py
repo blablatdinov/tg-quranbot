@@ -31,8 +31,9 @@ from app_types.intable import AsyncInt
 from app_types.stringable import SupportsStr
 from exceptions.content_exceptions import AyatNotFoundError
 from services.regular_expression import IntableRegularExpression
+from srv.ayats.AyatIdByPublicId import AyatIdByPublicId
 from srv.ayats.ayat import Ayat, AyatText
-from srv.ayats.ayat_id_by_sura_ayat import AyatIdByPublicId, AyatIdBySuraAyatNum
+from srv.ayats.ayat_id_by_sura_ayat_num import AyatIdBySuraAyatNum
 from srv.ayats.ayat_link import AyatLink
 from srv.ayats.nums_search_query import NumsSearchQuery
 from srv.ayats.pg_ayat_identifier import PgAyatIdentifier
