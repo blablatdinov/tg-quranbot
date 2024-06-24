@@ -20,8 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 37
-
 from typing import Literal, Protocol, final, override
 
 import attrs
@@ -32,7 +30,7 @@ from services.regular_expression import IntableRegularExpression
 
 
 @elegant
-class PodcastReactionsT(Protocol):
+class PodcastReactions(Protocol):
     """Реакция на подкаст."""
 
     def podcast_id(self) -> int:
@@ -45,10 +43,10 @@ class PodcastReactionsT(Protocol):
 @final
 @attrs.define(frozen=True)
 @elegant
-class PodcastReaction(PodcastReactionsT):
+class ParsedPodcastReaction(PodcastReactions):
     """Реакция на подкаст.
 
-    >>> prayer_reaction = PodcastReaction('like(17)')
+    >>> prayer_reaction = ParsedPodcastReaction('like(17)')
     >>> prayer_reaction.podcast_id()
     17
     >>> prayer_reaction.status()

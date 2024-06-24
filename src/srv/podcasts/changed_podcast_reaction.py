@@ -20,17 +20,17 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import pytest
+from typing import Final, Protocol
 
-from srv.podcasts.podcast_reaction import ParsedPodcastReaction
+from pyeo import elegant
+
+PODCAST_ID_LITERAL: Final = 'podcast_id'
+USER_ID_LITERAL: Final = 'user_id'
 
 
-@pytest.mark.parametrize(('callback_data', 'prayer_id', 'status'), [
-    ('like(123)', 123, 'like'),
-    ('dislike(7854)', 7854, 'dislike'),
-])
-def test(callback_data, prayer_id, status):
-    reaction = ParsedPodcastReaction(callback_data)
+@elegant
+class ChangedPodcastReaction(Protocol):
+    """Реакция на подкаст."""
 
-    assert reaction.podcast_id() == prayer_id
-    assert reaction.status() == status
+    async def apply(self) -> None:
+        """Применить."""

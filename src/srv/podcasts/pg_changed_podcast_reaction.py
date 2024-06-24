@@ -20,38 +20,26 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 38
-
-from typing import Final, Protocol, final
+from typing import final
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
 from integrations.tg.chat_id import ChatId
-from srv.reactions.podcast_reaction import PodcastReactionsT
-
-PODCAST_ID_LITERAL: Final = 'podcast_id'
-USER_ID_LITERAL: Final = 'user_id'
-
-
-@elegant
-class Reaction(Protocol):
-    """Реакция на подкаст."""
-
-    async def apply(self) -> None:
-        """Применить."""
+from srv.podcasts.changed_podcast_reaction import PODCAST_ID_LITERAL, USER_ID_LITERAL, ChangedPodcastReaction
+from srv.podcasts.podcast_reaction import PodcastReactions
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class PgReaction(Reaction):
+class PgChangedPoodcastReaction(ChangedPodcastReaction):
     """Реакция на подкаст в БД postgres."""
 
     _pgsql: Database
     _chat_id: ChatId
-    _reaction: PodcastReactionsT
+    _reaction: PodcastReactions
 
     async def apply(self) -> None:
         """Применить."""
