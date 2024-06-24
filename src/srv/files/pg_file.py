@@ -28,7 +28,7 @@ from databases import Database
 from pyeo import elegant
 
 from exceptions.content_exceptions import BotFileNotFoundError
-from srv.files.file import FileLink, TgFile, TgFileId
+from srv.files.tg_file import FileLink, TgFile, TgFileId
 
 
 @final

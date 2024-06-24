@@ -35,7 +35,7 @@ from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
 from srv.ayats.favorites.ayat_is_favor import AyatIsFavor
 from srv.ayats.neighbor_ayat_keyboard import NeighborAyatKeyboard
-from srv.ayats.neighbor_ayats import PgNeighborAyats
+from srv.ayats.PgNeighborAyats import PgNeighborAyats
 
 
 @final

@@ -27,7 +27,7 @@ import pytest
 import ujson
 
 from app_types.update import FkUpdate
-from srv.prayers.prayer_date import PrayersRequestDate
+from srv.prayers.PrayersRequestDate import PrayersRequestDate
 
 
 async def test(time_machine):

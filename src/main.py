@@ -49,8 +49,8 @@ from srv.events.message_deleted import MessageDeleted
 from srv.events.morning_content_published import MorningContentPublishedEvent
 from srv.events.prayer_created_event import PrayerCreatedEvent
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
-from srv.events.recieved_event import EventFork
-from srv.events.sink import RabbitmqSink
+from srv.events.EventFork import EventFork
+from srv.events.RabbitmqSink import RabbitmqSink
 
 
 def main(sys_args: list[str]) -> None:

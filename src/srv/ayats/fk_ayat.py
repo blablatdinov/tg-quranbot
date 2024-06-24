@@ -28,7 +28,7 @@ from pyeo import elegant
 
 from srv.ayats.ayat import Ayat
 from srv.ayats.ayat_identifier import AyatIdentifier
-from srv.files.file import TgFile
+from srv.files.tg_file import TgFile
 
 
 @final

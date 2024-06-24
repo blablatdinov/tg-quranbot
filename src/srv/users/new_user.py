@@ -20,22 +20,10 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 54
+from typing import Protocol
 
-from typing import Protocol, final, override
-
-import attrs
-from asyncpg import ForeignKeyViolationError, UniqueViolationError
-from databases import Database
 from pyeo import elegant
 
-from app_types.date_time import DateTime
-from app_types.logger import LogSink
-from exceptions.internal_exceptions import UserNotFoundError
-from exceptions.user import UserAlreadyExistsError
-from integrations.tg.chat_id import ChatId
-from srv.events.sink import SinkInterface
-from srv.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone
 
 
 @elegant
@@ -46,93 +34,3 @@ class NewUser(Protocol):
         """Создание."""
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkNewUser(NewUser):
-    """Фейк нового пользователя."""
-
-    @override
-    async def create(self) -> None:
-        """Создание."""
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class PgNewUserWithEvent(NewUser):
-    """Создание пользователя с событием."""
-
-    _origin: NewUser
-    _event_sink: SinkInterface
-    _new_user_chat_id: ChatId
-    _datetime: DateTime
-
-    @override
-    async def create(self) -> None:
-        """Создание."""
-        await self._origin.create()
-        await self._event_sink.send(
-            'qbot_admin.users',
-            {
-                'user_id': int(self._new_user_chat_id),
-                'date_time': str(self._datetime.datetime()),
-                'referrer_id': None,
-            },
-            'User.Subscribed',
-            1,
-        )
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class PgNewUser(NewUser):
-    """Новый пользователь в БД postgres."""
-
-    _referrer_chat_id: AsyncIntOrNone
-    _new_user_chat_id: ChatId
-    _pgsql: Database
-    _logger: LogSink
-
-    @classmethod
-    def ctor(cls, new_user_chat_id: ChatId, pgsql: Database, logger: LogSink) -> NewUser:
-        """Конструктор без реферера.
-
-        :param new_user_chat_id: ChatId
-        :param pgsql: Database
-        :param logger: LogSink
-        :return: NewUser
-        """
-        return cls(
-            FkAsyncIntOrNone(None),
-            new_user_chat_id,
-            pgsql,
-            logger,
-        )
-
-    @override
-    async def create(self) -> None:
-        """Создание.
-
-        :raises UserAlreadyExistsError: пользователь уже зарегистрирован
-        :raises UserNotFoundError: не найден реферер
-        """
-        chat_id = int(self._new_user_chat_id)
-        self._logger.debug('Insert in DB User <{0}>...'.format(chat_id))
-        query = '\n'.join([
-            'INSERT INTO',
-            'users (chat_id, referrer_id, day)',
-            'VALUES (:chat_id, :referrer_id, 2)',
-            'RETURNING (chat_id, referrer_id)',
-        ])
-        try:
-            await self._pgsql.fetch_one(
-                query,
-                {'chat_id': chat_id, 'referrer_id': await self._referrer_chat_id.to_int()},
-            )
-        except UniqueViolationError as err:
-            raise UserAlreadyExistsError from err
-        except ForeignKeyViolationError as err:
-            raise UserNotFoundError from err
-        self._logger.debug('User <{0}> inserted in DB'.format(chat_id))

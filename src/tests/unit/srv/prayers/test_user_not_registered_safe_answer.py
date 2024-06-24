@@ -28,7 +28,7 @@ from app_types.update import FkUpdate, Update
 from exceptions.internal_exceptions import UserNotFoundError
 from integrations.tg.tg_answers import FkAnswer, TgAnswer
 from srv.prayers.user_not_registered_safe_answer import UserNotRegisteredSafeAnswer
-from srv.users.new_user import FkNewUser
+from srv.users.FkNewUser import FkNewUser
 
 
 @final

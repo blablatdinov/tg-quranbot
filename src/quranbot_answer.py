@@ -62,7 +62,7 @@ from srv.admin_messages.pg_admin_message import PgAdminMessage
 from srv.ayats.ayat_by_id_answer import AyatByIdAnswer
 from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
 from srv.ayats.favorite_ayat_page import FavoriteAyatPage
-from srv.events.sink import SinkInterface
+from srv.events.sink import Sink
 from srv.prayers.inline_query_answer import InlineQueryAnswer
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.users.user_step import UserStep
@@ -77,7 +77,7 @@ class QuranbotAnswer(TgAnswer):
         self,
         database: Database,
         redis: Redis,
-        event_sink: SinkInterface,
+        event_sink: Sink,
         settings: Settings,
         logger: LogSink,
     ) -> None:

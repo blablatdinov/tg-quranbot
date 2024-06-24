@@ -35,8 +35,9 @@ from app_types.update import Update
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers.interface import TgAnswer
 from services.regular_expression import IntableRegularExpression
-from srv.podcasts.podcast import PgPodcast
-from srv.podcasts.podcast_answer import MarkuppedPodcastAnswer, PodcastAnswer
+from srv.podcasts.MarkuppedPodcastAnswer import MarkuppedPodcastAnswer
+from srv.podcasts.PgPodcast import PgPodcast
+from srv.podcasts.podcast_answer import PodcastAnswer
 
 
 @final

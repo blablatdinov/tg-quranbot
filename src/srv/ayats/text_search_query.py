@@ -20,11 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 46
+from typing import Protocol
 
-from typing import Protocol, final, override
-
-import attrs
 from pyeo import elegant
 
 
@@ -42,25 +39,3 @@ class TextSearchQuery(Protocol):
         """Чтение."""
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkTextSearchQuery(TextSearchQuery):
-    """Фейковый запрос для поиска аятов."""
-
-    _query: str
-
-    @override
-    async def write(self, query: str) -> None:
-        """Запись.
-
-        :param query: str
-        """
-
-    @override
-    async def read(self) -> str:
-        """Чтение.
-
-        :return: str
-        """
-        return self._query

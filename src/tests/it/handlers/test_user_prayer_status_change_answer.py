@@ -32,7 +32,7 @@ from app_types.update import FkUpdate
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
 from integrations.tg.tg_answers import FkAnswer
-from srv.prayers.prayer_date import FkPrayerDate
+from srv.prayers.FkPrayerDate import FkPrayerDate
 from srv.prayers.prayers_text import PrayersText
 
 

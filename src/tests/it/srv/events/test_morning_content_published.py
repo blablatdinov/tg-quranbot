@@ -32,8 +32,8 @@ from loguru import logger
 
 from integrations.tg.tg_answers import TgEmptyAnswer
 from srv.events.morning_content_published import MorningContentPublishedEvent
-from srv.events.sink import RabbitmqSink
-from srv.users.pg_user import PgUser
+from srv.events.RabbitmqSink import RabbitmqSink
+from srv.users.PgUser import PgUser
 
 
 @pytest.fixture()

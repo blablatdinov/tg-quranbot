@@ -29,7 +29,8 @@ from app_types.fk_log_sink import FkLogSink
 from app_types.update import FkUpdate, Update
 from exceptions.content_exceptions import UserHasNotCityIdError
 from integrations.tg.tg_answers import FkAnswer, TgAnswer
-from srv.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
+from srv.prayers.UserWithoutCitySafeAnswer import UserWithoutCitySafeAnswer
+from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 
 
 class FkOrigin(TgAnswer):

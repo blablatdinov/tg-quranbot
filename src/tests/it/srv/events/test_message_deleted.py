@@ -27,7 +27,7 @@ from eljson.json_doc import JsonDoc
 from app_types.fk_log_sink import FkLogSink
 from integrations.tg.tg_answers import TgEmptyAnswer
 from srv.events.message_deleted import MessageDeleted
-from srv.events.sink import FkSink
+from srv.events.FkSink import FkSink
 
 
 @pytest.fixture()

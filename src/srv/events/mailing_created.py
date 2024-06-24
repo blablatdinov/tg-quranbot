@@ -38,9 +38,11 @@ from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from services.logged_answer import LoggedAnswer
 from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
-from srv.events.sink import SinkInterface
-from srv.users.active_users import PgUpdatedUsersStatus, UpdatedUsersStatusEvent
-from srv.users.pg_user import FkUser, User
+from srv.events.sink import Sink
+from srv.users.FkUser import FkUser
+from srv.users.PgUpdatedUsersStatus import PgUpdatedUsersStatus
+from srv.users.UpdatedUsersStatusEvent import UpdatedUsersStatusEvent
+from srv.users.pg_user import User
 
 
 @final
@@ -51,7 +53,7 @@ class MailingCreatedEvent(ReceivedEvent):
 
     _empty_answer: TgAnswer
     _pgsql: Database
-    _events_sink: SinkInterface
+    _events_sink: Sink
     _log_sink: LogSink
     _settings: Settings
 

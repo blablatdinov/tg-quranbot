@@ -27,7 +27,7 @@ from pyeo import elegant
 
 from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer, TgAnswer
-from srv.files.file import FkFile
+from srv.files.FkFile import FkFile
 from srv.files.file_id_answer import TelegramFileIdAnswer
 
 

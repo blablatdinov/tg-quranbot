@@ -20,17 +20,10 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 56
+from typing import Protocol
 
-from typing import Protocol, final, override
-
-import attrs
-from databases import Database
 from pyeo import elegant
 
-from app_types.fk_async_int import FkAsyncInt
-from app_types.intable import AsyncInt
-from srv.users.valid_chat_id import PgValidChatId, ValidChatId
 
 
 @elegant
@@ -47,126 +40,7 @@ class User(Protocol):
         """Статус активности пользователя."""
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkUser(User):
-    """Фейковый пользователь."""
-
-    _chat_id: int
-    _day: int
-    _is_active: bool
-
-    @override
-    async def chat_id(self) -> int:
-        """Идентификатор чата.
-
-        :return: int
-        """
-        return self._chat_id
-
-    @override
-    async def day(self) -> int:
-        """День для рассылки утреннего контента.
-
-        :return: int
-        """
-        return self._day
-
-    @override
-    async def is_active(self) -> bool:
-        """Статус пользователя.
-
-        :return: bool
-        """
-        return self._is_active
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class ChatIdByLegacyId(AsyncInt):
-    """Идентификатор чата по старому идентификатору в БД.
-
-    Остались реферальные ссылки, сгенерированные на предыдущей версии бота
-    """
-
-    _pgsql: Database
-    _legacy_id: AsyncInt
-
-    @override
-    async def to_int(self) -> int:
-        """Числовое представление.
-
-        :return: int
-        """
-        query = '\n'.join([
-            'SELECT chat_id',
-            'FROM users',
-            'WHERE legacy_id = :legacy_id',
-        ])
-        return await self._pgsql.fetch_val(query, {'legacy_id': await self._legacy_id.to_int()})
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class PgUser(User):
-    """Пользователь в БД postgres."""
-
-    _chat_id: ValidChatId
-    _pgsql: Database
-
-    @classmethod
-    def legacy_id_ctor(cls, legacy_id: AsyncInt, pgsql: Database) -> User:
-        """Конструктор по старому идентификатору в БД.
-
-        :param legacy_id: int
-        :param pgsql: Database
-        :return: User
-        """
-        return cls(PgValidChatId(pgsql, ChatIdByLegacyId(pgsql, legacy_id)), pgsql)
-
-    @classmethod
-    def int_ctor(cls, chat_id: int, pgsql: Database) -> User:
-        """Конструктор по идентификатору чата.
-
-        :param chat_id: int
-        :param pgsql: Database
-        :return: User
-        """
-        return cls(PgValidChatId(pgsql, FkAsyncInt(chat_id)), pgsql)
-
-    @override
-    async def chat_id(self) -> int:
-        """Идентификатор чата.
-
-        :return: int
-        """
-        return await self._chat_id.to_int()
-
-    @override
-    async def day(self) -> int:
-        """День для рассылки утреннего контента.
-
-        :return: int
-        """
-        query = '\n'.join([
-            'SELECT day',
-            'FROM users',
-            'WHERE chat_id = :chat_id',
-        ])
-        return await self._pgsql.fetch_val(query, {'chat_id': await self._chat_id.to_int()})
-
-    @override
-    async def is_active(self) -> bool:
-        """Статус пользователя.
-
-        :return: bool
-        """
-        query = '\n'.join([
-            'SELECT is_active',
-            'FROM users',
-            'WHERE chat_id = :chat_id',
-        ])
-        return await self._pgsql.fetch_val(query, {'chat_id': await self._chat_id.to_int()})

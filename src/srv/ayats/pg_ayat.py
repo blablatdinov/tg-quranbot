@@ -37,7 +37,7 @@ from srv.ayats.ayat_link import AyatLink
 from srv.ayats.nums_search_query import NumsSearchQuery
 from srv.ayats.pg_ayat_identifier import PgAyatIdentifier
 from srv.ayats.validated_search_query import ValidatedSearchQuery
-from srv.files.file import TgFile
+from srv.files.tg_file import TgFile
 from srv.files.pg_file import PgFile
 
 

@@ -40,9 +40,13 @@ from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender,
 from integrations.tg.tg_datetime import TgDateTime
 from srv.admin_messages.admin_message import AdminMessage
 from srv.ayats.pg_ayat import PgAyat
-from srv.events.sink import SinkInterface
-from srv.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone, ReferrerChatId, ReferrerIdOrNone
-from srv.users.new_user import PgNewUser, PgNewUserWithEvent
+from srv.events.sink import Sink
+from app_types.AsyncIntOrNone import AsyncIntOrNone
+from app_types.FkAsyncIntOrNone import FkAsyncIntOrNone
+from srv.start.ReferrerChatId import ReferrerChatId
+from srv.start.referrer_id_or_none import ReferrerIdOrNone
+from srv.users.PgNewUserWithEvent import PgNewUserWithEvent
+from srv.users.PgNewUser import PgNewUser
 
 
 class NewTgUserT(Protocol):
@@ -63,7 +67,7 @@ class NewTgUser(NewTgUserT):
 
     _pgsql: Database
     _logger: LogSink
-    _event_sink: SinkInterface
+    _event_sink: Sink
     _update: Update
 
     @override

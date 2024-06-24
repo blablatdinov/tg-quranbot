@@ -51,12 +51,15 @@ from services.logged_answer import LoggedAnswer
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
-from srv.events.sink import SinkInterface
-from srv.prayers.prayer_date import FkPrayerDate
-from srv.prayers.prayers_text import PrayersText, UserCityId
+from srv.events.sink import Sink
+from srv.prayers.UserCityId import UserCityId
+from srv.prayers.FkPrayerDate import FkPrayerDate
+from srv.prayers.prayers_text import PrayersText
 from srv.prayers.ramadan_prayer_text import RamadanPrayerText
-from srv.users.active_users import PgUpdatedUsersStatus, UpdatedUsersStatusEvent
-from srv.users.pg_user import FkUser, User
+from srv.users.FkUser import FkUser
+from srv.users.PgUpdatedUsersStatus import PgUpdatedUsersStatus
+from srv.users.UpdatedUsersStatusEvent import UpdatedUsersStatusEvent
+from srv.users.pg_user import User
 
 CHAT_ID: Final = 'chat_id'
 
@@ -70,7 +73,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
     _empty_answer: TgAnswer
     _pgsql: Database
     _settings: Settings
-    _events_sink: SinkInterface
+    _events_sink: Sink
     _log_sink: LogSink
     _redis: Redis
 

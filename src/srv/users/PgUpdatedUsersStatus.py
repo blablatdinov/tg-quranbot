@@ -1,0 +1,41 @@
+from app_types.listable import AsyncListable
+from srv.users.UpdatedUsersStatus import UpdatedUsersStatus
+from srv.users.pg_user import User
+
+
+import attrs
+from databases import Database
+from pyeo import elegant
+
+
+from typing import final, override
+
+
+@final
+@attrs.define(frozen=True)
+@elegant
+class PgUpdatedUsersStatus(UpdatedUsersStatus):
+    """Обновление статусов пользователей."""
+
+    _pgsql: Database
+    _users: AsyncListable[User]
+
+    @override
+    async def update(self, to: bool) -> None:
+        """Обновление.
+
+        :param to: bool
+        """
+        query_template = '\n'.join([
+            'UPDATE users',
+            'SET is_active = :to',
+            'WHERE chat_id in ({0})',
+        ])
+        users = await self._users.to_list()
+        if not users:
+            return
+        query = query_template.format(','.join([
+            str(await user.chat_id())
+            for user in users
+        ]))
+        await self._pgsql.execute(query, {'to': to})

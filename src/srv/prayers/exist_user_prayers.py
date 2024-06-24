@@ -20,63 +20,16 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 33
-
-import datetime
-from typing import Protocol, TypedDict, final, override
-
-import attrs
-from databases import Database
-from pyeo import elegant
-
-from integrations.tg.chat_id import ChatId
+from typing import Protocol
 
 
-class _ExistUserPrayersDict(TypedDict):
-
-    prayer_at_user_id: int
-    is_read: bool
+from srv.prayers.ExistUserPrayersDict import ExistUserPrayersDict
 
 
 class ExistUserPrayers(Protocol):
     """Существующие времена намаза у пользователя."""
 
-    async def fetch(self) -> list[_ExistUserPrayersDict]:
+    async def fetch(self) -> list[ExistUserPrayersDict]:
         """Получить."""
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class PgExistUserPrayers(ExistUserPrayers):
-    """Существующие времена намаза у пользователя."""
-
-    _pgsql: Database
-    _chat_id: ChatId
-    _date: datetime.date
-
-    @override
-    async def fetch(self) -> list[_ExistUserPrayersDict]:
-        """Получить.
-
-        :return: list[Record]
-        """
-        select_query = '\n'.join([
-            'SELECT',
-            '    pau.prayer_at_user_id,',
-            '    pau.is_read',
-            'FROM prayers_at_user AS pau',
-            'INNER JOIN prayers AS p on pau.prayer_id = p.prayer_id',
-            "WHERE p.day = :date AND pau.user_id = :chat_id AND p.name <> 'sunrise'",
-            'ORDER BY pau.prayer_at_user_id',
-        ])
-        return [
-            {
-                'prayer_at_user_id': record['prayer_at_user_id'],
-                'is_read': record['is_read'],
-            }
-            for record in await self._pgsql.fetch_all(select_query, {
-                'date': self._date,
-                'chat_id': int(self._chat_id),
-            })
-        ]

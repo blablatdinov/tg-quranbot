@@ -20,8 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 32
-
 from typing import final, override
 
 import attrs
@@ -29,35 +27,9 @@ import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from exceptions.content_exceptions import CityNotSupportedError
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from srv.prayers.city import City
-from srv.prayers.update_user_city import UpdatedUserCity
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class CityNotSupportedAnswer(TgAnswer):
-    """Ответ о неподдерживаемом городе."""
-
-    _origin: TgAnswer
-    _error_answer: TgAnswer
-
-    @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Собрать ответ.
-
-        :param update: Update
-        :return: list[httpx.Request]
-        """
-        try:
-            return await self._origin.build(update)
-        except CityNotSupportedError:
-            return await TgTextAnswer.str_ctor(
-                self._error_answer,
-                'Этот город не поддерживается',
-            ).build(update)
+from srv.prayers.updated_user_city import UpdatedUserCity
 
 
 @final

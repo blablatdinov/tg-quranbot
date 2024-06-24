@@ -34,8 +34,9 @@ from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers.interface import TgAnswer
-from srv.podcasts.podcast import PgPodcast
-from srv.podcasts.podcast_answer import MarkuppedPodcastAnswer, PodcastAnswer
+from srv.podcasts.MarkuppedPodcastAnswer import MarkuppedPodcastAnswer
+from srv.podcasts.PgPodcast import PgPodcast
+from srv.podcasts.podcast_answer import PodcastAnswer
 from srv.podcasts.podcast_id import PodcastId
 
 

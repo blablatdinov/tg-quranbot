@@ -31,7 +31,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.sendable import SendableInterface
-from srv.events.sink import SinkInterface
+from srv.events.sink import Sink
 
 MESSAGE_LITERAL: Final = 'message'
 UPDATES_LOG: Final = 'qbot_admin.updates_log'
@@ -52,7 +52,7 @@ class LoggedAnswer(SendableInterface):
     """Декоратор логирующий сообщения."""
 
     _origin: SendableInterface
-    _event_sink: SinkInterface
+    _event_sink: Sink
     _mailing_id: uuid.UUID | None = None
 
     @override

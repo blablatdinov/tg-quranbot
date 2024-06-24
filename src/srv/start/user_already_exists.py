@@ -33,10 +33,11 @@ from exceptions.user import UserAlreadyActiveError, UserAlreadyExistsError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from integrations.tg.tg_datetime import TgDateTime
-from srv.events.sink import SinkInterface
-from srv.users.active_users import PgUpdatedUsersStatus, PgUsers
-from srv.users.pg_user import PgUser
-from srv.users.valid_chat_id import PgValidChatId
+from srv.events.sink import Sink
+from srv.users.PgUsers import PgUsers
+from srv.users.PgUpdatedUsersStatus import PgUpdatedUsersStatus
+from srv.users.PgUser import PgUser
+from srv.users.PgValidChatId import PgValidChatId
 
 
 @final
@@ -48,7 +49,7 @@ class UserAlreadyExistsAnswer(TgAnswer):
     _origin: TgAnswer
     _sender_answer: TgAnswer
     _pgsql: Database
-    _event_sink: SinkInterface
+    _event_sink: Sink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

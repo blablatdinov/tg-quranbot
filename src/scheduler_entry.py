@@ -29,7 +29,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from loguru import logger
 
 from settings import BASE_DIR, Settings
-from srv.events.sink import RabbitmqSink
+from srv.events.RabbitmqSink import RabbitmqSink
 
 logging.basicConfig()
 logging.getLogger('apscheduler').setLevel(logging.DEBUG)

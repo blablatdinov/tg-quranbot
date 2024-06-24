@@ -20,8 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 58
-
 from typing import final, override
 
 import attrs
@@ -30,30 +28,8 @@ from pyeo import elegant
 
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
-from exceptions.content_exceptions import TelegramFileIdNotFilledError
 from integrations.tg.tg_answers import TgAnswer
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class TgFileIdNotFilledSafeAnswer(TgAnswer):
-    """Декоратор для обработки файлов с незаполненным идентификатором файла."""
-
-    _file_id_answer: TgAnswer
-    _text_answer: TgAnswer
-
-    @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
-
-        :param update: Update
-        :return: list[httpx.Request]
-        """
-        try:
-            return await self._file_id_answer.build(update)
-        except TelegramFileIdNotFilledError:
-            return await self._text_answer.build(update)
+from srv.files.TgFileIdNotFilledSafeAnswer import TgFileIdNotFilledSafeAnswer
 
 
 @final

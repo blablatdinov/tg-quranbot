@@ -28,9 +28,10 @@ import httpx
 from app_types.update import FkUpdate, Update
 from exceptions.content_exceptions import CityNotSupportedError
 from integrations.tg.tg_answers import FkAnswer, TgAnswer
-from srv.prayers.change_city_answer import ChangeCityAnswer, CityNotSupportedAnswer
-from srv.prayers.city import FkCity
-from srv.prayers.update_user_city import FkUpdateUserCity
+from srv.prayers.CityNotSupportedAnswer import CityNotSupportedAnswer
+from srv.prayers.change_city_answer import ChangeCityAnswer
+from srv.prayers.FkCity import FkCity
+from srv.prayers.FkUpdateUserCity import FkUpdateUserCity
 
 
 class _Answer(TgAnswer):
