@@ -29,6 +29,9 @@ from databases import Database
 
 from settings import BASE_DIR, Settings
 from tests.creating_test_db import apply_migrations, create_db, drop_db
+from srv.ayats.fk_ayat import FkAyat
+from srv.ayats.ayat_identifier import FkIdentifier
+from srv.files.file import FkFile
 
 
 @pytest.fixture(scope='session')
@@ -103,6 +106,11 @@ async def _db_ayat(pgsql):
             'arab_text': 'Arab text',
             'transliteration': 'Transliteration',
         },
+    )
+    return FkAyat(
+        FkIdentifier(1, '1', '1-7'),
+        '',
+        FkFile('', ''),
     )
 
 
