@@ -24,11 +24,9 @@ from typing import final, override
 
 import attrs
 import httpx
-from furl import furl
 
 from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
-from integrations.tg.tg_answers import TgHtmlParseAnswer, TgMessageAnswer
+from integrations.tg.tg_answers import TgHtmlParseAnswer, TgMessageAnswer, TgAnswerToSender
 from integrations.tg.tg_answers.interface import TgAnswer
 
 
@@ -46,10 +44,8 @@ class TgHtmlMessageAnswerToSender(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        return [
-            httpx.Request(
-                request.method,
-                furl(request.url).add({'chat_id': int(TgChatId(update))}).url,
-            )
-            for request in await TgHtmlParseAnswer(TgMessageAnswer(self._origin)).build(update)
-        ]
+        return await TgAnswerToSender(
+            TgHtmlParseAnswer(
+                TgMessageAnswer(self._origin),
+            ),
+        ).build(update)

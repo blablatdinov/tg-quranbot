@@ -48,7 +48,7 @@ async def test(fake_redis, unquote, search_answer):
         'parse_mode': 'html',
         'chat_id': '1758',
         'text': '\n'.join([
-            '<a href="https://umma.ruhttps://link-to-sura.domain#1-1">1:1-7)</a>',
+            '<a href="https://umma.ru/link-to-sura#1-1">1:1-7)</a>',
             'Arab text\n',
             'Content\n',
             '<i>Transliteration</i>',
