@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
+from typing import Final, final, override
 
 import attrs
 from databases import Database
@@ -31,6 +31,8 @@ from srv.ayats.ayat import Ayat
 from srv.ayats.neighbor_ayats import NeighborAyats
 from srv.ayats.pg_ayat import PgAyat
 from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
+
+_AYAT_ID_LITERAL: Final = 'ayat_id'
 
 
 @final
@@ -54,10 +56,10 @@ class PgNeighborAyats(NeighborAyats):
             'FROM ayats',
             'WHERE ayat_id = :ayat_id',
         ])
-        row = await self._pgsql.fetch_one(query, {'ayat_id': self._ayat_id - 1})
+        row = await self._pgsql.fetch_one(query, {_AYAT_ID_LITERAL: self._ayat_id - 1})
         if not row:
             raise AyatNotFoundError
-        return TextLenSafeAyat(PgAyat.from_int(row['ayat_id'], self._pgsql))
+        return TextLenSafeAyat(PgAyat.from_int(row[_AYAT_ID_LITERAL], self._pgsql))
 
     @override
     async def right_neighbor(self) -> Ayat:
@@ -71,10 +73,10 @@ class PgNeighborAyats(NeighborAyats):
             'FROM ayats',
             'WHERE ayats.ayat_id = :ayat_id',
         ])
-        row = await self._pgsql.fetch_one(query, {'ayat_id': self._ayat_id + 1})
+        row = await self._pgsql.fetch_one(query, {_AYAT_ID_LITERAL: self._ayat_id + 1})
         if not row:
             raise AyatNotFoundError
-        return TextLenSafeAyat(PgAyat.from_int(row['ayat_id'], self._pgsql))
+        return TextLenSafeAyat(PgAyat.from_int(row[_AYAT_ID_LITERAL], self._pgsql))
 
     @override
     async def page(self) -> str:
@@ -85,6 +87,6 @@ class PgNeighborAyats(NeighborAyats):
         ayats_count = await self._pgsql.fetch_val('SELECT COUNT(*) FROM ayats')
         actual_page_num = await self._pgsql.fetch_val(
             'SELECT COUNT(*) FROM ayats WHERE ayat_id <= :ayat_id',
-            {'ayat_id': self._ayat_id},
+            {_AYAT_ID_LITERAL: self._ayat_id},
         )
         return 'стр. {0}/{1}'.format(actual_page_num, ayats_count)

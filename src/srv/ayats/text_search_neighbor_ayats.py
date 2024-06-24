@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
+from typing import Final, final, override
 
 import attrs
 from databases import Database
@@ -32,6 +32,8 @@ from srv.ayats.neighbor_ayats import NeighborAyats
 from srv.ayats.pg_ayat import PgAyat
 from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
 from srv.ayats.text_search_query import TextSearchQuery
+
+_AYAT_ID_LITERAL: Final = 'ayat_id'
 
 
 @final
@@ -60,9 +62,9 @@ class TextSearchNeighborAyats(NeighborAyats):
         search_query = '%{0}%'.format(await self._query.read())
         rows = await self._pgsql.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[1:], start=1):
-            if row['ayat_id'] == self._ayat_id:
+            if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 return TextLenSafeAyat(
-                    PgAyat.from_int(rows[idx - 1]['ayat_id'], self._pgsql),
+                    PgAyat.from_int(rows[idx - 1][_AYAT_ID_LITERAL], self._pgsql),
                 )
         raise AyatNotFoundError
 
@@ -76,9 +78,9 @@ class TextSearchNeighborAyats(NeighborAyats):
         search_query = '%{0}%'.format(await self._query.read())
         rows = await self._pgsql.fetch_all(self._search_sql_query, {'search_query': search_query})
         for idx, row in enumerate(rows[:-1]):
-            if row['ayat_id'] == self._ayat_id:
+            if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 return TextLenSafeAyat(
-                    PgAyat.from_int(rows[idx + 1]['ayat_id'], self._pgsql),
+                    PgAyat.from_int(rows[idx + 1][_AYAT_ID_LITERAL], self._pgsql),
                 )
         raise AyatNotFoundError
 
@@ -94,6 +96,6 @@ class TextSearchNeighborAyats(NeighborAyats):
             {'search_query': '%{0}%'.format(await self._query.read())},
         )
         for idx, row in enumerate(rows, start=1):
-            if row['ayat_id'] == self._ayat_id:
+            if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 actual_page_num = idx
         return 'стр. {0}/{1}'.format(actual_page_num, len(rows))
