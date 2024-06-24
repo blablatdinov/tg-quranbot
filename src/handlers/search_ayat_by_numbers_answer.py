@@ -35,10 +35,11 @@ from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgAudioAnswer
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from services.reset_state_answer import ResetStateAnswer
-from services.user_state import CachedUserState, RedisUserState
 from srv.ayats.ayat_by_sura_ayat_num_answer import AyatBySuraAyatNumAnswer
 from srv.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 from srv.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
+from srv.users.cached_user_state import CachedUserState
+from srv.users.redis_user_state import RedisUserState
 
 
 @final

@@ -20,10 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 6
-
-import enum
-from typing import Protocol, final, override
+from typing import final, override
 
 import attrs
 from pyeo import elegant
@@ -31,65 +28,8 @@ from redis.asyncio import Redis
 
 from app_types.logger import LogSink
 from integrations.tg.chat_id import ChatId
-
-
-@final
-class UserStep(enum.Enum):
-    """Перечисление возможных состояний пользователя."""
-
-    city_search = 'city_search'
-    nothing = 'nothing'
-    ayat_search = 'ayat_search'
-    ayat_favor = 'ayat_favor'
-
-
-@elegant
-class UserState(Protocol):
-    """Интерфейс для работы с состоянием пользователя."""
-
-    async def step(self) -> UserStep:
-        """Состояние пользователя."""
-
-    async def change_step(self, step: UserStep) -> None:
-        """Изменение, состояние пользователя.
-
-        :param step: UserStep
-        """
-
-
-@final
-@elegant
-class CachedUserState(UserState):
-    """Кэширующий декоратор."""
-
-    @override
-    def __init__(self, origin: UserState) -> None:
-        """Ctor.
-
-        :param origin: UserState
-        """
-        self._origin = origin
-        self._cache: UserStep | None = None
-
-    @override
-    async def step(self) -> UserStep:
-        """Состояние пользователя.
-
-        :return: UserStep
-        """
-        if self._cache:
-            return self._cache
-        self._cache = await self._origin.step()
-        return self._cache
-
-    @override
-    async def change_step(self, step: UserStep) -> None:
-        """Изменение, состояние пользователя.
-
-        :param step: UserStep
-        """
-        await self._origin.change_step(step)
-        self._cache = step
+from srv.users.user_state import UserState
+from srv.users.user_step import UserStep
 
 
 @final

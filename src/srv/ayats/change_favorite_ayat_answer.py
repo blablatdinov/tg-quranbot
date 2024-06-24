@@ -45,7 +45,6 @@ from integrations.tg.tg_answers import (
 )
 from services.regular_expression import IntableRegularExpression
 from services.state_answer import StepAnswer
-from services.user_state import UserStep
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.ayat_favorite_status import AyatFavoriteStatus
@@ -53,6 +52,7 @@ from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.favorite_ayats_after_remove import FavoriteAyatsAfterRemove
 from srv.ayats.neighbor_ayats import FavoriteNeighborAyats, PgNeighborAyats, TextSearchNeighborAyats
 from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
+from srv.users.user_step import UserStep
 
 
 @final

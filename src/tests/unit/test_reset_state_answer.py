@@ -29,7 +29,9 @@ from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer
 from integrations.tg.update import TgUpdate
 from services.reset_state_answer import ResetStateAnswer
-from services.user_state import CachedUserState, RedisUserState, UserStep
+from srv.users.cached_user_state import CachedUserState
+from srv.users.redis_user_state import RedisUserState
+from srv.users.user_step import UserStep
 
 
 @pytest.fixture()

@@ -28,7 +28,8 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer
-from services.user_state import UserState, UserStep
+from srv.users.user_state import UserState
+from srv.users.user_step import UserStep
 
 
 @final

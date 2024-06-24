@@ -43,11 +43,12 @@ from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from integrations.tg.tg_answers.skipable_answer import SkipableAnswer
 from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from services.reset_state_answer import ResetStateAnswer
-from services.user_state import CachedUserState, RedisUserState
 from srv.files.file_answer import FileAnswer
 from srv.files.file_id_answer import TelegramFileIdAnswer
 from srv.podcasts.podcast import Podcast
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
+from srv.users.cached_user_state import CachedUserState
+from srv.users.redis_user_state import RedisUserState
 
 
 @final
