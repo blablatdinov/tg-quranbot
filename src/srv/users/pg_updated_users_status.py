@@ -20,63 +20,42 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 31
-
-from typing import Protocol, final, override
+from typing import final, override
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
-from exceptions.internal_exceptions import UserNotFoundError
-from integrations.tg.chat_id import ChatId
-from srv.prayers.city import City
-
-
-@elegant
-class UpdatedUserCity(Protocol):
-    """Обновленный город у пользователя."""
-
-    async def update(self) -> None:
-        """Обновление."""
+from app_types.listable import AsyncListable
+from srv.users.updated_users_status import UpdatedUsersStatus
+from srv.users.user import User
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class FkUpdateUserCity(UpdatedUserCity):
-    """Стаб для обновления города."""
+class PgUpdatedUsersStatus(UpdatedUsersStatus):
+    """Обновление статусов пользователей."""
 
-    @override
-    async def update(self) -> None:
-        """Обновление."""
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class PgUpdatedUserCity(UpdatedUserCity):
-    """Обновленный город у пользователя в БД postgres."""
-
-    _city: City
-    _chat_id: ChatId
     _pgsql: Database
+    _users: AsyncListable[User]
 
     @override
-    async def update(self) -> None:
+    async def update(self, to: bool) -> None:
         """Обновление.
 
-        :raises UserNotFoundError: незарегистрированный пользователь меняет город
+        :param to: bool
         """
-        query = '\n'.join([
+        query_template = '\n'.join([
             'UPDATE users',
-            'SET city_id = :city_id',
-            'WHERE chat_id = :chat_id',
-            'RETURNING *',
+            'SET is_active = :to',
+            'WHERE chat_id in ({0})',
         ])
-        updated_rows = await self._pgsql.fetch_all(query, {
-            'city_id': str(await self._city.city_id()),
-            'chat_id': int(self._chat_id),
-        })
-        if not updated_rows:
-            raise UserNotFoundError
+        users = await self._users.to_list()
+        if not users:
+            return
+        query = query_template.format(','.join([
+            str(await user.chat_id())
+            for user in users
+        ]))
+        await self._pgsql.execute(query, {'to': to})

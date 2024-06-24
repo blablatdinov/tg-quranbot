@@ -20,8 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 36
-
 from typing import final, override
 
 import attrs
@@ -31,34 +29,11 @@ from redis.asyncio import Redis
 
 from app_types.logger import LogSink
 from app_types.update import Update
-from exceptions.content_exceptions import UserHasNotCityIdError
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup
 from services.switch_inline_query_answer import SwitchInlineQueryKeyboard
 from srv.users.redis_user_state import RedisUserState
 from srv.users.user_step import UserStep
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class UserWithoutCitySafeAnswer(TgAnswer):
-    """Объект для обработки случаев когда пользователь запрашивает время намаза без установленного города."""
-
-    _origin: TgAnswer
-    _invite_set_city_answer: TgAnswer
-
-    @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
-
-        :param update: Update
-        :return: list[httpx.Request]
-        """
-        try:
-            return await self._origin.build(update)
-        except UserHasNotCityIdError:
-            return await self._invite_set_city_answer.build(update)
 
 
 @final

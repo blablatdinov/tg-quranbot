@@ -20,8 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 14
-
 import datetime
 from typing import Protocol
 
@@ -29,16 +27,8 @@ from pyeo import elegant
 
 
 @elegant
-class DateTimeInterface(Protocol):
+class DateTime(Protocol):
     """Интерфейс даты/времени."""
 
     def datetime(self) -> datetime.datetime:
-        """Дата/время."""
-
-
-@elegant
-class AsyncDateTimeInterface(Protocol):
-    """Интерфейс даты/времени для вычисления с возможностью переключения контекста."""
-
-    async def datetime(self) -> datetime.datetime:
         """Дата/время."""

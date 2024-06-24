@@ -22,14 +22,14 @@
 
 import pytest
 
-from app_types.intable import FkAsyncIntable
+from app_types.fk_async_int import FkAsyncInt
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.pg_ayat_identifier import PgAyatIdentifier
 
 
 @pytest.mark.usefixtures('db_ayat')
 async def test(pgsql):
-    identifier = PgAyatIdentifier(FkAsyncIntable(1), pgsql)
+    identifier = PgAyatIdentifier(FkAsyncInt(1), pgsql)
 
     assert await identifier.ayat_id() == 1
     assert await identifier.sura_num() == 1
@@ -37,7 +37,7 @@ async def test(pgsql):
 
 
 async def test_not_found(pgsql):
-    identifier = PgAyatIdentifier(FkAsyncIntable(1), pgsql)
+    identifier = PgAyatIdentifier(FkAsyncInt(1), pgsql)
 
     with pytest.raises(AyatNotFoundError):
         await identifier.sura_num()

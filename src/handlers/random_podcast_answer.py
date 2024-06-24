@@ -28,14 +28,15 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
-from app_types.intable import CachedAsyncIntable
+from app_types.cached_async_int import CachedAsyncInt
 from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers.interface import TgAnswer
-from srv.podcasts.podcast import PgPodcast
-from srv.podcasts.podcast_answer import MarkuppedPodcastAnswer, PodcastAnswer
+from srv.podcasts.markupped_podcast_answer import MarkuppedPodcastAnswer
+from srv.podcasts.pg_podcast import PgPodcast
+from srv.podcasts.podcast_answer import PodcastAnswer
 from srv.podcasts.podcast_id import PodcastId
 
 
@@ -59,7 +60,7 @@ class RandomPodcastAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         podcast = PgPodcast(
-            CachedAsyncIntable(
+            CachedAsyncInt(
                 PodcastId(self._pgsql, TgChatId(update)),
             ),
             self._pgsql,

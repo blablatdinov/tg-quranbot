@@ -20,12 +20,11 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from app_types.intable import FkIntable
 from app_types.update import FkUpdate
 from integrations.tg.tg_answers import FkAnswer, TgMessageIdAnswer
 
 
 async def test():
-    got = await TgMessageIdAnswer(FkAnswer(), FkIntable(1)).build(FkUpdate())
+    got = await TgMessageIdAnswer(FkAnswer(), 1).build(FkUpdate())
 
     assert got[0].url == 'https://some.domain?message_id=1'

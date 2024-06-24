@@ -25,11 +25,12 @@ from typing import override
 import httpx
 import ujson
 
-from app_types.logger import FkLogSink
+from app_types.fk_log_sink import FkLogSink
 from app_types.update import FkUpdate, Update
 from exceptions.content_exceptions import UserHasNotCityIdError
 from integrations.tg.tg_answers import FkAnswer, TgAnswer
-from srv.prayers.invite_set_city_answer import InviteSetCityAnswer, UserWithoutCitySafeAnswer
+from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
+from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
 
 
 class FkOrigin(TgAnswer):

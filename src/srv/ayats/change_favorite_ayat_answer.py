@@ -28,7 +28,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
-from app_types.intable import FkAsyncIntable
+from app_types.fk_async_int import FkAsyncInt
 from app_types.logger import LogSink
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
@@ -50,9 +50,11 @@ from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.ayat_favorite_status import AyatFavoriteStatus
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.favorite_ayats_after_remove import FavoriteAyatsAfterRemove
-from srv.ayats.neighbor_ayats import FavoriteNeighborAyats, PgNeighborAyats, TextSearchNeighborAyats
+from srv.ayats.favorite_neighbor_ayats import FavoriteNeighborAyats
 from srv.ayats.pg_ayat import PgAyat
+from srv.ayats.pg_neighbor_ayats import PgNeighborAyats
 from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
+from srv.ayats.text_search_neighbor_ayats import TextSearchNeighborAyats
 from srv.users.user_step import UserStep
 
 
@@ -77,7 +79,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
         status = AyatFavoriteStatus(str(CallbackQueryData(update)))
         result_ayat = TextLenSafeAyat(
             PgAyat(
-                FkAsyncIntable(
+                FkAsyncInt(
                     IntableRegularExpression(
                         str(CallbackQueryData(update)),
                     ),

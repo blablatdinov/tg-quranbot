@@ -30,7 +30,7 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
-from app_types.intable import FkAsyncIntable
+from app_types.fk_async_int import FkAsyncInt
 from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
@@ -42,9 +42,10 @@ from integrations.tg.tg_answers.interface import TgAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from services.json_path_value import MatchManyJsonPath
 from services.reset_state_answer import ResetStateAnswer
+from srv.podcasts.markupped_podcast_answer import MarkuppedPodcastAnswer
 from srv.podcasts.pg_changed_podcast_reaction import PgChangedPoodcastReaction
-from srv.podcasts.podcast import PgPodcast
-from srv.podcasts.podcast_answer import MarkuppedPodcastAnswer, PodcastAnswer
+from srv.podcasts.pg_podcast import PgPodcast
+from srv.podcasts.podcast_answer import PodcastAnswer
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
 from srv.podcasts.podcast_reaction import ParsedPodcastReaction
 from srv.users.cached_user_state import CachedUserState
@@ -101,7 +102,7 @@ class PodcastReactionChangeAnswer(TgAnswer):
         """
         reaction = ParsedPodcastReaction(CallbackQueryData(update))
         podcast = PgPodcast(
-            FkAsyncIntable(reaction.podcast_id()),
+            FkAsyncInt(reaction.podcast_id()),
             self._pgsql,
         )
         await PgChangedPoodcastReaction(

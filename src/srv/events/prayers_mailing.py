@@ -33,7 +33,7 @@ from eljson.json import Json
 from pyeo import elegant
 from redis.asyncio import Redis
 
-from app_types.listable import FkAsyncListable
+from app_types.fk_async_listable import FkAsyncListable
 from app_types.logger import LogSink
 from app_types.update import FkUpdate
 from exceptions.internal_exceptions import TelegramIntegrationsError
@@ -51,12 +51,15 @@ from services.logged_answer import LoggedAnswer
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
-from srv.events.sink import SinkInterface
-from srv.prayers.prayer_date import FkPrayerDate
-from srv.prayers.prayers_text import PrayersText, UserCityId
+from srv.events.sink import Sink
+from srv.prayers.fk_prayer_date import FkPrayerDate
+from srv.prayers.prayers_text import PrayersText
 from srv.prayers.ramadan_prayer_text import RamadanPrayerText
-from srv.users.active_users import PgUpdatedUsersStatus, UpdatedUsersStatusEvent
-from srv.users.pg_user import FkUser, User
+from srv.prayers.user_city_id import UserCityId
+from srv.users.fk_user import FkUser
+from srv.users.pg_updated_users_status import PgUpdatedUsersStatus
+from srv.users.updated_users_status_event import UpdatedUsersStatusEvent
+from srv.users.user import User
 
 CHAT_ID: Final = 'chat_id'
 
@@ -70,7 +73,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
     _empty_answer: TgAnswer
     _pgsql: Database
     _settings: Settings
-    _events_sink: SinkInterface
+    _events_sink: Sink
     _log_sink: LogSink
     _redis: Redis
 

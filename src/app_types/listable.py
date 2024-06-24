@@ -20,12 +20,9 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 12
-
 from collections.abc import Sequence
-from typing import Generic, Protocol, TypeVar, final
+from typing import Generic, Protocol, TypeVar
 
-import attrs
 from pyeo import elegant
 
 ListElemT_co = TypeVar('ListElemT_co', covariant=True)
@@ -37,19 +34,3 @@ class AsyncListable(Protocol, Generic[ListElemT_co]):  # type: ignore [misc]
 
     async def to_list(self) -> Sequence[ListElemT_co]:
         """Список."""
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkAsyncListable(AsyncListable, Generic[ListElemT_co]):
-    """Фейковый список."""
-
-    _origin: list[ListElemT_co]
-
-    async def to_list(self) -> list[ListElemT_co]:
-        """Список.
-
-        :return: list[ListElemT]
-        """
-        return self._origin

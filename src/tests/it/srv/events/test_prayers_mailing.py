@@ -31,7 +31,7 @@ from loguru import logger
 
 from integrations.tg.tg_answers import TgEmptyAnswer
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
-from srv.events.sink import RabbitmqSink
+from srv.events.rabbitmq_sink import RabbitmqSink
 from srv.users.pg_user import PgUser
 
 

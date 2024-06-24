@@ -30,7 +30,9 @@ import httpx
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import FkAsyncIntable
+from app_types.async_int_or_none import AsyncIntOrNone
+from app_types.fk_async_int import FkAsyncInt
+from app_types.fk_async_int_or_none import FkAsyncIntOrNone
 from app_types.logger import LogSink
 from app_types.update import Update
 from exceptions.internal_exceptions import UserNotFoundError
@@ -40,9 +42,11 @@ from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender,
 from integrations.tg.tg_datetime import TgDateTime
 from srv.admin_messages.admin_message import AdminMessage
 from srv.ayats.pg_ayat import PgAyat
-from srv.events.sink import SinkInterface
-from srv.start.start_message import AsyncIntOrNone, FkAsyncIntOrNone, ReferrerChatId, ReferrerIdOrNone
-from srv.users.new_user import PgNewUser, PgNewUserWithEvent
+from srv.events.sink import Sink
+from srv.start.referrer_chat_id import ReferrerChatId
+from srv.start.referrer_id_or_none import ReferrerIdOrNone
+from srv.users.pg_new_user import PgNewUser
+from srv.users.pg_new_user_with_event import PgNewUserWithEvent
 
 
 class NewTgUserT(Protocol):
@@ -63,7 +67,7 @@ class NewTgUser(NewTgUserT):
 
     _pgsql: Database
     _logger: LogSink
-    _event_sink: SinkInterface
+    _event_sink: Sink
     _update: Update
 
     @override
@@ -125,7 +129,7 @@ class StartAnswer(TgAnswer):
             ),
         )
         start_message = self._admin_message
-        ayat_message = PgAyat(FkAsyncIntable(1), self._pgsql)
+        ayat_message = PgAyat(FkAsyncInt(1), self._pgsql)
         await self._new_tg_user.create(referrer_chat_id)
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
         if referrer_chat_id_calculated:

@@ -27,7 +27,7 @@ import pytest
 import ujson
 from pyeo import elegant
 
-from app_types.logger import FkLogSink
+from app_types.fk_log_sink import FkLogSink
 from integrations.tg.tg_answers import TgAnswer
 from integrations.tg.update import TgUpdate
 from srv.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer

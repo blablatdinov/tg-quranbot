@@ -32,7 +32,7 @@ from app_types.update import FkUpdate
 from integrations.tg.sendable import SendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer, TgMessageDeleteAnswer, TgMessageIdAnswer
 from srv.events.recieved_event import ReceivedEvent
-from srv.events.sink import SinkInterface
+from srv.events.sink import Sink
 
 
 @final
@@ -43,7 +43,7 @@ class MessageDeleted(ReceivedEvent):
 
     _empty_answer: TgAnswer
     _pgsql: Database
-    _events_sink: SinkInterface
+    _events_sink: Sink
     _logger: LogSink
 
     @override

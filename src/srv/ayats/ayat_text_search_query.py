@@ -20,8 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 45
-
 from typing import final, override
 
 import attrs
@@ -31,40 +29,6 @@ from app_types.logger import LogSink
 from exceptions.content_exceptions import UserHasNotSearchQueryError
 from integrations.tg.chat_id import ChatId
 from srv.ayats.text_search_query import TextSearchQuery
-
-
-@final
-class CachedTextSearchQuery(TextSearchQuery):
-    """Закэшированный запрос."""
-
-    @override
-    def __init__(self, origin: TextSearchQuery) -> None:
-        """Ctor.
-
-        :param origin: TextSearchQuery
-        """
-        self._origin = origin
-        self._cached = ''
-
-    @override
-    async def write(self, query: str) -> None:
-        """Запись.
-
-        :param query: str
-        """
-        await self._origin.write(query)
-        self._cached = query
-
-    @override
-    async def read(self) -> str:
-        """Чтение.
-
-        :return: str
-        """
-        if self._cached:
-            return self._cached
-        self._cached = await self._origin.read()
-        return self._cached
 
 
 @final

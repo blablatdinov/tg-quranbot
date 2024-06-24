@@ -20,11 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 44
+from typing import Protocol, TypeAlias
 
-from typing import Protocol, TypeAlias, final, override
-
-import attrs
 from pyeo import elegant
 
 SuraId: TypeAlias = int
@@ -40,29 +37,3 @@ class SearchQuery(Protocol):
 
     def ayat(self) -> AyatNum:
         """Номер аята."""
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkSearchQuery(SearchQuery):
-    """Фейковый запрос для поиска аятов."""
-
-    _sura: SuraId
-    _ayat: AyatNum
-
-    @override
-    def sura(self) -> SuraId:
-        """Идентификатор суры.
-
-        :return: SuraId
-        """
-        return self._sura
-
-    @override
-    def ayat(self) -> AyatNum:
-        """Номер аята.
-
-        :return: AyatNum
-        """
-        return self._ayat

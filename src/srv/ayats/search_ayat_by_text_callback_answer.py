@@ -40,9 +40,10 @@ from services.regular_expression import IntableRegularExpression
 from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
-from srv.ayats.ayat_text_search_query import AyatTextSearchQuery, CachedTextSearchQuery
+from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.ayats_by_text_query import AyatsByTextQuery
-from srv.ayats.neighbor_ayats import TextSearchNeighborAyats
+from srv.ayats.cached_text_search_query import CachedTextSearchQuery
+from srv.ayats.text_search_neighbor_ayats import TextSearchNeighborAyats
 
 
 @final

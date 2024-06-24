@@ -20,49 +20,27 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 61
-
 from typing import final, override
 
 import attrs
-import httpx
 from databases import Database
 from eljson.json import Json
 from pyeo import elegant
 
 from app_types.listable import AsyncListable
 from app_types.logger import LogSink
-from app_types.update import FkUpdate, Update
+from app_types.update import FkUpdate
 from integrations.tg.sendable import BulkSendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer
 from integrations.tg.tg_answers.chat_action import TgChatAction
+from integrations.tg.typing_action import TypingAction
 from srv.events.recieved_event import ReceivedEvent
-from srv.events.sink import SinkInterface
-from srv.users.active_users import ActiveUsers, PgUpdatedUsersStatus, PgUsers, UpdatedUsersStatusEvent
-from srv.users.pg_user import User
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class TypingAction(TgAnswer):
-    """Действие с печатью."""
-
-    _origin: TgAnswer
-
-    @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
-
-        :param update: Update
-        :return: list[httpx.Request]
-        """
-        return [
-            httpx.Request(
-                method=request.method, url=request.url.copy_add_param('action', 'typing'), headers=request.headers,
-            )
-            for request in await self._origin.build(update)
-        ]
+from srv.events.sink import Sink
+from srv.users.pg_active_users import PgActiveUsers
+from srv.users.pg_updated_users_status import PgUpdatedUsersStatus
+from srv.users.pg_users import PgUsers
+from srv.users.updated_users_status_event import UpdatedUsersStatusEvent
+from srv.users.user import User
 
 
 @final
@@ -73,7 +51,7 @@ class CheckUsersStatus(ReceivedEvent):
 
     _empty_answer: TgAnswer
     _pgsql: Database
-    _events_sink: SinkInterface
+    _events_sink: Sink
     _logger: LogSink
 
     @override
@@ -82,7 +60,7 @@ class CheckUsersStatus(ReceivedEvent):
 
         :param json_doc: Json
         """
-        users = ActiveUsers(self._pgsql)
+        users = PgActiveUsers(self._pgsql)
         zipped_user_responses = zip(
             await users.to_list(),
             await BulkSendableAnswer(await self._answers(users), self._logger).send(FkUpdate()),

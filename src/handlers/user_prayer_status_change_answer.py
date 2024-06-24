@@ -33,7 +33,8 @@ from app_types.update import Update
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.tg_answers.interface import TgAnswer
 from settings import Settings
-from srv.prayers.prayer_status import PrayerStatus, UserPrayerStatus
+from srv.prayers.prayer_status import PrayerStatus
+from srv.prayers.user_prayer_status import UserPrayerStatus
 
 
 @final

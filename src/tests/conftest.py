@@ -29,7 +29,7 @@ import pytest
 from fakeredis import aioredis
 from jinja2 import Template
 
-from app_types.logger import FkLogSink
+from app_types.fk_log_sink import FkLogSink
 from settings import BASE_DIR, Settings
 
 

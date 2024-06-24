@@ -28,7 +28,7 @@ from databases import Database
 from eljson.json import Json
 from pyeo import elegant
 
-from app_types.listable import FkAsyncListable
+from app_types.fk_async_listable import FkAsyncListable
 from app_types.logger import LogSink
 from app_types.update import FkUpdate
 from exceptions.internal_exceptions import TelegramIntegrationsError, UnreacheableError
@@ -38,9 +38,11 @@ from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from services.logged_answer import LoggedAnswer
 from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
-from srv.events.sink import SinkInterface
-from srv.users.active_users import PgUpdatedUsersStatus, UpdatedUsersStatusEvent
-from srv.users.pg_user import FkUser, User
+from srv.events.sink import Sink
+from srv.users.fk_user import FkUser
+from srv.users.pg_updated_users_status import PgUpdatedUsersStatus
+from srv.users.updated_users_status_event import UpdatedUsersStatusEvent
+from srv.users.user import User
 
 
 @final
@@ -51,7 +53,7 @@ class MailingCreatedEvent(ReceivedEvent):
 
     _empty_answer: TgAnswer
     _pgsql: Database
-    _events_sink: SinkInterface
+    _events_sink: Sink
     _log_sink: LogSink
     _settings: Settings
 

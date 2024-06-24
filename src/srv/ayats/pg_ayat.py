@@ -26,18 +26,20 @@ import attrs
 from databases import Database
 from eljson.json import Json
 
-from app_types.intable import AsyncIntable, FkAsyncIntable
+from app_types.fk_async_int import FkAsyncInt
+from app_types.intable import AsyncInt
 from app_types.stringable import SupportsStr
 from exceptions.content_exceptions import AyatNotFoundError
 from services.regular_expression import IntableRegularExpression
 from srv.ayats.ayat import Ayat, AyatText
-from srv.ayats.ayat_id_by_sura_ayat import AyatIdByPublicId, AyatIdBySuraAyatNum
+from srv.ayats.ayat_id_by_public_id import AyatIdByPublicId
+from srv.ayats.ayat_id_by_sura_ayat_num import AyatIdBySuraAyatNum
 from srv.ayats.ayat_link import AyatLink
 from srv.ayats.nums_search_query import NumsSearchQuery
 from srv.ayats.pg_ayat_identifier import PgAyatIdentifier
 from srv.ayats.validated_search_query import ValidatedSearchQuery
-from srv.files.file import TgFile
 from srv.files.pg_file import PgFile
+from srv.files.tg_file import TgFile
 
 
 @final
@@ -45,7 +47,7 @@ from srv.files.pg_file import PgFile
 class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 method
     """Аят."""
 
-    _ayat_id: AsyncIntable
+    _ayat_id: AsyncInt
     _pgsql: Database
 
     @classmethod
@@ -74,7 +76,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         :param database: Database
         :return: Ayat
         """
-        return PgAyat(FkAsyncIntable(ayat_id), database)
+        return PgAyat(FkAsyncInt(ayat_id), database)
 
     @classmethod
     def from_callback_query(cls, callback_query: SupportsStr, database: Database) -> Ayat:
@@ -85,7 +87,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         :return: Ayat
         """
         return PgAyat(
-            FkAsyncIntable(
+            FkAsyncInt(
                 int(IntableRegularExpression(callback_query)),
             ),
             database,

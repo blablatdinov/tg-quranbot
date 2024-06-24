@@ -20,9 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 11
-
-from typing import Protocol, final
+from typing import Protocol
 
 from pyeo import elegant
 
@@ -58,47 +56,3 @@ class LogSink(Protocol):
         :param args: tuple[object]
         :param kwargs: dict[object, object]
         """
-
-
-@final
-@elegant
-class FkLogSink(LogSink):
-    """Фейковый логгер."""
-
-    stack: list[str]
-
-    def __init__(self) -> None:
-        """Ctor."""
-        self.stack = []
-
-    def info(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003, WPS110
-        """Информационный уровень.
-
-        :param args: tuple[object]
-        :param kwargs: dict[object, object]
-        """
-        self.stack.append('INFO {0}'.format(args[0]))
-
-    def debug(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
-        """Уровень для отладки.
-
-        :param args: tuple[object]
-        :param kwargs: dict[object, object]
-        """
-        self.stack.append('DEBUG {0}'.format(args[0]))
-
-    def error(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
-        """Уровень для ошибок.
-
-        :param args: tuple[object]
-        :param kwargs: dict[object, object]
-        """
-        self.stack.append('ERROR {0}'.format(args[0]))
-
-    def exception(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
-        """Уровень для исключений.
-
-        :param args: tuple[object]
-        :param kwargs: dict[object, object]
-        """
-        self.stack.append('ERROR {0}'.format(args[0]))

@@ -25,8 +25,9 @@ import uuid
 import pytest
 
 from exceptions.content_exceptions import AyatNotFoundError
-from srv.ayats.ayat_id_by_sura_ayat import AyatIdByPublicId, AyatIdBySuraAyatNum
-from srv.ayats.search_query import FkSearchQuery
+from srv.ayats.ayat_id_by_public_id import AyatIdByPublicId
+from srv.ayats.ayat_id_by_sura_ayat_num import AyatIdBySuraAyatNum
+from srv.ayats.fk_search_query import FkSearchQuery
 
 pytestmark = [pytest.mark.usefixtures('db_ayat')]
 

@@ -20,48 +20,17 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 57
+from typing import Protocol
 
-from typing import Protocol, TypeAlias, final, override
-
-import attrs
 from pyeo import elegant
 
-TgFileId: TypeAlias = str
-FileLink: TypeAlias = str
 
-
-class TgFile(Protocol):
-    """Тип файла."""
-
-    async def tg_file_id(self) -> TgFileId:
-        """Идентификатор файла в телеграм."""
-
-    async def file_link(self) -> FileLink:
-        """Ссылка на файл."""
-
-
-@final
-@attrs.define(frozen=True)
 @elegant
-class FkFile(TgFile):
-    """Фейковый файл."""
+class SyncRunable(Protocol):
+    """Интерфейс блокирующего запускаемого объекта."""
 
-    _file_id: str
-    _link: str
+    def run(self, args: list[str]) -> int:
+        """Запуск.
 
-    @override
-    async def tg_file_id(self) -> TgFileId:
-        """Идентификатор файла в телеграм.
-
-        :return: TgFileId
+        :param args: list[str]
         """
-        return self._file_id
-
-    @override
-    async def file_link(self) -> FileLink:
-        """Идентификатор файла в телеграм.
-
-        :return: FileLink
-        """
-        return self._link

@@ -27,7 +27,7 @@ from pyeo import elegant
 
 from app_types.stringable import AsyncSupportsStr
 from srv.ayats.ayat_identifier import AyatIdentifier
-from srv.files.file import TgFile
+from srv.files.tg_file import TgFile
 
 AyatText: TypeAlias = str
 

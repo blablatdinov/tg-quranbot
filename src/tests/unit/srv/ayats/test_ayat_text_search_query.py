@@ -22,7 +22,7 @@
 
 import pytest
 
-from app_types.logger import FkLogSink
+from app_types.fk_log_sink import FkLogSink
 from exceptions.content_exceptions import UserHasNotSearchQueryError
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 

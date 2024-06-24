@@ -27,7 +27,7 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.intable import FkAsyncIntable
+from app_types.fk_async_int import FkAsyncInt
 from app_types.listable import AsyncListable
 from app_types.stringable import SupportsStr
 from srv.ayats.ayat import Ayat
@@ -62,7 +62,7 @@ class AyatsByTextQuery(AsyncListable):
         return [
             TextLenSafeAyat(
                 PgAyat(
-                    FkAsyncIntable(row['id']),
+                    FkAsyncInt(row['id']),
                     self._pgsql,
                 ),
             )
