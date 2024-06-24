@@ -20,11 +20,41 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from app_types.update import FkUpdate
-from integrations.tg.callback_query import CallbackQueryData
+from typing import override
+
+import attrs
+
+from srv.ayats.ayat_identifier import AyatIdentifier
 
 
-def test(callback_update_factory):
-    cb_query_data = CallbackQueryData(FkUpdate(callback_update_factory(callback_data='mark_readed(2362)')))
+@attrs.define(frozen=True)
+class FkIdentifier(AyatIdentifier):
+    """Identifier stub."""
 
-    assert str(cb_query_data) == 'mark_readed(2362)'
+    _id: int
+    _sura_num: int
+    _ayat_num: str
+
+    @override
+    async def ayat_id(self) -> int:
+        """Идентификатор.
+
+        :return: int
+        """
+        return self._id
+
+    @override
+    async def sura_num(self) -> int:
+        """Номер суры.
+
+        :return: int
+        """
+        return self._sura_num
+
+    @override
+    async def ayat_num(self) -> str:
+        """Номер аята.
+
+        :return: str
+        """
+        return self._ayat_num

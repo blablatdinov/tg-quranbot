@@ -28,6 +28,9 @@ import pytz
 from databases import Database
 
 from settings import BASE_DIR, Settings
+from srv.ayats.fk_ayat import FkAyat
+from srv.ayats.fk_identifier import FkIdentifier
+from srv.files.file import FkFile
 from tests.creating_test_db import apply_migrations, create_db, drop_db
 
 
@@ -72,7 +75,7 @@ async def pgsql(_migrate):
 
 
 @pytest.fixture()
-async def _db_ayat(pgsql):
+async def db_ayat(pgsql):
     created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
     await pgsql.execute(
         '\n'.join([
@@ -83,7 +86,7 @@ async def _db_ayat(pgsql):
     )
     await pgsql.execute('\n'.join([
         'INSERT INTO suras (sura_id, link) VALUES',
-        "(1, 'https://link-to-sura.domain')",
+        "(1, '/link-to-sura')",
     ]))
     await pgsql.execute(
         '\n'.join([
@@ -104,3 +107,24 @@ async def _db_ayat(pgsql):
             'transliteration': 'Transliteration',
         },
     )
+    return FkAyat(
+        FkIdentifier(1, 1, '1-7'),
+        '',
+        FkFile('', ''),
+    )
+
+
+@pytest.fixture()
+async def _prayers(pgsql):
+    await pgsql.execute("INSERT INTO cities (city_id, name) VALUES ('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')")
+    await pgsql.execute("INSERT INTO users (chat_id, city_id) VALUES (905, '080fd3f4-678e-4a1c-97d2-4460700fe7ac')")
+    query = '\n'.join([
+        'INSERT INTO prayers (prayer_id, name, "time", city_id, day) VALUES',
+        "(1, 'fajr', '05:43:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '2023-12-19'),",
+        "(2, 'sunrise', '08:02:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '2023-12-19'),",
+        "(3, 'dhuhr', '12:00:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '2023-12-19'),",
+        "(4, 'asr', '13:21:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '2023-12-19'),",
+        "(5, 'maghrib', '15:07:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '2023-12-19'),",
+        "(6, 'isha''a', '17:04:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '2023-12-19')",
+    ])
+    await pgsql.execute(query)

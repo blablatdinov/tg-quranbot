@@ -58,14 +58,6 @@ def test_skipped_prayers(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/skipped_prayers')
     messages = wait_until(tg_client, 2)
 
-    assert messages[0].message == '\n'.join([
-        'Кол-во непрочитанных намазов:\n',
-        'Иртәнге: 20',
-        'Өйлә: 19',
-        'Икенде: 20',
-        'Ахшам: 19',
-        'Ястү: 20',
-    ])
     assert [
         (button.text, button.data)
         for button_row in messages[0].get_buttons()
@@ -77,6 +69,14 @@ def test_skipped_prayers(tg_client, bot_name, wait_until):
         ('Ахшам: (-1)', b'decr(maghrib)'),
         ('Ястү: (-1)', b'decr(isha)'),
     ]
+    assert messages[0].message == '\n'.join([
+        'Кол-во непрочитанных намазов:\n',
+        'Иртәнге: 20',
+        'Өйлә: 19',
+        'Икенде: 20',
+        'Ахшам: 19',
+        'Ястү: 20',
+    ])
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_prayers')

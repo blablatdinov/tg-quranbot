@@ -38,7 +38,7 @@ def search_answer(pgsql, fake_redis):
     return SearchAyatByTextCallbackAnswer(debug, FkAnswer(), fake_redis, pgsql, FkLogSink())
 
 
-@pytest.mark.usefixtures('_db_ayat')
+@pytest.mark.usefixtures('db_ayat')
 async def test(fake_redis, unquote, search_answer):
     await AyatTextSearchQuery(fake_redis, FkChatId(1758), FkLogSink()).write('Content')
     got = await search_answer.build(FkUpdate('{"callback_query": {"data": "1"}, "chat": {"id": 1758}}'))
@@ -48,7 +48,7 @@ async def test(fake_redis, unquote, search_answer):
         'parse_mode': 'html',
         'chat_id': '1758',
         'text': '\n'.join([
-            '<a href="https://umma.ruhttps://link-to-sura.domain#1-1">1:1-7)</a>',
+            '<a href="https://umma.ru/link-to-sura#1-1">1:1-7)</a>',
             'Arab text\n',
             'Content\n',
             '<i>Transliteration</i>',
@@ -63,7 +63,7 @@ async def test(fake_redis, unquote, search_answer):
     }
 
 
-@pytest.mark.usefixtures('_db_ayat')
+@pytest.mark.usefixtures('db_ayat')
 async def test_unknown_target_ayat(fake_redis, search_answer):
     await AyatTextSearchQuery(fake_redis, 1758, FkLogSink()).write('Content')
     with pytest.raises(AyatNotFoundError):

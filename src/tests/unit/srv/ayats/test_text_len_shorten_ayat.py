@@ -24,8 +24,8 @@ import textwrap
 from pathlib import Path
 
 from settings import BASE_DIR
-from srv.ayats.ayat_identifier import FkIdentifier
 from srv.ayats.fk_ayat import FkAyat
+from srv.ayats.fk_identifier import FkIdentifier
 from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
 from srv.files.file import FkFile
 
