@@ -44,21 +44,23 @@ async def test(fake_redis, unquote, search_answer):
     got = await search_answer.build(FkUpdate('{"callback_query": {"data": "1"}, "chat": {"id": 1758}}'))
 
     assert got[0].url.path == '/sendMessage'
-    assert got[0].url.params['parse_mode'] == 'html'
-    assert got[0].url.params['chat_id'] == '1758'
-    assert got[0].url.params['text'] == '\n'.join([
-        '<a href="https://umma.ruhttps://link-to-sura.domain#1-1">1:1-7)</a>',
-        'Arab text\n',
-        'Content\n',
-        '<i>Transliteration</i>',
-    ])
-    assert got[0].url.params['reply_markup'] == ujson.dumps({
-        'inline_keyboard': [
-            [{'text': 'стр. 1/1', 'callback_data': 'fake'}],
-            [{'text': 'Добавить в избранное', 'callback_data': 'addToFavor(1)'}],
-        ],
-    })
-    assert got[0].url.params['link_preview_options'] == '{"is_disabled":true}'
+    assert dict(got[0].url.params) == {
+        'parse_mode': 'html',
+        'chat_id': '1758',
+        'text': '\n'.join([
+            '<a href="https://umma.ruhttps://link-to-sura.domain#1-1">1:1-7)</a>',
+            'Arab text\n',
+            'Content\n',
+            '<i>Transliteration</i>',
+        ]),
+        'reply_markup': ujson.dumps({
+            'inline_keyboard': [
+                [{'text': 'стр. 1/1', 'callback_data': 'fake'}],
+                [{'text': 'Добавить в избранное', 'callback_data': 'addToFavor(1)'}],
+            ],
+        }),
+        'link_preview_options': '{"is_disabled":true}',
+    }
 
 
 @pytest.mark.usefixtures('_db_ayat')

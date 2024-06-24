@@ -20,10 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
 
 import pytest
-import pytz
 
 from app_types.intable import FkAsyncIntable
 from exceptions.content_exceptions import AyatNotFoundError

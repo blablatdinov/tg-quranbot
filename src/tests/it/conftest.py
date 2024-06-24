@@ -22,9 +22,9 @@
 
 import datetime
 
-import pytz
 import psycopg2
 import pytest
+import pytz
 from databases import Database
 
 from settings import BASE_DIR, Settings
