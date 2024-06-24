@@ -1,57 +1,23 @@
-# The MIT License (MIT).
-#
-# Copyright (c) 2018-2024 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
-# OR OTHER DEALINGS IN THE SOFTWARE.
-
-# TODO #899 Перенести классы в отдельные файлы 38
-
-from typing import Final, Protocol, final
+from typing import final
 
 import attrs
 from databases import Database
 from pyeo import elegant
 
 from integrations.tg.chat_id import ChatId
-from srv.reactions.podcast_reaction import PodcastReactionsT
-
-PODCAST_ID_LITERAL: Final = 'podcast_id'
-USER_ID_LITERAL: Final = 'user_id'
-
-
-@elegant
-class Reaction(Protocol):
-    """Реакция на подкаст."""
-
-    async def apply(self) -> None:
-        """Применить."""
+from srv.podcasts.changed_podcast_reaction import PODCAST_ID_LITERAL, USER_ID_LITERAL, ChangedPodcastReaction
+from srv.podcasts.podcast_reaction import PodcastReactions
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class PgReaction(Reaction):
+class PgChangedPoodcastReaction(ChangedPodcastReaction):
     """Реакция на подкаст в БД postgres."""
 
     _pgsql: Database
     _chat_id: ChatId
-    _reaction: PodcastReactionsT
+    _reaction: PodcastReactions
 
     async def apply(self) -> None:
         """Применить."""

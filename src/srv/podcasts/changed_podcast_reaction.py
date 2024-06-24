@@ -20,57 +20,21 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 37
+# TODO #899 Перенести классы в отдельные файлы 38
 
-from typing import Literal, Protocol, final, override
+from typing import Final, Protocol
 
-import attrs
 from pyeo import elegant
 
-from app_types.stringable import SupportsStr
-from services.regular_expression import IntableRegularExpression
+PODCAST_ID_LITERAL: Final = 'podcast_id'
+USER_ID_LITERAL: Final = 'user_id'
 
 
 @elegant
-class PodcastReactionsT(Protocol):
+class ChangedPodcastReaction(Protocol):
     """Реакция на подкаст."""
 
-    def podcast_id(self) -> int:
-        """Идентификатор подкаста."""
-
-    def status(self) -> Literal['like', 'dislike']:
-        """Реакция."""
+    async def apply(self) -> None:
+        """Применить."""
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class PodcastReaction(PodcastReactionsT):
-    """Реакция на подкаст.
-
-    >>> prayer_reaction = PodcastReaction('like(17)')
-    >>> prayer_reaction.podcast_id()
-    17
-    >>> prayer_reaction.status()
-    'like'
-    """
-
-    _callback_query: SupportsStr
-
-    @override
-    def podcast_id(self) -> int:
-        """Идентификатор подкаста.
-
-        :return: int
-        """
-        return int(IntableRegularExpression(str(self._callback_query)))
-
-    @override
-    def status(self) -> Literal['like', 'dislike']:
-        """Реакция.
-
-        :return: Literal['like', 'dislike']
-        """
-        if 'dislike' in str(self._callback_query):
-            return 'dislike'
-        return 'like'

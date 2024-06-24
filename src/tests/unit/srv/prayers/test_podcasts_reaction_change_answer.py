@@ -22,7 +22,7 @@
 
 import pytest
 
-from srv.reactions.podcast_reaction import PodcastReaction
+from srv.podcasts.podcast_reaction import ParsedPodcastReaction
 
 
 @pytest.mark.parametrize(('callback_data', 'prayer_id', 'status'), [
@@ -30,7 +30,7 @@ from srv.reactions.podcast_reaction import PodcastReaction
     ('dislike(7854)', 7854, 'dislike'),
 ])
 def test(callback_data, prayer_id, status):
-    reaction = PodcastReaction(callback_data)
+    reaction = ParsedPodcastReaction(callback_data)
 
     assert reaction.podcast_id() == prayer_id
     assert reaction.status() == status
