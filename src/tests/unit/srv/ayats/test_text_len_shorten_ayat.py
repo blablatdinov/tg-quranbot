@@ -20,43 +20,24 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
+import textwrap
+from pathlib import Path
 
-import attrs
-from databases import Database
-from pyeo import elegant
-
-from app_types.listable import AsyncListable
-from integrations.tg.chat_id import ChatId
-from srv.ayats.ayat import Ayat
-from srv.ayats.pg_ayat import PgAyat
+from settings import BASE_DIR
+from srv.ayats.ayat_identifier import FkIdentifier
+from srv.ayats.fk_ayat import FkAyat
 from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
+from srv.files.file import FkFile
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class UserFavoriteAyats(AsyncListable[Ayat]):
-    """Избранные аяты пользователя."""
+async def test_text_len_safe_ayat():
+    ayat_content = Path(BASE_DIR / 'tests/fixtures/2_282_ayat_rendered.txt').read_text(encoding='utf-8').strip()
+    got = await TextLenSafeAyat(
+        FkAyat(
+            FkIdentifier(272, 2, '282'),
+            ayat_content,
+            FkFile('', ''),
+        ),
+    ).to_str()
 
-    _pgsql: Database
-    _chat_id: ChatId
-
-    @override
-    async def to_list(self) -> list[Ayat]:
-        """Списковое представление.
-
-        :return: list[PgAyat]
-        """
-        query = '\n'.join([
-            'SELECT a.ayat_id AS id',
-            'FROM favorite_ayats AS fa',
-            'INNER JOIN ayats AS a ON fa.ayat_id = a.ayat_id',
-            'INNER JOIN users AS u ON fa.user_id = u.chat_id',
-            'WHERE u.chat_id = :chat_id',
-            'ORDER BY a.ayat_id',
-        ])
-        rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
-        return [
-            TextLenSafeAyat(PgAyat.from_int(row['id'], self._pgsql)) for row in rows
-        ]
+    assert got == textwrap.shorten(ayat_content, width=4096, placeholder='...')

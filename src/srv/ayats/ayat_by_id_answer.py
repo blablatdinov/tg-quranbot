@@ -33,7 +33,8 @@ from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgAudioAnswer, TgTextAnswer
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from srv.ayats.ayat_by_id_message_answer import AyatByIdMessageAnswer
-from srv.ayats.pg_ayat import PgAyat, TextLenSafeAyat
+from srv.ayats.pg_ayat import PgAyat
+from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
 from srv.files.file_answer import FileAnswer
 from srv.files.file_id_answer import TelegramFileIdAnswer
 
