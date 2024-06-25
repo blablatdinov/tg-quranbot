@@ -24,8 +24,10 @@ from typing import override
 
 import httpx
 
-from app_types.update import FkUpdate, Update
-from integrations.tg.tg_answers import FkAnswer, TgAnswer
+from app_types.fk_update import FkUpdate
+from app_types.update import Update
+from integrations.tg.tg_answers import TgAnswer
+from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
 
 

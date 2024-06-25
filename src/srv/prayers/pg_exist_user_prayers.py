@@ -27,7 +27,7 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from integrations.tg.chat_id import ChatId
+from integrations.tg.fk_chat_id import ChatId
 from srv.prayers.exist_user_prayers import ExistUserPrayers
 from srv.prayers.exist_user_prayers_dict import ExistUserPrayersDict
 

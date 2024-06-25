@@ -25,8 +25,8 @@ import datetime
 import pytest
 import pytz
 
-from app_types.stringable import FkAsyncStr
-from app_types.update import FkUpdate
+from app_types.fk_async_str import FkAsyncStr
+from app_types.fk_update import FkUpdate
 from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.prayers_text import PrayersText
 from srv.prayers.ramadan_prayer_text import RamadanPrayerText

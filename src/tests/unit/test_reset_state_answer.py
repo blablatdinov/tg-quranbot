@@ -24,8 +24,8 @@ import pytest
 from fakeredis import aioredis
 
 from app_types.fk_log_sink import FkLogSink
-from app_types.update import FkUpdate
-from integrations.tg.tg_answers import FkAnswer
+from app_types.fk_update import FkUpdate
+from integrations.tg.tg_answers.fk_answer import FkAnswer
 from integrations.tg.update import TgUpdate
 from services.reset_state_answer import ResetStateAnswer
 from srv.users.cached_user_state import CachedUserState

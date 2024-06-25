@@ -20,49 +20,34 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 28
-
 from typing import final, override
 
 import attrs
-import ujson
+import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.keyboard import KeyboardInterface
+from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
+from integrations.tg.tg_answers import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class ResizedKeyboard(KeyboardInterface):
-    """Сжатая в высоту клавиатура."""
+class MessageNotFoundSafeAnswer(TgAnswer):
+    """MessageNotFoundSafeAnswer."""
 
-    _origin: KeyboardInterface
-
-    @override
-    async def generate(self, update: Update) -> str:
-        """Генерация.
-
-        :param update: Update
-        :return: str
-        """
-        origin_keyboard = await self._origin.generate(update)
-        keyboard_as_dict = ujson.loads(origin_keyboard)
-        keyboard_as_dict['resize_keyboard'] = True
-        return ujson.dumps(keyboard_as_dict)
-
-
-@final
-@elegant
-class DefaultKeyboard(KeyboardInterface):
-    """Класс клавиатуры по умолчанию."""
+    _origin: TgAnswer
+    _new_message_answer: TgAnswer
 
     @override
-    async def generate(self, update: Update) -> str:
-        """Генерация.
+    async def build(self, update: Update) -> list[httpx.Request]:
+        """Сборка ответа.
 
         :param update: Update
-        :return: str
+        :return: list[httpx.Request]
         """
-        return '{"keyboard":[["🎧 Подкасты"],["🕋 Время намаза","🏘️ Поменять город"],["🌟 Избранное","🔍 Найти аят"]]}'
+        try:
+            return await self._origin.build(update)
+        except MessageTextNotFoundError:
+            return await self._new_message_answer.build(update)

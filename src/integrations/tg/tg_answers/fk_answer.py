@@ -20,57 +20,32 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 19
-
-from typing import SupportsInt, TypeAlias, final, override
+from typing import final, override
 
 import attrs
+import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from exceptions.base_exception import InternalBotError
-from services.json_path_value import ErrRedirectJsonPath, MatchManyJsonPath
-
-ChatId: TypeAlias = SupportsInt
+from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class FkChatId(ChatId):
-    """Фейк идентификатора чата."""
+class FkAnswer(TgAnswer):
+    """Фейковый ответ."""
 
-    _origin: int
-
-    @override
-    def __int__(self) -> int:
-        """Числовое представление.
-
-        :return: int
-        """
-        return self._origin
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class TgChatId(ChatId):
-    """Идентификатор чата."""
-
-    _update: Update
+    _url: str | None = 'https://some.domain'
 
     @override
-    def __int__(self) -> int:
-        """Числовое представление.
+    async def build(self, update: Update) -> list[httpx.Request]:
+        """Сборка ответа.
 
-        :return: int
+        :param update: Update
+        :return: list[httpx.Request]
+        :raises ValueError: if self._url is None
         """
-        return int(
-            ErrRedirectJsonPath(
-                MatchManyJsonPath(
-                    self._update.asdict(),
-                    ('$..chat.id', '$..from.id'),
-                ),
-                InternalBotError(),
-            ).evaluate(),
-        )
+        if self._url is None:
+            raise ValueError
+        return [httpx.Request('GET', self._url)]

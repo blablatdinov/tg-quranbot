@@ -22,8 +22,8 @@
 
 import pytest
 
-from integrations.nominatim import NominatimCityName
-from integrations.tg.coordinates import FkCoordinates
+from integrations.nominatim_city_name import NominatimCityName
+from integrations.tg.fk_coordinates import FkCoordinates
 
 
 @pytest.mark.usefixtures('_mock_nominatim')

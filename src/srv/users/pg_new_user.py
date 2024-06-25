@@ -32,7 +32,7 @@ from app_types.fk_async_int_or_none import FkAsyncIntOrNone
 from app_types.logger import LogSink
 from exceptions.internal_exceptions import UserNotFoundError
 from exceptions.user import UserAlreadyExistsError
-from integrations.tg.chat_id import ChatId
+from integrations.tg.fk_chat_id import ChatId
 from srv.users.new_user import NewUser
 
 

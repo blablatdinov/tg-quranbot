@@ -20,9 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 22
-
-from typing import SupportsInt, final, override
+from typing import final, override
 
 import attrs
 from pyeo import elegant
@@ -30,7 +28,8 @@ from pyeo import elegant
 from app_types.stringable import SupportsStr
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import InlineQueryNotFoundError
-from services.json_path_value import ErrRedirectJsonPath, JsonPathValue
+from services.err_redirect_json_path import ErrRedirectJsonPath
+from services.json_path_value import JsonPathValue
 
 
 @final
@@ -52,31 +51,6 @@ class InlineQuery(SupportsStr):
                 JsonPathValue(
                     self._update.asdict(),
                     '$..query',
-                ),
-                InlineQueryNotFoundError(),
-            ).evaluate(),
-        )
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class InlineQueryId(SupportsInt):
-    """Идентификатор инлайн поиска."""
-
-    _update: Update
-
-    @override
-    def __int__(self) -> int:
-        """Числовое представление.
-
-        :return: int
-        """
-        return int(
-            ErrRedirectJsonPath(
-                JsonPathValue(
-                    self._update.asdict(),
-                    '$..inline_query.id',
                 ),
                 InlineQueryNotFoundError(),
             ).evaluate(),

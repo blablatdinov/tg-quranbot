@@ -24,9 +24,9 @@ import pytest
 import ujson
 
 from app_types.fk_log_sink import FkLogSink
-from app_types.update import FkUpdate
+from app_types.fk_update import FkUpdate
 from handlers.search_city_answer import SearchCityAnswer
-from integrations.tg.tg_answers import FkAnswer
+from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 async def test_message(pgsql, fake_redis):

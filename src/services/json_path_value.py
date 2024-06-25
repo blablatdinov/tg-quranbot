@@ -20,33 +20,20 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 9
-
-from collections.abc import Iterable
-from contextlib import suppress
-from typing import Generic, Protocol, TypeVar, final, override
+from typing import Generic, final, override
 
 import attrs
 import jsonpath_ng
 from pyeo import elegant
 
 from app_types.stringable import SupportsStr
-
-_ET_co = TypeVar('_ET_co', covariant=True)
-
-
-@elegant
-class JsonPath(Protocol[_ET_co]):
-    """Интерфейс объектов, получающих значение по jsonpath."""
-
-    def evaluate(self) -> _ET_co:
-        """Получить значение."""
+from services.json_path import ET_co, JsonPath
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class JsonPathValue(JsonPath, Generic[_ET_co]):
+class JsonPathValue(JsonPath, Generic[ET_co]):
     """Объект, получающий значение по jsonpath.
 
     Пример поиска идентификатора чата:
@@ -68,7 +55,7 @@ class JsonPathValue(JsonPath, Generic[_ET_co]):
     _json_path: SupportsStr
 
     @override
-    def evaluate(self) -> _ET_co:
+    def evaluate(self) -> ET_co:
         """Получить значение.
 
         :return: T
@@ -78,49 +65,3 @@ class JsonPathValue(JsonPath, Generic[_ET_co]):
         if not match:
             raise ValueError
         return match[0].value
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class MatchManyJsonPath(JsonPath, Generic[_ET_co]):
-    """Поиск по нескольким jsonpath."""
-
-    _json: dict
-    _json_paths: Iterable[SupportsStr]
-
-    @override
-    def evaluate(self) -> _ET_co:
-        """Получить значение.
-
-        :return: T
-        :raises ValueError: если поиск не дал результатов
-        """
-        for path in self._json_paths:
-            with suppress(ValueError):
-                return JsonPathValue(
-                    self._json,
-                    path,
-                ).evaluate()
-        raise ValueError
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class ErrRedirectJsonPath(JsonPath, Generic[_ET_co]):
-    """JsonPath с преобразованием исключений."""
-
-    _origin: JsonPath
-    _to_error: Exception
-
-    @override
-    def evaluate(self) -> _ET_co:
-        """Получить значение.
-
-        :return: T
-        :raises _to_error: преобразуемое исключение
-        """
-        with suppress(ValueError):
-            return self._origin.evaluate()
-        raise self._to_error

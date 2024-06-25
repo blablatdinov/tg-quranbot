@@ -20,39 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 1
-
-from typing import TypeAlias, final, override
+from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
 from pyeo import elegant
 
-from app_types.stringable import AsyncSupportsStr
+from integrations.city_name_by_id import CityName
 from integrations.tg.coordinates import Coordinates
-
-CityName: TypeAlias = AsyncSupportsStr
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class CityNameById(CityName):
-    """Имя города по id."""
-
-    _pgsql: Database
-    _city_id: AsyncSupportsStr
-
-    @override
-    async def to_str(self) -> str:
-        """Поиск.
-
-        :return: str
-        """
-        return await self._pgsql.fetch_val('SELECT name FROM cities WHERE city_id = :city_id', {
-            'city_id': await self._city_id.to_str(),
-        })
 
 
 @final

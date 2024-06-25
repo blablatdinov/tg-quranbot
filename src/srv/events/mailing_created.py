@@ -29,8 +29,8 @@ from eljson.json import Json
 from pyeo import elegant
 
 from app_types.fk_async_listable import FkAsyncListable
+from app_types.fk_update import FkUpdate
 from app_types.logger import LogSink
-from app_types.update import FkUpdate
 from exceptions.internal_exceptions import TelegramIntegrationsError, UnreacheableError
 from integrations.tg.sendable import SendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer, TgHtmlParseAnswer, TgTextAnswer

@@ -20,44 +20,41 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 27
-
-from typing import Protocol, final, override
+from typing import final
 
 import attrs
 import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-
-
-@elegant
-class TgAnswer(Protocol):
-    """Интерфейс ответа пользователю."""
-
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
-
-        :param update: Update
-        """
+from integrations.tg.tg_answers.tg_answer import TgAnswer
+from services.match_many_json_path import MatchManyJsonPath
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class FkAnswer(TgAnswer):
-    """Фейковый ответ."""
+class PodcastMessageTextNotExistsSafeAnswer(TgAnswer):
+    """В случаи нажатия на кнопку с отсутствующем текстом сообщения."""
 
-    _url: str | None = 'https://some.domain'
+    _edited_markup_answer: TgAnswer
+    _new_podcast_message_answer: TgAnswer
 
-    @override
     async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
+        """Трансформация в ответ.
 
         :param update: Update
         :return: list[httpx.Request]
-        :raises ValueError: if self._url is None
         """
-        if self._url is None:
-            raise ValueError
-        return [httpx.Request('GET', self._url)]
+        try:
+            return await self._message_text_exists_case(update)
+        except ValueError:
+            return await self._new_podcast_message_answer.build(update)
+
+    async def _message_text_exists_case(self, update: Update) -> list[httpx.Request]:
+        # TODO #802 Удалить или задокументировать необходимость приватного метода "_message_text_exists_case"
+        MatchManyJsonPath(
+            update.asdict(),
+            ('$..message.text', '$..message.audio'),
+        ).evaluate()
+        return await self._edited_markup_answer.build(update)

@@ -26,9 +26,9 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.stringable import AsyncSupportsStr
+from app_types.async_supports_str import AsyncSupportsStr
 from exceptions.content_exceptions import UserHasNotCityIdError
-from integrations.tg.chat_id import ChatId
+from integrations.tg.fk_chat_id import ChatId
 
 
 @final

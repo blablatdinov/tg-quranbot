@@ -28,7 +28,7 @@ from pyeo import elegant
 
 from app_types.fk_async_int import FkAsyncInt
 from app_types.listable import AsyncListable
-from integrations.tg.chat_id import ChatId
+from integrations.tg.fk_chat_id import ChatId
 from srv.ayats.ayat import Ayat
 from srv.ayats.pg_ayat import PgAyat
 from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat

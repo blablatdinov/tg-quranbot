@@ -20,11 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 15
+from typing import Protocol, override
 
-from typing import Protocol, final, override
-
-import attrs
 from pyeo import elegant
 
 
@@ -35,62 +32,3 @@ class SupportsStr(Protocol):
     @override
     def __str__(self) -> str:
         """Приведение к строке."""
-
-
-@elegant
-class AsyncSupportsStr(Protocol):
-    """Интерфейс объектов, которые можно привести к строке."""
-
-    async def to_str(self) -> str:
-        """Приведение к строке."""
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkAsyncStr(AsyncSupportsStr):
-    """Обертка для строки."""
-
-    _source: str
-
-    @override
-    async def to_str(self) -> str:
-        """Строковое представление.
-
-        :return: str
-        """
-        return self._source
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class ThroughString(SupportsStr):
-    """Обертка для строки."""
-
-    _source: str
-
-    @override
-    def __str__(self) -> str:
-        """Строковое представление.
-
-        :return: str
-        """
-        return self._source
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class UnwrappedString(SupportsStr):
-    """Строки без переноса."""
-
-    _origin: SupportsStr
-
-    @override
-    def __str__(self) -> str:
-        """Строковое представление.
-
-        :return: str
-        """
-        return str(self._origin).replace('\n', '')

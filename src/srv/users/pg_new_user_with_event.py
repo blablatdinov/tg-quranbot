@@ -26,7 +26,7 @@ import attrs
 from pyeo import elegant
 
 from app_types.date_time import DateTime
-from integrations.tg.chat_id import ChatId
+from integrations.tg.fk_chat_id import ChatId
 from srv.events.sink import Sink
 from srv.users.new_user import NewUser
 

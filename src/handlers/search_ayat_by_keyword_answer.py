@@ -31,8 +31,8 @@ from redis.asyncio import Redis
 from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgMessageRegexAnswer
+from integrations.tg.tg_chat_id import TgChatId
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
 from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer

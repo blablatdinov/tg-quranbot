@@ -22,8 +22,8 @@
 
 import urllib
 
-from app_types.update import FkUpdate
-from integrations.tg.tg_answers import FkAnswer
+from app_types.fk_update import FkUpdate
+from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.ayats.fk_text_search_query import FkTextSearchQuery
 from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer
 

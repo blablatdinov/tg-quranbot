@@ -26,14 +26,14 @@ import pytest
 import pytz
 from pytest_lazy_fixtures import lf
 
-from app_types.stringable import ThroughString
+from app_types.fk_string import FkString
 from integrations.tg.tg_datetime import TgDateTime
 from integrations.tg.update import TgUpdate
 
 
 @pytest.fixture()
 def message_update(message_update_factory):
-    return ThroughString(message_update_factory())
+    return FkString(message_update_factory())
 
 
 @pytest.fixture()

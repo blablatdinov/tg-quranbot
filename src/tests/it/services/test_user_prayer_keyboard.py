@@ -27,9 +27,9 @@ from itertools import chain, repeat
 
 import pytest
 
-from app_types.update import FkUpdate
+from app_types.fk_update import FkUpdate
 from exceptions.internal_exceptions import PrayerAtUserNotCreatedError
-from handlers.skipped_prayers_answer import PrayerNames
+from handlers.prayer_names import PrayerNames
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from srv.prayers.fk_city import FkCity
 from srv.prayers.fk_prayer_date import FkPrayerDate

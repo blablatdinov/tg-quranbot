@@ -22,7 +22,8 @@
 
 import pytest
 
-from integrations.tg.tg_answers import FkAnswer, TgMessageRegexAnswer
+from integrations.tg.tg_answers import TgMessageRegexAnswer
+from integrations.tg.tg_answers.fk_answer import FkAnswer
 from integrations.tg.update import TgUpdate
 from settings import BASE_DIR
 

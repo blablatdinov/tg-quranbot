@@ -30,9 +30,9 @@ from redis.asyncio import Redis
 
 from app_types.logger import LogSink
 from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgMessageAnswer, TgTextAnswer
 from integrations.tg.tg_answers.answer_to_sender import TgAnswerToSender
+from integrations.tg.tg_chat_id import TgChatId
 from settings import Settings
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer

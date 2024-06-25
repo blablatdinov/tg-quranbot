@@ -22,7 +22,7 @@
 
 import pytest
 
-from app_types.stringable import FkAsyncStr
+from app_types.fk_async_str import FkAsyncStr
 from srv.prayers.ramadan_prayer_text import RamadanPrayerText
 
 

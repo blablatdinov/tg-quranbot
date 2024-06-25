@@ -23,14 +23,14 @@
 import pytest
 from pytest_lazy_fixtures import lf
 
-from app_types.stringable import ThroughString
+from app_types.fk_string import FkString
 from integrations.tg.message_text import MessageText
 from integrations.tg.update import TgUpdate
 
 
 @pytest.fixture()
 def stringable_update(message_update_factory):
-    return ThroughString(message_update_factory('afwe'))
+    return FkString(message_update_factory('afwe'))
 
 
 @pytest.fixture()

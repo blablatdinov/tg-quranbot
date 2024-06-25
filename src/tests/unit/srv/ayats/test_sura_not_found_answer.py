@@ -24,9 +24,10 @@ from typing import final, override
 
 from pyeo import elegant
 
-from app_types.update import FkUpdate
+from app_types.fk_update import FkUpdate
 from exceptions.content_exceptions import SuraNotFoundError
-from integrations.tg.tg_answers import FkAnswer, TgAnswer
+from integrations.tg.tg_answers import TgAnswer
+from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.ayats.sura_not_found_safe_answer import SuraNotFoundSafeAnswer
 
 

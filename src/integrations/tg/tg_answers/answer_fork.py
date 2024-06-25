@@ -35,7 +35,7 @@ from integrations.tg.exceptions.update_parse_exceptions import (
     InlineQueryNotFoundError,
     MessageIdNotFoundError,
 )
-from integrations.tg.tg_answers.interface import TgAnswer
+from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 
 @final

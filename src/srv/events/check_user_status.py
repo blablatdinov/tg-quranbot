@@ -27,9 +27,9 @@ from databases import Database
 from eljson.json import Json
 from pyeo import elegant
 
+from app_types.fk_update import FkUpdate
 from app_types.listable import AsyncListable
 from app_types.logger import LogSink
-from app_types.update import FkUpdate
 from integrations.tg.sendable import BulkSendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer
 from integrations.tg.tg_answers.chat_action import TgChatAction
