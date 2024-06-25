@@ -66,7 +66,7 @@ telethon = "1.36.0"
 psycopg2-binary = "2.9.9"
 pika = "1.3.2"
 # type checking
-mypy = "1.10.0"
+mypy = "1.10.1"
 types-pytz = "2024.1.0.20240417"
 types-redis = "4.6.0.20240425"
 types-pytest-lazy-fixture = "0.6.3.20240310"
