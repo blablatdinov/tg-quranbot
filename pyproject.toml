@@ -590,6 +590,7 @@ disable = [
   "redefined-outer-name",  # Check via WPS
   "invalid-name",  # conflict with WPS115
   "c-extension-no-member",  # Module 'ujson' has no 'dumps' member
+  "duplicate-code",  # check by jscpd
 ]
 
 # Enable the message, report, category or checker with the given id(s). You can
