@@ -25,6 +25,7 @@ from typing import override
 import pytest
 
 from app_types.listable import AsyncListable
+from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat import Ayat
 from srv.ayats.favorite_neighbor_ayats import FavoriteNeighborAyats
 from srv.ayats.fk_ayat import FkAyat
@@ -54,3 +55,29 @@ async def test_page(ayat_id, expected):
     ).page()
 
     assert got == expected
+
+
+async def test_left_neighbor_for_first_ayat():
+    with pytest.raises(AyatNotFoundError):
+        await FavoriteNeighborAyats(
+            1, FkFavoriteAyats(),
+        ).left_neighbor()
+
+
+async def test_right_neighbor_for_last_ayat():
+    with pytest.raises(AyatNotFoundError):
+        await FavoriteNeighborAyats(
+            3, FkFavoriteAyats(),
+        ).right_neighbor()
+
+
+async def test_neighbors_for_middle_ayat():
+    left = await FavoriteNeighborAyats(
+        2, FkFavoriteAyats(),
+    ).left_neighbor()
+    right = await FavoriteNeighborAyats(
+        2, FkFavoriteAyats(),
+    ).right_neighbor()
+
+    assert await left.identifier().ayat_id() == 1
+    assert await right.identifier().ayat_id() == 3
