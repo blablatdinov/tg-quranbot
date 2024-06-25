@@ -20,12 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 10
+from typing import Protocol
 
-from typing import Protocol, final, override
-
-import attrs
-import ujson
 from pyeo import elegant
 
 from app_types.stringable import SupportsStr
@@ -42,26 +38,3 @@ class Update(SupportsStr, Protocol):
         """Словарь."""
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class FkUpdate(Update):
-    """Подделка обновления."""
-
-    _raw: SupportsStr | None = '{}'  # noqa: P103. Empty json
-
-    @override
-    def __str__(self) -> str:
-        """Приведение к строке.
-
-        :return: str
-        """
-        return str(self._raw)
-
-    @override
-    def asdict(self) -> dict:
-        """Словарь.
-
-        :return: dict
-        """
-        return ujson.loads(str(self._raw))

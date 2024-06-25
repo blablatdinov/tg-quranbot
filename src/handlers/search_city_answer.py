@@ -31,12 +31,12 @@ from redis.asyncio import Redis
 from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
-from integrations.tg.coordinates import TgMessageCoordinates
+from integrations.tg.TgChatId import TgChatId
+from integrations.tg.TgMessageCoordinates import TgMessageCoordinates
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswerFork, TgAnswerToSender, TgMessageAnswer, TgMessageRegexAnswer
-from integrations.tg.tg_answers.interface import TgAnswer
+from integrations.tg.tg_answers.tg_answer import TgAnswer
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from services.reset_state_answer import ResetStateAnswer

@@ -20,9 +20,9 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from app_types.update import FkUpdate
+from app_types.FkUpdate import FkUpdate
 from handlers.status_answer import StatusAnswer
-from integrations.tg.tg_answers import FkAnswer
+from integrations.tg.tg_answers.FkAnswer import FkAnswer
 
 
 async def test(pgsql, fake_redis):

@@ -23,7 +23,7 @@
 import pytest
 from pytest_lazy_fixtures import lf
 
-from app_types.stringable import ThroughString
+from app_types.ThroughString import ThroughString
 from integrations.tg.message_text import MessageText
 from integrations.tg.update import TgUpdate
 

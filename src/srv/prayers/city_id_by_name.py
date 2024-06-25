@@ -26,7 +26,7 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.stringable import AsyncSupportsStr
+from app_types.AsyncSupportsStr import AsyncSupportsStr
 from exceptions.content_exceptions import CityNotSupportedError
 
 

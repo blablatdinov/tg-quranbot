@@ -23,7 +23,7 @@
 import pytest
 from pytest_lazy_fixtures import lf
 
-from integrations.tg.chat_id import TgChatId
+from integrations.tg.TgChatId import TgChatId
 from integrations.tg.update import TgUpdate
 
 

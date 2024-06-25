@@ -28,7 +28,7 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.keyboard import KeyboardInterface
+from integrations.tg.keyboard import Keyboard
 from srv.podcasts.podcast import Podcast
 
 
@@ -41,7 +41,7 @@ class _Row(TypedDict):
 @final
 @attrs.define(frozen=True)
 @elegant
-class PodcastKeyboard(KeyboardInterface):
+class PodcastKeyboard(Keyboard):
     """Клавиатура подкаста."""
 
     _pgsql: Database

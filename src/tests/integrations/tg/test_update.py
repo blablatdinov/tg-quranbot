@@ -23,7 +23,7 @@
 from typing import final, override
 
 from app_types.update import Update
-from integrations.tg.update import CachedTgUpdate
+from integrations.tg.CachedTgUpdate import CachedTgUpdate
 
 
 @final

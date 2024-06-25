@@ -29,10 +29,10 @@ from redis.asyncio import Redis
 
 from app_types.logger import LogSink
 from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
+from integrations.tg.TgChatId import TgChatId
 from integrations.tg.tg_answers.answer_list import TgAnswerList
 from integrations.tg.tg_answers.chat_id_answer import TgChatIdAnswer
-from integrations.tg.tg_answers.interface import TgAnswer
+from integrations.tg.tg_answers.tg_answer import TgAnswer
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from integrations.tg.tg_answers.skipable_answer import SkipableAnswer
 from integrations.tg.tg_answers.text_answer import TgTextAnswer

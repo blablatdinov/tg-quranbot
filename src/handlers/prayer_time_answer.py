@@ -20,8 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 2
-
 from collections.abc import Sequence
 from typing import final, override
 
@@ -33,8 +31,7 @@ from redis.asyncio import Redis
 
 from app_types.logger import LogSink
 from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
-from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
+from integrations.tg.TgChatId import TgChatId
 from integrations.tg.message_id import TgMessageId
 from integrations.tg.tg_answers import (
     TgAnswer,
@@ -59,21 +56,6 @@ from srv.prayers.prayers_text import PrayersText
 from srv.prayers.ramadan_prayer_text import RamadanPrayerText
 from srv.prayers.user_city_id import UserCityId
 from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class _MessageNotFoundSafeAnswer(TgAnswer):
-
-    _origin: TgAnswer
-    _new_message_answer: TgAnswer
-
-    async def build(self, update: Update) -> list[httpx.Request]:
-        try:
-            return await self._origin.build(update)
-        except MessageTextNotFoundError:
-            return await self._new_message_answer.build(update)
 
 
 @final

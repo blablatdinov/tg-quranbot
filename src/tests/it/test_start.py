@@ -25,9 +25,9 @@ import ujson
 from furl import furl
 
 from app_types.fk_log_sink import FkLogSink
-from app_types.update import FkUpdate
+from app_types.FkUpdate import FkUpdate
 from handlers.full_start_answer import FullStartAnswer
-from integrations.tg.tg_answers import FkAnswer
+from integrations.tg.tg_answers.FkAnswer import FkAnswer
 from srv.events.fk_sink import FkSink
 
 

@@ -20,8 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 16
-
 from typing import Protocol
 
 from pyeo import elegant
@@ -35,9 +33,3 @@ class SupportsBool(Protocol):
         """Приведение к булевому значению."""
 
 
-@elegant
-class AsyncSupportsBool(Protocol):
-    """Интерфейс объектов, которые можно привести к булевому значению."""
-
-    async def to_bool(self) -> bool:
-        """Приведение к булевому значению."""

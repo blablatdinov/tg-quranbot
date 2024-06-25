@@ -28,8 +28,8 @@ from furl import furl
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.chat_id import ChatId
-from integrations.tg.tg_answers.interface import TgAnswer
+from integrations.tg.fk_chat_id import ChatId
+from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 
 @final

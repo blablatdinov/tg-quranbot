@@ -28,8 +28,8 @@ from furl import furl
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.keyboard import KeyboardInterface
-from integrations.tg.tg_answers.interface import TgAnswer
+from integrations.tg.keyboard import Keyboard
+from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 
 @final
@@ -39,7 +39,7 @@ class TgAnswerMarkup(TgAnswer):
     """Ответ с клавиатурой."""
 
     _origin: TgAnswer
-    _keyboard: KeyboardInterface
+    _keyboard: Keyboard
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

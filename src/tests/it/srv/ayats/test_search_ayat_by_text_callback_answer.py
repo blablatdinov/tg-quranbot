@@ -24,10 +24,10 @@ import pytest
 import ujson
 
 from app_types.fk_log_sink import FkLogSink
-from app_types.update import FkUpdate
+from app_types.FkUpdate import FkUpdate
 from exceptions.content_exceptions import AyatNotFoundError
-from integrations.tg.chat_id import FkChatId
-from integrations.tg.tg_answers import FkAnswer
+from integrations.tg.fk_chat_id import FkChatId
+from integrations.tg.tg_answers.FkAnswer import FkAnswer
 from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.search_ayat_by_text_callback_answer import SearchAyatByTextCallbackAnswer
 

@@ -30,7 +30,7 @@ from pyeo import elegant
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.exceptions.update_parse_exceptions import CallbackQueryNotFoundError
-from integrations.tg.tg_answers.interface import TgAnswer
+from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 
 @final

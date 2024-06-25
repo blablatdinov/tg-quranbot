@@ -25,7 +25,7 @@ from typing import Protocol, TypeAlias
 from eljson.json import Json
 from pyeo import elegant
 
-from app_types.stringable import AsyncSupportsStr
+from app_types.AsyncSupportsStr import AsyncSupportsStr
 from srv.ayats.ayat_identifier import AyatIdentifier
 from srv.files.tg_file import TgFile
 

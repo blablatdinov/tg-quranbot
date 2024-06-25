@@ -27,7 +27,7 @@ from databases import Database
 from pyeo import elegant
 
 from exceptions.internal_exceptions import UserNotFoundError
-from integrations.tg.chat_id import ChatId
+from integrations.tg.fk_chat_id import ChatId
 from srv.prayers.city import City
 from srv.prayers.updated_user_city import UpdatedUserCity
 

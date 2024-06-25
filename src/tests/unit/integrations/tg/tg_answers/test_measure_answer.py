@@ -22,8 +22,9 @@
 
 import re
 
-from app_types.update import FkUpdate
-from integrations.tg.tg_answers import FkAnswer, TgMeasureAnswer
+from app_types.FkUpdate import FkUpdate
+from integrations.tg.tg_answers import TgMeasureAnswer
+from integrations.tg.tg_answers.FkAnswer import FkAnswer
 
 
 async def test(fk_logger):

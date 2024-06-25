@@ -25,7 +25,7 @@ from typing import final
 import attrs
 from pyeo import elegant
 
-from app_types.stringable import AsyncSupportsStr
+from app_types.AsyncSupportsStr import AsyncSupportsStr
 
 
 @final

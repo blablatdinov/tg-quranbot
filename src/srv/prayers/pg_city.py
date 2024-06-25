@@ -27,8 +27,9 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from app_types.stringable import AsyncSupportsStr, FkAsyncStr
-from integrations.nominatim import NominatimCityName
+from app_types.AsyncSupportsStr import AsyncSupportsStr
+from app_types.FkAsyncStr import FkAsyncStr
+from integrations.NominatimCityName import NominatimCityName
 from integrations.tg.coordinates import Coordinates
 from srv.prayers.city import City
 from srv.prayers.city_id_by_name import CityIdByName

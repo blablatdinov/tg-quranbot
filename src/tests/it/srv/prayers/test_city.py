@@ -22,9 +22,9 @@
 
 import pytest
 
-from app_types.stringable import FkAsyncStr
+from app_types.FkAsyncStr import FkAsyncStr
 from exceptions.content_exceptions import CityNotSupportedError
-from integrations.tg.coordinates import FkCoordinates
+from integrations.tg.FkCoordinates import FkCoordinates
 from srv.prayers.city_id_by_name import CityIdByName
 from srv.prayers.pg_city import PgCity
 

@@ -27,8 +27,8 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.chat_id import TgChatId
-from integrations.tg.keyboard import KeyboardInterface
+from integrations.tg.TgChatId import TgChatId
+from integrations.tg.keyboard import Keyboard
 from srv.ayats.ayat import Ayat
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
 from srv.ayats.ayat_favorite_keyboard_button import AyatFavoriteKeyboardButton
@@ -40,7 +40,7 @@ from srv.ayats.neighbor_ayats import NeighborAyats
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatAnswerKeyboard(KeyboardInterface):
+class AyatAnswerKeyboard(Keyboard):
     """Клавиатура аята."""
 
     _ayat: Ayat

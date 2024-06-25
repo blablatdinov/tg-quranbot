@@ -26,19 +26,19 @@ import attrs
 import ujson
 from pyeo import elegant
 
-from app_types.supports_bool import AsyncSupportsBool
+from app_types.AsyncSupportsBool import AsyncSupportsBool
 from app_types.update import Update
-from integrations.tg.keyboard import KeyboardInterface
+from integrations.tg.keyboard import Keyboard
 from srv.ayats.ayat import Ayat
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class AyatFavoriteKeyboardButton(KeyboardInterface):
+class AyatFavoriteKeyboardButton(Keyboard):
     """Кнопка с добавлением аята в избранные."""
 
-    _origin: KeyboardInterface
+    _origin: Keyboard
     _is_favor: AsyncSupportsBool
     _ayat: Ayat
 

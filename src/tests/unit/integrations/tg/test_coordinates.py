@@ -22,8 +22,8 @@
 
 import pytest
 
-from app_types.stringable import ThroughString
-from integrations.tg.coordinates import TgMessageCoordinates
+from app_types.ThroughString import ThroughString
+from integrations.tg.TgMessageCoordinates import TgMessageCoordinates
 from integrations.tg.update import TgUpdate
 from settings import BASE_DIR
 

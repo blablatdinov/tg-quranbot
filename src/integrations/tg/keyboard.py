@@ -20,18 +20,15 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 25
+from typing import Protocol
 
-from typing import Protocol, final, override
-
-import attrs
 from pyeo import elegant
 
 from app_types.update import Update
 
 
 @elegant
-class KeyboardInterface(Protocol):
+class Keyboard(Protocol):
     """Интерфейс клавиатуры."""
 
     async def generate(self, update: Update) -> str:
@@ -41,17 +38,3 @@ class KeyboardInterface(Protocol):
         """
 
 
-@elegant
-@final
-@attrs.define(frozen=True)
-class FkKeyboard(KeyboardInterface):
-    """Фейковая клавиатура."""
-
-    @override
-    async def generate(self, update: Update) -> str:
-        """Генерация.
-
-        :param update: Update
-        :return: str
-        """
-        return '{}'  # noqa: P103 it is empty json

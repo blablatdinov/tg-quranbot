@@ -30,8 +30,9 @@ from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError
+from integrations.tg.InlineQueryId import InlineQueryId
 from integrations.tg.exceptions.update_parse_exceptions import InlineQueryNotFoundError
-from integrations.tg.inline_query import InlineQuery, InlineQueryId
+from integrations.tg.inline_query import InlineQuery
 from integrations.tg.tg_answers import TgAnswer
 from services.debug_answer import DebugAnswer
 from srv.prayers.city_names import CityNames

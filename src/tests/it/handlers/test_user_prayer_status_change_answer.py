@@ -27,11 +27,11 @@ import pytz
 import ujson
 
 from app_types.fk_log_sink import FkLogSink
-from app_types.stringable import FkAsyncStr
-from app_types.update import FkUpdate
+from app_types.FkAsyncStr import FkAsyncStr
+from app_types.FkUpdate import FkUpdate
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
-from integrations.tg.tg_answers import FkAnswer
+from integrations.tg.tg_answers.FkAnswer import FkAnswer
 from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.prayers_text import PrayersText
 

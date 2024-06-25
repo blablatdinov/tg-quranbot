@@ -29,7 +29,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.message_id import MessageId
-from integrations.tg.tg_answers.interface import TgAnswer
+from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 
 @final

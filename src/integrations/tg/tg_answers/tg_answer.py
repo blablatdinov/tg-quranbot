@@ -20,49 +20,24 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 28
+# TODO #899 Перенести классы в отдельные файлы 27
 
-from typing import final, override
+from typing import Protocol
 
-import attrs
-import ujson
+import httpx
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.keyboard import KeyboardInterface
 
 
-@final
-@attrs.define(frozen=True)
 @elegant
-class ResizedKeyboard(KeyboardInterface):
-    """Сжатая в высоту клавиатура."""
+class TgAnswer(Protocol):
+    """Интерфейс ответа пользователю."""
 
-    _origin: KeyboardInterface
-
-    @override
-    async def generate(self, update: Update) -> str:
-        """Генерация.
+    async def build(self, update: Update) -> list[httpx.Request]:
+        """Сборка ответа.
 
         :param update: Update
-        :return: str
         """
-        origin_keyboard = await self._origin.generate(update)
-        keyboard_as_dict = ujson.loads(origin_keyboard)
-        keyboard_as_dict['resize_keyboard'] = True
-        return ujson.dumps(keyboard_as_dict)
 
 
-@final
-@elegant
-class DefaultKeyboard(KeyboardInterface):
-    """Класс клавиатуры по умолчанию."""
-
-    @override
-    async def generate(self, update: Update) -> str:
-        """Генерация.
-
-        :param update: Update
-        :return: str
-        """
-        return '{"keyboard":[["🎧 Подкасты"],["🕋 Время намаза","🏘️ Поменять город"],["🌟 Избранное","🔍 Найти аят"]]}'

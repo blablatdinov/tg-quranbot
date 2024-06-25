@@ -25,9 +25,9 @@ import uuid
 import pytest
 import ujson
 
-from app_types.update import FkUpdate
+from app_types.FkUpdate import FkUpdate
 from exceptions.internal_exceptions import NotProcessableUpdateError
-from integrations.tg.tg_answers import FkAnswer
+from integrations.tg.tg_answers.FkAnswer import FkAnswer
 from srv.prayers.inline_query_answer import InlineQueryAnswer
 
 

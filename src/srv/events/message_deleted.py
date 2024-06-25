@@ -28,7 +28,7 @@ from eljson.json import Json
 from pyeo import elegant
 
 from app_types.logger import LogSink
-from app_types.update import FkUpdate
+from app_types.FkUpdate import FkUpdate
 from integrations.tg.sendable import SendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer, TgMessageDeleteAnswer, TgMessageIdAnswer
 from srv.events.recieved_event import ReceivedEvent

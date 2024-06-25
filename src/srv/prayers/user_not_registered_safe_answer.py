@@ -28,7 +28,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.internal_exceptions import UserNotFoundError
-from integrations.tg.tg_answers.interface import TgAnswer
+from integrations.tg.tg_answers.tg_answer import TgAnswer
 from srv.users.new_user import NewUser
 
 

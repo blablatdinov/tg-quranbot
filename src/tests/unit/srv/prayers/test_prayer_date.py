@@ -26,7 +26,7 @@ import re
 import pytest
 import ujson
 
-from app_types.update import FkUpdate
+from app_types.FkUpdate import FkUpdate
 from srv.prayers.prayers_request_date import PrayersRequestDate
 
 

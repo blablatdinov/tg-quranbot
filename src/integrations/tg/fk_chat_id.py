@@ -20,44 +20,29 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 27
-
-from typing import Protocol, final, override
+from typing import SupportsInt, TypeAlias, final, override
 
 import attrs
-import httpx
 from pyeo import elegant
 
-from app_types.update import Update
 
-
-@elegant
-class TgAnswer(Protocol):
-    """Интерфейс ответа пользователю."""
-
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
-
-        :param update: Update
-        """
+ChatId: TypeAlias = SupportsInt
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class FkAnswer(TgAnswer):
-    """Фейковый ответ."""
+class FkChatId(ChatId):
+    """Фейк идентификатора чата."""
 
-    _url: str | None = 'https://some.domain'
+    _origin: int
 
     @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
+    def __int__(self) -> int:
+        """Числовое представление.
 
-        :param update: Update
-        :return: list[httpx.Request]
-        :raises ValueError: if self._url is None
+        :return: int
         """
-        if self._url is None:
-            raise ValueError
-        return [httpx.Request('GET', self._url)]
+        return self._origin
+
+

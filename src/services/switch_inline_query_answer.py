@@ -26,12 +26,12 @@ import ujson
 from pyeo import elegant
 
 from app_types.update import Update
-from services.answers.answer import KeyboardInterface
+from services.answers.resized_keyboard import Keyboard
 
 
 @final
 @elegant
-class SwitchInlineQueryKeyboard(KeyboardInterface):
+class SwitchInlineQueryKeyboard(Keyboard):
     """Переключение на инлайн поиск."""
 
     @override

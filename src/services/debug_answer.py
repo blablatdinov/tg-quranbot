@@ -28,7 +28,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers.answer_to_sender import TgAnswerToSender
-from integrations.tg.tg_answers.interface import TgAnswer
+from integrations.tg.tg_answers.tg_answer import TgAnswer
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from integrations.tg.update_id import UpdateId

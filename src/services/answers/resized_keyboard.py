@@ -20,57 +20,36 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 19
+# TODO #899 Перенести классы в отдельные файлы 28
 
-from typing import SupportsInt, TypeAlias, final, override
+from typing import final, override
 
 import attrs
+import ujson
 from pyeo import elegant
 
 from app_types.update import Update
-from exceptions.base_exception import InternalBotError
-from services.json_path_value import ErrRedirectJsonPath, MatchManyJsonPath
-
-ChatId: TypeAlias = SupportsInt
+from integrations.tg.keyboard import Keyboard
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class FkChatId(ChatId):
-    """Фейк идентификатора чата."""
+class ResizedKeyboard(Keyboard):
+    """Сжатая в высоту клавиатура."""
 
-    _origin: int
-
-    @override
-    def __int__(self) -> int:
-        """Числовое представление.
-
-        :return: int
-        """
-        return self._origin
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class TgChatId(ChatId):
-    """Идентификатор чата."""
-
-    _update: Update
+    _origin: Keyboard
 
     @override
-    def __int__(self) -> int:
-        """Числовое представление.
+    async def generate(self, update: Update) -> str:
+        """Генерация.
 
-        :return: int
+        :param update: Update
+        :return: str
         """
-        return int(
-            ErrRedirectJsonPath(
-                MatchManyJsonPath(
-                    self._update.asdict(),
-                    ('$..chat.id', '$..from.id'),
-                ),
-                InternalBotError(),
-            ).evaluate(),
-        )
+        origin_keyboard = await self._origin.generate(update)
+        keyboard_as_dict = ujson.loads(origin_keyboard)
+        keyboard_as_dict['resize_keyboard'] = True
+        return ujson.dumps(keyboard_as_dict)
+
+

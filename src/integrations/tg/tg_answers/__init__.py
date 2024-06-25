@@ -21,6 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import override
 
+from integrations.tg.tg_answers.FkAnswer import FkAnswer
 from integrations.tg.tg_answers.answer_fork import TgAnswerFork
 from integrations.tg.tg_answers.answer_list import TgAnswerList
 from integrations.tg.tg_answers.answer_to_sender import TgAnswerToSender
@@ -30,7 +31,7 @@ from integrations.tg.tg_answers.chat_id_answer import TgChatIdAnswer
 from integrations.tg.tg_answers.delete_message_answer import TgMessageDeleteAnswer
 from integrations.tg.tg_answers.empty_answer import TgEmptyAnswer
 from integrations.tg.tg_answers.html_parse_answer import TgHtmlParseAnswer
-from integrations.tg.tg_answers.interface import FkAnswer, TgAnswer
+from integrations.tg.tg_answers.tg_answer import TgAnswer
 from integrations.tg.tg_answers.link_preview_options import TgLinkPreviewOptions
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.measure_answer import TgMeasureAnswer

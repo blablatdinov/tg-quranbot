@@ -24,7 +24,8 @@ from typing import override
 
 import httpx
 
-from app_types.update import FkUpdate, Update
+from app_types.FkUpdate import FkUpdate
+from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.tg_answers import TgAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable

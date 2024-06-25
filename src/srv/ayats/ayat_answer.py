@@ -28,7 +28,7 @@ from pyeo import elegant
 
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
-from integrations.tg.keyboard import KeyboardInterface
+from integrations.tg.keyboard import Keyboard
 from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerList,
@@ -53,7 +53,7 @@ class AyatAnswer(TgAnswer):
     _debug_mode: SupportsBool
     _empty_answer: TgAnswer
     _ayat: Ayat
-    _ayat_answer_keyboard: KeyboardInterface
+    _ayat_answer_keyboard: Keyboard
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

@@ -30,7 +30,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.user import UserAlreadyActiveError, UserAlreadyExistsError
-from integrations.tg.chat_id import TgChatId
+from integrations.tg.TgChatId import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from integrations.tg.tg_datetime import TgDateTime
 from srv.events.sink import Sink
