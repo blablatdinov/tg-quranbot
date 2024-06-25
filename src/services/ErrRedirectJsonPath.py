@@ -1,12 +1,10 @@
-from services.json_path import JsonPath
-
+from contextlib import suppress
+from typing import Generic, final, override
 
 import attrs
 from pyeo import elegant
 
-
-from contextlib import suppress
-from typing import Generic, final, override
+from services.json_path import JsonPath
 
 
 @final

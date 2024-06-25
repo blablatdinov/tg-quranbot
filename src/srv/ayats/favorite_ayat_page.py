@@ -30,8 +30,8 @@ from pyeo import elegant
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
-from integrations.tg.TgChatId import TgChatId
 from integrations.tg.tg_answers import TgAnswer
+from integrations.tg.TgChatId import TgChatId
 from services.regular_expression import IntableRegularExpression
 from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard

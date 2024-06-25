@@ -36,5 +36,3 @@ class Keyboard(Protocol):
 
         :param update: Update
         """
-
-

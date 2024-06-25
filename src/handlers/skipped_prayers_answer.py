@@ -30,8 +30,8 @@ from pyeo import elegant
 from app_types.update import Update
 from handlers.PrayersStatistic import PrayersStatistic
 from handlers.SkippedPrayersKeyboard import SkippedPrayersKeyboard
-from integrations.tg.TgChatId import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
+from integrations.tg.TgChatId import TgChatId
 from srv.prayers.pg_new_prayers_at_user import PgNewPrayersAtUser
 
 IS_READ_LITERAL: Final = 'is_read'

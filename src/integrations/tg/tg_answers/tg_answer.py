@@ -39,5 +39,3 @@ class TgAnswer(Protocol):
 
         :param update: Update
         """
-
-

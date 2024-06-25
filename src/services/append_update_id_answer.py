@@ -31,8 +31,8 @@ import pytz
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.TgChatId import TgChatId
 from integrations.tg.tg_answers import TgAnswer
+from integrations.tg.TgChatId import TgChatId
 from integrations.tg.update_id import UpdateId
 
 

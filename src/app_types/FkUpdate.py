@@ -1,13 +1,11 @@
-from app_types.stringable import SupportsStr
-from app_types.update import Update
-
+from typing import final, override
 
 import attrs
 import ujson
 from pyeo import elegant
 
-
-from typing import final, override
+from app_types.stringable import SupportsStr
+from app_types.update import Update
 
 
 @final

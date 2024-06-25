@@ -1,7 +1,6 @@
-from pyeo import elegant
-
-
 from typing import Protocol
+
+from pyeo import elegant
 
 
 @elegant

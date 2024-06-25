@@ -30,8 +30,8 @@ from redis.asyncio import Redis
 
 from app_types.logger import LogSink
 from app_types.update import Update
-from integrations.tg.TgChatId import TgChatId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgHtmlParseAnswer, TgMessageAnswer
+from integrations.tg.TgChatId import TgChatId
 from services.answers.DefaultKeyboard import DefaultKeyboard
 from services.answers.resized_keyboard import ResizedKeyboard
 from services.reset_state_answer import ResetStateAnswer

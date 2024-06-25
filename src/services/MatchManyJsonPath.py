@@ -1,15 +1,13 @@
-from app_types.stringable import SupportsStr
-from services.JsonPathValue import JsonPathValue
-from services.json_path import JsonPath
-
+from collections.abc import Iterable
+from contextlib import suppress
+from typing import Generic, final, override
 
 import attrs
 from pyeo import elegant
 
-
-from collections.abc import Iterable
-from contextlib import suppress
-from typing import Generic, final, override
+from app_types.stringable import SupportsStr
+from services.json_path import JsonPath
+from services.JsonPathValue import JsonPathValue
 
 
 @final

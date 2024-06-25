@@ -65,5 +65,3 @@ class TgUpdate(Update):
         :return: dict
         """
         return self._update_dict
-
-

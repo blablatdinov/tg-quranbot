@@ -1,15 +1,13 @@
+from typing import final, override
+
+import attrs
+from pyeo import elegant
+
 from app_types.update import Update
 from integrations.tg.coordinates import Coordinates
 from integrations.tg.exceptions.update_parse_exceptions import CoordinatesNotFoundError
 from services.ErrRedirectJsonPath import ErrRedirectJsonPath
 from services.JsonPathValue import JsonPathValue
-
-
-import attrs
-from pyeo import elegant
-
-
-from typing import final, override
 
 
 @final

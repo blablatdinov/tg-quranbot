@@ -1,11 +1,9 @@
-from app_types.update import Update
-
+from typing import ClassVar, final, override
 
 import attrs
 from pyeo import elegant
 
-
-from typing import ClassVar, final, override
+from app_types.update import Update
 
 
 @final

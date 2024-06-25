@@ -25,7 +25,6 @@ from typing import Protocol, override
 from pyeo import elegant
 
 
-
 @elegant
 class SupportsStr(Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
@@ -33,5 +32,3 @@ class SupportsStr(Protocol):
     @override
     def __str__(self) -> str:
         """Приведение к строке."""
-
-

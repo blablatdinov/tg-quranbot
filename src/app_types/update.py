@@ -36,5 +36,3 @@ class Update(SupportsStr, Protocol):
 
     def asdict(self) -> dict:
         """Словарь."""
-
-

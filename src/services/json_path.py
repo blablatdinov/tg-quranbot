@@ -24,7 +24,6 @@ from typing import Protocol, TypeVar
 
 from pyeo import elegant
 
-
 _ET_co = TypeVar('_ET_co', covariant=True)
 
 
@@ -34,5 +33,3 @@ class JsonPath(Protocol[_ET_co]):
 
     def evaluate(self) -> _ET_co:
         """Получить значение."""
-
-

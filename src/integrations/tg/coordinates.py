@@ -25,7 +25,6 @@ from typing import Protocol
 from pyeo import elegant
 
 
-
 @elegant
 class Coordinates(Protocol):
     """Интерфейс координат."""
@@ -35,5 +34,3 @@ class Coordinates(Protocol):
 
     def longitude(self) -> float:
         """Долгота."""
-
-

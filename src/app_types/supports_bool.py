@@ -31,5 +31,3 @@ class SupportsBool(Protocol):
 
     def __bool__(self) -> bool:
         """Приведение к булевому значению."""
-
-

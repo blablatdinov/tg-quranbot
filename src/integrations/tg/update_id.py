@@ -27,8 +27,8 @@ from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.base_exception import InternalBotError
-from services.JsonPathValue import JsonPathValue
 from services.ErrRedirectJsonPath import ErrRedirectJsonPath
+from services.JsonPathValue import JsonPathValue
 
 
 @final

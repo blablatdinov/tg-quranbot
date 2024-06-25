@@ -34,10 +34,9 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.fk_async_listable import FkAsyncListable
-from app_types.logger import LogSink
 from app_types.FkUpdate import FkUpdate
+from app_types.logger import LogSink
 from exceptions.internal_exceptions import TelegramIntegrationsError
-from integrations.tg.TgChatId import TgChatId
 from integrations.tg.sendable import SendableAnswer
 from integrations.tg.tg_answers import (
     TgAnswer,
@@ -47,6 +46,7 @@ from integrations.tg.tg_answers import (
     TgMessageAnswer,
     TgTextAnswer,
 )
+from integrations.tg.TgChatId import TgChatId
 from services.logged_answer import LoggedAnswer
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from settings import Settings

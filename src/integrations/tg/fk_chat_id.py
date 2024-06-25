@@ -25,7 +25,6 @@ from typing import SupportsInt, TypeAlias, final, override
 import attrs
 from pyeo import elegant
 
-
 ChatId: TypeAlias = SupportsInt
 
 
@@ -44,5 +43,3 @@ class FkChatId(ChatId):
         :return: int
         """
         return self._origin
-
-

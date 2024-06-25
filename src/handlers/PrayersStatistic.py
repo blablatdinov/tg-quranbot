@@ -1,19 +1,17 @@
-from app_types.AsyncSupportsStr import AsyncSupportsStr
-from handlers.PrayerNames import PrayerNames
-from handlers.skipped_prayers_answer import IS_READ_LITERAL
-from integrations.tg.fk_chat_id import ChatId
-from srv.prayers.new_prayers_at_user import NewPrayersAtUser
-
+import datetime
+from itertools import batched
+from typing import final
 
 import attrs
 from databases import Database
 from dateutil import rrule
 from pyeo import elegant
 
-
-import datetime
-from itertools import batched
-from typing import final
+from app_types.AsyncSupportsStr import AsyncSupportsStr
+from handlers.PrayerNames import PrayerNames
+from handlers.skipped_prayers_answer import IS_READ_LITERAL
+from integrations.tg.fk_chat_id import ChatId
+from srv.prayers.new_prayers_at_user import NewPrayersAtUser
 
 
 @final

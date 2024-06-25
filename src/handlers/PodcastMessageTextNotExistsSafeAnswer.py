@@ -1,14 +1,12 @@
-from app_types.update import Update
-from integrations.tg.tg_answers.tg_answer import TgAnswer
-from services.MatchManyJsonPath import MatchManyJsonPath
-
+from typing import final
 
 import attrs
 import httpx
 from pyeo import elegant
 
-
-from typing import final
+from app_types.update import Update
+from integrations.tg.tg_answers.tg_answer import TgAnswer
+from services.MatchManyJsonPath import MatchManyJsonPath
 
 
 @final

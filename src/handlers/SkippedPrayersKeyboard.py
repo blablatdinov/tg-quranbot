@@ -1,14 +1,12 @@
-from app_types.update import Update
-from handlers.PrayerNames import PrayerNames
-from integrations.tg.keyboard import Keyboard
-
+from typing import final
 
 import attrs
 import ujson
 from pyeo import elegant
 
-
-from typing import final
+from app_types.update import Update
+from handlers.PrayerNames import PrayerNames
+from integrations.tg.keyboard import Keyboard
 
 
 @final

@@ -1,11 +1,9 @@
-from integrations.tg.coordinates import Coordinates
-
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-from typing import final, override
+from integrations.tg.coordinates import Coordinates
 
 
 @final

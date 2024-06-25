@@ -1,12 +1,10 @@
-from app_types.update import Update
-from integrations.tg.keyboard import Keyboard
-
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-from typing import final, override
+from app_types.update import Update
+from integrations.tg.keyboard import Keyboard
 
 
 @elegant

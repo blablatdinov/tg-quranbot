@@ -1,13 +1,11 @@
-from app_types.stringable import SupportsStr
-from services.json_path import JsonPath
-
+from typing import Generic, final, override
 
 import attrs
 import jsonpath_ng
 from pyeo import elegant
 
-
-from typing import Generic, final, override
+from app_types.stringable import SupportsStr
+from services.json_path import JsonPath
 
 
 @final

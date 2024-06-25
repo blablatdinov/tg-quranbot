@@ -51,5 +51,3 @@ class ResizedKeyboard(Keyboard):
         keyboard_as_dict = ujson.loads(origin_keyboard)
         keyboard_as_dict['resize_keyboard'] = True
         return ujson.dumps(keyboard_as_dict)
-
-

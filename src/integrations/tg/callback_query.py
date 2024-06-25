@@ -28,8 +28,8 @@ from pyeo import elegant
 from app_types.stringable import SupportsStr
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import CallbackQueryNotFoundError
-from services.JsonPathValue import JsonPathValue
 from services.ErrRedirectJsonPath import ErrRedirectJsonPath
+from services.JsonPathValue import JsonPathValue
 
 
 @final
