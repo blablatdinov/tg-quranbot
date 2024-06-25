@@ -35,7 +35,7 @@ class CachedTgUpdate(Update):
     def __init__(self, origin: Update) -> None:
         """Ctor.
 
-        :param _origin: Update - оригинальный объект обновления
+        :param origin: Update - оригинальный объект обновления
         """
         self._origin = origin
         self._cache = {
