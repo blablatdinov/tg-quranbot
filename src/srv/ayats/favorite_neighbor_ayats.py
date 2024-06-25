@@ -50,13 +50,13 @@ class FavoriteNeighborAyats(NeighborAyats):
         :return: Ayat
         :raises AyatNotFoundError: if ayat not found
         """
-        fayats = await self._favorite_ayats.to_list()
-        for ayat_index, ayat in enumerate(fayats):
+        fav_ayats = await self._favorite_ayats.to_list()
+        for ayat_index, ayat in enumerate(fav_ayats):
             ayat_id = await ayat.identifier().ayat_id()
-            if ayat_id == self._ayat_id:
-                return fayats[ayat_index - 1]
             if ayat_id == self._ayat_id and ayat_index == 0:
                 raise AyatNotFoundError
+            if ayat_id == self._ayat_id:
+                return fav_ayats[ayat_index - 1]
         raise AyatNotFoundError
 
     @override
@@ -66,13 +66,13 @@ class FavoriteNeighborAyats(NeighborAyats):
         :return: AyatShort
         :raises AyatNotFoundError: if ayat not found
         """
-        fayats = await self._favorite_ayats.to_list()
-        for ayat_index, ayat in enumerate(fayats):
+        fav_ayats = await self._favorite_ayats.to_list()
+        for ayat_index, ayat in enumerate(fav_ayats):
             ayat_id = await ayat.identifier().ayat_id()
-            if ayat_id == self._ayat_id:
-                return fayats[ayat_index + 1]
-            if ayat_id == self._ayat_id and ayat_index + 1 == len(fayats):
+            if ayat_id == self._ayat_id and ayat_index + 1 == len(fav_ayats):
                 raise AyatNotFoundError
+            if ayat_id == self._ayat_id:
+                return fav_ayats[ayat_index + 1]
         raise AyatNotFoundError
 
     @override
@@ -82,13 +82,13 @@ class FavoriteNeighborAyats(NeighborAyats):
         :return: str
         :raises BaseAppError: if page not generated
         """
-        fayats = await self._favorite_ayats.to_list()
-        for ayat_idx, ayat in enumerate(fayats, start=1):
+        fav_ayats = await self._favorite_ayats.to_list()
+        for ayat_idx, ayat in enumerate(fav_ayats, start=1):
             if self._ayat_id == 1:
-                return 'стр. 1/{0}'.format(len(fayats))
-            if await ayat.identifier().ayat_id() == len(fayats):
-                return 'стр. {0}/{0}'.format(len(fayats))
+                return 'стр. 1/{0}'.format(len(fav_ayats))
+            if await ayat.identifier().ayat_id() == len(fav_ayats):
+                return 'стр. {0}/{0}'.format(len(fav_ayats))
             if self._ayat_id == await ayat.identifier().ayat_id():
-                return 'стр. {0}/{1}'.format(ayat_idx, len(fayats))
+                return 'стр. {0}/{1}'.format(ayat_idx, len(fav_ayats))
         msg = 'Page info not generated'
         raise BaseAppError(msg)
