@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from app_types.FkUpdate import FkUpdate
+from app_types.fk_update import FkUpdate
 from integrations.tg.sendable import FkSendable
 from services.logged_answer import LoggedAnswer
 from srv.events.fk_sink import FkSink

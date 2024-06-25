@@ -31,7 +31,7 @@ from app_types.logger import LogSink
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
-from integrations.tg.TgChatId import TgChatId
+from integrations.tg.tg_chat_id import TgChatId
 from services.reset_state_answer import ResetStateAnswer
 from srv.admin_messages.admin_message import AdminMessage
 from srv.users.cached_user_state import CachedUserState

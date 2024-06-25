@@ -34,7 +34,7 @@ from app_types.update import Update
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer
-from integrations.tg.TgChatId import TgChatId
+from integrations.tg.tg_chat_id import TgChatId
 from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum

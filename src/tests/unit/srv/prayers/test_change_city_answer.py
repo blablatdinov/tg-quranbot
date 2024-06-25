@@ -25,11 +25,11 @@ from typing import override
 
 import httpx
 
-from app_types.FkUpdate import FkUpdate
+from app_types.fk_update import FkUpdate
 from app_types.update import Update
 from exceptions.content_exceptions import CityNotSupportedError
 from integrations.tg.tg_answers import TgAnswer
-from integrations.tg.tg_answers.FkAnswer import FkAnswer
+from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.prayers.change_city_answer import ChangeCityAnswer
 from srv.prayers.city_not_supported_answer import CityNotSupportedAnswer
 from srv.prayers.fk_city import FkCity

@@ -43,7 +43,7 @@ from integrations.tg.tg_answers import (
     TgTextAnswer,
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
-from integrations.tg.TgChatId import TgChatId
+from integrations.tg.tg_chat_id import TgChatId
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from settings import Settings
 from srv.prayers.date_from_user_prayer_id import DateFromUserPrayerId

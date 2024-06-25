@@ -37,8 +37,8 @@ from integrations.tg.tg_answers import TgAnswerFork, TgAnswerToSender, TgMessage
 from integrations.tg.tg_answers.location_answer import TgLocationAnswer
 from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from integrations.tg.tg_answers.tg_answer import TgAnswer
-from integrations.tg.TgChatId import TgChatId
-from integrations.tg.TgMessageCoordinates import TgMessageCoordinates
+from integrations.tg.tg_chat_id import TgChatId
+from integrations.tg.tg_message_coordinates import TgMessageCoordinates
 from services.reset_state_answer import ResetStateAnswer
 from srv.prayers.change_city_answer import ChangeCityAnswer
 from srv.prayers.city_not_supported_answer import CityNotSupportedAnswer

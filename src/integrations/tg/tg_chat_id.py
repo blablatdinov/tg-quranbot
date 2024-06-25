@@ -20,38 +20,38 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from collections.abc import Iterable
-from contextlib import suppress
-from typing import Generic, final, override
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-from app_types.stringable import SupportsStr
-from services.json_path import JsonPath
-from services.JsonPathValue import JsonPathValue
+from app_types.update import Update
+from exceptions.base_exception import InternalBotError
+from integrations.tg.fk_chat_id import ChatId
+from services.err_redirect_json_path import ErrRedirectJsonPath
+from services.match_many_json_path import MatchManyJsonPath
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class MatchManyJsonPath(JsonPath, Generic[_ET_co]):
-    """Поиск по нескольким jsonpath."""
+class TgChatId(ChatId):
+    """Идентификатор чата."""
 
-    _json: dict
-    _json_paths: Iterable[SupportsStr]
+    _update: Update
 
     @override
-    def evaluate(self) -> _ET_co:
-        """Получить значение.
+    def __int__(self) -> int:
+        """Числовое представление.
 
-        :return: T
-        :raises ValueError: если поиск не дал результатов
+        :return: int
         """
-        for path in self._json_paths:
-            with suppress(ValueError):
-                return JsonPathValue(
-                    self._json,
-                    path,
-                ).evaluate()
-        raise ValueError
+        return int(
+            ErrRedirectJsonPath(
+                MatchManyJsonPath(
+                    self._update.asdict(),
+                    ('$..chat.id', '$..from.id'),
+                ),
+                InternalBotError(),
+            ).evaluate(),
+        )

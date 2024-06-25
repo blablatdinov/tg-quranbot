@@ -30,7 +30,7 @@ from redis.asyncio import Redis
 from app_types.logger import LogSink
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer
-from integrations.tg.TgChatId import TgChatId
+from integrations.tg.tg_chat_id import TgChatId
 from srv.users.redis_user_state import RedisUserState
 
 

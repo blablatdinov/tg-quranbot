@@ -20,26 +20,38 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
+from collections.abc import Iterable
+from contextlib import suppress
+from typing import Generic, final, override
 
 import attrs
 from pyeo import elegant
 
 from app_types.stringable import SupportsStr
+from services.json_path import JsonPath
+from services.json_path_value import JsonPathValue
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class ThroughString(SupportsStr):
-    """Обертка для строки."""
+class MatchManyJsonPath(JsonPath, Generic[_ET_co]):
+    """Поиск по нескольким jsonpath."""
 
-    _source: str
+    _json: dict
+    _json_paths: Iterable[SupportsStr]
 
     @override
-    def __str__(self) -> str:
-        """Строковое представление.
+    def evaluate(self) -> _ET_co:
+        """Получить значение.
 
-        :return: str
+        :return: T
+        :raises ValueError: если поиск не дал результатов
         """
-        return self._source
+        for path in self._json_paths:
+            with suppress(ValueError):
+                return JsonPathValue(
+                    self._json,
+                    path,
+                ).evaluate()
+        raise ValueError

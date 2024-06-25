@@ -23,9 +23,9 @@
 import pytest
 import ujson
 
-from app_types.FkUpdate import FkUpdate
+from app_types.fk_update import FkUpdate
 from handlers.decrement_skipped_prayer_answer import DecrementSkippedPrayerAnswer
-from integrations.tg.tg_answers.FkAnswer import FkAnswer
+from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 @pytest.mark.usefixtures('_prayers_from_csv')

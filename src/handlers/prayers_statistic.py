@@ -29,8 +29,8 @@ from databases import Database
 from dateutil import rrule
 from pyeo import elegant
 
-from app_types.AsyncSupportsStr import AsyncSupportsStr
-from handlers.PrayerNames import PrayerNames
+from app_types.async_supports_str import AsyncSupportsStr
+from handlers.prayer_names import PrayerNames
 from handlers.skipped_prayers_answer import IS_READ_LITERAL
 from integrations.tg.fk_chat_id import ChatId
 from srv.prayers.new_prayers_at_user import NewPrayersAtUser

@@ -27,8 +27,8 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import MessageIdNotFoundError
-from services.ErrRedirectJsonPath import ErrRedirectJsonPath
-from services.JsonPathValue import JsonPathValue
+from services.err_redirect_json_path import ErrRedirectJsonPath
+from services.json_path_value import JsonPathValue
 
 MessageId: TypeAlias = SupportsInt
 

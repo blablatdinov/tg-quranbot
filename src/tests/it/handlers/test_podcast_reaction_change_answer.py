@@ -28,9 +28,9 @@ import pytz
 import ujson
 
 from app_types.fk_log_sink import FkLogSink
-from app_types.FkUpdate import FkUpdate
+from app_types.fk_update import FkUpdate
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
-from integrations.tg.tg_answers.FkAnswer import FkAnswer
+from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 @pytest.fixture()

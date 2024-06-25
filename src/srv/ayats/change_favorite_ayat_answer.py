@@ -42,7 +42,7 @@ from integrations.tg.tg_answers import (
     TgKeyboardEditAnswer,
     TgMessageIdAnswer,
 )
-from integrations.tg.TgChatId import TgChatId
+from integrations.tg.tg_chat_id import TgChatId
 from services.regular_expression import IntableRegularExpression
 from services.state_answer import StepAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard

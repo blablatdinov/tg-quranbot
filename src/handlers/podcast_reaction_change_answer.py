@@ -32,13 +32,13 @@ from app_types.fk_async_int import FkAsyncInt
 from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
-from handlers.PodcastMessageTextNotExistsSafeAnswer import PodcastMessageTextNotExistsSafeAnswer
+from handlers.podcast_message_text_not_exists_safe_answer import PodcastMessageTextNotExistsSafeAnswer
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.message_id import TgMessageId
 from integrations.tg.tg_answers import TgAnswerToSender, TgKeyboardEditAnswer, TgMessageIdAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.tg_answer import TgAnswer
-from integrations.tg.TgChatId import TgChatId
+from integrations.tg.tg_chat_id import TgChatId
 from services.reset_state_answer import ResetStateAnswer
 from srv.podcasts.markupped_podcast_answer import MarkuppedPodcastAnswer
 from srv.podcasts.pg_changed_podcast_reaction import PgChangedPoodcastReaction

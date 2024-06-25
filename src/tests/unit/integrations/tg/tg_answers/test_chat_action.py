@@ -20,9 +20,9 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from app_types.FkUpdate import FkUpdate
+from app_types.fk_update import FkUpdate
 from integrations.tg.tg_answers.chat_action import TgChatAction
-from integrations.tg.tg_answers.FkAnswer import FkAnswer
+from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 async def test():

@@ -35,7 +35,7 @@ from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from integrations.tg.tg_answers.skipable_answer import SkipableAnswer
 from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from integrations.tg.tg_answers.tg_answer import TgAnswer
-from integrations.tg.TgChatId import TgChatId
+from integrations.tg.tg_chat_id import TgChatId
 from services.reset_state_answer import ResetStateAnswer
 from srv.podcasts.podcast import Podcast
 from srv.users.cached_user_state import CachedUserState

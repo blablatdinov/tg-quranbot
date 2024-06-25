@@ -26,7 +26,7 @@ import attrs
 import ujson
 from pyeo import elegant
 
-from app_types.AsyncSupportsBool import AsyncSupportsBool
+from app_types.async_supports_bool import AsyncSupportsBool
 from app_types.update import Update
 from integrations.tg.keyboard import Keyboard
 from srv.ayats.ayat import Ayat

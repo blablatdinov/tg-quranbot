@@ -24,10 +24,10 @@ from typing import final, override
 
 from pyeo import elegant
 
-from app_types.FkUpdate import FkUpdate
+from app_types.fk_update import FkUpdate
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.tg_answers import TgAnswer
-from integrations.tg.tg_answers.FkAnswer import FkAnswer
+from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 
 

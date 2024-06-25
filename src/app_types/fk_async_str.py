@@ -20,41 +20,26 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final
+from typing import final, override
 
 import attrs
-import httpx
 from pyeo import elegant
 
-from app_types.update import Update
-from integrations.tg.tg_answers.tg_answer import TgAnswer
-from services.MatchManyJsonPath import MatchManyJsonPath
+from app_types.async_supports_str import AsyncSupportsStr
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class PodcastMessageTextNotExistsSafeAnswer(TgAnswer):
-    """В случаи нажатия на кнопку с отсутствующем текстом сообщения."""
+class FkAsyncStr(AsyncSupportsStr):
+    """Обертка для строки."""
 
-    _edited_markup_answer: TgAnswer
-    _new_podcast_message_answer: TgAnswer
+    _source: str
 
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Трансформация в ответ.
+    @override
+    async def to_str(self) -> str:
+        """Строковое представление.
 
-        :param update: Update
-        :return: list[httpx.Request]
+        :return: str
         """
-        try:
-            return await self._message_text_exists_case(update)
-        except ValueError:
-            return await self._new_podcast_message_answer.build(update)
-
-    async def _message_text_exists_case(self, update: Update) -> list[httpx.Request]:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_message_text_exists_case"
-        MatchManyJsonPath(
-            update.asdict(),
-            ('$..message.text', '$..message.audio'),
-        ).evaluate()
-        return await self._edited_markup_answer.build(update)
+        return self._source

@@ -20,37 +20,26 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import SupportsInt, final, override
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-from app_types.update import Update
-from integrations.tg.exceptions.update_parse_exceptions import InlineQueryNotFoundError
-from services.ErrRedirectJsonPath import ErrRedirectJsonPath
-from services.JsonPathValue import JsonPathValue
+from app_types.stringable import SupportsStr
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class InlineQueryId(SupportsInt):
-    """Идентификатор инлайн поиска."""
+class FkString(SupportsStr):
+    """Обертка для строки."""
 
-    _update: Update
+    _source: str
 
     @override
-    def __int__(self) -> int:
-        """Числовое представление.
+    def __str__(self) -> str:
+        """Строковое представление.
 
-        :return: int
+        :return: str
         """
-        return int(
-            ErrRedirectJsonPath(
-                JsonPathValue(
-                    self._update.asdict(),
-                    '$..inline_query.id',
-                ),
-                InlineQueryNotFoundError(),
-            ).evaluate(),
-        )
+        return self._source

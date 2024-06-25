@@ -25,9 +25,9 @@ from typing import final, override
 import httpx
 from pyeo import elegant
 
-from app_types.FkUpdate import FkUpdate
+from app_types.fk_update import FkUpdate
 from integrations.tg.tg_answers import TgAnswer
-from integrations.tg.tg_answers.FkAnswer import FkAnswer
+from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.files.file_id_answer import TelegramFileIdAnswer
 from srv.files.fk_file import FkFile
 

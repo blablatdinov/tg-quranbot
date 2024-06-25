@@ -20,54 +20,37 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
+from typing import SupportsInt, final, override
 
 import attrs
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.coordinates import Coordinates
-from integrations.tg.exceptions.update_parse_exceptions import CoordinatesNotFoundError
-from services.ErrRedirectJsonPath import ErrRedirectJsonPath
-from services.JsonPathValue import JsonPathValue
+from integrations.tg.exceptions.update_parse_exceptions import InlineQueryNotFoundError
+from services.err_redirect_json_path import ErrRedirectJsonPath
+from services.json_path_value import JsonPathValue
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class TgMessageCoordinates(Coordinates):
-    """Координаты, принятые из чата."""
+class InlineQueryId(SupportsInt):
+    """Идентификатор инлайн поиска."""
 
     _update: Update
 
     @override
-    def latitude(self) -> float:
-        """Ширина.
+    def __int__(self) -> int:
+        """Числовое представление.
 
-        :return: float
+        :return: int
         """
-        return float(
+        return int(
             ErrRedirectJsonPath(
                 JsonPathValue(
                     self._update.asdict(),
-                    '$..[latitude]',
+                    '$..inline_query.id',
                 ),
-                CoordinatesNotFoundError(),
-            ).evaluate(),
-        )
-
-    @override
-    def longitude(self) -> float:
-        """Долгота.
-
-        :return: float
-        """
-        return float(
-            ErrRedirectJsonPath(
-                JsonPathValue(
-                    self._update.asdict(),
-                    '$..[longitude]',
-                ),
-                CoordinatesNotFoundError(),
+                InlineQueryNotFoundError(),
             ).evaluate(),
         )

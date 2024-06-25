@@ -32,7 +32,7 @@ from app_types.update import Update
 from exceptions.user import UserAlreadyActiveError, UserAlreadyExistsError
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 from integrations.tg.tg_datetime import TgDateTime
-from integrations.tg.TgChatId import TgChatId
+from integrations.tg.tg_chat_id import TgChatId
 from srv.events.sink import Sink
 from srv.users.pg_updated_users_status import PgUpdatedUsersStatus
 from srv.users.pg_user import PgUser

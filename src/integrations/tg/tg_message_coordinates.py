@@ -25,21 +25,49 @@ from typing import final, override
 import attrs
 from pyeo import elegant
 
-from app_types.AsyncSupportsStr import AsyncSupportsStr
+from app_types.update import Update
+from integrations.tg.coordinates import Coordinates
+from integrations.tg.exceptions.update_parse_exceptions import CoordinatesNotFoundError
+from services.err_redirect_json_path import ErrRedirectJsonPath
+from services.json_path_value import JsonPathValue
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class FkAsyncStr(AsyncSupportsStr):
-    """Обертка для строки."""
+class TgMessageCoordinates(Coordinates):
+    """Координаты, принятые из чата."""
 
-    _source: str
+    _update: Update
 
     @override
-    async def to_str(self) -> str:
-        """Строковое представление.
+    def latitude(self) -> float:
+        """Ширина.
 
-        :return: str
+        :return: float
         """
-        return self._source
+        return float(
+            ErrRedirectJsonPath(
+                JsonPathValue(
+                    self._update.asdict(),
+                    '$..[latitude]',
+                ),
+                CoordinatesNotFoundError(),
+            ).evaluate(),
+        )
+
+    @override
+    def longitude(self) -> float:
+        """Долгота.
+
+        :return: float
+        """
+        return float(
+            ErrRedirectJsonPath(
+                JsonPathValue(
+                    self._update.asdict(),
+                    '$..[longitude]',
+                ),
+                CoordinatesNotFoundError(),
+            ).evaluate(),
+        )

@@ -33,7 +33,7 @@ from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.tg_answers.tg_answer import TgAnswer
-from integrations.tg.TgChatId import TgChatId
+from integrations.tg.tg_chat_id import TgChatId
 from srv.podcasts.markupped_podcast_answer import MarkuppedPodcastAnswer
 from srv.podcasts.pg_podcast import PgPodcast
 from srv.podcasts.podcast_answer import PodcastAnswer

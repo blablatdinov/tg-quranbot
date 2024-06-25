@@ -24,11 +24,11 @@ from typing import final, override
 
 import httpx
 
-from app_types.FkUpdate import FkUpdate
+from app_types.fk_update import FkUpdate
 from app_types.update import Update
 from exceptions.internal_exceptions import UserNotFoundError
 from integrations.tg.tg_answers import TgAnswer
-from integrations.tg.tg_answers.FkAnswer import FkAnswer
+from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.prayers.user_not_registered_safe_answer import UserNotRegisteredSafeAnswer
 from srv.users.fk_new_user import FkNewUser
 

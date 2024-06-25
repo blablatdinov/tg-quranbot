@@ -27,8 +27,8 @@ import httpx
 from furl import furl
 from pyeo import elegant
 
-from app_types.AsyncSupportsStr import AsyncSupportsStr
-from app_types.FkAsyncStr import FkAsyncStr
+from app_types.async_supports_str import AsyncSupportsStr
+from app_types.fk_async_str import FkAsyncStr
 from app_types.update import Update
 from integrations.tg.tg_answers.tg_answer import TgAnswer
 
