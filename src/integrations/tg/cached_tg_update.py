@@ -20,11 +20,20 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
+# flake8: noqa: WPS226
+
+from typing import TypedDict, final, override
 
 from pyeo import elegant
 
 from app_types.update import Update
+
+
+class _CacheDict(TypedDict):
+
+    str: str
+    parsed: None
+    asdict: dict
 
 
 @final
@@ -38,7 +47,7 @@ class CachedTgUpdate(Update):
         :param origin: Update - оригинальный объект обновления
         """
         self._origin = origin
-        self._cache = {
+        self._cache: _CacheDict = {
             'str': '',
             'parsed': None,
             'asdict': {},
@@ -50,10 +59,9 @@ class CachedTgUpdate(Update):
 
         :return: str
         """
-        str_cache_key = 'str'
-        if not self._cache[str_cache_key]:
-            self._cache[str_cache_key] = str(self._origin)
-        return self._cache[str_cache_key]
+        if not self._cache['str']:
+            self._cache['str'] = str(self._origin)
+        return self._cache['str']
 
     @override
     def asdict(self) -> dict:
@@ -61,7 +69,6 @@ class CachedTgUpdate(Update):
 
         :return: dict
         """
-        dict_cache_key = 'asdict'
-        if not self._cache[dict_cache_key]:
-            self._cache[dict_cache_key] = self._origin.asdict()
-        return self._cache[dict_cache_key]
+        if not self._cache['asdict']:
+            self._cache['asdict'] = self._origin.asdict()
+        return self._cache['asdict']
