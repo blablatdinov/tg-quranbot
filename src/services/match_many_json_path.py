@@ -28,21 +28,21 @@ import attrs
 from pyeo import elegant
 
 from app_types.stringable import SupportsStr
-from services.json_path import JsonPath
+from services.json_path import ET_co, JsonPath
 from services.json_path_value import JsonPathValue
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class MatchManyJsonPath(JsonPath, Generic[_ET_co]):
+class MatchManyJsonPath(JsonPath, Generic[ET_co]):
     """Поиск по нескольким jsonpath."""
 
     _json: dict
     _json_paths: Iterable[SupportsStr]
 
     @override
-    def evaluate(self) -> _ET_co:
+    def evaluate(self) -> ET_co:
         """Получить значение.
 
         :return: T

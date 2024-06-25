@@ -26,8 +26,8 @@ import pytest
 import pytz
 import ujson
 
-from app_types.fk_log_sink import FkLogSink
 from app_types.fk_async_str import FkAsyncStr
+from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer

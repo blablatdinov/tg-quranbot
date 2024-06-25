@@ -35,12 +35,18 @@ from integrations.tg.tg_answers import TgAnswer
 @attrs.define(frozen=True)
 @elegant
 class MessageNotFoundSafeAnswer(TgAnswer):
+    """MessageNotFoundSafeAnswer."""
 
     _origin: TgAnswer
     _new_message_answer: TgAnswer
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
+        """Сборка ответа.
+
+        :param update: Update
+        :return: list[httpx.Request]
+        """
         try:
             return await self._origin.build(update)
         except MessageTextNotFoundError:

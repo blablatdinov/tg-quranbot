@@ -26,20 +26,20 @@ from typing import Generic, final, override
 import attrs
 from pyeo import elegant
 
-from services.json_path import JsonPath
+from services.json_path import ET_co, JsonPath
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class ErrRedirectJsonPath(JsonPath, Generic[_ET_co]):
+class ErrRedirectJsonPath(JsonPath, Generic[ET_co]):
     """JsonPath с преобразованием исключений."""
 
     _origin: JsonPath
     _to_error: Exception
 
     @override
-    def evaluate(self) -> _ET_co:
+    def evaluate(self) -> ET_co:
         """Получить значение.
 
         :return: T

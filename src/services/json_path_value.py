@@ -27,13 +27,13 @@ import jsonpath_ng
 from pyeo import elegant
 
 from app_types.stringable import SupportsStr
-from services.json_path import JsonPath
+from services.json_path import ET_co, JsonPath
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class JsonPathValue(JsonPath, Generic[_ET_co]):
+class JsonPathValue(JsonPath, Generic[ET_co]):
     """Объект, получающий значение по jsonpath.
 
     Пример поиска идентификатора чата:
@@ -55,7 +55,7 @@ class JsonPathValue(JsonPath, Generic[_ET_co]):
     _json_path: SupportsStr
 
     @override
-    def evaluate(self) -> _ET_co:
+    def evaluate(self) -> ET_co:
         """Получить значение.
 
         :return: T

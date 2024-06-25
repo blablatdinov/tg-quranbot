@@ -28,9 +28,9 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
+from app_types.fk_string import FkString
 from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
-from app_types.fk_string import FkString
 from app_types.update import Update
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.callback_query import CallbackQueryData
