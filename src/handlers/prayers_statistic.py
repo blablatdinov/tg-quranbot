@@ -68,16 +68,16 @@ class PrayersStatistic(AsyncSupportsStr):
             'Ястү: {0}'.format(prayer_unread_dict[PrayerNames.isha.name]),
         ])
 
-    def _exist_prayer_case(self, prayers_per_day: list[tuple], res: dict, idx: int) -> None:
+    def _exist_prayer_case(self, prayers_per_day: list[tuple], prayer_unread_dict: dict, idx: int) -> None:
         # TODO #802 Удалить или задокументировать необходимость приватного метода "_exist_prayer_case"
         for prayer_idx, prayer_name in enumerate(PrayerNames.names()):
-            res[prayer_name] += int(not prayers_per_day[idx][prayer_idx]['is_read'])
+            prayer_unread_dict[prayer_name] += int(not prayers_per_day[idx][prayer_idx]['is_read'])
 
-    async def _new_prayer_at_user_case(self, res: dict, date: datetime.date) -> None:
+    async def _new_prayer_at_user_case(self, prayer_unread_dict: dict, date: datetime.date) -> None:
         # TODO #802 Удалить или задокументировать необходимость приватного метода "_new_prayer_at_user_case"
         await self._prayers_at_user.create(date)
         for prayer_name in PrayerNames.names():
-            res[prayer_name] += 1
+            prayer_unread_dict[prayer_name] += 1
 
     async def _prayers_per_day(self) -> list[tuple]:
         # TODO #802 Удалить или задокументировать необходимость приватного метода "_prayers_per_day"

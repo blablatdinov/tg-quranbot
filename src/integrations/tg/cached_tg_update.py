@@ -20,29 +20,29 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import ClassVar, final, override
+from typing import final, override
 
-import attrs
 from pyeo import elegant
 
 from app_types.update import Update
 
 
 @final
-@attrs.define()
 @elegant
 class CachedTgUpdate(Update):
-    """Декоратор, для избежания повторной десериализации.
+    """Декоратор, для избежания повторной десериализации."""
 
-    _origin: Update - оригинальный объект обновления
-    """
+    def __init__(self, origin: Update) -> None:
+        """Ctor.
 
-    _origin: Update
-    _cache: ClassVar = {
-        'str': None,
-        'parsed': None,
-        'asdict': None,
-    }
+        :param _origin: Update - оригинальный объект обновления
+        """
+        self._origin = origin
+        self._cache = {
+            'str': '',
+            'parsed': None,
+            'asdict': {},
+        }
 
     @override
     def __str__(self) -> str:
