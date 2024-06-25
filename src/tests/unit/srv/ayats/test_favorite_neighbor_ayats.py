@@ -25,12 +25,12 @@ from typing import override
 import pytest
 
 from app_types.listable import AsyncListable
+from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat import Ayat
 from srv.ayats.favorite_neighbor_ayats import FavoriteNeighborAyats
 from srv.ayats.fk_ayat import FkAyat
 from srv.ayats.fk_identifier import FkIdentifier
 from srv.files.fk_file import FkFile
-from exceptions.content_exceptions import AyatNotFoundError
 
 
 class FkFavoriteAyats(AsyncListable[Ayat]):
