@@ -31,7 +31,6 @@ from pyeo import elegant
 
 from app_types.async_supports_str import AsyncSupportsStr
 from handlers.prayer_names import PrayerNames
-from handlers.skipped_prayers_answer import IS_READ_LITERAL
 from integrations.tg.fk_chat_id import ChatId
 from srv.prayers.new_prayers_at_user import NewPrayersAtUser
 
@@ -72,7 +71,7 @@ class PrayersStatistic(AsyncSupportsStr):
     def _exist_prayer_case(self, prayers_per_day: list[tuple], res: dict, idx: int) -> None:
         # TODO #802 Удалить или задокументировать необходимость приватного метода "_exist_prayer_case"
         for prayer_idx, prayer_name in enumerate(PrayerNames.names()):
-            res[prayer_name] += int(not prayers_per_day[idx][prayer_idx][IS_READ_LITERAL])
+            res[prayer_name] += int(not prayers_per_day[idx][prayer_idx]['is_read'])
 
     async def _new_prayer_at_user_case(self, res: dict, date: datetime.date) -> None:
         # TODO #802 Удалить или задокументировать необходимость приватного метода "_new_prayer_at_user_case"
