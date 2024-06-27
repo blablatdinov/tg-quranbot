@@ -22,40 +22,38 @@
 
 import sys
 
-from integrations.tg.AppWithGetMe import AppWithGetMe
-from integrations.tg.DatabaseConnectedApp import DatabaseConnectedApp
-from integrations.tg.UpdatesLongPollingURL import UpdatesLongPollingURL
-from integrations.tg.UpdatesTimeout import UpdatesTimeout
-from integrations.tg.UpdatesURL import UpdatesURL
-from integrations.tg.UpdatesWithOffsetURL import UpdatesWithOffsetURL
 import sentry_sdk
 from loguru import logger
 from redis import asyncio as aioredis
 
 from db.connection import pgsql
+from integrations.tg.AppWithGetMe import AppWithGetMe
+from integrations.tg.DatabaseConnectedApp import DatabaseConnectedApp
 from integrations.tg.polling_app import PollingApp
-from integrations.tg.polling_updates import (
-    PollingUpdatesIterator,
-)
+from integrations.tg.polling_updates import PollingUpdatesIterator
 from integrations.tg.SendableAnswer import SendableAnswer
 from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer
+from integrations.tg.UpdatesLongPollingURL import UpdatesLongPollingURL
+from integrations.tg.UpdatesTimeout import UpdatesTimeout
+from integrations.tg.UpdatesURL import UpdatesURL
+from integrations.tg.UpdatesWithOffsetURL import UpdatesWithOffsetURL
 from quranbot_answer import QuranbotAnswer
+from services.cli_app import CliApp
 from services.CommandCliApp import CommandCliApp
 from services.ForkCliApp import ForkCliApp
-from services.cli_app import CliApp
 from services.logged_answer import LoggedAnswer
 from settings import BASE_DIR, Settings
-from srv.events.EventHookApp import EventHookApp
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.check_user_status import CheckUsersStatus
 from srv.events.event_fork import EventFork
-from srv.events.RbmqEventHook import RbmqEventHook
+from srv.events.EventHookApp import EventHookApp
 from srv.events.mailing_created import MailingCreatedEvent
 from srv.events.message_deleted import MessageDeleted
 from srv.events.morning_content_published import MorningContentPublishedEvent
 from srv.events.prayer_created_event import PrayerCreatedEvent
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
 from srv.events.rabbitmq_sink import RabbitmqSink
+from srv.events.RbmqEventHook import RbmqEventHook
 
 
 def main(sys_args: list[str]) -> None:

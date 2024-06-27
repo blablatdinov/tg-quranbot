@@ -1,11 +1,9 @@
-from integrations.tg.UpdatesURLInterface import UpdatesURLInterface
-
+from typing import SupportsInt, final, override
 
 import attrs
 import httpx
 
-
-from typing import SupportsInt, final, override
+from integrations.tg.UpdatesURLInterface import UpdatesURLInterface
 
 
 @final

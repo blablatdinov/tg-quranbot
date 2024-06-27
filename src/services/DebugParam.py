@@ -1,7 +1,6 @@
-from app_types.update import Update
-
-
 from typing import Protocol
+
+from app_types.update import Update
 
 
 @elegant

@@ -1,13 +1,11 @@
-from app_types.update import Update
-from exceptions.internal_exceptions import TelegramIntegrationsError
-from integrations.tg.sendable import Sendable
-
+from typing import final, override
 
 import attrs
 import ujson
 
-
-from typing import final, override
+from app_types.update import Update
+from exceptions.internal_exceptions import TelegramIntegrationsError
+from integrations.tg.sendable import Sendable
 
 
 @final

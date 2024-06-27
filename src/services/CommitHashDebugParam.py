@@ -1,11 +1,9 @@
-from app_types.update import Update
-from services.DebugParam import DebugParam
-
+from typing import final, override
 
 import attrs
 
-
-from typing import final, override
+from app_types.update import Update
+from services.DebugParam import DebugParam
 
 
 @final

@@ -1,3 +1,7 @@
+from typing import final, override
+
+import attrs
+
 from app_types.async_int_or_none import AsyncIntOrNone
 from app_types.fk_async_int_or_none import FkAsyncIntOrNone
 from app_types.logger import LogSink
@@ -9,12 +13,6 @@ from srv.events.sink import Sink
 from srv.start.NewUser import NewUser
 from srv.users.pg_new_user import PgNewUser
 from srv.users.pg_new_user_with_event import PgNewUserWithEvent
-
-
-import attrs
-
-
-from typing import final, override
 
 
 @final

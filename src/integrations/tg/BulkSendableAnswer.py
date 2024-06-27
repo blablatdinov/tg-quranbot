@@ -1,17 +1,15 @@
-from app_types.logger import LogSink
-from app_types.update import Update
-from integrations.tg.SendableAnswer import SendableAnswer
-from integrations.tg.UserNotSubscribedSafeSendable import UserNotSubscribedSafeSendable
-from integrations.tg.sendable import Sendable
-from integrations.tg.tg_answers.tg_answer import TgAnswer
-
-
-import attrs
-
-
 import asyncio
 from itertools import chain
 from typing import final, override
+
+import attrs
+
+from app_types.logger import LogSink
+from app_types.update import Update
+from integrations.tg.sendable import Sendable
+from integrations.tg.SendableAnswer import SendableAnswer
+from integrations.tg.tg_answers.tg_answer import TgAnswer
+from integrations.tg.UserNotSubscribedSafeSendable import UserNotSubscribedSafeSendable
 
 
 @final

@@ -1,10 +1,8 @@
-from app_types.stringable import SupportsStr
-
+from typing import final, override
 
 import attrs
 
-
-from typing import final, override
+from app_types.stringable import SupportsStr
 
 
 @final

@@ -1,9 +1,8 @@
+from typing import final, override
+
 from app_types.update import Update
 from integrations.tg.tg_chat_id import TgChatId
 from services.DebugParam import DebugParam
-
-
-from typing import final, override
 
 
 @final

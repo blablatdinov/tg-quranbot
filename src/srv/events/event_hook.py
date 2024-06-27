@@ -25,12 +25,9 @@ from typing import Protocol
 from pyeo import elegant
 
 
-
 @elegant
 class EventHook(Protocol):
     """Обработчик событий из очереди."""
 
     async def catch(self) -> None:
         """Запуск обработки."""
-
-

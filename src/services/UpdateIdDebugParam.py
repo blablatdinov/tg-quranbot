@@ -1,9 +1,8 @@
+from typing import final, override
+
 from app_types.update import Update
 from integrations.tg.update_id import UpdateId
 from services.DebugParam import DebugParam
-
-
-from typing import final, override
 
 
 @final

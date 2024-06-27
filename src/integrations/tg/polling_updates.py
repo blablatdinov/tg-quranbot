@@ -25,12 +25,12 @@ from typing import SupportsInt, final, override
 import attrs
 import httpx
 import ujson
-from integrations.tg.UpdatesIterator import UpdatesIterator
-from integrations.tg.UpdatesURLInterface import UpdatesURLInterface
 from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.update import TgUpdate
+from integrations.tg.UpdatesIterator import UpdatesIterator
+from integrations.tg.UpdatesURLInterface import UpdatesURLInterface
 
 
 @final

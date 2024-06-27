@@ -84,5 +84,3 @@ class AppendDebugInfoAnswer(TgAnswer):
             else:
                 new_requests.append(request)
         return new_requests
-
-

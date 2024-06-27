@@ -26,12 +26,12 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from integrations.tg.tg_answers.Millis import Millis
 from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
+from integrations.tg.tg_answers.Millis import Millis
 from integrations.tg.tg_answers.RoundedFloat import RoundedFloat
 
 

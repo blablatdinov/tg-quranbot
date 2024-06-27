@@ -1,7 +1,6 @@
-import attrs
-
-
 from typing import SupportsFloat, final, override
+
+import attrs
 
 
 # FIXME: move to app_types

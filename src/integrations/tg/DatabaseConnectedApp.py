@@ -1,10 +1,8 @@
-from app_types.runable import Runable
-
+from typing import final, override
 
 import attrs
 
-
-from typing import final, override
+from app_types.runable import Runable
 
 
 @final

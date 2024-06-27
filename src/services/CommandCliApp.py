@@ -1,11 +1,9 @@
-from app_types.sync_runable import SyncRunable
-
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-from typing import final, override
+from app_types.sync_runable import SyncRunable
 
 
 @final

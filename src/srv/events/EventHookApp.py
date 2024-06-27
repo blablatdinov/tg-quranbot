@@ -1,13 +1,11 @@
-from app_types.sync_runable import SyncRunable
-from srv.events.event_hook import EventHook
-
+import asyncio
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-
-import asyncio
-from typing import final, override
+from app_types.sync_runable import SyncRunable
+from srv.events.event_hook import EventHook
 
 
 @final

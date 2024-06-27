@@ -50,5 +50,3 @@ class CliApp(SyncRunable):
         except KeyboardInterrupt:
             return 0
         return 0
-
-

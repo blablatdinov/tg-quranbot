@@ -1,8 +1,5 @@
-from app_types.logger import LogSink
-from settings import Settings
-from srv.events.event_hook import EventHook
-from srv.events.recieved_event import ReceivedEvent
-
+import asyncio
+from typing import final, override
 
 import aio_pika
 import ujson
@@ -12,9 +9,10 @@ from eljson.json_doc import JsonDoc
 from pyeo import elegant
 from quranbot_schema_registry import validate_schema
 
-
-import asyncio
-from typing import final, override
+from app_types.logger import LogSink
+from settings import Settings
+from srv.events.event_hook import EventHook
+from srv.events.recieved_event import ReceivedEvent
 
 
 @final

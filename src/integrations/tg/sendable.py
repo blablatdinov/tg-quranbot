@@ -36,5 +36,3 @@ class Sendable(Protocol):
 
         :param update: Update
         """
-
-

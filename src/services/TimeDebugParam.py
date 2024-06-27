@@ -1,12 +1,10 @@
-from app_types.update import Update
-from services.DebugParam import DebugParam
-
+import datetime
+from typing import final, override
 
 import pytz
 
-
-import datetime
-from typing import final, override
+from app_types.update import Update
+from services.DebugParam import DebugParam
 
 
 @final

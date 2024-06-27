@@ -1,17 +1,15 @@
-from app_types.logger import LogSink
-from app_types.update import Update
-from exceptions.internal_exceptions import TelegramIntegrationsError
-from integrations.tg.sendable import Sendable
-from integrations.tg.tg_answers.tg_answer import TgAnswer
-
+from typing import final, override
+from urllib import parse as url_parse
 
 import attrs
 import httpx
 import ujson
 
-
-from typing import final, override
-from urllib import parse as url_parse
+from app_types.logger import LogSink
+from app_types.update import Update
+from exceptions.internal_exceptions import TelegramIntegrationsError
+from integrations.tg.sendable import Sendable
+from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 
 @final

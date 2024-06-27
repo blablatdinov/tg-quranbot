@@ -1,13 +1,11 @@
-from app_types.logger import LogSink
-from app_types.runable import Runable
-from exceptions.base_exception import InternalBotError
-
+from typing import final, override
 
 import attrs
 import httpx
 
-
-from typing import final, override
+from app_types.logger import LogSink
+from app_types.runable import Runable
+from exceptions.base_exception import InternalBotError
 
 
 @final

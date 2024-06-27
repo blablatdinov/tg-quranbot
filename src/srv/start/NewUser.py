@@ -1,7 +1,6 @@
-from app_types.async_int_or_none import AsyncIntOrNone
-
-
 from typing import Protocol
+
+from app_types.async_int_or_none import AsyncIntOrNone
 
 
 class NewUser(Protocol):

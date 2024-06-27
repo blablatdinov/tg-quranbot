@@ -1,11 +1,9 @@
-from app_types.stringable import SupportsStr
-from integrations.tg.UpdatesURLInterface import UpdatesURLInterface
-
+from typing import final, override
 
 import attrs
 
-
-from typing import final, override
+from app_types.stringable import SupportsStr
+from integrations.tg.UpdatesURLInterface import UpdatesURLInterface
 
 
 @final
