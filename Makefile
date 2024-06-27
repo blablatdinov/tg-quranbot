@@ -42,7 +42,7 @@ lint:
 
 test:
 	poetry run mypy src
-	poetry run pytest src --ignore=src/tests/e2e --cov=src --cov-report html --cov-fail-under=95
+	poetry run pytest src --ignore=src/tests/e2e --cov=src --cov-report html --cov-fail-under=96
 
 e2e:
 	poetry run pytest src/tests/e2e -m 'not tg_button'

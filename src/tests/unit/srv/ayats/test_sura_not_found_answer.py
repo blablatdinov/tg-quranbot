@@ -44,7 +44,7 @@ async def test_normal_flow():
     got = await SuraNotFoundSafeAnswer(
         FkAnswer('https://normal.flow'),
         FkAnswer('https://error.flow'),
-    ).build(FkUpdate())
+    ).build(FkUpdate.empty_ctor())
 
     assert got[0].url == 'https://normal.flow'
 
@@ -53,6 +53,6 @@ async def test_error_flow():
     got = await SuraNotFoundSafeAnswer(
         SuraNotFoundAnswer(),
         FkAnswer('https://error.flow'),
-    ).build(FkUpdate())
+    ).build(FkUpdate.empty_ctor())
 
     assert 'error.flow' in str(got[0].url)

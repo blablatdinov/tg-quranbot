@@ -63,7 +63,10 @@ class CheckUsersStatus(ReceivedEvent):
         users = PgActiveUsers(self._pgsql)
         zipped_user_responses = zip(
             await users.to_list(),
-            await BulkSendableAnswer(await self._answers(users), self._logger).send(FkUpdate()),
+            await BulkSendableAnswer(
+                await self._answers(users),
+                self._logger,
+            ).send(FkUpdate.empty_ctor()),
             strict=True,
         )
         deactivated_user_chat_ids = [

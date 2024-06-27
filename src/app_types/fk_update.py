@@ -36,7 +36,15 @@ from app_types.update import Update
 class FkUpdate(Update):
     """Подделка обновления."""
 
-    _raw: SupportsStr | None = '{}'  # noqa: P103. Empty json
+    _raw: SupportsStr
+
+    @classmethod
+    def empty_ctor(cls) -> Update:
+        """Ctor.
+
+        :return: Update
+        """
+        return cls('{}')  # noqa: P103. Empty json
 
     @override
     def __str__(self) -> str:

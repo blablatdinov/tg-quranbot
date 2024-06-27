@@ -52,7 +52,7 @@ async def test():
     got = await UserNotRegisteredSafeAnswer(
         FkNewUser(),
         FkAnswer(),
-    ).build(FkUpdate())
+    ).build(FkUpdate.empty_ctor())
 
     assert got[0].url == 'https://some.domain'
 
@@ -61,6 +61,6 @@ async def test_user_not_found():
     got = await UserNotRegisteredSafeAnswer(
         FkNewUser(),
         UserNotFoundAnswer(FkAnswer()),
-    ).build(FkUpdate())
+    ).build(FkUpdate.empty_ctor())
 
     assert got[0].url == 'https://some.domain'
