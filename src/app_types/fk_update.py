@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override, Any
+from typing import final, override
 
 import attrs
 import ujson
@@ -28,8 +28,6 @@ from pyeo import elegant
 
 from app_types.stringable import SupportsStr
 from app_types.update import Update
-
-_sentiel: Any = object()
 
 
 @final
