@@ -39,10 +39,10 @@ class FkUpdate(Update):
     _raw: SupportsStr
 
     @classmethod
-    def empty_ctor(cls) -> 'FkUpdate':
+    def empty_ctor(cls) -> Update:
         """Ctor.
 
-        :param: raw_json: str
+        :return: Update
         """
         return cls('{}')  # noqa: P103. Empty json
 

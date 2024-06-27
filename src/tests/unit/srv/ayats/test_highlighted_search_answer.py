@@ -41,7 +41,10 @@ async def test():
 
 
 async def test_key_error():
-    got = await HighlightedSearchAnswer(FkAnswer(), FkTextSearchQuery('How to write tests')).build(FkUpdate.empty_ctor())
+    got = await HighlightedSearchAnswer(
+        FkAnswer(),
+        FkTextSearchQuery('How to write tests'),
+    ).build(FkUpdate.empty_ctor())
 
     assert len(got) == 1
     assert urllib.parse.unquote(

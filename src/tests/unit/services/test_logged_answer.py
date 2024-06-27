@@ -27,6 +27,9 @@ from srv.events.fk_sink import FkSink
 
 
 async def test():
-    got = await LoggedAnswer(FkSendable([]), FkSink()).send(FkUpdate.empty_ctor())
+    got = await LoggedAnswer(
+        FkSendable([]),
+        FkSink(),
+    ).send(FkUpdate.empty_ctor())
 
     assert got == []
