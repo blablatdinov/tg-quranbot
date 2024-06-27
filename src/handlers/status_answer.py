@@ -29,10 +29,10 @@ from databases import Database
 from pyeo import elegant
 from redis.asyncio import Redis
 
-from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
 from app_types.millis import Millis
 from app_types.rounded_float import RoundedFloat
+from app_types.update import Update
+from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgMessageAnswer, TgTextAnswer
 
 
 @final
