@@ -20,10 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 40
-
 from collections.abc import Sequence
-from typing import Protocol, final, override
+from typing import final, override
 
 import attrs
 import httpx
@@ -32,75 +30,14 @@ from pyeo import elegant
 
 from app_types.async_int_or_none import AsyncIntOrNone
 from app_types.fk_async_int import FkAsyncInt
-from app_types.fk_async_int_or_none import FkAsyncIntOrNone
-from app_types.logger import LogSink
 from app_types.update import Update
-from exceptions.internal_exceptions import UserNotFoundError
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
-from integrations.tg.tg_chat_id import TgChatId
-from integrations.tg.tg_datetime import TgDateTime
 from srv.admin_messages.admin_message import AdminMessage
 from srv.ayats.pg_ayat import PgAyat
-from srv.events.sink import Sink
+from srv.start.NewUser import NewUser
 from srv.start.referrer_chat_id import ReferrerChatId
 from srv.start.referrer_id_or_none import ReferrerIdOrNone
-from srv.users.pg_new_user import PgNewUser
-from srv.users.pg_new_user_with_event import PgNewUserWithEvent
-
-
-class NewTgUserT(Protocol):
-    """Registration of user."""
-
-    async def create(self, referrer_chat_id: AsyncIntOrNone) -> None:
-        """Creation.
-
-        :param referrer_chat_id: AsyncIntOrNone
-        """
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class NewTgUser(NewTgUserT):
-    """Registration of user by tg."""
-
-    _pgsql: Database
-    _logger: LogSink
-    _event_sink: Sink
-    _update: Update
-
-    @override
-    async def create(self, referrer_chat_id: AsyncIntOrNone) -> None:
-        """Creation.
-
-        :param referrer_chat_id: AsyncIntOrNone
-        """
-        try:
-            await PgNewUserWithEvent(
-                PgNewUser(
-                    referrer_chat_id,
-                    TgChatId(self._update),
-                    self._pgsql,
-                    self._logger,
-                ),
-                self._event_sink,
-                TgChatId(self._update),
-                TgDateTime(self._update),
-            ).create()
-        except UserNotFoundError:
-            referrer_chat_id = FkAsyncIntOrNone(None)
-            await PgNewUserWithEvent(
-                PgNewUser(
-                    referrer_chat_id,
-                    TgChatId(self._update),
-                    self._pgsql,
-                    self._logger,
-                ),
-                self._event_sink,
-                TgChatId(self._update),
-                TgDateTime(self._update),
-            ).create()
 
 
 @final
@@ -111,7 +48,7 @@ class StartAnswer(TgAnswer):
 
     _origin: TgAnswer
     _admin_message: AdminMessage
-    _new_tg_user: NewTgUserT
+    _new_tg_user: NewUser
     _pgsql: Database
     _admin_chat_ids: Sequence[int]
 

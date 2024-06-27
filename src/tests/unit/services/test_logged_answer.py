@@ -21,7 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 from app_types.fk_update import FkUpdate
-from integrations.tg.sendable import FkSendable
+from integrations.tg.FkSendable import FkSendable
 from services.logged_answer import LoggedAnswer
 from srv.events.fk_sink import FkSink
 

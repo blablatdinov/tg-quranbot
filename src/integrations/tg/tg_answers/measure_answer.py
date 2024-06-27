@@ -20,62 +20,19 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 26
-
 import time
-from typing import SupportsFloat, final, override
+from typing import final, override
 
 import attrs
 import httpx
+from integrations.tg.tg_answers.Millis import Millis
+from integrations.tg.tg_answers.RoundedFloat import RoundedFloat
 from pyeo import elegant
 
 from app_types.logger import LogSink
 from app_types.update import Update
 from integrations.tg.tg_answers.tg_answer import TgAnswer
 from integrations.tg.update_id import UpdateId
-
-
-@final
-@attrs.define(frozen=True)
-class Millis(SupportsFloat):
-    """Миллисекунды."""
-
-    _millis: float
-
-    @classmethod
-    def seconds_ctor(cls, seconds: float) -> SupportsFloat:
-        """Конструктор для секунд.
-
-        :param seconds: float
-        :return: Millis
-        """
-        return Millis(seconds * 1000)
-
-    @override
-    def __float__(self) -> float:
-        """Представление в форме числа с плавающей запятой.
-
-        :return: float
-        """
-        return self._millis
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class RoundedFloat(SupportsFloat):
-    """Округленное дробное число."""
-
-    _origin: SupportsFloat
-    _shift_comma: int
-
-    @override
-    def __float__(self) -> float:
-        """Представление в форме числа с плавающей запятой.
-
-        :return: float
-        """
-        return round(float(self._origin), self._shift_comma)
 
 
 @final

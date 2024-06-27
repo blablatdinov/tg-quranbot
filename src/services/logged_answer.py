@@ -30,7 +30,7 @@ import ujson
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.sendable import SendableInterface
+from integrations.tg.sendable import Sendable
 from srv.events.sink import Sink
 
 MESSAGE_LITERAL: Final = 'message'
@@ -48,10 +48,10 @@ MESSAGES_CREATED: Final = 'Messages.Created'
 @final
 @attrs.define(frozen=True)
 @elegant
-class LoggedAnswer(SendableInterface):
+class LoggedAnswer(Sendable):
     """Декоратор логирующий сообщения."""
 
-    _origin: SendableInterface
+    _origin: Sendable
     _event_sink: Sink
     _mailing_id: uuid.UUID | None = None
 

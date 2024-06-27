@@ -20,21 +20,16 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 23
-
 import asyncio
 from typing import final, override
 
 import attrs
-import httpx
-from databases import Database
 from pyeo import elegant
 
 from app_types.logger import LogSink
 from app_types.runable import Runable
-from exceptions.base_exception import InternalBotError
 from integrations.tg.polling_updates import PollingUpdatesIterator
-from integrations.tg.sendable import SendableInterface
+from integrations.tg.sendable import Sendable
 
 
 @final
@@ -44,7 +39,7 @@ class PollingApp(Runable):
     """Приложение на long polling."""
 
     _updates: PollingUpdatesIterator
-    _sendable: SendableInterface
+    _sendable: Sendable
     _logger: LogSink
 
     @override
@@ -61,41 +56,3 @@ class PollingApp(Runable):
                 await asyncio.sleep(0.1)
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class AppWithGetMe(Runable):
-    """Объект для запуска с предварительным запросом getMe."""
-
-    _origin: Runable
-    _token: str
-    _logger: LogSink
-
-    @override
-    async def run(self) -> None:
-        """Запуск.
-
-        :raises InternalBotError: в случае не успешного запроса к getMe
-        """
-        async with httpx.AsyncClient() as client:
-            response = await client.get('https://api.telegram.org/bot{0}/getMe'.format(self._token))
-            if response.status_code != httpx.codes.OK:
-                raise InternalBotError(response.text)
-            self._logger.info(response.content)
-        await self._origin.run()
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class DatabaseConnectedApp(Runable):
-    """Декоратор для подключения к БД."""
-
-    _pgsql: Database
-    _app: Runable
-
-    @override
-    async def run(self) -> None:
-        """Запуск."""
-        await self._pgsql.connect()
-        await self._app.run()

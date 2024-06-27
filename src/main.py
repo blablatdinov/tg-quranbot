@@ -22,29 +22,34 @@
 
 import sys
 
+from integrations.tg.AppWithGetMe import AppWithGetMe
+from integrations.tg.DatabaseConnectedApp import DatabaseConnectedApp
+from integrations.tg.UpdatesLongPollingURL import UpdatesLongPollingURL
+from integrations.tg.UpdatesTimeout import UpdatesTimeout
+from integrations.tg.UpdatesURL import UpdatesURL
+from integrations.tg.UpdatesWithOffsetURL import UpdatesWithOffsetURL
 import sentry_sdk
 from loguru import logger
 from redis import asyncio as aioredis
 
 from db.connection import pgsql
-from integrations.tg.app import AppWithGetMe, DatabaseConnectedApp, PollingApp
+from integrations.tg.polling_app import PollingApp
 from integrations.tg.polling_updates import (
     PollingUpdatesIterator,
-    UpdatesLongPollingURL,
-    UpdatesTimeout,
-    UpdatesURL,
-    UpdatesWithOffsetURL,
 )
-from integrations.tg.sendable import SendableAnswer
+from integrations.tg.SendableAnswer import SendableAnswer
 from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer
 from quranbot_answer import QuranbotAnswer
-from services.cli_app import CliApp, CommandCliApp, ForkCliApp
+from services.CommandCliApp import CommandCliApp
+from services.ForkCliApp import ForkCliApp
+from services.cli_app import CliApp
 from services.logged_answer import LoggedAnswer
 from settings import BASE_DIR, Settings
+from srv.events.EventHookApp import EventHookApp
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.check_user_status import CheckUsersStatus
 from srv.events.event_fork import EventFork
-from srv.events.event_hook import EventHookApp, RbmqEventHook
+from srv.events.RbmqEventHook import RbmqEventHook
 from srv.events.mailing_created import MailingCreatedEvent
 from srv.events.message_deleted import MessageDeleted
 from srv.events.morning_content_published import MorningContentPublishedEvent

@@ -20,8 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 8
-
 import asyncio
 from typing import final, override
 
@@ -54,48 +52,3 @@ class CliApp(SyncRunable):
         return 0
 
 
-@final
-@elegant
-class ForkCliApp(SyncRunable):
-    """Маршрутизация для CLI приложения."""
-
-    @override
-    def __init__(self, *apps: SyncRunable) -> None:
-        """Конструктор класса.
-
-        :param apps: SyncRunable
-        """
-        self._apps = apps
-
-    @override
-    def run(self, args: list[str]) -> int:
-        """Запуск.
-
-        :param args: list[str]
-        :return: int
-        """
-        for app in self._apps:
-            app.run(args)
-        return 0
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class CommandCliApp(SyncRunable):
-    """CLI команда."""
-
-    _command: str
-    _app: SyncRunable
-
-    @override
-    def run(self, args: list[str]) -> int:
-        """Запуск.
-
-        :param args: list[str]
-        :return: int
-        """
-        if args[1] != self._command:
-            return 1
-        self._app.run(args)
-        return 0
