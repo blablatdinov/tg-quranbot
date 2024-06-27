@@ -29,7 +29,7 @@ from pyeo import elegant
 
 from app_types.fk_update import FkUpdate
 from app_types.logger import LogSink
-from integrations.tg.sendable import SendableAnswer
+from integrations.tg.sendable_answer import SendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer, TgMessageDeleteAnswer, TgMessageIdAnswer
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import Sink

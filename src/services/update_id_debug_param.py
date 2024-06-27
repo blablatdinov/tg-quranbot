@@ -20,33 +20,25 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import asyncio
 from typing import final, override
 
-import attrs
 from pyeo import elegant
 
-from app_types.runable import Runable
-from app_types.sync_runable import SyncRunable
+from app_types.update import Update
+from integrations.tg.update_id import UpdateId
+from services.debug_param import DebugParam
 
 
 @final
-@attrs.define(frozen=True)
 @elegant
-class CliApp(SyncRunable):
-    """CLI приложение."""
-
-    _origin: Runable
+class UpdateIdDebugParam(DebugParam):
+    """Отладочная информация с идентификатором обновления."""
 
     @override
-    def run(self, args: list[str]) -> int:
-        """Запуск.
+    async def debug_value(self, update: Update) -> str:
+        """Идентификатор обновления.
 
-        :param args: list[str]
-        :return: int
+        :param update: Update
+        :return: str
         """
-        try:
-            asyncio.run(self._origin.run())
-        except KeyboardInterrupt:
-            return 0
-        return 0
+        return 'Update id: {0}'.format(int(UpdateId(update)))

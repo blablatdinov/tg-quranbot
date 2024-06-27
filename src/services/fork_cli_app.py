@@ -20,23 +20,25 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import asyncio
 from typing import final, override
 
-import attrs
 from pyeo import elegant
 
-from app_types.runable import Runable
 from app_types.sync_runable import SyncRunable
 
 
 @final
-@attrs.define(frozen=True)
 @elegant
-class CliApp(SyncRunable):
-    """CLI приложение."""
+class ForkCliApp(SyncRunable):
+    """Маршрутизация для CLI приложения."""
 
-    _origin: Runable
+    @override
+    def __init__(self, *apps: SyncRunable) -> None:
+        """Конструктор класса.
+
+        :param apps: SyncRunable
+        """
+        self._apps = apps
 
     @override
     def run(self, args: list[str]) -> int:
@@ -45,8 +47,6 @@ class CliApp(SyncRunable):
         :param args: list[str]
         :return: int
         """
-        try:
-            asyncio.run(self._origin.run())
-        except KeyboardInterrupt:
-            return 0
+        for app in self._apps:
+            app.run(args)
         return 0

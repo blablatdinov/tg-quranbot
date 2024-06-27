@@ -38,7 +38,8 @@ from services.reset_state_answer import ResetStateAnswer
 from settings import Settings
 from srv.admin_messages.pg_admin_message import PgAdminMessage
 from srv.events.sink import Sink
-from srv.start.start_answer import NewTgUser, StartAnswer
+from srv.start.new_tg_user import NewTgUser
+from srv.start.start_answer import StartAnswer
 from srv.start.user_already_active import UserAlreadyActiveSafeAnswer
 from srv.start.user_already_exists import UserAlreadyExistsAnswer
 from srv.users.cached_user_state import CachedUserState

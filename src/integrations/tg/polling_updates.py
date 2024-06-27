@@ -20,117 +20,23 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 20
-
-from typing import Protocol, SupportsInt, final, override
+from typing import SupportsInt, final, override
 
 import attrs
 import httpx
 import ujson
 from pyeo import elegant
 
-from app_types.stringable import SupportsStr
 from app_types.update import Update
+from integrations.tg.udpates_url_interface import UpdatesURLInterface
 from integrations.tg.update import TgUpdate
-
-
-@final
-@elegant
-class UpdatesTimeout(SupportsInt):
-    """Таймаут для обновлений."""
-
-    @override
-    def __int__(self) -> int:
-        """Числовое представление.
-
-        :return: int
-        """
-        return 5
-
-
-@elegant
-class UpdatesURLInterface(Protocol):
-    """Интерфейс URL запроса для получения уведомлений."""
-
-    def generate(self, update_id: int) -> str:
-        """Генерация.
-
-        :param update_id: int
-        """
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class UpdatesURL(SupportsStr):
-    """Базовый URL обновлений из телеграма."""
-
-    _token: str
-
-    @override
-    def __str__(self) -> str:
-        """Строчное представление.
-
-        :return: str
-        """
-        return 'https://api.telegram.org/bot{0}/getUpdates'.format(self._token)
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class UpdatesWithOffsetURL(UpdatesURLInterface):
-    """URL для получения только новых обновлений."""
-
-    _updates_url: SupportsStr
-
-    @override
-    def generate(self, update_id: int) -> str:
-        """Генерация.
-
-        :param update_id: int
-        :return: str
-        """
-        return '{0}?offset={1}'.format(self._updates_url, update_id)
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class UpdatesLongPollingURL(UpdatesURLInterface):
-    """URL обновлений с таймаутом."""
-
-    _origin: UpdatesURLInterface
-    _long_polling_timeout: SupportsInt
-
-    @override
-    def generate(self, update_id: int) -> str:
-        """Генерация.
-
-        :param update_id: int
-        :return: str
-        """
-        return str(httpx.URL(self._origin.generate(update_id)).copy_add_param(
-            'timeout',
-            int(self._long_polling_timeout),
-        ))
-
-
-@elegant
-class UpdatesIteratorInterface(Protocol):
-    """Интерфейс итератора по обновлениям."""
-
-    def __aiter__(self) -> 'UpdatesIteratorInterface':
-        """Точка входа в итератор."""
-
-    async def __anext__(self) -> list[Update]:
-        """Вернуть следующий элемент."""
+from integrations.tg.updates_iterator import UpdatesIterator
 
 
 @final
 @attrs.define(slots=True)
 @elegant
-class PollingUpdatesIterator(UpdatesIteratorInterface):
+class PollingUpdatesIterator(UpdatesIterator):
     """Итератор по обновлениям."""
 
     _updates_url: UpdatesURLInterface
@@ -139,7 +45,7 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
     _offset: int = 0
 
     @override
-    def __aiter__(self) -> 'UpdatesIteratorInterface':
+    def __aiter__(self) -> 'UpdatesIterator':
         """Точка входа в итератор.
 
         :return: UpdatesIteratorInterface

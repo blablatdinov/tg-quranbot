@@ -20,33 +20,32 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import asyncio
-from typing import final, override
+from typing import SupportsInt, final, override
 
 import attrs
+import httpx
 from pyeo import elegant
 
-from app_types.runable import Runable
-from app_types.sync_runable import SyncRunable
+from integrations.tg.udpates_url_interface import UpdatesURLInterface
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class CliApp(SyncRunable):
-    """CLI приложение."""
+class UpdatesLongPollingURL(UpdatesURLInterface):
+    """URL обновлений с таймаутом."""
 
-    _origin: Runable
+    _origin: UpdatesURLInterface
+    _long_polling_timeout: SupportsInt
 
     @override
-    def run(self, args: list[str]) -> int:
-        """Запуск.
+    def generate(self, update_id: int) -> str:
+        """Генерация.
 
-        :param args: list[str]
-        :return: int
+        :param update_id: int
+        :return: str
         """
-        try:
-            asyncio.run(self._origin.run())
-        except KeyboardInterrupt:
-            return 0
-        return 0
+        return str(httpx.URL(self._origin.generate(update_id)).copy_add_param(
+            'timeout',
+            int(self._long_polling_timeout),
+        ))

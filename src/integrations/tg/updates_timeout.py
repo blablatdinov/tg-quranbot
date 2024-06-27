@@ -20,33 +20,20 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import asyncio
-from typing import final, override
+from typing import SupportsInt, final, override
 
-import attrs
 from pyeo import elegant
-
-from app_types.runable import Runable
-from app_types.sync_runable import SyncRunable
 
 
 @final
-@attrs.define(frozen=True)
 @elegant
-class CliApp(SyncRunable):
-    """CLI приложение."""
-
-    _origin: Runable
+class UpdatesTimeout(SupportsInt):
+    """Таймаут для обновлений."""
 
     @override
-    def run(self, args: list[str]) -> int:
-        """Запуск.
+    def __int__(self) -> int:
+        """Числовое представление.
 
-        :param args: list[str]
         :return: int
         """
-        try:
-            asyncio.run(self._origin.run())
-        except KeyboardInterrupt:
-            return 0
-        return 0
+        return 5

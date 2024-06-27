@@ -26,27 +26,31 @@ from typing import final, override
 import attrs
 from pyeo import elegant
 
+from app_types.logger import LogSink
 from app_types.runable import Runable
-from app_types.sync_runable import SyncRunable
+from integrations.tg.polling_updates import PollingUpdatesIterator
+from integrations.tg.sendable import Sendable
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class CliApp(SyncRunable):
-    """CLI приложение."""
+class PollingApp(Runable):
+    """Приложение на long polling."""
 
-    _origin: Runable
+    _updates: PollingUpdatesIterator
+    _sendable: Sendable
+    _logger: LogSink
 
     @override
-    def run(self, args: list[str]) -> int:
-        """Запуск.
-
-        :param args: list[str]
-        :return: int
-        """
-        try:
-            asyncio.run(self._origin.run())
-        except KeyboardInterrupt:
-            return 0
-        return 0
+    async def run(self) -> None:
+        """Запуск."""
+        self._logger.info('Start app on polling')
+        background_tasks = set()
+        async for update_list in self._updates:
+            for update in update_list:
+                self._logger.debug('Update: {update}', update=update)
+                task = asyncio.create_task(self._sendable.send(update))
+                background_tasks.add(task)
+                task.add_done_callback(background_tasks.discard)
+                await asyncio.sleep(0.1)

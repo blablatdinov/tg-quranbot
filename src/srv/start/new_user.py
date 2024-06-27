@@ -20,33 +20,16 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import asyncio
-from typing import final, override
+from typing import Protocol
 
-import attrs
-from pyeo import elegant
-
-from app_types.runable import Runable
-from app_types.sync_runable import SyncRunable
+from app_types.async_int_or_none import AsyncIntOrNone
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class CliApp(SyncRunable):
-    """CLI приложение."""
+class NewUser(Protocol):
+    """Registration of user."""
 
-    _origin: Runable
+    async def create(self, referrer_chat_id: AsyncIntOrNone) -> None:
+        """Creation.
 
-    @override
-    def run(self, args: list[str]) -> int:
-        """Запуск.
-
-        :param args: list[str]
-        :return: int
+        :param referrer_chat_id: AsyncIntOrNone
         """
-        try:
-            asyncio.run(self._origin.run())
-        except KeyboardInterrupt:
-            return 0
-        return 0

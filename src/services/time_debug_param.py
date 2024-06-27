@@ -20,33 +20,26 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import asyncio
+import datetime
 from typing import final, override
 
-import attrs
+import pytz
 from pyeo import elegant
 
-from app_types.runable import Runable
-from app_types.sync_runable import SyncRunable
+from app_types.update import Update
+from services.debug_param import DebugParam
 
 
 @final
-@attrs.define(frozen=True)
 @elegant
-class CliApp(SyncRunable):
-    """CLI приложение."""
-
-    _origin: Runable
+class TimeDebugParam(DebugParam):
+    """Отладочная информация с временем."""
 
     @override
-    def run(self, args: list[str]) -> int:
-        """Запуск.
+    async def debug_value(self, update: Update) -> str:
+        """Время.
 
-        :param args: list[str]
-        :return: int
+        :param update: Update
+        :return: str
         """
-        try:
-            asyncio.run(self._origin.run())
-        except KeyboardInterrupt:
-            return 0
-        return 0
+        return 'Time: {0}'.format(datetime.datetime.now(pytz.timezone('Europe/Moscow')))

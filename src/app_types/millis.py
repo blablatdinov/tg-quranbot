@@ -20,33 +20,31 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import asyncio
-from typing import final, override
+from typing import SupportsFloat, final, override
 
 import attrs
-from pyeo import elegant
-
-from app_types.runable import Runable
-from app_types.sync_runable import SyncRunable
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
-class CliApp(SyncRunable):
-    """CLI приложение."""
+class Millis(SupportsFloat):
+    """Миллисекунды."""
 
-    _origin: Runable
+    _millis: float
+
+    @classmethod
+    def seconds_ctor(cls, seconds: float) -> SupportsFloat:
+        """Конструктор для секунд.
+
+        :param seconds: float
+        :return: Millis
+        """
+        return Millis(seconds * 1000)
 
     @override
-    def run(self, args: list[str]) -> int:
-        """Запуск.
+    def __float__(self) -> float:
+        """Представление в форме числа с плавающей запятой.
 
-        :param args: list[str]
-        :return: int
+        :return: float
         """
-        try:
-            asyncio.run(self._origin.run())
-        except KeyboardInterrupt:
-            return 0
-        return 0
+        return self._millis

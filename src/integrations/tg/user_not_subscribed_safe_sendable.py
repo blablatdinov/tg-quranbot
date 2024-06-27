@@ -20,33 +20,45 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import asyncio
 from typing import final, override
 
 import attrs
+import ujson
 from pyeo import elegant
 
-from app_types.runable import Runable
-from app_types.sync_runable import SyncRunable
+from app_types.update import Update
+from exceptions.internal_exceptions import TelegramIntegrationsError
+from integrations.tg.sendable import Sendable
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class CliApp(SyncRunable):
-    """CLI приложение."""
+class UserNotSubscribedSafeSendable(Sendable):
+    """Декоратор для обработки отписанных пользователей."""
 
-    _origin: Runable
+    _origin: Sendable
 
     @override
-    def run(self, args: list[str]) -> int:
-        """Запуск.
+    async def send(self, update: Update) -> list[dict]:
+        """Отправка.
 
-        :param args: list[str]
-        :return: int
+        :param update: Update
+        :return: list[dict]
+        :raises TelegramIntegrationsError: если ошибка не связана с блокировкой бота
         """
         try:
-            asyncio.run(self._origin.run())
-        except KeyboardInterrupt:
-            return 0
-        return 0
+            responses = await self._origin.send(update)
+        except TelegramIntegrationsError as err:
+            error_messages = [
+                'chat not found',
+                'bot was blocked by the user',
+                'user is deactivated',
+            ]
+            for error_message in error_messages:
+                if error_message not in str(err):
+                    continue
+                dict_response = ujson.loads(str(err))
+                return [dict_response]
+            raise TelegramIntegrationsError(str(err)) from err
+        return responses

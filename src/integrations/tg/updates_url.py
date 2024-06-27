@@ -20,33 +20,26 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import asyncio
 from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-from app_types.runable import Runable
-from app_types.sync_runable import SyncRunable
+from app_types.stringable import SupportsStr
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class CliApp(SyncRunable):
-    """CLI приложение."""
+class UpdatesURL(SupportsStr):
+    """Базовый URL обновлений из телеграма."""
 
-    _origin: Runable
+    _token: str
 
     @override
-    def run(self, args: list[str]) -> int:
-        """Запуск.
+    def __str__(self) -> str:
+        """Строчное представление.
 
-        :param args: list[str]
-        :return: int
+        :return: str
         """
-        try:
-            asyncio.run(self._origin.run())
-        except KeyboardInterrupt:
-            return 0
-        return 0
+        return 'https://api.telegram.org/bot{0}/getUpdates'.format(self._token)

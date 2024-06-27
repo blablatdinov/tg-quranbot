@@ -20,31 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #899 Перенести классы в отдельные файлы 7
+from typing import final, override
 
-import datetime
-from typing import Protocol, final, override
-
-import attrs
 import httpx
-import pytz
 from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer
-from integrations.tg.tg_chat_id import TgChatId
-from integrations.tg.update_id import UpdateId
-
-
-@elegant
-class DebugParamInterface(Protocol):
-    """Интерфейс отладочной информации."""
-
-    async def debug_value(self, update: Update) -> str:
-        """Значение отладочной информации.
-
-        :param update: Update
-        """
+from services.debug_param import DebugParam
 
 
 @final
@@ -52,7 +35,7 @@ class DebugParamInterface(Protocol):
 class AppendDebugInfoAnswer(TgAnswer):
     """Ответ с отладочной информацией."""
 
-    def __init__(self, answer: TgAnswer, *debug_params: DebugParamInterface, debug_mode: bool) -> None:
+    def __init__(self, answer: TgAnswer, *debug_params: DebugParam, debug_mode: bool) -> None:
         """Конструктор класса.
 
         :param debug_mode: bool
@@ -101,66 +84,3 @@ class AppendDebugInfoAnswer(TgAnswer):
             else:
                 new_requests.append(request)
         return new_requests
-
-
-@final
-@elegant
-class UpdateIdDebugParam(DebugParamInterface):
-    """Отладочная информация с идентификатором обновления."""
-
-    @override
-    async def debug_value(self, update: Update) -> str:
-        """Идентификатор обновления.
-
-        :param update: Update
-        :return: str
-        """
-        return 'Update id: {0}'.format(int(UpdateId(update)))
-
-
-@final
-@elegant
-class TimeDebugParam(DebugParamInterface):
-    """Отладочная информация с временем."""
-
-    @override
-    async def debug_value(self, update: Update) -> str:
-        """Время.
-
-        :param update: Update
-        :return: str
-        """
-        return 'Time: {0}'.format(datetime.datetime.now(pytz.timezone('Europe/Moscow')))
-
-
-@final
-@elegant
-class ChatIdDebugParam(DebugParamInterface):
-    """Отладочная информация с идентификатором чата."""
-
-    @override
-    async def debug_value(self, update: Update) -> str:
-        """Идентификатор чата.
-
-        :param update: Update
-        :return: str
-        """
-        return 'Chat id: {0}'.format(int(TgChatId(update)))
-
-
-@final
-@attrs.define(frozen=True)
-@elegant
-class CommitHashDebugParam(DebugParamInterface):
-    """Отладочная информация с хэшом коммита."""
-
-    _commit_hash: str
-
-    @override
-    async def debug_value(self, update: Update) -> str:
-        """Хэш коммита.
-
-        :param update: Update
-        :return: str
-        """
-        return 'Commit hash: {0}'.format(self._commit_hash)

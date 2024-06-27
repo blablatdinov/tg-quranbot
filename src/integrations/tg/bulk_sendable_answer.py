@@ -21,32 +21,45 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import asyncio
+from itertools import chain
 from typing import final, override
 
 import attrs
+from more_itertools import distribute
 from pyeo import elegant
 
-from app_types.runable import Runable
-from app_types.sync_runable import SyncRunable
+from app_types.logger import LogSink
+from app_types.update import Update
+from integrations.tg.sendable import Sendable
+from integrations.tg.sendable_answer import SendableAnswer
+from integrations.tg.tg_answers.tg_answer import TgAnswer
+from integrations.tg.user_not_subscribed_safe_sendable import UserNotSubscribedSafeSendable
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class CliApp(SyncRunable):
-    """CLI приложение."""
+class BulkSendableAnswer(Sendable):
+    """Массовая отправка."""
 
-    _origin: Runable
+    _answers: list[TgAnswer]
+    _logger: LogSink
 
     @override
-    def run(self, args: list[str]) -> int:
-        """Запуск.
+    async def send(self, update: Update) -> list[dict]:
+        """Отправка.
 
-        :param args: list[str]
-        :return: int
+        :param update: Update
+        :return: list[dict]
         """
-        try:
-            asyncio.run(self._origin.run())
-        except KeyboardInterrupt:
-            return 0
-        return 0
+        tasks = [
+            UserNotSubscribedSafeSendable(
+                SendableAnswer(answer, self._logger),
+            ).send(update)
+            for answer in self._answers
+        ]
+        responses: list[dict] = []
+        for sendable_slice in distribute(10, tasks):
+            res_list = await asyncio.gather(*sendable_slice)
+            responses.extend(list(chain.from_iterable(res_list)))
+        return responses

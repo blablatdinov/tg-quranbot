@@ -20,33 +20,19 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import asyncio
-from typing import final, override
+from typing import Protocol
 
-import attrs
 from pyeo import elegant
 
-from app_types.runable import Runable
-from app_types.sync_runable import SyncRunable
+from app_types.update import Update
 
 
-@final
-@attrs.define(frozen=True)
 @elegant
-class CliApp(SyncRunable):
-    """CLI приложение."""
+class UpdatesIterator(Protocol):
+    """Интерфейс итератора по обновлениям."""
 
-    _origin: Runable
+    def __aiter__(self) -> 'UpdatesIterator':
+        """Точка входа в итератор."""
 
-    @override
-    def run(self, args: list[str]) -> int:
-        """Запуск.
-
-        :param args: list[str]
-        :return: int
-        """
-        try:
-            asyncio.run(self._origin.run())
-        except KeyboardInterrupt:
-            return 0
-        return 0
+    async def __anext__(self) -> list[Update]:
+        """Вернуть следующий элемент."""

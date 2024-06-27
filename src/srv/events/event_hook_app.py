@@ -26,17 +26,17 @@ from typing import final, override
 import attrs
 from pyeo import elegant
 
-from app_types.runable import Runable
 from app_types.sync_runable import SyncRunable
+from srv.events.event_hook import EventHook
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class CliApp(SyncRunable):
-    """CLI приложение."""
+class EventHookApp(SyncRunable):
+    """Запускаемый объект."""
 
-    _origin: Runable
+    _event_hook: EventHook
 
     @override
     def run(self, args: list[str]) -> int:
@@ -45,8 +45,5 @@ class CliApp(SyncRunable):
         :param args: list[str]
         :return: int
         """
-        try:
-            asyncio.run(self._origin.run())
-        except KeyboardInterrupt:
-            return 0
+        asyncio.run(self._event_hook.catch())
         return 0

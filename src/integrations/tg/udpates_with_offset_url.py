@@ -20,33 +20,28 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import asyncio
 from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-from app_types.runable import Runable
-from app_types.sync_runable import SyncRunable
+from app_types.stringable import SupportsStr
+from integrations.tg.udpates_url_interface import UpdatesURLInterface
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class CliApp(SyncRunable):
-    """CLI приложение."""
+class UpdatesWithOffsetURL(UpdatesURLInterface):
+    """URL для получения только новых обновлений."""
 
-    _origin: Runable
+    _updates_url: SupportsStr
 
     @override
-    def run(self, args: list[str]) -> int:
-        """Запуск.
+    def generate(self, update_id: int) -> str:
+        """Генерация.
 
-        :param args: list[str]
-        :return: int
+        :param update_id: int
+        :return: str
         """
-        try:
-            asyncio.run(self._origin.run())
-        except KeyboardInterrupt:
-            return 0
-        return 0
+        return '{0}?offset={1}'.format(self._updates_url, update_id)

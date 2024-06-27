@@ -23,7 +23,8 @@
 from app_types.fk_update import FkUpdate
 from integrations.tg.tg_answers import TgMessageAnswer, TgTextAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
-from services.append_update_id_answer import AppendDebugInfoAnswer, UpdateIdDebugParam
+from services.append_debug_info_answer import AppendDebugInfoAnswer
+from services.update_id_debug_param import UpdateIdDebugParam
 
 
 async def test():
