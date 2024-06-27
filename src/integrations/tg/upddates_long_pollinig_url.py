@@ -20,21 +20,23 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
+from typing import SupportsInt, final, override
 
 import attrs
+import httpx
+from pyeo import elegant
 
-from app_types.stringable import SupportsStr
-from integrations.tg.UpdatesURLInterface import UpdatesURLInterface
+from integrations.tg.udpates_url_interface import UpdatesURLInterface
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class UpdatesWithOffsetURL(UpdatesURLInterface):
-    """URL для получения только новых обновлений."""
+class UpdatesLongPollingURL(UpdatesURLInterface):
+    """URL обновлений с таймаутом."""
 
-    _updates_url: SupportsStr
+    _origin: UpdatesURLInterface
+    _long_polling_timeout: SupportsInt
 
     @override
     def generate(self, update_id: int) -> str:
@@ -43,4 +45,7 @@ class UpdatesWithOffsetURL(UpdatesURLInterface):
         :param update_id: int
         :return: str
         """
-        return '{0}?offset={1}'.format(self._updates_url, update_id)
+        return str(httpx.URL(self._origin.generate(update_id)).copy_add_param(
+            'timeout',
+            int(self._long_polling_timeout),
+        ))

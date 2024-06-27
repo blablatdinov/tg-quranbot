@@ -35,7 +35,7 @@ from app_types.fk_async_listable import FkAsyncListable
 from app_types.fk_update import FkUpdate
 from app_types.logger import LogSink
 from exceptions.internal_exceptions import TelegramIntegrationsError
-from integrations.tg.SendableAnswer import SendableAnswer
+from integrations.tg.sendable_answer import SendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer, TgHtmlParseAnswer, TgTextAnswer
 from integrations.tg.tg_answers.link_preview_options import TgLinkPreviewOptions
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer

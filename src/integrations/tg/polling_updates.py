@@ -28,9 +28,9 @@ import ujson
 from pyeo import elegant
 
 from app_types.update import Update
+from integrations.tg.udpates_url_interface import UpdatesURLInterface
 from integrations.tg.update import TgUpdate
-from integrations.tg.UpdatesIterator import UpdatesIterator
-from integrations.tg.UpdatesURLInterface import UpdatesURLInterface
+from integrations.tg.updates_iterator import UpdatesIterator
 
 
 @final

@@ -35,7 +35,7 @@ from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
 from srv.admin_messages.admin_message import AdminMessage
 from srv.ayats.pg_ayat import PgAyat
-from srv.start.NewUser import NewUser
+from srv.start.new_user import NewUser
 from srv.start.referrer_chat_id import ReferrerChatId
 from srv.start.referrer_id_or_none import ReferrerIdOrNone
 

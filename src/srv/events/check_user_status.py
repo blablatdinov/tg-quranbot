@@ -30,7 +30,7 @@ from pyeo import elegant
 from app_types.fk_update import FkUpdate
 from app_types.listable import AsyncListable
 from app_types.logger import LogSink
-from integrations.tg.BulkSendableAnswer import BulkSendableAnswer
+from integrations.tg.bulk_sendable_answer import BulkSendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer
 from integrations.tg.tg_answers.chat_action import TgChatAction
 from integrations.tg.typing_action import TypingAction

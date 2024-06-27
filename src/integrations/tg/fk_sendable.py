@@ -23,21 +23,25 @@
 from typing import final, override
 
 import attrs
+from pyeo import elegant
 
-from app_types.runable import Runable
+from app_types.update import Update
+from integrations.tg.sendable import Sendable
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class DatabaseConnectedApp(Runable):
-    """Декоратор для подключения к БД."""
+class FkSendable(Sendable):
+    """Фейковый объект для отправки ответов."""
 
-    _pgsql: Database
-    _app: Runable
+    _origin: list[dict]
 
     @override
-    async def run(self) -> None:
-        """Запуск."""
-        await self._pgsql.connect()
-        await self._app.run()
+    async def send(self, update: Update) -> list[dict]:
+        """Отправка.
+
+        :param update: Update
+        :return: list[str]
+        """
+        return self._origin

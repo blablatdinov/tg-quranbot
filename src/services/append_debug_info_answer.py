@@ -27,7 +27,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer
-from services.DebugParam import DebugParam
+from services.debug_param import DebugParam
 
 
 @final

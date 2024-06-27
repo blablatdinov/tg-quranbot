@@ -25,7 +25,7 @@ from typing import SupportsFloat, final, override
 import attrs
 from pyeo import elegant
 
-from integrations.tg.tg_answers.RoundedFloat import RoundedFloat
+from integrations.tg.tg_answers.rounded_float import RoundedFloat
 
 
 @attrs.define(frozen=True)

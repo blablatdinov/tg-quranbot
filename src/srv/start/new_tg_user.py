@@ -23,6 +23,8 @@
 from typing import final, override
 
 import attrs
+from databases import Database
+from pyeo import elegant
 
 from app_types.async_int_or_none import AsyncIntOrNone
 from app_types.fk_async_int_or_none import FkAsyncIntOrNone
@@ -32,7 +34,7 @@ from exceptions.internal_exceptions import UserNotFoundError
 from integrations.tg.tg_chat_id import TgChatId
 from integrations.tg.tg_datetime import TgDateTime
 from srv.events.sink import Sink
-from srv.start.NewUser import NewUser
+from srv.start.new_user import NewUser
 from srv.users.pg_new_user import PgNewUser
 from srv.users.pg_new_user_with_event import PgNewUserWithEvent
 

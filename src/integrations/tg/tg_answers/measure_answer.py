@@ -29,8 +29,8 @@ from pyeo import elegant
 
 from app_types.logger import LogSink
 from app_types.update import Update
-from integrations.tg.tg_answers.Millis import Millis
-from integrations.tg.tg_answers.RoundedFloat import RoundedFloat
+from integrations.tg.tg_answers.millis import Millis
+from integrations.tg.tg_answers.rounded_float import RoundedFloat
 from integrations.tg.tg_answers.tg_answer import TgAnswer
 from integrations.tg.update_id import UpdateId
 

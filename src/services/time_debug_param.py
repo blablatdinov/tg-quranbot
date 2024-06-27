@@ -24,9 +24,10 @@ import datetime
 from typing import final, override
 
 import pytz
+from pyeo import elegant
 
 from app_types.update import Update
-from services.DebugParam import DebugParam
+from services.debug_param import DebugParam
 
 
 @final

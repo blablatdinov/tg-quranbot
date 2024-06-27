@@ -20,17 +20,28 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Protocol
+from typing import final, override
+
+import attrs
+from pyeo import elegant
 
 from app_types.update import Update
+from services.debug_param import DebugParam
 
 
+@final
+@attrs.define(frozen=True)
 @elegant
-class DebugParam(Protocol):
-    """Интерфейс отладочной информации."""
+class CommitHashDebugParam(DebugParam):
+    """Отладочная информация с хэшом коммита."""
 
+    _commit_hash: str
+
+    @override
     async def debug_value(self, update: Update) -> str:
-        """Значение отладочной информации.
+        """Хэш коммита.
 
         :param update: Update
+        :return: str
         """
+        return 'Commit hash: {0}'.format(self._commit_hash)

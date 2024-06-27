@@ -22,21 +22,26 @@
 
 from typing import final, override
 
-from app_types.update import Update
-from integrations.tg.tg_chat_id import TgChatId
-from services.DebugParam import DebugParam
+import attrs
+from pyeo import elegant
+
+from app_types.stringable import SupportsStr
+from integrations.tg.udpates_url_interface import UpdatesURLInterface
 
 
 @final
+@attrs.define(frozen=True)
 @elegant
-class ChatIdDebugParam(DebugParam):
-    """Отладочная информация с идентификатором чата."""
+class UpdatesWithOffsetURL(UpdatesURLInterface):
+    """URL для получения только новых обновлений."""
+
+    _updates_url: SupportsStr
 
     @override
-    async def debug_value(self, update: Update) -> str:
-        """Идентификатор чата.
+    def generate(self, update_id: int) -> str:
+        """Генерация.
 
-        :param update: Update
+        :param update_id: int
         :return: str
         """
-        return 'Chat id: {0}'.format(int(TgChatId(update)))
+        return '{0}?offset={1}'.format(self._updates_url, update_id)

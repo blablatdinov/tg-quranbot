@@ -22,23 +22,23 @@
 
 from typing import final, override
 
-import attrs
+from pyeo import elegant
 
-from app_types.stringable import SupportsStr
+from app_types.update import Update
+from integrations.tg.tg_chat_id import TgChatId
+from services.debug_param import DebugParam
 
 
 @final
-@attrs.define(frozen=True)
 @elegant
-class UpdatesURL(SupportsStr):
-    """Базовый URL обновлений из телеграма."""
-
-    _token: str
+class ChatIdDebugParam(DebugParam):
+    """Отладочная информация с идентификатором чата."""
 
     @override
-    def __str__(self) -> str:
-        """Строчное представление.
+    async def debug_value(self, update: Update) -> str:
+        """Идентификатор чата.
 
+        :param update: Update
         :return: str
         """
-        return 'https://api.telegram.org/bot{0}/getUpdates'.format(self._token)
+        return 'Chat id: {0}'.format(int(TgChatId(update)))

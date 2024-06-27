@@ -24,6 +24,7 @@ from typing import final, override
 
 import attrs
 import ujson
+from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.internal_exceptions import TelegramIntegrationsError

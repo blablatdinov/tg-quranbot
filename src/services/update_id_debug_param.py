@@ -22,25 +22,23 @@
 
 from typing import final, override
 
-import attrs
+from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.sendable import Sendable
+from integrations.tg.update_id import UpdateId
+from services.debug_param import DebugParam
 
 
 @final
-@attrs.define(frozen=True)
 @elegant
-class FkSendable(Sendable):
-    """Фейковый объект для отправки ответов."""
-
-    _origin: list[dict]
+class UpdateIdDebugParam(DebugParam):
+    """Отладочная информация с идентификатором обновления."""
 
     @override
-    async def send(self, update: Update) -> list[dict]:
-        """Отправка.
+    async def debug_value(self, update: Update) -> str:
+        """Идентификатор обновления.
 
         :param update: Update
-        :return: list[str]
+        :return: str
         """
-        return self._origin
+        return 'Update id: {0}'.format(int(UpdateId(update)))

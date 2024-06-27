@@ -20,31 +20,26 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import SupportsInt, final, override
+from typing import SupportsFloat, final, override
 
 import attrs
-import httpx
-
-from integrations.tg.UpdatesURLInterface import UpdatesURLInterface
+from pyeo import elegant
 
 
+# FIXME: move to app_types
 @final
 @attrs.define(frozen=True)
 @elegant
-class UpdatesLongPollingURL(UpdatesURLInterface):
-    """URL обновлений с таймаутом."""
+class RoundedFloat(SupportsFloat):
+    """Округленное дробное число."""
 
-    _origin: UpdatesURLInterface
-    _long_polling_timeout: SupportsInt
+    _origin: SupportsFloat
+    _shift_comma: int
 
     @override
-    def generate(self, update_id: int) -> str:
-        """Генерация.
+    def __float__(self) -> float:
+        """Представление в форме числа с плавающей запятой.
 
-        :param update_id: int
-        :return: str
+        :return: float
         """
-        return str(httpx.URL(self._origin.generate(update_id)).copy_add_param(
-            'timeout',
-            int(self._long_polling_timeout),
-        ))
+        return round(float(self._origin), self._shift_comma)

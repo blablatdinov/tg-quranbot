@@ -22,15 +22,15 @@
 
 from typing import Protocol
 
-from app_types.update import Update
+from pyeo import elegant
 
 
 @elegant
-class UpdatesIterator(Protocol):
-    """Интерфейс итератора по обновлениям."""
+class UpdatesURLInterface(Protocol):
+    """Интерфейс URL запроса для получения уведомлений."""
 
-    def __aiter__(self) -> 'UpdatesIterator':
-        """Точка входа в итератор."""
+    def generate(self, update_id: int) -> str:
+        """Генерация.
 
-    async def __anext__(self) -> list[Update]:
-        """Вернуть следующий элемент."""
+        :param update_id: int
+        """

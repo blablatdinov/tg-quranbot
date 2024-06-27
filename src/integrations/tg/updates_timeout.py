@@ -20,25 +20,20 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import SupportsFloat, final, override
+from typing import SupportsInt, final, override
 
-import attrs
+from pyeo import elegant
 
 
-# FIXME: move to app_types
 @final
-@attrs.define(frozen=True)
 @elegant
-class RoundedFloat(SupportsFloat):
-    """Округленное дробное число."""
-
-    _origin: SupportsFloat
-    _shift_comma: int
+class UpdatesTimeout(SupportsInt):
+    """Таймаут для обновлений."""
 
     @override
-    def __float__(self) -> float:
-        """Представление в форме числа с плавающей запятой.
+    def __int__(self) -> int:
+        """Числовое представление.
 
-        :return: float
+        :return: int
         """
-        return round(float(self._origin), self._shift_comma)
+        return 5

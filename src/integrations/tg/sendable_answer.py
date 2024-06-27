@@ -21,26 +21,46 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 from typing import final, override
+from urllib import parse as url_parse
 
 import attrs
+import httpx
+import ujson
+from pyeo import elegant
 
+from app_types.logger import LogSink
 from app_types.update import Update
-from services.DebugParam import DebugParam
+from exceptions.internal_exceptions import TelegramIntegrationsError
+from integrations.tg.sendable import Sendable
+from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class CommitHashDebugParam(DebugParam):
-    """Отладочная информация с хэшом коммита."""
+class SendableAnswer(Sendable):
+    """Объект, отправляющий ответы в API."""
 
-    _commit_hash: str
+    _answer: TgAnswer
+    _logger: LogSink
 
     @override
-    async def debug_value(self, update: Update) -> str:
-        """Хэш коммита.
+    async def send(self, update: Update) -> list[dict]:
+        """Отправка.
 
         :param update: Update
-        :return: str
+        :return: list[str]
+        :raises TelegramIntegrationsError: при невалидном ответе от API телеграмма
         """
-        return 'Commit hash: {0}'.format(self._commit_hash)
+        responses = []
+        success_status = 200
+        async with httpx.AsyncClient() as client:
+            for request in await self._answer.build(update):
+                self._logger.debug('Try send request to: {0}'.format(
+                    url_parse.unquote(str(request.url)),
+                ))
+                resp = await client.send(request)
+                responses.append(resp.text)
+                if resp.status_code != success_status:
+                    raise TelegramIntegrationsError(resp.text)
+            return [ujson.loads(response) for response in responses]

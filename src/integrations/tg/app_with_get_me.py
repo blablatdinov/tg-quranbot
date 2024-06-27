@@ -24,6 +24,7 @@ from typing import final, override
 
 import attrs
 import httpx
+from pyeo import elegant
 
 from app_types.logger import LogSink
 from app_types.runable import Runable

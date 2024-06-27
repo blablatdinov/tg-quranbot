@@ -20,27 +20,29 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import asyncio
+from itertools import chain
 from typing import final, override
-from urllib import parse as url_parse
 
 import attrs
-import httpx
-import ujson
+from more_itertools import distribute
+from pyeo import elegant
 
 from app_types.logger import LogSink
 from app_types.update import Update
-from exceptions.internal_exceptions import TelegramIntegrationsError
 from integrations.tg.sendable import Sendable
+from integrations.tg.sendable_answer import SendableAnswer
 from integrations.tg.tg_answers.tg_answer import TgAnswer
+from integrations.tg.user_not_subscribed_safe_sendable import UserNotSubscribedSafeSendable
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class SendableAnswer(Sendable):
-    """Объект, отправляющий ответы в API."""
+class BulkSendableAnswer(Sendable):
+    """Массовая отправка."""
 
-    _answer: TgAnswer
+    _answers: list[TgAnswer]
     _logger: LogSink
 
     @override
@@ -48,18 +50,17 @@ class SendableAnswer(Sendable):
         """Отправка.
 
         :param update: Update
-        :return: list[str]
-        :raises TelegramIntegrationsError: при невалидном ответе от API телеграмма
+        :return: list[dict]
         """
-        responses = []
-        success_status = 200
-        async with httpx.AsyncClient() as client:
-            for request in await self._answer.build(update):
-                self._logger.debug('Try send request to: {0}'.format(
-                    url_parse.unquote(str(request.url)),
-                ))
-                resp = await client.send(request)
-                responses.append(resp.text)
-                if resp.status_code != success_status:
-                    raise TelegramIntegrationsError(resp.text)
-            return [ujson.loads(response) for response in responses]
+        tasks = [
+            UserNotSubscribedSafeSendable(
+                SendableAnswer(answer, self._logger),
+            ).send(update)
+            for answer in self._answers
+        ]
+        responses: list[dict] = []
+        for sendable_slice in distribute(10, tasks):
+            res_list = await asyncio.gather(*sendable_slice)
+            for res in chain.from_iterable(res_list):
+                responses.append(res)  # noqa: PERF402
+        return responses

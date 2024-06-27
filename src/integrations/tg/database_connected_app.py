@@ -22,21 +22,24 @@
 
 from typing import final, override
 
-from app_types.update import Update
-from integrations.tg.update_id import UpdateId
-from services.DebugParam import DebugParam
+import attrs
+from databases import Database
+from pyeo import elegant
+
+from app_types.runable import Runable
 
 
 @final
+@attrs.define(frozen=True)
 @elegant
-class UpdateIdDebugParam(DebugParam):
-    """Отладочная информация с идентификатором обновления."""
+class DatabaseConnectedApp(Runable):
+    """Декоратор для подключения к БД."""
+
+    _pgsql: Database
+    _app: Runable
 
     @override
-    async def debug_value(self, update: Update) -> str:
-        """Идентификатор обновления.
-
-        :param update: Update
-        :return: str
-        """
-        return 'Update id: {0}'.format(int(UpdateId(update)))
+    async def run(self) -> None:
+        """Запуск."""
+        await self._pgsql.connect()
+        await self._app.run()

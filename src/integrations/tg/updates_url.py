@@ -20,18 +20,26 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import SupportsInt, final, override
+from typing import final, override
+
+import attrs
+from pyeo import elegant
+
+from app_types.stringable import SupportsStr
 
 
 @final
+@attrs.define(frozen=True)
 @elegant
-class UpdatesTimeout(SupportsInt):
-    """Таймаут для обновлений."""
+class UpdatesURL(SupportsStr):
+    """Базовый URL обновлений из телеграма."""
+
+    _token: str
 
     @override
-    def __int__(self) -> int:
-        """Числовое представление.
+    def __str__(self) -> str:
+        """Строчное представление.
 
-        :return: int
+        :return: str
         """
-        return 5
+        return 'https://api.telegram.org/bot{0}/getUpdates'.format(self._token)
