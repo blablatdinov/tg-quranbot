@@ -28,9 +28,9 @@ import httpx
 from pyeo import elegant
 
 from app_types.logger import LogSink
-from app_types.update import Update
 from app_types.millis import Millis
 from app_types.rounded_float import RoundedFloat
+from app_types.update import Update
 from integrations.tg.tg_answers.tg_answer import TgAnswer
 from integrations.tg.update_id import UpdateId
 

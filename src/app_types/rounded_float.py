@@ -26,7 +26,6 @@ import attrs
 from pyeo import elegant
 
 
-# FIXME: move to app_types
 @final
 @attrs.define(frozen=True)
 @elegant
