@@ -39,6 +39,6 @@ class _NotProcessableAnswer(TgAnswer):
 
 
 async def test():
-    got = await TgSkipNotProcessable(_NotProcessableAnswer()).build(FkUpdate())
+    got = await TgSkipNotProcessable(_NotProcessableAnswer()).build(FkUpdate.empty_ctor())
 
     assert got == []

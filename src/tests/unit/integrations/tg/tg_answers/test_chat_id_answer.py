@@ -26,6 +26,6 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 async def test():
-    got = await TgChatIdAnswer(FkAnswer(), 123).build(FkUpdate())
+    got = await TgChatIdAnswer(FkAnswer(), 123).build(FkUpdate.empty_ctor())
 
     assert got[0].url == 'https://some.domain?chat_id=123'

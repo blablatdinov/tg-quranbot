@@ -109,7 +109,7 @@ async def user_with_changed_city(user, pgsql, cities):
         pgsql,
         FkPrayerDate(datetime.date(2024, 6, 5)),
         await user.chat_id(),
-    ).generate(FkUpdate())
+    ).generate(FkUpdate.empty_ctor())
     await PgUpdatedUserCity(
         cities[1],
         await user.chat_id(),
@@ -126,7 +126,7 @@ async def test(pgsql, user, execution_number):
             pgsql,
             FkPrayerDate(datetime.date(2024, 6, 5)),
             await user.chat_id(),
-        ).generate(FkUpdate())
+        ).generate(FkUpdate.empty_ctor())
         for _ in range(10)
     ]
     await asyncio.gather(*tasks)
@@ -140,7 +140,7 @@ async def test_empty(pgsql, user):
             pgsql,
             FkPrayerDate(datetime.date(2024, 6, 5)),
             await user.chat_id(),
-        ).generate(FkUpdate())
+        ).generate(FkUpdate.empty_ctor())
 
 
 @pytest.mark.usefixtures('_prayers')
@@ -149,6 +149,6 @@ async def test_change_city(pgsql, user_with_changed_city):
         pgsql,
         FkPrayerDate(datetime.date(2024, 6, 5)),
         await user_with_changed_city.chat_id(),
-    ).generate(FkUpdate())
+    ).generate(FkUpdate.empty_ctor())
 
     assert await pgsql.fetch_val('SELECT COUNT(*) FROM prayers_at_user') == 5

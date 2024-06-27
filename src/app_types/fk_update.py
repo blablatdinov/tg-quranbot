@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
+from typing import final, override, Any
 
 import attrs
 import ujson
@@ -29,6 +29,8 @@ from pyeo import elegant
 from app_types.stringable import SupportsStr
 from app_types.update import Update
 
+_sentiel: Any = object()
+
 
 @final
 @attrs.define(frozen=True)
@@ -36,7 +38,15 @@ from app_types.update import Update
 class FkUpdate(Update):
     """Подделка обновления."""
 
-    _raw: SupportsStr | None = '{}'  # noqa: P103. Empty json
+    _raw: SupportsStr
+
+    @classmethod
+    def empty_ctor(cls) -> 'FkUpdate':
+        """Ctor.
+
+        :param: raw_json: str
+        """
+        return cls('{}')  # noqa: P103. Empty json
 
     @override
     def __str__(self) -> str:
