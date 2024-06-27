@@ -90,7 +90,8 @@ class RbmqEventHook(EventHook):
             return
         try:
             await self._inner_handler(message)
-        except Exception:  # noqa: BLE001
+        except Exception:  # pylint: disable=broad-exception-caught
+            # Catching all exceptions because app entry.
             self._logger.exception('Fail on process event')
             await chnl.default_exchange.publish(
                 aio_pika.Message(body=message.body),

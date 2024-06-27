@@ -61,6 +61,5 @@ class BulkSendableAnswer(Sendable):
         responses: list[dict] = []
         for sendable_slice in distribute(10, tasks):
             res_list = await asyncio.gather(*sendable_slice)
-            for res in chain.from_iterable(res_list):
-                responses.append(res)  # noqa: PERF402
+            responses.extend(list(chain.from_iterable(res_list)))
         return responses
