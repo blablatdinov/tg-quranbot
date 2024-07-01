@@ -58,9 +58,23 @@ class TextLenSafeAyat(Ayat):
         """
         origin_val = await self._origin.to_str()
         max_len_of_telegram_message = 4096
-        if len(origin_val) > max_len_of_telegram_message:
-            return textwrap.shorten(origin_val, width=max_len_of_telegram_message, placeholder='...')
-        return origin_val
+        if len(origin_val) <= max_len_of_telegram_message:
+            return origin_val
+        buff = max_len_of_telegram_message - origin_val.count('\n')
+        res_lines = []
+        for line in origin_val.splitlines():
+            if buff - len(line) < 0:
+                res_lines.append(
+                    textwrap.shorten(
+                        line,
+                        width=buff,
+                        placeholder='</i>...' if line.startswith('<i>') else '...',
+                    ),
+                )
+                break
+            buff -= len(line)
+            res_lines.append(line)
+        return '\n'.join(res_lines)
 
     async def audio(self) -> TgFile:
         """Аудио файл.
