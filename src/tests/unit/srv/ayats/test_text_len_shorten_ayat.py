@@ -23,6 +23,8 @@
 import textwrap
 from pathlib import Path
 
+import pytest
+
 from settings import BASE_DIR
 from srv.ayats.fk_ayat import FkAyat
 from srv.ayats.fk_identifier import FkIdentifier
@@ -41,3 +43,18 @@ async def test_text_len_safe_ayat():
     ).to_str()
 
     assert got == textwrap.shorten(ayat_content, width=4096, placeholder='...')
+
+
+# TODO #1095 Исправить обрезку, учитывать теги, убрать маркер skip
+@pytest.mark.skip()
+async def test_tags_closed():
+    ayat_content = Path(BASE_DIR / 'tests/fixtures/2_282_ayat_rendered.txt').read_text(encoding='utf-8').strip()
+    got = await TextLenSafeAyat(
+        FkAyat(
+            FkIdentifier(272, 2, '282'),
+            ayat_content,
+            FkFile('', ''),
+        ),
+    ).to_str()
+
+    assert '</i>' in got
