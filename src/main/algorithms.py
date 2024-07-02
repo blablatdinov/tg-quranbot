@@ -1,31 +1,35 @@
-"""The MIT License (MIT).
+# The MIT License (MIT).
+#
+# Copyright (c) 2013-2024 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+# OR OTHER DEALINGS IN THE SOFTWARE.
 
-Copyright (c) 2023-2024 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+"""Algorithms for define files."""
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
-OR OTHER DEALINGS IN THE SOFTWARE.
-"""
 import datetime
 from collections import defaultdict
 from os import PathLike
 from pathlib import Path
 
 from git import Repo
+
+from main.models import TouchRecord
 
 
 def files_changes_count(repo_path: Path, files_for_check: list[Path]):
@@ -40,14 +44,37 @@ def files_changes_count(repo_path: Path, files_for_check: list[Path]):
     return file_change_count
 
 
-def files_sorted_by_last_changes(repo_path: Path, files_for_check: list[Path]):
+def files_sorted_by_last_changes(
+    repo_path: Path,
+    files_for_check: list[Path],
+):
     """Count days after last file changing."""
     repo = Repo(repo_path)
     file_last_commit: dict[PathLike[str], datetime.datetime] = {}
     now = datetime.datetime.now(tz=datetime.UTC)
     for file in files_for_check:
-        file_last_commit[file] = (now - next(repo.iter_commits(paths=file)).committed_datetime).days
+        last_touch = next(repo.iter_commits(paths=file)).committed_datetime
+        file_last_commit[file] = (now - last_touch).days
     return file_last_commit
+
+
+def files_sorted_by_last_changes_from_db(
+    repo_id: int,
+    real_points: dict[PathLike[str], int],
+    relative_to: PathLike,
+):
+    """Count days after last file changing."""
+    today = datetime.datetime.now(tz=datetime.UTC).date()
+    touch_records = {}
+    for str_path, date in TouchRecord.objects.filter(gh_repo_id=repo_id).values_list('path', 'date'):
+        touch_records[Path(str_path)] = (today - date).days
+    res = {}
+    for key, value in real_points.items():
+        res[key] = min(
+            touch_records.get(key.relative_to(relative_to), float('inf')),
+            value,
+        )
+    return res
 
 
 def apply_coefficient(file_point_map: dict[PathLike[str], int], coefficient: float):

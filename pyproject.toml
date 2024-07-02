@@ -1,3 +1,25 @@
+# The MIT License (MIT).
+#
+# Copyright (c) 2013-2024 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+# OR OTHER DEALINGS IN THE SOFTWARE.
+
 [tool.poetry]
 name = "revive-code-bot"
 version = "0.1.0"
@@ -14,8 +36,9 @@ gitpython = "3.1.43"
 gunicorn = "22.0.0"
 psycopg2-binary = "2.9.9"
 django = "5.0.6"
-django-environ = "^0.11.2"
+django-environ = "0.11.2"
 time-machine = "2.14.1"
+pygithub = "2.3.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "8.2.2"
@@ -25,7 +48,8 @@ wemake-python-styleguide = "0.19.2"
 refurb = "2.0.0"
 pytest-cov = "5.0.0"
 pytest-django = "4.8.0"
-faker = "24.11.0"
+faker = "12.0.1"
+mixer = "7.2.2"
 
 [build-system]
 requires = ["poetry-core"]
@@ -56,6 +80,7 @@ ignore = [
   "ANN102",  # Missing type annotation for `cls` in classmethod
   "ARG001",  # Unused function argument
   "ARG002",  # Unused method argument
+  "D106",    # Missing docstring in public nested class
   "D203",    # no-blank-line-before-class
   "D213",    # multi-line-summary-first-line
   "D401",    # First line of docstring should be in imperative mood
@@ -94,6 +119,12 @@ max-args = 6
   "ANN",     # Annotations
   "PLR2004", # Magic value
   "PLR0913", # Too many arguments to function call
+]
+"*/migrations/*" = [
+  "D100",
+  "CPY001",
+  "D101",
+  "RUF012",
 ]
 
 [tool.refurb]

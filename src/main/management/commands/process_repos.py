@@ -20,15 +20,20 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""Routers."""
+"""Manual process repo."""
 
-from django.contrib import admin
-from django.urls import path
+from django.core.management.base import BaseCommand
 
-from main.views import healthcheck, webhook
+from main.models import GhRepo
+from main.service import process_repo
 
-urlpatterns = [
-    path('health-check/', healthcheck),
-    path('hook/github', webhook),
-    path('admin/', admin.site.urls),
-]
+
+class Command(BaseCommand):
+    """CLI command."""
+
+    help = ''
+
+    def handle(self, *args, **options):
+        """Entrypoint."""
+        for repo in GhRepo.objects.all():
+            process_repo(repo.id)

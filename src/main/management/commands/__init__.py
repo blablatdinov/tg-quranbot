@@ -20,15 +20,4 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""Routers."""
-
-from django.contrib import admin
-from django.urls import path
-
-from main.views import healthcheck, webhook
-
-urlpatterns = [
-    path('health-check/', healthcheck),
-    path('hook/github', webhook),
-    path('admin/', admin.site.urls),
-]
+"""Management commands."""

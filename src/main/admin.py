@@ -20,15 +20,11 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""Routers."""
+"""Revive bot admin configuration."""
 
 from django.contrib import admin
-from django.urls import path
 
-from main.views import healthcheck, webhook
+from main.models import GhRepo, TouchRecord
 
-urlpatterns = [
-    path('health-check/', healthcheck),
-    path('hook/github', webhook),
-    path('admin/', admin.site.urls),
-]
+admin.site.register(GhRepo)
+admin.site.register(TouchRecord)

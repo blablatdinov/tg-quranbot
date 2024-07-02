@@ -20,15 +20,40 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""Routers."""
+"""DB models."""
 
-from django.contrib import admin
-from django.urls import path
+from typing import final
 
-from main.views import healthcheck, webhook
+from django.db import models
 
-urlpatterns = [
-    path('health-check/', healthcheck),
-    path('hook/github', webhook),
-    path('admin/', admin.site.urls),
-]
+
+@final
+class GhRepo(models.Model):
+    """Table contain github repos."""
+
+    full_name = models.CharField(max_length=512, unique=True)
+    has_webhook = models.BooleanField()
+    installation_id = models.BigIntegerField()
+
+    class Meta:
+        db_table = 'gh_repos'
+
+    def __str__(self) -> str:
+        """String representation."""
+        return 'Gh repo <{0}>'.format(self.full_name)
+
+
+@final
+class TouchRecord(models.Model):
+    """Table contain record about touching files."""
+
+    gh_repo = models.ForeignKey(GhRepo, on_delete=models.PROTECT)
+    path = models.CharField(max_length=1024, unique=True)
+    date = models.DateField()
+
+    class Meta:
+        db_table = 'touch_records'
+
+    def __str__(self) -> str:
+        """String representation."""
+        return 'Touch record <{0}>. {1} {2}'.format(self.gh_repo.full_name, self.path, self.date)

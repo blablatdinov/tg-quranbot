@@ -1,0 +1,86 @@
+{
+  "action": "added",
+  "installation": {
+    "id": 52326552,
+    "account": {
+      "login": "blablatdinov",
+      "id": 45946541,
+      "node_id": "MDQ6VXNlcjQ1OTQ2NTQx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45946541?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/blablatdinov",
+      "html_url": "https://github.com/blablatdinov",
+      "followers_url": "https://api.github.com/users/blablatdinov/followers",
+      "following_url": "https://api.github.com/users/blablatdinov/following{/other_user}",
+      "gists_url": "https://api.github.com/users/blablatdinov/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/blablatdinov/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/blablatdinov/subscriptions",
+      "organizations_url": "https://api.github.com/users/blablatdinov/orgs",
+      "repos_url": "https://api.github.com/users/blablatdinov/repos",
+      "events_url": "https://api.github.com/users/blablatdinov/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/blablatdinov/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "repository_selection": "selected",
+    "access_tokens_url": "https://api.github.com/app/installations/52326552/access_tokens",
+    "repositories_url": "https://api.github.com/installation/repositories",
+    "html_url": "https://github.com/settings/installations/52326552",
+    "app_id": 874924,
+    "app_slug": "revive-code-bot",
+    "target_id": 45946541,
+    "target_type": "User",
+    "permissions": {
+      "issues": "write",
+      "metadata": "read",
+      "pull_requests": "read",
+      "repository_hooks": "write"
+    },
+    "events": [
+
+    ],
+    "created_at": "2024-06-29T18:04:22.000+03:00",
+    "updated_at": "2024-06-30T00:54:02.000+03:00",
+    "single_file_name": null,
+    "has_multiple_single_files": false,
+    "single_file_paths": [
+
+    ],
+    "suspended_by": null,
+    "suspended_at": null
+  },
+  "repository_selection": "selected",
+  "repositories_added": [
+    {
+      "id": 258458557,
+      "node_id": "MDEwOlJlcG9zaXRvcnkyNTg0NTg1NTc=",
+      "name": "ramadan2020marathon_bot",
+      "full_name": "blablatdinov/ramadan2020marathon_bot",
+      "private": false
+    }
+  ],
+  "repositories_removed": [
+
+  ],
+  "requester": null,
+  "sender": {
+    "login": "blablatdinov",
+    "id": 45946541,
+    "node_id": "MDQ6VXNlcjQ1OTQ2NTQx",
+    "avatar_url": "https://avatars.githubusercontent.com/u/45946541?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/blablatdinov",
+    "html_url": "https://github.com/blablatdinov",
+    "followers_url": "https://api.github.com/users/blablatdinov/followers",
+    "following_url": "https://api.github.com/users/blablatdinov/following{/other_user}",
+    "gists_url": "https://api.github.com/users/blablatdinov/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/blablatdinov/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/blablatdinov/subscriptions",
+    "organizations_url": "https://api.github.com/users/blablatdinov/orgs",
+    "repos_url": "https://api.github.com/users/blablatdinov/repos",
+    "events_url": "https://api.github.com/users/blablatdinov/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/blablatdinov/received_events",
+    "type": "User",
+    "site_admin": false
+  }
+}
