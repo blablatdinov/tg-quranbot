@@ -55,7 +55,10 @@ def webhook(request: HttpRequest):
             GhRepo.objects.bulk_create(new_repos)
             gh_repo = gh.get_repo(repo['full_name'])
             gh_repo.create_hook(
-                'web', {'url': 'http://revive-code-bot.ilaletdinov.ru/hook/github', 'content_type': 'json'},
+                'web', {
+                    'url': 'https://www.rehttp.net/p/https%3A%2F%2Frevive-code-bot.ilaletdinov.ru%2Fhook%2Fgithub',
+                    'content_type': 'json',
+                },
                 ['issues', 'issue_comment', 'push'],
             )
         gh.close()
