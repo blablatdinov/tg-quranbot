@@ -67,6 +67,22 @@ def config_or_default(repo_path: Path) -> ConfigDict:
     })
 
 
+def sync_touch_records(files: list[str], repo_id: int) -> None:
+    """Synching touch records."""
+    exists_touch_records = TouchRecord.objects.filter(gh_repo_id=repo_id)
+    for tr in exists_touch_records:
+        if tr.path in files:
+            tr.date = datetime.datetime.now(tz=datetime.UTC).date()
+            tr.save()
+    for file in files:
+        if not TouchRecord.objects.filter(gh_repo_id=repo_id, path=file).exists():
+            TouchRecord.objects.create(
+                gh_repo_id=repo_id,
+                path=file,
+                date=datetime.datetime.now(tz=datetime.UTC).date(),
+            )
+
+
 def process_repo(repo_id: int):
     """Processing repo."""
     gh_repo = GhRepo.objects.get(id=repo_id)
@@ -112,12 +128,11 @@ def process_repo(repo_id: int):
             ],
         })),
     )
-    TouchRecord.objects.bulk_create([
-        TouchRecord(
-            gh_repo_id=repo_id,
-            path=file,
-            date=datetime.datetime.now(tz=datetime.UTC).date(),
-        )
-        for file, _ in stripped_file_list
-        if file not in TouchRecord.objects.values_list('path', flat=True)
-    ])
+    sync_touch_records(
+        [
+            file
+            for file, _ in stripped_file_list
+            if file in stripped_file_list
+        ],
+        repo_id,
+    )
