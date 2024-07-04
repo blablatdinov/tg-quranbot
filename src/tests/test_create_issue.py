@@ -50,17 +50,12 @@ def gh_repo(mixer):
 def _exist_touch_records(mixer, gh_repo):
     files = [
         'manage.py',
-        'config/asgi.py',
-        'config/wsgi.py',
-        'game/__init__.py',
-        'game/apps.py',
         'game/views.py',
-        'bot_init/__init__.py',
-        'bot_init/apps.py',
-        'bot_init/urls.py',
         'game/migrations/__init__.py',
+        'game/apps.py',
+        'game/__init__.py',
     ]
-    mixer.cycle(10).blend(
+    mixer.cycle(5).blend(
         'main.TouchRecord',
         gh_repo=gh_repo,
         path=(f for f in files),
@@ -74,32 +69,22 @@ def test(gh_repo, time_machine):
 
     assert list(TouchRecord.objects.values_list('path', flat=True)) == [
         'manage.py',
-        'config/asgi.py',
-        'config/wsgi.py',
-        'game/__init__.py',
-        'game/apps.py',
         'game/views.py',
-        'bot_init/__init__.py',
-        'bot_init/apps.py',
-        'bot_init/urls.py',
         'game/migrations/__init__.py',
+        'game/apps.py',
+        'game/__init__.py',
     ]
-    assert list(TouchRecord.objects.values_list('date', flat=True)) == [today] * 10
+    assert list(TouchRecord.objects.values_list('date', flat=True)) == [today] * 5
     assert next(iter(sorted(
         pygithub_client(gh_repo.installation_id).search_issues('Issue from revive-code-bot'),
         key=attrgetter('created_at'),
         reverse=True,
     ))).body == '\n'.join([
         '- [ ] `manage.py`',
-        '- [ ] `config/asgi.py`',
-        '- [ ] `config/wsgi.py`',
-        '- [ ] `game/__init__.py`',
-        '- [ ] `game/apps.py`',
         '- [ ] `game/views.py`',
-        '- [ ] `bot_init/__init__.py`',
-        '- [ ] `bot_init/apps.py`',
-        '- [ ] `bot_init/urls.py`',
         '- [ ] `game/migrations/__init__.py`',
+        '- [ ] `game/apps.py`',
+        '- [ ] `game/__init__.py`',
         '',
         '',
         'Expected actions:',
@@ -109,49 +94,34 @@ def test(gh_repo, time_machine):
     ])
 
 
-@pytest.mark.usefixtures('exist_touch_records')
+@pytest.mark.usefixtures('_exist_touch_records')
 def test_double_process(gh_repo):
     process_repo(gh_repo.id)
     today = datetime.datetime.now(tz=datetime.UTC).date()
 
     assert list(TouchRecord.objects.values_list('path', flat=True)) == [
         'manage.py',
-        'config/asgi.py',
-        'config/wsgi.py',
-        'game/__init__.py',
-        'game/apps.py',
         'game/views.py',
-        'bot_init/__init__.py',
-        'bot_init/apps.py',
-        'bot_init/urls.py',
         'game/migrations/__init__.py',
+        'game/apps.py',
+        'game/__init__.py',
+        'config/wsgi.py',
+        'config/asgi.py',
+        'bot_init/urls.py',
         'bot_init/migrations/__init__.py',
         'bot_init/migrations/0001_initial.py',
-        'bot_init/management/commands/update_webhook.py',
-        'events/service.py',
-        'events/models.py',
-        'events/__init__.py',
-        'events/apps.py',
-        'events/admin.py',
-        'events/migrations/__init__.py',
-        'events/migrations/0001_initial.py',
     ]
-    assert list(TouchRecord.objects.values_list('date', flat=True)) == [today] * 20
+    assert list(TouchRecord.objects.values_list('date', flat=True)) == [today] * 10
     assert next(iter(sorted(
         pygithub_client(gh_repo.installation_id).search_issues('Issue from revive-code-bot'),
         key=attrgetter('created_at'),
         reverse=True,
     ))).body == '\n'.join([
+        '- [ ] `config/wsgi.py`',
+        '- [ ] `config/asgi.py`',
+        '- [ ] `bot_init/urls.py`',
         '- [ ] `bot_init/migrations/__init__.py`',
         '- [ ] `bot_init/migrations/0001_initial.py`',
-        '- [ ] `bot_init/management/commands/update_webhook.py`',
-        '- [ ] `events/service.py`',
-        '- [ ] `events/models.py`',
-        '- [ ] `events/__init__.py`',
-        '- [ ] `events/apps.py`',
-        '- [ ] `events/admin.py`',
-        '- [ ] `events/migrations/__init__.py`',
-        '- [ ] `events/migrations/0001_initial.py`',
         '',
         '',
         'Expected actions:',

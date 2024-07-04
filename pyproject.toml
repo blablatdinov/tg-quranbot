@@ -24,9 +24,6 @@
 name = "revive-code-bot"
 version = "0.1.0"
 description = ""
-packages = [
-  { include = "src/revive_code_bot" }
-]
 authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 readme = "README.md"
 
@@ -39,6 +36,7 @@ django = "5.0.6"
 django-environ = "0.11.2"
 time-machine = "2.14.1"
 pygithub = "2.3.0"
+pyyaml = "6.0.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "8.2.2"

@@ -24,9 +24,10 @@
 
 import datetime
 import tempfile
-from operator import itemgetter
 from pathlib import Path
+from typing import TypedDict
 
+import yaml
 from django.conf import settings
 from django.template import Context, Template
 from git import Repo
@@ -36,6 +37,12 @@ from main.algorithms import files_sorted_by_last_changes, files_sorted_by_last_c
 from main.models import GhRepo, TouchRecord
 
 
+class ConfigDict(TypedDict):
+    """Configuration structure."""
+
+    limit: int
+
+
 def pygithub_client(installation_id: int) -> Github:
     """Pygithub client."""
     auth = Auth.AppAuth(
@@ -43,6 +50,21 @@ def pygithub_client(installation_id: int) -> Github:
         Path(settings.BASE_DIR / 'revive-code-bot.2024-04-11.private-key.pem').read_text(encoding='utf-8'),
     )
     return Github(auth=auth.get_installation_auth(installation_id))
+
+
+def read_config(config: str) -> ConfigDict:
+    """Read config from yaml files."""
+    return yaml.safe_load(config)
+
+
+def config_or_default(repo_path: Path) -> ConfigDict:
+    """Read or default config."""
+    config_file = repo_path.glob('.revive-bot.*')
+    if config_file:
+        return read_config(next(iter(config_file)).read_text())
+    return ConfigDict({
+        'limit': 10,
+    })
 
 
 def process_repo(repo_id: int):
@@ -55,12 +77,12 @@ def process_repo(repo_id: int):
         Repo.clone_from(repo.clone_url, tmpdirname)
         repo_path = Path(tmpdirname)
         files_for_search = list(repo_path.glob('**/*.py'))
+        config = config_or_default(repo_path)
         got = files_sorted_by_last_changes_from_db(
             repo_id,
             files_sorted_by_last_changes(repo_path, files_for_search),
             tmpdirname,
         )
-    limit = 10
     stripped_file_list = sorted(
         [
             (
@@ -72,9 +94,9 @@ def process_repo(repo_id: int):
             )
             for path, points in got.items()
         ],
-        key=itemgetter(1),
+        key=lambda x: (x[1], str(x[0])),
         reverse=True,
-    )[:limit]
+    )[:config['limit']]
     repo.create_issue(
         'Issue from revive-code-bot',
         Template('\n'.join([
