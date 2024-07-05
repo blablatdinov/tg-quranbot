@@ -117,7 +117,7 @@ async def db_ayat(pgsql):
 
 @pytest.fixture()
 def city_factory(pgsql):
-    async def _city_factory(city_id, name):
+    async def _city_factory(city_id, name):  # noqa: WPS430
         await pgsql.execute(
             'INSERT INTO cities (city_id, name) VALUES (:city_id, :city_name)',
             {'city_id': city_id, 'city_name': name},
