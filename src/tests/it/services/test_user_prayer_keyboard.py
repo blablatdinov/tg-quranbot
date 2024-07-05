@@ -44,12 +44,8 @@ async def cities(city_factory):
 
 
 @pytest.fixture
-async def user(pgsql, cities):
-    await pgsql.execute(
-        'INSERT INTO users (chat_id, is_active, day, city_id) VALUES (:chat_id, :is_active, :day, :city_id)',
-        {'chat_id': 849375, 'is_active': True, 'day': 2, 'city_id': await cities[0].city_id()},
-    )
-    return PgUser.int_ctor(849375, pgsql)
+async def user(cities, user_factory):
+    return await user_factory(849375, 2, city=cities[0])
 
 
 @pytest.fixture

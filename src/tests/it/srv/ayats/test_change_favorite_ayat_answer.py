@@ -30,8 +30,8 @@ from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
 
 
 @pytest.fixture
-async def _user(pgsql):
-    await pgsql.execute('INSERT INTO users (chat_id) VALUES (1)')
+async def _user(user_factory):
+    await user_factory(1)
 
 
 @pytest.mark.usefixtures('db_ayat', '_user')
