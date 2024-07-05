@@ -31,6 +31,7 @@ from settings import BASE_DIR, Settings
 from srv.ayats.fk_ayat import FkAyat
 from srv.ayats.fk_identifier import FkIdentifier
 from srv.files.fk_file import FkFile
+from srv.prayers.fk_city import FkCity
 from tests.creating_test_db import apply_migrations, create_db, drop_db
 
 
@@ -115,8 +116,19 @@ async def db_ayat(pgsql):
 
 
 @pytest.fixture()
-async def _prayers(pgsql):
-    await pgsql.execute("INSERT INTO cities (city_id, name) VALUES ('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')")
+async def city_factory(pgsql):
+    async def _city_factory(city_id, name):
+        await pgsql.execute(
+            'INSERT INTO cities (city_id, name) VALUES (:city_id, :city_name)',
+            {'city_id': city_id, 'city_name': name}
+        )
+        return FkCity(city_id, name)
+    return _city_factory
+
+
+@pytest.fixture()
+async def _prayers(pgsql, city_factory):
+    await city_factory('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')
     await pgsql.execute("INSERT INTO users (chat_id, city_id) VALUES (905, '080fd3f4-678e-4a1c-97d2-4460700fe7ac')")
     query = '\n'.join([
         'INSERT INTO prayers (prayer_id, name, "time", city_id, day) VALUES',

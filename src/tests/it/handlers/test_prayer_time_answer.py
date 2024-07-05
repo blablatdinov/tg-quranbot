@@ -29,8 +29,8 @@ from integrations.tg.tg_answers.empty_answer import TgEmptyAnswer
 
 
 @pytest.fixture()
-async def _prayers(pgsql):
-    await pgsql.execute("INSERT INTO cities (city_id, name) VALUES ('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')")
+async def _prayers(pgsql, city_factory):
+    await city_factory('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')
     await pgsql.execute("INSERT INTO users (chat_id, city_id) VALUES (905, '080fd3f4-678e-4a1c-97d2-4460700fe7ac')")
     query = '\n'.join([
         'INSERT INTO prayers (prayer_id, name, "time", city_id, day) VALUES',

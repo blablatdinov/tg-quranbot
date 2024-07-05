@@ -32,14 +32,11 @@ from srv.prayers.inline_query_answer import InlineQueryAnswer
 
 
 @pytest.fixture()
-async def _db_cities(pgsql):
-    await pgsql.execute(
-        'INSERT INTO cities (city_id, name) VALUES (:city_id, :name)',
-        {'city_id': str(uuid.uuid4()), 'name': 'Kazan'},
-    )
+async def _db_city(city_factory):
+    await city_factory(str(uuid.uuid4()), 'Kazan')
 
 
-@pytest.mark.usefixtures('_db_cities')
+@pytest.mark.usefixtures('_db_city')
 async def test(pgsql):
     got = await InlineQueryAnswer(FkAnswer(), pgsql).build(
         FkUpdate(ujson.dumps({
@@ -60,7 +57,7 @@ async def test(pgsql):
     ]
 
 
-@pytest.mark.usefixtures('_db_cities')
+@pytest.mark.usefixtures('_db_city')
 async def test_not_processable(pgsql):
     with pytest.raises(NotProcessableUpdateError):
         await InlineQueryAnswer(FkAnswer(), pgsql).build(

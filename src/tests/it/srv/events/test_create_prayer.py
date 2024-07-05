@@ -29,12 +29,8 @@ from srv.events.prayer_created_event import PrayerCreatedEvent
 
 
 @pytest.fixture()
-async def _city(pgsql):
-    await pgsql.execute('\n'.join([
-        'INSERT INTO cities',
-        '(city_id)',
-        "VALUES ('6a4e14a7-b05d-4769-b801-e0c0dbf3c923')",
-    ]))
+async def _city(pgsql, city_factory):
+    await city_factory('6a4e14a7-b05d-4769-b801-e0c0dbf3c923', 'Name')
 
 
 @pytest.mark.usefixtures('_city')
