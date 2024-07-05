@@ -101,7 +101,7 @@ class NewIssue(Protocol):
 
 @final
 @attrs.define(frozen=True)
-class GhNewIssue(Protocol):
+class GhNewIssue(NewIssue):
     """New issue in github."""
 
     _repo: Repository
