@@ -36,7 +36,7 @@ from srv.users.pg_user import PgUser
 
 
 @pytest.fixture
-async def cities(pgsql, city_factory):
+async def cities(city_factory):
     return (
         await city_factory('e22d9142-a39b-4e99-92f7-2082766f0987', 'Kazan'),
         await city_factory('4bd2af2a-aec9-4660-b710-405940f6e578', 'NabChelny'),

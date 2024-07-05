@@ -32,7 +32,7 @@ async def city(city_factory):
 
 
 @pytest.fixture
-async def _user(pgsql, city):
+async def _user(pgsql):
     await pgsql.execute('INSERT INTO users (chat_id) VALUES (849357)')
 
 
