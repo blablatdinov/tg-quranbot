@@ -58,7 +58,7 @@ class PollingUpdatesIterator(UpdatesIterator):
 
         :return: list[Update]
         """
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=5) as client:
             try:
                 resp = await client.get(
                     self._updates_url.generate(self._offset),

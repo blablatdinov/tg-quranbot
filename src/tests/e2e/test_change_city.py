@@ -24,7 +24,7 @@ import pytest
 from telethon.sync import TelegramClient
 
 
-@pytest.fixture()
+@pytest.fixture
 def _user_city(tg_client, db_conn, bot_name, wait_until):
     tg_client.send_message(bot_name, '/start')
     wait_until(tg_client, 3)

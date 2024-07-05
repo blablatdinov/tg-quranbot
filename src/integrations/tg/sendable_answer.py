@@ -54,7 +54,7 @@ class SendableAnswer(Sendable):
         """
         responses = []
         success_status = 200
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=5) as client:
             for request in await self._answer.build(update):
                 self._logger.debug('Try send request to: {0}'.format(
                     url_parse.unquote(str(request.url)),

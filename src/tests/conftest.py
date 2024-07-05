@@ -34,7 +34,7 @@ from settings import BASE_DIR, Settings
 
 
 # flake8: noqa: WPS202
-@pytest.fixture()
+@pytest.fixture
 def unquote():
     def _unquote(url):  # noqa: WPS430
         return urllib.parse.unquote(
@@ -48,12 +48,12 @@ def event_loop_policy():
     return asyncio.get_event_loop_policy()
 
 
-@pytest.fixture()
+@pytest.fixture
 def fake_redis():
     return aioredis.FakeRedis()
 
 
-@pytest.fixture()
+@pytest.fixture
 def message_update_factory():
     def _message_update_factory(text='', chat_id=1):  # noqa: WPS430
         return Template(
@@ -62,7 +62,7 @@ def message_update_factory():
     return _message_update_factory
 
 
-@pytest.fixture()
+@pytest.fixture
 def callback_update_factory():
     def _message_update_factory(chat_id=1, callback_data=''):  # noqa: WPS430
         return Template(
@@ -71,7 +71,7 @@ def callback_update_factory():
     return _message_update_factory
 
 
-@pytest.fixture()
+@pytest.fixture
 def inline_query_update_factory():
     def _inline_query_update_factory(query=''):  # noqa: WPS430
         return Template(
@@ -80,12 +80,12 @@ def inline_query_update_factory():
     return _inline_query_update_factory
 
 
-@pytest.fixture()
+@pytest.fixture
 def fk_logger():
     return FkLogSink()
 
 
-@pytest.fixture()
+@pytest.fixture
 def settings_ctor():
     def _settings_ctor(  # noqa: PLR0917, S107, WPS430, its settings ctor, not secure issue, pytest fixture specific
         redis_dsn='redis://default@localhost:6379/15',
@@ -126,7 +126,7 @@ def settings_ctor():
     return _settings_ctor
 
 
-@pytest.fixture()
+@pytest.fixture
 def _mock_nominatim(respx_mock):
     respx_mock.get(
         'https://nominatim.openstreetmap.org/reverse.php?lat=55.7887&lon=49.1221&format=jsonv2',

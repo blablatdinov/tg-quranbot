@@ -29,7 +29,7 @@ from srv.prayers.city_id_by_name import CityIdByName
 from srv.prayers.pg_city import PgCity
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _db_city(city_factory):
     await city_factory('e9fa0fff-4e6a-47c8-8654-09adf913734a', 'Казань')
 

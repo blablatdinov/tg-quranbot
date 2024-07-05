@@ -29,7 +29,7 @@ from eljson.json_doc import JsonDoc
 from srv.ayats.pg_ayat import PgAyat
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _db_ayat(pgsql):
     created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
     await pgsql.execute_many(

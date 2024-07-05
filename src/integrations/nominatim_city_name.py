@@ -51,6 +51,6 @@ class NominatimCityName(CityName):
             latitude=self._coordinates.latitude(),
             longitude=self._coordinates.longitude(),
         )
-        async with httpx.AsyncClient() as http_client:
+        async with httpx.AsyncClient(timeout=5) as http_client:
             response = await http_client.get(url)
         return response.json()['address']['city']

@@ -27,7 +27,7 @@ from integrations.tg.inline_query_id import InlineQueryId
 from integrations.tg.update import TgUpdate
 
 
-@pytest.fixture()
+@pytest.fixture
 def inline_query_update(inline_query_update_factory):
     return inline_query_update_factory('Search')
 

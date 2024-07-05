@@ -30,7 +30,7 @@ from exceptions.content_exceptions import BotFileNotFoundError
 from srv.files.pg_file import PgFile
 
 
-@pytest.fixture()
+@pytest.fixture
 async def db_file_id(pgsql):
     file_id = uuid.uuid4()
     query = '\n'.join([

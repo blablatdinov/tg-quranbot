@@ -31,14 +31,14 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.events.fk_sink import FkSink
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _existed_user(pgsql):
     await pgsql.execute(
         'INSERT INTO users (chat_id, day, legacy_id) VALUES (321, 2, 1)',
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _admin_message(pgsql):
     await pgsql.execute(
         "INSERT INTO admin_messages (key, text) VALUES ('start', 'start admin message')",

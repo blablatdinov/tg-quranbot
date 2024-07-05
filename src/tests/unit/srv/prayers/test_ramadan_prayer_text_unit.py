@@ -26,7 +26,7 @@ from app_types.fk_async_str import FkAsyncStr
 from srv.prayers.ramadan_prayer_text import RamadanPrayerText
 
 
-@pytest.fixture()
+@pytest.fixture
 def prayer_time_text():
     return '\n'.join([
         'Время намаза для г. Казань (21.10.2023)\n',

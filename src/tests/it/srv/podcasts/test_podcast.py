@@ -40,7 +40,7 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.podcasts.pg_podcast import PgPodcast
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _db_podcast(pgsql):
     file_id = str(uuid.uuid4())
     await pgsql.execute(
@@ -60,7 +60,7 @@ async def _db_podcast(pgsql):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _podcast_reactions(pgsql):
     file_ids = [str(uuid.uuid4()) for _ in range(3)]
     await pgsql.execute_many(
@@ -96,7 +96,7 @@ async def _podcast_reactions(pgsql):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _db_podcast_without_telegram_file_id(pgsql):
     file_id = str(uuid.uuid4())
     await pgsql.execute(

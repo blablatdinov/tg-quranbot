@@ -23,7 +23,7 @@
 import pytest
 
 
-@pytest.fixture()
+@pytest.fixture
 def _user(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, '/start')
     wait_until(tg_client, 3)

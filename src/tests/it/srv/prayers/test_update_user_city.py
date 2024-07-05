@@ -26,12 +26,12 @@ from exceptions.internal_exceptions import UserNotFoundError
 from srv.prayers.pg_updated_user_city import PgUpdatedUserCity
 
 
-@pytest.fixture()
+@pytest.fixture
 async def city(city_factory):
     return await city_factory('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _user(pgsql, city):
     await pgsql.execute('INSERT INTO users (chat_id) VALUES (849357)')
 

@@ -31,7 +31,7 @@ from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _user(pgsql, city_factory):
     city_id = str(uuid.uuid4())
     await city_factory(city_id, 'Казань')

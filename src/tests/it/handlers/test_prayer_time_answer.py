@@ -28,7 +28,7 @@ from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.tg_answers.empty_answer import TgEmptyAnswer
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _prayers(pgsql, city_factory):
     await city_factory('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')
     await pgsql.execute("INSERT INTO users (chat_id, city_id) VALUES (905, '080fd3f4-678e-4a1c-97d2-4460700fe7ac')")

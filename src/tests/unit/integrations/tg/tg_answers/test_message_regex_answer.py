@@ -28,7 +28,7 @@ from integrations.tg.update import TgUpdate
 from settings import BASE_DIR
 
 
-@pytest.fixture()
+@pytest.fixture
 def callback_update():
     return (BASE_DIR / 'tests' / 'fixtures' / 'button_callback.json').read_text()
 

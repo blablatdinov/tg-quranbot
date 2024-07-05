@@ -27,7 +27,7 @@ import pytest
 import pytz
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _prayers_from_csv(pgsql, city_factory) -> None:
     lines = [
         line.split(';')

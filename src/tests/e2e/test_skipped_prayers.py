@@ -26,7 +26,7 @@ from pathlib import Path
 import pytest
 
 
-@pytest.fixture()
+@pytest.fixture
 def _prayers(db_conn):
     lines = [
         line.split(';')

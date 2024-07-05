@@ -35,7 +35,7 @@ from srv.prayers.pg_updated_user_city import PgUpdatedUserCity
 from srv.users.pg_user import PgUser
 
 
-@pytest.fixture()
+@pytest.fixture
 async def cities(pgsql, city_factory):
     return (
         await city_factory('e22d9142-a39b-4e99-92f7-2082766f0987', 'Kazan'),
@@ -43,7 +43,7 @@ async def cities(pgsql, city_factory):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 async def user(pgsql, cities):
     await pgsql.execute(
         'INSERT INTO users (chat_id, is_active, day, city_id) VALUES (:chat_id, :is_active, :day, :city_id)',
@@ -52,7 +52,7 @@ async def user(pgsql, cities):
     return PgUser.int_ctor(849375, pgsql)
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _prayers(pgsql, cities):
     prayer_times = [
         datetime.time(hour, 30)
@@ -85,7 +85,7 @@ async def _prayers(pgsql, cities):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 async def user_with_changed_city(user, pgsql, cities):
     await UserPrayersKeyboard(
         pgsql,

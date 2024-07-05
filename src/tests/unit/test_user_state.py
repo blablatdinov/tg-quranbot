@@ -28,7 +28,7 @@ from srv.users.redis_user_state import RedisUserState
 from srv.users.user_step import UserStep
 
 
-@pytest.fixture()
+@pytest.fixture
 def fake_redis():
     return aioredis.FakeRedis()
 

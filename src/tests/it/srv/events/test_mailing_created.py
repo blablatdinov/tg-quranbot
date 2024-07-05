@@ -32,7 +32,7 @@ from srv.events.fk_sink import FkSink
 from srv.events.mailing_created import MailingCreatedEvent
 
 
-@pytest.fixture()
+@pytest.fixture
 def _mock_http(respx_mock):
     respx_mock.get('https://api.telegram.org/bottoken/sendMessage?chat_id=483457&text=Hello&parse_mode=html').mock(
         return_value=httpx.Response(
@@ -62,7 +62,7 @@ def _mock_http(respx_mock):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _users(pgsql):
     await pgsql.execute_many(
         '\n'.join([

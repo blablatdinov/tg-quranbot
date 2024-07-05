@@ -28,7 +28,7 @@ import pytz
 from srv.ayats.favorite_ayats_after_remove import FavoriteAyatsAfterRemove
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _db_ayat(pgsql):
     created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
     await pgsql.execute_many(

@@ -32,7 +32,7 @@ from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 from srv.ayats.search_ayat_by_text_callback_answer import SearchAyatByTextCallbackAnswer
 
 
-@pytest.fixture()
+@pytest.fixture
 def search_answer(pgsql, fake_redis):
     debug = True
     return SearchAyatByTextCallbackAnswer(debug, FkAnswer(), fake_redis, pgsql, FkLogSink())

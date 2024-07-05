@@ -25,7 +25,7 @@ import pytest
 from srv.ayats.favorites.user_favorite_ayats import UserFavoriteAyats
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _favorite_ayats(db_ayat, pgsql):
     await pgsql.execute('\n'.join([
         'INSERT INTO users (chat_id) VALUES',

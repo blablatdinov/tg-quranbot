@@ -31,7 +31,7 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.prayers.inline_query_answer import InlineQueryAnswer
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _db_city(city_factory):
     await city_factory(str(uuid.uuid4()), 'Kazan')
 

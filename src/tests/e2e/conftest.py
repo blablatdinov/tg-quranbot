@@ -55,7 +55,7 @@ def bot_name():
     return '@WokeUpSmiled_bot'
 
 
-@pytest.fixture()
+@pytest.fixture
 def _clear_db(settings):
     qbot_connection = psycopg2.connect(str(settings.DATABASE_URL))
     qbot_connection.autocommit = True
@@ -71,7 +71,7 @@ def _clear_db(settings):
     cursor.execute("SELECT setval('prayers_at_user_prayer_at_user_id_seq', 1, false)")
 
 
-@pytest.fixture()
+@pytest.fixture
 def db_conn(settings):
     connection = psycopg2.connect(str(settings.DATABASE_URL))
     connection.autocommit = True
@@ -79,7 +79,7 @@ def db_conn(settings):
     connection.close()
 
 
-@pytest.fixture()
+@pytest.fixture
 def db_query_vals(db_conn):
     def _db_query_vals(query):  # noqa: WPS430
         cursor = db_conn.cursor()
@@ -106,7 +106,7 @@ def _bot_process(rbmq_channel):
     drop_db()
 
 
-@pytest.fixture()
+@pytest.fixture
 def wait_until(bot_name):
     def _wait_until(tg_client, messages_count, retry=50, delay=0.1):  # noqa: WPS430
         for _ in range(retry):
@@ -148,7 +148,7 @@ def rbmq_channel(queues, settings):
     return channel
 
 
-@pytest.fixture()
+@pytest.fixture
 def wait_event(rbmq_channel, queues):
     def _wait_event(count, retry=50, delay=0.1):  # noqa: WPS430, E306
         events = []
@@ -172,7 +172,7 @@ def wait_event(rbmq_channel, queues):
     return _wait_event
 
 
-@pytest.fixture()
+@pytest.fixture
 def tg_client(bot_name):
     asyncio.set_event_loop(asyncio.new_event_loop())
     settings = Settings(_env_file=BASE_DIR.parent / '.env')
