@@ -22,14 +22,45 @@
 
 import pytest
 
+from app_types.fk_async_int import FkAsyncInt
 from srv.users.pg_user import PgUser
 
 
 @pytest.fixture
-async def user_id(pgsql):
-    await pgsql.execute('INSERT INTO users (chat_id, day) VALUES (1, 12)')
+def legacy_id():
+    return 18
+
+
+@pytest.fixture
+def chat_id():
     return 1
 
 
-async def test_day(user_id, pgsql):
-    assert await PgUser.int_ctor(user_id, pgsql).day() == 12
+@pytest.fixture
+def day():
+    return 12
+
+
+@pytest.fixture
+async def db_user(pgsql, chat_id, day, legacy_id):
+    await pgsql.execute(
+        'INSERT INTO users (chat_id, day, legacy_id) VALUES (:chat_id, :day, :legacy_id)',
+        {'chat_id': chat_id, 'day': day, 'legacy_id': legacy_id},
+    )
+    return PgUser.int_ctor(chat_id, pgsql)
+
+
+async def test_user(db_user, day, chat_id):
+    assert await db_user.day() == day
+    assert await db_user.chat_id() == chat_id
+    assert await db_user.is_active()
+
+
+@pytest.mark.usefixtures('db_user')
+async def test_legacy_id_ctor(pgsql, legacy_id):
+    user = PgUser.legacy_id_ctor(
+        FkAsyncInt(legacy_id),
+        pgsql,
+    )
+
+    assert await user.chat_id() == 1
