@@ -32,7 +32,6 @@ from handlers.prayer_names import PrayerNames
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.pg_updated_user_city import PgUpdatedUserCity
-from srv.users.pg_user import PgUser
 
 
 @pytest.fixture

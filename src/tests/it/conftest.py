@@ -31,8 +31,8 @@ from settings import BASE_DIR, Settings
 from srv.ayats.fk_ayat import FkAyat
 from srv.ayats.fk_identifier import FkIdentifier
 from srv.files.fk_file import FkFile
-from srv.prayers.fk_city import FkCity
 from srv.prayers.city import City
+from srv.prayers.fk_city import FkCity
 from srv.users.pg_user import PgUser
 from tests.creating_test_db import apply_migrations, create_db, drop_db
 

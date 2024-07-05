@@ -32,7 +32,6 @@ from loguru import logger
 from integrations.tg.tg_answers import TgEmptyAnswer
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
 from srv.events.rabbitmq_sink import RabbitmqSink
-from srv.users.pg_user import PgUser
 
 
 @pytest.fixture
@@ -156,7 +155,7 @@ async def users(pgsql, city_factory, user_factory):
             },
         ],
     )
-    [await user_factory(358610865, 2, city)]
+    return [await user_factory(358610865, 2, city)]
 
 
 @pytest.mark.usefixtures('users')
