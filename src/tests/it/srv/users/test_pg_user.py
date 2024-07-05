@@ -22,8 +22,8 @@
 
 import pytest
 
-from srv.users.pg_user import PgUser
 from app_types.fk_async_int import FkAsyncInt
+from srv.users.pg_user import PgUser
 
 
 @pytest.fixture
