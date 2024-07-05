@@ -31,10 +31,10 @@ from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
-@pytest.fixture()
-async def _user(pgsql):
+@pytest.fixture
+async def _user(pgsql, city_factory):
     city_id = str(uuid.uuid4())
-    await pgsql.execute("INSERT INTO cities (city_id, name) VALUES (:city_id, 'Казань')", {'city_id': city_id})
+    await city_factory(city_id, 'Казань')
     await pgsql.execute(
         'INSERT INTO users (chat_id, city_id) VALUES (:chat_id, :city_id)',
         {'chat_id': 123, 'city_id': city_id},

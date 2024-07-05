@@ -29,7 +29,7 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.ayats.change_favorite_ayat_answer import ChangeFavoriteAyatAnswer
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _user(pgsql):
     await pgsql.execute('INSERT INTO users (chat_id) VALUES (1)')
 

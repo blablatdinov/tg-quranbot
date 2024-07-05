@@ -47,7 +47,7 @@ class AppWithGetMe(Runable):
 
         :raises InternalBotError: в случае не успешного запроса к getMe
         """
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=5) as client:
             response = await client.get('https://api.telegram.org/bot{0}/getMe'.format(self._token))
             if response.status_code != httpx.codes.OK:
                 raise InternalBotError(response.text)

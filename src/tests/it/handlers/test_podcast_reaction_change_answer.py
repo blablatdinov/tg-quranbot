@@ -33,7 +33,7 @@ from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _once_podcast(pgsql):
     file_id = str(uuid.uuid4())
     await pgsql.execute('INSERT INTO users (chat_id) VALUES (905)')
@@ -50,7 +50,7 @@ async def _once_podcast(pgsql):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _podcasts(pgsql):
     file_ids = [uuid.uuid4() for _ in range(3)]
     await pgsql.execute_many('INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)', [
@@ -69,7 +69,7 @@ async def _podcasts(pgsql):
     await pgsql.execute('INSERT INTO users (chat_id) VALUES (1)')
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _existed_reaction(pgsql, _podcasts):
     query = '\n'.join([
         'INSERT INTO podcast_reactions (user_id, podcast_id, reaction)',

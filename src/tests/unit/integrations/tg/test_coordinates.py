@@ -28,7 +28,7 @@ from integrations.tg.update import TgUpdate
 from settings import BASE_DIR
 
 
-@pytest.fixture()
+@pytest.fixture
 def coordinates_json():
     return FkString(
         (BASE_DIR / 'tests' / 'fixtures' / 'coordinates.json').read_text(),

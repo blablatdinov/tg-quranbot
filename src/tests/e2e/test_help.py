@@ -23,7 +23,7 @@
 import pytest
 
 
-@pytest.fixture()
+@pytest.fixture
 def expected_message():
     return '\n'.join([
         'Этот бот поможет тебе изучить Коран по богословскому переводу Шамиля Аляутдинова. ',

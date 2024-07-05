@@ -20,39 +20,32 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import uuid
-
 import pytest
 
 from exceptions.internal_exceptions import UserNotFoundError
-from srv.prayers.fk_city import FkCity
 from srv.prayers.pg_updated_user_city import PgUpdatedUserCity
 
 
-@pytest.fixture()
-async def _city(pgsql):
-    await pgsql.execute("INSERT INTO cities (city_id, name) VALUES ('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')")
+@pytest.fixture
+async def city(city_factory):
+    return await city_factory('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')
+
+
+@pytest.fixture
+async def _user(pgsql):
     await pgsql.execute('INSERT INTO users (chat_id) VALUES (849357)')
 
 
-@pytest.mark.usefixtures('_city')
-async def test(pgsql):
-    await PgUpdatedUserCity(
-        FkCity(uuid.UUID('080fd3f4-678e-4a1c-97d2-4460700fe7ac'), 'Kazan'),
-        849357,
-        pgsql,
-    ).update()
+@pytest.mark.usefixtures('_user')
+async def test(pgsql, city):
+    await PgUpdatedUserCity(city, 849357, pgsql).update()
 
     assert await pgsql.fetch_val(
         'SELECT city_id FROM users WHERE chat_id = 849357',
-    ) == '080fd3f4-678e-4a1c-97d2-4460700fe7ac'
+    ) == await city.city_id()
 
 
-@pytest.mark.usefixtures('_city')
-async def test_user_not_found(pgsql):
+@pytest.mark.usefixtures('_user')
+async def test_user_not_found(pgsql, city):
     with pytest.raises(UserNotFoundError):
-        await PgUpdatedUserCity(
-            FkCity(uuid.UUID('080fd3f4-678e-4a1c-97d2-4460700fe7ac'), 'Kazan'),
-            84935,
-            pgsql,
-        ).update()
+        await PgUpdatedUserCity(city, 84935, pgsql).update()

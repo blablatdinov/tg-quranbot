@@ -35,7 +35,7 @@ from srv.events.rabbitmq_sink import RabbitmqSink
 from srv.users.pg_user import PgUser
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_http_routes(respx_mock):
     rv = {
         'return_value': httpx.Response(
@@ -72,7 +72,7 @@ def mock_http_routes(respx_mock):
     ]
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_http_ramadan_mode(respx_mock):
     rv = {
         'return_value': httpx.Response(
@@ -103,15 +103,9 @@ def mock_http_ramadan_mode(respx_mock):
     }))).mock(**rv)
 
 
-@pytest.fixture()
-async def users(pgsql):
-    await pgsql.execute_many(
-        'INSERT INTO cities (city_id, name) VALUES (:city_id, :name)',
-        [
-            {'city_id': city_id, 'name': 'Kazan'}
-            for city_id in ('e22d9142-a39b-4e99-92f7-2082766f0987',)
-        ],
-    )
+@pytest.fixture
+async def users(pgsql, city_factory):
+    await city_factory('e22d9142-a39b-4e99-92f7-2082766f0987', 'Kazan')
     await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO prayers (prayer_id, name, time, city_id, day)',

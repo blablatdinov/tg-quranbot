@@ -31,7 +31,7 @@ from srv.events.check_user_status import CheckUsersStatus
 from srv.events.fk_sink import FkSink
 
 
-@pytest.fixture()
+@pytest.fixture
 def _mock_actives(respx_mock):
     rv = {
         'return_value': httpx.Response(
@@ -43,7 +43,7 @@ def _mock_actives(respx_mock):
     respx_mock.get('https://some.domain/sendChatAction?chat_id=3&action=typing').mock(**rv)
 
 
-@pytest.fixture()
+@pytest.fixture
 def _mock_unsubscribed(respx_mock):
     rv = {
         'return_value': httpx.Response(
@@ -57,7 +57,7 @@ def _mock_unsubscribed(respx_mock):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _users(pgsql):
     await pgsql.execute_many('INSERT INTO users (chat_id) VALUES (:chat_id)', [
         {'chat_id': 1},

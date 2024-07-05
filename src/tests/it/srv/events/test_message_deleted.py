@@ -30,7 +30,7 @@ from srv.events.fk_sink import FkSink
 from srv.events.message_deleted import MessageDeleted
 
 
-@pytest.fixture()
+@pytest.fixture
 def _mock_http(respx_mock):
     respx_mock.get('https://api.telegram.org/bottoken/deleteMessage?chat_id=37945&message_id=893457').mock(
         return_value=httpx.Response(

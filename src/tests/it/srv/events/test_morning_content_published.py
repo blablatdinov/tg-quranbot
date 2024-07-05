@@ -36,7 +36,7 @@ from srv.events.rabbitmq_sink import RabbitmqSink
 from srv.users.pg_user import PgUser
 
 
-@pytest.fixture()
+@pytest.fixture
 def _mock_http(respx_mock):
     rv = {
         'return_value': httpx.Response(
@@ -68,7 +68,7 @@ def _mock_http(respx_mock):
         }))).mock(**rv)
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _ayats(pgsql):
     await pgsql.execute(
         'INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)',
@@ -124,7 +124,7 @@ async def _ayats(pgsql):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 async def users(pgsql):
     await pgsql.execute_many(
         'INSERT INTO users (chat_id, is_active, day) VALUES (:chat_id, :is_active, :day)',

@@ -29,7 +29,7 @@ import pytest
 import ujson
 
 
-@pytest.fixture()
+@pytest.fixture
 def _revert_changes(settings):
     yield
     qbot_connection = psycopg2.connect(str(settings.DATABASE_URL))

@@ -46,7 +46,7 @@ class TgAnswerFake(TgAnswer):
         raise FakeError
 
 
-@pytest.fixture()
+@pytest.fixture
 def update():
     return ujson.dumps(
         {

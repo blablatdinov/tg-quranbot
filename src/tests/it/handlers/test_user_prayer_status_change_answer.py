@@ -36,7 +36,7 @@ from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.prayers_text import PrayersText
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _generated_prayers(pgsql, _prayers):
     query = '\n'.join([
         'INSERT INTO prayers_at_user (user_id, prayer_id, is_read) VALUES',

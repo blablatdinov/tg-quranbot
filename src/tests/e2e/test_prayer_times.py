@@ -29,7 +29,7 @@ import pytz
 from telethon import functions, types
 
 
-@pytest.fixture()
+@pytest.fixture
 def _user_city(tg_client, db_conn, bot_name, wait_until):
     tg_client.send_message(bot_name, '/start')
     wait_until(tg_client, 3)
@@ -41,11 +41,12 @@ def _user_city(tg_client, db_conn, bot_name, wait_until):
     db_conn.commit()
 
 
-@pytest.fixture()
+@pytest.fixture
 def expected_message():
     date = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
     dumrt_response = httpx.get(
         'http://dumrt.ru/netcat_files/482/640/Kazan.csv?t={0}'.format(date.strftime('%d%m%y')),
+        timeout=5,
     ).text
     for line in dumrt_response.strip().split('\n'):
         elems = line.strip().split(';')

@@ -29,11 +29,9 @@ from srv.prayers.city_id_by_name import CityIdByName
 from srv.prayers.pg_city import PgCity
 
 
-@pytest.fixture()
-async def _db_city(pgsql):
-    await pgsql.execute("INSERT INTO cities (city_id, name) VALUES (:city_id, 'Казань')", {
-        'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
-    })
+@pytest.fixture
+async def _db_city(city_factory):
+    await city_factory('e9fa0fff-4e6a-47c8-8654-09adf913734a', 'Казань')
 
 
 @pytest.mark.usefixtures('_db_city')

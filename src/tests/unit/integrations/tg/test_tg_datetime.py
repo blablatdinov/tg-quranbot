@@ -31,12 +31,12 @@ from integrations.tg.tg_datetime import TgDateTime
 from integrations.tg.update import TgUpdate
 
 
-@pytest.fixture()
+@pytest.fixture
 def message_update(message_update_factory):
     return FkString(message_update_factory())
 
 
-@pytest.fixture()
+@pytest.fixture
 def stringable_callback_update(callback_update_factory):
     return callback_update_factory()
 

@@ -22,7 +22,6 @@
 
 import asyncio
 import datetime
-import uuid
 from itertools import chain, repeat
 
 import pytest
@@ -31,37 +30,20 @@ from app_types.fk_update import FkUpdate
 from exceptions.internal_exceptions import PrayerAtUserNotCreatedError
 from handlers.prayer_names import PrayerNames
 from services.user_prayer_keyboard import UserPrayersKeyboard
-from srv.prayers.fk_city import FkCity
 from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.pg_updated_user_city import PgUpdatedUserCity
 from srv.users.pg_user import PgUser
 
 
-@pytest.fixture()
-async def cities(pgsql):
-    await pgsql.execute_many(
-        'INSERT INTO cities (city_id, name) VALUES (:city_id, :name)',
-        [
-            {'city_id': city_id, 'name': city_name}
-            for city_id, city_name in (
-                ('e22d9142-a39b-4e99-92f7-2082766f0987', 'Kazan'),
-                ('4bd2af2a-aec9-4660-b710-405940f6e578', 'NabChelny'),
-            )
-        ],
-    )
+@pytest.fixture
+async def cities(city_factory):
     return (
-        FkCity(
-            uuid.UUID('e22d9142-a39b-4e99-92f7-2082766f0987'),
-            'Kazan',
-        ),
-        FkCity(
-            uuid.UUID('4bd2af2a-aec9-4660-b710-405940f6e578'),
-            'NabChelny',
-        ),
+        await city_factory('e22d9142-a39b-4e99-92f7-2082766f0987', 'Kazan'),
+        await city_factory('4bd2af2a-aec9-4660-b710-405940f6e578', 'NabChelny'),
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 async def user(pgsql, cities):
     await pgsql.execute(
         'INSERT INTO users (chat_id, is_active, day, city_id) VALUES (:chat_id, :is_active, :day, :city_id)',
@@ -70,7 +52,7 @@ async def user(pgsql, cities):
     return PgUser.int_ctor(849375, pgsql)
 
 
-@pytest.fixture()
+@pytest.fixture
 async def _prayers(pgsql, cities):
     prayer_times = [
         datetime.time(hour, 30)
@@ -103,7 +85,7 @@ async def _prayers(pgsql, cities):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 async def user_with_changed_city(user, pgsql, cities):
     await UserPrayersKeyboard(
         pgsql,
