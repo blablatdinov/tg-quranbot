@@ -25,7 +25,7 @@
 from django.core.management.base import BaseCommand
 
 from main.models import GhRepo
-from main.service import process_repo
+from main.service import process_repo, GhNewIssue, GhClonedRepo, pygithub_client
 
 
 class Command(BaseCommand):
@@ -36,4 +36,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """Entrypoint."""
         for repo in GhRepo.objects.all():
-            process_repo(repo.id)
+            process_repo(
+                repo.id,
+                GhClonedRepo(repo),
+                GhNewIssue(pygithub_client(repo.installation_id).get_repo(repo.full_name)),
+            )

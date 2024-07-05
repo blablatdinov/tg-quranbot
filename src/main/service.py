@@ -24,14 +24,16 @@
 
 import datetime
 import tempfile
+import zipfile
 from pathlib import Path
-from typing import TypedDict
+from typing import Protocol, TypedDict, final
 
+import attrs
 import yaml
 from django.conf import settings
 from django.template import Context, Template
 from git import Repo
-from github import Auth, Github
+from github import Auth, Github, Repository
 
 from main.algorithms import files_sorted_by_last_changes, files_sorted_by_last_changes_from_db
 from main.models import GhRepo, TouchRecord
@@ -59,7 +61,7 @@ def read_config(config: str) -> ConfigDict:
 
 def config_or_default(repo_path: Path) -> ConfigDict:
     """Read or default config."""
-    config_file = repo_path.glob('.revive-bot.*')
+    config_file = list(repo_path.glob('.revive-bot.*'))
     if config_file:
         return read_config(next(iter(config_file)).read_text())
     return ConfigDict({
@@ -83,27 +85,96 @@ def sync_touch_records(files: list[str], repo_id: int) -> None:
             )
 
 
-def process_repo(repo_id: int):
+class ClonedRepo(Protocol):
+    """Cloned git repository."""
+
+    def clone_to(self, path: Path) -> Path:
+        """Run cloning."""
+
+
+class NewIssue(Protocol):
+    """New issue."""
+
+    def create(self, title: str, content: str) -> None:
+        """Creating issue."""
+
+
+@final
+@attrs.define(frozen=True)
+class GhNewIssue(Protocol):
+    """New issue in github."""
+
+    _repo: Repository
+
+    def create(self, title: str, content: str) -> None:
+        """Creating issue."""
+        self._repo.create_issue(title, content)
+
+
+@final
+class FkNewIssue(Protocol):
+    """Fk issue storage."""
+
+    issues: list
+
+    def __init__(self) -> None:
+        """Ctor."""
+        self.issues = []
+
+    def create(self, title: str, content: str) -> None:
+        """Creating issue."""
+        self.issues.append({
+            'title': title,
+            'content': content,
+        })
+
+
+@final
+@attrs.define(frozen=True)
+class FkClonedRepo(ClonedRepo):
+    """Fk git repo."""
+
+    _zipped_repo: Path
+
+    def clone_to(self, path: Path):
+        """Unzipping repo from archieve."""
+        with zipfile.ZipFile(self._zipped_repo, 'r') as zip_ref:
+            zip_ref.extractall(path)
+        return path
+
+
+@final
+@attrs.define(frozen=True)
+class GhClonedRepo(ClonedRepo):
+    """Git repo from github."""
+
+    _gh_repo: GhRepo
+
+    def clone_to(self, path: Path) -> Path:
+        """Cloning from github."""
+        gh = pygithub_client(self._gh_repo.installation_id)
+        repo = gh.get_repo(self._gh_repo.full_name)
+        gh.close()
+        Repo.clone_from(repo.clone_url, path)
+        return path
+
+
+def process_repo(repo_id: int, cloned_repo: ClonedRepo, new_issue: NewIssue):
     """Processing repo."""
-    gh_repo = GhRepo.objects.get(id=repo_id)
-    gh = pygithub_client(gh_repo.installation_id)
-    repo = gh.get_repo(gh_repo.full_name)
-    gh.close()
     with tempfile.TemporaryDirectory() as tmpdirname:
-        Repo.clone_from(repo.clone_url, tmpdirname)
-        repo_path = Path(tmpdirname)
+        repo_path = cloned_repo.clone_to(Path(tmpdirname))
         files_for_search = list(repo_path.glob('**/*.py'))
         config = config_or_default(repo_path)
         got = files_sorted_by_last_changes_from_db(
             repo_id,
             files_sorted_by_last_changes(repo_path, files_for_search),
-            tmpdirname,
+            repo_path,
         )
     stripped_file_list = sorted(
         [
             (
                 str(path).replace(
-                    '{0}/'.format(tmpdirname),
+                    '{0}/'.format(repo_path),
                     '',
                 ),
                 points,
@@ -113,7 +184,8 @@ def process_repo(repo_id: int):
         key=lambda x: (x[1], str(x[0])),
         reverse=True,
     )[:config['limit']]
-    repo.create_issue(
+    stripped_file_list = [file for file, _ in stripped_file_list]
+    new_issue.create(
         'Issue from revive-code-bot',
         Template('\n'.join([
             '{% for file in files %}- [ ] `{{ file }}`\n{% endfor %}\n',
@@ -122,17 +194,10 @@ def process_repo(repo_id: int):
             '2. Clean files must be marked in checklist',
             '3. Close issue',
         ])).render(Context({
-            'files': [
-                file
-                for file, _ in stripped_file_list
-            ],
+            'files': stripped_file_list,
         })),
     )
     sync_touch_records(
-        [
-            file
-            for file, _ in stripped_file_list
-            if file in stripped_file_list
-        ],
+        stripped_file_list,
         repo_id,
     )

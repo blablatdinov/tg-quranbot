@@ -110,5 +110,3 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-GH_PRIVATE_KEY = env('GH_PRIVATE_KEY')
