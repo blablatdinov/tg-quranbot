@@ -42,12 +42,8 @@ def day():
 
 
 @pytest.fixture
-async def db_user(pgsql, chat_id, day, legacy_id):
-    await pgsql.execute(
-        "INSERT INTO users (chat_id, day, legacy_id, is_active) VALUES (:chat_id, :day, :legacy_id, 'true')",
-        {'chat_id': chat_id, 'day': day, 'legacy_id': legacy_id},
-    )
-    return PgUser.int_ctor(chat_id, pgsql)
+async def db_user(pgsql, chat_id, day, legacy_id, user_factory):
+    return await user_factory(chat_id, day=day, legacy_id=legacy_id)
 
 
 async def test_user(db_user, day, chat_id):

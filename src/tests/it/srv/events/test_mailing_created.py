@@ -63,18 +63,11 @@ def _mock_http(respx_mock):
 
 
 @pytest.fixture
-async def _users(pgsql):
-    await pgsql.execute_many(
-        '\n'.join([
-            'INSERT INTO users (chat_id)',
-            'VALUES',
-            '(:chat_id)',
-        ]),
-        [{'chat_id': 483457}],
-    )
+async def _user(user_factory):
+    await user_factory(483457)
 
 
-@pytest.mark.usefixtures('_mock_http', '_users')
+@pytest.mark.usefixtures('_mock_http', '_user')
 async def test(pgsql, settings_ctor):
     await MailingCreatedEvent(
         TgEmptyAnswer('token'),

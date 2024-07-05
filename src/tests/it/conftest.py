@@ -130,17 +130,24 @@ def city_factory(pgsql):
 
 @pytest.fixture
 def user_factory(pgsql):
-    async def _user_factory(chat_id, day=2, city: City | None = None, legacy_id: int | None = None):  # noqa: WPS430
+    async def _user_factory(
+        chat_id,
+        day=2,
+        city: City | None = None,
+        legacy_id: int | None = None,
+        is_active: bool = True,
+    ):  # noqa: WPS430
         await pgsql.execute(
             '\n'.join([
                 'INSERT INTO users (chat_id, day, city_id, is_active, legacy_id) VALUES',
-                "(:chat_id, :day, :city_id, 'true', :legacy_id)",
+                '(:chat_id, :day, :city_id, :is_active, :legacy_id)',
             ]),
             {
                 'chat_id': chat_id,
                 'day': day or 2,
-                'city_id': None if not city else await city.city_id(),
+                'city_id': await city.city_id() if city else None,
                 'legacy_id': legacy_id or None,
+                'is_active': is_active,
             },
         )
         return PgUser.int_ctor(chat_id, pgsql)
@@ -148,9 +155,9 @@ def user_factory(pgsql):
 
 
 @pytest.fixture
-async def _prayers(pgsql, city_factory):
-    await city_factory('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')
-    await pgsql.execute("INSERT INTO users (chat_id, city_id) VALUES (905, '080fd3f4-678e-4a1c-97d2-4460700fe7ac')")
+async def _prayers(pgsql, city_factory, user_factory):
+    city = await city_factory('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')
+    await user_factory(905, city=city)
     query = '\n'.join([
         'INSERT INTO prayers (prayer_id, name, "time", city_id, day) VALUES',
         "(1, 'fajr', '05:43:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '2023-12-19'),",

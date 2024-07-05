@@ -28,15 +28,13 @@ import pytz
 
 
 @pytest.fixture
-async def _prayers_from_csv(pgsql, city_factory) -> None:
+async def _prayers_from_csv(pgsql, city_factory, user_factory) -> None:
     lines = [
         line.split(';')
         for line in Path('src/tests/fixtures/prayers.csv').read_text(encoding='utf-8').splitlines()
     ]
-    await city_factory('bc932b25-707e-4af1-8b6e-facb5e6dfa9b', 'Казань')
-    await pgsql.execute(
-        "INSERT INTO users (chat_id, city_id) VALUES (358610865, 'bc932b25-707e-4af1-8b6e-facb5e6dfa9b')",
-    )
+    city = await city_factory('bc932b25-707e-4af1-8b6e-facb5e6dfa9b', 'Казань')
+    await user_factory(358610865, city=city)
     query = '\n'.join([
         'INSERT INTO prayers (prayer_id, name, time, city_id, day)',
         'VALUES',
