@@ -116,11 +116,11 @@ async def db_ayat(pgsql):
 
 
 @pytest.fixture()
-async def city_factory(pgsql):
+def city_factory(pgsql):
     async def _city_factory(city_id, name):
         await pgsql.execute(
             'INSERT INTO cities (city_id, name) VALUES (:city_id, :city_name)',
-            {'city_id': city_id, 'city_name': name}
+            {'city_id': city_id, 'city_name': name},
         )
         return FkCity(city_id, name)
     return _city_factory
