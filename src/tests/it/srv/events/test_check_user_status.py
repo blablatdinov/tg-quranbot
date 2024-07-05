@@ -58,12 +58,10 @@ def _mock_unsubscribed(respx_mock):
 
 
 @pytest.fixture
-async def _users(pgsql):
-    await pgsql.execute_many('INSERT INTO users (chat_id) VALUES (:chat_id)', [
-        {'chat_id': 1},
-        {'chat_id': 2},
-        {'chat_id': 3},
-    ])
+async def _users(pgsql, user_factory):
+    await user_factory(1)
+    await user_factory(2)
+    await user_factory(3)
 
 
 @pytest.mark.usefixtures('_users', '_mock_actives')
