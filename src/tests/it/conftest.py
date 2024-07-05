@@ -32,6 +32,8 @@ from srv.ayats.fk_ayat import FkAyat
 from srv.ayats.fk_identifier import FkIdentifier
 from srv.files.fk_file import FkFile
 from srv.prayers.fk_city import FkCity
+from srv.prayers.city import City
+from srv.users.pg_user import PgUser
 from tests.creating_test_db import apply_migrations, create_db, drop_db
 
 
@@ -124,6 +126,25 @@ def city_factory(pgsql):
         )
         return FkCity(city_id, name)
     return _city_factory
+
+
+@pytest.fixture
+def user_factory(pgsql):
+    async def _user_factory(chat_id, day=2, city: City | None = None, legacy_id: int | None = None):  # noqa: WPS430
+        await pgsql.execute(
+            '\n'.join([
+                'INSERT INTO users (chat_id, day, city_id, is_active, legacy_id) VALUES',
+                "(:chat_id, :day, :city_id, 'true', :legacy_id)",
+            ]),
+            {
+                'chat_id': chat_id,
+                'day': day or 2,
+                'city_id': None if not city else await city.city_id(),
+                'legacy_id': legacy_id or None,
+            },
+        )
+        return PgUser.int_ctor(chat_id, pgsql)
+    return _user_factory
 
 
 @pytest.fixture

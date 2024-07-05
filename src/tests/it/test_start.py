@@ -32,10 +32,8 @@ from srv.events.fk_sink import FkSink
 
 
 @pytest.fixture
-async def _existed_user(pgsql):
-    await pgsql.execute(
-        'INSERT INTO users (chat_id, day, legacy_id) VALUES (321, 2, 1)',
-    )
+async def _existed_user(user_factory):
+    await user_factory(321, 2, '', 1)
 
 
 @pytest.fixture
