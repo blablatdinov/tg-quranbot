@@ -33,7 +33,7 @@ from srv.events.fk_sink import FkSink
 
 @pytest.fixture
 async def _existed_user(user_factory):
-    await user_factory(321, 2, '', 1)
+    await user_factory(321, 2, city=None, legacy_id=1)
 
 
 @pytest.fixture
