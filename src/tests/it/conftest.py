@@ -130,7 +130,7 @@ def city_factory(pgsql):
 
 @pytest.fixture
 def user_factory(pgsql):
-    async def _user_factory(
+    async def _user_factory(  # noqa: WPS430
         chat_id,
         day=2,
         city: City | None = None,
