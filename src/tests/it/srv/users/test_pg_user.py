@@ -42,7 +42,7 @@ def day():
 
 
 @pytest.fixture
-async def db_user(pgsql, chat_id, day, legacy_id, user_factory):
+async def db_user(chat_id, day, legacy_id, user_factory):
     return await user_factory(chat_id, day=day, legacy_id=legacy_id)
 
 

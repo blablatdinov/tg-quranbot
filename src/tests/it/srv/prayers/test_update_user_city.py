@@ -32,7 +32,7 @@ async def city(city_factory):
 
 
 @pytest.fixture
-async def _user(pgsql, user_factory):
+async def _user(user_factory):
     await user_factory(849357)
 
 

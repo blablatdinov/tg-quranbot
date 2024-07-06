@@ -31,7 +31,7 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 @pytest.fixture
-async def _user(pgsql, city_factory, user_factory):
+async def _user(city_factory, user_factory):
     city_id = str(uuid.uuid4())
     city = await city_factory(city_id, 'Казань')
     await user_factory(123, city=city)

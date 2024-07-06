@@ -124,7 +124,7 @@ async def _ayats(pgsql):
 
 
 @pytest.fixture
-async def users(pgsql, user_factory):
+async def users(user_factory):
     return [
         await user_factory(358610865, 2),
         await user_factory(206497847, 3),

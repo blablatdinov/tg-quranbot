@@ -58,7 +58,7 @@ def _mock_unsubscribed(respx_mock):
 
 
 @pytest.fixture
-async def _users(pgsql, user_factory):
+async def _users(user_factory):
     await user_factory(1)
     await user_factory(2)
     await user_factory(3)
