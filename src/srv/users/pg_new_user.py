@@ -74,8 +74,8 @@ class PgNewUser(NewUser):
         self._logger.debug('Insert in DB User <{0}>...'.format(chat_id))
         query = '\n'.join([
             'INSERT INTO',
-            'users (chat_id, referrer_id, day)',
-            'VALUES (:chat_id, :referrer_id, 2)',
+            'users (chat_id, referrer_id, day, is_active)',
+            'VALUES (:chat_id, :referrer_id, 2, true)',
             'RETURNING (chat_id, referrer_id)',
         ])
         try:

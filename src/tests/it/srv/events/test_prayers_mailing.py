@@ -32,7 +32,6 @@ from loguru import logger
 from integrations.tg.tg_answers import TgEmptyAnswer
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
 from srv.events.rabbitmq_sink import RabbitmqSink
-from srv.users.pg_user import PgUser
 
 
 @pytest.fixture
@@ -104,8 +103,8 @@ def mock_http_ramadan_mode(respx_mock):
 
 
 @pytest.fixture
-async def users(pgsql, city_factory):
-    await city_factory('e22d9142-a39b-4e99-92f7-2082766f0987', 'Kazan')
+async def users(pgsql, city_factory, user_factory):
+    city = await city_factory('e22d9142-a39b-4e99-92f7-2082766f0987', 'Kazan')
     await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO prayers (prayer_id, name, time, city_id, day)',
@@ -156,16 +155,7 @@ async def users(pgsql, city_factory):
             },
         ],
     )
-    await pgsql.execute_many(
-        "INSERT INTO users (chat_id, is_active, day, city_id) VALUES (:chat_id, 't', 2, :city_id)",
-        [
-            {'chat_id': 358610865, 'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987'},
-        ],
-    )
-    return [
-        PgUser.int_ctor(row['chat_id'], pgsql)
-        for row in await pgsql.fetch_all('SELECT chat_id FROM users')
-    ]
+    return [await user_factory(358610865, 2, city)]
 
 
 @pytest.mark.usefixtures('users')

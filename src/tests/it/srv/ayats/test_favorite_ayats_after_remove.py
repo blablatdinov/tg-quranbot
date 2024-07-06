@@ -29,7 +29,7 @@ from srv.ayats.favorite_ayats_after_remove import FavoriteAyatsAfterRemove
 
 
 @pytest.fixture
-async def _db_ayat(pgsql):
+async def _db_ayat(pgsql, user_factory):
     created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
     await pgsql.execute_many(
         '\n'.join([
@@ -87,9 +87,7 @@ async def _db_ayat(pgsql):
             },
         ],
     )
-    await pgsql.execute(
-        'INSERT INTO users (chat_id) VALUES (1)',
-    )
+    await user_factory(1)
     await pgsql.execute_many(
         'INSERT INTO favorite_ayats (user_id, ayat_id) VALUES (:user_id, :ayat_id)', [
             {'user_id': 1, 'ayat_id': 1},

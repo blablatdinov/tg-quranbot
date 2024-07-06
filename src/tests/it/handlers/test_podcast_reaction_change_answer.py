@@ -34,9 +34,9 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 @pytest.fixture
-async def _once_podcast(pgsql):
+async def _once_podcast(pgsql, user_factory):
     file_id = str(uuid.uuid4())
-    await pgsql.execute('INSERT INTO users (chat_id) VALUES (905)')
+    await user_factory(905)
     await pgsql.execute(
         '\n'.join([
             'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
@@ -51,7 +51,7 @@ async def _once_podcast(pgsql):
 
 
 @pytest.fixture
-async def _podcasts(pgsql):
+async def _podcasts(pgsql, user_factory):
     file_ids = [uuid.uuid4() for _ in range(3)]
     await pgsql.execute_many('INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)', [
         {
@@ -66,7 +66,7 @@ async def _podcasts(pgsql):
             'file_id': str(file_id),
         } for podcast_id, file_id in enumerate(file_ids, start=1)
     ])
-    await pgsql.execute('INSERT INTO users (chat_id) VALUES (1)')
+    await user_factory(1)
 
 
 @pytest.fixture

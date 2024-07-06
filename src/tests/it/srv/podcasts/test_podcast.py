@@ -41,12 +41,9 @@ from srv.podcasts.pg_podcast import PgPodcast
 
 
 @pytest.fixture
-async def _db_podcast(pgsql):
+async def _db_podcast(pgsql, user_factory):
     file_id = str(uuid.uuid4())
-    await pgsql.execute(
-        'INSERT INTO users (chat_id) VALUES (:chat_id)',
-        {'chat_id': 123},
-    )
+    await user_factory(123)
     await pgsql.execute(
         '\n'.join([
             'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
@@ -61,7 +58,7 @@ async def _db_podcast(pgsql):
 
 
 @pytest.fixture
-async def _podcast_reactions(pgsql):
+async def _podcast_reactions(pgsql, user_factory):
     file_ids = [str(uuid.uuid4()) for _ in range(3)]
     await pgsql.execute_many(
         '\n'.join([
@@ -77,13 +74,8 @@ async def _podcast_reactions(pgsql):
         'INSERT INTO podcasts (file_id) VALUES (:file_id)',
         [{'file_id': file_id} for file_id in file_ids],
     )
-    await pgsql.execute_many(
-        'INSERT INTO users (chat_id) VALUES (:chat_id)',
-        [
-            {'chat_id': 937584},
-            {'chat_id': 87945},
-        ],
-    )
+    await user_factory(937584)
+    await user_factory(87945)
     await pgsql.execute_many(
         'INSERT INTO podcast_reactions (podcast_id, reaction, user_id) VALUES (:podcast_id, :reaction, :user_id)',
         [

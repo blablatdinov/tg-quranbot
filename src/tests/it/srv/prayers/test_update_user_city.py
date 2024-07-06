@@ -32,8 +32,8 @@ async def city(city_factory):
 
 
 @pytest.fixture
-async def _user(pgsql):
-    await pgsql.execute('INSERT INTO users (chat_id) VALUES (849357)')
+async def _user(user_factory):
+    await user_factory(849357)
 
 
 @pytest.mark.usefixtures('_user')

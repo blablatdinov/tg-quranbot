@@ -32,7 +32,6 @@ from handlers.prayer_names import PrayerNames
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.pg_updated_user_city import PgUpdatedUserCity
-from srv.users.pg_user import PgUser
 
 
 @pytest.fixture
@@ -44,12 +43,8 @@ async def cities(city_factory):
 
 
 @pytest.fixture
-async def user(pgsql, cities):
-    await pgsql.execute(
-        'INSERT INTO users (chat_id, is_active, day, city_id) VALUES (:chat_id, :is_active, :day, :city_id)',
-        {'chat_id': 849375, 'is_active': True, 'day': 2, 'city_id': await cities[0].city_id()},
-    )
-    return PgUser.int_ctor(849375, pgsql)
+async def user(cities, user_factory):
+    return await user_factory(849375, 2, city=cities[0])
 
 
 @pytest.fixture

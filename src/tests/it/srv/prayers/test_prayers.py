@@ -20,7 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import urllib
 import uuid
 
 import pytest
@@ -32,13 +31,10 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 @pytest.fixture
-async def _user(pgsql, city_factory):
+async def _user(city_factory, user_factory):
     city_id = str(uuid.uuid4())
-    await city_factory(city_id, 'Казань')
-    await pgsql.execute(
-        'INSERT INTO users (chat_id, city_id) VALUES (:chat_id, :city_id)',
-        {'chat_id': 123, 'city_id': city_id},
-    )
+    city = await city_factory(city_id, 'Казань')
+    await user_factory(123, city=city)
 
 
 @pytest.mark.usefixtures('_user')
@@ -49,15 +45,12 @@ async def test_not_found_prayer(pgsql, fake_redis, time_machine, settings_ctor):
     ).build(FkUpdate('{"chat":{"id":123},"message":{"message_id":1,"text":"Время намаза"}}'))
 
     assert len(got) == 2
-    assert urllib.parse.unquote(
-        str(got[0].url),
-    ).replace('+', ' ') == ''.join([
-        'https://some.domain/sendMessage',
-        '?chat_id=123&text=Время намаза на 30.08.2023 для города Казань не найдено',
-    ])
-    assert urllib.parse.unquote(
-        str(got[1].url),
-    ).replace('+', ' ') == ''.join([
-        'https://some.domain/sendMessage',
-        '?chat_id=321&text=Время намаза на 30.08.2023 для города Казань не найдено',
-    ])
+    assert got[0].url.path == got[1].url.path == '/sendMessage'
+    assert dict(got[0].url.params) == {
+        'chat_id': '123',
+        'text': 'Время намаза на 30.08.2023 для города Казань не найдено',
+    }
+    assert dict(got[1].url.params) == {
+        'chat_id': '321',
+        'text': 'Время намаза на 30.08.2023 для города Казань не найдено',
+    }

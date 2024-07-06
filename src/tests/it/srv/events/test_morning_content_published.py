@@ -33,7 +33,6 @@ from loguru import logger
 from integrations.tg.tg_answers import TgEmptyAnswer
 from srv.events.morning_content_published import MorningContentPublishedEvent
 from srv.events.rabbitmq_sink import RabbitmqSink
-from srv.users.pg_user import PgUser
 
 
 @pytest.fixture
@@ -125,19 +124,12 @@ async def _ayats(pgsql):
 
 
 @pytest.fixture
-async def users(pgsql):
-    await pgsql.execute_many(
-        'INSERT INTO users (chat_id, is_active, day) VALUES (:chat_id, :is_active, :day)',
-        [
-            {'chat_id': 358610865, 'is_active': True, 'day': 2},
-            {'chat_id': 206497847, 'is_active': True, 'day': 3},
-            {'chat_id': 827078672, 'is_active': False, 'day': 5},
-            {'chat_id': 24391797, 'is_active': True, 'day': 2},
-        ],
-    )
+async def users(user_factory):
     return [
-        PgUser.int_ctor(row['chat_id'], pgsql)
-        for row in await pgsql.fetch_all('SELECT chat_id FROM users')
+        await user_factory(358610865, 2),
+        await user_factory(206497847, 3),
+        await user_factory(827078672, 5, is_active=False),
+        await user_factory(24391797, 2),
     ]
 
 
