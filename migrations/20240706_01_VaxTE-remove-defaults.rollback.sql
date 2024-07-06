@@ -22,4 +22,4 @@
 -- Remove defaults
 -- depends: 20240607_01_PlBa5-prayer-at-user-unique-together
 
-ALTER TABLE users ALTER COLUMN is_active SET default true;
+ALTER TABLE users ALTER COLUMN is_active SET DEFAULT true;
