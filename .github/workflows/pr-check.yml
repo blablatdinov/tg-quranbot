@@ -114,5 +114,5 @@ jobs:
       - uses: actions/setup-node@v4
       - name: Install cspell
         run: npm i cspell@8.10.4 @cspell/dict-ru_ru@2.2.1 -g
-      - name: Run yaspeller
-        run: cspell **/*.{py,md} --cache --show-suggestions --no-progress
+      - name: Run cspell
+        run: cspell **/*.{py,md}
