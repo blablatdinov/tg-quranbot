@@ -3097,13 +3097,13 @@ cryptography = ">=35.0.0"
 
 [[package]]
 name = "types-pytest-lazy-fixture"
-version = "0.6.3.20240310"
+version = "0.6.3.20240707"
 description = "Typing stubs for pytest-lazy-fixture"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "types-pytest-lazy-fixture-0.6.3.20240310.tar.gz", hash = "sha256:990bb96f556369ce8e37562171e75ad52956444b5a71c85b3e7f51db4cafcc7b"},
-    {file = "types_pytest_lazy_fixture-0.6.3.20240310-py3-none-any.whl", hash = "sha256:50618fba86e576e72cb3c200d940ad6d2a899c3493239806b907a964fbb527c6"},
+    {file = "types-pytest-lazy-fixture-0.6.3.20240707.tar.gz", hash = "sha256:c6d93433977081bbb6b38bc521d4429113b23e7b14575db9e3948237e6691962"},
+    {file = "types_pytest_lazy_fixture-0.6.3.20240707-py3-none-any.whl", hash = "sha256:b0493cb5ad3ff0fbd8ce0d83c07aa867d0770bba5c6c87a09eac0ad8ef86700d"},
 ]
 
 [[package]]
@@ -3489,4 +3489,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "dc31874b3ea4419f488e17fbd651bbda90486333f7382bcfff8f104acff88f43"
+content-hash = "bff1a5cb6598f64bfddb9decb28a09885f0a67c32dd1930d1f286b2ec0d59208"
