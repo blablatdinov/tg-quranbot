@@ -42,7 +42,7 @@ class CallbackQueryNotFoundError(BaseAppError):
 
 @final
 class MessageIdNotFoundError(BaseAppError):
-    """Идентификатор сообщения не найден."""
+    """Идентификатор сообщеня не найден."""
 
 
 @final
