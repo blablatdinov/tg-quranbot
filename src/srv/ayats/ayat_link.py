@@ -26,6 +26,7 @@ import attrs
 from pyeo import elegant
 
 from app_types.stringable import SupportsStr
+from services.regular_expression import IntableRegularExpression
 
 _AyatNum: TypeAlias = str
 
@@ -59,14 +60,5 @@ class AyatLink(SupportsStr):
         return 'https://umma.ru{0}#{1}-{2}'.format(
             self._sura_link,
             self._sura_num,
-            self._ayat_first_digit(self._ayat_num),
+            int(IntableRegularExpression(self._ayat_num)),
         )
-
-    def _ayat_first_digit(self, ayat_num: _AyatNum) -> str:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_ayat_first_digit"
-        num = ''
-        for char in ayat_num:
-            if not char.isdigit():
-                break
-            num += char
-        return num
