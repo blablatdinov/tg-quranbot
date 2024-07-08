@@ -51,9 +51,8 @@ class HighlightedSearchAnswer(TgAnswer):
         requests = await self._origin.build(update)
         search_query = await self._search_query.read()
         for request in requests:
-            try:
-                text = request.url.params['text']
-            except KeyError:
+            text = request.url.params.get('text')
+            if not text:
                 new_requests.append(request)
                 continue
             if search_query in text:
@@ -61,7 +60,7 @@ class HighlightedSearchAnswer(TgAnswer):
                     method=request.method,
                     url=request.url.copy_set_param(
                         'text',
-                        text.replace('+', ' ') .replace(search_query, '<b>{0}</b>'.format(search_query)),
+                        request.url.params['text'].replace(search_query, '<b>{0}</b>'.format(search_query)),
                     ),
                     headers=request.headers,
                 ))
