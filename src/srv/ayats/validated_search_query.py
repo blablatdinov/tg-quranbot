@@ -46,8 +46,7 @@ class ValidatedSearchQuery(SearchQuery):
         """
         max_sura_num = 114
         sura_num = self._origin.sura()
-        if not 0 < sura_num <= max_sura_num:  # noqa: WPS508
-            # https://github.com/wemake-services/wemake-python-styleguide/issues/1942
+        if sura_num not in range(1, max_sura_num + 1):
             raise SuraNotFoundError
         return sura_num
 

@@ -27,11 +27,15 @@ from srv.ayats.fk_search_query import FkSearchQuery
 from srv.ayats.validated_search_query import ValidatedSearchQuery
 
 
-def test():
-    query = ValidatedSearchQuery(FkSearchQuery(1, '1'))
+@pytest.mark.parametrize(('sura_id', 'ayat_num'), [
+    (1, '1'),
+    (114, '1'),
+])
+def test(sura_id, ayat_num):
+    query = ValidatedSearchQuery(FkSearchQuery(sura_id, ayat_num))
 
-    assert query.sura() == 1
-    assert query.ayat() == '1'
+    assert query.sura() == sura_id
+    assert query.ayat() == ayat_num
 
 
 @pytest.mark.parametrize('sura_id', [-1, 115])
