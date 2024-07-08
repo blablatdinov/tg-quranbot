@@ -23,10 +23,10 @@
 from typing import TypeAlias, final, override
 
 import attrs
-from services.regular_expression import IntableRegularExpression
 from pyeo import elegant
 
 from app_types.stringable import SupportsStr
+from services.regular_expression import IntableRegularExpression
 
 _AyatNum: TypeAlias = str
 
