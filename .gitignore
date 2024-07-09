@@ -241,3 +241,5 @@ me.session-journal
 
 # Visual studio code
 .vscode
+
+.cspellcache
