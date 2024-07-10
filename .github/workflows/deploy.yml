@@ -73,7 +73,7 @@ jobs:
         # run: echo "::set-output name=TAG_NAME::$(echo ${GITHUB_REF#refs/tags/})"
         run: echo "::set-output name=TAG_NAME::$(echo ${GITHUB_SHA})"
       - name: Build Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
