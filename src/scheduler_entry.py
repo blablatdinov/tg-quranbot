@@ -80,7 +80,7 @@ async def main() -> None:
     logger.info('Starting the scheduler...')
     try:
         while True:  # noqa: WPS457
-            await asyncio.sleep(1)
+            await asyncio.sleep(1)  # noqa: ASYNC110
     except KeyboardInterrupt:
         logger.info('Stopping the scheduler...')
         scheduler.shutdown()
