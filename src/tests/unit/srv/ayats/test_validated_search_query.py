@@ -28,8 +28,21 @@ from srv.ayats.fk_search_query import FkSearchQuery
 from srv.ayats.validated_search_query import ValidatedSearchQuery
 
 
+def _sura_num_valid(sura_id):
+    num_greater = sura_id > 0
+    return num_greater and sura_id < 115
+
+
+def _sura_num_invalid(num):
+    return num < 1 or num > 114
+
+
+def _ayat_num_invalid(ayat_num):
+    return ayat_num.isdigit() and int(ayat_num) < 1
+
+
 @given(
-    strategies.integers().filter(lambda sura_id: sura_id > 0 and sura_id < 115),
+    strategies.integers().filter(_sura_num_valid),
     strategies.integers().filter(lambda ayat_num: ayat_num > 0),
 )
 @example(1, '1')
@@ -41,7 +54,7 @@ def test(sura_id, ayat_num):
     assert query.ayat() == str(ayat_num)
 
 
-@given(strategies.integers().filter(lambda num: num < 1 or num > 114))
+@given(strategies.integers().filter(_sura_num_invalid))
 @example(0)
 @example(-1)
 @example(115)
@@ -53,7 +66,7 @@ def test_fail_sura(sura_id):
 
 @given(
     strategies.text().filter(lambda ayat_num: not ayat_num.isdigit())
-    | strategies.text().filter(lambda ayat_num: ayat_num.isdigit() and int(ayat_num) < 1),
+    | strategies.text().filter(_ayat_num_invalid),
 )
 @example('0')
 @example('1iw')
