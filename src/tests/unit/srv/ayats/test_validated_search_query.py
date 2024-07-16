@@ -21,36 +21,41 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import pytest
+from hypothesis import example, given, strategies
 
 from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
 from srv.ayats.fk_search_query import FkSearchQuery
 from srv.ayats.validated_search_query import ValidatedSearchQuery
 
 
-@pytest.mark.parametrize(('sura_id', 'ayat_num'), [
-    (1, '1'),
-    (114, '1'),
-])
+@given(
+    strategies.integers().filter(lambda sura_id: sura_id > 0 and sura_id < 115),
+    strategies.integers().filter(lambda ayat_num: ayat_num > 0),
+)
+@example(1, '1')
+@example(114, '1')
 def test(sura_id, ayat_num):
-    query = ValidatedSearchQuery(FkSearchQuery(sura_id, ayat_num))
+    query = ValidatedSearchQuery(FkSearchQuery(sura_id, str(ayat_num)))
 
     assert query.sura() == sura_id
-    assert query.ayat() == ayat_num
+    assert query.ayat() == str(ayat_num)
 
 
-@pytest.mark.parametrize('sura_id', [-1, 115])
+@given(strategies.integers().filter(lambda num: num < 1 or num > 114))
+@example(0)
+@example(-1)
+@example(115)
 def test_fail_sura(sura_id):
     query = ValidatedSearchQuery(FkSearchQuery(sura_id, '1'))
     with pytest.raises(SuraNotFoundError):
         query.sura()
 
 
-@pytest.mark.parametrize('ayat_num', [
-    '0',
-    '1iw',
-    '1,5',
-    '1-5',
-])
+@given(strategies.text().filter(lambda ayat_num: not ayat_num.isdigit()))
+@example('0')
+@example('1iw')
+@example('1,5')
+@example('1-5')
 def test_fail(ayat_num):
     query = ValidatedSearchQuery(FkSearchQuery(1, ayat_num))
     with pytest.raises(AyatNotFoundError):
