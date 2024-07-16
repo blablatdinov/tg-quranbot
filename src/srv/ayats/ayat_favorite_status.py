@@ -25,7 +25,7 @@ from typing import TypeAlias, final, override
 import attrs
 from pyeo import elegant
 
-from services.regular_expression import IntableRegularExpression
+from services.instable_regex import IntableRegex
 from srv.ayats.ayat_identifier import AyatId
 from srv.ayats.favorite_ayat_status import FavoriteAyatStatus
 
@@ -60,7 +60,7 @@ class AyatFavoriteStatus(FavoriteAyatStatus):
 
         :return: int
         """
-        return int(IntableRegularExpression(self._source))
+        return int(IntableRegex(self._source))
 
     @override
     def change_to(self) -> bool:

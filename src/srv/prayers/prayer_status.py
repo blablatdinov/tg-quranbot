@@ -27,7 +27,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
-from services.regular_expression import IntableRegularExpression
+from services.instable_regex import IntableRegex
 from srv.prayers.prayers_stts import PrayerStts
 
 
@@ -54,7 +54,7 @@ class PrayerStatus(PrayerStts):
 
         :return: int
         """
-        return int(IntableRegularExpression(self._source))
+        return int(IntableRegex(self._source))
 
     @override
     def change_to(self) -> bool:

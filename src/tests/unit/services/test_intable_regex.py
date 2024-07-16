@@ -22,7 +22,7 @@
 
 import pytest
 
-from services.regular_expression import IntableRegularExpression
+from services.instable_regex import IntableRegex
 
 
 @pytest.mark.parametrize(('input_', 'expected'), [
@@ -31,6 +31,6 @@ from services.regular_expression import IntableRegularExpression
     ('5347split832457', 5347),
 ])
 def test(input_, expected):
-    got = IntableRegularExpression(input_)
+    got = IntableRegex(input_)
 
     assert int(got) == expected

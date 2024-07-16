@@ -43,7 +43,7 @@ from integrations.tg.tg_answers import (
     TgMessageIdAnswer,
 )
 from integrations.tg.tg_chat_id import TgChatId
-from services.regular_expression import IntableRegularExpression
+from services.instable_regex import IntableRegex
 from services.state_answer import StepAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
@@ -80,7 +80,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
         result_ayat = TextLenSafeAyat(
             PgAyat(
                 FkAsyncInt(
-                    IntableRegularExpression(
+                    IntableRegex(
                         str(CallbackQueryData(update)),
                     ),
                 ),

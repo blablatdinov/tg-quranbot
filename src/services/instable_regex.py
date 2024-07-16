@@ -33,7 +33,7 @@ from exceptions.base_exception import BaseAppError
 @final
 @attrs.define(frozen=True)
 @elegant
-class IntableRegularExpression(SupportsInt):
+class IntableRegex(SupportsInt):
     """Регулярное выражение, которое можно привести к числу."""
 
     _text_for_searching: SupportsStr
