@@ -51,7 +51,10 @@ def test_fail_sura(sura_id):
         query.sura()
 
 
-@given(strategies.text().filter(lambda ayat_num: not ayat_num.isdigit()))
+@given(
+    strategies.text().filter(lambda ayat_num: not ayat_num.isdigit())
+    | strategies.text().filter(lambda ayat_num: ayat_num.isdigit() and int(ayat_num) < 1),
+)
 @example('0')
 @example('1iw')
 @example('1,5')
