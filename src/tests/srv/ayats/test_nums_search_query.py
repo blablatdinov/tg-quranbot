@@ -20,20 +20,15 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Protocol, TypeAlias
+from hypothesis import given
+from hypothesis.strategies import integers
 
-from pyeo import elegant
-
-SuraId: TypeAlias = int
-AyatNum: TypeAlias = int
+from srv.ayats.nums_search_query import NumsSearchQuery
 
 
-@elegant
-class SearchQuery(Protocol):
-    """Интерфейс объекта с запросом для поиска."""
+@given(integers(), integers())
+def test(sura_num, ayat_num):
+    nums_search_query = NumsSearchQuery('{0}:{1}'.format(sura_num, ayat_num))
 
-    def sura(self) -> SuraId:
-        """Номер суры."""
-
-    def ayat(self) -> AyatNum:
-        """Номер аята."""
+    assert nums_search_query.sura() == sura_num
+    assert nums_search_query.ayat() == ayat_num

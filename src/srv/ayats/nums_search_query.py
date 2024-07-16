@@ -58,4 +58,4 @@ class NumsSearchQuery(SearchQuery):
 
         :return: str
         """
-        return str(self._query).split(':')[1]
+        return int(str(self._query).split(':')[1])
