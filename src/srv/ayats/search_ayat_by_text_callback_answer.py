@@ -36,7 +36,7 @@ from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers import TgAnswer
 from integrations.tg.tg_chat_id import TgChatId
-from services.regular_expression import IntableRegularExpression
+from services.instable_regex import IntableRegex
 from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
@@ -66,7 +66,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
         :return: list[httpx.Request]
         :raises AyatNotFoundError: if ayat not found
         """
-        target_ayat_id = int(IntableRegularExpression(str(CallbackQueryData(update))))
+        target_ayat_id = int(IntableRegex(str(CallbackQueryData(update))))
         ayats = await AyatsByTextQuery(
             FkString(
                 await AyatTextSearchQuery(

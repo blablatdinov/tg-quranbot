@@ -26,7 +26,7 @@ import attrs
 from pyeo import elegant
 
 from app_types.stringable import SupportsStr
-from services.regular_expression import IntableRegularExpression
+from services.instable_regex import IntableRegex
 
 _AyatNum: TypeAlias = str
 
@@ -60,5 +60,5 @@ class AyatLink(SupportsStr):
         return 'https://umma.ru{0}#{1}-{2}'.format(
             self._sura_link,
             self._sura_num,
-            int(IntableRegularExpression(self._ayat_num)),
+            int(IntableRegex(self._ayat_num)),
         )

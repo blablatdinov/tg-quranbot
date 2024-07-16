@@ -26,7 +26,7 @@ import attrs
 from pyeo import elegant
 
 from app_types.stringable import SupportsStr
-from services.regular_expression import IntableRegularExpression
+from services.instable_regex import IntableRegex
 
 
 @elegant
@@ -61,7 +61,7 @@ class ParsedPodcastReaction(PodcastReactions):
 
         :return: int
         """
-        return int(IntableRegularExpression(str(self._callback_query)))
+        return int(IntableRegex(str(self._callback_query)))
 
     @override
     def status(self) -> Literal['like', 'dislike']:

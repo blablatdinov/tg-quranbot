@@ -30,7 +30,7 @@ from app_types.fk_async_int import FkAsyncInt
 from app_types.intable import AsyncInt
 from exceptions.base_exception import BaseAppError
 from exceptions.user import StartMessageNotContainReferrerError
-from services.regular_expression import IntableRegularExpression
+from services.instable_regex import IntableRegex
 from srv.users.pg_user import PgUser
 from srv.users.pg_valid_chat_id import PgValidChatId
 
@@ -52,21 +52,21 @@ class ReferrerChatId(AsyncInt):
         :raises StartMessageNotContainReferrerError: if message not contain referrer id
         """
         try:
-            message_meta = int(IntableRegularExpression(self._message))
+            message_meta = int(IntableRegex(self._message))
         except BaseAppError as err:
             raise StartMessageNotContainReferrerError from err
         max_legacy_id = 3000
         if message_meta < max_legacy_id:
             return await PgUser.legacy_id_ctor(
                 FkAsyncInt(
-                    IntableRegularExpression(self._message),
+                    IntableRegex(self._message),
                 ),
                 self._pgsql,
             ).chat_id()
         return await PgUser(
             PgValidChatId.int_ctor(
                 self._pgsql,
-                IntableRegularExpression(self._message),
+                IntableRegex(self._message),
             ),
             self._pgsql,
         ).chat_id()

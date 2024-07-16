@@ -32,7 +32,7 @@ from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers import TgAnswer
 from integrations.tg.tg_chat_id import TgChatId
-from services.regular_expression import IntableRegularExpression
+from services.instable_regex import IntableRegex
 from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
@@ -60,7 +60,7 @@ class FavoriteAyatPage(TgAnswer):
         """
         favorite_ayats = await FavoriteAyats(TgChatId(update), self._pgsql).to_list()
         for ayat in favorite_ayats:
-            expect_ayat_id = IntableRegularExpression(CallbackQueryData(update))
+            expect_ayat_id = IntableRegex(CallbackQueryData(update))
             if await ayat.identifier().ayat_id() == int(expect_ayat_id):
                 result_ayat = ayat
                 break

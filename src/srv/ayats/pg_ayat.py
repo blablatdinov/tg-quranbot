@@ -30,7 +30,7 @@ from app_types.fk_async_int import FkAsyncInt
 from app_types.intable import AsyncInt
 from app_types.stringable import SupportsStr
 from exceptions.content_exceptions import AyatNotFoundError
-from services.regular_expression import IntableRegularExpression
+from services.instable_regex import IntableRegex
 from srv.ayats.ayat import Ayat, AyatText
 from srv.ayats.ayat_id_by_public_id import AyatIdByPublicId
 from srv.ayats.ayat_id_by_sura_ayat_num import AyatIdBySuraAyatNum
@@ -88,7 +88,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         """
         return PgAyat(
             FkAsyncInt(
-                int(IntableRegularExpression(callback_query)),
+                int(IntableRegex(callback_query)),
             ),
             database,
         )
