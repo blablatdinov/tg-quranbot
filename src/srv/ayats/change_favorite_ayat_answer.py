@@ -32,7 +32,7 @@ from app_types.fk_async_int import FkAsyncInt
 from app_types.logger import LogSink
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
-from integrations.tg.message_id import TgMessageId
+from integrations.tg.tg_message_id import TgMessageId
 from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerFork,

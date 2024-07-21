@@ -117,8 +117,7 @@ include_trailing_comma = true
 max_line_length = 120
 
 [tool.ruff]
-# TODO #360:30min Поднять python target-version до "py312"
-target-version = "py311"
+target-version = "py312"
 line-length = 120
 preview = true
 output-format = "concise"

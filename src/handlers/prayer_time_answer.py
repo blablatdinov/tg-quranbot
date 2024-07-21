@@ -32,7 +32,7 @@ from redis.asyncio import Redis
 from app_types.logger import LogSink
 from app_types.update import Update
 from handlers.message_not_found_safe_answer import MessageNotFoundSafeAnswer
-from integrations.tg.message_id import TgMessageId
+from integrations.tg.tg_message_id import TgMessageId
 from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerMarkup,

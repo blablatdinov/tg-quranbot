@@ -20,39 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import SupportsInt, TypeAlias, final, override
-
-import attrs
-from pyeo import elegant
-
-from app_types.update import Update
-from integrations.tg.exceptions.update_parse_exceptions import MessageIdNotFoundError
-from services.err_redirect_json_path import ErrRedirectJsonPath
-from services.json_path_value import JsonPathValue
-
-MessageId: TypeAlias = SupportsInt
+from typing import SupportsInt
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class TgMessageId(MessageId):
+class MessageId(SupportsInt):
     """Идентификатор сообщения."""
-
-    _update: Update
-
-    @override
-    def __int__(self) -> int:
-        """Числовое представление.
-
-        :return: int
-        """
-        return int(
-            ErrRedirectJsonPath(
-                JsonPathValue(
-                    self._update.asdict(),
-                    '$..message.message_id',
-                ),
-                MessageIdNotFoundError(),
-            ).evaluate(),
-        )

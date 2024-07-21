@@ -27,7 +27,7 @@ from redis.asyncio import Redis
 
 from app_types.logger import LogSink
 from exceptions.content_exceptions import UserHasNotSearchQueryError
-from integrations.tg.fk_chat_id import ChatId
+from integrations.tg.chat_id import ChatId
 from srv.ayats.text_search_query import TextSearchQuery
 
 

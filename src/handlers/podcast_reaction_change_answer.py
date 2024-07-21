@@ -34,7 +34,7 @@ from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from handlers.podcast_message_text_not_exists_safe_answer import PodcastMessageTextNotExistsSafeAnswer
 from integrations.tg.callback_query import CallbackQueryData
-from integrations.tg.message_id import TgMessageId
+from integrations.tg.tg_message_id import TgMessageId
 from integrations.tg.tg_answers import TgAnswerToSender, TgKeyboardEditAnswer, TgMessageIdAnswer
 from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.tg_answer import TgAnswer

@@ -20,29 +20,38 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import pytest
-from pytest_lazy_fixtures import lf
+from typing import final, override
 
-from app_types.fk_string import FkString
-from integrations.tg.tg_message_id import TgMessageId
-from integrations.tg.update import TgUpdate
+import attrs
+from pyeo import elegant
 
-
-@pytest.fixture
-def stringable_update(message_update_factory):
-    return FkString(message_update_factory())
-
-
-@pytest.fixture
-def stringable_callback_update(callback_update_factory):
-    return callback_update_factory()
+from app_types.update import Update
+from integrations.tg.message_id import MessageId
+from integrations.tg.exceptions.update_parse_exceptions import MessageIdNotFoundError
+from services.err_redirect_json_path import ErrRedirectJsonPath
+from services.json_path_value import JsonPathValue
 
 
-@pytest.mark.parametrize(('update', 'expected'), [
-    (lf('stringable_update'), 22628),
-    (lf('stringable_callback_update'), 22627),
-])
-def test(update, expected):
-    message_id = TgMessageId(TgUpdate.str_ctor(update))
+@final
+@attrs.define(frozen=True)
+@elegant
+class TgMessageId(MessageId):
+    """Идентификатор сообщения."""
 
-    assert int(message_id) == expected
+    _update: Update
+
+    @override
+    def __int__(self) -> int:
+        """Числовое представление.
+
+        :return: int
+        """
+        return int(
+            ErrRedirectJsonPath(
+                JsonPathValue(
+                    self._update.asdict(),
+                    '$..message.message_id',
+                ),
+                MessageIdNotFoundError(),
+            ).evaluate(),
+        )

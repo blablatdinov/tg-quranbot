@@ -26,7 +26,7 @@ import attrs
 from databases import Database
 from pyeo import elegant
 
-from integrations.tg.fk_chat_id import ChatId
+from integrations.tg.chat_id import ChatId
 from srv.podcasts.changed_podcast_reaction import PODCAST_ID_LITERAL, USER_ID_LITERAL, ChangedPodcastReaction
 from srv.podcasts.podcast_reaction import PodcastReactions
 

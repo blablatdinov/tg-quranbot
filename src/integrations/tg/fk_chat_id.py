@@ -20,12 +20,12 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import SupportsInt, TypeAlias, final, override
+from typing import final, override
 
 import attrs
 from pyeo import elegant
 
-ChatId: TypeAlias = SupportsInt
+from integrations.tg.chat_id import ChatId
 
 
 @final

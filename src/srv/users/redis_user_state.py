@@ -27,7 +27,7 @@ from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.logger import LogSink
-from integrations.tg.fk_chat_id import ChatId
+from integrations.tg.chat_id import ChatId
 from srv.users.user_state import UserState
 from srv.users.user_step import UserStep
 

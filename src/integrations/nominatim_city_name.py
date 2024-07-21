@@ -26,7 +26,7 @@ import attrs
 import httpx
 from pyeo import elegant
 
-from integrations.city_name_by_id import CityName
+from integrations.city_name import CityName
 from integrations.tg.coordinates import Coordinates
 
 

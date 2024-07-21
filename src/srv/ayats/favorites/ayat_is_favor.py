@@ -27,7 +27,7 @@ from databases import Database
 from pyeo import elegant
 
 from app_types.async_supports_bool import AsyncSupportsBool
-from integrations.tg.fk_chat_id import ChatId
+from integrations.tg.chat_id import ChatId
 from srv.ayats.ayat import Ayat
 
 

@@ -30,7 +30,7 @@ from databases import Database
 from pyeo import elegant
 
 from exceptions.internal_exceptions import PrayerAtUserAlreadyExistsError, PrayerAtUserNotCreatedError
-from integrations.tg.fk_chat_id import ChatId
+from integrations.tg.chat_id import ChatId
 from srv.prayers.new_prayers_at_user import NewPrayersAtUser
 
 

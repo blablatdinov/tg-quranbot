@@ -31,7 +31,7 @@ from app_types.update import Update
 from handlers.prayers_statistic import PrayersStatistic
 from handlers.skipped_prayers_keyboard import SkippedPrayersKeyboard
 from integrations.tg.callback_query import CallbackQueryData
-from integrations.tg.message_id import TgMessageId
+from integrations.tg.tg_message_id import TgMessageId
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgMessageIdAnswer, TgTextAnswer
 from integrations.tg.tg_answers.edit_message_text import TgEditMessageText
 from integrations.tg.tg_chat_id import TgChatId
