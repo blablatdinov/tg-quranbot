@@ -32,7 +32,6 @@ from redis.asyncio import Redis
 from app_types.logger import LogSink
 from app_types.update import Update
 from handlers.message_not_found_safe_answer import MessageNotFoundSafeAnswer
-from integrations.tg.tg_message_id import TgMessageId
 from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerMarkup,
@@ -45,6 +44,7 @@ from integrations.tg.tg_answers import (
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from integrations.tg.tg_chat_id import TgChatId
+from integrations.tg.tg_message_id import TgMessageId
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from settings import Settings
 from srv.prayers.date_from_user_prayer_id import DateFromUserPrayerId
