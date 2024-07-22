@@ -21,8 +21,10 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import enum
+from typing import final
 
 
+@final
 class PrayerNames(enum.Enum):
     """Имена намазов."""
 

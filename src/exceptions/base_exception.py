@@ -20,11 +20,11 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-class BaseAppError(Exception):
+class BaseAppError(Exception):  # noqa: FIN100
     """Базовое исключение бота."""
 
 
-class InternalBotError(BaseAppError):
+class InternalBotError(BaseAppError):  # noqa: FIN100
     """Внутренняя ошибка бота."""
 
     user_message = ''

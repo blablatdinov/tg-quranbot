@@ -21,7 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import uuid
-from typing import override
+from typing import final, override
 
 import httpx
 
@@ -36,6 +36,7 @@ from srv.prayers.fk_city import FkCity
 from srv.prayers.fk_updated_user_city import FkUpdateUserCity
 
 
+@final
 class _Answer(TgAnswer):
 
     @override

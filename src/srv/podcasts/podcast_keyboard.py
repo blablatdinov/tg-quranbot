@@ -32,6 +32,7 @@ from integrations.tg.keyboard import Keyboard
 from srv.podcasts.podcast import Podcast
 
 
+@final
 class _Row(TypedDict):
 
     like_count: int

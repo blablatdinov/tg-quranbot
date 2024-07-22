@@ -33,6 +33,7 @@ from integrations.tg.update import TgUpdate
 from srv.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
 
 
+@final
 class FakeError(Exception):
     pass
 

@@ -20,13 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import override
+from typing import final, override
 
 import attrs
 
 from srv.ayats.ayat_identifier import AyatIdentifier
 
 
+@final
 @attrs.define(frozen=True)
 class FkIdentifier(AyatIdentifier):
     """Identifier stub."""
