@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import override
+from typing import final, override
 
 import httpx
 import ujson
@@ -35,6 +35,7 @@ from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
 
 
+@final
 class FkOrigin(TgAnswer):
 
     @override

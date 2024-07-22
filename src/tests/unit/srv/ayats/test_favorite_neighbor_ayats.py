@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import override
+from typing import final, override
 
 import pytest
 
@@ -33,6 +33,7 @@ from srv.ayats.fk_identifier import FkIdentifier
 from srv.files.fk_file import FkFile
 
 
+@final
 class FkFavoriteAyats(AsyncListable[Ayat]):
 
     @override

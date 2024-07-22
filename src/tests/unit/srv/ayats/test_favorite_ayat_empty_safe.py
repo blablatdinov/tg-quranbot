@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import override
+from typing import final, override
 
 import httpx
 
@@ -31,6 +31,7 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
 
 
+@final
 class IndexErrorAnswer(TgAnswer):
 
     @override
