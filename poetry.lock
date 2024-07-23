@@ -2117,13 +2117,13 @@ testing = ["fields", "hunter", "process-tests", "pytest-xdist", "virtualenv"]
 
 [[package]]
 name = "pytest-lazy-fixtures"
-version = "1.1.0"
+version = "1.1.1"
 description = "Allows you to use fixtures in @pytest.mark.parametrize."
 optional = false
 python-versions = "<4.0,>=3.8"
 files = [
-    {file = "pytest_lazy_fixtures-1.1.0-py3-none-any.whl", hash = "sha256:88923002ac493584a9def069c4462c296fcce7358c1abcaff62ebe219f86dd33"},
-    {file = "pytest_lazy_fixtures-1.1.0.tar.gz", hash = "sha256:f136f190bbecc34bfba1d47717a42be8bfa3027e5cdac0a273955aba4328f913"},
+    {file = "pytest_lazy_fixtures-1.1.1-py3-none-any.whl", hash = "sha256:a4b396a361faf56c6305535fd0175ce82902ca7cf668c4d812a25ed2bcde8183"},
+    {file = "pytest_lazy_fixtures-1.1.1.tar.gz", hash = "sha256:0c561f0d29eea5b55cf29b9264a3241999ffdb74c6b6e8c4ccc0bd2c934d01ed"},
 ]
 
 [package.dependencies]
@@ -3491,4 +3491,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "b4d8a5b618828a1e93d06660db51145760977a6217c81e6100a1077e7bdc73e5"
+content-hash = "d978c4c44715c7ea512482c97b23f2585988cef1ef619c93a5645be5b45e6240"
