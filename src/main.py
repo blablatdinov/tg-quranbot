@@ -23,8 +23,8 @@
 import sys
 
 import sentry_sdk
-from loguru import logger
 from redis import asyncio as aioredis
+from loguru import logger
 
 from db.connection import pgsql
 from integrations.tg.app_with_get_me import AppWithGetMe
