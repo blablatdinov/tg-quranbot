@@ -811,6 +811,20 @@ isort = ">=5.0.0,<6"
 test = ["pytest"]
 
 [[package]]
+name = "flake8-override"
+version = "0.0.4"
+description = "This is how python package should look like!"
+optional = false
+python-versions = "<4.0,>=3.9"
+files = [
+    {file = "flake8_override-0.0.4-py3-none-any.whl", hash = "sha256:8d7585440161bf2868f455450d16c6d7178a0fbc71ac6d582b3c4fbf0bfcd84c"},
+    {file = "flake8_override-0.0.4.tar.gz", hash = "sha256:891571dc19786e59cabde6d1cf2a6f55df540fdd92e95d79265b027c60d21798"},
+]
+
+[package.dependencies]
+flake8 = ">=5.0.0"
+
+[[package]]
 name = "flake8-quotes"
 version = "3.3.2"
 description = "Flake8 lint for quotes."
@@ -3491,4 +3505,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "4c2a14efa87dd2fbadb0876d26363bc380c364c1bc78e5730cda59d671915961"
+content-hash = "125450ef21c0e16bdc34a55af203d3039684d96f35345699c15454dcddfd588d"

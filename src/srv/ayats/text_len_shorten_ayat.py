@@ -21,7 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import textwrap
-from typing import final
+from typing import final, override
 
 import attrs
 from eljson.json import Json
@@ -44,6 +44,7 @@ class TextLenSafeAyat(Ayat):
 
     _origin: Ayat
 
+    @override
     def identifier(self) -> AyatIdentifier:
         """Идентификатор аята.
 
@@ -51,6 +52,7 @@ class TextLenSafeAyat(Ayat):
         """
         return self._origin.identifier()
 
+    @override
     async def to_str(self) -> AyatText:
         """Строковое представление.
 
@@ -76,6 +78,7 @@ class TextLenSafeAyat(Ayat):
             res_lines.append(line)
         return '\n'.join(res_lines)
 
+    @override
     async def audio(self) -> TgFile:
         """Аудио файл.
 
@@ -83,6 +86,7 @@ class TextLenSafeAyat(Ayat):
         """
         return await self._origin.audio()
 
+    @override
     async def change(self, event_body: Json) -> None:
         """Изменить содержимое аята.
 

@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Generic, final
+from typing import Generic, final, override
 
 import attrs
 from pyeo import elegant
@@ -36,6 +36,7 @@ class FkAsyncListable(AsyncListable, Generic[ListElemT_co]):
 
     _origin: list[ListElemT_co]
 
+    @override
     async def to_list(self) -> list[ListElemT_co]:
         """Список.
 

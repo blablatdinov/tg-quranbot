@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final
+from typing import final, override
 
 import attrs
 import httpx
@@ -40,6 +40,7 @@ class PodcastMessageTextNotExistsSafeAnswer(TgAnswer):
     _edited_markup_answer: TgAnswer
     _new_podcast_message_answer: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
         """Трансформация в ответ.
 

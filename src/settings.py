@@ -50,7 +50,7 @@ class Settings(BaseSettings):
     DAILY_PRAYERS: bool = False
     RAMADAN_MODE: bool = False
 
-    def admin_chat_ids(self) -> list[int]:
+    def admin_chat_ids(self) -> list[int]:  # noqa: OVR100
         """Список идентификаторов админов.
 
         :return: list[int]

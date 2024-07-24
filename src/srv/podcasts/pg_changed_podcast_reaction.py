@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final
+from typing import final, override
 
 import attrs
 from databases import Database
@@ -41,6 +41,7 @@ class PgChangedPoodcastReaction(ChangedPodcastReaction):
     _chat_id: ChatId
     _reaction: PodcastReactions
 
+    @override
     async def apply(self) -> None:
         """Применить."""
         query = '\n'.join([

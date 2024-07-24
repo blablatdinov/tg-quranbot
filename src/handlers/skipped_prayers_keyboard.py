@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final
+from typing import final, override
 
 import attrs
 import ujson
@@ -37,6 +37,7 @@ from integrations.tg.keyboard import Keyboard
 class SkippedPrayersKeyboard(Keyboard):
     """Клавиатура для пропущеных намазов."""
 
+    @override
     async def generate(self, update: Update) -> str:
         """Генерация клавиатуры.
 
