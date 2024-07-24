@@ -22,7 +22,7 @@
 
 import datetime
 import uuid
-from typing import final
+from typing import final, override
 
 import attrs
 from asyncpg.exceptions import UniqueViolationError
@@ -43,6 +43,7 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
     _chat_id: ChatId
     _pgsql: Database
 
+    @override
     async def create(self, date: datetime.date) -> None:
         """Создать.
 

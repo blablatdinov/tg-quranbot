@@ -21,7 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 from contextlib import suppress
-from typing import final
+from typing import final, override
 
 import attrs
 from pyeo import elegant
@@ -41,6 +41,7 @@ class NeighborAyatsBtns(NeighborAyatsButtons):
     _ayats_neighbors: NeighborAyats
     _callback_template: AyatCallbackTemplateEnum
 
+    @override
     async def left(self) -> dict[str, str] | None:
         """Левая кнопка.
 
@@ -57,6 +58,7 @@ class NeighborAyatsBtns(NeighborAyatsButtons):
             }
         return None
 
+    @override
     async def right(self) -> dict[str, str] | None:
         """Правая кнопка.
 

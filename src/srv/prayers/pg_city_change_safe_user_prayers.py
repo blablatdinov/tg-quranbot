@@ -21,7 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-from typing import final
+from typing import final, override
 
 import attrs
 from pyeo import elegant
@@ -42,6 +42,7 @@ class PgCityChangeSafeUserPrayers(NewPrayersAtUser):
     _origin: NewPrayersAtUser
     _exist_user_prayers: ExistUserPrayers
 
+    @override
     async def create(self, date: datetime.date) -> None:
         """Создать.
 

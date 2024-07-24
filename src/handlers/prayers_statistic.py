@@ -22,7 +22,7 @@
 
 import datetime
 from itertools import batched
-from typing import final
+from typing import final, override
 
 import attrs
 from databases import Database
@@ -45,6 +45,7 @@ class PrayersStatistic(AsyncSupportsStr):
     _chat_id: ChatId
     _pgsql: Database
 
+    @override
     async def to_str(self) -> str:
         """Приведение к строке.
 

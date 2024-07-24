@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final
+from typing import final, override
 
 import attrs
 from pyeo import elegant
@@ -37,6 +37,7 @@ class RamadanPrayerText(AsyncSupportsStr):
     _origin: AsyncSupportsStr
     _ramadan_mode: bool
 
+    @override
     async def to_str(self) -> str:
         """Строковое представление.
 
