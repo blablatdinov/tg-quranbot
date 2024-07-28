@@ -139,6 +139,7 @@ ignore = [
   "D203",    # no-blank-line-before-class
   "D213",    # multi-line-summary-first-line
   "D418",    # Function decorated with `@overload` shouldn't contain a docstring
+  "DOC501",  # Check by flake8-docstrings
   "FBT001",  # Boolean-typed positional argument in function definition
   "FBT002",  # Boolean-typed positional argument in function definition
   "FIX002",  # Line contains T0DO, consider resolving the issue
