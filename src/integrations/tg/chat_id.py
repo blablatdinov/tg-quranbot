@@ -20,8 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import SupportsInt
+from typing import Protocol, SupportsInt
 
 
-class ChatId(SupportsInt):
+class ChatId(SupportsInt, Protocol):
     """Идентификатор чата."""

@@ -20,8 +20,10 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+from typing import Protocol
+
 from app_types.async_supports_str import AsyncSupportsStr
 
 
-class CityName(AsyncSupportsStr):
+class CityName(AsyncSupportsStr, Protocol):
     """Имя города."""

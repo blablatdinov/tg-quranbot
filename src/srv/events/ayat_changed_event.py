@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
+from typing import Protocol, final, override
 
 import attrs
 from databases import Database
@@ -33,7 +33,7 @@ from srv.events.recieved_event import ReceivedEvent
 type JsonPathQuery = str
 
 
-class AyatChangedEvent(ReceivedEvent):
+class AyatChangedEvent(ReceivedEvent, Protocol):
     """Событие об изменении аята."""
 
 
