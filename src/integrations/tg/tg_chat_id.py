@@ -27,7 +27,7 @@ from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.base_exception import InternalBotError
-from integrations.tg.fk_chat_id import ChatId
+from integrations.tg.chat_id import ChatId
 from services.err_redirect_json_path import ErrRedirectJsonPath
 from services.match_many_json_path import MatchManyJsonPath
 

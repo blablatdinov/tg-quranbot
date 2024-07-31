@@ -117,8 +117,7 @@ include_trailing_comma = true
 max_line_length = 120
 
 [tool.ruff]
-# TODO #360:30min Поднять python target-version до "py312"
-target-version = "py311"
+target-version = "py312"
 line-length = 120
 preview = true
 output-format = "concise"
@@ -485,7 +484,7 @@ max-returns = 6
 max-statements = 50
 
 # Minimum number of public methods for a class (see R0903).
-min-public-methods = 1
+min-public-methods = 0
 
 [tool.pylint.exceptions]
 # Exceptions that will emit a warning when caught.

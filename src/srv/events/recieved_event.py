@@ -20,12 +20,12 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Protocol, TypeAlias, TypeVar
+from typing import Protocol, TypeVar
 
 from eljson.json import Json
 from pyeo import elegant
 
-JsonPathQuery: TypeAlias = str
+type JsonPathQuery = str
 JsonPathReturnType_co = TypeVar('JsonPathReturnType_co', covariant=True)
 
 
