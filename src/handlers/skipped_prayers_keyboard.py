@@ -27,8 +27,8 @@ import ujson
 from pyeo import elegant
 
 from app_types.update import Update
-from srv.prayers.prayer_names import PrayerNames
 from integrations.tg.keyboard import Keyboard
+from srv.prayers.prayer_names import PrayerNames
 
 
 @final

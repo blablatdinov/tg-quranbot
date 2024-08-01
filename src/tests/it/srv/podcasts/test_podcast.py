@@ -35,9 +35,9 @@ from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
 from exceptions.base_exception import InternalBotError
 from handlers.concrete_podcast_answer import ConcretePodcastAnswer
-from srv.podcasts.random_podcast_answer import RandomPodcastAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.podcasts.pg_podcast import PgPodcast
+from srv.podcasts.random_podcast_answer import RandomPodcastAnswer
 
 
 @pytest.fixture
