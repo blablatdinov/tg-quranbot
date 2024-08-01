@@ -30,7 +30,7 @@ from dateutil import rrule
 from pyeo import elegant
 
 from app_types.async_supports_str import AsyncSupportsStr
-from handlers.prayer_names import PrayerNames
+from srv.prayers.prayer_names import PrayerNames
 from integrations.tg.fk_chat_id import ChatId
 from srv.prayers.new_prayers_at_user import NewPrayersAtUser
 

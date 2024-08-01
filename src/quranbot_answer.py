@@ -35,7 +35,7 @@ from handlers.full_start_answer import FullStartAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
 from handlers.prayer_time_answer import PrayerTimeAnswer
-from handlers.random_podcast_answer import RandomPodcastAnswer
+from srv.podcasts.random_podcast_answer import RandomPodcastAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
 from handlers.search_ayat_by_numbers_answer import SearchAyatByNumbersAnswer
 from handlers.search_city_answer import SearchCityAnswer
