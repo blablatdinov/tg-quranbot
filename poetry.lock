@@ -551,20 +551,20 @@ files = [
 
 [[package]]
 name = "eljson"
-version = "0.0.1a1"
+version = "0.0.1"
 description = "This is how python package should look like!"
 optional = false
-python-versions = ">=3.8.1,<4.0"
+python-versions = "<4.0,>=3.9"
 files = [
-    {file = "eljson-0.0.1a1-py3-none-any.whl", hash = "sha256:376eaa5555d45d6d3f0a791efbf2a4b0d43c4f9bbb26abd3d2a9e516e40e0f3c"},
-    {file = "eljson-0.0.1a1.tar.gz", hash = "sha256:538ba4794e0b457ec2576921eff679b9458d2131deb30dafb8f427e76560f33c"},
+    {file = "eljson-0.0.1-py3-none-any.whl", hash = "sha256:b28fe77b814b10c4031823707d81aaa9dbfb56fb7a101afcb05de702a4312cbd"},
+    {file = "eljson-0.0.1.tar.gz", hash = "sha256:fe5ce5bb0747fd59eec6c360b6332069e4408de66b81fc9db38ec80c68cf8270"},
 ]
 
 [package.dependencies]
-attrs = ">=23.1,<24.0"
-jsonpath-ng = ">=1.5,<2.0"
-jsonschema = ">=4.17,<5.0"
-ujson = ">=5,<6"
+attrs = ">=22.2.0"
+jsonpath-ng = "*"
+jsonschema = ">=0.3"
+ujson = ">=1.19"
 
 [[package]]
 name = "eo-styleguide"
@@ -3545,4 +3545,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "d97d01cba16bcb6f0e40b17987baa2c62e4a0f0162555f9dc02a0a137621273a"
+content-hash = "ca4204c696b0a87d7e69fedb58a58b2caaa3eb1a8bfaf94f1453abb748e2dd82"
