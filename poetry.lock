@@ -182,22 +182,22 @@ typing-extensions = ">=4.7.0,<5.0.0"
 
 [[package]]
 name = "attrs"
-version = "23.2.0"
+version = "24.2.0"
 description = "Classes Without Boilerplate"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "attrs-23.2.0-py3-none-any.whl", hash = "sha256:99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1"},
-    {file = "attrs-23.2.0.tar.gz", hash = "sha256:935dc3b529c262f6cf76e50877d35a4bd3c1de194fd41f47a2b7ae8f19971f30"},
+    {file = "attrs-24.2.0-py3-none-any.whl", hash = "sha256:81921eb96de3191c8258c199618104dd27ac608d9366f5e35d011eae1867ede2"},
+    {file = "attrs-24.2.0.tar.gz", hash = "sha256:5cfb1b9148b5b086569baec03f20d7b6bf3bcacc9a42bebf87ffaaca362f6346"},
 ]
 
 [package.extras]
-cov = ["attrs[tests]", "coverage[toml] (>=5.3)"]
-dev = ["attrs[tests]", "pre-commit"]
-docs = ["furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-towncrier", "towncrier", "zope-interface"]
-tests = ["attrs[tests-no-zope]", "zope-interface"]
-tests-mypy = ["mypy (>=1.6)", "pytest-mypy-plugins"]
-tests-no-zope = ["attrs[tests-mypy]", "cloudpickle", "hypothesis", "pympler", "pytest (>=4.3.0)", "pytest-xdist[psutil]"]
+benchmark = ["cloudpickle", "hypothesis", "mypy (>=1.11.1)", "pympler", "pytest (>=4.3.0)", "pytest-codspeed", "pytest-mypy-plugins", "pytest-xdist[psutil]"]
+cov = ["cloudpickle", "coverage[toml] (>=5.3)", "hypothesis", "mypy (>=1.11.1)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "pytest-xdist[psutil]"]
+dev = ["cloudpickle", "hypothesis", "mypy (>=1.11.1)", "pre-commit", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "pytest-xdist[psutil]"]
+docs = ["cogapp", "furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-towncrier", "towncrier (<24.7)"]
+tests = ["cloudpickle", "hypothesis", "mypy (>=1.11.1)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "pytest-xdist[psutil]"]
+tests-mypy = ["mypy (>=1.11.1)", "pytest-mypy-plugins"]
 
 [[package]]
 name = "bandit"
@@ -568,17 +568,17 @@ ujson = ">=1.19"
 
 [[package]]
 name = "eo-styleguide"
-version = "0.0.1a12"
+version = "0.0.1a14"
 description = "Pyeo is an advanced static analysis tool tailored specifically to enforce the principles advocated by Elegant Objects (elegantobjects.org) in Python projects. It serves as a quality control instrument to ensure that your Python code adheres to the core tenets of elegance, simplicity, and maintainability."
 optional = false
-python-versions = ">=3.8.1,<3.13"
+python-versions = "<3.13,>=3.9"
 files = [
-    {file = "eo_styleguide-0.0.1a12-py3-none-any.whl", hash = "sha256:6c82e94d30e4f19f3ae0b93c6689ee8f351858cfc834b9313e7d2599e824ff9f"},
-    {file = "eo_styleguide-0.0.1a12.tar.gz", hash = "sha256:9cff9e7299fe4898316b91998e89b20ad717048282614c239b7e1e79f5ae166d"},
+    {file = "eo_styleguide-0.0.1a14-py3-none-any.whl", hash = "sha256:21df13f43b13b687ff05d2c36628f4273a69080a02fd7f90340c1a83e174282a"},
+    {file = "eo_styleguide-0.0.1a14.tar.gz", hash = "sha256:5a5bbf21136447ee6e8dc7ea00a5def84dc07b8c3b28bd2bf354c47c437a18ed"},
 ]
 
 [package.dependencies]
-attrs = ">=23.0,<24.0"
+attrs = ">=23"
 mypy = ">=1.6.0,<2.0.0"
 
 [[package]]
@@ -3545,4 +3545,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "ca4204c696b0a87d7e69fedb58a58b2caaa3eb1a8bfaf94f1453abb748e2dd82"
+content-hash = "6fbd2894d01ed97cf95bba0f65b880fcd91222f9c5b5de14f544aeeb0d0b4ea0"
