@@ -26,7 +26,7 @@ jobs:
           - 6379:6379
         options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
       rabbitmq:
-        image: rabbitmq:3.12.4
+        image: rabbitmq:3.12.5
         ports:
           - 5672:5672
           - 15672:15672
@@ -42,7 +42,7 @@ jobs:
     - name: Set up Python 3.12
       uses: actions/setup-python@v5
       with:
-        python-version: "3.12.4"
+        python-version: "3.12.5"
     - name: Install Poetry
       uses: snok/install-poetry@v1.4.1
       with:
