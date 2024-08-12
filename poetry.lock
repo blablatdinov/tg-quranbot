@@ -3508,13 +3508,12 @@ multidict = ">=4.0"
 
 [[package]]
 name = "yoyo-migrations"
-version = "8.2.0"
+version = "9.0.0"
 description = "Database migrations with SQL"
 optional = false
 python-versions = "*"
 files = [
-    {file = "yoyo-migrations-8.2.0.tar.gz", hash = "sha256:820606a03e262cf1cd4f59e256c28fa446425224d5b82a3d1275fd78178523e4"},
-    {file = "yoyo_migrations-8.2.0-py3-none-any.whl", hash = "sha256:27dabe7432859288b0bd771093f593e3dd2ff6dd4e3b8438992a07c9a7154660"},
+    {file = "yoyo_migrations-9.0.0-py3-none-any.whl", hash = "sha256:fc65d3a6d9449c1c54d64ff2ff98e32a27da356057c60e3471010bfb19ede081"},
 ]
 
 [package.dependencies]
@@ -3545,4 +3544,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "034506606d3e3cd8e5f619fffad0c56b1f1e5460c6c55273ee43ff1e90854388"
+content-hash = "4433d190ae62797de1a23a7257a16aa8f14ebf58d5d6c477e39ab245dfbc4e64"
