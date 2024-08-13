@@ -31,7 +31,7 @@ package-mode = false
 python = ">=3.12,<3.13"
 loguru = "0.7.2"
 quranbot-schema-registry = "0.0.28"
-sentry-sdk = "2.12.0"
+sentry-sdk = "2.13.0"
 httpx = "0.27.0"
 pytz = "2024.1"
 databases = {extras = ["asyncpg"], version = "0.9.0"}
