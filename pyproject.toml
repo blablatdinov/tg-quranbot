@@ -75,7 +75,7 @@ types-ujson = "5.10.0.20240515"
 asyncpg-stubs = "0.29.1"
 # style checks
 wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master" }
-ruff = "0.5.7"
+ruff = "0.6.1"
 refurb = "2.0.0"
 fixit = "2.1.0"
 pylint = "3.2.6"
@@ -156,6 +156,7 @@ ignore = [
   "UP032",   # We not use f-strings
   "UP004",   # Class `PrayerReaction` inherits from `object`
   "TD",      # "t0do" formats
+  "TCH001",  # Move application import `...` into a type-checking block
   "TCH002",  # Move third-party import into a type-checking block
   "PLR630",  # We not respect staticmethods
   "G001",    # Only .format for strings
