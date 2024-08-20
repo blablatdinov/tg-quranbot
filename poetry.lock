@@ -807,6 +807,20 @@ isort = ">=5.0.0,<6"
 test = ["pytest"]
 
 [[package]]
+name = "flake8-no-json"
+version = "0.0.2"
+description = "flake8 plugin for using json from stdlib"
+optional = false
+python-versions = "<4.0,>=3.9"
+files = [
+    {file = "flake8_no_json-0.0.2-py3-none-any.whl", hash = "sha256:32571354726c2bac3055e0230e79412431b679eb11572289172bbc00be0b6e97"},
+    {file = "flake8_no_json-0.0.2.tar.gz", hash = "sha256:4df3afce4c82a7d48e370383b855118cf2d423256882616dc8acb86911cf9f24"},
+]
+
+[package.dependencies]
+flake8 = ">=5"
+
+[[package]]
 name = "flake8-override"
 version = "0.0.4"
 description = "This is how python package should look like!"
@@ -3556,4 +3570,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "cea2d381f813e70389a7246b8ac080591ea3b0266f09f02599db63fede486347"
+content-hash = "57c3abac54588c99b1974450f58b9a19dc621d64eef3cf503aeec66647959e50"
