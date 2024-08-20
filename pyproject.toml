@@ -82,6 +82,7 @@ pylint = "3.2.6"
 ondivi = "0.5.0"
 flake8-final = "0.0.3"
 flake8-override = "0.0.4"
+vulture = "2.11"
 # other
 deltaver = "0.2.3"
 yoyo-migrations = "9.0.0"
