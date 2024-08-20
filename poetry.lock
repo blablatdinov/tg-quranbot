@@ -3356,6 +3356,17 @@ socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
+name = "vulture"
+version = "2.11"
+description = "Find dead code"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "vulture-2.11-py2.py3-none-any.whl", hash = "sha256:12d745f7710ffbf6aeb8279ba9068a24d4e52e8ed333b8b044035c9d6b823aba"},
+    {file = "vulture-2.11.tar.gz", hash = "sha256:f0fbb60bce6511aad87ee0736c502456737490a82d919a44e6d92262cb35f1c2"},
+]
+
+[[package]]
 name = "wemake-python-styleguide"
 version = "0.19.2"
 description = "The strictest and most opinionated python linter ever"
@@ -3545,4 +3556,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "6cb7fe60bf037d7332808002cb64d8368511ed43b13bd290e3621dd552ff93e4"
+content-hash = "cea2d381f813e70389a7246b8ac080591ea3b0266f09f02599db63fede486347"
