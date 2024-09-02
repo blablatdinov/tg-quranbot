@@ -55,7 +55,7 @@ async def test_dates(
     ).build(
         FkUpdate(
             callback_update_factory(
-                chat_id=905, callback_data='pagPrDay({0})'.format(date.strftime('%d.%m.%Y')),
+                chat_id=905, callback_data='pagPrDay({0})'.format(date.strftime('%Y-%m-%d')),
             ),
         ),
     )
@@ -92,7 +92,7 @@ async def test(
     ).build(
         FkUpdate(
             callback_update_factory(
-                chat_id=905, callback_data='pagPrDay(02.09.2024)',
+                chat_id=905, callback_data='pagPrDay(2024-09-02)',
             ),
         ),
     )
