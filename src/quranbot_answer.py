@@ -42,6 +42,7 @@ from handlers.search_city_answer import SearchCityAnswer
 from handlers.skipped_prayers_answer import SkippedPrayersAnswer
 from handlers.status_answer import StatusAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
+from handlers.pagination_per_day_prayer_answer import PaginationPerDayPrayerAnswer
 from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerFork,
