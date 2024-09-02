@@ -152,6 +152,7 @@ ignore = [
   "RUF100",  # WPS primary linter
   "RUF001",  # Project contain cyrillic symbols
   "RUF002",  # Project contain cyrillic symbols
+  "RUF003",  # Project contain cyrillic symbols
   "RET505",  # Unnecessary `elif` after `return` statement
   "RET506",  # Unnecessary `elif` after `raise` statement
   "UP030",   # We use explicit references

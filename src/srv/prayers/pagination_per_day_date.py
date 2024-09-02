@@ -20,47 +20,28 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import datetime
 from typing import final, override
 
 import attrs
-import httpx
-from databases import Database
 from pyeo import elegant
-from redis.asyncio import Redis
 
-from app_types.logger import LogSink
 from app_types.update import Update
-from handlers.prayer_time_answer import PrayerTimeAnswer
-from integrations.tg.tg_answers import TgAnswer
-from settings import Settings
+from srv.prayers.prayer_date import PrayerDate
 
 
 @final
 @attrs.define(frozen=True)
 @elegant
-class PaginationPerDayPrayerAnswer(TgAnswer):
-    """Пагинация по дням для времен намаза."""
-
-    _origin: TgAnswer
-    _pgsql: Database
-    _admin_chat_ids: list[int]
-    _rds: Redis
-    _logger: LogSink
-    _settings: Settings
+class PaginationPerDayDate(PrayerDate):
+    """Дата намаза."""
 
     @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
+    async def parse(self, update: Update) -> datetime.date:
+        """Парсинг из текста сообщения.
 
         :param update: Update
-        :return: list[httpx.Request]
+        :return: datetime.date
         """
-        # TODO #1206 Реализовать обработку для pagPrDay
-        return await PrayerTimeAnswer.pagination_per_day_ctor(
-            self._pgsql,
-            self._origin,
-            self._admin_chat_ids,
-            self._rds,
-            self._logger,
-            self._settings,
-        ).build(update)
+        # TODO #1213:30min реализовать парсинг даты из callback data
+        return datetime.date(2024, 9, 2)  # noqa: WPS432

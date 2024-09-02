@@ -220,7 +220,14 @@ class QuranbotAnswer(TgAnswer):
                 ),
                 TgCallbackQueryRegexAnswer(
                     'pagPrDay',
-                    PaginationPerDayPrayerAnswer(empty_answer),
+                    PaginationPerDayPrayerAnswer(
+                        empty_answer,
+                        self._pgsql,
+                        self._settings.admin_chat_ids(),
+                        self._redis,
+                        self._logger,
+                        self._settings,
+                    ),
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(like|dislike)',
