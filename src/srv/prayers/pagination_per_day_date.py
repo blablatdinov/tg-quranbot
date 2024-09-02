@@ -21,15 +21,12 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-from contextlib import suppress
 from typing import final, override
 
 import attrs
-import pytz
 from pyeo import elegant
 
 from app_types.update import Update
-from integrations.tg.message_text import MessageText
 from srv.prayers.prayer_date import PrayerDate
 
 
@@ -45,6 +42,6 @@ class PaginaitonPerDayDate(PrayerDate):
 
         :param update: Update
         :return: datetime.date
-        :raises ValueError: время намаза не соответствует формату
         """
-        return datetime.date(2024, 9, 2)
+        # TODO #1213:30min реализовать парсинг даты из callback data
+        return datetime.date(2024, 9, 2)  # noqa: WPS432

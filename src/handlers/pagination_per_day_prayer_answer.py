@@ -25,15 +25,14 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from redis.asyncio import Redis
 from pyeo import elegant
-from app_types.logger import LogSink
-from settings import Settings
+from redis.asyncio import Redis
 
+from app_types.logger import LogSink
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswer
-from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 from handlers.prayer_time_answer import PrayerTimeAnswer
+from integrations.tg.tg_answers import TgAnswer
+from settings import Settings
 
 
 @final
