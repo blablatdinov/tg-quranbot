@@ -73,13 +73,28 @@ class UserPrayersKeyboard(Keyboard):
             await self._date.parse(update),
         ).fetch()
         return ujson.dumps({
-            'inline_keyboard': [[
-                {
-                    'text': '✅' if user_prayer['is_read'] else '❌',
-                    'callback_data': ('mark_not_readed({0})' if user_prayer['is_read'] else 'mark_readed({0})').format(
-                        user_prayer['prayer_at_user_id'],
-                    ),
-                }
-                for user_prayer in prayers
-            ]],
+            'inline_keyboard': [
+                [
+                    {
+                        'text': '✅' if user_prayer['is_read'] else '❌',
+                        'callback_data': (
+                            'mark_not_readed({0})' if user_prayer['is_read'] else 'mark_readed({0})'
+                        ).format(
+                            user_prayer['prayer_at_user_id'],
+                        ),
+                    }
+                    for user_prayer in prayers
+                ],
+                # TODO #1206 Захардкоженное значение даты
+                [
+                    {
+                        'text': '<- 01.09',
+                        'callback_data': 'pagPrDay(01.09.2024)',
+                    },
+                    {
+                        'text': '03.09 ->',
+                        'callback_data': 'pagPrDay(03.09.2024)',
+                    },
+                ],
+            ],
         })

@@ -33,6 +33,7 @@ from handlers.decrement_skipped_prayer_answer import DecrementSkippedPrayerAnswe
 from handlers.favorites_answer import FavoriteAyatsAnswer
 from handlers.full_start_answer import FullStartAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
+from handlers.pagination_per_day_prayer_answer import PaginationPerDayPrayerAnswer
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
@@ -216,6 +217,10 @@ class QuranbotAnswer(TgAnswer):
                 TgCallbackQueryRegexAnswer(
                     '(mark_readed|mark_not_readed)',
                     UserPrayerStatusChangeAnswer(empty_answer, self._pgsql, self._redis, self._logger, self._settings),
+                ),
+                TgCallbackQueryRegexAnswer(
+                    'pagPrDay',
+                    PaginationPerDayPrayerAnswer(empty_answer),
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(like|dislike)',
