@@ -22,7 +22,6 @@
 
 import datetime
 
-import pytest
 import pytz
 
 from app_types.fk_async_str import FkAsyncStr
