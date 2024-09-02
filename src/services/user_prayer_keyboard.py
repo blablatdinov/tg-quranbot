@@ -20,6 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import datetime
 from contextlib import suppress
 from typing import final, override
 
@@ -55,6 +56,7 @@ class UserPrayersKeyboard(Keyboard):
         :param update: Update
         :return: str
         """
+        parsed_date = await self._date.parse(update)
         with suppress(PrayerAtUserAlreadyExistsError):
             await PgCityChangeSafeUserPrayers(
                 PgNewPrayersAtUser(
@@ -64,36 +66,40 @@ class UserPrayersKeyboard(Keyboard):
                 PgExistUserPrayers(
                     self._pgsql,
                     self._chat_id,
-                    await self._date.parse(update),
+                    parsed_date,
                 ),
-            ).create(await self._date.parse(update))
+            ).create(parsed_date)
         prayers = await PgExistUserPrayers(
             self._pgsql,
             self._chat_id,
-            await self._date.parse(update),
+            parsed_date,
         ).fetch()
+        readed_buttons_line = [
+            {
+                'text': '✅' if user_prayer['is_read'] else '❌',
+                'callback_data': (
+                    'mark_not_readed({0})' if user_prayer['is_read'] else 'mark_readed({0})'
+                ).format(
+                    user_prayer['prayer_at_user_id'],
+                ),
+            }
+            for user_prayer in prayers
+        ]
         return ujson.dumps({
             'inline_keyboard': [
+                readed_buttons_line,
                 [
                     {
-                        'text': '✅' if user_prayer['is_read'] else '❌',
-                        'callback_data': (
-                            'mark_not_readed({0})' if user_prayer['is_read'] else 'mark_readed({0})'
-                        ).format(
-                            user_prayer['prayer_at_user_id'],
+                        'text': '<- {0}'.format((parsed_date - datetime.timedelta(days=1)).strftime('%d.%m')),
+                        'callback_data': 'pagPrDay({0})'.format(
+                            (parsed_date - datetime.timedelta(days=1)).strftime('%d.%m.%Y'),
                         ),
-                    }
-                    for user_prayer in prayers
-                ],
-                # TODO #1206 Захардкоженное значение даты
-                [
-                    {
-                        'text': '<- 01.09',
-                        'callback_data': 'pagPrDay(01.09.2024)',
                     },
                     {
-                        'text': '03.09 ->',
-                        'callback_data': 'pagPrDay(03.09.2024)',
+                        'text': '{0} ->'.format((parsed_date + datetime.timedelta(days=1)).strftime('%d.%m')),
+                        'callback_data': 'pagPrDay({0})'.format(
+                            (parsed_date + datetime.timedelta(days=1)).strftime('%d.%m.%Y'),
+                        ),
                     },
                 ],
             ],

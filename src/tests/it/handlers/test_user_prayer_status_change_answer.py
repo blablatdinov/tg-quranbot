@@ -37,7 +37,8 @@ from srv.prayers.prayers_text import PrayersText
 
 
 @pytest.fixture
-async def _generated_prayers(pgsql, _prayers):
+async def _generated_prayers(pgsql, prayers_factory):
+    await prayers_factory('2023-12-19')
     query = '\n'.join([
         'INSERT INTO prayers_at_user (user_id, prayer_id, is_read) VALUES',
         '(905, 1, false),',
@@ -50,9 +51,8 @@ async def _generated_prayers(pgsql, _prayers):
     await pgsql.execute(query)
 
 
-@pytest.mark.usefixtures('_prayers')
-@pytest.mark.skip  # TODO #1206 Исправить тест test_new_prayer_times
-async def test_new_prayer_times(pgsql, fake_redis, time_machine, settings_ctor):
+async def test_new_prayer_times(pgsql, fake_redis, time_machine, settings_ctor, prayers_factory):
+    await prayers_factory('2023-12-19')
     time_machine.move_to('2023-12-19')
     got = await PrayerTimeAnswer.new_prayers_ctor(
         pgsql, FkAnswer(), [123], fake_redis, FkLogSink(), settings_ctor(),
@@ -73,9 +73,63 @@ async def test_new_prayer_times(pgsql, fake_redis, time_machine, settings_ctor):
                 {'callback_data': 'mark_readed(4)', 'text': '❌'},
                 {'callback_data': 'mark_readed(5)', 'text': '❌'},
             ],
+            [
+                {
+                    'callback_data': 'pagPrDay(18.12.2023)',
+                    'text': '<- 18.12',
+                },
+                {
+                    'callback_data': 'pagPrDay(20.12.2023)',
+                    'text': '20.12 ->',
+                },
+            ],
         ],
     }
     assert got[0].url.path == '/sendMessage'
+
+
+@pytest.mark.parametrize(('date', 'prev_button', 'next_button'), [
+    (
+        '2024-09-01',
+        {
+            'callback_data': 'pagPrDay(31.08.2024)',
+            'text': '<- 31.08',
+        },
+        {
+            'callback_data': 'pagPrDay(02.09.2024)',
+            'text': '02.09 ->',
+        },
+    ),
+    # TODO #1214 Добавить кейсы
+])
+# TODO #1214 Сократить кол-во аргументов в тесте
+async def test_button_dates(  # noqa: PLR0917
+    pgsql,
+    fake_redis,
+    time_machine,
+    settings_ctor,
+    date,
+    prev_button,
+    next_button,
+    prayers_factory,
+):
+    await prayers_factory(date)
+    time_machine.move_to(date)
+    got = await PrayerTimeAnswer.new_prayers_ctor(
+        pgsql, FkAnswer(), [123], fake_redis, FkLogSink(), settings_ctor(),
+    ).build(
+        FkUpdate(ujson.dumps({
+            'callback_query': {'data': 'mark_readed(3)'},
+            'message': {'message_id': 17, 'text': 'Время намаза'},
+            'chat': {'id': 905},
+        })),
+    )
+
+    assert ujson.loads(
+        got[0].url.params.get('reply_markup'),
+    )['inline_keyboard'][1] == [
+        prev_button, next_button,
+    ]
 
 
 @pytest.mark.usefixtures('_generated_prayers')
