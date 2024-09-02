@@ -112,16 +112,6 @@ async def test_today(pgsql, fake_redis, time_machine, settings_ctor):
                 {'callback_data': 'mark_readed(5)', 'text': '❌'},
                 {'callback_data': 'mark_readed(6)', 'text': '❌'},
             ],
-            [
-                {
-                    'callback_data': 'pagPrDay(01.09.2024)',
-                    'text': '<- 01.09',
-                },
-                {
-                    'callback_data': 'pagPrDay(03.09.2024)',
-                    'text': '03.09 ->',
-                },
-            ],
         ],
     }
     assert got[0].url.path == '/editMessageReplyMarkup'
@@ -189,16 +179,6 @@ async def test_without_message_text(pgsql, fake_redis, settings_ctor):
                 {'callback_data': 'mark_readed(4)', 'text': '❌'},
                 {'callback_data': 'mark_not_readed(5)', 'text': '✅'},
                 {'callback_data': 'mark_readed(6)', 'text': '❌'},
-            ],
-            [
-                {
-                    'callback_data': 'pagPrDay(01.09.2024)',
-                    'text': '<- 01.09',
-                },
-                {
-                    'callback_data': 'pagPrDay(03.09.2024)',
-                    'text': '03.09 ->',
-                },
             ],
         ],
     }
