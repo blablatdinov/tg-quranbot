@@ -75,11 +75,11 @@ async def test_new_prayer_times(pgsql, fake_redis, time_machine, settings_ctor, 
             ],
             [
                 {
-                    'callback_data': 'pagPrDay(18.12.2023)',
+                    'callback_data': 'pagPrDay(2023-12-18)',
                     'text': '<- 18.12',
                 },
                 {
-                    'callback_data': 'pagPrDay(20.12.2023)',
+                    'callback_data': 'pagPrDay(2023-12-20)',
                     'text': '20.12 ->',
                 },
             ],
@@ -92,11 +92,11 @@ async def test_new_prayer_times(pgsql, fake_redis, time_machine, settings_ctor, 
     (
         '2024-09-01',
         {
-            'callback_data': 'pagPrDay(31.08.2024)',
+            'callback_data': 'pagPrDay(2024-08-31)',
             'text': '<- 31.08',
         },
         {
-            'callback_data': 'pagPrDay(02.09.2024)',
+            'callback_data': 'pagPrDay(2024-09-02)',
             'text': '02.09 ->',
         },
     ),

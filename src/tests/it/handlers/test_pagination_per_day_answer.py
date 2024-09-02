@@ -55,7 +55,7 @@ async def test_dates(
     ).build(
         FkUpdate(
             callback_update_factory(
-                chat_id=905, callback_data='pagPrDay({0})'.format(date.strftime('%d.%m.%Y')),
+                chat_id=905, callback_data='pagPrDay({0})'.format(date.strftime('%Y-%m-%d')),
             ),
         ),
     )
@@ -64,11 +64,11 @@ async def test_dates(
         got[0].url.params.get('reply_markup'),
     )['inline_keyboard'][1] == [
         {
-            'callback_data': 'pagPrDay({0})'.format((date - datetime.timedelta(days=1)).strftime('%d.%m.%Y')),
+            'callback_data': 'pagPrDay({0})'.format((date - datetime.timedelta(days=1)).strftime('%Y-%m-%d')),
             'text': '<- {0}'.format((date - datetime.timedelta(days=1)).strftime('%d.%m')),
         },
         {
-            'callback_data': 'pagPrDay({0})'.format((date + datetime.timedelta(days=1)).strftime('%d.%m.%Y')),
+            'callback_data': 'pagPrDay({0})'.format((date + datetime.timedelta(days=1)).strftime('%Y-%m-%d')),
             'text': '{0} ->'.format((date + datetime.timedelta(days=1)).strftime('%d.%m')),
         },
     ]
@@ -92,7 +92,7 @@ async def test(
     ).build(
         FkUpdate(
             callback_update_factory(
-                chat_id=905, callback_data='pagPrDay(02.09.2024)',
+                chat_id=905, callback_data='pagPrDay(2024-09-02)',
             ),
         ),
     )
@@ -117,8 +117,8 @@ async def test(
                 {'callback_data': 'mark_readed(5)', 'text': '❌'},
             ],
             [
-                {'callback_data': 'pagPrDay(01.09.2024)', 'text': '<- 01.09'},
-                {'callback_data': 'pagPrDay(03.09.2024)', 'text': '03.09 ->'},
+                {'callback_data': 'pagPrDay(2024-09-01)', 'text': '<- 01.09'},
+                {'callback_data': 'pagPrDay(2024-09-03)', 'text': '03.09 ->'},
             ],
         ],
     }

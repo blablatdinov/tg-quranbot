@@ -45,8 +45,7 @@ class PaginationPerDayDate(PrayerDate):
         :param update: Update
         :return: datetime.date
         """
-        # TODO #1227:30min Поменять формат даты '02.09.2024' -> '2024.09.02'
         return datetime.datetime.strptime(
             str(CallbackQueryData(update)).split('(')[1][:-1],
-            '%d.%m.%Y',
+            '%Y-%m-%d',
         ).astimezone(pytz.timezone('Europe/Moscow')).date()
