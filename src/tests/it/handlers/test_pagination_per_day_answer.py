@@ -20,11 +20,18 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+<<<<<<< HEAD
 import datetime
 
 import pytest
 import pytz
+||||||| parent of 36c15f80 (#1229 test other dates)
+=======
+import datetime
+
+>>>>>>> 36c15f80 (#1229 test other dates)
 import ujson
+import pytest
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
