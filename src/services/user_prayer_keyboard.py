@@ -92,13 +92,13 @@ class UserPrayersKeyboard(Keyboard):
                     {
                         'text': '<- {0}'.format((parsed_date - datetime.timedelta(days=1)).strftime('%d.%m')),
                         'callback_data': 'pagPrDay({0})'.format(
-                            (parsed_date - datetime.timedelta(days=1)).strftime('%d.%m.%Y'),
+                            (parsed_date - datetime.timedelta(days=1)).strftime('%Y-%m-%d'),
                         ),
                     },
                     {
                         'text': '{0} ->'.format((parsed_date + datetime.timedelta(days=1)).strftime('%d.%m')),
                         'callback_data': 'pagPrDay({0})'.format(
-                            (parsed_date + datetime.timedelta(days=1)).strftime('%d.%m.%Y'),
+                            (parsed_date + datetime.timedelta(days=1)).strftime('%Y-%m-%d'),
                         ),
                     },
                 ],
