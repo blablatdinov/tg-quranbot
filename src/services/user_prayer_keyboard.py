@@ -84,15 +84,14 @@ class UserPrayersKeyboard(Keyboard):
                     for user_prayer in prayers
                 ],
                 # TODO #1206 Захардкоженное значение даты
-                # TODO #1206 Пустой callback data
                 [
                     {
                         'text': '<- 01.09',
-                        'callback_data': 'empty',
+                        'callback_data': 'pagPrDay(01.09.2024)',
                     },
                     {
                         'text': '03.09 ->',
-                        'callback_data': 'empty',
+                        'callback_data': 'pagPrDay(03.09.2024)',
                     },
                 ],
             ],
