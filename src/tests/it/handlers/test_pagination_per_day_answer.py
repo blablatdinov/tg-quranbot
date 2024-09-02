@@ -28,4 +28,4 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 async def test():
     # TODO #1206 Реализовать проверку обработки
-    await PaginationPerDayPrayerAnswer(FkAnswer()).build(FkUpdate())
+    await PaginationPerDayPrayerAnswer(FkAnswer()).build(FkUpdate.empty_ctor())
