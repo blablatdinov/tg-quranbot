@@ -23,6 +23,7 @@
 import datetime
 
 import pytest
+import pytz
 import ujson
 
 from app_types.fk_log_sink import FkLogSink
@@ -32,8 +33,8 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 @pytest.mark.parametrize('date', [
-    datetime.datetime(2014, 2, 17).date(),
-    datetime.datetime(2100, 2, 17).date(),
+    datetime.datetime(2014, 2, 17, tzinfo=pytz.timezone('Europe/Moscow')).date(),
+    datetime.datetime(2100, 2, 17, tzinfo=pytz.timezone('Europe/Moscow')).date(),
 ])
 async def test_dates(
     callback_update_factory,
