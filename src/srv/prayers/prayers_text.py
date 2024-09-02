@@ -65,6 +65,22 @@ class PrayersText(AsyncSupportsStr):
             'ORDER BY',
             "    ARRAY_POSITION(ARRAY['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
         ])
+        print([
+            row for row in await self._pgsql.fetch_all(
+                '\n'.join([
+                    'SELECT',
+                    '    c.name AS city_name,',
+                    '    p.day,',
+                    '    p.time,',
+                    '    p.name',
+                    'FROM prayers AS p',
+                    'INNER JOIN cities AS c ON p.city_id = c.city_id',
+                    # 'WHERE p.day = :date AND c.city_id = :city_id',
+                    # 'ORDER BY',
+                    # "    ARRAY_POSITION(ARRAY['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
+                ]),
+            )
+        ])
         rows = await self._pgsql.fetch_all(query, {
             'date': await self._date.parse(self._update),
             'city_id': await self._city_id.to_str(),

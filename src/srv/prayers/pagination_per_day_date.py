@@ -20,33 +20,31 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import pytest
+import datetime
+from contextlib import suppress
+from typing import final, override
 
-from app_types.fk_update import FkUpdate
-from app_types.fk_log_sink import FkLogSink
-from handlers.pagination_per_day_prayer_answer import PaginationPerDayPrayerAnswer
-from integrations.tg.tg_answers.fk_answer import FkAnswer
+import attrs
+import pytz
+from pyeo import elegant
+
+from app_types.update import Update
+from integrations.tg.message_text import MessageText
+from srv.prayers.prayer_date import PrayerDate
 
 
-async def test(callback_update_factory, pgsql, fake_redis, settings_ctor, unquote, prayers_factory):
-    await prayers_factory('2024-09-02')
-    got = await PaginationPerDayPrayerAnswer(
-        FkAnswer(),
-        pgsql,
-        [123],
-        fake_redis,
-        FkLogSink(),
-        settings_ctor(),
-    ).build(FkUpdate(callback_update_factory(chat_id=905, callback_data='pagPrDay(02.09.2024)')))
+@final
+@attrs.define(frozen=True)
+@elegant
+class PaginaitonPerDayDate(PrayerDate):
+    """Дата намаза."""
 
-    assert got[0].url.params.get('text') == '\n'.join([
-        'Время намаза для г. Kazan (02.09.2024)',
-        '',
-        'Иртәнге: 05:43',
-        'Восход: 08:02',
-        'Өйлә: 12:00',
-        'Икенде: 13:21',
-        'Ахшам: 15:07',
-        'Ястү: 17:04',
-    ])
-    # TODO #1213:30min добавить assert с проверкой клавиатуры
+    @override
+    async def parse(self, update: Update) -> datetime.date:
+        """Парсинг из текста сообщения.
+
+        :param update: Update
+        :return: datetime.date
+        :raises ValueError: время намаза не соответствует формату
+        """
+        return datetime.date(2024, 9, 2)

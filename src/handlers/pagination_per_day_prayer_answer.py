@@ -24,11 +24,16 @@ from typing import final, override
 
 import attrs
 import httpx
+from databases import Database
+from redis.asyncio import Redis
 from pyeo import elegant
+from app_types.logger import LogSink
+from settings import Settings
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
+from handlers.prayer_time_answer import PrayerTimeAnswer
 
 
 @final
@@ -38,6 +43,11 @@ class PaginationPerDayPrayerAnswer(TgAnswer):
     """Пагинация по дням для времен намаза."""
 
     _origin: TgAnswer
+    _pgsql: Database
+    _admin_chat_ids: list[int]
+    _rds: Redis
+    _logger: LogSink
+    _settings: Settings
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -47,4 +57,11 @@ class PaginationPerDayPrayerAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         # TODO #1206 Реализовать обработку для pagPrDay
-        return await TgHtmlMessageAnswerToSender(self._origin).build(update)
+        return await PrayerTimeAnswer.pagination_per_day_ctor(
+            self._pgsql,
+            self._origin,
+            self._admin_chat_ids,
+            self._rds,
+            self._logger,
+            self._settings,
+        ).build(update)

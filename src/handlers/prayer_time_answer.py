@@ -53,6 +53,7 @@ from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 from srv.prayers.prayers_mark_as_date import PrayersMarkAsDate
 from srv.prayers.prayers_request_date import PrayersRequestDate
+from srv.prayers.pagination_per_day_date import PaginaitonPerDayDate
 from srv.prayers.prayers_text import PrayersText
 from srv.prayers.ramadan_prayer_text import RamadanPrayerText
 from srv.prayers.user_city_id import UserCityId
@@ -151,6 +152,37 @@ class PrayerTimeAnswer(TgAnswer):
                 logger,
                 settings,
             ),
+        )
+
+    @classmethod
+    def pagination_per_day_ctor(  # noqa: PLR0913
+        cls,
+        pgsql: Database,
+        empty_answer: TgAnswer,
+        admin_chat_ids: Sequence[int],
+        redis: Redis,
+        logger: LogSink,
+        settings: Settings,
+    ) -> TgAnswer:
+        """Конструктор для пагинации по дням.
+
+        :param pgsql: Database
+        :param empty_answer: TgAnswer
+        :param admin_chat_ids: Sequence[int]
+        :param redis: Redis
+        :param logger: LogSink
+        :param settings: Settings
+        :return: TgAnswer
+        """
+        return cls(
+            pgsql,
+            TgAnswerToSender(TgMessageAnswer(empty_answer)),
+            admin_chat_ids,
+            empty_answer,
+            redis,
+            PaginaitonPerDayDate(),
+            logger,
+            settings,
         )
 
     @override
