@@ -100,7 +100,7 @@ async def test_new_prayer_times(pgsql, fake_redis, time_machine, settings_ctor, 
             'text': '02.09 ->',
         },
     ),
-    # TODO
+    # TODO #1214 Добавить кейсы
 ])
 async def test_button_dates(
     pgsql,
