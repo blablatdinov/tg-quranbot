@@ -49,3 +49,4 @@ async def test(callback_update_factory, pgsql, fake_redis, settings_ctor, prayer
         'Ястү: 17:04',
     ])
     # TODO #1213:30min добавить assert с проверкой клавиатуры
+    # TODO #1213:30min добавить тест для другого дня (можно использовать параметризацию)
