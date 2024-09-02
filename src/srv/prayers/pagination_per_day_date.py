@@ -24,9 +24,11 @@ import datetime
 from typing import final, override
 
 import attrs
+import pytz
 from pyeo import elegant
 
 from app_types.update import Update
+from integrations.tg.callback_query import CallbackQueryData
 from srv.prayers.prayer_date import PrayerDate
 
 
@@ -38,10 +40,13 @@ class PaginationPerDayDate(PrayerDate):
 
     @override
     async def parse(self, update: Update) -> datetime.date:
-        """Парсинг из текста сообщения.
+        """Парсинг даты из информации о нажатии на кнопку.
 
         :param update: Update
         :return: datetime.date
         """
-        # TODO #1213:30min реализовать парсинг даты из callback data
-        return datetime.date(2024, 9, 2)  # noqa: WPS432
+        # TODO #1227:30min Поменять формат даты '02.09.2024' -> '2024.09.02'
+        return datetime.datetime.strptime(
+            str(CallbackQueryData(update)).split('(')[1][:-1],
+            '%d.%m.%Y',
+        ).astimezone(pytz.timezone('Europe/Moscow')).date()

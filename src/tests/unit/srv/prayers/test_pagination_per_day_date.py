@@ -24,14 +24,21 @@ import datetime
 
 import pytest
 
+from app_types.fk_update import FkUpdate
 from srv.prayers.pagination_per_day_date import PaginationPerDayDate
 
 
 @pytest.mark.parametrize('date', [
     datetime.date(2024, 9, 2),
+    datetime.date(2023, 5, 20),
 ])
 async def test(callback_update_factory, date):
-    # TODO #1227:30min Поменять формат даты '02.09.2024' -> '2024.09.02'
-    got = await PaginationPerDayDate().parse(callback_update_factory(callback_data='pagPrDay({0})'.format(date.strftime('%d.%m.%D'))))  
+    got = await PaginationPerDayDate().parse(
+        FkUpdate(
+            callback_update_factory(
+                callback_data='pagPrDay({0})'.format(date.strftime('%d.%m.%Y')),
+            ),
+        ),
+    )
 
     assert got == date
