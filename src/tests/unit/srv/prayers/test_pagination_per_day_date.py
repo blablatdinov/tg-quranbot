@@ -21,32 +21,24 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-from typing import final, override
 
-import attrs
-import pytz
-from pyeo import elegant
+import pytest
 
-from app_types.update import Update
-from integrations.tg.callback_query import CallbackQueryData
-from srv.prayers.prayer_date import PrayerDate
+from app_types.fk_update import FkUpdate
+from srv.prayers.pagination_per_day_date import PaginationPerDayDate
 
 
-@final
-@attrs.define(frozen=True)
-@elegant
-class PaginationPerDayDate(PrayerDate):
-    """Дата намаза."""
+@pytest.mark.parametrize('date', [
+    datetime.date(2024, 9, 2),
+    datetime.date(2023, 5, 20),
+])
+async def test(callback_update_factory, date):
+    got = await PaginationPerDayDate().parse(
+        FkUpdate(
+            callback_update_factory(
+                callback_data='pagPrDay({0})'.format(date.strftime('%d.%m.%Y')),
+            ),
+        ),
+    )
 
-    @override
-    async def parse(self, update: Update) -> datetime.date:
-        """Парсинг даты из информации о нажатии на кнопку.
-
-        :param update: Update
-        :return: datetime.date
-        """
-        # TODO #1227:30min Поменять формат даты '02.09.2024' -> '2024.09.02'
-        return datetime.datetime.strptime(
-            str(CallbackQueryData(update)).split('(')[1][:-1],
-            '%d.%m.%Y',
-        ).astimezone(pytz.timezone('Europe/Moscow')).date()
+    assert got == date
