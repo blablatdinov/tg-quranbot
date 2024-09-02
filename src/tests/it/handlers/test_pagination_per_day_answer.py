@@ -20,14 +20,10 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import ujson
 
-from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
-from handlers.paginate_by_search_ayat import PaginateBySearchAyat
-from integrations.tg.tg_answers.fk_answer import FkAnswer
-
 from handlers.pagination_per_day_prayer_answer import PaginationPerDayPrayerAnswer
+from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 async def test():

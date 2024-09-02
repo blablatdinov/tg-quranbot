@@ -77,7 +77,9 @@ class UserPrayersKeyboard(Keyboard):
                 [
                     {
                         'text': '✅' if user_prayer['is_read'] else '❌',
-                        'callback_data': ('mark_not_readed({0})' if user_prayer['is_read'] else 'mark_readed({0})').format(
+                        'callback_data': (
+                            'mark_not_readed({0})' if user_prayer['is_read'] else 'mark_readed({0})'
+                        ).format(
                             user_prayer['prayer_at_user_id'],
                         ),
                     }

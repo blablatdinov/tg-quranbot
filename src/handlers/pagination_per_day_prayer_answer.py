@@ -24,20 +24,10 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
 from pyeo import elegant
-from redis.asyncio import Redis
 
-from app_types.logger import LogSink
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswer, TgMessageAnswer, TgTextAnswer
-from integrations.tg.tg_answers.answer_to_sender import TgAnswerToSender
-from integrations.tg.tg_chat_id import TgChatId
-from settings import Settings
-from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
-from srv.ayats.highlighted_search_answer import HighlightedSearchAnswer
-from srv.ayats.search_ayat_by_text_callback_answer import SearchAyatByTextCallbackAnswer
-from srv.ayats.user_has_not_search_query_safe_answer import UserHasNotSearchQuerySafeAnswer
+from integrations.tg.tg_answers import TgAnswer
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
 
 
@@ -45,9 +35,16 @@ from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAns
 @attrs.define(frozen=True)
 @elegant
 class PaginationPerDayPrayerAnswer(TgAnswer):
+    """Пагинация по дням для времен намаза."""
 
     _origin: TgAnswer
 
+    @override
     async def build(self, update: Update) -> list[httpx.Request]:
+        """Сборка ответа.
+
+        :param update: Update
+        :return: list[httpx.Request]
+        """
         # TODO #1206 Реализовать обработку для pagPrDay
         return await TgHtmlMessageAnswerToSender(self._origin).build(update)

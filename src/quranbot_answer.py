@@ -33,6 +33,7 @@ from handlers.decrement_skipped_prayer_answer import DecrementSkippedPrayerAnswe
 from handlers.favorites_answer import FavoriteAyatsAnswer
 from handlers.full_start_answer import FullStartAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
+from handlers.pagination_per_day_prayer_answer import PaginationPerDayPrayerAnswer
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
@@ -41,7 +42,6 @@ from handlers.search_city_answer import SearchCityAnswer
 from handlers.skipped_prayers_answer import SkippedPrayersAnswer
 from handlers.status_answer import StatusAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
-from handlers.pagination_per_day_prayer_answer import PaginationPerDayPrayerAnswer
 from integrations.tg.tg_answers import (
     TgAnswer,
     TgAnswerFork,
