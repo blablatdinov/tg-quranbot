@@ -159,7 +159,7 @@ async def users(pgsql, city_factory, user_factory):
 
 
 @pytest.mark.usefixtures('users')
-@pytest.mark.skip  #TODO #1206 Исправить тест test
+@pytest.mark.skip  # TODO #1206 Исправить тест test
 async def test(pgsql, fake_redis, time_machine, settings_ctor, mock_http_routes):
     time_machine.move_to('2024-03-06')
     settings = settings_ctor(  # noqa: S106. Not secure issue
@@ -184,7 +184,7 @@ async def test(pgsql, fake_redis, time_machine, settings_ctor, mock_http_routes)
 
 
 @pytest.mark.usefixtures('users')
-@pytest.mark.skip  #TODO #1206 Исправить тест test_ramadan_mode
+@pytest.mark.skip  # TODO #1206 Исправить тест test_ramadan_mode
 async def test_ramadan_mode(pgsql, fake_redis, time_machine, settings_ctor, mock_http_ramadan_mode):
     time_machine.move_to('2024-03-06')
     settings = settings_ctor(  # noqa: S106. Not secure issue
