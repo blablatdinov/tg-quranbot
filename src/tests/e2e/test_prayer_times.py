@@ -211,11 +211,11 @@ def test_pagination_by_dates_backward(tg_client, bot_name, wait_until):
         ('❌', 'mark_readed(9)'),
         ('❌', 'mark_readed(10)'),
         (
-            '{0} ->'.format(today.strftime('%d.%m')),
+            '<- {0} ->'.format(today.strftime('%d.%m')),
             'pagPrDay({0})'.format(today.strftime('%Y-%m-%d')),
         ),
         (
-            '<- {0}'.format((today + datetime.timedelta(days=2)).strftime('%d.%m')),
+            '{0} ->'.format((today + datetime.timedelta(days=2)).strftime('%d.%m')),
             'pagPrDay({0})'.format((today + datetime.timedelta(days=2)).strftime('%Y-%m-%d')),
         ),
     ]
