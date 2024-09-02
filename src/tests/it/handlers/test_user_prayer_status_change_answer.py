@@ -102,7 +102,8 @@ async def test_new_prayer_times(pgsql, fake_redis, time_machine, settings_ctor, 
     ),
     # TODO #1214 Добавить кейсы
 ])
-async def test_button_dates(
+# TODO #1214 Сократить кол-во аргументов в тесте
+async def test_button_dates(  # noqa: PLR0917
     pgsql,
     fake_redis,
     time_machine,
@@ -124,7 +125,9 @@ async def test_button_dates(
         })),
     )
 
-    assert ujson.loads(got[0].url.params.get('reply_markup'))['inline_keyboard'][1] == [
+    assert ujson.loads(
+        got[0].url.params.get('reply_markup'),
+    )['inline_keyboard'][1] == [
         prev_button, next_button,
     ]
 

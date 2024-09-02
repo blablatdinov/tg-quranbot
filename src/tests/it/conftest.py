@@ -158,7 +158,8 @@ def user_factory(pgsql):
 async def prayers_factory(pgsql, city_factory, user_factory):
     city = await city_factory('080fd3f4-678e-4a1c-97d2-4460700fe7ac', 'Kazan')
     await user_factory(905, city=city)
-    async def _prayers_factory(date_as_str):
+
+    async def _prayers_factory(date_as_str):  # noqa: WPS430
         query = '\n'.join([
             'INSERT INTO prayers (prayer_id, name, "time", city_id, day) VALUES',
             "(1, 'fajr', '05:43:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '{0}'),",
