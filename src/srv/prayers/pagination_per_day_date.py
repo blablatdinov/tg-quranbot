@@ -33,7 +33,7 @@ from srv.prayers.prayer_date import PrayerDate
 @final
 @attrs.define(frozen=True)
 @elegant
-class PaginaitonPerDayDate(PrayerDate):
+class PaginationPerDayDate(PrayerDate):
     """Дата намаза."""
 
     @override

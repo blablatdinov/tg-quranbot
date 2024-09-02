@@ -49,7 +49,7 @@ from settings import Settings
 from srv.message_not_found_safe_answer import MessageNotFoundSafeAnswer
 from srv.prayers.date_from_user_prayer_id import DateFromUserPrayerId
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
-from srv.prayers.pagination_per_day_date import PaginaitonPerDayDate
+from srv.prayers.pagination_per_day_date import PaginationPerDayDate
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 from srv.prayers.prayers_mark_as_date import PrayersMarkAsDate
@@ -180,7 +180,7 @@ class PrayerTimeAnswer(TgAnswer):
             admin_chat_ids,
             empty_answer,
             redis,
-            PaginaitonPerDayDate(),
+            PaginationPerDayDate(),
             logger,
             settings,
         )
