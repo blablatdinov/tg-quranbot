@@ -164,7 +164,7 @@ def test_with_set_city_by_location(tg_client, bot_name, wait_until):
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')
 def test_pagination_by_dates_forward(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
-    today = datetime.datetime.now().date()
+    today = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).date()
     messages = wait_until(tg_client, 5)
     list(chain.from_iterable(
         button_row for button_row in messages[0].get_buttons()
@@ -194,7 +194,7 @@ def test_pagination_by_dates_forward(tg_client, bot_name, wait_until):
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')
 def test_pagination_by_dates_backward(tg_client, bot_name, wait_until):
     tg_client.send_message(bot_name, 'Время намаза')
-    today = datetime.datetime.now().date()
+    today = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).date()
     messages = wait_until(tg_client, 5)
     list(chain.from_iterable(
         button_row for button_row in messages[0].get_buttons()
