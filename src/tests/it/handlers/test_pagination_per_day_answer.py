@@ -20,6 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import ujson
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
@@ -48,5 +49,19 @@ async def test(callback_update_factory, pgsql, fake_redis, settings_ctor, prayer
         'Ахшам: 15:07',
         'Ястү: 17:04',
     ])
-    # TODO #1213:30min добавить assert с проверкой клавиатуры
+    assert ujson.loads(got[0].url.params.get('reply_markup')) == {
+        'inline_keyboard': [
+            [
+                {'callback_data': 'mark_readed(1)', 'text': '❌'},
+                {'callback_data': 'mark_readed(2)', 'text': '❌'},
+                {'callback_data': 'mark_readed(3)', 'text': '❌'},
+                {'callback_data': 'mark_readed(4)', 'text': '❌'},
+                {'callback_data': 'mark_readed(5)', 'text': '❌'},
+            ],
+            [
+                {'callback_data': 'pagPrDay(01.09.2024)', 'text': '<- 01.09'},
+                {'callback_data': 'pagPrDay(03.09.2024)', 'text': '03.09 ->'},
+            ],
+        ],
+    }
     # TODO #1213:30min добавить тест для другого дня (можно использовать параметризацию)
