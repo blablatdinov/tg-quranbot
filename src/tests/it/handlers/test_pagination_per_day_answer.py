@@ -60,7 +60,9 @@ async def test_dates(
         ),
     )
 
-    assert ujson.loads(got[0].url.params.get('reply_markup'))['inline_keyboard'][1] == [
+    assert ujson.loads(
+        got[0].url.params.get('reply_markup'),
+    )['inline_keyboard'][1] == [
         {
             'callback_data': 'pagPrDay({0})'.format((date - datetime.timedelta(days=1)).strftime('%d.%m.%Y')),
             'text': '<- {0}'.format((date - datetime.timedelta(days=1)).strftime('%d.%m')),
