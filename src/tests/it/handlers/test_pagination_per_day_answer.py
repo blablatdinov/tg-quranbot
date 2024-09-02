@@ -20,12 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import pytest
 
 from app_types.fk_update import FkUpdate
 from handlers.pagination_per_day_prayer_answer import PaginationPerDayPrayerAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
+# TODO #1206 Реализовать проверку обработки
+@pytest.mark.skip
 async def test():
-    # TODO #1206 Реализовать проверку обработки
     await PaginationPerDayPrayerAnswer(FkAnswer()).build(FkUpdate.empty_ctor())
