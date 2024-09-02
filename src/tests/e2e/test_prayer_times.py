@@ -20,6 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+# flake8: noqa: WPS202
+
 import datetime
 from itertools import chain
 
@@ -159,3 +161,63 @@ def test_with_set_city_by_location(tg_client, bot_name, wait_until):
     messages = wait_until(tg_client, 3)
 
     assert messages[0].message == 'Вам будет приходить время намаза для города Казань'
+
+
+@pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')
+def test_pagination_by_dates_forward(tg_client, bot_name, wait_until):
+    tg_client.send_message(bot_name, 'Время намаза')
+    today = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).date()
+    messages = wait_until(tg_client, 5)
+    list(chain.from_iterable(
+        button_row for button_row in messages[0].get_buttons()
+    ))[-2].click()
+    messages = wait_until(tg_client, 6)
+    assert [
+        (button.text, button.data.decode('utf-8'))
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+    ] == [
+        ('❌', 'mark_readed(6)'),
+        ('❌', 'mark_readed(7)'),
+        ('❌', 'mark_readed(8)'),
+        ('❌', 'mark_readed(9)'),
+        ('❌', 'mark_readed(10)'),
+        (
+            '<- {0}'.format((today - datetime.timedelta(days=2)).strftime('%d.%m')),
+            'pagPrDay({0})'.format((today - datetime.timedelta(days=2)).strftime('%Y-%m-%d')),
+        ),
+        (
+            '{0} ->'.format(today.strftime('%d.%m')),
+            'pagPrDay({0})'.format(today.strftime('%Y-%m-%d')),
+        ),
+    ]
+
+
+@pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')
+def test_pagination_by_dates_backward(tg_client, bot_name, wait_until):
+    tg_client.send_message(bot_name, 'Время намаза')
+    today = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).date()
+    messages = wait_until(tg_client, 5)
+    list(chain.from_iterable(
+        button_row for button_row in messages[0].get_buttons()
+    ))[-1].click()
+    messages = wait_until(tg_client, 6)
+    assert [
+        (button.text, button.data.decode('utf-8'))
+        for button_row in messages[0].get_buttons()
+        for button in button_row
+    ] == [
+        ('❌', 'mark_readed(6)'),
+        ('❌', 'mark_readed(7)'),
+        ('❌', 'mark_readed(8)'),
+        ('❌', 'mark_readed(9)'),
+        ('❌', 'mark_readed(10)'),
+        (
+            '<- {0} ->'.format(today.strftime('%d.%m')),
+            'pagPrDay({0})'.format(today.strftime('%Y-%m-%d')),
+        ),
+        (
+            '{0} ->'.format((today + datetime.timedelta(days=2)).strftime('%d.%m')),
+            'pagPrDay({0})'.format((today + datetime.timedelta(days=2)).strftime('%Y-%m-%d')),
+        ),
+    ]
