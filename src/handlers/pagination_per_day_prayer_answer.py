@@ -55,7 +55,6 @@ class PaginationPerDayPrayerAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        # TODO #1206 Реализовать обработку для pagPrDay
         return await PrayerTimeAnswer.pagination_per_day_ctor(
             self._pgsql,
             self._origin,

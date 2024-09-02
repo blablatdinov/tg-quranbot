@@ -20,7 +20,10 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import datetime
+
 import ujson
+import pytest
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
@@ -28,8 +31,19 @@ from handlers.pagination_per_day_prayer_answer import PaginationPerDayPrayerAnsw
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
-async def test(callback_update_factory, pgsql, fake_redis, settings_ctor, prayers_factory):
-    await prayers_factory('2024-09-02')
+@pytest.mark.parametrize('date', [
+    datetime.datetime(2014, 2, 17).date(),
+    datetime.datetime(2100, 2, 17).date(),
+])
+async def test(
+    callback_update_factory,
+    pgsql,
+    fake_redis,
+    settings_ctor,
+    prayers_factory,
+    date,
+):
+    await prayers_factory(date)
     got = await PaginationPerDayPrayerAnswer(
         FkAnswer(),
         pgsql,
@@ -37,10 +51,16 @@ async def test(callback_update_factory, pgsql, fake_redis, settings_ctor, prayer
         fake_redis,
         FkLogSink(),
         settings_ctor(),
-    ).build(FkUpdate(callback_update_factory(chat_id=905, callback_data='pagPrDay(02.09.2024)')))
+    ).build(
+        FkUpdate(
+            callback_update_factory(
+                chat_id=905, callback_data='pagPrDay({0})'.format(date.strftime('%d.%m.%Y')),
+            ),
+        ),
+    )
 
     assert got[0].url.params.get('text') == '\n'.join([
-        'Время намаза для г. Kazan (02.09.2024)',
+        'Время намаза для г. Kazan ({0})'.format(date.strftime('%d.%m.%Y')),
         '',
         'Иртәнге: 05:43',
         'Восход: 08:02',
@@ -59,9 +79,14 @@ async def test(callback_update_factory, pgsql, fake_redis, settings_ctor, prayer
                 {'callback_data': 'mark_readed(5)', 'text': '❌'},
             ],
             [
-                {'callback_data': 'pagPrDay(01.09.2024)', 'text': '<- 01.09'},
-                {'callback_data': 'pagPrDay(03.09.2024)', 'text': '03.09 ->'},
+                {
+                    'callback_data': 'pagPrDay({0})'.format((date - datetime.timedelta(days=1)).strftime('%d.%m.%Y')),
+                    'text': '<- {0}'.format((date - datetime.timedelta(days=1)).strftime('%d.%m')),
+                },
+                {
+                    'callback_data': 'pagPrDay({0})'.format((date + datetime.timedelta(days=1)).strftime('%d.%m.%Y')),
+                    'text': '{0} ->'.format((date + datetime.timedelta(days=1)).strftime('%d.%m')),
+                },
             ],
         ],
     }
-    # TODO #1213:30min добавить тест для другого дня (можно использовать параметризацию)
