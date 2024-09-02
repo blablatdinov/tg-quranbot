@@ -32,7 +32,7 @@ from srv.prayers.prayers_text import PrayersText
 from srv.prayers.ramadan_prayer_text import RamadanPrayerText
 
 
-# TODO #1214 Исправить тест test
+# TODO #1214 Исправить проверку текста времени намаза со временем поста
 @pytest.mark.skip
 async def test(pgsql, prayers_factory):
     prayers_factory('2023-12-19')
