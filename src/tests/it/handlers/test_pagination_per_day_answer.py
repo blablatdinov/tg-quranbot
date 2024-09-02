@@ -27,7 +27,7 @@ from handlers.pagination_per_day_prayer_answer import PaginationPerDayPrayerAnsw
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
-async def test(callback_update_factory, pgsql, fake_redis, settings_ctor, unquote, prayers_factory):
+async def test(callback_update_factory, pgsql, fake_redis, settings_ctor, prayers_factory):
     await prayers_factory('2024-09-02')
     got = await PaginationPerDayPrayerAnswer(
         FkAnswer(),
