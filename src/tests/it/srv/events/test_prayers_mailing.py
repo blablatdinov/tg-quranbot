@@ -66,8 +66,8 @@ def mock_http_routes(respx_mock):
                         {'text': '\u274c', 'callback_data': 'mark_readed(5)'},
                     ],
                     [
-                        {'text': '<- 06.03', 'callbabk_data': 'pagPrDay(2024-03-06)'},
-                        {'text': '08.03 ->', 'callbabk_data': 'pagPrDay(2024-03-08)'},
+                        {'text': '<- 06.03', 'callback_data': 'pagPrDay(2024-03-06)'},
+                        {'text': '08.03 ->', 'callback_data': 'pagPrDay(2024-03-08)'},
                     ],
                 ],
             }),
@@ -105,8 +105,8 @@ def mock_http_ramadan_mode(respx_mock):
                     {'text': '\u274c', 'callback_data': 'mark_readed(5)'},
                 ],
                 [
-                    {'text': '<- 06.03', 'callbabk_data': 'pagPrDay(2024-03-06)'},
-                    {'text': '08.03 ->', 'callbabk_data': 'pagPrDay(2024-03-08)'},
+                    {'text': '<- 06.03', 'callback_data': 'pagPrDay(2024-03-06)'},
+                    {'text': '08.03 ->', 'callback_data': 'pagPrDay(2024-03-08)'},
                 ],
             ],
         }),
