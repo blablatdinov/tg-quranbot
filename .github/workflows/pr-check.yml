@@ -79,9 +79,8 @@ jobs:
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
       - name: create .env file
         run: echo '${{ secrets.E2E_ENV_SETUP }}' > .env
-      # TODO #1206 Повысить fail-under до 96
       - name: Run tests with pytest
-        run: .venv/bin/pytest src --ignore=src/tests/e2e --doctest-modules --cov --cov-report xml --cov-fail-under=95
+        run: .venv/bin/pytest src --ignore=src/tests/e2e --doctest-modules --cov --cov-report xml --cov-fail-under=96
       - uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
