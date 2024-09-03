@@ -51,6 +51,17 @@ async def _generated_prayers(pgsql, prayers_factory):
     await pgsql.execute(query)
 
 
+@pytest.fixture
+def prayer_time_answer(
+    pgsql,
+    fake_redis,
+    settings_ctor,
+):
+    return PrayerTimeAnswer.new_prayers_ctor(
+        pgsql, FkAnswer(), [123], fake_redis, FkLogSink(), settings_ctor(),
+    )
+
+
 async def test_new_prayer_times(pgsql, fake_redis, time_machine, settings_ctor, prayers_factory):
     await prayers_factory('2023-12-19')
     time_machine.move_to('2023-12-19')
@@ -102,22 +113,17 @@ async def test_new_prayer_times(pgsql, fake_redis, time_machine, settings_ctor, 
     ),
     # TODO #1214 Добавить кейсы
 ])
-# TODO #1214 Сократить кол-во аргументов в тесте
-async def test_button_dates(  # noqa: PLR0917
-    pgsql,
-    fake_redis,
+async def test_button_dates(
     time_machine,
-    settings_ctor,
     date,
     prev_button,
     next_button,
     prayers_factory,
+    prayer_time_answer,
 ):
     await prayers_factory(date)
     time_machine.move_to(date)
-    got = await PrayerTimeAnswer.new_prayers_ctor(
-        pgsql, FkAnswer(), [123], fake_redis, FkLogSink(), settings_ctor(),
-    ).build(
+    got = await prayer_time_answer.build(
         FkUpdate(ujson.dumps({
             'callback_query': {'data': 'mark_readed(3)'},
             'message': {'message_id': 17, 'text': 'Время намаза'},
