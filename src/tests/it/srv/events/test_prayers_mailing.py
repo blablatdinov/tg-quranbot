@@ -35,7 +35,26 @@ from srv.events.rabbitmq_sink import RabbitmqSink
 
 
 @pytest.fixture
-def mock_http_routes(respx_mock):
+def keyboard():
+    return ujson.dumps({
+            'inline_keyboard': [
+            [
+                {'text': '\u274c', 'callback_data': 'mark_readed(1)'},
+                {'text': '\u274c', 'callback_data': 'mark_readed(2)'},
+                {'text': '\u274c', 'callback_data': 'mark_readed(3)'},
+                {'text': '\u274c', 'callback_data': 'mark_readed(4)'},
+                {'text': '\u274c', 'callback_data': 'mark_readed(5)'},
+            ],
+            [
+                {'text': '<- 06.03', 'callback_data': 'pagPrDay(2024-03-06)'},
+                {'text': '08.03 ->', 'callback_data': 'pagPrDay(2024-03-08)'},
+            ],
+        ],
+    })
+
+
+@pytest.fixture
+def mock_http_routes(respx_mock, keyboard):
     rv = {
         'return_value': httpx.Response(
             200, text=ujson.dumps({'ok': True, 'result': True}),
@@ -56,21 +75,7 @@ def mock_http_routes(respx_mock):
         respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add({
             'text': text,
             'chat_id': chat_id,
-            'reply_markup': ujson.dumps({
-                'inline_keyboard': [
-                    [
-                        {'text': '\u274c', 'callback_data': 'mark_readed(1)'},
-                        {'text': '\u274c', 'callback_data': 'mark_readed(2)'},
-                        {'text': '\u274c', 'callback_data': 'mark_readed(3)'},
-                        {'text': '\u274c', 'callback_data': 'mark_readed(4)'},
-                        {'text': '\u274c', 'callback_data': 'mark_readed(5)'},
-                    ],
-                    [
-                        {'text': '<- 06.03', 'callback_data': 'pagPrDay(2024-03-06)'},
-                        {'text': '08.03 ->', 'callback_data': 'pagPrDay(2024-03-08)'},
-                    ],
-                ],
-            }),
+            'reply_markup': keyboard,
             'parse_mode': 'html',
         }))).mock(**rv)
         for chat_id, text in chat_content.items()
@@ -78,7 +83,7 @@ def mock_http_routes(respx_mock):
 
 
 @pytest.fixture
-def mock_http_ramadan_mode(respx_mock):
+def mock_http_ramadan_mode(respx_mock, keyboard):
     rv = {
         'return_value': httpx.Response(
             200, text=ujson.dumps({'ok': True, 'result': True}),
@@ -95,21 +100,7 @@ def mock_http_ramadan_mode(respx_mock):
             'Ястү: 09:30',
         ]),
         'chat_id': '358610865',
-        'reply_markup': ujson.dumps({
-            'inline_keyboard': [
-                [
-                    {'text': '\u274c', 'callback_data': 'mark_readed(1)'},
-                    {'text': '\u274c', 'callback_data': 'mark_readed(2)'},
-                    {'text': '\u274c', 'callback_data': 'mark_readed(3)'},
-                    {'text': '\u274c', 'callback_data': 'mark_readed(4)'},
-                    {'text': '\u274c', 'callback_data': 'mark_readed(5)'},
-                ],
-                [
-                    {'text': '<- 06.03', 'callback_data': 'pagPrDay(2024-03-06)'},
-                    {'text': '08.03 ->', 'callback_data': 'pagPrDay(2024-03-08)'},
-                ],
-            ],
-        }),
+        'reply_markup': keyboard,
         'parse_mode': 'html',
     }))).mock(**rv)
 
