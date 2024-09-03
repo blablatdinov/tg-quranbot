@@ -100,7 +100,17 @@ async def test_new_prayer_times(pgsql, fake_redis, time_machine, settings_ctor, 
             'text': '02.09 ->',
         },
     ),
-    # TODO #1214 Добавить кейсы
+    (
+        '2160-12-31',
+        {
+            'callback_data': 'pagPrDay(2160-12-30)',
+            'text': '<- 30.12',
+        },
+        {
+            'callback_data': 'pagPrDay(2161-01-01)',
+            'text': '01.01 ->',
+        },
+    ),
 ])
 # TODO #1214 Сократить кол-во аргументов в тесте
 async def test_button_dates(  # noqa: PLR0917
