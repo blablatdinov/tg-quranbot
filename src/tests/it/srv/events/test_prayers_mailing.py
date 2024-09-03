@@ -37,7 +37,7 @@ from srv.events.rabbitmq_sink import RabbitmqSink
 @pytest.fixture
 def keyboard():
     return ujson.dumps({
-            'inline_keyboard': [
+        'inline_keyboard': [
             [
                 {'text': '\u274c', 'callback_data': 'mark_readed(1)'},
                 {'text': '\u274c', 'callback_data': 'mark_readed(2)'},
