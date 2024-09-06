@@ -99,7 +99,7 @@ class QuranbotAnswer(TgAnswer):
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
+        """Сборка ответа от бота.
 
         :param update: Update
         :return: list[httpx.Request]
