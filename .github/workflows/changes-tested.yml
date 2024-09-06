@@ -40,7 +40,7 @@ jobs:
           code:
             - 'src/**/*.py'
           tests:
-            - 'tests/**/*.py'
+            - 'src/tests/**/*.py'
 
     - name: Ensure code changes have corresponding tests
       if: steps.filter.outputs.code == 'true' && steps.filter.outputs.tests != 'true'
