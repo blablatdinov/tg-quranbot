@@ -40,12 +40,14 @@ jobs:
         CODE_CHANGED=$(echo "${{ steps.changed-files.outputs.modified }}" | grep -E '\.(js|ts|py|java|go|rb|cpp)$' || true)
         if [ -z "$CODE_CHANGED" ]; then
           echo "No code changes detected. Skipping tests check."
-          exit 0
+          echo "code_changed=false" >> $GITHUB_ENV
         else
           echo "Code changes detected. Verifying if tests were updated."
+          echo "code_changed=true" >> $GITHUB_ENV
         fi
       shell: bash
     - name: Ensure tests were updated
+      if: env.code_changed == 'true'
       run: |
         echo "Checking if test files were modified..."
         TESTS_CHANGED=$(echo "${{ steps.changed-files.outputs.modified }}" | grep -E 'tests/|test/|spec/' || true)
