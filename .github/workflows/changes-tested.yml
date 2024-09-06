@@ -38,9 +38,9 @@ jobs:
       with:
         filters: |
           code:
-            - 'src/**/*'  # Изменения в коде (замените на ваши пути)
+            - 'src/**/*.py'
           tests:
-            - 'tests/**/*'  # Изменения в тестах (замените на ваши пути)
+            - 'tests/**/*.py'
 
     - name: Ensure code changes have corresponding tests
       if: steps.filter.outputs.code == 'true' && steps.filter.outputs.tests != 'true'
