@@ -27,10 +27,10 @@ WHERE prayer_at_user_id IN (
     SELECT unnest(subquery.ids_for_remove) FROM
         (
             SELECT
-                (array_agg(prayer_at_user_id))[2:] AS ids_for_remove,
+                (array_agg(prayers_at_user.prayer_at_user_id))[2:] AS ids_for_remove,
                 count(*) AS records_count
             FROM prayers_at_user
-            GROUP BY user_id, prayer_id
+            GROUP BY prayers_at_user.user_id, prayers_at_user.prayer_id
             HAVING count(*) > 1
         ) AS subquery
 );
