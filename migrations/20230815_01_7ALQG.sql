@@ -80,7 +80,7 @@ CREATE TABLE public.prayer_days (
 CREATE TABLE public.prayers (
     prayer_id integer NOT NULL,
     name character varying,
-    "time" time without time zone NOT NULL,
+    time time without time zone NOT NULL,
     city_id character varying,
     day_id date
 );
