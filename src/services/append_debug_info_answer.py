@@ -23,7 +23,6 @@
 from typing import final, override
 
 import httpx
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer
@@ -31,7 +30,6 @@ from services.debug_param import DebugParam
 
 
 @final
-@elegant
 class AppendDebugInfoAnswer(TgAnswer):
     """Ответ с отладочной информацией."""
 

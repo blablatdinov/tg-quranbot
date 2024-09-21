@@ -22,13 +22,10 @@
 
 from typing import Final, Protocol
 
-from pyeo import elegant
-
 PODCAST_ID_LITERAL: Final = 'podcast_id'
 USER_ID_LITERAL: Final = 'user_id'
 
 
-@elegant
 class ChangedPodcastReaction(Protocol):
     """Реакция на подкаст."""
 

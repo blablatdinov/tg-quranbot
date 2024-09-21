@@ -26,7 +26,6 @@ import attrs
 import httpx
 import ujson
 from furl import furl
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers.tg_answer import TgAnswer
@@ -34,7 +33,6 @@ from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class TgLinkPreviewOptions(TgAnswer):
     """Опции превью ссылок."""
 

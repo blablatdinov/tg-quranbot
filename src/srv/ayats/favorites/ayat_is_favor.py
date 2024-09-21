@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.async_supports_bool import AsyncSupportsBool
 from integrations.tg.fk_chat_id import ChatId
@@ -33,7 +32,6 @@ from srv.ayats.ayat import Ayat
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class AyatIsFavor(AsyncSupportsBool):
     """Является ли аят избранным."""
 

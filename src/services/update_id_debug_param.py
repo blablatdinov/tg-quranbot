@@ -22,15 +22,12 @@
 
 from typing import final, override
 
-from pyeo import elegant
-
 from app_types.update import Update
 from integrations.tg.update_id import UpdateId
 from services.debug_param import DebugParam
 
 
 @final
-@elegant
 class UpdateIdDebugParam(DebugParam):
     """Отладочная информация с идентификатором обновления."""
 

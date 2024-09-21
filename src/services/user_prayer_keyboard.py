@@ -27,7 +27,6 @@ from typing import final, override
 import attrs
 import ujson
 from databases import Database
-from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.internal_exceptions import PrayerAtUserAlreadyExistsError
@@ -41,7 +40,6 @@ from srv.prayers.prayer_date import PrayerDate
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class UserPrayersKeyboard(Keyboard):
     """Клавиатура времен намаза."""
 

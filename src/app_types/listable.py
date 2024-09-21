@@ -23,12 +23,9 @@
 from collections.abc import Sequence
 from typing import Generic, Protocol, TypeVar
 
-from pyeo import elegant
-
 ListElemT_co = TypeVar('ListElemT_co', covariant=True)
 
 
-@elegant
 class AsyncListable(Protocol, Generic[ListElemT_co]):  # type: ignore [misc]
     """Объект, имеющий корутину представляющую его в кач-ве списка."""
 

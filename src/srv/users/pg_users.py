@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.fk_async_int import FkAsyncInt
 from app_types.listable import AsyncListable
@@ -34,7 +33,6 @@ from srv.users.user import User
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PgUsers(AsyncListable):
     """Пользователи из БД postgres."""
 

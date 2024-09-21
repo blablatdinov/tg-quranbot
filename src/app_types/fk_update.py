@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import ujson
-from pyeo import elegant
 
 from app_types.stringable import SupportsStr
 from app_types.update import Update
@@ -32,7 +31,6 @@ from app_types.update import Update
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class FkUpdate(Update):
     """Подделка обновления."""
 

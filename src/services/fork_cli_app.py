@@ -22,13 +22,10 @@
 
 from typing import final, override
 
-from pyeo import elegant
-
 from app_types.sync_runable import SyncRunable
 
 
 @final
-@elegant
 class ForkCliApp(SyncRunable):
     """Маршрутизация для CLI приложения."""
 

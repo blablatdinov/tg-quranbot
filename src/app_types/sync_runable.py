@@ -22,10 +22,7 @@
 
 from typing import Protocol
 
-from pyeo import elegant
 
-
-@elegant
 class SyncRunable(Protocol):
     """Интерфейс блокирующего запускаемого объекта."""
 

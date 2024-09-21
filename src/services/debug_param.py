@@ -22,12 +22,9 @@
 
 from typing import Protocol
 
-from pyeo import elegant
-
 from app_types.update import Update
 
 
-@elegant
 class DebugParam(Protocol):
     """Интерфейс отладочной информации."""
 

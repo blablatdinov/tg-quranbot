@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.fk_async_int import FkAsyncInt
 from app_types.intable import AsyncInt
@@ -37,7 +36,6 @@ from srv.users.pg_valid_chat_id import PgValidChatId
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class ReferrerChatId(AsyncInt):
     """Идентификатор чата пригласившего."""
 

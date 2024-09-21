@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 from databases import Database
 from eljson.json import Json
-from pyeo import elegant
 
 from app_types.fk_update import FkUpdate
 from app_types.listable import AsyncListable
@@ -45,7 +44,6 @@ from srv.users.user import User
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class CheckUsersStatus(ReceivedEvent):
     """Статусы пользователей."""
 

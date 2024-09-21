@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer
@@ -34,7 +33,6 @@ from srv.users.user_step import UserStep
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class ResetStateAnswer(TgAnswer):
     """Декоратор для обнуления состояния пользователя."""
 

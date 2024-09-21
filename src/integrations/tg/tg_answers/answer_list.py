@@ -23,14 +23,12 @@
 from typing import final, override
 
 import httpx
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 
 @final
-@elegant
 class TgAnswerList(TgAnswer):
     """Список ответов пользователю."""
 

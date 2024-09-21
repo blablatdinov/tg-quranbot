@@ -24,7 +24,6 @@ from contextlib import suppress
 from typing import final, override
 
 import httpx
-from pyeo import elegant
 
 from app_types.logger import LogSink
 from app_types.update import Update
@@ -39,7 +38,6 @@ from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 
 @final
-@elegant
 class TgAnswerFork(TgAnswer):
     """Маршрутизация ответов."""
 

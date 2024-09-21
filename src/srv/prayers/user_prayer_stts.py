@@ -22,12 +22,9 @@
 
 from typing import Protocol
 
-from pyeo import elegant
-
 from srv.prayers.prayer_status import PrayerStatus
 
 
-@elegant
 class UserPrayerStts(Protocol):
     """Интерфейс статуса прочитанности намаза."""
 

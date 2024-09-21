@@ -23,7 +23,6 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.sendable import Sendable
@@ -31,7 +30,6 @@ from integrations.tg.sendable import Sendable
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class FkSendable(Sendable):
     """Фейковый объект для отправки ответов."""
 

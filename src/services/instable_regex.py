@@ -24,7 +24,6 @@ import re
 from typing import SupportsInt, final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.stringable import SupportsStr
 from exceptions.base_exception import BaseAppError
@@ -32,7 +31,6 @@ from exceptions.base_exception import BaseAppError
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class IntableRegex(SupportsInt):
     """Регулярное выражение, которое можно привести к числу."""
 

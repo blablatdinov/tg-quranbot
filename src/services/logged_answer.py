@@ -27,7 +27,6 @@ from typing import Final, final, override
 import attrs
 import pytz
 import ujson
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.sendable import Sendable
@@ -47,7 +46,6 @@ MESSAGES_CREATED: Final = 'Messages.Created'
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class LoggedAnswer(Sendable):
     """Декоратор логирующий сообщения."""
 

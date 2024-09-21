@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 
 from integrations.city_name_by_id import CityName
 from integrations.tg.coordinates import Coordinates
@@ -32,7 +31,6 @@ from integrations.tg.coordinates import Coordinates
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class NominatimCityName(CityName):
     """Интеграция с https://nominatim.openstreetmap.org ."""
 

@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import ujson
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.keyboard import Keyboard
@@ -32,7 +31,6 @@ from integrations.tg.keyboard import Keyboard
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class ResizedKeyboard(Keyboard):
     """Сжатая в высоту клавиатура."""
 

@@ -22,14 +22,11 @@
 
 from typing import final, override
 
-from pyeo import elegant
-
 from srv.users.user_state import UserState
 from srv.users.user_step import UserStep
 
 
 @final
-@elegant
 class CachedUserState(UserState):
     """Кэширующий декоратор."""
 

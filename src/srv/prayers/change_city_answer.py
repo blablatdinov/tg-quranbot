@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
@@ -34,7 +33,6 @@ from srv.prayers.updated_user_city import UpdatedUserCity
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class ChangeCityAnswer(TgAnswer):
     """Ответ со сменой города."""
 

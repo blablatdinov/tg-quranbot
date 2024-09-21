@@ -26,7 +26,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 
 from app_types.async_int_or_none import AsyncIntOrNone
 from app_types.fk_async_int import FkAsyncInt
@@ -42,7 +41,6 @@ from srv.start.referrer_id_or_none import ReferrerIdOrNone
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class StartAnswer(TgAnswer):
     """Обработчик стартового сообщения."""
 

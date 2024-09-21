@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgTextAnswer
@@ -40,7 +39,6 @@ from srv.ayats.pg_neighbor_ayats import PgNeighborAyats
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class AyatByIdMessageAnswer(TgAnswer):
     """Текстовый ответ на поиск аята."""
 

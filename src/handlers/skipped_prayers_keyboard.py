@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import ujson
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.keyboard import Keyboard
@@ -33,7 +32,6 @@ from srv.prayers.prayer_names import PrayerNames
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class SkippedPrayersKeyboard(Keyboard):
     """Клавиатура для пропущеных намазов."""
 

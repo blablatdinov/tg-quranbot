@@ -24,14 +24,12 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.intable import AsyncInt
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class ChatIdByLegacyId(AsyncInt):
     """Идентификатор чата по старому идентификатору в БД.
 

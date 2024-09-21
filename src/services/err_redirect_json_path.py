@@ -24,14 +24,12 @@ from contextlib import suppress
 from typing import Generic, final, override
 
 import attrs
-from pyeo import elegant
 
 from services.json_path import ET_co, JsonPath
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class ErrRedirectJsonPath(JsonPath, Generic[ET_co]):
     """JsonPath с преобразованием исключений."""
 

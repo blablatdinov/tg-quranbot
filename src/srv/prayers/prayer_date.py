@@ -23,12 +23,9 @@
 import datetime
 from typing import Protocol
 
-from pyeo import elegant
-
 from app_types.update import Update
 
 
-@elegant
 class PrayerDate(Protocol):
     """Дата времен намаза."""
 

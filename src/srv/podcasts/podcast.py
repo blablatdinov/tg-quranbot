@@ -22,12 +22,9 @@
 
 from typing import Protocol
 
-from pyeo import elegant
-
 from srv.files.tg_file import TgFile
 
 
-@elegant
 class Podcast(TgFile, Protocol):
     """Интерфейс подкаста."""
 

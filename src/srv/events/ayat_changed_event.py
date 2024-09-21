@@ -25,7 +25,6 @@ from typing import TypeAlias, final, override
 import attrs
 from databases import Database
 from eljson.json import Json
-from pyeo import elegant
 
 from srv.ayats.pg_ayat import PgAyat
 from srv.events.recieved_event import ReceivedEvent
@@ -36,7 +35,6 @@ AyatChangedEvent: TypeAlias = ReceivedEvent
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class RbmqAyatChangedEvent(AyatChangedEvent):
     """Событие изменения аята из rabbitmq."""
 

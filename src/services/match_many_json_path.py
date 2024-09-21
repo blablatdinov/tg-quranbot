@@ -25,7 +25,6 @@ from contextlib import suppress
 from typing import Generic, final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.stringable import SupportsStr
 from services.json_path import ET_co, JsonPath
@@ -34,7 +33,6 @@ from services.json_path_value import JsonPathValue
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class MatchManyJsonPath(JsonPath, Generic[ET_co]):
     """Поиск по нескольким jsonpath."""
 

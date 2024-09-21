@@ -22,15 +22,12 @@
 
 from typing import final, override
 
-from pyeo import elegant
-
 from app_types.update import Update
 from integrations.tg.tg_chat_id import TgChatId
 from services.debug_param import DebugParam
 
 
 @final
-@elegant
 class ChatIdDebugParam(DebugParam):
     """Отладочная информация с идентификатором чата."""
 

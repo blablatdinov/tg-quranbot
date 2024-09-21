@@ -23,7 +23,6 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.stringable import SupportsStr
 from srv.ayats.search_query import AyatNum, SearchQuery, SuraId
@@ -31,7 +30,6 @@ from srv.ayats.search_query import AyatNum, SearchQuery, SuraId
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class NumsSearchQuery(SearchQuery):
     """Запросом для поиска.
 

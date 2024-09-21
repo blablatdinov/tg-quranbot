@@ -26,7 +26,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.millis import Millis
@@ -37,7 +36,6 @@ from integrations.tg.tg_answers import TgAnswer, TgAnswerToSender, TgMessageAnsw
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class StatusAnswer(TgAnswer):
     """Ответ со статусом системы."""
 

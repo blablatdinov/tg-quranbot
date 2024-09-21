@@ -29,7 +29,6 @@ from databases import Database
 from databases.interfaces import Record
 from eljson.json import Json
 from jinja2 import Template
-from pyeo import elegant
 
 from app_types.fk_async_listable import FkAsyncListable
 from app_types.fk_update import FkUpdate
@@ -51,7 +50,6 @@ from srv.users.user import User
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class MorningContentPublishedEvent(ReceivedEvent):
     """Обработка события об утренней рассылки с аятми."""
 

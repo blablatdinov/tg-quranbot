@@ -25,7 +25,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 
 from app_types.logger import LogSink
 from app_types.millis import Millis
@@ -37,7 +36,6 @@ from integrations.tg.update_id import UpdateId
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class TgMeasureAnswer(TgAnswer):
     """Замеренный ответ."""
 

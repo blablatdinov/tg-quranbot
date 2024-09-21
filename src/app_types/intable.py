@@ -22,10 +22,7 @@
 
 from typing import Protocol
 
-from pyeo import elegant
 
-
-@elegant
 class AsyncInt(Protocol):
     """Интерфейс объектов, которые можно привести к числу."""
 

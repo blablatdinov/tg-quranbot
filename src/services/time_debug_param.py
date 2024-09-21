@@ -24,14 +24,12 @@ import datetime
 from typing import final, override
 
 import pytz
-from pyeo import elegant
 
 from app_types.update import Update
 from services.debug_param import DebugParam
 
 
 @final
-@elegant
 class TimeDebugParam(DebugParam):
     """Отладочная информация с временем."""
 

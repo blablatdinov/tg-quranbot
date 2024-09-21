@@ -23,7 +23,6 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.date_time import DateTime
 from integrations.tg.fk_chat_id import ChatId
@@ -33,7 +32,6 @@ from srv.users.new_user import NewUser
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PgNewUserWithEvent(NewUser):
     """Создание пользователя с событием."""
 

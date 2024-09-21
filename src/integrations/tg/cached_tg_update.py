@@ -24,8 +24,6 @@
 
 from typing import TypedDict, final, override
 
-from pyeo import elegant
-
 from app_types.update import Update
 
 
@@ -37,7 +35,6 @@ class _CacheDict(TypedDict):
 
 
 @final
-@elegant
 class CachedTgUpdate(Update):
     """Декоратор, для избежания повторной десериализации."""
 

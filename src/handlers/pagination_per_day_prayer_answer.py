@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.logger import LogSink
@@ -37,7 +36,6 @@ from settings import Settings
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PaginationPerDayPrayerAnswer(TgAnswer):
     """Пагинация по дням для времен намаза."""
 

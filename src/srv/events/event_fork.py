@@ -24,12 +24,10 @@ from typing import final, override
 
 import attrs
 from eljson.json import Json
-from pyeo import elegant
 
 from srv.events.recieved_event import ReceivedEvent
 
 
-@elegant
 @attrs.define(frozen=True)
 @final
 class EventFork(ReceivedEvent):

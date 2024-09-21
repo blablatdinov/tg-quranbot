@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.intable import AsyncInt
 from exceptions.content_exceptions import AyatNotFoundError
@@ -34,7 +33,6 @@ from srv.ayats.search_query import SearchQuery
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class AyatIdBySuraAyatNum(AsyncInt):
     """Поиск аятов по номеру суры, аята."""
 

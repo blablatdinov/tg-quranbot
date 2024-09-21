@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers.answer_to_sender import TgAnswerToSender
@@ -36,7 +35,6 @@ from integrations.tg.update_id import UpdateId
 
 @final
 @attrs.define
-@elegant
 class DebugAnswer(TgAnswer):
     """Ответ для отладки."""
 

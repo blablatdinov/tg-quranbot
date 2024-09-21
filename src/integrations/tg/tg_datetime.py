@@ -25,7 +25,6 @@ from typing import final, override
 
 import attrs
 import pytz
-from pyeo import elegant
 
 from app_types.date_time import DateTime
 from app_types.update import Update
@@ -36,7 +35,6 @@ from services.json_path_value import JsonPathValue
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class TgDateTime(DateTime):
     """Время сообщения."""
 

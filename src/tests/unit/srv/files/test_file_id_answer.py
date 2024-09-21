@@ -23,7 +23,6 @@
 from typing import final, override
 
 import httpx
-from pyeo import elegant
 
 from app_types.fk_update import FkUpdate
 from integrations.tg.tg_answers import TgAnswer
@@ -32,7 +31,6 @@ from srv.files.file_id_answer import TelegramFileIdAnswer
 from srv.files.fk_file import FkFile
 
 
-@elegant
 @final
 class FakeAnswer(TgAnswer):
 

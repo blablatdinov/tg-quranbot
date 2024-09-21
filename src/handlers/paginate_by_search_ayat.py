@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.logger import LogSink
@@ -42,7 +41,6 @@ from srv.ayats.user_has_not_search_query_safe_answer import UserHasNotSearchQuer
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PaginateBySearchAyat(TgAnswer):
     """Пагинация по поиску аятов."""
 

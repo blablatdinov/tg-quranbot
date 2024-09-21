@@ -25,7 +25,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from exceptions.content_exceptions import BotFileNotFoundError
 from srv.files.tg_file import FileLink, TgFile, TgFileId
@@ -33,7 +32,6 @@ from srv.files.tg_file import FileLink, TgFile, TgFileId
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PgFile(TgFile):
     """Объект файла в postgres."""
 

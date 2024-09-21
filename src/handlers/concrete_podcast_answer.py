@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.fk_async_int import FkAsyncInt
@@ -42,7 +41,6 @@ from srv.podcasts.podcast_answer import PodcastAnswer
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class ConcretePodcastAnswer(TgAnswer):
     """Ответ с подкастом."""
 

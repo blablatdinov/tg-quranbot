@@ -26,7 +26,6 @@ from typing import final, override
 import attrs
 from databases import Database
 from eljson.json import Json
-from pyeo import elegant
 
 from app_types.fk_async_listable import FkAsyncListable
 from app_types.fk_update import FkUpdate
@@ -47,7 +46,6 @@ from srv.users.user import User
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class MailingCreatedEvent(ReceivedEvent):
     """Обработка события об утренней рассылки с аятми."""
 

@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.intable import AsyncInt
 from exceptions.base_exception import InternalBotError
@@ -35,7 +34,6 @@ from srv.podcasts.podcast import Podcast
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PgPodcast(Podcast):
     """Объект подкаста."""
 

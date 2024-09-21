@@ -22,10 +22,7 @@
 
 from typing import Protocol
 
-from pyeo import elegant
 
-
-@elegant
 class User(Protocol):
     """Интерфейс пользователя."""
 

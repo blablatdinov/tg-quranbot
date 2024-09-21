@@ -23,7 +23,6 @@
 from typing import SupportsInt, final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.base_exception import InternalBotError
@@ -33,7 +32,6 @@ from services.json_path_value import JsonPathValue
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class UpdateId(SupportsInt):
     """Идентификатор обновления."""
 

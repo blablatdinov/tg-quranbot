@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.fk_async_int import FkAsyncInt
@@ -52,7 +51,6 @@ from srv.users.redis_user_state import RedisUserState
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PodcastReactionChangeAnswer(TgAnswer):
     """Ответ с подкастом."""
 

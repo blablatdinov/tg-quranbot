@@ -22,12 +22,9 @@
 
 from typing import Protocol
 
-from pyeo import elegant
-
 from srv.users.user_step import UserStep
 
 
-@elegant
 class UserState(Protocol):
     """Интерфейс для работы с состоянием пользователя."""
 

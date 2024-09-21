@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import CoordinatesNotFoundError
@@ -34,7 +33,6 @@ from integrations.tg.tg_message_coordinates import TgMessageCoordinates
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class TgLocationAnswer(TgAnswer):
     """Ответ на присланную геопозицию."""
 

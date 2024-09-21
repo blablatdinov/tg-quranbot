@@ -25,7 +25,6 @@ from typing import final, override
 
 import attrs
 import pytz
-from pyeo import elegant
 
 from app_types.listable import AsyncListable
 from srv.events.sink import Sink
@@ -35,7 +34,6 @@ from srv.users.user import User
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class UpdatedUsersStatusEvent(UpdatedUsersStatus):
     """Событие об отписке."""
 

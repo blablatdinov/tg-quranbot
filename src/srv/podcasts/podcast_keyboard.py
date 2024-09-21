@@ -25,7 +25,6 @@ from typing import TypedDict, final, override
 import attrs
 import ujson
 from databases import Database
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.keyboard import Keyboard
@@ -41,7 +40,6 @@ class _Row(TypedDict):
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PodcastKeyboard(Keyboard):
     """Клавиатура подкаста."""
 

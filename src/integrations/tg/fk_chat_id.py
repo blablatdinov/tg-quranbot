@@ -23,14 +23,12 @@
 from typing import SupportsInt, TypeAlias, final, override
 
 import attrs
-from pyeo import elegant
 
 ChatId: TypeAlias = SupportsInt
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class FkChatId(ChatId):
     """Фейк идентификатора чата."""
 

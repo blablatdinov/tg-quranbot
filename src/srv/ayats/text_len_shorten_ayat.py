@@ -25,7 +25,6 @@ from typing import final, override
 
 import attrs
 from eljson.json import Json
-from pyeo import elegant
 
 from srv.ayats.ayat import Ayat, AyatText
 from srv.ayats.ayat_identifier import AyatIdentifier
@@ -34,7 +33,6 @@ from srv.files.tg_file import TgFile
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class TextLenSafeAyat(Ayat):
     """Декоратор для обрезания текста аята.
 

@@ -24,7 +24,6 @@ from contextlib import suppress
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
@@ -34,7 +33,6 @@ from srv.ayats.neighbor_ayats_buttons import NeighborAyatsButtons
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class NeighborAyatsBtns(NeighborAyatsButtons):
     """Кнопки для клавиатуры с соседними аятами."""
 

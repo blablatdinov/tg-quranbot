@@ -23,14 +23,12 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from srv.events.sink import Sink
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class FkSink(Sink):
     """Фейковый слив для событий."""
 

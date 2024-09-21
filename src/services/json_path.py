@@ -22,12 +22,9 @@
 
 from typing import Protocol, TypeVar
 
-from pyeo import elegant
-
 ET_co = TypeVar('ET_co', covariant=True)
 
 
-@elegant
 class JsonPath(Protocol[ET_co]):
     """Интерфейс объектов, получающих значение по jsonpath."""
 

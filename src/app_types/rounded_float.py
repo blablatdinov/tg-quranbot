@@ -23,12 +23,10 @@
 from typing import SupportsFloat, final, override
 
 import attrs
-from pyeo import elegant
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class RoundedFloat(SupportsFloat):
     """Округленное дробное число."""
 

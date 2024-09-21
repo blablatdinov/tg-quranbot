@@ -22,12 +22,9 @@
 
 from typing import Protocol
 
-from pyeo import elegant
-
 from app_types.async_supports_str import AsyncSupportsStr
 
 
-@elegant
 class AdminMessage(AsyncSupportsStr, Protocol):
     """Интерфейс административного сообщения."""
 

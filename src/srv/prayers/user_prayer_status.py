@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from srv.prayers.prayers_stts import PrayerStts
 from srv.prayers.user_prayer_stts import UserPrayerStts
@@ -32,7 +31,6 @@ from srv.prayers.user_prayer_stts import UserPrayerStts
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class UserPrayerStatus(UserPrayerStts):
     """Статус прочитанности намаза."""
 

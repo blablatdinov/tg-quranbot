@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.fk_async_int import FkAsyncInt
 from app_types.intable import AsyncInt
@@ -36,7 +35,6 @@ from srv.users.valid_chat_id import ValidChatId
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PgUser(User):
     """Пользователь в БД postgres."""
 

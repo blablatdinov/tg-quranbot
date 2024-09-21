@@ -23,7 +23,6 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.logger import LogSink
@@ -34,7 +33,6 @@ from srv.users.user_step import UserStep
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class RedisUserState(UserState):
     """Объект, работающий с состоянием пользователя."""
 

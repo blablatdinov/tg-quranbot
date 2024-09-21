@@ -23,12 +23,10 @@
 from typing import Protocol
 
 import httpx
-from pyeo import elegant
 
 from app_types.update import Update
 
 
-@elegant
 class TgAnswer(Protocol):
     """Интерфейс ответа пользователю."""
 

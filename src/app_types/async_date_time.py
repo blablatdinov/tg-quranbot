@@ -23,10 +23,7 @@
 import datetime
 from typing import Protocol
 
-from pyeo import elegant
 
-
-@elegant
 class AsyncDateTime(Protocol):
     """Интерфейс даты/времени для вычисления с возможностью переключения контекста."""
 

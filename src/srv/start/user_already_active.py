@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.user import UserAlreadyActiveError
@@ -33,7 +32,6 @@ from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class UserAlreadyActiveSafeAnswer(TgAnswer):
     """Ответ для случаев когда пользователь уже активен."""
 

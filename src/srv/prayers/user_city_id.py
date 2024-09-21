@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.async_supports_str import AsyncSupportsStr
 from exceptions.content_exceptions import UserHasNotCityIdError
@@ -33,7 +32,6 @@ from integrations.tg.fk_chat_id import ChatId
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class UserCityId(AsyncSupportsStr):
     """Идентификатор города."""
 

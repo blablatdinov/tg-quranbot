@@ -25,7 +25,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from integrations.tg.fk_chat_id import ChatId
 from srv.prayers.exist_user_prayers import ExistUserPrayers
@@ -34,7 +33,6 @@ from srv.prayers.exist_user_prayers_dict import ExistUserPrayersDict
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PgExistUserPrayers(ExistUserPrayers):
     """Существующие времена намаза у пользователя."""
 

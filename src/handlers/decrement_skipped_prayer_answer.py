@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 
 from app_types.update import Update
 from handlers.prayers_statistic import PrayersStatistic
@@ -40,7 +39,6 @@ from srv.prayers.pg_new_prayers_at_user import PgNewPrayersAtUser
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class DecrementSkippedPrayerAnswer(TgAnswer):
     """Уменьшение кол-ва пропущенных намазов."""
 
