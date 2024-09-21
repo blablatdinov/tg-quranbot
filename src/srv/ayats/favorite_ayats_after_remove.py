@@ -25,7 +25,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.listable import AsyncListable
 from integrations.tg.fk_chat_id import ChatId
@@ -37,7 +36,6 @@ from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class FavoriteAyatsAfterRemove(AsyncListable):
     """Избранные аяты."""
 

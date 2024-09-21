@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from exceptions.base_exception import InternalBotError
 from srv.admin_messages.admin_message import AdminMessage
@@ -32,7 +31,6 @@ from srv.admin_messages.admin_message import AdminMessage
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PgAdminMessage(AdminMessage):
     """Административное сообщение."""
 

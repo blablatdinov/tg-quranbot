@@ -22,11 +22,8 @@
 
 from typing import SupportsInt, final, override
 
-from pyeo import elegant
-
 
 @final
-@elegant
 class UpdatesTimeout(SupportsInt):
     """Таймаут для обновлений."""
 

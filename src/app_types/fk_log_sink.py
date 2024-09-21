@@ -22,13 +22,10 @@
 
 from typing import final
 
-from pyeo import elegant
-
 from app_types.logger import LogSink
 
 
 @final
-@elegant
 class FkLogSink(LogSink):
     """Фейковый логгер."""
 

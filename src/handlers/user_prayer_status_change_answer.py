@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.logger import LogSink
@@ -39,7 +38,6 @@ from srv.prayers.user_prayer_status import UserPrayerStatus
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class UserPrayerStatusChangeAnswer(TgAnswer):
     """Ответ с изменением статуса прочитанности намаза."""
 

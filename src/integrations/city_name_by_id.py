@@ -24,7 +24,6 @@ from typing import TypeAlias, final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.async_supports_str import AsyncSupportsStr
 
@@ -33,7 +32,6 @@ CityName: TypeAlias = AsyncSupportsStr
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class CityNameById(CityName):
     """Имя города по id."""
 

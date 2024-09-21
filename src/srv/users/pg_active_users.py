@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.listable import AsyncListable
 from srv.users.fk_valid_chat_id import FkValidChatId
@@ -34,7 +33,6 @@ from srv.users.user import User
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PgActiveUsers(AsyncListable):
     """Активные пользователи."""
 

@@ -27,7 +27,6 @@ from typing import final, override
 import attrs
 from asyncpg.exceptions import UniqueViolationError
 from databases import Database
-from pyeo import elegant
 
 from exceptions.internal_exceptions import PrayerAtUserAlreadyExistsError, PrayerAtUserNotCreatedError
 from integrations.tg.fk_chat_id import ChatId
@@ -36,7 +35,6 @@ from srv.prayers.new_prayers_at_user import NewPrayersAtUser
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PgNewPrayersAtUser(NewPrayersAtUser):
     """Новые записи о статусе намаза."""
 

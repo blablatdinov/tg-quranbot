@@ -23,7 +23,6 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.base_exception import InternalBotError
@@ -34,7 +33,6 @@ from services.match_many_json_path import MatchManyJsonPath
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class TgChatId(ChatId):
     """Идентификатор чата."""
 

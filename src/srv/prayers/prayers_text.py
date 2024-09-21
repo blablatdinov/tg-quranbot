@@ -24,7 +24,6 @@ from typing import Final, final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.async_supports_str import AsyncSupportsStr
 from app_types.update import Update
@@ -37,7 +36,6 @@ TIME_LITERAL: Final = 'time'
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PrayersText(AsyncSupportsStr):
     """Текст сообщения с намазами."""
 

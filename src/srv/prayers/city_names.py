@@ -24,14 +24,12 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.listable import AsyncListable
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class CityNames(AsyncListable):
     """Имена городов."""
 

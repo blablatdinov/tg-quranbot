@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.async_supports_str import AsyncSupportsStr
 from exceptions.content_exceptions import CityNotSupportedError
@@ -32,7 +31,6 @@ from exceptions.content_exceptions import CityNotSupportedError
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class CityIdByName(AsyncSupportsStr):
     """Идентификатор города по имени."""
 

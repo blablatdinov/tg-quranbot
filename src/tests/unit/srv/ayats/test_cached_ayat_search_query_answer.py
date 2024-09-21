@@ -25,7 +25,6 @@ from typing import final, override
 
 import pytest
 import ujson
-from pyeo import elegant
 
 from app_types.fk_log_sink import FkLogSink
 from integrations.tg.tg_answers import TgAnswer
@@ -38,7 +37,6 @@ class FakeError(Exception):
     pass
 
 
-@elegant
 @final
 class TgAnswerFake(TgAnswer):
 

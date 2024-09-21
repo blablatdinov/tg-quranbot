@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from furl import furl
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer
@@ -34,7 +33,6 @@ from srv.files.tg_file import TgFile
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class TelegramFileIdAnswer(TgAnswer):
     """Класс ответа с файлом."""
 

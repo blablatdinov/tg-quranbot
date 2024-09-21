@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer
@@ -33,7 +32,6 @@ from srv.ayats.text_search_query import TextSearchQuery
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class HighlightedSearchAnswer(TgAnswer):
     """Ответ с подсвеченным поисковым текстом."""
 

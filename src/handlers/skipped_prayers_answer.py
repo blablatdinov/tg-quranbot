@@ -25,7 +25,6 @@ from typing import Final, final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 
 from app_types.update import Update
 from handlers.prayers_statistic import PrayersStatistic
@@ -39,7 +38,6 @@ IS_READ_LITERAL: Final = 'is_read'
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class SkippedPrayersAnswer(TgAnswer):
     """Пропущенные намазы."""
 

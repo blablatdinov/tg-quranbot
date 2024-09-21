@@ -22,13 +22,10 @@
 
 from typing import Protocol, TypeAlias
 
-from pyeo import elegant
-
 SuraId: TypeAlias = int
 AyatNum: TypeAlias = str
 
 
-@elegant
 class SearchQuery(Protocol):
     """Интерфейс объекта с запросом для поиска."""
 

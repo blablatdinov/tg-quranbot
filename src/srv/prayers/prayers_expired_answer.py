@@ -25,7 +25,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.prayer_exceptions import PrayersNotFoundError
@@ -41,7 +40,6 @@ from integrations.tg.tg_answers import (
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PrayersExpiredAnswer(TgAnswer):
     """Декоратор для обработки случаев с отсутствием времени намаза на эту дату."""
 

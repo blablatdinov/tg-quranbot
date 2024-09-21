@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
@@ -41,7 +40,6 @@ from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class AyatBySuraAyatNumAnswer(TgAnswer):
     """Ответ на поиск аята по номеру суры, аята."""
 

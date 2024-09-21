@@ -25,7 +25,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.async_supports_str import AsyncSupportsStr
 from app_types.fk_async_str import FkAsyncStr
@@ -37,7 +36,6 @@ from srv.prayers.city_id_by_name import CityIdByName
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PgCity(City):
     """Город в БД postgres."""
 

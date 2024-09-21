@@ -28,7 +28,6 @@ import ujson
 from aiormq.abc import DeliveredMessage
 from databases import Database
 from eljson.json_doc import JsonDoc
-from pyeo import elegant
 from quranbot_schema_registry import validate_schema
 
 from app_types.logger import LogSink
@@ -38,7 +37,6 @@ from srv.events.recieved_event import ReceivedEvent
 
 
 @final
-@elegant
 class RbmqEventHook(EventHook):
     """Обработчик событий из RabbitMQ."""
 

@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import ujson
-from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.internal_exceptions import TelegramIntegrationsError
@@ -33,7 +32,6 @@ from integrations.tg.sendable import Sendable
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class UserNotSubscribedSafeSendable(Sendable):
     """Декоратор для обработки отписанных пользователей."""
 

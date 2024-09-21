@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
@@ -33,7 +32,6 @@ from integrations.tg.tg_answers import TgAnswer
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class MessageNotFoundSafeAnswer(TgAnswer):
     """MessageNotFoundSafeAnswer."""
 

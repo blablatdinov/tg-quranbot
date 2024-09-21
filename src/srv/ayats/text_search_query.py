@@ -22,10 +22,7 @@
 
 from typing import Protocol
 
-from pyeo import elegant
 
-
-@elegant
 class TextSearchQuery(Protocol):
     """Интерфейс запроса для поиска аятов."""
 

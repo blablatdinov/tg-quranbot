@@ -23,7 +23,6 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.stringable import SupportsStr
 from integrations.tg.udpates_url_interface import UpdatesURLInterface
@@ -31,7 +30,6 @@ from integrations.tg.udpates_url_interface import UpdatesURLInterface
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class UpdatesWithOffsetURL(UpdatesURLInterface):
     """URL для получения только новых обновлений."""
 

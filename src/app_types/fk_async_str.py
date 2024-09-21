@@ -23,14 +23,12 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.async_supports_str import AsyncSupportsStr
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class FkAsyncStr(AsyncSupportsStr):
     """Обертка для строки."""
 

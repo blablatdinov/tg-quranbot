@@ -25,7 +25,6 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.listable import AsyncListable
 from exceptions.base_exception import BaseAppError
@@ -36,7 +35,6 @@ from srv.ayats.neighbor_ayats import NeighborAyats
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class FavoriteNeighborAyats(NeighborAyats):
     """Класс для работы с соседними аятами в хранилище."""
 

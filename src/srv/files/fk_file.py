@@ -23,14 +23,12 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from srv.files.tg_file import FileLink, TgFile, TgFileId
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class FkFile(TgFile):
     """Фейковый файл."""
 

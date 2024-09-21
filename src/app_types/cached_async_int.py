@@ -22,13 +22,10 @@
 
 from typing import final, override
 
-from pyeo import elegant
-
 from app_types.intable import AsyncInt
 
 
 @final
-@elegant
 class CachedAsyncInt(AsyncInt):
     """Кэшируемое число."""
 

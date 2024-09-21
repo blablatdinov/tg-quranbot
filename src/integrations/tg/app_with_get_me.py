@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 
 from app_types.logger import LogSink
 from app_types.runable import Runable
@@ -33,7 +32,6 @@ from exceptions.base_exception import InternalBotError
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class AppWithGetMe(Runable):
     """Объект для запуска с предварительным запросом getMe."""
 

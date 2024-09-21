@@ -22,10 +22,7 @@
 
 from typing import Protocol, override
 
-from pyeo import elegant
 
-
-@elegant
 class SupportsStr(Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 

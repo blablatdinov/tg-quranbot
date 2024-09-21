@@ -26,7 +26,6 @@ from typing import final, override
 
 import attrs
 from more_itertools import distribute
-from pyeo import elegant
 
 from app_types.logger import LogSink
 from app_types.update import Update
@@ -38,7 +37,6 @@ from integrations.tg.user_not_subscribed_safe_sendable import UserNotSubscribedS
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class BulkSendableAnswer(Sendable):
     """Массовая отправка."""
 

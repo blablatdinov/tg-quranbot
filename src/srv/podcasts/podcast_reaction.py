@@ -23,13 +23,11 @@
 from typing import Literal, Protocol, final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.stringable import SupportsStr
 from services.instable_regex import IntableRegex
 
 
-@elegant
 class PodcastReactions(Protocol):
     """Реакция на подкаст."""
 
@@ -42,7 +40,6 @@ class PodcastReactions(Protocol):
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class ParsedPodcastReaction(PodcastReactions):
     """Реакция на подкаст.
 

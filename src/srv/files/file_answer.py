@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
@@ -34,7 +33,6 @@ from srv.files.tg_file_id_not_filled_safe_answer import TgFileIdNotFilledSafeAns
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class FileAnswer(TgAnswer):
     """Класс ответа с файлом."""
 

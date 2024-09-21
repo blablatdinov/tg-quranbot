@@ -22,12 +22,9 @@
 
 from typing import Protocol
 
-from pyeo import elegant
-
 from app_types.intable import AsyncInt
 
 
-@elegant
 class ValidChatId(AsyncInt, Protocol):
     """Проверенный идентификатор чата."""
 

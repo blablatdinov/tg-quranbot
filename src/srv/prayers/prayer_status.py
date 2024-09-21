@@ -23,7 +23,6 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
@@ -33,7 +32,6 @@ from srv.prayers.prayers_stts import PrayerStts
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PrayerStatus(PrayerStts):
     """Объект, рассчитывающий данные кнопки для изменения статуса прочитанности намаза."""
 

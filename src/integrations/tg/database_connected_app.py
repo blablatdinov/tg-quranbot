@@ -24,14 +24,12 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.runable import Runable
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class DatabaseConnectedApp(Runable):
     """Декоратор для подключения к БД."""
 

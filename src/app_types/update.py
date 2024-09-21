@@ -22,12 +22,9 @@
 
 from typing import Protocol
 
-from pyeo import elegant
-
 from app_types.stringable import SupportsStr
 
 
-@elegant
 class Update(SupportsStr, Protocol):
     """Интерфейс объектов, которые можно привести к строке."""
 

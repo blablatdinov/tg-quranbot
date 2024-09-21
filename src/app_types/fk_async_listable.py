@@ -23,14 +23,12 @@
 from typing import Generic, final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.listable import AsyncListable, ListElemT_co
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class FkAsyncListable(AsyncListable, Generic[ListElemT_co]):
     """Фейковый список."""
 

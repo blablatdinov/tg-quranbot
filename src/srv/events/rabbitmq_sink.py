@@ -28,7 +28,6 @@ import aio_pika
 import attrs
 import ujson
 from loguru import logger
-from pyeo import elegant
 from quranbot_schema_registry import validate_schema
 
 from app_types.logger import LogSink
@@ -38,7 +37,6 @@ from srv.events.sink import Sink
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class RabbitmqSink(Sink):
     """События в rabbitmq."""
 

@@ -23,13 +23,11 @@
 from typing import SupportsFloat, final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.rounded_float import RoundedFloat
 
 
 @attrs.define(frozen=True)
-@elegant
 @final
 class FloatableFake(SupportsFloat):
 

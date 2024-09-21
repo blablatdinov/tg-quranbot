@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from furl import furl
-from pyeo import elegant
 
 from app_types.async_supports_str import AsyncSupportsStr
 from app_types.fk_async_str import FkAsyncStr
@@ -35,7 +34,6 @@ from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class TgTextAnswer(TgAnswer):
     """Ответ пользователю с текстом."""
 

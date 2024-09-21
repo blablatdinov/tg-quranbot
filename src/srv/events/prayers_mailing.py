@@ -30,7 +30,6 @@ import pytz
 import ujson
 from databases import Database
 from eljson.json import Json
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.fk_async_listable import FkAsyncListable
@@ -66,7 +65,6 @@ CHAT_ID: Final = 'chat_id'
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PrayersMailingPublishedEvent(ReceivedEvent):
     """Обработка события о рассылке времени намаза на следующий день."""
 

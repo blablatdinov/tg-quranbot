@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import ujson
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.keyboard import Keyboard
@@ -35,7 +34,6 @@ from srv.ayats.neighbor_ayats_btns import NeighborAyatsBtns
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class NeighborAyatKeyboard(Keyboard):
     """Клавиатура с соседними аятами."""
 

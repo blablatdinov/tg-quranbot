@@ -23,10 +23,7 @@
 import datetime
 from typing import Protocol
 
-from pyeo import elegant
 
-
-@elegant
 class DateTime(Protocol):
     """Интерфейс даты/времени."""
 

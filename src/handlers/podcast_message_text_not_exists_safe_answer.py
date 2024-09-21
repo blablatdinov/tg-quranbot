@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.tg_answers.tg_answer import TgAnswer
@@ -33,7 +32,6 @@ from services.match_many_json_path import MatchManyJsonPath
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PodcastMessageTextNotExistsSafeAnswer(TgAnswer):
     """В случаи нажатия на кнопку с отсутствующем текстом сообщения."""
 

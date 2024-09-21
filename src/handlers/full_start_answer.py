@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.logger import LogSink
@@ -48,7 +47,6 @@ from srv.users.redis_user_state import RedisUserState
 
 @attrs.define(frozen=True)
 @final
-@elegant
 class FullStartAnswer(TgAnswer):
     """Ответ на команду /start."""
 

@@ -24,7 +24,6 @@ from contextlib import suppress
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.async_int_or_none import AsyncIntOrNone
 from app_types.intable import AsyncInt
@@ -34,7 +33,6 @@ from exceptions.user import StartMessageNotContainReferrerError
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class ReferrerIdOrNone(AsyncIntOrNone):
     """Идентификатор чата пригласившего."""
 

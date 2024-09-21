@@ -23,13 +23,11 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.keyboard import Keyboard
 
 
-@elegant
 @final
 @attrs.define(frozen=True)
 class FkKeyboard(Keyboard):

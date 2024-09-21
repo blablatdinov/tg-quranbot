@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.listable import AsyncListable
 from srv.users.updated_users_status import UpdatedUsersStatus
@@ -33,7 +32,6 @@ from srv.users.user import User
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PgUpdatedUsersStatus(UpdatedUsersStatus):
     """Обновление статусов пользователей."""
 

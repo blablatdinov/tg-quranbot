@@ -24,14 +24,12 @@ import uuid
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from srv.prayers.city import City
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class FkCity(City):
     """Стаб города."""
 

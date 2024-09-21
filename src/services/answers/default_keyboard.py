@@ -22,14 +22,11 @@
 
 from typing import final, override
 
-from pyeo import elegant
-
 from app_types.update import Update
 from integrations.tg.keyboard import Keyboard
 
 
 @final
-@elegant
 class DefaultKeyboard(Keyboard):
     """Класс клавиатуры по умолчанию."""
 

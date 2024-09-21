@@ -23,7 +23,6 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.coordinates import Coordinates
@@ -34,7 +33,6 @@ from services.json_path_value import JsonPathValue
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class TgMessageCoordinates(Coordinates):
     """Координаты, принятые из чата."""
 

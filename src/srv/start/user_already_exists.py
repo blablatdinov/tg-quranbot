@@ -26,7 +26,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.user import UserAlreadyActiveError, UserAlreadyExistsError
@@ -42,7 +41,6 @@ from srv.users.pg_valid_chat_id import PgValidChatId
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class UserAlreadyExistsAnswer(TgAnswer):
     """Декоратор обработчика стартового сообщение с предохранением от UserAlreadyExists."""
 

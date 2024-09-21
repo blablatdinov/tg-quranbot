@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 from databases import Database
 from eljson.json import Json
-from pyeo import elegant
 
 from app_types.fk_update import FkUpdate
 from app_types.logger import LogSink
@@ -37,7 +36,6 @@ from srv.events.sink import Sink
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class MessageDeleted(ReceivedEvent):
     """Удаление сообщения."""
 

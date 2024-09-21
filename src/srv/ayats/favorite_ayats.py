@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from app_types.fk_async_int import FkAsyncInt
 from app_types.listable import AsyncListable
@@ -36,7 +35,6 @@ from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class FavoriteAyats(AsyncListable):
     """Избранные аяты."""
 

@@ -24,7 +24,6 @@ from typing import Final, final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat import Ayat
@@ -37,7 +36,6 @@ _AYAT_ID_LITERAL: Final = 'ayat_id'
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PgNeighborAyats(NeighborAyats):
     """Класс для работы с соседними аятами в хранилище."""
 

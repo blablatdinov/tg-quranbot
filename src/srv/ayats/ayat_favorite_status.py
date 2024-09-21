@@ -23,7 +23,6 @@
 from typing import TypeAlias, final, override
 
 import attrs
-from pyeo import elegant
 
 from services.instable_regex import IntableRegex
 from srv.ayats.ayat_identifier import AyatId
@@ -35,7 +34,6 @@ _ChangeAyatStatusCommand: TypeAlias = str
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class AyatFavoriteStatus(FavoriteAyatStatus):
     """Пользовательский ввод статуса аята в избранном.
 

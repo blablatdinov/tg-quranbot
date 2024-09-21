@@ -24,7 +24,6 @@ import asyncio
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.logger import LogSink
 from app_types.runable import Runable
@@ -34,7 +33,6 @@ from integrations.tg.sendable import Sendable
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PollingApp(Runable):
     """Приложение на long polling."""
 

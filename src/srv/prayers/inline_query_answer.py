@@ -26,7 +26,6 @@ import attrs
 import httpx
 import ujson
 from databases import Database
-from pyeo import elegant
 
 from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError
@@ -40,7 +39,6 @@ from srv.prayers.city_names import CityNames
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class InlineQueryAnswer(TgAnswer):
     """Ответ на инлайн поиск."""
 

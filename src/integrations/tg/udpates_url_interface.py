@@ -22,10 +22,7 @@
 
 from typing import Protocol
 
-from pyeo import elegant
 
-
-@elegant
 class UpdatesURLInterface(Protocol):
     """Интерфейс URL запроса для получения уведомлений."""
 

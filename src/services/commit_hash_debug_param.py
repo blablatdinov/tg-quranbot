@@ -23,7 +23,6 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.update import Update
 from services.debug_param import DebugParam
@@ -31,7 +30,6 @@ from services.debug_param import DebugParam
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class CommitHashDebugParam(DebugParam):
     """Отладочная информация с хэшом коммита."""
 

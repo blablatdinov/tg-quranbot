@@ -26,7 +26,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.logger import LogSink
@@ -62,7 +61,6 @@ from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PrayerTimeAnswer(TgAnswer):
     """Ответ с временами намаза.
 

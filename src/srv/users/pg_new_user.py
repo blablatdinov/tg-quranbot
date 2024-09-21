@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 from asyncpg import ForeignKeyViolationError, UniqueViolationError
 from databases import Database
-from pyeo import elegant
 
 from app_types.async_int_or_none import AsyncIntOrNone
 from app_types.fk_async_int_or_none import FkAsyncIntOrNone
@@ -38,7 +37,6 @@ from srv.users.new_user import NewUser
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PgNewUser(NewUser):
     """Новый пользователь в БД postgres."""
 

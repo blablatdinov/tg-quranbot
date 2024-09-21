@@ -23,7 +23,6 @@
 from typing import Protocol, TypeAlias
 
 from eljson.json import Json
-from pyeo import elegant
 
 from app_types.async_supports_str import AsyncSupportsStr
 from srv.ayats.ayat_identifier import AyatIdentifier
@@ -32,7 +31,6 @@ from srv.files.tg_file import TgFile
 AyatText: TypeAlias = str
 
 
-@elegant
 class Ayat(AsyncSupportsStr, Protocol):
     """Интерфейс аята."""
 

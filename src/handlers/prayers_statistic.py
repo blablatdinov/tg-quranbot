@@ -27,7 +27,6 @@ from typing import final, override
 import attrs
 from databases import Database
 from dateutil import rrule
-from pyeo import elegant
 
 from app_types.async_supports_str import AsyncSupportsStr
 from integrations.tg.fk_chat_id import ChatId
@@ -37,7 +36,6 @@ from srv.prayers.prayer_names import PrayerNames
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PrayersStatistic(AsyncSupportsStr):
     """Статистика непрочитанных намазов."""
 

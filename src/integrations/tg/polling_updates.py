@@ -25,7 +25,6 @@ from typing import SupportsInt, final, override
 import attrs
 import httpx
 import ujson
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.udpates_url_interface import UpdatesURLInterface
@@ -35,7 +34,6 @@ from integrations.tg.updates_iterator import UpdatesIterator
 
 @final
 @attrs.define(slots=True)
-@elegant
 class PollingUpdatesIterator(UpdatesIterator):
     """Итератор по обновлениям."""
 

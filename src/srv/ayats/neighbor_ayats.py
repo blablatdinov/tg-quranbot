@@ -22,12 +22,9 @@
 
 from typing import Protocol
 
-from pyeo import elegant
-
 from srv.ayats.ayat import Ayat
 
 
-@elegant
 class NeighborAyats(Protocol):
     """Интерфейс для работы с соседними аятами в хранилище."""
 

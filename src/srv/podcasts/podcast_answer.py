@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.logger import LogSink
@@ -44,7 +43,6 @@ from srv.users.redis_user_state import RedisUserState
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PodcastAnswer(TgAnswer):
     """Ответ с подкастом."""
 

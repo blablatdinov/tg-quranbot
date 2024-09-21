@@ -23,14 +23,12 @@
 from typing import SupportsInt, final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.intable import AsyncInt
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class FkAsyncInt(AsyncInt):
     """Фейковое число."""
 

@@ -23,14 +23,12 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.sync_runable import SyncRunable
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class CommandCliApp(SyncRunable):
     """CLI команда."""
 

@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.supports_bool import SupportsBool
@@ -45,7 +44,6 @@ from srv.podcasts.podcast_keyboard import PodcastKeyboard
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class MarkuppedPodcastAnswer(TgAnswer):
     """Ответ с подкастом."""
 

@@ -23,14 +23,12 @@
 from typing import final, override
 
 import attrs
-from pyeo import elegant
 
 from srv.users.user import User
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class FkUser(User):
     """Фейковый пользователь."""
 

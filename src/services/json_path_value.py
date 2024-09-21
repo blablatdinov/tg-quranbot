@@ -24,7 +24,6 @@ from typing import Generic, final, override
 
 import attrs
 import jsonpath_ng
-from pyeo import elegant
 
 from app_types.stringable import SupportsStr
 from services.json_path import ET_co, JsonPath
@@ -32,7 +31,6 @@ from services.json_path import ET_co, JsonPath
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class JsonPathValue(JsonPath, Generic[ET_co]):
     """Объект, получающий значение по jsonpath.
 

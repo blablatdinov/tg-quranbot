@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.fk_string import FkString
@@ -48,7 +47,6 @@ from srv.ayats.text_search_neighbor_ayats import TextSearchNeighborAyats
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class SearchAyatByTextCallbackAnswer(TgAnswer):
     """Поиск аята по тексту для обработки нажатия кнопки."""
 

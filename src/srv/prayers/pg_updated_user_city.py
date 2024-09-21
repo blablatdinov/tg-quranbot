@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 from databases import Database
-from pyeo import elegant
 
 from exceptions.internal_exceptions import UserNotFoundError
 from integrations.tg.fk_chat_id import ChatId
@@ -34,7 +33,6 @@ from srv.prayers.updated_user_city import UpdatedUserCity
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class PgUpdatedUserCity(UpdatedUserCity):
     """Обновленный город у пользователя в БД postgres."""
 

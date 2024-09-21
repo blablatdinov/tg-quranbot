@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.cached_async_int import CachedAsyncInt
@@ -42,7 +41,6 @@ from srv.podcasts.podcast_id import PodcastId
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class RandomPodcastAnswer(TgAnswer):
     """Ответ с подкастом."""
 

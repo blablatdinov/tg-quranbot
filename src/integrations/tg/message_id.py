@@ -23,7 +23,6 @@
 from typing import SupportsInt, TypeAlias, final, override
 
 import attrs
-from pyeo import elegant
 
 from app_types.update import Update
 from integrations.tg.exceptions.update_parse_exceptions import MessageIdNotFoundError
@@ -35,7 +34,6 @@ MessageId: TypeAlias = SupportsInt
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class TgMessageId(MessageId):
     """Идентификатор сообщения."""
 

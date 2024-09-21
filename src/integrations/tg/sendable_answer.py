@@ -26,7 +26,6 @@ from urllib import parse as url_parse
 import attrs
 import httpx
 import ujson
-from pyeo import elegant
 
 from app_types.logger import LogSink
 from app_types.update import Update
@@ -37,7 +36,6 @@ from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class SendableAnswer(Sendable):
     """Объект, отправляющий ответы в API."""
 

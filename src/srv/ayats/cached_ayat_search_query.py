@@ -24,7 +24,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.logger import LogSink
@@ -37,7 +36,6 @@ from srv.ayats.ayat_text_search_query import AyatTextSearchQuery
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class CachedAyatSearchQueryAnswer(TgAnswer):
     """Объект кэширует запрос на поиск аятов, для использования в пагинации."""
 

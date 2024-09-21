@@ -24,14 +24,12 @@ from typing import SupportsInt, final, override
 
 import attrs
 import httpx
-from pyeo import elegant
 
 from integrations.tg.udpates_url_interface import UpdatesURLInterface
 
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class UpdatesLongPollingURL(UpdatesURLInterface):
     """URL обновлений с таймаутом."""
 

@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 import httpx
 from databases import Database
-from pyeo import elegant
 from redis.asyncio import Redis
 
 from app_types.fk_async_int import FkAsyncInt
@@ -60,7 +59,6 @@ from srv.users.user_step import UserStep
 
 @final
 @attrs.define(frozen=True)
-@elegant
 class ChangeFavoriteAyatAnswer(TgAnswer):
     """Ответ на запрос о смене аята в избранном."""
 
