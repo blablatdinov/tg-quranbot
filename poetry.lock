@@ -2957,12 +2957,12 @@ files = [
 
 [[package]]
 name = "telethon"
-version = "1.36.0"
+version = "1.37.0"
 description = "Full-featured Telegram client library for Python 3"
 optional = false
 python-versions = ">=3.5"
 files = [
-    {file = "Telethon-1.36.0.tar.gz", hash = "sha256:11db5c7ed7e37f1272d443fb7eea0f1db580d56c6949165233946fb323aaf3a7"},
+    {file = "Telethon-1.37.0.tar.gz", hash = "sha256:e5e43cff1c1b34e2f9c2b395215beb6e9bda706b69def7efff4f55b23c9c4374"},
 ]
 
 [package.dependencies]
@@ -3571,4 +3571,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "a4960e7197b5ba71465adba6793fc0a1c0c8905266cd445c31586b7e070fdfd6"
+content-hash = "5d04b752de7409f33a416e6691830105928bf9c894e669454064a9a5e75a92b2"
