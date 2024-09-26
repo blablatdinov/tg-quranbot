@@ -37,7 +37,7 @@ jobs:
 
   tests:
     needs: setup
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       TZ: "Europe/Moscow"
     services:
@@ -94,7 +94,7 @@ jobs:
     uses: blablatdinov/tg-quranbot/.github/workflows/lint.yml@master
 
   check-duplicates:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     name: Check duplicated code
     steps:
       - name: Checkout
@@ -106,7 +106,7 @@ jobs:
         run: jscpd -p '**/*.py' -l 18 -t 0 --ignore-pattern "from.*import\s"
 
   check-spelling:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     name: Check spelling
     steps:
       - name: Checkout
