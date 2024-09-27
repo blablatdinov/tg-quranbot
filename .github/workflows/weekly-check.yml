@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-22.04
     services:
       postgres:
-        image: postgres:13.3
+        image: postgres:17.0
         env:
           POSTGRES_USER: almazilaletdinov
           POSTGRES_DB: postgres
