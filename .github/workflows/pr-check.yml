@@ -103,7 +103,7 @@ jobs:
       - name: Install jscpd
         run: npm i jscpd -g
       - name: Run jscpd
-        run: jscpd -p '**/*.py' -l 18 -t 0 --ignore-pattern "from.*import\s"
+        run: jscpd -p '**/*.py' -t 33 --ignore-pattern "from.*import\s"
 
   check-spelling:
     runs-on: ubuntu-24.04

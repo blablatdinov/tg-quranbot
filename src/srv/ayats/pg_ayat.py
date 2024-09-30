@@ -159,7 +159,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         query = '\n'.join([
             'SELECT cf.file_id',
             'FROM ayats AS a',
-            'INNER JOIN files AS cf ON a.audio_id = cf.file_id',
+            'INNER JOIN files AS cf ON a.ar_audio_id = cf.file_id',
             'WHERE a.ayat_id = :ayat_id',
         ])
         ayat_id = await self._ayat_id.to_int()
@@ -179,7 +179,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
             'UPDATE ayats',
             'SET',
             '    day = :day,',
-            '    audio_id = :audio_id,',
+            '    ar_audio_id = :ar_audio_id,',
             '    ayat_number = :ayat_number,',
             '    content = :content,',
             '    arab_text = :arab_text,',
@@ -189,7 +189,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         await self._pgsql.execute(query, {
             'ayat_id': await self._ayat_id.to_int(),
             'day': event_body.path('$.data.day')[0],
-            'audio_id': event_body.path('$.data.audio_id')[0],
+            'ar_audio_id': event_body.path('$.data.audio_id')[0],
             'ayat_number': event_body.path('$.data.ayat_number')[0],
             'content': event_body.path('$.data.content')[0],
             'arab_text': event_body.path('$.data.arab_text')[0],
