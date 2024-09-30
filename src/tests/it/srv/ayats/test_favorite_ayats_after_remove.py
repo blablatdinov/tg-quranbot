@@ -49,7 +49,17 @@ async def _db_ayat(pgsql, user_factory):
             'INSERT INTO ayats',
             '(ayat_id, sura_id, public_id, day, ar_audio_id, ayat_number, content, arab_text, transliteration)',
             'VALUES',
-            '(:ayat_id, :sura_id, :public_id, :day, :ar_audio_id, :ayat_number, :content, :arab_text, :transliteration)',
+            '(',
+            '  :ayat_id,',
+            '  :sura_id,',
+            '  :public_id,',
+            '  :day,',
+            '  :ar_audio_id,',
+            '  :ayat_number,',
+            '  :content,',
+            '  :arab_text,',
+            '  :transliteration',
+            ')',
         ]),
         [
             {
