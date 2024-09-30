@@ -22,7 +22,7 @@
 
 [tool.poetry]
 name = "tg-quranbot"
-version = "3.6.0"
+version = "3.6.1"
 description = ""
 authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 package-mode = false
