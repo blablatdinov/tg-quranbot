@@ -25,6 +25,6 @@
 
 ALTER TABLE ayats RENAME COLUMN ar_audio_id TO audio_id;
 
-ALTER TABLE ayats drop COLUMN ru_audio_id;
+ALTER TABLE ayats DROP COLUMN ru_audio_id;
 
-ALTER TABLE ayats drop CONSTRAINT ayats_ru_audio_id_fkey;
+ALTER TABLE ayats DROP CONSTRAINT ayats_ru_audio_id_fkey;
