@@ -86,16 +86,16 @@ async def _ayats(pgsql):
     )
     common = {
         'public_id': '',
-        'audio_id': '7fc47c04-2271-4ef0-9e47-ba08f499932b',
+        'ar_audio_id': '7fc47c04-2271-4ef0-9e47-ba08f499932b',
         'arab_text': '',
         'transliteration': '',
     }
     await pgsql.execute_many(
         '\n'.join([
             'INSERT INTO ayats',
-            '(ayat_id, public_id, sura_id, audio_id, ayat_number, content, arab_text, transliteration, day)',
+            '(ayat_id, public_id, sura_id, ar_audio_id, ayat_number, content, arab_text, transliteration, day)',
             'VALUES',
-            '(:ayat_id, :public_id, :sura_id, :audio_id, :ayat_number, :content, :arab_text, :transliteration, :day)',
+            '(:ayat_id, :public_id, :sura_id, :ar_audio_id, :ayat_number, :content, :arab_text, :transliteration, :day)',
         ]),
         [
             {

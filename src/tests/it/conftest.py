@@ -94,16 +94,16 @@ async def db_ayat(pgsql):
     await pgsql.execute(
         '\n'.join([
             'INSERT INTO ayats',
-            '(ayat_id, sura_id, public_id, day, audio_id, ayat_number, content, arab_text, transliteration)',
+            '(ayat_id, sura_id, public_id, day, ar_audio_id, ayat_number, content, arab_text, transliteration)',
             'VALUES',
-            '(:ayat_id, :sura_id, :public_id, :day, :audio_id, :ayat_number, :content, :arab_text, :transliteration)',
+            '(:ayat_id, :sura_id, :public_id, :day, :ar_audio_id, :ayat_number, :content, :arab_text, :transliteration)',
         ]),
         {
             'ayat_id': 1,
             'sura_id': 1,
             'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
             'day': 1,
-            'audio_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90',
+            'ar_audio_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90',
             'ayat_number': '1-7',
             'content': 'Content',
             'arab_text': 'Arab text',
