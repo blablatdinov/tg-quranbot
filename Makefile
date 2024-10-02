@@ -31,4 +31,4 @@ lint:
 	# poetry run mypy src
 
 test:
-	cd src && poetry run pytest --cov=. --cov-report=term-missing:skip-covered -vv
+	cd src && poetry run pytest -m 'not integration' --cov=. --cov-report=term-missing:skip-covered -vv

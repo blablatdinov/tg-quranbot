@@ -43,6 +43,7 @@ def gh_repo(mixer):
 
 
 @pytest.fixture()
+@pytest.mark.integration
 def _exist_touch_records(mixer, gh_repo):
     files = [
         'manage.py',
@@ -59,6 +60,7 @@ def _exist_touch_records(mixer, gh_repo):
     )
 
 
+@pytest.mark.integration
 def test(gh_repo, time_machine):
     new_issue = FkNewIssue()
     process_repo(
@@ -94,6 +96,7 @@ def test(gh_repo, time_machine):
     }
 
 
+@pytest.mark.integration
 @pytest.mark.usefixtures('_exist_touch_records')
 def test_double_process(gh_repo):
     new_issue = FkNewIssue()
