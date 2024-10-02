@@ -43,6 +43,7 @@ def gh_repo(mixer):
             issue.edit(state='closed')
 
 
+@pytest.mark.integration
 def test(gh_repo):
     call_command('process_repos')
 
