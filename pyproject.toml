@@ -601,6 +601,7 @@ disable = [
   "c-extension-no-member",  # Module 'ujson' has no 'dumps' member
   "duplicate-code",  # check by jscpd
   "too-many-arguments", # check by ruff
+  "missing-class-docstring", # check by flake8
 ]
 
 # Enable the message, report, category or checker with the given id(s). You can
