@@ -30,25 +30,25 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
 gitpython = "3.1.43"
-gunicorn = "22.0.0"
+gunicorn = "23.0.0"
 psycopg2-binary = "2.9.9"
-django = "5.0.7"
+django = "5.1.1"
 django-environ = "0.11.2"
-time-machine = "2.14.1"
-pygithub = "2.3.0"
+pygithub = "2.4.0"
 pyyaml = "6.0.2"
-attrs = "23.2.0"
+attrs = "24.2.0"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "8.3.0"
+pytest = "8.3.3"
 isort = "5.13.2"
-ruff = "0.4.10"
+ruff = "0.6.8"
 wemake-python-styleguide = "0.19.2"
 refurb = "2.0.0"
 pytest-cov = "5.0.0"
-pytest-django = "4.8.0"
+pytest-django = "4.9.0"
 faker = "12.0.1"
 mixer = "7.2.2"
+time-machine = "2.15.0"
 
 [build-system]
 requires = ["poetry-core"]
