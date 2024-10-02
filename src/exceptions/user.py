@@ -22,10 +22,13 @@
 
 from typing import final
 
+import attrs
+
 from exceptions.base_exception import BaseAppError
 
 
 @final
+@attrs.define(frozen=True)
 class UserAlreadyExistsError(BaseAppError):
     """Пользователь уже зарегистрирован."""
 
@@ -33,6 +36,7 @@ class UserAlreadyExistsError(BaseAppError):
 
 
 @final
+@attrs.define(frozen=True)
 class StartMessageNotContainReferrerError(BaseAppError):
     """Стартовое сообщение не содержит информации о пригласившем."""
 
@@ -40,5 +44,6 @@ class StartMessageNotContainReferrerError(BaseAppError):
 
 
 @final
+@attrs.define(frozen=True)
 class UserAlreadyActiveError(BaseAppError):
     """Пользователь уже активен."""

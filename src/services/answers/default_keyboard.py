@@ -22,11 +22,14 @@
 
 from typing import final, override
 
+import attrs
+
 from app_types.update import Update
 from integrations.tg.keyboard import Keyboard
 
 
 @final
+@attrs.define(frozen=True)
 class DefaultKeyboard(Keyboard):
     """Класс клавиатуры по умолчанию."""
 

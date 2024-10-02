@@ -21,7 +21,9 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 from typing import final, override
+from collections.abc import Iterable
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -30,19 +32,27 @@ from services.debug_param import DebugParam
 
 
 @final
+@attrs.define(frozen=True)
 class AppendDebugInfoAnswer(TgAnswer):
     """Ответ с отладочной информацией."""
 
-    def __init__(self, answer: TgAnswer, *debug_params: DebugParam, debug_mode: bool) -> None:
+    _origin: TgAnswer
+    _debug_params: Iterable[DebugParam]
+    _debug: bool
+
+    @classmethod
+    def ctor(cls, answer: TgAnswer, *debug_params: DebugParam, debug_mode: bool) -> TgAnswer:
         """Конструктор класса.
 
         :param debug_mode: bool
         :param answer: TgAnswerInterface
         :param debug_params: DebugParamInterface
         """
-        self._debug = debug_mode
-        self._origin = answer
-        self._debug_params = debug_params
+        return cls(
+            answer,
+            debug_params,
+            debug_mode,
+        )
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

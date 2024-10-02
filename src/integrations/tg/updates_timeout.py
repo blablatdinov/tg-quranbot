@@ -22,8 +22,11 @@
 
 from typing import SupportsInt, final, override
 
+import attrs
+
 
 @final
+@attrs.define(frozen=True)
 class UpdatesTimeout(SupportsInt):
     """Таймаут для обновлений."""
 

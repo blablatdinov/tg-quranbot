@@ -23,6 +23,8 @@
 import enum
 from typing import final
 
+import attrs
+
 
 @final
 class AyatCallbackTemplateEnum(enum.StrEnum):

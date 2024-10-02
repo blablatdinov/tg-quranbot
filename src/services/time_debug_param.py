@@ -23,6 +23,7 @@
 import datetime
 from typing import final, override
 
+import attrs
 import pytz
 
 from app_types.update import Update
@@ -30,6 +31,7 @@ from services.debug_param import DebugParam
 
 
 @final
+@attrs.define(frozen=True)
 class TimeDebugParam(DebugParam):
     """Отладочная информация с временем."""
 

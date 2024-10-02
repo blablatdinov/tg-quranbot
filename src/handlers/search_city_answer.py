@@ -75,7 +75,7 @@ class SearchCityAnswer(TgAnswer):
         return await UserNotRegisteredSafeAnswer(
             PgNewUser.ctor(TgChatId(update), self._pgsql, self._logger),
             TgSkipNotProcessable(
-                TgAnswerFork(
+                TgAnswerFork.ctor(
                     self._logger,
                     TgMessageRegexAnswer(
                         '.+',

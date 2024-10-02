@@ -22,6 +22,7 @@
 
 from typing import final, override
 
+import attrs
 import httpx
 from databases import Database
 from redis.asyncio import Redis
@@ -70,6 +71,7 @@ from srv.users.user_step import UserStep
 
 
 @final
+@attrs.define(frozen=True, init=False)
 class QuranbotAnswer(TgAnswer):
     """Ответ бота quranbot."""
 
@@ -95,22 +97,9 @@ class QuranbotAnswer(TgAnswer):
         self._event_sink = event_sink
         self._settings = settings
         self._logger = logger
-        self._pre_build()
-
-    @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа.
-
-        :param update: Update
-        :return: list[httpx.Request]
-        """
-        return await self._answer.build(update)
-
-    def _pre_build(self) -> None:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_pre_build"
         empty_answer = TgEmptyAnswer(self._settings.API_TOKEN)
         self._answer = SafeFork(
-            TgAnswerFork(
+            TgAnswerFork.ctor(
                 self._logger,
                 TgMessageRegexAnswer(
                     'Подкасты',
@@ -276,3 +265,12 @@ class QuranbotAnswer(TgAnswer):
                 TgMessageAnswer(empty_answer),
             ),
         )
+
+    @override
+    async def build(self, update: Update) -> list[httpx.Request]:
+        """Сборка ответа.
+
+        :param update: Update
+        :return: list[httpx.Request]
+        """
+        return await self._answer.build(update)

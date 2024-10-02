@@ -22,6 +22,7 @@
 
 from typing import final, override
 
+import attrs
 import httpx
 
 from app_types.fk_update import FkUpdate
@@ -32,6 +33,7 @@ from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 
 
 @final
+@attrs.define(frozen=True)
 class _NotProcessableAnswer(TgAnswer):
 
     @override

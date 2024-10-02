@@ -22,6 +22,7 @@
 
 from typing import final, override
 
+import attrs
 import httpx
 
 from app_types.fk_update import FkUpdate
@@ -32,6 +33,7 @@ from srv.ayats.favorite_ayat_empty_safe import FavoriteAyatEmptySafeAnswer
 
 
 @final
+@attrs.define(frozen=True)
 class IndexErrorAnswer(TgAnswer):
 
     @override

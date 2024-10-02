@@ -23,6 +23,7 @@
 from contextlib import suppress
 from typing import final, override
 
+import attrs
 import pytest
 import ujson
 
@@ -33,11 +34,13 @@ from srv.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
 
 
 @final
+@attrs.define(frozen=True)
 class FakeError(Exception):
     pass
 
 
 @final
+@attrs.define(frozen=True)
 class TgAnswerFake(TgAnswer):
 
     @override

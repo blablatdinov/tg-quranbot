@@ -23,6 +23,7 @@
 import uuid
 from typing import final, override
 
+import attrs
 import httpx
 
 from app_types.fk_update import FkUpdate
@@ -37,6 +38,7 @@ from srv.prayers.fk_updated_user_city import FkUpdateUserCity
 
 
 @final
+@attrs.define(frozen=True)
 class _Answer(TgAnswer):
 
     @override

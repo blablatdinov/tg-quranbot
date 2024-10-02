@@ -21,7 +21,9 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 from typing import final, override
+from collections.abc import Iterable
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -29,16 +31,21 @@ from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 
 @final
+@attrs.define(frozen=True)
 class TgAnswerList(TgAnswer):
     """Список ответов пользователю."""
 
-    @override
-    def __init__(self, *answers: TgAnswer) -> None:
+    _answers: Iterable[TgAnswer]
+
+    @classmethod
+    def ctor(cls, *answers: TgAnswer) -> TgAnswer:
         """Конструктор класса.
 
         :param answers: TgAnswerInterface
         """
-        self._answers = answers
+        return cls(
+            answers,
+        )
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

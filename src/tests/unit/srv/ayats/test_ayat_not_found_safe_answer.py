@@ -22,6 +22,8 @@
 
 from typing import final, override
 
+import attrs
+
 from app_types.fk_update import FkUpdate
 from exceptions.content_exceptions import AyatNotFoundError
 from integrations.tg.tg_answers import TgAnswer
@@ -30,6 +32,7 @@ from srv.ayats.ayat_not_found_safe_answer import AyatNotFoundSafeAnswer
 
 
 @final
+@attrs.define(frozen=True)
 class AyatNotFoundAnswer(TgAnswer):
 
     @override

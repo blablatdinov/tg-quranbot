@@ -33,8 +33,8 @@ from integrations.tg.updates_iterator import UpdatesIterator
 
 
 @final
-@attrs.define(slots=True)
-class PollingUpdatesIterator(UpdatesIterator):
+@attrs.define()
+class PollingUpdatesIterator(UpdatesIterator):  # noqa: PEO200. It is generator with mutable offset
     """Итератор по обновлениям."""
 
     _updates_url: UpdatesURLInterface

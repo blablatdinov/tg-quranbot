@@ -27,7 +27,7 @@ from integrations.tg.cached_tg_update import CachedTgUpdate
 
 
 @final
-class SeUpdate(Update):
+class SeUpdate(Update):  # noqa: PEO200. Class for testing
 
     def __init__(self) -> None:
         self._str_call_count = 0

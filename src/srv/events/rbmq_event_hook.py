@@ -24,6 +24,7 @@ import asyncio
 from typing import final, override
 
 import aio_pika
+import attrs
 import ujson
 from aiormq.abc import DeliveredMessage
 from databases import Database
@@ -37,6 +38,7 @@ from srv.events.recieved_event import ReceivedEvent
 
 
 @final
+@attrs.define(frozen=True, init=False)
 class RbmqEventHook(EventHook):
     """Обработчик событий из RabbitMQ."""
 

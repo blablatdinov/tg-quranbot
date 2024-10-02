@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).parent  # Path to src dir
 
 
 @final
-class Settings(BaseSettings):
+class Settings(BaseSettings):  # noqa: PEO200
     """Настройки приложения."""
 
     REDIS_DSN: RedisDsn
