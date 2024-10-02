@@ -20,8 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
 from collections.abc import Iterable
+from typing import final, override
 
 import attrs
 import httpx
@@ -47,6 +47,7 @@ class AppendDebugInfoAnswer(TgAnswer):
         :param debug_mode: bool
         :param answer: TgAnswerInterface
         :param debug_params: DebugParamInterface
+        :return: TgAnswer
         """
         return cls(
             answer,

@@ -20,8 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from contextlib import suppress
 from collections.abc import Iterable
+from contextlib import suppress
 from typing import final, override
 
 import attrs
@@ -53,6 +53,7 @@ class TgAnswerFork(TgAnswer):
 
         :param answers: TgAnswerInterface
         :param logger: LogSink
+        :return: TgAnswer
         """
         return cls(
             answers,
