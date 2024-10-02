@@ -1,4 +1,4 @@
-FROM python:3.12.1-slim as base
+FROM python:3.12.7-slim as base
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 WORKDIR /app
 
@@ -13,7 +13,7 @@ RUN cat /tmp/requirements.txt
 RUN apt-get update && apt-get install gcc -y
 RUN python -m venv /app/.venv && /app/.venv/bin/pip install -r /tmp/requirements.txt
 
-FROM python:3.12.1-slim as runtime
+FROM python:3.12.7-slim as runtime
 
 # Copy only requirements to cache them in docker layer
 WORKDIR /app
