@@ -30,7 +30,7 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 async def test():
-    got = await TgAnswerFork(
+    got = await TgAnswerFork.ctor(
         FkLogSink(),
         FkAnswer(),
     ).build(FkUpdate.empty_ctor())
@@ -41,4 +41,6 @@ async def test():
 
 async def test_not_processable():
     with pytest.raises(NotProcessableUpdateError):
-        await TgAnswerFork(FkLogSink()).build(FkUpdate.empty_ctor())
+        await TgAnswerFork.ctor(
+            FkLogSink(),
+        ).build(FkUpdate.empty_ctor())

@@ -28,7 +28,7 @@ from services.update_id_debug_param import UpdateIdDebugParam
 
 
 async def test():
-    got = await AppendDebugInfoAnswer(
+    got = await AppendDebugInfoAnswer.ctor(
         TgTextAnswer.str_ctor(
             TgMessageAnswer(
                 FkAnswer(),

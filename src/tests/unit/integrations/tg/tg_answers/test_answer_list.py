@@ -26,7 +26,7 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 async def test():
-    got = await TgAnswerList(
+    got = await TgAnswerList.ctor(
         FkAnswer(),
         FkAnswer(),
     ).build(FkUpdate.empty_ctor())

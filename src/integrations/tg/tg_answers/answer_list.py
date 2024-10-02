@@ -20,8 +20,10 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+from collections.abc import Iterable
 from typing import final, override
 
+import attrs
 import httpx
 
 from app_types.update import Update
@@ -29,16 +31,22 @@ from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 
 @final
+@attrs.define(frozen=True)
 class TgAnswerList(TgAnswer):
     """Список ответов пользователю."""
 
-    @override
-    def __init__(self, *answers: TgAnswer) -> None:
+    _answers: Iterable[TgAnswer]
+
+    @classmethod
+    def ctor(cls, *answers: TgAnswer) -> TgAnswer:
         """Конструктор класса.
 
         :param answers: TgAnswerInterface
+        :return: TgAnswer
         """
-        self._answers = answers
+        return cls(
+            answers,
+        )
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

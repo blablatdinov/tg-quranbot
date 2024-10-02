@@ -101,7 +101,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
             query, {'ayat_id': status.ayat_id(), 'user_id': int(TgChatId(update))},
         )
         chat_id = TgChatId(update)
-        return await TgAnswerFork(
+        return await TgAnswerFork.ctor(
             self._logger,
             StepAnswer(
                 UserStep.ayat_favor.value,

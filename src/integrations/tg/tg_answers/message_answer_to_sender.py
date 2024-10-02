@@ -32,7 +32,7 @@ from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 @final
 @attrs.define(frozen=True)
-class TgHtmlMessageAnswerToSender(TgAnswer):
+class TgHtmlMessageAnswerToSender(TgAnswer):  # noqa: PEO300
     """Ответ пользователю, от которого пришло сообщение."""
 
     _origin: TgAnswer

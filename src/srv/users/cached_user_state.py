@@ -27,7 +27,7 @@ from srv.users.user_step import UserStep
 
 
 @final
-class CachedUserState(UserState):
+class CachedUserState(UserState):  # noqa: PEO200. Cached decorator
     """Кэширующий декоратор."""
 
     @override

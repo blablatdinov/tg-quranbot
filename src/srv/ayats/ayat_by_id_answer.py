@@ -55,7 +55,7 @@ class AyatByIdAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         result_ayat = TextLenSafeAyat(PgAyat.from_callback_query(CallbackQueryData(update), self._pgsql))
-        return await TgAnswerList(
+        return await TgAnswerList.ctor(
             AyatByIdMessageAnswer(
                 result_ayat, TgHtmlMessageAnswerToSender(self._empty_answer), self._pgsql,
             ),

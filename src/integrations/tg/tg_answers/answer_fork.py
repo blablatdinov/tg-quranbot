@@ -20,9 +20,11 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+from collections.abc import Iterable
 from contextlib import suppress
 from typing import final, override
 
+import attrs
 import httpx
 
 from app_types.logger import LogSink
@@ -38,18 +40,25 @@ from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 
 @final
+@attrs.define(frozen=True)
 class TgAnswerFork(TgAnswer):
     """Маршрутизация ответов."""
 
-    @override
-    def __init__(self, logger: LogSink, *answers: TgAnswer) -> None:
+    _answers: Iterable[TgAnswer]
+    _logger: LogSink
+
+    @classmethod
+    def ctor(cls, logger: LogSink, *answers: TgAnswer) -> TgAnswer:
         """Конструктор класса.
 
         :param answers: TgAnswerInterface
         :param logger: LogSink
+        :return: TgAnswer
         """
-        self._answers = answers
-        self._logger = logger
+        return cls(
+            answers,
+            logger,
+        )
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

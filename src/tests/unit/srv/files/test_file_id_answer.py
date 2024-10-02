@@ -22,6 +22,7 @@
 
 from typing import final, override
 
+import attrs
 import httpx
 
 from app_types.fk_update import FkUpdate
@@ -32,6 +33,7 @@ from srv.files.fk_file import FkFile
 
 
 @final
+@attrs.define(frozen=True)
 class FakeAnswer(TgAnswer):
 
     @override

@@ -22,6 +22,7 @@
 
 from typing import final, override
 
+import attrs
 import ujson
 
 from app_types.update import Update
@@ -29,6 +30,7 @@ from services.answers.resized_keyboard import Keyboard
 
 
 @final
+@attrs.define(frozen=True)
 class SwitchInlineQueryKeyboard(Keyboard):
     """Переключение на инлайн поиск."""
 

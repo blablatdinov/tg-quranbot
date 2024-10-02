@@ -34,7 +34,7 @@ from integrations.tg.update_id import UpdateId
 
 
 @final
-@attrs.define
+@attrs.define(frozen=True)
 class DebugAnswer(TgAnswer):
     """Ответ для отладки."""
 

@@ -29,6 +29,7 @@ from exceptions.base_exception import BaseAppError
 
 
 @final
+@attrs.define(frozen=True)
 class UserPrayersNotFoundError(BaseAppError):
     """У пользователя нет сгенерированных времен намазов."""
 

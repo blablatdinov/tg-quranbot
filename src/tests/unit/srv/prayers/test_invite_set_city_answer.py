@@ -22,6 +22,7 @@
 
 from typing import final, override
 
+import attrs
 import httpx
 import ujson
 
@@ -36,6 +37,7 @@ from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
 
 
 @final
+@attrs.define(frozen=True)
 class FkOrigin(TgAnswer):
 
     @override

@@ -60,7 +60,7 @@ class AyatAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        return await TgAnswerList(
+        return await TgAnswerList.ctor(
             TgLinkPreviewOptions(
                 TgAnswerMarkup(
                     TgTextAnswer(

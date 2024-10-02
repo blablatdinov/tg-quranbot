@@ -26,7 +26,7 @@ from app_types.logger import LogSink
 
 
 @final
-class FkLogSink(LogSink):
+class FkLogSink(LogSink):  # noqa: PEO200. Class for testing, has mutable state
     """Фейковый логгер."""
 
     stack: list[str]

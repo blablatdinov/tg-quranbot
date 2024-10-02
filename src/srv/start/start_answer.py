@@ -68,7 +68,7 @@ class StartAnswer(TgAnswer):
         await self._new_tg_user.create(referrer_chat_id)
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
         if referrer_chat_id_calculated:
-            return await TgAnswerList(
+            return await TgAnswerList.ctor(
                 TgAnswerToSender(
                     TgTextAnswer(
                         self._origin,
@@ -96,7 +96,7 @@ class StartAnswer(TgAnswer):
                     self._admin_chat_ids[0],
                 ),
             ).build(update)
-        return await TgAnswerList(
+        return await TgAnswerList.ctor(
             TgAnswerToSender(
                 TgTextAnswer(
                     self._origin,

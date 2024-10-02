@@ -22,6 +22,7 @@
 
 from typing import final, override
 
+import attrs
 import pytest
 
 from app_types.listable import AsyncListable
@@ -34,6 +35,7 @@ from srv.files.fk_file import FkFile
 
 
 @final
+@attrs.define(frozen=True)
 class FkFavoriteAyats(AsyncListable[Ayat]):
 
     @override

@@ -33,7 +33,7 @@ from integrations.tg.tg_chat_id import TgChatId
 
 @final
 @attrs.define(frozen=True)
-class TgAnswerToSender(TgAnswer):
+class TgAnswerToSender(TgAnswer):  # noqa: PEO300
     """Ответ пользователю, от которого пришло сообщение."""
 
     _origin: TgAnswer

@@ -22,10 +22,13 @@
 
 from typing import final, override
 
+import attrs
+
 from app_types.sync_runable import SyncRunable
 
 
 @final
+@attrs.define(frozen=True, init=False)
 class ForkCliApp(SyncRunable):
     """Маршрутизация для CLI приложения."""
 

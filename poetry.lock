@@ -568,18 +568,19 @@ ujson = ">=1.19"
 
 [[package]]
 name = "eo-styleguide"
-version = "0.0.1a14"
+version = "0.0.1a15"
 description = "Pyeo is an advanced static analysis tool tailored specifically to enforce the principles advocated by Elegant Objects (elegantobjects.org) in Python projects. It serves as a quality control instrument to ensure that your Python code adheres to the core tenets of elegance, simplicity, and maintainability."
 optional = false
 python-versions = "<3.13,>=3.9"
 files = [
-    {file = "eo_styleguide-0.0.1a14-py3-none-any.whl", hash = "sha256:21df13f43b13b687ff05d2c36628f4273a69080a02fd7f90340c1a83e174282a"},
-    {file = "eo_styleguide-0.0.1a14.tar.gz", hash = "sha256:5a5bbf21136447ee6e8dc7ea00a5def84dc07b8c3b28bd2bf354c47c437a18ed"},
+    {file = "eo_styleguide-0.0.1a15-py3-none-any.whl", hash = "sha256:0346578a60f275a2c452dc225ff0ee59bf8456595b2279bd21892752f9fa9797"},
+    {file = "eo_styleguide-0.0.1a15.tar.gz", hash = "sha256:b0d1d2eb13b9dfde337b6a898e7db8c98c28812855eaa69a62bdee22529a8ce6"},
 ]
 
 [package.dependencies]
-attrs = ">=23"
-mypy = ">=1.6.0,<2.0.0"
+flake8 = ">=7.1,<8.0"
+flake8-final = "*"
+flake8-override = "*"
 
 [[package]]
 name = "eradicate"
@@ -3571,4 +3572,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "aae1b8e0cfb34f3648b1ca7b1735b782c81319e16b8c52a970c99fb745e49fb5"
+content-hash = "b5fc38fc0f2b7026c7e67f6b4fbc965a97aa9b6eb03fc2a1ca4ec85b11dc782a"

@@ -26,7 +26,7 @@ from app_types.intable import AsyncInt
 
 
 @final
-class CachedAsyncInt(AsyncInt):
+class CachedAsyncInt(AsyncInt):  # noqa: PEO200. Class has mutable state for caching
     """Кэшируемое число."""
 
     def __init__(self, origin: AsyncInt) -> None:
