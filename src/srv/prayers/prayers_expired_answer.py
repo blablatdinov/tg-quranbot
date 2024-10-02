@@ -57,7 +57,7 @@ class PrayersExpiredAnswer(TgAnswer):
         try:
             return await self._origin.build(update)
         except PrayersNotFoundError as err:
-            return await TgAnswerList(
+            return await TgAnswerList.ctor(
                 TgTextAnswer.str_ctor(
                     TgAnswerToSender(TgMessageAnswer(self._empty_answer)),
                     'Время намаза на {0} для города {1} не найдено'.format(

@@ -62,7 +62,7 @@ class PodcastAnswer(TgAnswer):
         """
         chat_id = TgChatId(update)
         return await ResetStateAnswer(
-            TgAnswerList(
+            TgAnswerList.ctor(
                 SkipableAnswer(
                     not self._show_podcast_id,
                     TgTextAnswer.str_ctor(
