@@ -86,7 +86,7 @@ def main(sys_args: list[str]) -> None:
                     LoggedAnswer(
                         SendableAnswer(
                             TgMeasureAnswer(
-                                QuranbotAnswer(
+                                QuranbotAnswer.ctor(
                                     pgsql,
                                     redis,
                                     rabbitmq_sink,
