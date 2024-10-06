@@ -30,7 +30,6 @@ from srv.users.user_step import UserStep
 class CachedUserState(UserState):  # noqa: PEO200. Cached decorator
     """Кэширующий декоратор."""
 
-    @override
     def __init__(self, origin: UserState) -> None:
         """Ctor.
 
