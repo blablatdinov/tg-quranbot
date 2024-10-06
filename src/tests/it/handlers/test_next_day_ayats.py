@@ -108,3 +108,4 @@ async def test(callback_update_factory, pgsql):
         'https://umma.ru/link-to-sura',
     ])
     assert got[0].url.params['chat_id'] == '849375'
+    assert await pgsql.fetch_val('SELECT day FROM users WHERE chat_id = 849375') == 3

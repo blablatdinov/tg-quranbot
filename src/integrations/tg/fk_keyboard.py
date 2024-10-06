@@ -33,6 +33,12 @@ from integrations.tg.keyboard import Keyboard
 class FkKeyboard(Keyboard):
     """Фейковая клавиатура."""
 
+    _json_keyboard: str
+
+    @classmethod
+    def empty_ctor(cls):
+        return cls('{}')  # noqa: P103 it is empty json
+
     @override
     async def generate(self, update: Update) -> str:
         """Генерация.
@@ -40,4 +46,4 @@ class FkKeyboard(Keyboard):
         :param update: Update
         :return: str
         """
-        return '{}'  # noqa: P103 it is empty json
+        return self._json_keyboard

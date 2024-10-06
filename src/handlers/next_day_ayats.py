@@ -31,12 +31,13 @@ from redis.asyncio import Redis
 from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
-from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer, TgHtmlParseAnswer, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer, TgHtmlParseAnswer, TgTextAnswer, TgAnswerMarkup
 from integrations.tg.tg_answers.link_preview_options import TgLinkPreviewOptions
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from integrations.tg.tg_answers.tg_answer import TgAnswer
 from integrations.tg.tg_answers import TgAnswerToSender
 from integrations.tg.tg_chat_id import TgChatId
+from integrations.tg.fk_keyboard import FkKeyboard
 
 
 @final
@@ -54,6 +55,14 @@ class NextDayAyats(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
+        await self._pgsql.execute(
+            '\n'.join([
+                'UPDATE users',
+                'SET day = day + 1',
+                'WHERE chat_id = :chat_id',
+            ]),
+            {'chat_id': int(TgChatId(update))}
+        )
         query = '\n'.join([
             'SELECT',
             '  a.sura_id,',
@@ -61,34 +70,41 @@ class NextDayAyats(TgAnswer):
             '  a.content,',
             '  s.link AS sura_link',
             'FROM public.ayats AS a',
-            'JOIN public.users AS u ON a.day = u.day + 1',
+            'JOIN public.users AS u ON a.day = u.day',
             'JOIN suras AS s ON a.sura_id = s.sura_id',
+            'WHERE u.chat_id = :chat_id',
             'ORDER BY a.ayat_id',
         ])
-        ayats = await self._pgsql.fetch_all(query)
-        return await TgLinkPreviewOptions(
+        ayats = await self._pgsql.fetch_all(query, {'chat_id': int(TgChatId(update))})
+        answer = await TgLinkPreviewOptions(
             TgHtmlParseAnswer(
-                TgTextAnswer.str_ctor(
-                    TgAnswerToSender(
-                        TgMessageAnswer(self._empty_answer),
+                TgAnswerMarkup(
+                    TgTextAnswer.str_ctor(
+                        TgAnswerToSender(
+                            TgMessageAnswer(self._empty_answer),
+                        ),
+                        Template(''.join([
+                            '{% for ayat in ayats %}',
+                            '<b>{{ ayat.sura_id }}:{{ ayat.ayat_number }})</b> {{ ayat.content }}\n',
+                            '{% endfor %}',
+                            '\nhttps://umma.ru{{ sura_link }}',
+                        ])).render({
+                            'ayats': [
+                                {
+                                    'sura_id': ayat['sura_id'],
+                                    'ayat_number': ayat['ayat_number'],
+                                    'content': ayat['content'],
+                                }
+                                for ayat in ayats
+                            ],
+                            'sura_link': ayats[0]['sura_link'],
+                        }),
                     ),
-                    Template(''.join([
-                        '{% for ayat in ayats %}',
-                        '<b>{{ ayat.sura_id }}:{{ ayat.ayat_number }})</b> {{ ayat.content }}\n',
-                        '{% endfor %}',
-                        '\nhttps://umma.ru{{ sura_link }}',
-                    ])).render({
-                        'ayats': [
-                            {
-                                'sura_id': ayat['sura_id'],
-                                'ayat_number': ayat['ayat_number'],
-                                'content': ayat['content'],
-                            }
-                            for ayat in ayats
-                        ],
-                        'sura_link': ayats[0]['sura_link'],
-                    }),
+                    FkKeyboard(
+                        '{"inline_keyboard":[[{"text":"Следующий день","callback_data":"nextDayAyats"}]]}',
+                    ),
                 ),
             ),
             disabled=True,
         ).build(update)
+        return answer

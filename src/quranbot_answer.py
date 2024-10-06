@@ -28,6 +28,7 @@ from redis.asyncio import Redis
 
 from app_types.logger import LogSink
 from app_types.update import Update
+from handlers.next_day_ayats import NextDayAyats
 from handlers.concrete_podcast_answer import ConcretePodcastAnswer
 from handlers.decrement_skipped_prayer_answer import DecrementSkippedPrayerAnswer
 from handlers.favorites_answer import FavoriteAyatsAnswer
@@ -248,8 +249,8 @@ class QuranbotAnswer(TgAnswer):
                     DecrementSkippedPrayerAnswer(empty_answer, self._pgsql),
                 ),
                 TgCallbackQueryRegexAnswer(
-                    'nextDay',
-                    DecrementSkippedPrayerAnswer(empty_answer, self._pgsql),
+                    'nextDayAyats',
+                    NextDayAyats(empty_answer, self._pgsql),
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,
