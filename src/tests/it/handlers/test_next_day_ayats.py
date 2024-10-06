@@ -20,12 +20,11 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import uuid
 import datetime
+import uuid
 
-import pytz
 import pytest
-import ujson
+import pytz
 
 from app_types.fk_update import FkUpdate
 from handlers.next_day_ayats import NextDayAyats
