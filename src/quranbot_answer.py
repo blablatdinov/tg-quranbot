@@ -77,7 +77,7 @@ class QuranbotAnswer(TgAnswer):
 
     def __init__(
         self,
-        database: Database,
+        pgsql: Database,
         redis: Redis,
         event_sink: Sink,
         settings: Settings,
@@ -91,73 +91,68 @@ class QuranbotAnswer(TgAnswer):
         :param settings: Settings
         :param logger: LogSink
         """
-        self._pgsql = database
-        self._redis = redis
-        self._event_sink = event_sink
-        self._settings = settings
-        self._logger = logger
-        empty_answer = TgEmptyAnswer(self._settings.API_TOKEN)
+        empty_answer = TgEmptyAnswer(settings.API_TOKEN)
         self._answer = SafeFork(
             TgAnswerFork.ctor(
-                self._logger,
+                logger,
                 TgMessageRegexAnswer(
                     'Подкасты',
                     RandomPodcastAnswer(
-                        self._settings.DEBUG,
+                        settings.DEBUG,
                         empty_answer,
-                        self._redis,
-                        self._pgsql,
-                        self._logger,
+                        redis,
+                        pgsql,
+                        logger,
                     ),
                 ),
                 TgMessageRegexAnswer(
                     r'/podcast\d+',
                     ConcretePodcastAnswer(
-                        self._settings.DEBUG,
+                        settings.DEBUG,
                         empty_answer,
-                        self._redis,
-                        self._pgsql,
-                        self._logger,
+                        redis,
+                        pgsql,
+                        logger,
                     ),
                 ),
                 TgMessageRegexAnswer(
                     'Время намаза',
                     PrayerTimeAnswer.new_prayers_ctor(
-                        self._pgsql,
+                        pgsql,
                         empty_answer,
-                        self._settings.admin_chat_ids(),
-                        self._redis,
-                        self._logger,
-                        self._settings,
+                        settings.admin_chat_ids(),
+                        redis,
+                        logger,
+                        settings,
                     ),
                 ),
                 TgMessageRegexAnswer(
                     '/skipped_prayers',
-                    SkippedPrayersAnswer(empty_answer, self._pgsql),
+                    SkippedPrayersAnswer(empty_answer, pgsql),
                 ),
                 TgMessageRegexAnswer(
                     'Избранное',
                     FavoriteAyatsAnswer(
-                        self._settings.DEBUG, self._pgsql, self._redis, empty_answer, self._logger,
+                        settings.DEBUG, pgsql, redis, empty_answer, logger,
                     ),
                 ),
                 TgMessageRegexAnswer(
                     r'\d+:\d+',
                     SearchAyatByNumbersAnswer(
-                        self._settings.DEBUG,
+                        settings.DEBUG,
                         empty_answer,
-                        self._redis,
-                        self._pgsql,
-                        self._logger,
+                        redis,
+                        pgsql,
+                        logger,
                     ),
                 ),
                 TgMessageRegexAnswer(
                     'Найти аят',
                     ChangeStateAnswer(
                         TgTextAnswer.str_ctor(TgHtmlMessageAnswerToSender(empty_answer), 'Введите слово для поиска:'),
-                        self._redis,
+                        redis,
                         UserStep.ayat_search,
-                        self._logger,
+                        logger,
                     ),
                 ),
                 TgMessageRegexAnswer(
@@ -167,102 +162,102 @@ class QuranbotAnswer(TgAnswer):
                             TgHtmlMessageAnswerToSender(empty_answer),
                             'Отправьте местоположение или воспользуйтесь поиском',
                         ),
-                        self._redis,
-                        self._logger,
+                        redis,
+                        logger,
                     ),
                 ),
                 TgMessageRegexAnswer(
                     '/start',
                     FullStartAnswer(
-                        self._pgsql, empty_answer, self._event_sink, self._redis, self._settings, self._logger,
+                        pgsql, empty_answer, event_sink, redis, settings, logger,
                     ),
                 ),
                 TgMessageRegexAnswer(
                     '/status',
-                    StatusAnswer(empty_answer, self._pgsql, self._redis),
+                    StatusAnswer(empty_answer, pgsql, redis),
                 ),
                 TgMessageRegexAnswer(
                     '/help',
                     HelpAnswer(
                         empty_answer,
-                        PgAdminMessage('start', self._pgsql),
-                        self._redis,
-                        self._logger,
+                        PgAdminMessage('start', pgsql),
+                        redis,
+                        logger,
                     ),
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,
                     SearchAyatByKeywordAnswer(
-                        self._settings.DEBUG,
+                        settings.DEBUG,
                         empty_answer,
-                        self._redis,
-                        self._pgsql,
-                        self._logger,
+                        redis,
+                        pgsql,
+                        logger,
                     ),
-                    self._redis,
-                    self._logger,
+                    redis,
+                    logger,
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(mark_readed|mark_not_readed)',
-                    UserPrayerStatusChangeAnswer(empty_answer, self._pgsql, self._redis, self._logger, self._settings),
+                    UserPrayerStatusChangeAnswer(empty_answer, pgsql, redis, logger, settings),
                 ),
                 TgCallbackQueryRegexAnswer(
                     'pagPrDay',
                     PaginationPerDayPrayerAnswer(
                         empty_answer,
-                        self._pgsql,
-                        self._settings.admin_chat_ids(),
-                        self._redis,
-                        self._logger,
-                        self._settings,
+                        pgsql,
+                        settings.admin_chat_ids(),
+                        redis,
+                        logger,
+                        settings,
                     ),
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(like|dislike)',
                     PodcastReactionChangeAnswer(
-                        self._settings.DEBUG,
+                        settings.DEBUG,
                         empty_answer,
-                        self._redis,
-                        self._pgsql,
-                        self._logger,
+                        redis,
+                        pgsql,
+                        logger,
                     ),
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getAyat',
-                    AyatByIdAnswer(self._settings.DEBUG, empty_answer, self._pgsql),
+                    AyatByIdAnswer(settings.DEBUG, empty_answer, pgsql),
                 ),
                 TgCallbackQueryRegexAnswer(
                     'decr',
-                    DecrementSkippedPrayerAnswer(empty_answer, self._pgsql),
+                    DecrementSkippedPrayerAnswer(empty_answer, pgsql),
                 ),
                 TgCallbackQueryRegexAnswer(
                     'nextDayAyats',
-                    NextDayAyats(empty_answer, self._pgsql),
+                    NextDayAyats(empty_answer, pgsql),
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,
                     TgCallbackQueryRegexAnswer(
                         'getSAyat',
-                        PaginateBySearchAyat(empty_answer, self._redis, self._pgsql, self._settings, self._logger),
+                        PaginateBySearchAyat(empty_answer, redis, pgsql, settings, logger),
                     ),
-                    self._redis,
-                    self._logger,
+                    redis,
+                    logger,
                 ),
                 StepAnswer(
                     UserStep.city_search.value,
-                    SearchCityAnswer(self._pgsql, empty_answer, self._settings.DEBUG, self._redis, self._logger),
-                    self._redis,
-                    self._logger,
+                    SearchCityAnswer(pgsql, empty_answer, settings.DEBUG, redis, logger),
+                    redis,
+                    logger,
                 ),
                 TgCallbackQueryRegexAnswer(
                     'getFAyat',
-                    FavoriteAyatPage(self._settings.DEBUG, empty_answer, self._pgsql),
+                    FavoriteAyatPage(settings.DEBUG, empty_answer, pgsql),
                 ),
                 TgCallbackQueryRegexAnswer(
                     '(addToFavor|removeFromFavor)',
-                    ChangeFavoriteAyatAnswer(self._pgsql, empty_answer, self._redis, self._logger),
+                    ChangeFavoriteAyatAnswer(pgsql, empty_answer, redis, logger),
                 ),
-                InlineQueryAnswer(empty_answer, self._pgsql),
+                InlineQueryAnswer(empty_answer, pgsql),
             ),
             TgAnswerToSender(
                 TgMessageAnswer(empty_answer),
