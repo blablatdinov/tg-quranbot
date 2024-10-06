@@ -32,7 +32,6 @@ from app_types.sync_runable import SyncRunable
 class ForkCliApp(SyncRunable):
     """Маршрутизация для CLI приложения."""
 
-    @override
     def __init__(self, *apps: SyncRunable) -> None:
         """Конструктор класса.
 

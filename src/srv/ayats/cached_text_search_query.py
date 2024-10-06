@@ -29,7 +29,6 @@ from srv.ayats.text_search_query import TextSearchQuery
 class CachedTextSearchQuery(TextSearchQuery):  # noqa: PEO200. Cached decorator
     """Закэшированный запрос."""
 
-    @override
     def __init__(self, origin: TextSearchQuery) -> None:
         """Ctor.
 
