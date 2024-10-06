@@ -84,18 +84,24 @@ async def _db_ayats(pgsql):
                 [2 for _ in range(5)] + [3 for _ in range(5)],
                 strict=True,
             )
-        ]
+        ],
     )
 
 
 @pytest.fixture
 async def _user(city_factory, user_factory):
-    return await user_factory(849375, 2, city=await city_factory(str(uuid.uuid4()), 'Kazan'))
+    return await user_factory(
+        849375,
+        2,
+        city=await city_factory(str(uuid.uuid4()), 'Kazan'),
+    )
 
 
 @pytest.mark.usefixtures('_db_ayats', '_user')
 async def test(callback_update_factory, pgsql):
-    got = await NextDayAyats(FkAnswer(), pgsql).build(FkUpdate(callback_update_factory(chat_id=849375)))
+    got = await NextDayAyats(FkAnswer(), pgsql).build(
+        FkUpdate(callback_update_factory(chat_id=849375)),
+    )
 
     assert got[0].url.params['text'] == '\n'.join([
         '<b>2:6)</b> 3 day ayat content',

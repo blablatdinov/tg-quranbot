@@ -32,7 +32,6 @@ from integrations.tg.fk_keyboard import FkKeyboard
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgAnswerToSender, TgHtmlParseAnswer, TgTextAnswer
 from integrations.tg.tg_answers.link_preview_options import TgLinkPreviewOptions
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
-from integrations.tg.tg_answers.tg_answer import TgAnswer
 from integrations.tg.tg_chat_id import TgChatId
 
 
@@ -57,7 +56,7 @@ class NextDayAyats(TgAnswer):
                 'SET day = day + 1',
                 'WHERE chat_id = :chat_id',
             ]),
-            {'chat_id': int(TgChatId(update))}
+            {'chat_id': int(TgChatId(update))},
         )
         query = '\n'.join([
             'SELECT',
@@ -71,8 +70,11 @@ class NextDayAyats(TgAnswer):
             'WHERE u.chat_id = :chat_id',
             'ORDER BY a.ayat_id',
         ])
-        ayats = await self._pgsql.fetch_all(query, {'chat_id': int(TgChatId(update))})
-        answer = await TgLinkPreviewOptions(
+        ayats = await self._pgsql.fetch_all(
+            query,
+            {'chat_id': int(TgChatId(update))},
+        )
+        return await TgLinkPreviewOptions(
             TgHtmlParseAnswer(
                 TgAnswerMarkup(
                     TgTextAnswer.str_ctor(
@@ -103,4 +105,3 @@ class NextDayAyats(TgAnswer):
             ),
             disabled=True,
         ).build(update)
-        return answer

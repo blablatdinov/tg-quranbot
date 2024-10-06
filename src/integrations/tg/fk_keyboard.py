@@ -36,7 +36,11 @@ class FkKeyboard(Keyboard):
     _json_keyboard: str
 
     @classmethod
-    def empty_ctor(cls):
+    def empty_ctor(cls) -> Keyboard:
+        """Empty ctor.
+
+        :return: Keyboard
+        """
         return cls('{}')  # noqa: P103 it is empty json
 
     @override

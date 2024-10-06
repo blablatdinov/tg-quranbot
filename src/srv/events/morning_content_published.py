@@ -140,7 +140,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
                             FkKeyboard(
                                 '{"inline_keyboard":[[{"text":"Следующий день","callback_data":"nextDayAyats"}]]}',
                             ),
-                        )
+                        ),
                     ),
                     disabled=True,
                 )
