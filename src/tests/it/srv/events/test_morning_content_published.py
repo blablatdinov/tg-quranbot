@@ -45,6 +45,7 @@ def _mock_http(respx_mock):
     url = furl('https://api.telegram.org/botfakeToken/sendMessage').add({
         'text': '<b>1:1)</b> First ayat content\n<b>1:2)</b> Second ayat content\n\nhttps://umma.ru/sura-1',
         'chat_id': '358610865',
+        'reply_markup': '{"inline_keyboard":[[{"text":"Следующий день","callback_data":"nextDayAyats"}]]}',
         'parse_mode': 'html',
         'link_preview_options': '{"is_disabled":true}',
     })
@@ -62,6 +63,7 @@ def _mock_http(respx_mock):
         respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add({
             'text': text,
             'chat_id': chat_id,
+            'reply_markup': '{"inline_keyboard":[[{"text":"Следующий день","callback_data":"nextDayAyats"}]]}',
             'parse_mode': 'html',
             'link_preview_options': '{"is_disabled":true}',
         }))).mock(**rv)

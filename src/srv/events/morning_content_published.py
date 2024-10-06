@@ -34,8 +34,9 @@ from app_types.fk_async_listable import FkAsyncListable
 from app_types.fk_update import FkUpdate
 from app_types.logger import LogSink
 from exceptions.internal_exceptions import TelegramIntegrationsError
+from integrations.tg.fk_keyboard import FkKeyboard
 from integrations.tg.sendable_answer import SendableAnswer
-from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer, TgHtmlParseAnswer, TgTextAnswer
+from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgChatIdAnswer, TgHtmlParseAnswer, TgTextAnswer
 from integrations.tg.tg_answers.link_preview_options import TgLinkPreviewOptions
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from services.logged_answer import LoggedAnswer
@@ -108,32 +109,37 @@ class MorningContentPublishedEvent(ReceivedEvent):
             [
                 TgLinkPreviewOptions(
                     TgHtmlParseAnswer(
-                        TgTextAnswer.str_ctor(
-                            TgChatIdAnswer(
-                                TgMessageAnswer(self._empty_answer),
-                                row['chat_id'],
+                        TgAnswerMarkup(
+                            TgTextAnswer.str_ctor(
+                                TgChatIdAnswer(
+                                    TgMessageAnswer(self._empty_answer),
+                                    row['chat_id'],
+                                ),
+                                Template(''.join([
+                                    '{% for ayat in ayats %}',
+                                    '<b>{{ ayat.sura_id }}:{{ ayat.ayat_number }})</b> {{ ayat.content }}\n',
+                                    '{% endfor %}',
+                                    '\nhttps://umma.ru{{ sura_link }}',
+                                ])).render({
+                                    'ayats': [
+                                        {
+                                            'sura_id': sura_id,
+                                            'ayat_number': ayat_num,
+                                            'content': ayat_content,
+                                        }
+                                        for sura_id, ayat_num, ayat_content in zip(
+                                            row['sura_ids'].split(','),
+                                            row['ayat_nums'].split('|'),
+                                            row['content'].split('|sep|'),
+                                            strict=True,
+                                        )
+                                    ],
+                                    'sura_link': row['sura_link'].split('|sep|')[0],
+                                }),
                             ),
-                            Template(''.join([
-                                '{% for ayat in ayats %}',
-                                '<b>{{ ayat.sura_id }}:{{ ayat.ayat_number }})</b> {{ ayat.content }}\n',
-                                '{% endfor %}',
-                                '\nhttps://umma.ru{{ sura_link }}',
-                            ])).render({
-                                'ayats': [
-                                    {
-                                        'sura_id': sura_id,
-                                        'ayat_number': ayat_num,
-                                        'content': ayat_content,
-                                    }
-                                    for sura_id, ayat_num, ayat_content in zip(
-                                        row['sura_ids'].split(','),
-                                        row['ayat_nums'].split('|'),
-                                        row['content'].split('|sep|'),
-                                        strict=True,
-                                    )
-                                ],
-                                'sura_link': row['sura_link'].split('|sep|')[0],
-                            }),
+                            FkKeyboard(
+                                '{"inline_keyboard":[[{"text":"Следующий день","callback_data":"nextDayAyats"}]]}',
+                            ),
                         ),
                     ),
                     disabled=True,

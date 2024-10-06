@@ -33,6 +33,7 @@ from handlers.concrete_podcast_answer import ConcretePodcastAnswer
 from handlers.decrement_skipped_prayer_answer import DecrementSkippedPrayerAnswer
 from handlers.favorites_answer import FavoriteAyatsAnswer
 from handlers.full_start_answer import FullStartAnswer
+from handlers.next_day_ayats import NextDayAyats
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.pagination_per_day_prayer_answer import PaginationPerDayPrayerAnswer
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
@@ -235,6 +236,10 @@ class QuranbotAnswer(TgAnswer):
                 TgCallbackQueryRegexAnswer(
                     'decr',
                     DecrementSkippedPrayerAnswer(empty_answer, self._pgsql),
+                ),
+                TgCallbackQueryRegexAnswer(
+                    'nextDayAyats',
+                    NextDayAyats(empty_answer, self._pgsql),
                 ),
                 StepAnswer(
                     UserStep.ayat_search.value,

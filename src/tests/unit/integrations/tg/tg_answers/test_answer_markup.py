@@ -27,6 +27,9 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 async def test(unquote):
-    got = await TgAnswerMarkup(FkAnswer(), FkKeyboard()).build(FkUpdate.empty_ctor())
+    got = await TgAnswerMarkup(
+        FkAnswer(),
+        FkKeyboard.empty_ctor(),
+    ).build(FkUpdate.empty_ctor())
 
     assert unquote(str(got[0].url)) == 'https://some.domain?reply_markup={}'  # noqa: P103 it is empty json
