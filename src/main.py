@@ -106,7 +106,7 @@ def main(sys_args: list[str]) -> None:
             ),
         ),
     )
-    ForkCliApp(
+    ForkCliApp.ctor(
         CommandCliApp(
             'run_polling',
             quranbot_polling_app,

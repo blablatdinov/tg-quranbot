@@ -20,6 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+from collections.abc import Iterable
 from typing import final, override
 
 import attrs
@@ -28,16 +29,19 @@ from app_types.sync_runable import SyncRunable
 
 
 @final
-@attrs.define(frozen=True, init=False)
+@attrs.define(frozen=True)
 class ForkCliApp(SyncRunable):
     """Маршрутизация для CLI приложения."""
 
-    def __init__(self, *apps: SyncRunable) -> None:
+    _apps: Iterable[SyncRunable]
+
+    @classmethod
+    def ctor(cls, *apps: SyncRunable) -> None:
         """Конструктор класса.
 
         :param apps: SyncRunable
         """
-        self._apps = apps
+        return cls(apps)
 
     @override
     def run(self, args: list[str]) -> int:
