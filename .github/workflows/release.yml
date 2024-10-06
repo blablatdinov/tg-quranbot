@@ -120,10 +120,10 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12.2
+          python-version: 3.12.7
       - name: Install Dependencies
         run: |
-          pip install yoyo-migrations==8.2.0 psycopg2-binary==2.9.9 setuptools==68.2.2
+          pip install yoyo-migrations==9.0.0 psycopg2-binary==2.9.9 setuptools==75.1.0
       - name: Fill yoyo.ini
         run: |
           echo '[DEFAULT]
@@ -143,7 +143,7 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_KEY}}
-          known_hosts: '87.249.49.217 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXsftBFh0RQ0pupvfT8zZp7HEIT8cWD9ziL7glOEtCqVWu8mMqgmYH+GzA7xsWHkAGgQ0BHHQinVMg2sQzDyyHdSVuMvsi04WsgAaOdD0mQa5LwauXpaw/X5nyOKAtiVzzUSi6I8leTS+o4/5nnNz+wxGEZSItESEYYbLWIhE9p30Mt1cSB+F8iUXsAO/I1DqwqXsOUET5ocVOfeRd7/3P7ZT8KGjG6DP8D4aCvxnc1NIAVnW9sfj7hsR84kTWNFFfihMZkmFrDuQfS30mFBlb9sAahHmQfeYfVUexU0ntkiSyE7jsnvfKJIKb3uyfbP1TjJ5EwTt7lDgNdZst3aAkK/JHiEJaIyod1AHt5gG8OFC75+Cy7fbwawPJUuRysxz2O35KFGcbZyN42kdHYZoVLpe5GvcziUSkQLW/KRBrbK7Uw4X6Q6h1QOhUL1ifbqACEIZXeuqkje0c6nL9M5lFeYITn1Ikc3N+c50hAmnX6F4rnifbFUnqiELBk0sn7zM='
+          known_hosts: '87.249.49.217 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDyRsXjQSzzB0b/g9mm1/ET01bx3BTUpm1DRLeG03UY7X+NfAQLskQWl7NP5rp8AVIwFmcRtiZo+Stle2Xo3wNCHRDFu0zU2RixTeelJ046Kcu6xSeIgwvi+OK1MaFPJwd1Em+U/aq624FNI7aJe05UCOy77W9Xa5TzKW3htG9ZLN0ykQ3AUEJ0ZnDLoOY1/4g4x1KqeRRnh61mwxGqzQ/kub/GVooKzfqrfY07/5E7hw3VLMZrQwuUhe9XJOZZjO/rObZdChmHxHwBsmprbYmWEjiRJRms4OZ70kVV7O2HjEVCkQQdtWrxhXzoDB4+oJq1STSEv9hEM2lpZERm1muTIYsLn3z4Ejget0iA/H5PJRLxRZs9y/q/vxptI/cX+VDKWstOQKu/Ic7v8LIhTe0mPUAHqp0eu60ZHp2JLpJ6pko9RptflM2cjPawINulmINOE43wrTzFhhhgrdxtYEt7dnCVAfooanbB9vYoH5LGBVOPxiqUnJzMvlJ0z9rpk/0='
       - name: Get tag name
         id: tag_name
         run: echo "::set-output name=TAG_NAME::$(echo ${GITHUB_REF#refs/tags/})"
