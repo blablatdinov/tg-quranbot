@@ -114,7 +114,7 @@ def main(sys_args: list[str]) -> None:
         CommandCliApp(
             'receive_events',
             EventHookApp(
-                RbmqEventHook(
+                RbmqEventHook.ctor(
                     settings,
                     pgsql,
                     logger,

@@ -21,6 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import asyncio
+from collections.abc import Iterable
 from typing import final, override
 
 import aio_pika
@@ -38,28 +39,37 @@ from srv.events.recieved_event import ReceivedEvent
 
 
 @final
-@attrs.define(frozen=True, init=False)
+@attrs.define(frozen=True)
 class RbmqEventHook(EventHook):
     """Обработчик событий из RabbitMQ."""
 
-    def __init__(
-        self,
+    _settings: Settings
+    _pgsql: Database
+    _logger: LogSink
+    _events: Iterable[ReceivedEvent]
+
+    @classmethod
+    def ctor(
+        cls,
         settings: Settings,
         pgsql: Database,
         logger: LogSink,
         *events: ReceivedEvent,
-    ) -> None:
+    ) -> EventHook:
         """Ctor.
 
         :param settings: Settings,
         :param pgsql: Database,
         :param logger: LogSink,
         :param events: ReceivedEvent,
+        :return: EventHook
         """
-        self._settings = settings
-        self._pgsql = pgsql
-        self._logger = logger
-        self._events = events
+        return cls(
+            settings,
+            pgsql,
+            logger,
+            events,
+        )
 
     @override
     async def catch(self) -> None:  # noqa: WPS217
