@@ -72,11 +72,9 @@ from srv.users.user_step import UserStep
 
 
 @final
-@attrs.define(frozen=True, init=False)
 class QuranbotAnswer(TgAnswer):
     """Ответ бота quranbot."""
 
-    @override
     def __init__(
         self,
         database: Database,
