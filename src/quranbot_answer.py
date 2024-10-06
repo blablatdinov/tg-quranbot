@@ -247,6 +247,10 @@ class QuranbotAnswer(TgAnswer):
                     'decr',
                     DecrementSkippedPrayerAnswer(empty_answer, self._pgsql),
                 ),
+                TgCallbackQueryRegexAnswer(
+                    'nextDay',
+                    DecrementSkippedPrayerAnswer(empty_answer, self._pgsql),
+                ),
                 StepAnswer(
                     UserStep.ayat_search.value,
                     TgCallbackQueryRegexAnswer(
