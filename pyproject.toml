@@ -87,7 +87,7 @@ vulture = "2.13"
 # other
 deltaver = "0.2.3"
 yoyo-migrations = "9.0.0"
-sqlfluff = "3.2.1"
+sqlfluff = "3.2.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
