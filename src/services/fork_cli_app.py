@@ -36,10 +36,11 @@ class ForkCliApp(SyncRunable):
     _apps: Iterable[SyncRunable]
 
     @classmethod
-    def ctor(cls, *apps: SyncRunable) -> None:
+    def ctor(cls, *apps: SyncRunable) -> SyncRunable:
         """Конструктор класса.
 
         :param apps: SyncRunable
+        :return: SyncRunable
         """
         return cls(apps)
 

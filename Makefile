@@ -48,4 +48,4 @@ e2e:
 	poetry run pytest src/tests/e2e -m 'not tg_button'
 
 clean:
-	git clean -f -d -x -e .env
+	git clean -f -d -x -e .env me.session
