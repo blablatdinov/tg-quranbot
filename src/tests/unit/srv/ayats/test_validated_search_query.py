@@ -38,6 +38,10 @@ def _sura_num_invalid(num):
 
 
 def _ayat_num_invalid(ayat_num):
+    try:
+        int(ayat_num)
+    except ValueError:
+        return True
     return ayat_num.isdigit() and int(ayat_num) < 1
 
 
