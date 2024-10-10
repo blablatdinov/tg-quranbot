@@ -85,7 +85,7 @@ flake8-final = "0.0.3"
 flake8-override = "0.0.4"
 flake8-no-json = "0.0.2"
 vulture = "2.13"
-sqlfluff = "3.2.2"
+sqlfluff = "3.2.3"
 # other
 deltaver = "0.2.3"
 yoyo-migrations = "9.0.0"
