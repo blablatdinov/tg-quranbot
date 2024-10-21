@@ -74,8 +74,6 @@ class NextDayAyats(TgAnswer):
             ]),
             {'chat_id': int(TgChatId(update))},
         )
-        # print(ayats)
-        # assert False
         return await TgLinkPreviewOptions(
             TgHtmlParseAnswer(
                 TgAnswerMarkup(
