@@ -50,14 +50,6 @@ class NextDayAyats(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        await self._pgsql.execute(
-            '\n'.join([
-                'UPDATE users',
-                'SET day = day + 1',
-                'WHERE chat_id = :chat_id',
-            ]),
-            {'chat_id': int(TgChatId(update))},
-        )
         query = '\n'.join([
             'SELECT',
             '  a.sura_id,',
@@ -74,6 +66,16 @@ class NextDayAyats(TgAnswer):
             query,
             {'chat_id': int(TgChatId(update))},
         )
+        await self._pgsql.execute(
+            '\n'.join([
+                'UPDATE users',
+                'SET day = day + 1',
+                'WHERE chat_id = :chat_id',
+            ]),
+            {'chat_id': int(TgChatId(update))},
+        )
+        # print(ayats)
+        # assert False
         return await TgLinkPreviewOptions(
             TgHtmlParseAnswer(
                 TgAnswerMarkup(
