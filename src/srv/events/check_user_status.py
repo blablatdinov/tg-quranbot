@@ -82,7 +82,6 @@ class CheckUsersStatus(ReceivedEvent):
         ).update(to=False)
 
     async def _answers(self, users: AsyncListable[User]) -> list[TgAnswer]:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_answers"
         return [
             TypingAction(
                 TgChatIdAnswer(

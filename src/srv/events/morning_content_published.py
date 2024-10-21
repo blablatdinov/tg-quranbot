@@ -104,7 +104,6 @@ class MorningContentPublishedEvent(ReceivedEvent):
         ]))
 
     def _zipped_ans_chat_ids(self, rows: list[Record]) -> Iterator[tuple[TgAnswer, int]]:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_zipped_ans_chat_ids"
         return zip(
             [
                 TgLinkPreviewOptions(

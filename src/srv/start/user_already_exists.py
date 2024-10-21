@@ -69,7 +69,6 @@ class UserAlreadyExistsAnswer(TgAnswer):
         ).build(update)
 
     async def _update_and_push_event(self, update: Update) -> None:
-        # TODO #802 Удалить или задокументировать необходимость приватного метода "_update_and_push_event"
         await PgUpdatedUsersStatus(
             self._pgsql,
             PgUsers(self._pgsql, [int(TgChatId(update))]),
