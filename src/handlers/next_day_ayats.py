@@ -50,28 +50,27 @@ class NextDayAyats(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
+        ayats = await self._pgsql.fetch_all(
+            '\n'.join([
+                'SELECT',
+                '  a.sura_id,',
+                '  a.ayat_number,',
+                '  a.content,',
+                '  s.link AS sura_link',
+                'FROM public.ayats AS a',
+                'JOIN public.users AS u ON a.day = u.day',
+                'JOIN suras AS s ON a.sura_id = s.sura_id',
+                'WHERE u.chat_id = :chat_id',
+                'ORDER BY a.ayat_id',
+            ]),
+            {'chat_id': int(TgChatId(update))},
+        )
         await self._pgsql.execute(
             '\n'.join([
                 'UPDATE users',
                 'SET day = day + 1',
                 'WHERE chat_id = :chat_id',
             ]),
-            {'chat_id': int(TgChatId(update))},
-        )
-        query = '\n'.join([
-            'SELECT',
-            '  a.sura_id,',
-            '  a.ayat_number,',
-            '  a.content,',
-            '  s.link AS sura_link',
-            'FROM public.ayats AS a',
-            'JOIN public.users AS u ON a.day = u.day',
-            'JOIN suras AS s ON a.sura_id = s.sura_id',
-            'WHERE u.chat_id = :chat_id',
-            'ORDER BY a.ayat_id',
-        ])
-        ayats = await self._pgsql.fetch_all(
-            query,
             {'chat_id': int(TgChatId(update))},
         )
         return await TgLinkPreviewOptions(

@@ -92,7 +92,7 @@ async def _db_ayats(pgsql):
 async def _user(city_factory, user_factory):
     return await user_factory(
         849375,
-        2,
+        3,
         city=await city_factory(str(uuid.uuid4()), 'Kazan'),
     )
 
@@ -113,4 +113,4 @@ async def test(callback_update_factory, pgsql):
         'https://umma.ru/link-to-sura',
     ])
     assert got[0].url.params['chat_id'] == '849375'
-    assert await pgsql.fetch_val('SELECT day FROM users WHERE chat_id = 849375') == 3
+    assert await pgsql.fetch_val('SELECT day FROM users WHERE chat_id = 849375') == 4
