@@ -1069,13 +1069,13 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "hypothesis"
-version = "6.115.4"
+version = "6.115.5"
 description = "A library for property-based testing"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "hypothesis-6.115.4-py3-none-any.whl", hash = "sha256:8a6e1715b55664d6400387e36a40831b1646121eae5c0e829ae95a8d29782c83"},
-    {file = "hypothesis-6.115.4.tar.gz", hash = "sha256:e5bc1aad1eccd0fd929176376a1a57ef7685259efba9f6d2ba034493f95a113f"},
+    {file = "hypothesis-6.115.5-py3-none-any.whl", hash = "sha256:b7733459ae9a93020fac3b91b41473c9b85e975139a152a70d88f3a5caa3fa3f"},
+    {file = "hypothesis-6.115.5.tar.gz", hash = "sha256:4768c5fb426b305462ed31032d6e216a31daaefb1dc3134fdf2795b7961d7cb3"},
 ]
 
 [package.dependencies]
@@ -3594,4 +3594,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "a3b43fbfbbc630c5632e333d88118b1b70b3691f28477a4d53a1042c67a1a74c"
+content-hash = "e9a6b1c6c6d709b9365358cad1fad5bc005764c4cd89903704f98a5ab358cb3f"
