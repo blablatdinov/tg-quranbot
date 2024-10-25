@@ -97,10 +97,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Run gotemir
         run: |
-          VERSION="0.0.1-a4"
+          VERSION="0.0.1-a6"
           curl -O -L -C - https://github.com/blablatdinov/gotemir/download/$VERSION/gotemir-linux-amd64
-          chmod 0770 gotemir-linux-amd64
-          ls -la gotemir-linux-amd64
+          tar xzf gotemir-linux-amd64.tar.gz
+          ls -la
           ./gotemir-linux-amd64
         shell: bash
 
