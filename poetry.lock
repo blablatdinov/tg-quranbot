@@ -2217,13 +2217,13 @@ dev = ["pre-commit", "pytest-asyncio", "tox"]
 
 [[package]]
 name = "pytest-randomly"
-version = "3.15.0"
+version = "3.16.0"
 description = "Pytest plugin to randomly order tests and control random.seed."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 files = [
-    {file = "pytest_randomly-3.15.0-py3-none-any.whl", hash = "sha256:0516f4344b29f4e9cdae8bce31c4aeebf59d0b9ef05927c33354ff3859eeeca6"},
-    {file = "pytest_randomly-3.15.0.tar.gz", hash = "sha256:b908529648667ba5e54723088edd6f82252f540cc340d748d1fa985539687047"},
+    {file = "pytest_randomly-3.16.0-py3-none-any.whl", hash = "sha256:8633d332635a1a0983d3bba19342196807f6afb17c3eef78e02c2f85dade45d6"},
+    {file = "pytest_randomly-3.16.0.tar.gz", hash = "sha256:11bf4d23a26484de7860d82f726c0629837cf4064b79157bd18ec9d41d7feb26"},
 ]
 
 [package.dependencies]
@@ -3594,4 +3594,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "431888967b0b0849ca901299abf13b7995fc37855f8b7d8e5820d8f75d63d2a9"
+content-hash = "92af30a778c576978b3d798218ffe26bfee2ab21f8bee487acbe62ea22d3d839"
