@@ -102,6 +102,7 @@ jobs:
           chmod 0770 gotemir-linux-amd64
           ls -la gotemir-linux-amd64
           ./gotemir-linux-amd64
+        shell: bash
 
   lint:
     needs: setup
