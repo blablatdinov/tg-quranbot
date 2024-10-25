@@ -98,10 +98,10 @@ jobs:
       - name: Run gotemir
         run: |
           VERSION="0.0.1-a4"
-          curl -O -L -C - https://github.com/blablatdinov/gotemir/download/$VERSION/gotemir-linux-386
-          chmod 0770 gotemir-linux-386
-          ls -la gotemir-linux-386
-          ./gotemir-linux-386
+          curl -O -L -C - https://github.com/blablatdinov/gotemir/download/$VERSION/gotemir-linux-amd64
+          chmod 0770 gotemir-linux-amd64
+          ls -la gotemir-linux-amd64
+          ./gotemir-linux-amd64
 
   lint:
     needs: setup
