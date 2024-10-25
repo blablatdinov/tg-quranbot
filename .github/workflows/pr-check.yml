@@ -99,6 +99,7 @@ jobs:
         run: |
           VERSION="0.0.1-a6"
           curl -O -L -C - https://github.com/blablatdinov/gotemir/download/$VERSION/gotemir-linux-amd64.tar
+          ls -la
           tar -xvf gotemir-linux-amd64.tar
           ls -la
           ./gotemir-linux-amd64
