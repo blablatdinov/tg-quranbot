@@ -99,6 +99,7 @@ jobs:
         run: |
           VERSION="0.0.1-a4"
           curl -O -L -C - https://github.com/blablatdinov/gotemir/download/$VERSION/gotemir-linux-amd64
+          chmod 0770 gotemir-linux-amd64
           ./gotemir-linux-amd64
 
   lint:
