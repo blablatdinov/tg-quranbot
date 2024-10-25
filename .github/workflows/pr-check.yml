@@ -98,8 +98,8 @@ jobs:
       - name: Run gotemir
         run: |
           VERSION="0.0.1-a6"
-          curl -O -L -C - https://github.com/blablatdinov/gotemir/download/$VERSION/gotemir-linux-amd64
-          tar xzf gotemir-linux-amd64.tar.gz
+          curl -O -L -C - https://github.com/blablatdinov/gotemir/download/$VERSION/gotemir-linux-amd64.tar
+          tar xzf gotemir-linux-amd64.tar
           ls -la
           ./gotemir-linux-amd64
         shell: bash
