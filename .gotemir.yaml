@@ -185,7 +185,6 @@ test-free-files:
   - src/srv/prayers/prayers_stts.py
   - src/srv/prayers/prayers_text.py
   - src/srv/prayers/updated_user_city.py
-  - src/srv/prayers/user_city_id.py
   - src/srv/prayers/user_prayer_status.py
   - src/srv/prayers/user_prayer_stts.py
   - src/srv/prayers/user_without_city_safe_answer.py
