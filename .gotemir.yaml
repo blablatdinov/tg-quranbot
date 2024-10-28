@@ -35,7 +35,6 @@ test-free-files:
   - src/handlers/search_ayat_by_keyword_answer.py
   - src/handlers/search_ayat_by_numbers_answer.py
   - src/handlers/skipped_prayers_keyboard.py
-  # - src/integrations/city_name_by_id.py
   - src/integrations/tg/app_with_get_me.py
   - src/integrations/tg/bulk_sendable_answer.py
   - src/integrations/tg/cached_tg_update.py
