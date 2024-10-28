@@ -97,9 +97,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Run gotemir
         run: |
-          VERSION="0.0.1-a6"
+          VERSION="0.0.2"
           curl -O -L -C - https://github.com/blablatdinov/gotemir/releases/download/$VERSION/gotemir-linux-amd64.tar
-          tar -xvf gotemir-linux-amd64.tar
+          tar xzf gotemir-linux-amd64.tar
           ./gotemir-linux-amd64 --ext .py src src/tests/unit,src/tests/it
         shell: bash
 
