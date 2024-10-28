@@ -22,9 +22,9 @@
 
 import pytest
 
-from integrations.city_name_by_id import CityNameById
 from app_types.fk_async_str import FkAsyncStr
 from exceptions.content_exceptions import CityNotSupportedError
+from integrations.city_name_by_id import CityNameById
 
 
 @pytest.fixture
@@ -33,8 +33,8 @@ async def _db_city(pgsql):
         '\n'.join([
             'INSERT INTO cities (city_id, name)',
             'VALUES',
-            "('7ceb19b6-93ff-4819-bed7-86f14077af9a', 'Erak')",
-        ])
+            "('7ceb19b6-93ff-4819-bed7-86f14077af9a', 'Kazan')",
+        ]),
     )
 
 
@@ -45,7 +45,7 @@ async def test(pgsql):
         FkAsyncStr('7ceb19b6-93ff-4819-bed7-86f14077af9a'),
     ).to_str()
 
-    assert got == 'Erak'
+    assert got == 'Kazan'
 
 
 @pytest.mark.usefixtures('_db_city')
