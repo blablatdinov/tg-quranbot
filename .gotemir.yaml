@@ -26,6 +26,7 @@ test-free-files:
   - src/db/connection.py
   - src/exceptions.*
   - src/tests/.*
+  - .*fk_.*\.py
   # TODO
   - src/handlers/full_start_answer.py
   - src/handlers/pagination_per_day_prayer_answer.py
@@ -41,10 +42,6 @@ test-free-files:
   - src/integrations/tg/callback_query.py
   - src/integrations/tg/database_connected_app.py
   - src/integrations/tg/exceptions/update_parse_exceptions.py
-  - src/integrations/tg/fk_chat_id.py
-  - src/integrations/tg/fk_coordinates.py
-  - src/integrations/tg/fk_keyboard.py
-  - src/integrations/tg/fk_sendable.py
   - src/integrations/tg/inline_query_id.py
   - src/integrations/tg/keyboard.py
   - src/integrations/tg/polling_app.py
@@ -54,7 +51,6 @@ test-free-files:
   - src/integrations/tg/tg_answers/callback_query_regex_answer.py
   - src/integrations/tg/tg_answers/delete_message_answer.py
   - src/integrations/tg/tg_answers/edit_message_text.py
-  - src/integrations/tg/tg_answers/fk_answer.py
   - src/integrations/tg/tg_answers/link_preview_options.py
   - src/integrations/tg/tg_answers/markup_answer.py
   - src/integrations/tg/tg_answers/message_answer_to_sender.py
@@ -123,10 +119,6 @@ test-free-files:
   - src/srv/ayats/favorite_ayat_status.py
   - src/srv/ayats/favorite_ayats.py
   - src/srv/ayats/favorites/ayat_is_favor.py
-  - src/srv/ayats/fk_ayat.py
-  - src/srv/ayats/fk_identifier.py
-  - src/srv/ayats/fk_search_query.py
-  - src/srv/ayats/fk_text_search_query.py
   - src/srv/ayats/neighbor_ayat_keyboard.py
   - src/srv/ayats/neighbor_ayats.py
   - src/srv/ayats/neighbor_ayats_btns.py
@@ -143,14 +135,12 @@ test-free-files:
   - src/srv/events/event_fork.py
   - src/srv/events/event_hook.py
   - src/srv/events/event_hook_app.py
-  - src/srv/events/fk_sink.py
   - src/srv/events/prayer_created_event.py
   - src/srv/events/rabbitmq_sink.py
   - src/srv/events/rbmq_event_hook.py
   - src/srv/events/recieved_event.py
   - src/srv/events/sink.py
   - src/srv/files/file_answer.py
-  - src/srv/files/fk_file.py
   - src/srv/files/tg_file.py
   - src/srv/files/tg_file_id_not_filled_safe_answer.py
   - src/srv/message_not_found_safe_answer.py
@@ -169,9 +159,6 @@ test-free-files:
   - src/srv/prayers/date_from_user_prayer_id.py
   - src/srv/prayers/exist_user_prayers.py
   - src/srv/prayers/exist_user_prayers_dict.py
-  - src/srv/prayers/fk_city.py
-  - src/srv/prayers/fk_prayer_date.py
-  - src/srv/prayers/fk_updated_user_city.py
   - src/srv/prayers/new_prayers_at_user.py
   - src/srv/prayers/pg_city.py
   - src/srv/prayers/pg_city_change_safe_user_prayers.py
@@ -197,9 +184,6 @@ test-free-files:
   - src/srv/start/user_already_exists.py
   - src/srv/users/cached_user_state.py
   - src/srv/users/chat_id_by_legacy_id.py
-  - src/srv/users/fk_new_user.py
-  - src/srv/users/fk_user.py
-  - src/srv/users/fk_valid_chat_id.py
   - src/srv/users/new_user.py
   - src/srv/users/pg_active_users.py
   - src/srv/users/pg_new_user.py
