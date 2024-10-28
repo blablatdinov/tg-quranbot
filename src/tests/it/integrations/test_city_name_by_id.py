@@ -20,34 +20,38 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import TypeAlias, final, override
+import pytest
 
-import attrs
-from databases import Database
-
-from app_types.async_supports_str import AsyncSupportsStr
+from integrations.city_name_by_id import CityNameById
+from app_types.fk_async_str import FkAsyncStr
 from exceptions.content_exceptions import CityNotSupportedError
 
-CityName: TypeAlias = AsyncSupportsStr
+
+@pytest.fixture
+async def _db_city(pgsql):
+    await pgsql.execute(
+        '\n'.join([
+            'INSERT INTO cities (city_id, name)',
+            'VALUES',
+            "('7ceb19b6-93ff-4819-bed7-86f14077af9a', 'Erak')",
+        ])
+    )
 
 
-@final
-@attrs.define(frozen=True)
-class CityNameById(CityName):
-    """Имя города по id."""
+@pytest.mark.usefixtures('_db_city')
+async def test(pgsql):
+    got = await CityNameById(
+        pgsql,
+        FkAsyncStr('7ceb19b6-93ff-4819-bed7-86f14077af9a'),
+    ).to_str()
 
-    _pgsql: Database
-    _city_id: AsyncSupportsStr
+    assert got == 'Erak'
 
-    @override
-    async def to_str(self) -> str:
-        """Поиск.
 
-        :return: str
-        """
-        city_name = await self._pgsql.fetch_val('SELECT name FROM cities WHERE city_id = :city_id', {
-            'city_id': await self._city_id.to_str(),
-        })
-        if not city_name:
-            raise CityNotSupportedError
-        return city_name
+@pytest.mark.usefixtures('_db_city')
+async def test_not_found(pgsql):
+    with pytest.raises(CityNotSupportedError):
+        await CityNameById(
+            pgsql,
+            FkAsyncStr(''),
+        ).to_str()
