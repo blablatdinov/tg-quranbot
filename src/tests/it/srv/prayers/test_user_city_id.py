@@ -20,35 +20,19 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import TypeAlias, final, override
+import pytest
 
-import attrs
-from databases import Database
-
-from app_types.async_supports_str import AsyncSupportsStr
-from exceptions.content_exceptions import CityNotSupportedError
-
-CityName: TypeAlias = AsyncSupportsStr
+from srv.prayers.user_city_id import UserCityId
 
 
-@final
-@attrs.define(frozen=True)
-class CityNameById(CityName):
-    """Имя города по id."""
+@pytest.fixture
+async def _db_city(city_factory, user_factory):
+    city = await city_factory('e9fa0fff-4e6a-47c8-8654-09adf913734a', 'Казань')
+    await user_factory(89348, city=city)
 
-    _pgsql: Database
-    _city_id: AsyncSupportsStr
 
-    @override
-    async def to_str(self) -> str:
-        """Поиск.
+@pytest.mark.usefixtures('_db_city')
+async def test(pgsql):
+    got = await UserCityId(pgsql, 89348).to_str()
 
-        :return: str
-        :raises CityNotSupportedError: City not found
-        """
-        city_name = await self._pgsql.fetch_val('SELECT name FROM cities WHERE city_id = :city_id', {
-            'city_id': await self._city_id.to_str(),
-        })
-        if not city_name:
-            raise CityNotSupportedError
-        return city_name
+    assert got == 'e9fa0fff-4e6a-47c8-8654-09adf913734a'
