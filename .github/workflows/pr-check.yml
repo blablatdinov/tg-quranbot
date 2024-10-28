@@ -89,6 +89,20 @@ jobs:
       - name: Check dependencies relevance
         run: .venv/bin/deltaver poetry.lock --format lock
 
+  gotemir:
+    runs-on: ubuntu-24.04
+    name: Src and tests structure check
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run gotemir
+        run: |
+          VERSION="0.0.2"
+          curl -O -L -C - https://github.com/blablatdinov/gotemir/releases/download/$VERSION/gotemir-linux-amd64.tar
+          tar xzf gotemir-linux-amd64.tar
+          ./gotemir-linux-amd64 --ext .py src src/tests/unit,src/tests/it
+        shell: bash
+
   lint:
     needs: setup
     uses: blablatdinov/tg-quranbot/.github/workflows/lint.yml@master
