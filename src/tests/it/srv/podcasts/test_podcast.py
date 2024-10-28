@@ -34,7 +34,6 @@ from app_types.fk_async_int import FkAsyncInt
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
 from exceptions.base_exception import InternalBotError
-from handlers.concrete_podcast_answer import ConcretePodcastAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.podcasts.pg_podcast import PgPodcast
 from srv.podcasts.random_podcast_answer import RandomPodcastAnswer
@@ -153,41 +152,11 @@ async def test_random_podcast(pgsql, fake_redis, debug_mode, expected, unquote):
     assert unquote(got[1].url) == unquote(expected)
 
 
-@pytest.mark.usefixtures('_db_podcast')
-async def test_concrete_podcast(pgsql, fake_redis):
-    debug_mode = True
-    got = await ConcretePodcastAnswer(
-        debug_mode,
-        FkAnswer(),
-        fake_redis,
-        pgsql,
-        FkLogSink(),
-    ).build(FkUpdate('{"chat":{"id":123},"message":{"text":"/podcast1"}}'))
-
-    assert len(got) == 1
-    assert got[0].url.params['text'] == 'https://link-to-file.domain'
-
-
 async def test_podcast_not_found(pgsql):
     with pytest.raises(InternalBotError):
         await PgPodcast(FkAsyncInt(1), pgsql).tg_file_id()
     with pytest.raises(InternalBotError):
         await PgPodcast(FkAsyncInt(1), pgsql).file_link()
-
-
-@pytest.mark.usefixtures('_db_podcast_without_telegram_file_id')
-async def test_podcast_without_tg_file_id(pgsql, fake_redis):
-    debug_mode = False
-    got = await ConcretePodcastAnswer(
-        debug_mode,
-        FkAnswer(),
-        fake_redis,
-        pgsql,
-        FkLogSink(),
-    ).build(FkUpdate('{"chat":{"id":123},"message":{"text":"/podcast1"}}'))
-
-    assert 'audio' not in got[0].url.params
-    assert got[0].url.params['text'] == 'https://link-to-file.domain'
 
 
 @pytest.mark.usefixtures('_podcast_reactions')

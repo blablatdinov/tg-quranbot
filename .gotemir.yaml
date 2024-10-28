@@ -27,16 +27,16 @@ test-free-files:
   - src/exceptions.*
   - src/tests/.*
   # TODO
-  - src/handlers/concrete_podcast_answer.py
-  - src/handlers/decrement_skipped_prayer_answer.py
-  - src/handlers/favorites_answer.py
-  - src/handlers/full_start_answer.py
-  - src/handlers/next_day_ayats.py
-  - src/handlers/paginate_by_search_ayat.py
-  - src/handlers/pagination_per_day_prayer_answer.py
-  - src/handlers/podcast_message_text_not_exists_safe_answer.py
-  - src/handlers/podcast_reaction_change_answer.py
-  - src/handlers/prayer_time_answer.py
+  # - src/handlers/concrete_podcast_answer.py
+  # - src/handlers/decrement_skipped_prayer_answer.py
+  # - src/handlers/favorites_answer.py
+  # - src/handlers/full_start_answer.py
+  # - src/handlers/next_day_ayats.py
+  # - src/handlers/paginate_by_search_ayat.py
+  # - src/handlers/pagination_per_day_prayer_answer.py
+  # - src/handlers/podcast_message_text_not_exists_safe_answer.py
+  # - src/handlers/podcast_reaction_change_answer.py
+  # - src/handlers/prayer_time_answer.py
   - src/handlers/prayers_statistic.py
   - src/handlers/search_ayat_by_keyword_answer.py
   - src/handlers/search_ayat_by_numbers_answer.py
