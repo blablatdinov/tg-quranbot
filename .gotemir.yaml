@@ -139,7 +139,7 @@ test-free-files:
   - src/srv/events/rbmq_event_hook.py
   - src/srv/events/recieved_event.py
   - src/srv/events/sink.py
-  - src/srv/files/file_answer.py
+  # - src/srv/files/file_answer.py
   - src/srv/files/tg_file.py
   - src/srv/files/tg_file_id_not_filled_safe_answer.py
   - src/srv/message_not_found_safe_answer.py
