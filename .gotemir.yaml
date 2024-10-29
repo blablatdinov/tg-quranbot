@@ -148,11 +148,11 @@ test-free-files:
   - src/srv/podcasts/pg_changed_podcast_reaction.py
   # - src/srv/podcasts/pg_podcast.py
   - src/srv/podcasts/podcast_answer.py
-  - src/srv/podcasts/podcast_id.py
+  # - src/srv/podcasts/podcast_id.py
   - src/srv/podcasts/podcast_keyboard.py
   - src/srv/podcasts/podcast_reaction.py
   - src/srv/podcasts/random_podcast_answer.py
-  - src/srv/prayers/city_id_by_name.py
+  # - src/srv/prayers/city_id_by_name.py
   - src/srv/prayers/city_names.py
   - src/srv/prayers/city_not_supported_answer.py
   - src/srv/prayers/date_from_user_prayer_id.py
