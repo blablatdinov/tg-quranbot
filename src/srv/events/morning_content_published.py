@@ -103,7 +103,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
             "WHERE is_active = 't' AND chat_id IN ({0})".format(','.join([str(row['chat_id']) for row in rows])),
         ]))
 
-    def _zipped_ans_chat_ids(self, rows: list[Record]) -> Iterator[tuple[TgAnswer, int]]:
+    def _zipped_ans_chat_ids(self, rows: list[Record]) -> Iterator[tuple[TgAnswer, int]]:  # noqa: NPM100. Fix it
         return zip(
             [
                 TgLinkPreviewOptions(
@@ -149,8 +149,12 @@ class MorningContentPublishedEvent(ReceivedEvent):
             strict=True,
         )
 
-    async def _iteration(self, answer: TgAnswer, chat_id: int, unsubscribed_users: list[User]) -> None:
-        # TODO #802 Удалить или обосновать необходимость метода `MorningContentPublishedEvent._iteration`
+    async def _iteration(  # noqa: NPM100. Fix it
+        self,
+        answer: TgAnswer,
+        chat_id: int,
+        unsubscribed_users: list[User],
+    ) -> None:
         try:
             await LoggedAnswer(
                 SendableAnswer(

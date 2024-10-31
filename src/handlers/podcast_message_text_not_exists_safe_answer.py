@@ -45,14 +45,12 @@ class PodcastMessageTextNotExistsSafeAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
+        answer = self._edited_markup_answer
         try:
-            return await self._message_text_exists_case(update)
+            MatchManyJsonPath(
+                update.asdict(),
+                ('$..message.text', '$..message.audio'),
+            ).evaluate()
         except ValueError:
-            return await self._new_podcast_message_answer.build(update)
-
-    async def _message_text_exists_case(self, update: Update) -> list[httpx.Request]:
-        MatchManyJsonPath(
-            update.asdict(),
-            ('$..message.text', '$..message.audio'),
-        ).evaluate()
-        return await self._edited_markup_answer.build(update)
+            answer = self._new_podcast_message_answer
+        return await answer.build(update)

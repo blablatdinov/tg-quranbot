@@ -36,7 +36,7 @@ logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 settings = Settings(_env_file=BASE_DIR.parent / '.env')
 
 
-async def _morning_ayats_task() -> None:
+async def _morning_ayats_task() -> None:  # noqa: NPM100. Fix it
     await RabbitmqSink(settings, logger).send(
         'quranbot.mailings',
         {},
@@ -45,7 +45,7 @@ async def _morning_ayats_task() -> None:
     )
 
 
-async def _daily_prayers_task() -> None:
+async def _daily_prayers_task() -> None:  # noqa: NPM100. Fix it
     await RabbitmqSink(settings, logger).send(
         'quranbot.mailings',
         {},
@@ -54,7 +54,7 @@ async def _daily_prayers_task() -> None:
     )
 
 
-async def _daily_check_user_status() -> None:
+async def _daily_check_user_status() -> None:  # noqa: NPM100. Fix it
     await RabbitmqSink(settings, logger).send(
         'quranbot.users',
         {},

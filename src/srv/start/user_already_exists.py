@@ -68,7 +68,7 @@ class UserAlreadyExistsAnswer(TgAnswer):
             'Рады видеть вас снова, вы продолжите с дня {0}'.format(await user.day()),
         ).build(update)
 
-    async def _update_and_push_event(self, update: Update) -> None:
+    async def _update_and_push_event(self, update: Update) -> None:  # noqa: NPM100. Fix it
         await PgUpdatedUsersStatus(
             self._pgsql,
             PgUsers(self._pgsql, [int(TgChatId(update))]),
