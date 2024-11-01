@@ -30,7 +30,7 @@ from main.service import pygithub_client
 pytestmark = [pytest.mark.django_db]
 
 
-@pytest.fixture()
+@pytest.fixture
 def gh_repo(mixer):
     yield mixer.blend(
         'main.GhRepo',

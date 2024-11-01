@@ -41,7 +41,7 @@ attrs = "24.2.0"
 [tool.poetry.group.dev.dependencies]
 pytest = "8.3.3"
 isort = "5.13.2"
-ruff = "0.6.8"
+ruff = "0.7.2"
 wemake-python-styleguide = "0.19.2"
 refurb = "2.0.0"
 pytest-cov = "5.0.0"
@@ -98,8 +98,10 @@ ignore = [
   "UP032",   # We not use f-strings
   "UP004",   # Class `PrayerReaction` inherits from `object`
   "TD",      # "todo" formats
-  "PLR630",  # We not respect staticmethods
-  "TCH003",  # Move standard library import `os.PathLike` into a type-checking block
+  "PLR630",  # We not respect staticmethods "TCH003",  # Move standard library import `os.PathLike` into a type-checking block
+  "DOC201",  # `return` is not documented in docstrin
+  "DOC501",  # Raised exception `UnreachebleCaseError` missing from docstring
+  "DOC402",  # `yield` is not documented in docstring
 ]
 
 [tool.ruff.lint.flake8-quotes]

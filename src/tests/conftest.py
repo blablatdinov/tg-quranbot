@@ -26,12 +26,12 @@ import pytest
 from django.test import Client
 
 
-@pytest.fixture()
+@pytest.fixture
 def anon():
     return Client()
 
 
-@pytest.fixture()
+@pytest.fixture
 def mixer():
     from mixer.backend.django import mixer as _mixer  # noqa: PLC0415. Conflict with fixture name
     return _mixer

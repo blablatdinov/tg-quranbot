@@ -30,12 +30,12 @@ from main.service import sync_touch_records
 pytestmark = [pytest.mark.django_db]
 
 
-@pytest.fixture()
+@pytest.fixture
 def gh_repo(mixer):
     return mixer.blend('main.GhRepo')
 
 
-@pytest.fixture()
+@pytest.fixture
 def exist_touch_record(mixer, gh_repo):
     return mixer.blend(
         'main.TouchRecord',

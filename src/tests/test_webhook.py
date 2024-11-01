@@ -33,7 +33,7 @@ from main.service import pygithub_client
 pytestmark = [pytest.mark.django_db]
 
 
-@pytest.fixture()
+@pytest.fixture
 def _remove_exist_webhook():
     gh = pygithub_client(52326552)
     gh_repo = gh.get_repo('blablatdinov/ramadan2020marathon_bot')

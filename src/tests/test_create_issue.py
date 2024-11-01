@@ -33,7 +33,7 @@ from main.service import FkClonedRepo, FkNewIssue, process_repo
 pytestmark = [pytest.mark.django_db]
 
 
-@pytest.fixture()
+@pytest.fixture
 def gh_repo(mixer):
     return mixer.blend(
         'main.GhRepo',
@@ -42,7 +42,7 @@ def gh_repo(mixer):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 @pytest.mark.integration
 def _exist_touch_records(mixer, gh_repo):
     files = [

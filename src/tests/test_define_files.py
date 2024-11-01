@@ -43,17 +43,17 @@ from main.algorithms import (
 pytestmark = [pytest.mark.django_db]
 
 
-@pytest.fixture()
+@pytest.fixture
 def gh_repo(mixer):
     return mixer.blend('main.GhRepo')
 
 
-@pytest.fixture()
+@pytest.fixture
 def touch_records(mixer, gh_repo):
     return mixer.blend('main.TouchRecord', path='src/main.py', gh_repo=gh_repo, date=datetime.date(2024, 7, 1))
 
 
-@pytest.fixture()
+@pytest.fixture
 def repo_path(faker, time_machine):
     """Path to temorary git repo."""
     temp_dir = tempfile.TemporaryDirectory()
