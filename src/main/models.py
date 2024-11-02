@@ -57,3 +57,18 @@ class TouchRecord(models.Model):
     def __str__(self) -> str:
         """String representation."""
         return 'Touch record <{0}>. {1} {2}'.format(self.gh_repo.full_name, self.path, self.date)
+
+
+@final
+class AnalyzeJobsSchedule(models.Model):
+    """Table contain time for analyze repos."""
+
+    repo = models.ForeignKey(GhRepo, on_delete=models.PROTECT)
+    cron_expression = models.CharField(max_length=16, unique=True)
+
+    class Meta:
+        db_table = 'analyze_jobs_schedules'
+
+    def __str__(self) -> str:
+        """String representation."""
+        return 'AnalyzeJobsSchedule repo={0}. cron={1}'.format(self.gh_repo.full_name, self.cron_expression)
