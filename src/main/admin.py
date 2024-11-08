@@ -24,7 +24,8 @@
 
 from django.contrib import admin
 
-from main.models import GhRepo, TouchRecord
+from main.models import GhRepo, TouchRecord, AnalyzeJobsSchedule
 
 admin.site.register(GhRepo)
 admin.site.register(TouchRecord)
+admin.site.register(AnalyzeJobsSchedule)

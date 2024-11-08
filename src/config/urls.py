@@ -25,10 +25,11 @@
 from django.contrib import admin
 from django.urls import path
 
-from main.views import healthcheck, webhook
+from main.views import healthcheck, gh_webhook, process_repo_view
 
 urlpatterns = [
     path('health-check/', healthcheck),
-    path('hook/github', webhook),
+    path('hook/github', gh_webhook),
+    path('process-repo/<int:repo_id>', process_repo_view),
     path('admin/', admin.site.urls),
 ]

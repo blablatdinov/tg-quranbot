@@ -25,6 +25,7 @@
 import datetime
 import tempfile
 import zipfile
+import random
 from pathlib import Path
 from typing import Protocol, TypedDict, final
 
@@ -43,6 +44,7 @@ class ConfigDict(TypedDict):
     """Configuration structure."""
 
     limit: int
+    cron: str
 
 
 def pygithub_client(installation_id: int) -> Github:
@@ -59,14 +61,24 @@ def read_config(config: str) -> ConfigDict:
     return yaml.safe_load(config)
 
 
+def generate_default_config():
+    """Generating default config."""
+    return ConfigDict({
+        'limit': 10,
+        'cron': '{0} {1} {2} * *'.format(
+            random.randint(0, 61),  # noqa: S311 . Not secure issue
+            random.randint(0, 25),  # noqa: S311 . Not secure issue
+            random.randint(0, 29),  # noqa: S311 . Not secure issue
+        ),
+    })
+
+
 def config_or_default(repo_path: Path) -> ConfigDict:
     """Read or default config."""
     config_file = list(repo_path.glob('.revive-bot.*'))
     if config_file:
         return read_config(next(iter(config_file)).read_text())
-    return ConfigDict({
-        'limit': 10,
-    })
+    return generate_default_config()
 
 
 def sync_touch_records(files: list[str], repo_id: int) -> None:

@@ -71,4 +71,4 @@ class AnalyzeJobsSchedule(models.Model):
 
     def __str__(self) -> str:
         """String representation."""
-        return 'AnalyzeJobsSchedule repo={0}. cron={1}'.format(self.gh_repo.full_name, self.cron_expression)
+        return 'AnalyzeJobsSchedule repo={0}. cron={1}'.format(self.repo.full_name, self.cron_expression)
