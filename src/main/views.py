@@ -93,6 +93,7 @@ def _read_config_from_repo(gh_repo: Repository):
     return generate_default_config()
 
 
+@csrf_exempt
 def process_repo_view(request, repo_id: int):
     """Webhook for process repo."""
     if request.headers['Authentication'] != 'Basic {0}'.format(settings.BASIC_AUTH_TOKEN):
