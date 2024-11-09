@@ -28,6 +28,7 @@ from os import PathLike
 from pathlib import Path
 
 from git import Repo
+from lxml import etree
 
 from main.models import TouchRecord
 
@@ -121,3 +122,12 @@ def merge_rating(
         for file, points in file_points_map.items():
             res[file] += points
     return dict(res)
+
+
+def code_coverage_rating(coverage_xml: str):
+    """Count coverage per file."""
+    tree = etree.fromstring(coverage_xml, etree.XMLParser())  # noqa: S320 . TODO
+    return {
+        file.xpath('./@name')[0]: float(file.xpath('./@line-rate')[0])
+        for file in tree.xpath('.//class')
+    }
