@@ -7,6 +7,14 @@
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
+    },
+    {
+      "matchPackageNames": ["/postgres/", "/redis/", "/rabbitmq/"],
+      "matchManagers": [
+        ".github/workflows/pr-check.yml",
+        ".github/workflows/release.yml",
+        ".github/workflows/weekly-check.yml",
+      ]
     }
   ]
 }
