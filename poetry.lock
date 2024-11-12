@@ -353,6 +353,21 @@ files = [
 toml = ["tomli"]
 
 [[package]]
+name = "cron-validator"
+version = "1.0.8"
+description = "Unix cron implementation by Python"
+optional = false
+python-versions = "*"
+files = [
+    {file = "cron-validator-1.0.8.tar.gz", hash = "sha256:dd485257adb6f590b3e9433f641440c801d307015259c1ee3eb6e21c964c8026"},
+    {file = "cron_validator-1.0.8-py3-none-any.whl", hash = "sha256:6477fcc3d60bfbd1ec00a708f0b8b5136c1fef8140c10effea1f45b79d778653"},
+]
+
+[package.dependencies]
+python-dateutil = "*"
+pytz = "*"
+
+[[package]]
 name = "cryptography"
 version = "43.0.1"
 description = "cryptography is a package which provides cryptographic recipes and primitives to Python developers."
@@ -1343,6 +1358,17 @@ files = [
 six = ">=1.5"
 
 [[package]]
+name = "pytz"
+version = "2024.2"
+description = "World timezone definitions, modern and historical"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pytz-2024.2-py2.py3-none-any.whl", hash = "sha256:31c7c1817eb7fae7ca4b8c7ee50c72f93aa2dd863de768e1ef4245d426aa0725"},
+    {file = "pytz-2024.2.tar.gz", hash = "sha256:2aa355083c50a0f93fa581709deac0c9ad65cca8a9e9beac660adcbd493c798a"},
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.2"
 description = "YAML parser and emitter for Python"
@@ -1801,4 +1827,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "ecc328d571adc561a31e849a64a5871e8bf303fe298a3a2d54dde5df37a1be07"
+content-hash = "7729f9b19ff7c8178bdce3c960b120a00b38a5fb606727f96b9d60c7a867b3fc"

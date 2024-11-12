@@ -20,6 +20,10 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import re
+
+import pytest
+
 from main.service import read_config
 
 
@@ -29,3 +33,11 @@ def test():
     ]))
 
     assert got == {'limit': 10}
+
+
+def test_invalid_cron():
+    cron_expr = '*/61 * * * *'
+    with pytest.raises(ValueError, match=re.escape('Cron expression: "{0}" has invalid format'.format(cron_expr))):
+        read_config('\n'.join([
+            "cron: '{0}'".format(cron_expr),
+        ]))

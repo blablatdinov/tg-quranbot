@@ -32,6 +32,7 @@ from typing import Protocol, TypedDict, final
 
 import attrs
 import yaml
+from cron_validator import CronValidator
 from django.conf import settings
 from django.template import Context, Template
 from git import Repo
@@ -61,7 +62,16 @@ def pygithub_client(installation_id: int) -> Github:
 
 def read_config(config: str) -> ConfigDict:
     """Read config from yaml files."""
-    return yaml.safe_load(config)
+    parsed_config: ConfigDict = yaml.safe_load(config)
+    if parsed_config.get('cron'):
+        # TODO: custom exception
+        # TODO: notify repository owner
+        try:
+            CronValidator.parse(parsed_config['cron'])
+        except ValueError as err:
+            msg = 'Cron expression: "{0}" has invalid format'.format(parsed_config['cron'])
+            raise ValueError(msg) from err
+    return parsed_config
 
 
 def generate_default_config():
