@@ -25,7 +25,7 @@
 from django.core.management.base import BaseCommand
 
 from main.models import GhRepo
-from main.service import process_repo, GhNewIssue, GhClonedRepo, pygithub_client
+from main.service import GhClonedRepo, GhNewIssue, process_repo, pygithub_client
 
 
 class Command(BaseCommand):

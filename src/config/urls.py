@@ -25,7 +25,7 @@
 from django.contrib import admin
 from django.urls import path
 
-from main.views import healthcheck, gh_webhook, process_repo_view
+from main.views import gh_webhook, healthcheck, process_repo_view
 
 urlpatterns = [
     path('health-check/', healthcheck),

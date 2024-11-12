@@ -23,9 +23,10 @@
 """Service utils."""
 
 import datetime
+import random
 import tempfile
 import zipfile
-import random
+from contextlib import suppress
 from pathlib import Path
 from typing import Protocol, TypedDict, final
 
@@ -35,9 +36,10 @@ from django.conf import settings
 from django.template import Context, Template
 from git import Repo
 from github import Auth, Github, Repository
+from github.GithubException import UnknownObjectException
 
 from main.algorithms import files_sorted_by_last_changes, files_sorted_by_last_changes_from_db
-from main.models import GhRepo, TouchRecord
+from main.models import GhRepo, RepoConfig, TouchRecord
 
 
 class ConfigDict(TypedDict):
@@ -45,6 +47,7 @@ class ConfigDict(TypedDict):
 
     limit: int
     cron: str
+    glob: str
 
 
 def pygithub_client(installation_id: int) -> Github:
@@ -70,6 +73,7 @@ def generate_default_config():
             random.randint(0, 25),  # noqa: S311 . Not secure issue
             random.randint(0, 29),  # noqa: S311 . Not secure issue
         ),
+        'glob': '**/*',
     })
 
 
@@ -173,9 +177,10 @@ class GhClonedRepo(ClonedRepo):
 
 def process_repo(repo_id: int, cloned_repo: ClonedRepo, new_issue: NewIssue):
     """Processing repo."""
+    repo_config = RepoConfig.objects.get(repo_id=repo_id)
     with tempfile.TemporaryDirectory() as tmpdirname:
         repo_path = cloned_repo.clone_to(Path(tmpdirname))
-        files_for_search = list(repo_path.glob('**/*.py'))
+        files_for_search = list(repo_config.glob or '**/*')
         config = config_or_default(repo_path)
         got = files_sorted_by_last_changes_from_db(
             repo_id,
@@ -213,3 +218,57 @@ def process_repo(repo_id: int, cloned_repo: ClonedRepo, new_issue: NewIssue):
         stripped_file_list,
         repo_id,
     )
+
+
+@final
+class RegisteredRepoFromGithub(TypedDict):
+    """Github webhook needed fields."""
+
+    full_name: str
+
+
+def register_repo(repos: list[RegisteredRepoFromGithub], installation_id: int, gh: Github):
+    """Registering new repositories."""
+    for repo in repos:
+        repo_db_record = GhRepo.objects.create(
+            full_name=repo['full_name'],
+            installation_id=installation_id,
+            has_webhook=False,
+        )
+        gh_repo = gh.get_repo(repo['full_name'])
+        gh_repo.create_hook(
+            'web',
+            {
+                'url': 'https://www.rehttp.net/p/https%3A%2F%2Frevive-code-bot.ilaletdinov.ru%2Fhook%2Fgithub',
+                'content_type': 'json',
+            },
+            ['issues', 'issue_comment', 'push'],
+        )
+        config = _read_config_from_repo(gh_repo)
+        RepoConfig.objects.create(repo=repo_db_record, cron_expression=config['cron'])
+
+
+def _read_config_from_repo(gh_repo: Repository):
+    # TODO write tests
+    # TODO invalid cron in .revive-bot.yaml case
+    # TODO merge fields from repo config and default config
+    #  Example of repo config:
+    #  ```yaml
+    #  cron: 9 16 * * *
+    #  ```
+    #  for this case configs must be merged. Result config:
+    #  ```yaml
+    #  limit: 10  # noqa: ERA001. It's yaml
+    #  cron: 9 16 * * *
+    #  glob: **/*
+    #  ```
+    variants = ('.revive-bot.yaml', '.revive-bot.yml')
+    for variant in variants:
+        with suppress(UnknownObjectException):
+            return read_config(
+                gh_repo
+                .get_contents(variant)
+                .decoded_content
+                .decode('utf-8'),
+            )
+    return generate_default_config()

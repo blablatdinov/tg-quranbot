@@ -60,15 +60,16 @@ class TouchRecord(models.Model):
 
 
 @final
-class AnalyzeJobsSchedule(models.Model):
-    """Table contain time for analyze repos."""
+class RepoConfig(models.Model):
+    """Table contain configs for repos."""
 
-    repo = models.ForeignKey(GhRepo, on_delete=models.PROTECT)
-    cron_expression = models.CharField(max_length=16, unique=True)
+    repo = models.ForeignKey(GhRepo, on_delete=models.PROTECT)  # TODO: one-to-one
+    cron_expression = models.CharField(max_length=16)
+    files_glob = models.CharField(max_length=128)
 
     class Meta:
-        db_table = 'analyze_jobs_schedules'
+        db_table = 'repo_configs'
 
     def __str__(self) -> str:
         """String representation."""
-        return 'AnalyzeJobsSchedule repo={0}. cron={1}'.format(self.repo.full_name, self.cron_expression)
+        return 'RepoConfig repo={0}. cron={1}'.format(self.repo.full_name, self.cron_expression)

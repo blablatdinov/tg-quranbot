@@ -32,13 +32,13 @@ from git import Repo
 
 from main.algorithms import (
     apply_coefficient,
+    code_coverage_rating,
     file_editors_count,
     files_changes_count,
     files_sorted_by_last_changes,
     files_sorted_by_last_changes_from_db,
     lines_count,
     merge_rating,
-    code_coverage_rating,
 )
 
 pytestmark = [pytest.mark.django_db]

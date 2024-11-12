@@ -23,18 +23,15 @@
 """HTTP controllers."""
 
 import json
-from contextlib import suppress
 
-from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
-from github.GithubException import UnknownObjectException
-from github.Repository import Repository
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 
-from main.models import GhRepo, AnalyzeJobsSchedule
-from main.service import pygithub_client, generate_default_config, read_config, process_repo, GhClonedRepo, GhNewIssue
+from main.models import GhRepo
+from main.service import GhClonedRepo, GhNewIssue, process_repo, pygithub_client, register_repo
 
 
 def healthcheck(request):
@@ -53,22 +50,11 @@ def gh_webhook(request: HttpRequest):
         request_json = json.loads(request.body)
         installation_id = request_json['installation']['id']
         gh = pygithub_client(installation_id)
-        for repo in request_json['repositories_added']:
-            repo_db_record = GhRepo.objects.create(
-                full_name=repo['full_name'],
-                installation_id=installation_id,
-                has_webhook=False,
-            )
-            gh_repo = gh.get_repo(repo['full_name'])
-            gh_repo.create_hook(
-                'web', {
-                    'url': 'https://www.rehttp.net/p/https%3A%2F%2Frevive-code-bot.ilaletdinov.ru%2Fhook%2Fgithub',
-                    'content_type': 'json',
-                },
-                ['issues', 'issue_comment', 'push'],
-            )
-            config = _read_config_from_repo(gh_repo)
-            AnalyzeJobsSchedule.objects.create(repo=repo_db_record, cron_expression=config['cron'])
+        register_repo(
+            request_json['repositories_added'],
+            installation_id,
+            gh,
+        )
         gh.close()
     elif request.headers['X-GitHub-Event'] == 'ping':
         request_json = json.loads(request.body)
@@ -76,21 +62,6 @@ def gh_webhook(request: HttpRequest):
         pg_repo.has_webhook = True
         pg_repo.save()
     return HttpResponse()
-
-
-def _read_config_from_repo(gh_repo: Repository):
-    # TODO write tests
-    # TODO invalid cron in .revive-bot.yaml case
-    variants = ('.revive-bot.yaml', '.revive-bot.yml')
-    for variant in variants:
-        with suppress(UnknownObjectException):
-            return read_config(
-                gh_repo
-                .get_contents(variant)
-                .decoded_content
-                .decode('utf-8'),
-            )
-    return generate_default_config()
 
 
 @csrf_exempt
