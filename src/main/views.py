@@ -76,3 +76,16 @@ def process_repo_view(request, repo_id: int):
         GhNewIssue(pygithub_client(repo.installation_id).get_repo(repo.full_name)),
     )
     return HttpResponse()
+
+
+def connected_repos(request):
+    """Endpoint for README badge.
+
+    https://img.shields.io/badges/endpoint-badge
+    """
+    return JsonResponse({
+        'schemaVersion': 1,
+        'label': 'Connected repos',
+        'message': str(GhRepo.objects.count()),
+        'color': 'blue',
+    })
