@@ -27,7 +27,7 @@ import json
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
 
 from main.models import GhRepo
@@ -89,3 +89,8 @@ def connected_repos(request):
         'message': str(GhRepo.objects.count()),
         'color': 'blue',
     })
+
+
+def index(request):
+    """Show index page."""
+    return render(request, 'index.html')
