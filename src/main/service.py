@@ -244,31 +244,22 @@ def register_repo(repos: list[RegisteredRepoFromGithub], installation_id: int, g
             },
             ['issues', 'issue_comment', 'push'],
         )
-        config = _read_config_from_repo(gh_repo)
+        config = read_config_from_repo(gh_repo)
         RepoConfig.objects.create(repo=repo_db_record, cron_expression=config['cron'])
 
 
-def _read_config_from_repo(gh_repo: Repository):
-    # TODO write tests
+def read_config_from_repo(gh_repo: Repository):
+    """Read config from repo and fill empty fields."""
     # TODO invalid cron in .revive-bot.yaml case
-    # TODO merge fields from repo config and default config
-    #  Example of repo config:
-    #  ```yaml
-    #  cron: 9 16 * * *
-    #  ```
-    #  for this case configs must be merged. Result config:
-    #  ```yaml
-    #  limit: 10  # noqa: ERA001. It's yaml
-    #  cron: 9 16 * * *
-    #  glob: **/*
-    #  ```
     variants = ('.revive-bot.yaml', '.revive-bot.yml')
+    repo_config = {}
+    default_config = generate_default_config()
     for variant in variants:
         with suppress(UnknownObjectException):
-            return read_config(
+            repo_config = read_config(
                 gh_repo
                 .get_contents(variant)
                 .decoded_content
                 .decode('utf-8'),
             )
-    return generate_default_config()
+    return default_config | repo_config
