@@ -46,7 +46,7 @@ def gh_webhook(request: HttpRequest):
     """Process webhooks from github."""
     # TODO wrap in transaction
     # TODO handle private repos
-    if request.headers['X-GitHub-Event'] == 'installation_repositories':
+    if request.headers['X-GitHub-Event'] in {'installation', 'installation_repositories'}:
         request_json = json.loads(request.body)
         installation_id = request_json['installation']['id']
         gh = pygithub_client(installation_id)
