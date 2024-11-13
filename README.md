@@ -22,6 +22,24 @@ code review may be needed for those files.
 - Helps maintain code quality by encouraging regular reviews.
 - Reduces the risk of having outdated or unmaintained code.
 
+## Configure
+
+To configure the app, create a `.revive-bot.yml` file in the root of your repository with the following options:
+
+```yaml
+# Schedule when the bot checks for stagnant files (cron format)
+# Visit https://crontab.guru
+cron: '11 2 6 * *'  # Runs on the 6th day of each month at 02:11 AM
+
+# Define file patterns to analyze using glob syntax
+# glob: '**/*.py'  # Analyze all Python files
+# glob: 'src/**/*.js'  # Analyze JavaScript files in the src directory and its subdirectories
+glob: '**/*.py'  # Example: analyze all Python files
+
+# Limit the maximum number of files listed in an issue
+limit: 5
+```
+
 ## See also:
 
 [revive-scheduler](https://github.com/blablatdinov/revive-scheduler)
