@@ -45,13 +45,13 @@ pytestmark = [pytest.mark.django_db]
 
 
 @pytest.fixture
-def gh_repo(mixer):
-    return mixer.blend('main.GhRepo')
+def gh_repo(baker):
+    return baker.make('main.GhRepo')
 
 
 @pytest.fixture
-def touch_records(mixer, gh_repo):
-    return mixer.blend('main.TouchRecord', path='src/main.py', gh_repo=gh_repo, date=datetime.date(2024, 7, 1))
+def touch_records(baker, gh_repo):
+    return baker.make('main.TouchRecord', path='src/main.py', gh_repo=gh_repo, date=datetime.date(2024, 7, 1))
 
 
 @pytest.fixture

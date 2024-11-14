@@ -31,8 +31,8 @@ pytestmark = [pytest.mark.django_db]
 
 
 @pytest.fixture
-def gh_repo(mixer):
-    yield mixer.blend(
+def gh_repo(baker):
+    yield baker.make(
         'main.GhRepo',
         full_name='blablatdinov/iman-game-bot',
         installation_id=52326552,

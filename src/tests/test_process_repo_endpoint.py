@@ -27,8 +27,8 @@ pytestmark = [pytest.mark.django_db]
 
 
 @pytest.fixture
-def repo(mixer):
-    return mixer.blend('main.GhRepo')
+def repo(baker):
+    return baker.make('main.GhRepo')
 
 
 @pytest.mark.integration

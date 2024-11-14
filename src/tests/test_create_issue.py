@@ -34,8 +34,8 @@ pytestmark = [pytest.mark.django_db]
 
 
 @pytest.fixture
-def gh_repo(mixer):
-    return mixer.blend(
+def gh_repo(baker):
+    return baker.make(
         'main.GhRepo',
         full_name='blablatdinov/iman-game-bot',
         installation_id=52326552,
@@ -44,7 +44,7 @@ def gh_repo(mixer):
 
 @pytest.fixture
 @pytest.mark.integration
-def _exist_touch_records(mixer, gh_repo):
+def _exist_touch_records(baker, gh_repo):
     files = [
         'manage.py',
         'game/views.py',
@@ -52,7 +52,7 @@ def _exist_touch_records(mixer, gh_repo):
         'game/apps.py',
         'game/__init__.py',
     ]
-    mixer.cycle(5).blend(
+    baker.make(
         'main.TouchRecord',
         gh_repo=gh_repo,
         path=(f for f in files),

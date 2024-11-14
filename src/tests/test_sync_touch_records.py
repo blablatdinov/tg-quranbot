@@ -31,13 +31,13 @@ pytestmark = [pytest.mark.django_db]
 
 
 @pytest.fixture
-def gh_repo(mixer):
-    return mixer.blend('main.GhRepo')
+def gh_repo(baker):
+    return baker.make('main.GhRepo')
 
 
 @pytest.fixture
-def exist_touch_record(mixer, gh_repo):
-    return mixer.blend(
+def exist_touch_record(baker, gh_repo):
+    return baker.make(
         'main.TouchRecord',
         path='b.py',
         gh_repo=gh_repo,
