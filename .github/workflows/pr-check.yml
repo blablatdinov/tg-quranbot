@@ -63,7 +63,7 @@ jobs:
       - name: create .env file
         run: cp .github/.env .env
       - name: App key
-        run: echo '${{ secrets.GH_APP_KEY }}' > src/revive-code-bot.2024-04-11.private-key.pem
+        run: echo '${{ secrets.GH_APP_KEY }}' > src/revive-code-bot.private-key.pem
       - name: Run tests with pytest
         run: |
           . .venv/bin/activate

@@ -32,3 +32,6 @@ lint:
 
 test:
 	cd src && poetry run pytest -m 'not integration' --cov=. --cov-report=term-missing:skip-covered -vv
+
+clean:
+	git clean -fdx -e .env -e src/revive-code-bot.private-key.pem

@@ -58,7 +58,7 @@ def pygithub_client(installation_id: int) -> Github:
     """Pygithub client."""
     auth = Auth.AppAuth(
         874924,
-        Path(settings.BASE_DIR / 'revive-code-bot.2024-04-11.private-key.pem').read_text(encoding='utf-8'),
+        Path(settings.BASE_DIR / 'revive-code-bot.private-key.pem').read_text(encoding='utf-8'),
     )
     return Github(auth=auth.get_installation_auth(installation_id))
 
@@ -184,7 +184,7 @@ class GhClonedRepo(ClonedRepo):
         repo = gh.get_repo(self._gh_repo.full_name)
         gh.close()
         now = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
-        signing_key = Path(settings.BASE_DIR / 'revive-code-bot.2024-04-11.private-key.pem').read_bytes()
+        signing_key = Path(settings.BASE_DIR / 'revive-code-bot.private-key.pem').read_bytes()
         payload = {'iat': now, 'exp': now + 600, 'iss': 874924}
         encoded_jwt = jwt.encode(payload, signing_key, algorithm='RS256')
         response = requests.post(
