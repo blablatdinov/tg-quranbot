@@ -26,6 +26,7 @@ import json
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
@@ -44,24 +45,23 @@ def healthcheck(request):
 @csrf_exempt
 def gh_webhook(request: HttpRequest):
     """Process webhooks from github."""
-    # TODO wrap in transaction
-    # TODO handle private repos
-    if request.headers['X-GitHub-Event'] in {'installation', 'installation_repositories'}:
-        request_json = json.loads(request.body)
-        installation_id = request_json['installation']['id']
-        gh = pygithub_client(installation_id)
-        register_repo(
-            request_json['repositories_added'],
-            installation_id,
-            gh,
-        )
-        gh.close()
-    elif request.headers['X-GitHub-Event'] == 'ping':
-        request_json = json.loads(request.body)
-        pg_repo = GhRepo.objects.get(full_name=request_json['repository']['full_name'])
-        pg_repo.has_webhook = True
-        pg_repo.save()
-    return HttpResponse()
+    with transaction.atomic():
+        if request.headers['X-GitHub-Event'] in {'installation', 'installation_repositories'}:
+            request_json = json.loads(request.body)
+            installation_id = request_json['installation']['id']
+            gh = pygithub_client(installation_id)
+            register_repo(
+                request_json['repositories_added'],
+                installation_id,
+                gh,
+            )
+            gh.close()
+        elif request.headers['X-GitHub-Event'] == 'ping':
+            request_json = json.loads(request.body)
+            pg_repo = GhRepo.objects.get(full_name=request_json['repository']['full_name'])
+            pg_repo.has_webhook = True
+            pg_repo.save()
+        return HttpResponse()
 
 
 @csrf_exempt

@@ -274,6 +274,7 @@ def register_repo(repos: list[RegisteredRepoFromGithub], installation_id: int, g
             has_webhook=False,
         )
         gh_repo = gh.get_repo(repo['full_name'])
+        # TODO: query may be failed, because already created
         gh_repo.create_hook(
             'web',
             {
