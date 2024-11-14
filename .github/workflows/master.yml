@@ -67,7 +67,7 @@ jobs:
           . .venv/bin/activate
           cd src
           pytest -m 'not integration' --doctest-modules --cov --cov-report xml # --cov-fail-under=95
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: src/coverage.xml
