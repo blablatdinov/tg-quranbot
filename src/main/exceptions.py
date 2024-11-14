@@ -20,28 +20,12 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import re
-
-import pytest
-
-from main.exceptions import InvalidaCronError
-from main.service import read_config
+"""App custom errors."""
 
 
-def test():
-    got = read_config('\n'.join([
-        'limit: 10',
-    ]))
-
-    assert got == {'limit': 10}
+class AppError(Exception):
+    """Root error for app."""
 
 
-def test_invalid_cron():
-    cron_expr = '*/61 * * * *'
-    with pytest.raises(
-        InvalidaCronError,
-        match=re.escape('Cron expression: "{0}" has invalid format'.format(cron_expr)),
-    ):
-        read_config('\n'.join([
-            "cron: '{0}'".format(cron_expr),
-        ]))
+class InvalidaCronError(AppError):
+    """Invalid cron error."""

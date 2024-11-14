@@ -42,6 +42,7 @@ from github import Auth, Github, Repository
 from github.GithubException import UnknownObjectException
 
 from main.algorithms import files_sorted_by_last_changes, files_sorted_by_last_changes_from_db
+from main.exceptions import InvalidaCronError
 from main.models import GhRepo, RepoConfig, TouchRecord
 
 
@@ -66,13 +67,12 @@ def read_config(config: str) -> ConfigDict:
     """Read config from yaml files."""
     parsed_config: ConfigDict = yaml.safe_load(config)
     if parsed_config.get('cron'):
-        # TODO: custom exception
         # TODO: notify repository owner
         try:
             CronValidator.parse(parsed_config['cron'])
         except ValueError as err:
             msg = 'Cron expression: "{0}" has invalid format'.format(parsed_config['cron'])
-            raise ValueError(msg) from err
+            raise InvalidaCronError(msg) from err
     return parsed_config
 
 
@@ -288,7 +288,6 @@ def register_repo(repos: list[RegisteredRepoFromGithub], installation_id: int, g
 
 def read_config_from_repo(gh_repo: Repository):
     """Read config from repo and fill empty fields."""
-    # TODO invalid cron in .revive-bot.yaml case
     variants = ('.revive-bot.yaml', '.revive-bot.yml')
     repo_config = {}
     default_config = generate_default_config()
