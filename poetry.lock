@@ -2,17 +2,18 @@
 
 [[package]]
 name = "aio-pika"
-version = "9.4.3"
+version = "9.5.0"
 description = "Wrapper around the aiormq for asyncio and humans"
 optional = false
 python-versions = "<4.0,>=3.8"
 files = [
-    {file = "aio_pika-9.4.3-py3-none-any.whl", hash = "sha256:f1423d2d5a8b7315d144efe1773763bf687ac17aa1535385982687e9e5ed49bb"},
-    {file = "aio_pika-9.4.3.tar.gz", hash = "sha256:fd2b1fce25f6ed5203ef1dd554dc03b90c9a46a64aaf758d032d78dc31e5295d"},
+    {file = "aio_pika-9.5.0-py3-none-any.whl", hash = "sha256:7e03b80fab5a0d354dca45fb5ac95f074b87c639db34c6a1962cabe0fd95bd56"},
+    {file = "aio_pika-9.5.0.tar.gz", hash = "sha256:d45d49e6543bcdfd2fe4b1a0ee59d931c15a96e99497bc599cf0fddb94061925"},
 ]
 
 [package.dependencies]
 aiormq = ">=6.8.0,<6.9.0"
+exceptiongroup = ">=1,<2"
 yarl = "*"
 
 [[package]]
@@ -603,6 +604,20 @@ files = [
 ]
 
 [[package]]
+name = "exceptiongroup"
+version = "1.2.2"
+description = "Backport of PEP 654 (exception groups)"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "exceptiongroup-1.2.2-py3-none-any.whl", hash = "sha256:3111b9d131c238bec2f8f516e123e14ba243563fb135d3fe885990585aa7795b"},
+    {file = "exceptiongroup-1.2.2.tar.gz", hash = "sha256:47c2edf7c6738fafb49fd34290706d1a1a2f4d1c6df275526b62cbb4aa5393cc"},
+]
+
+[package.extras]
+test = ["pytest (>=6)"]
+
+[[package]]
 name = "fakeredis"
 version = "2.26.1"
 description = "Python implementation of redis API, can be used for testing purposes."
@@ -1188,6 +1203,8 @@ optional = false
 python-versions = "*"
 files = [
     {file = "jsonpath-ng-1.7.0.tar.gz", hash = "sha256:f6f5f7fd4e5ff79c785f1573b394043b39849fb2bb47bcead935d12b00beab3c"},
+    {file = "jsonpath_ng-1.7.0-py2-none-any.whl", hash = "sha256:898c93fc173f0c336784a3fa63d7434297544b7198124a68f9a3ef9597b0ae6e"},
+    {file = "jsonpath_ng-1.7.0-py3-none-any.whl", hash = "sha256:f3d7f9e848cba1b6da28c55b1c26ff915dc9e0b1ba7e752a53d6da8d5cbd00b6"},
 ]
 
 [package.dependencies]
@@ -3606,4 +3623,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "5fa62854c81c0d0e8947920dc263a826ea0baf257e0f52dcc5df9668365f8749"
+content-hash = "b6d69984dccf79931eee0731ffaef3200e4d7a7fed12062ff325ade84c080f7b"
