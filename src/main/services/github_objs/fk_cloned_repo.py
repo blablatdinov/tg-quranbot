@@ -20,24 +20,27 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""App custom errors."""
+"""Fk git repo."""
+
+import zipfile
+from pathlib import Path
+from typing import final, override
+
+import attrs
+
+from main.services.github_objs.cloned_repo import ClonedRepo
 
 
-class AppError(Exception):
-    """Root error for app."""
+@final
+@attrs.define(frozen=True)
+class FkClonedRepo(ClonedRepo):
+    """Fk git repo."""
 
+    _zipped_repo: Path
 
-class InvalidaCronError(AppError):
-    """Invalid cron error."""
-
-
-class ConfigFileNotFoundError(AppError):
-    """Config file not found error."""
-
-
-class UnexpectedGhFileContentError(AppError):
-    """Unexpected github file content error."""
-
-
-class InvalidConfigError(AppError):
-    """Invalid config error."""
+    @override
+    def clone_to(self, path: Path):
+        """Unzipping repo from archieve."""
+        with zipfile.ZipFile(self._zipped_repo, 'r') as zip_ref:
+            zip_ref.extractall(path)
+        return path

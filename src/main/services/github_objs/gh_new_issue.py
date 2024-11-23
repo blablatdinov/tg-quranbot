@@ -20,24 +20,24 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""App custom errors."""
+"""New issue in github."""
+
+from typing import final, override
+
+import attrs
+from github.Repository import Repository
+
+from main.services.github_objs.new_issue import NewIssue
 
 
-class AppError(Exception):
-    """Root error for app."""
+@final
+@attrs.define(frozen=True)
+class GhNewIssue(NewIssue):
+    """New issue in github."""
 
+    _repo: Repository
 
-class InvalidaCronError(AppError):
-    """Invalid cron error."""
-
-
-class ConfigFileNotFoundError(AppError):
-    """Config file not found error."""
-
-
-class UnexpectedGhFileContentError(AppError):
-    """Unexpected github file content error."""
-
-
-class InvalidConfigError(AppError):
-    """Invalid config error."""
+    @override
+    def create(self, title: str, content: str) -> None:
+        """Creating issue."""
+        self._repo.create_issue(title, content)

@@ -20,24 +20,30 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""App custom errors."""
+"""Revive config stored in postgres."""
+
+from typing import final, override
+
+import attrs
+
+from main.models import RepoConfig
+from main.services.revive_config.revive_config import ConfigDict, ReviveConfig
 
 
-class AppError(Exception):
-    """Root error for app."""
+@final
+@attrs.define(frozen=True)
+class PgUpdatedReviveConfig(ReviveConfig):
+    """Update config in DB."""
 
+    _repo_id: int
+    _actual: ReviveConfig
 
-class InvalidaCronError(AppError):
-    """Invalid cron error."""
-
-
-class ConfigFileNotFoundError(AppError):
-    """Config file not found error."""
-
-
-class UnexpectedGhFileContentError(AppError):
-    """Unexpected github file content error."""
-
-
-class InvalidConfigError(AppError):
-    """Invalid config error."""
+    @override
+    def parse(self) -> ConfigDict:
+        """Fetch and save in DB."""
+        cfg = RepoConfig.objects.get(repo_id=self._repo_id)
+        origin = self._actual.parse()
+        cfg.cron_expression = origin['cron']
+        cfg.files_glob = origin['glob']
+        cfg.save()
+        return origin

@@ -20,24 +20,13 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""App custom errors."""
+"""New issue."""
+
+from typing import Protocol
 
 
-class AppError(Exception):
-    """Root error for app."""
+class NewIssue(Protocol):
+    """New issue."""
 
-
-class InvalidaCronError(AppError):
-    """Invalid cron error."""
-
-
-class ConfigFileNotFoundError(AppError):
-    """Config file not found error."""
-
-
-class UnexpectedGhFileContentError(AppError):
-    """Unexpected github file content error."""
-
-
-class InvalidConfigError(AppError):
-    """Invalid config error."""
+    def create(self, title: str, content: str) -> None:
+        """Creating issue."""

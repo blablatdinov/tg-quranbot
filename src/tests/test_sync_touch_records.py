@@ -25,7 +25,7 @@ import datetime
 import pytest
 
 from main.models import TouchRecord
-from main.service import sync_touch_records
+from main.services.synchronize_touch_records import PgSynchronizeTouchRecords
 
 pytestmark = [pytest.mark.django_db]
 
@@ -47,7 +47,7 @@ def exist_touch_record(baker, gh_repo):
 
 def test(gh_repo, exist_touch_record, time_machine):
     time_machine.move_to('2024-07-04')
-    sync_touch_records(['a.py', 'b.py'], gh_repo.id)
+    PgSynchronizeTouchRecords().sync(['a.py', 'b.py'], gh_repo.id)
 
     assert list(TouchRecord.objects.values('path', 'date')) == [
         {'path': 'b.py', 'date': datetime.date(2024, 7, 4)},

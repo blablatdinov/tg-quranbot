@@ -90,6 +90,8 @@ jobs:
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: create .env file  # Need for django-stubs
+        run: cp .github/.env .env
       - name: Lint via ruff
         run: .venv/bin/ruff check src
       # - name: Lint via flake8

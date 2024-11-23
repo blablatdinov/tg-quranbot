@@ -20,24 +20,31 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""App custom errors."""
+"""Merged Config."""
+
+from collections.abc import Iterable
+from typing import final
+
+import attrs
+
+from main.services.revive_config.revive_config import ReviveConfig
 
 
-class AppError(Exception):
-    """Root error for app."""
+@final
+@attrs.define(frozen=True)
+class MergedConfig(ReviveConfig):
+    """Merged Config."""
 
+    _origins: Iterable[ReviveConfig]
 
-class InvalidaCronError(AppError):
-    """Invalid cron error."""
+    @classmethod
+    def ctor(cls, *origins):
+        """Ctor."""
+        return cls(origins)
 
-
-class ConfigFileNotFoundError(AppError):
-    """Config file not found error."""
-
-
-class UnexpectedGhFileContentError(AppError):
-    """Unexpected github file content error."""
-
-
-class InvalidConfigError(AppError):
-    """Invalid config error."""
+    def parse(self):
+        """Merge configs."""
+        result_config = {}
+        for config in self._origins:
+            result_config |= config.parse()
+        return result_config

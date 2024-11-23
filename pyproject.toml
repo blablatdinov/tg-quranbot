@@ -51,6 +51,8 @@ pytest-django = "4.9.0"
 time-machine = "2.16.0"
 model-bakery = "1.20.0"
 faker = "33.0.0"
+mypy = "1.13.0"
+django-stubs = {extras = ["compatible-mypy"], version = "5.1.1"}
 
 [build-system]
 requires = ["poetry-core"]
@@ -75,6 +77,7 @@ fixable = [
   "F401",   # Unused import
   "Q000",   # Quotes
   "COM812", # Trailing comma missing
+  "ALL", # Trailing comma missing
 ]
 ignore = [
   "ANN",
@@ -140,3 +143,10 @@ DJANGO_SETTINGS_MODULE = "config.settings"
 markers = [
   "integration: integration tests",
 ]
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+mypy_path = "src"
+
+[tool.django-stubs]
+django_settings_module = "config.settings"

@@ -20,24 +20,21 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""App custom errors."""
+"""Revive bot config."""
+
+from typing import Protocol, TypedDict
 
 
-class AppError(Exception):
-    """Root error for app."""
+class ConfigDict(TypedDict):
+    """Configuration structure."""
+
+    limit: int
+    cron: str
+    glob: str
 
 
-class InvalidaCronError(AppError):
-    """Invalid cron error."""
+class ReviveConfig(Protocol):
+    """Revive bot config."""
 
-
-class ConfigFileNotFoundError(AppError):
-    """Config file not found error."""
-
-
-class UnexpectedGhFileContentError(AppError):
-    """Unexpected github file content error."""
-
-
-class InvalidConfigError(AppError):
-    """Invalid config error."""
+    def parse(self) -> ConfigDict:
+        """Parsing."""

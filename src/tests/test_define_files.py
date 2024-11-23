@@ -28,6 +28,7 @@ from itertools import cycle
 from pathlib import Path
 
 import pytest
+from django.conf import settings
 from git import Repo
 
 from main.algorithms import (
@@ -158,7 +159,7 @@ def test_lines_count(repo_path):
 
 
 def test_code_coverage(repo_path):
-    got = code_coverage_rating(Path('tests/fixtures/coverage.xml').read_text(encoding='utf-8'))
+    got = code_coverage_rating((settings.BASE_DIR / 'tests/fixtures/coverage.xml').read_text(encoding='utf-8'))
 
     assert got == {'bar.py': 0.6667, 'foo.py': 0.5, 'test.py': 1}
 

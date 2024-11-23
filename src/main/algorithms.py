@@ -51,17 +51,20 @@ def files_sorted_by_last_changes(
 ):
     """Count days after last file changing."""
     repo = Repo(repo_path)
-    file_last_commit: dict[PathLike[str], datetime.datetime] = {}
+    file_last_commit: dict[PathLike[str], int] = {}
     now = datetime.datetime.now(tz=datetime.UTC)
     for file in files_for_check:
-        last_touch = next(repo.iter_commits(paths=file)).committed_datetime
+        try:
+            last_touch = next(repo.iter_commits(paths=file)).committed_datetime
+        except StopIteration:
+            continue
         file_last_commit[file] = (now - last_touch).days
     return file_last_commit
 
 
 def files_sorted_by_last_changes_from_db(
     repo_id: int,
-    real_points: dict[PathLike[str], int],
+    real_points: dict[Path, int],
     relative_to: PathLike,
 ):
     """Count days after last file changing."""
@@ -111,23 +114,23 @@ def lines_count(files_for_check: list[Path]):
 
 
 def merge_rating(
-    *file_point_maps: tuple[dict[PathLike[str], int]],
+    *file_point_maps: dict[PathLike[str], int],
 ):
     """Merge ratings.
 
     Function sum points for file from different ratings
     """
-    res = defaultdict(int)
+    res: dict[PathLike[str], int] = defaultdict(int)
     for file_points_map in file_point_maps:
         for file, points in file_points_map.items():
             res[file] += points
-    return dict(res)
+    return res
 
 
 def code_coverage_rating(coverage_xml: str):
     """Count coverage per file."""
     tree = etree.fromstring(coverage_xml, etree.XMLParser())  # noqa: S320 . TODO
     return {
-        file.xpath('./@name')[0]: float(file.xpath('./@line-rate')[0])
-        for file in tree.xpath('.//class')
+        file.xpath('./@name')[0]: float(file.xpath('./@line-rate')[0])  # type: ignore [union-attr,index,arg-type]
+        for file in tree.xpath('.//class')  # type: ignore [union-attr,index,arg-type]
     }

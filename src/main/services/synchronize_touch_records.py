@@ -20,24 +20,40 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""App custom errors."""
+"""Synchronize touch records."""
+
+import datetime
+from typing import Protocol, final, override
+
+import attrs
+
+from main.models import TouchRecord
 
 
-class AppError(Exception):
-    """Root error for app."""
+class SynchronizeTouchRecords(Protocol):
+    """Synchronize touch records."""
+
+    def sync(self, files: list[str], repo_id: int):
+        """Sync."""
 
 
-class InvalidaCronError(AppError):
-    """Invalid cron error."""
+@final
+@attrs.define(frozen=True)
+class PgSynchronizeTouchRecords(SynchronizeTouchRecords):
+    """Synchronize touch records."""
 
-
-class ConfigFileNotFoundError(AppError):
-    """Config file not found error."""
-
-
-class UnexpectedGhFileContentError(AppError):
-    """Unexpected github file content error."""
-
-
-class InvalidConfigError(AppError):
-    """Invalid config error."""
+    @override
+    def sync(self, files: list[str], repo_id: int) -> None:
+        """Synching touch records."""
+        exists_touch_records = TouchRecord.objects.filter(gh_repo_id=repo_id)
+        for tr in exists_touch_records:
+            if tr.path in files:
+                tr.date = datetime.datetime.now(tz=datetime.UTC).date()
+                tr.save()
+        for file in files:
+            if not TouchRecord.objects.filter(gh_repo_id=repo_id, path=file).exists():
+                TouchRecord.objects.create(
+                    gh_repo_id=repo_id,
+                    path=file,
+                    date=datetime.datetime.now(tz=datetime.UTC).date(),
+                )

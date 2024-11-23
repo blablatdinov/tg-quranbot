@@ -20,24 +20,32 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""App custom errors."""
+"""Generating default revive bot config."""
+
+import random
+from typing import final, override
+
+import attrs
+
+from main.services.revive_config.revive_config import ConfigDict, ReviveConfig
 
 
-class AppError(Exception):
-    """Root error for app."""
+@final
+@attrs.define(frozen=True)
+class DefaultReviveConfig(ReviveConfig):
+    """Generating default revive bot config."""
 
+    _rnd: random.Random
 
-class InvalidaCronError(AppError):
-    """Invalid cron error."""
-
-
-class ConfigFileNotFoundError(AppError):
-    """Config file not found error."""
-
-
-class UnexpectedGhFileContentError(AppError):
-    """Unexpected github file content error."""
-
-
-class InvalidConfigError(AppError):
-    """Invalid config error."""
+    @override
+    def parse(self) -> ConfigDict:
+        """Generating default config."""
+        return ConfigDict({
+            'limit': 10,
+            'cron': '{0} {1} {2} * *'.format(
+                self._rnd.randint(0, 61),  # noqa: S311 . Not secure issue
+                self._rnd.randint(0, 25),  # noqa: S311 . Not secure issue
+                self._rnd.randint(0, 29),  # noqa: S311 . Not secure issue
+            ),
+            'glob': '**/*',
+        })

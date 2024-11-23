@@ -20,39 +20,41 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import random
-from collections import namedtuple
-from typing import final
+"""Revive bot config from github."""
+
+from contextlib import suppress
+from typing import final, override
 
 import attrs
-import pytest
+from github.GithubException import UnknownObjectException
+from github.Repository import Repository
 
-from main.services.revive_config.default_revive_config import DefaultReviveConfig
-from main.services.revive_config.gh_revive_config import GhReviveConfig
-
-pytestmark = [pytest.mark.django_db]
+from main.exceptions import UnexpectedGhFileContentError
+from main.services.revive_config.revive_config import ConfigDict, ReviveConfig
+from main.services.revive_config.str_config import StrReviveConfig
 
 
 @final
 @attrs.define(frozen=True)
-class FkRepo:
+class GhReviveConfig(ReviveConfig):
+    """Revive bot config from github."""
 
-    _origin: str
+    _gh_repo: Repository
+    _default_config: ReviveConfig
 
-    def get_contents(self, filepath: str):
-        return namedtuple('Content', 'decoded_content')(  # noqa: PYI024. Too simple case for typing.NamedTuple
-            self._origin.encode('utf-8'),
-        )
-
-
-def test():
-    got = GhReviveConfig(
-        FkRepo(
-            '\n'.join([
-                'cron: 3 4 * * *',
-            ]),
-        ),
-        DefaultReviveConfig(random.Random(0)),  # noqa: S311. Not secure issue
-    ).parse()
-
-    assert got == {'cron': '3 4 * * *', 'glob': '**/*', 'limit': 10}
+    @override
+    def parse(self) -> ConfigDict:
+        """Read from github."""
+        variants = ('.revive-bot.yaml', '.revive-bot.yml')
+        config = self._default_config.parse()
+        for variant in variants:
+            with suppress(UnknownObjectException):
+                file = self._gh_repo.get_contents(variant)
+                if isinstance(file, list):
+                    raise UnexpectedGhFileContentError
+                config |= StrReviveConfig(
+                    file
+                    .decoded_content
+                    .decode('utf-8'),
+                ).parse()
+        return config

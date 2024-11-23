@@ -28,7 +28,7 @@ lint:
 	poetry run ruff check src --fix
 	# poetry run flake8 src
 	poetry run refurb src
-	# poetry run mypy src
+	poetry run mypy src
 
 test:
 	cd src && poetry run pytest -m 'not integration' --cov=. --cov-report=term-missing:skip-covered -vv

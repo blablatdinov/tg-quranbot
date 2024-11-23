@@ -25,7 +25,7 @@ from operator import attrgetter
 import pytest
 from django.core.management import call_command
 
-from main.service import pygithub_client
+from main.services.github_objs.github_client import pygithub_client
 
 pytestmark = [pytest.mark.django_db]
 
@@ -43,7 +43,16 @@ def gh_repo(baker):
             issue.edit(state='closed')
 
 
+@pytest.fixture
+def repo_config(baker, gh_repo):
+    return baker.make(
+        'main.RepoConfig',
+        repo=gh_repo,
+    )
+
+
 @pytest.mark.integration
+@pytest.mark.usefixtures('repo_config')
 def test(gh_repo):
     call_command('process_repos')
 

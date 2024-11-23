@@ -22,224 +22,81 @@
 
 """Service utils."""
 
-import datetime
-import random
 import tempfile
-import zipfile
-from contextlib import suppress
 from pathlib import Path
-from typing import Protocol, TypedDict, final
+from typing import TypedDict
 
-import attrs
-import jwt
-import requests
-import yaml
-from cron_validator import CronValidator
-from django.conf import settings
 from django.template import Context, Template
-from git import Repo
-from github import Auth, Github, Repository
-from github.GithubException import UnknownObjectException
 
 from main.algorithms import files_sorted_by_last_changes, files_sorted_by_last_changes_from_db
-from main.exceptions import InvalidaCronError
-from main.models import GhRepo, RepoConfig, TouchRecord
+from main.models import GhRepo
+from main.services.github_objs.cloned_repo import ClonedRepo
+from main.services.github_objs.github_client import pygithub_client
+from main.services.github_objs.new_issue import NewIssue
+from main.services.revive_config.disk_revive_config import DiskReviveConfig
+from main.services.revive_config.gh_revive_config import GhReviveConfig
+from main.services.revive_config.merged_config import MergedConfig
+from main.services.revive_config.pg_revive_config import PgReviveConfig
+from main.services.revive_config.pg_updated_revive_config import PgUpdatedReviveConfig
+from main.services.revive_config.revive_config import ConfigDict
+from main.services.synchronize_touch_records import PgSynchronizeTouchRecords
 
 
-class ConfigDict(TypedDict):
-    """Configuration structure."""
-
-    limit: int
-    cron: str
-    glob: str
-
-
-def pygithub_client(installation_id: int) -> Github:
-    """Pygithub client."""
-    auth = Auth.AppAuth(
-        874924,
-        Path(settings.BASE_DIR / 'revive-code-bot.private-key.pem').read_text(encoding='utf-8'),
-    )
-    return Github(auth=auth.get_installation_auth(installation_id))
-
-
-def read_config(config: str) -> ConfigDict:
-    """Read config from yaml files."""
-    parsed_config: ConfigDict = yaml.safe_load(config)
-    if parsed_config.get('cron'):
-        # TODO: notify repository owner
-        try:
-            CronValidator.parse(parsed_config['cron'])
-        except ValueError as err:
-            msg = 'Cron expression: "{0}" has invalid format'.format(parsed_config['cron'])
-            raise InvalidaCronError(msg) from err
-    return parsed_config
-
-
-def generate_default_config():
-    """Generating default config."""
-    return ConfigDict({
-        'limit': 10,
-        'cron': '{0} {1} {2} * *'.format(
-            random.randint(0, 61),  # noqa: S311 . Not secure issue
-            random.randint(0, 25),  # noqa: S311 . Not secure issue
-            random.randint(0, 29),  # noqa: S311 . Not secure issue
+def update_config(repo_full_name: str):
+    """Update config."""
+    repo = GhRepo.objects.get(full_name=repo_full_name)
+    pg_revive_config = PgReviveConfig(repo.id)
+    PgUpdatedReviveConfig(
+        repo.id,
+        MergedConfig.ctor(
+            pg_revive_config,
+            GhReviveConfig(
+                pygithub_client(repo.installation_id).get_repo(repo.full_name),
+                pg_revive_config,
+            ),
         ),
-        'glob': '**/*',
-    })
+    ).parse()
 
 
-def config_or_default(repo_path: Path) -> ConfigDict:
-    """Read or default config."""
-    config_file = list(repo_path.glob('.revive-bot.*'))
-    if config_file:
-        return read_config(next(iter(config_file)).read_text())
-    return generate_default_config()
+class _Repository(TypedDict):
+
+    default_branch: str
+    ref: str
 
 
-def sync_touch_records(files: list[str], repo_id: int) -> None:
-    """Synching touch records."""
-    exists_touch_records = TouchRecord.objects.filter(gh_repo_id=repo_id)
-    for tr in exists_touch_records:
-        if tr.path in files:
-            tr.date = datetime.datetime.now(tz=datetime.UTC).date()
-            tr.save()
-    for file in files:
-        if not TouchRecord.objects.filter(gh_repo_id=repo_id, path=file).exists():
-            TouchRecord.objects.create(
-                gh_repo_id=repo_id,
-                path=file,
-                date=datetime.datetime.now(tz=datetime.UTC).date(),
-            )
+class _RequestForCheckBranchDefault(TypedDict):
+
+    repository: _Repository
 
 
-class ClonedRepo(Protocol):
-    """Cloned git repository."""
-
-    def clone_to(self, path: Path) -> Path:
-        """Run cloning."""
-
-
-class NewIssue(Protocol):
-    """New issue."""
-
-    def create(self, title: str, content: str) -> None:
-        """Creating issue."""
-
-
-@final
-@attrs.define(frozen=True)
-class GhNewIssue(NewIssue):
-    """New issue in github."""
-
-    _repo: Repository
-
-    def create(self, title: str, content: str) -> None:
-        """Creating issue."""
-        self._repo.create_issue(title, content)
-
-
-@final
-class FkNewIssue(Protocol):
-    """Fk issue storage."""
-
-    issues: list
-
-    def __init__(self) -> None:
-        """Ctor."""
-        self.issues = []
-
-    def create(self, title: str, content: str) -> None:
-        """Creating issue."""
-        self.issues.append({
-            'title': title,
-            'content': content,
-        })
-
-
-@final
-@attrs.define(frozen=True)
-class FkClonedRepo(ClonedRepo):
-    """Fk git repo."""
-
-    _zipped_repo: Path
-
-    def clone_to(self, path: Path):
-        """Unzipping repo from archieve."""
-        with zipfile.ZipFile(self._zipped_repo, 'r') as zip_ref:
-            zip_ref.extractall(path)
-        return path
-
-
-@final
-@attrs.define(frozen=True)
-class GhClonedRepo(ClonedRepo):
-    """Git repo from github."""
-
-    _gh_repo: GhRepo
-
-    def clone_to(self, path: Path) -> Path:
-        """Cloning from github."""
-        gh = pygithub_client(self._gh_repo.installation_id)
-        repo = gh.get_repo(self._gh_repo.full_name)
-        gh.close()
-        now = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
-        signing_key = Path(settings.BASE_DIR / 'revive-code-bot.private-key.pem').read_bytes()
-        payload = {'iat': now, 'exp': now + 600, 'iss': 874924}
-        encoded_jwt = jwt.encode(payload, signing_key, algorithm='RS256')
-        response = requests.post(
-            'https://api.github.com/app/installations/{0}/access_tokens'.format(
-                self._gh_repo.installation_id,
-            ),
-            headers={
-                'Authorization': f'Bearer {encoded_jwt}',
-                'Accept': 'application/vnd.github+json',
-                'X-GitHub-Api-Version': '2022-11-28',
-            },
-            timeout=5,
-        )
-        token = response.json()['token']
-        Repo.clone_from(
-            repo.clone_url.replace(
-                'https://',
-                'https://x-access-token:{0}@'.format(token),
-            ),
-            path,
-        )
-        return path
+def is_default_branch(request_json: _RequestForCheckBranchDefault):
+    """Check repo branch is default."""
+    actual = 'refs/heads/{0}'.format(request_json['repository']['default_branch'])
+    default_branch = request_json['repository']['ref']
+    return actual == default_branch
 
 
 def process_repo(repo_id: int, cloned_repo: ClonedRepo, new_issue: NewIssue):
     """Processing repo."""
-    repo_config = RepoConfig.objects.get(repo_id=repo_id)
     with tempfile.TemporaryDirectory() as tmpdirname:
         repo_path = cloned_repo.clone_to(Path(tmpdirname))
-        files_for_search = [
-            x
-            for x in repo_path.glob(repo_config.files_glob or '**/*')
-            if '.git' not in str(x)
-        ]
-        config = config_or_default(repo_path)
+        config = PgUpdatedReviveConfig(
+            repo_id,
+            MergedConfig.ctor(
+                PgReviveConfig(repo_id),
+                DiskReviveConfig(repo_path),
+            ),
+        ).parse()
         got = files_sorted_by_last_changes_from_db(
             repo_id,
-            files_sorted_by_last_changes(repo_path, files_for_search),
+            files_sorted_by_last_changes(
+                repo_path,
+                _define_files_for_search(repo_path, config),
+            ),
             repo_path,
         )
-    stripped_file_list = sorted(
-        [
-            (
-                str(path).replace(
-                    '{0}/'.format(repo_path),
-                    '',
-                ),
-                points,
-            )
-            for path, points in got.items()
-        ],
-        key=lambda x: (x[1], str(x[0])),
-        reverse=True,
-    )[:config['limit']]
-    stripped_file_list = [file for file, _ in stripped_file_list]
+    stripped_file_list: list[tuple[str, int]] = _sorted_file_list(repo_path, got)[:config['limit']]
+    file_list: list[str] = [file for file, _ in stripped_file_list]
     new_issue.create(
         'Issue from revive-code-bot',
         Template('\n'.join([
@@ -249,55 +106,35 @@ def process_repo(repo_id: int, cloned_repo: ClonedRepo, new_issue: NewIssue):
             '2. Clean files must be marked in checklist',
             '3. Close issue',
         ])).render(Context({
-            'files': stripped_file_list,
+            'files': file_list,
         })),
     )
-    sync_touch_records(
-        stripped_file_list,
+    PgSynchronizeTouchRecords().sync(
+        file_list,
         repo_id,
     )
 
 
-@final
-class RegisteredRepoFromGithub(TypedDict):
-    """Github webhook needed fields."""
-
-    full_name: str
-
-
-def register_repo(repos: list[RegisteredRepoFromGithub], installation_id: int, gh: Github):
-    """Registering new repositories."""
-    for repo in repos:
-        repo_db_record = GhRepo.objects.create(
-            full_name=repo['full_name'],
-            installation_id=installation_id,
-            has_webhook=False,
-        )
-        gh_repo = gh.get_repo(repo['full_name'])
-        # TODO: query may be failed, because already created
-        gh_repo.create_hook(
-            'web',
-            {
-                'url': 'https://www.rehttp.net/p/https%3A%2F%2Frevive-code-bot.ilaletdinov.ru%2Fhook%2Fgithub',
-                'content_type': 'json',
-            },
-            ['issues', 'issue_comment', 'push'],
-        )
-        config = read_config_from_repo(gh_repo)
-        RepoConfig.objects.create(repo=repo_db_record, cron_expression=config['cron'])
+def _define_files_for_search(repo_path: Path, config: ConfigDict) -> list[Path]:
+    return [
+        x
+        for x in repo_path.glob(config['glob'] or '**/*')
+        if '.git' not in str(x)  # TODO .github/workflows dir case
+    ]
 
 
-def read_config_from_repo(gh_repo: Repository):
-    """Read config from repo and fill empty fields."""
-    variants = ('.revive-bot.yaml', '.revive-bot.yml')
-    repo_config = {}
-    default_config = generate_default_config()
-    for variant in variants:
-        with suppress(UnknownObjectException):
-            repo_config = read_config(
-                gh_repo
-                .get_contents(variant)
-                .decoded_content
-                .decode('utf-8'),
+def _sorted_file_list(repo_path: Path, file_list: dict[Path, int]):
+    return sorted(
+        [
+            (
+                str(path).replace(
+                    '{0}/'.format(repo_path),
+                    '',
+                ),
+                points,
             )
-    return default_config | repo_config
+            for path, points in file_list.items()
+        ],
+        key=lambda x: (x[1], str(x[0])),
+        reverse=True,
+    )

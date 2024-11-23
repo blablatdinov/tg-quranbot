@@ -20,24 +20,27 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""App custom errors."""
+from main.services.revive_config.fk_revive_config import FkReviveConfig
+from main.services.revive_config.merged_config import MergedConfig
+from main.services.revive_config.revive_config import ConfigDict
 
 
-class AppError(Exception):
-    """Root error for app."""
+def test():
+    got = MergedConfig.ctor(
+        FkReviveConfig(ConfigDict({
+            'cron': '* * * * *',
+            'limit': 20,
+            'glob': '**/*.js',
+        })),
+        FkReviveConfig(ConfigDict({
+            'cron': '* * * * *',
+            'limit': 20,
+            'glob': '**/*.py',
+        })),
+    ).parse()
 
-
-class InvalidaCronError(AppError):
-    """Invalid cron error."""
-
-
-class ConfigFileNotFoundError(AppError):
-    """Config file not found error."""
-
-
-class UnexpectedGhFileContentError(AppError):
-    """Unexpected github file content error."""
-
-
-class InvalidConfigError(AppError):
-    """Invalid config error."""
+    assert got == {
+        'cron': '* * * * *',
+        'glob': '**/*.py',
+        'limit': 20,
+    }

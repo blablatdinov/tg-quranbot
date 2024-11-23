@@ -25,13 +25,13 @@ import re
 import pytest
 
 from main.exceptions import InvalidaCronError
-from main.service import read_config
+from main.services.revive_config.str_config import StrReviveConfig
 
 
 def test():
-    got = read_config('\n'.join([
+    got = StrReviveConfig('\n'.join([
         'limit: 10',
-    ]))
+    ])).parse()
 
     assert got == {'limit': 10}
 
@@ -42,6 +42,6 @@ def test_invalid_cron():
         InvalidaCronError,
         match=re.escape('Cron expression: "{0}" has invalid format'.format(cron_expr)),
     ):
-        read_config('\n'.join([
+        StrReviveConfig('\n'.join([
             "cron: '{0}'".format(cron_expr),
-        ]))
+        ])).parse()

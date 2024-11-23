@@ -20,24 +20,37 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""App custom errors."""
+"""Fk issue storage."""
+
+from typing import TypedDict, final, override
+
+import attrs
+
+from main.services.github_objs.new_issue import NewIssue
 
 
-class AppError(Exception):
-    """Root error for app."""
+class _IssueDict(TypedDict):
+
+    title: str
+    content: str
 
 
-class InvalidaCronError(AppError):
-    """Invalid cron error."""
+@final
+@attrs.define
+class FkNewIssue(NewIssue):
+    """Fk issue storage."""
 
+    issues: list[_IssueDict]
 
-class ConfigFileNotFoundError(AppError):
-    """Config file not found error."""
+    @classmethod
+    def ctor(cls) -> NewIssue:
+        """Ctor."""
+        return cls([])
 
-
-class UnexpectedGhFileContentError(AppError):
-    """Unexpected github file content error."""
-
-
-class InvalidConfigError(AppError):
-    """Invalid config error."""
+    @override
+    def create(self, title: str, content: str) -> None:
+        """Creating issue."""
+        self.issues.append({
+            'title': title,
+            'content': content,
+        })

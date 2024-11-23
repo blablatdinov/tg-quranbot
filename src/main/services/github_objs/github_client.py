@@ -20,24 +20,18 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""App custom errors."""
+"""Creating github client."""
+
+from pathlib import Path
+
+from django.conf import settings
+from github import Auth, Github
 
 
-class AppError(Exception):
-    """Root error for app."""
-
-
-class InvalidaCronError(AppError):
-    """Invalid cron error."""
-
-
-class ConfigFileNotFoundError(AppError):
-    """Config file not found error."""
-
-
-class UnexpectedGhFileContentError(AppError):
-    """Unexpected github file content error."""
-
-
-class InvalidConfigError(AppError):
-    """Invalid config error."""
+def pygithub_client(installation_id: int) -> Github:
+    """Pygithub client."""
+    auth = Auth.AppAuth(
+        874924,
+        Path(settings.BASE_DIR / 'revive-code-bot.private-key.pem').read_text(encoding='utf-8'),
+    )
+    return Github(auth=auth.get_installation_auth(installation_id))

@@ -20,24 +20,41 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""App custom errors."""
+from collections import namedtuple
+from typing import final
+
+import attrs
+import pytest
+
+from main.services.github_objs.gh_repo_installation import GhRepoInstallation
+
+pytestmark = [pytest.mark.django_db]
 
 
-class AppError(Exception):
-    """Root error for app."""
+@final
+@attrs.define(frozen=True)
+class FkGh:
+
+    def get_repo(self, full_name):
+        return FkRepo()
 
 
-class InvalidaCronError(AppError):
-    """Invalid cron error."""
+@final
+@attrs.define(frozen=True)
+class FkRepo:
+
+    def create_hook(self, name, config, events):
+        pass
+
+    def get_contents(self, name):
+        return namedtuple('Content', 'decoded_content')(  # noqa: PYI024. Simple structure for test
+            b'limit: 5',
+        )
 
 
-class ConfigFileNotFoundError(AppError):
-    """Config file not found error."""
-
-
-class UnexpectedGhFileContentError(AppError):
-    """Unexpected github file content error."""
-
-
-class InvalidConfigError(AppError):
-    """Invalid config error."""
+def test():
+    GhRepoInstallation(
+        [{'full_name': 'owner_name/repo_name'}],
+        1,
+        FkGh(),
+    ).register()

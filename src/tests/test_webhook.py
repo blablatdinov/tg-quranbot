@@ -28,7 +28,7 @@ import pytest
 from django.conf import settings
 
 from main.models import GhRepo
-from main.service import pygithub_client
+from main.services.github_objs.github_client import pygithub_client
 
 pytestmark = [pytest.mark.django_db]
 
@@ -57,7 +57,7 @@ def test_add_installation(client):
             'Content-Type': 'application/json',
             'User-Agent': 'GitHub-Hookshot/9729b30',
             'X-GitHub-Delivery': '18faf6d0-3662-11ef-9e2b-0e81d1f2cc20',
-            'X-GitHub-Event': 'installation_repositories',
+            'X-GitHub-Event': 'installation_repositories',  # TODO: make test for other events
             'X-GitHub-Hook-ID': '487229453',
             'X-GitHub-Hook-Installation-Target-ID': '874924',
             'X-GitHub-Hook-Installation-Target-Type': 'integration',
