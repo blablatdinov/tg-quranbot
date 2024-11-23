@@ -20,19 +20,24 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+from types import ModuleType
+
 import pytest
 from django.conf import settings
+from django.test.client import Client
+
+from main.models import GhRepo
 
 pytestmark = [pytest.mark.django_db]
 
 
 @pytest.fixture
-def repo(baker):
-    return baker.make('main.GhRepo')
+def repo(baker: ModuleType) -> GhRepo:
+    return baker.make('main.GhRepo')  # type: ignore [no-any-return]
 
 
 @pytest.mark.integration
-def test(anon, repo):
+def test(anon: Client, repo: GhRepo) -> None:
     response = anon.post(
         '/process-repo/{0}'.format(repo.id),
         headers={

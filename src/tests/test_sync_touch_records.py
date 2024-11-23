@@ -21,23 +21,25 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
+from types import ModuleType
 
 import pytest
+from time_machine import TimeMachineFixture
 
-from main.models import TouchRecord
+from main.models import GhRepo, TouchRecord
 from main.services.synchronize_touch_records import PgSynchronizeTouchRecords
 
 pytestmark = [pytest.mark.django_db]
 
 
 @pytest.fixture
-def gh_repo(baker):
-    return baker.make('main.GhRepo')
+def gh_repo(baker: ModuleType) -> GhRepo:
+    return baker.make('main.GhRepo')  # type: ignore [no-any-return]
 
 
 @pytest.fixture
-def exist_touch_record(baker, gh_repo):
-    return baker.make(
+def exist_touch_record(baker: ModuleType, gh_repo: GhRepo) -> TouchRecord:
+    return baker.make(  # type: ignore [no-any-return]
         'main.TouchRecord',
         path='b.py',
         gh_repo=gh_repo,
@@ -45,7 +47,8 @@ def exist_touch_record(baker, gh_repo):
     )
 
 
-def test(gh_repo, exist_touch_record, time_machine):
+@pytest.mark.usefixtures('exist_touch_record')
+def test(gh_repo: GhRepo, time_machine: TimeMachineFixture) -> None:
     time_machine.move_to('2024-07-04')
     PgSynchronizeTouchRecords().sync(['a.py', 'b.py'], gh_repo.id)
 

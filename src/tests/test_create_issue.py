@@ -23,11 +23,12 @@
 """Test create issue."""
 
 import datetime
+from types import ModuleType
 
 import pytest
 from django.conf import settings
 
-from main.models import TouchRecord
+from main.models import GhRepo, TouchRecord
 from main.service import process_repo
 from main.services.github_objs.fk_cloned_repo import FkClonedRepo
 from main.services.github_objs.fk_new_issue import FkNewIssue
@@ -36,18 +37,18 @@ pytestmark = [pytest.mark.django_db]
 
 
 @pytest.fixture
-def gh_repo(baker):
+def gh_repo(baker: ModuleType) -> GhRepo:
     repo = baker.make(
         'main.GhRepo',
         full_name='blablatdinov/iman-game-bot',
         installation_id=52326552,
     )
     baker.make('main.RepoConfig', repo=repo, files_glob='**/*')
-    return repo
+    return repo  # type: ignore [no-any-return]
 
 
 @pytest.fixture
-def _exist_touch_records(baker, gh_repo):
+def _exist_touch_records(baker: ModuleType, gh_repo: GhRepo) -> None:
     files = [
         'manage.py',
         'game/views.py',
@@ -64,7 +65,7 @@ def _exist_touch_records(baker, gh_repo):
 
 
 @pytest.mark.integration
-def test(gh_repo, time_machine):
+def test(gh_repo: GhRepo) -> None:
     new_issue = FkNewIssue.ctor()
     process_repo(
         gh_repo.id,
@@ -101,8 +102,8 @@ def test(gh_repo, time_machine):
 
 @pytest.mark.integration
 @pytest.mark.usefixtures('_exist_touch_records')
-def test_double_process(gh_repo):
-    new_issue = FkNewIssue()
+def test_double_process(gh_repo: GhRepo) -> None:
+    new_issue = FkNewIssue.ctor()
     process_repo(
         gh_repo.id,
         FkClonedRepo(settings.BASE_DIR / 'tests/fixtures/iman-game-bot.zip'),

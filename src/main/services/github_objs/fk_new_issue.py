@@ -22,7 +22,7 @@
 
 """Fk issue storage."""
 
-from typing import TypedDict, final, override
+from typing import Self, TypedDict, final, override
 
 import attrs
 
@@ -43,7 +43,7 @@ class FkNewIssue(NewIssue):
     issues: list[_IssueDict]
 
     @classmethod
-    def ctor(cls) -> NewIssue:
+    def ctor(cls) -> Self:
         """Ctor."""
         return cls([])
 

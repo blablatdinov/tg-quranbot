@@ -22,7 +22,7 @@
 
 """Generating default revive bot config."""
 
-from typing import final, override, Protocol
+from typing import Protocol, final, override
 
 import attrs
 

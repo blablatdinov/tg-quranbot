@@ -26,6 +26,7 @@ from pathlib import Path
 
 import pytest
 from django.conf import settings
+from django.test.client import Client
 
 from main.models import GhRepo
 from main.services.github_objs.github_client import pygithub_client
@@ -34,7 +35,7 @@ pytestmark = [pytest.mark.django_db]
 
 
 @pytest.fixture
-def _remove_exist_webhook():
+def _remove_exist_webhook() -> None:
     gh = pygithub_client(52326552)
     gh_repo = gh.get_repo('blablatdinov/ramadan2020marathon_bot')
     hook = next(iter(
@@ -47,7 +48,7 @@ def _remove_exist_webhook():
 
 @pytest.mark.usefixtures('_remove_exist_webhook')
 @pytest.mark.integration
-def test_add_installation(client):
+def test_add_installation(client: Client) -> None:
     response = client.post(
         '/hook/github',
         Path(settings.BASE_DIR / 'tests/fixtures/installation_added.json').read_text(encoding='utf-8'),

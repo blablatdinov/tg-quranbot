@@ -99,4 +99,4 @@ jobs:
       - name: Lint via refurb
         run: .venv/bin/refurb src
       - name: Check types with mypy
-        run: .venv/bin/mypy src
+        run: .venv/bin/mypy src --strict

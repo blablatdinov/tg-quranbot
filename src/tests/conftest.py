@@ -22,16 +22,18 @@
 
 """Fixtures for tests."""
 
+from types import ModuleType
+
 import pytest
 from django.test import Client
 
 
 @pytest.fixture
-def anon():
+def anon() -> Client:
     return Client()
 
 
 @pytest.fixture
-def baker():
+def baker() -> ModuleType:
     from model_bakery import baker as _baker  # noqa: PLC0415. Conflict with fixture name
     return _baker

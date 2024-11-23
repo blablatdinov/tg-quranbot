@@ -25,7 +25,7 @@ from main.services.revive_config.merged_config import MergedConfig
 from main.services.revive_config.revive_config import ConfigDict
 
 
-def test():
+def test() -> None:
     got = MergedConfig.ctor(
         FkReviveConfig(ConfigDict({
             'cron': '* * * * *',

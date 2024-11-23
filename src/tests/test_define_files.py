@@ -24,12 +24,16 @@
 
 import datetime
 import tempfile
+from collections.abc import Generator
 from itertools import cycle
 from pathlib import Path
+from types import ModuleType
 
 import pytest
 from django.conf import settings
+from faker import Faker
 from git import Repo
+from time_machine import TimeMachineFixture
 
 from main.algorithms import (
     apply_coefficient,
@@ -41,22 +45,28 @@ from main.algorithms import (
     lines_count,
     merge_rating,
 )
+from main.models import GhRepo, TouchRecord
 
 pytestmark = [pytest.mark.django_db]
 
 
 @pytest.fixture
-def gh_repo(baker):
-    return baker.make('main.GhRepo')
+def gh_repo(baker: ModuleType) -> GhRepo:
+    return baker.make('main.GhRepo')  # type: ignore [no-any-return]
 
 
 @pytest.fixture
-def touch_records(baker, gh_repo):
-    return baker.make('main.TouchRecord', path='src/main.py', gh_repo=gh_repo, date=datetime.date(2024, 7, 1))
+def touch_records(baker: ModuleType, gh_repo: GhRepo) -> TouchRecord:
+    return baker.make(  # type: ignore [no-any-return]
+        'main.TouchRecord',
+        path='src/main.py',
+        gh_repo=gh_repo,
+        date=datetime.date(2024, 7, 1),
+    )
 
 
 @pytest.fixture
-def repo_path(faker, time_machine):
+def repo_path(faker: Faker, time_machine: TimeMachineFixture) -> Generator[Path, None, None]:
     """Path to temorary git repo."""
     temp_dir = tempfile.TemporaryDirectory()
     temp_dir_path = Path(temp_dir.name)
@@ -105,60 +115,77 @@ def repo_path(faker, time_machine):
     temp_dir.cleanup()
 
 
-def test_files_change_count(repo_path):
+def test_files_change_count(repo_path: Path) -> None:
     got = {
-        str(file).replace(str(repo_path), '')[1:]: rating
+        Path(str(file).replace(str(repo_path), '')[1:]): rating
         for file, rating in files_changes_count(repo_path, list(repo_path.glob('**/*.py'))).items()
     }
 
     assert got == {
-        'dir1/file_in_dir.py': 1,
-        'first.py': 28,
-        'third.py': 0,
+        Path('dir1/file_in_dir.py'): 1,
+        Path('first.py'): 28,
+        Path('third.py'): 0,
     }
 
 
-def test_last_changes(repo_path, time_machine):
+def test_last_changes(repo_path: Path, time_machine: TimeMachineFixture) -> None:
     time_machine.move_to('2024-06-02')
     got = {
-        str(file).replace(str(repo_path), '')[1:]: rating
+        Path(str(file).replace(str(repo_path), '')[1:]): rating
         for file, rating in files_sorted_by_last_changes(repo_path, list(repo_path.glob('**/*.py'))).items()
     }
 
-    assert got == {'dir1/file_in_dir.py': 28, 'first.py': 26, 'third.py': 43}
+    assert got == {
+        Path('dir1/file_in_dir.py'): 28,
+        Path('first.py'): 26,
+        Path('third.py'): 43,
+    }
 
 
-def test_file_editors_count(repo_path):
+def test_file_editors_count(repo_path: Path) -> None:
     got = {
-        str(file).replace(str(repo_path), '')[1:]: rating
+        Path(str(file).replace(str(repo_path), '')[1:]): rating
         for file, rating in file_editors_count(repo_path, list(repo_path.glob('**/*.py'))).items()
     }
 
-    assert got == {'dir1/file_in_dir.py': 1, 'first.py': 2, 'third.py': 1}
+    assert got == {
+        Path('dir1/file_in_dir.py'): 1,
+        Path('first.py'): 2,
+        Path('third.py'): 1,
+    }
 
 
-def test_merge_real_ratings(repo_path):
+def test_merge_real_ratings(repo_path: Path) -> None:
     got = {
-        str(file).replace(str(repo_path), '')[1:]: rating
+        Path(str(file).replace(str(repo_path), '')[1:]): rating
         for file, rating in merge_rating(
             files_sorted_by_last_changes(repo_path, list(repo_path.glob('**/*.py'))),
             files_changes_count(repo_path, list(repo_path.glob('**/*.py'))),
         ).items()
     }
 
-    assert got == {'dir1/file_in_dir.py': 3, 'first.py': 28, 'third.py': 17}
+    assert got == {
+        Path('dir1/file_in_dir.py'): 3,
+        Path('first.py'): 28,
+        Path('third.py'): 17,
+    }
 
 
-def test_lines_count(repo_path):
+def test_lines_count(repo_path: Path) -> None:
     got = {
-        str(file).replace(str(repo_path), '')[1:]: rating
+        Path(str(file).replace(str(repo_path), '')[1:]): rating
         for file, rating in lines_count(list(repo_path.glob('**/*.py'))).items()
     }
 
-    assert got == {'dir1/file_in_dir.py': 0, 'first.py': 9, 'third.py': 0}
+    assert got == {
+        Path('dir1/file_in_dir.py'): 0,
+        Path('first.py'): 9,
+        Path('third.py'): 0,
+    }
 
 
-def test_code_coverage(repo_path):
+@pytest.mark.usefixtures('repo_path')
+def test_code_coverage() -> None:
     got = code_coverage_rating((settings.BASE_DIR / 'tests/fixtures/coverage.xml').read_text(encoding='utf-8'))
 
     assert got == {
@@ -168,26 +195,27 @@ def test_code_coverage(repo_path):
     }
 
 
-def test_merge_rating():
+def test_merge_rating() -> None:
     got = merge_rating(
-        {'first.py': 4},
-        {'first.py': 6},
-        {'first.py': 7, 'second.py': 2},
+        {Path('first.py'): 4},
+        {Path('first.py'): 6},
+        {Path('first.py'): 7, Path('second.py'): 2},
     )
 
-    assert got == {'first.py': 17, 'second.py': 2}
+    assert got == {Path('first.py'): 17, Path('second.py'): 2}
 
 
-def test_apply_coefficient():
+def test_apply_coefficient() -> None:
     got = apply_coefficient(
-        {'first.py': 5},
+        {Path('first.py'): 5},
         0.5,
     )
 
     assert got == {Path('first.py'): 2}
 
 
-def test_files_sorted_by_last_changes_from_db(gh_repo, touch_records, time_machine):
+@pytest.mark.usefixtures('touch_records')
+def test_files_sorted_by_last_changes_from_db(gh_repo: GhRepo, time_machine: TimeMachineFixture) -> None:
     time_machine.move_to('2024-07-01')
     got = files_sorted_by_last_changes_from_db(
         gh_repo.id,

@@ -20,18 +20,21 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+from collections.abc import Generator
 from operator import attrgetter
+from types import ModuleType
 
 import pytest
 from django.core.management import call_command
 
+from main.models import GhRepo, RepoConfig
 from main.services.github_objs.github_client import pygithub_client
 
 pytestmark = [pytest.mark.django_db]
 
 
 @pytest.fixture
-def gh_repo(baker):
+def gh_repo(baker: ModuleType) -> Generator[GhRepo, None, None]:
     yield baker.make(
         'main.GhRepo',
         full_name='blablatdinov/iman-game-bot',
@@ -44,8 +47,8 @@ def gh_repo(baker):
 
 
 @pytest.fixture
-def repo_config(baker, gh_repo):
-    return baker.make(
+def repo_config(baker: ModuleType, gh_repo: GhRepo) -> RepoConfig:
+    return baker.make(  # type: ignore [no-any-return]
         'main.RepoConfig',
         repo=gh_repo,
     )
@@ -53,7 +56,7 @@ def repo_config(baker, gh_repo):
 
 @pytest.mark.integration
 @pytest.mark.usefixtures('repo_config')
-def test(gh_repo):
+def test(gh_repo: GhRepo) -> None:
     call_command('process_repos')
 
     assert next(iter(sorted(

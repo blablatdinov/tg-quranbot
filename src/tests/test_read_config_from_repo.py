@@ -21,8 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import random
-from collections import namedtuple
-from typing import final
+from typing import Self, final
 
 import attrs
 import pytest
@@ -35,19 +34,29 @@ pytestmark = [pytest.mark.django_db]
 
 @final
 @attrs.define(frozen=True)
+class FkContent:
+
+    decoded_content: bytes
+
+    @classmethod
+    def str_ctor(cls, str_input: str) -> Self:
+        return cls(str_input.encode('utf-8'))
+
+
+@final
+@attrs.define(frozen=True)
 class FkRepo:
 
     _origin: str
 
-    def get_contents(self, filepath: str):
-        return namedtuple('Content', 'decoded_content')(  # noqa: PYI024. Too simple case for typing.NamedTuple
-            self._origin.encode('utf-8'),
-        )
+    def get_contents(self, filepath: str) -> FkContent:
+        return FkContent.str_ctor(self._origin)
 
 
-def test():
+def test() -> None:
     got = GhReviveConfig(
-        FkRepo(
+        # Too hard create Protocol for github.Repository.Repository
+        FkRepo(  # type: ignore [arg-type]
             '\n'.join([
                 'cron: 3 4 * * *',
             ]),
