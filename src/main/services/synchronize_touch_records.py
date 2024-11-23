@@ -33,7 +33,7 @@ from main.models import TouchRecord
 class SynchronizeTouchRecords(Protocol):
     """Synchronize touch records."""
 
-    def sync(self, files: list[str], repo_id: int):
+    def sync(self, files: list[str], repo_id: int) -> None:
         """Sync."""
 
 

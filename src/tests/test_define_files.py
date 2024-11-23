@@ -161,7 +161,11 @@ def test_lines_count(repo_path):
 def test_code_coverage(repo_path):
     got = code_coverage_rating((settings.BASE_DIR / 'tests/fixtures/coverage.xml').read_text(encoding='utf-8'))
 
-    assert got == {'bar.py': 0.6667, 'foo.py': 0.5, 'test.py': 1}
+    assert got == {
+        Path('bar.py'): 66,
+        Path('foo.py'): 50,
+        Path('test.py'): 100,
+    }
 
 
 def test_merge_rating():
@@ -180,7 +184,7 @@ def test_apply_coefficient():
         0.5,
     )
 
-    assert got == {'first.py': 2.5}
+    assert got == {Path('first.py'): 2}
 
 
 def test_files_sorted_by_last_changes_from_db(gh_repo, touch_records, time_machine):

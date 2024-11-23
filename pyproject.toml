@@ -43,7 +43,7 @@ cron-validator = "1.0.8"
 [tool.poetry.group.dev.dependencies]
 pytest = "8.3.3"
 isort = "5.13.2"
-ruff = "0.7.3"
+ruff = "0.8.0"
 wemake-python-styleguide = "0.19.2"
 refurb = "2.0.0"
 pytest-cov = "6.0.0"
@@ -77,13 +77,8 @@ fixable = [
   "F401",   # Unused import
   "Q000",   # Quotes
   "COM812", # Trailing comma missing
-  "ALL", # Trailing comma missing
 ]
 ignore = [
-  "ANN",
-  # --------------------
-  "ANN101",  # Missing type annotation for `self` in method
-  "ANN102",  # Missing type annotation for `cls` in classmethod
   "ARG001",  # Unused function argument
   "ARG002",  # Unused method argument
   "D106",    # Missing docstring in public nested class

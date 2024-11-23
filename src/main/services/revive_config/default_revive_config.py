@@ -22,12 +22,18 @@
 
 """Generating default revive bot config."""
 
-import random
-from typing import final, override
+from typing import final, override, Protocol
 
 import attrs
 
 from main.services.revive_config.revive_config import ConfigDict, ReviveConfig
+
+
+class HasRandint(Protocol):
+    """Object has randint callable."""
+
+    def randint(self, start: int, end: int) -> int:
+        """Randint callable."""
 
 
 @final
@@ -35,7 +41,7 @@ from main.services.revive_config.revive_config import ConfigDict, ReviveConfig
 class DefaultReviveConfig(ReviveConfig):
     """Generating default revive bot config."""
 
-    _rnd: random.Random
+    _rnd: HasRandint
 
     @override
     def parse(self) -> ConfigDict:

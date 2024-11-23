@@ -22,6 +22,8 @@
 
 """Manual process repo."""
 
+from typing import Any
+
 from django.core.management.base import BaseCommand
 
 from main.models import GhRepo
@@ -36,7 +38,9 @@ class Command(BaseCommand):
 
     help = ''
 
-    def handle(self, *args, **options):
+    # "Any" annotation taken from
+    # https://github.com/typeddjango/django-stubs/blob/c7df64/django-stubs/core/management/commands/check.pyi#L6
+    def handle(self, *args: list[str], **options: Any) -> None:  # noqa: ANN401
         """Entrypoint."""
         for repo in GhRepo.objects.all():
             process_repo(

@@ -42,7 +42,7 @@ from main.services.revive_config.revive_config import ConfigDict
 from main.services.synchronize_touch_records import PgSynchronizeTouchRecords
 
 
-def update_config(repo_full_name: str):
+def update_config(repo_full_name: str) -> None:
     """Update config."""
     repo = GhRepo.objects.get(full_name=repo_full_name)
     pg_revive_config = PgReviveConfig(repo.id)
@@ -69,14 +69,14 @@ class _RequestForCheckBranchDefault(TypedDict):
     repository: _Repository
 
 
-def is_default_branch(request_json: _RequestForCheckBranchDefault):
+def is_default_branch(request_json: _RequestForCheckBranchDefault) -> bool:
     """Check repo branch is default."""
     actual = 'refs/heads/{0}'.format(request_json['repository']['default_branch'])
     default_branch = request_json['repository']['ref']
     return actual == default_branch
 
 
-def process_repo(repo_id: int, cloned_repo: ClonedRepo, new_issue: NewIssue):
+def process_repo(repo_id: int, cloned_repo: ClonedRepo, new_issue: NewIssue) -> None:
     """Processing repo."""
     with tempfile.TemporaryDirectory() as tmpdirname:
         repo_path = cloned_repo.clone_to(Path(tmpdirname))
@@ -123,7 +123,7 @@ def _define_files_for_search(repo_path: Path, config: ConfigDict) -> list[Path]:
     ]
 
 
-def _sorted_file_list(repo_path: Path, file_list: dict[Path, int]):
+def _sorted_file_list(repo_path: Path, file_list: dict[Path, int]) -> list[tuple[str, int]]:
     return sorted(
         [
             (

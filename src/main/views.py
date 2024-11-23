@@ -39,7 +39,7 @@ from main.services.github_objs.gh_repo_installation import GhRepoInstallation
 from main.services.github_objs.github_client import pygithub_client
 
 
-def healthcheck(request):
+def healthcheck(request: HttpRequest) -> JsonResponse:
     """Endpoint for checking app."""
     return JsonResponse({
         'app': 'ok',
@@ -47,7 +47,7 @@ def healthcheck(request):
 
 
 @csrf_exempt
-def gh_webhook(request: HttpRequest):
+def gh_webhook(request: HttpRequest) -> HttpResponse:
     """Process webhooks from github."""
     with transaction.atomic():
         gh_event = request.headers.get('X-GitHub-Event')
@@ -75,7 +75,7 @@ def gh_webhook(request: HttpRequest):
 
 
 @csrf_exempt
-def process_repo_view(request, repo_id: int):
+def process_repo_view(request: HttpRequest, repo_id: int) -> HttpResponse:
     """Webhook for process repo."""
     if request.headers['Authentication'] != 'Basic {0}'.format(settings.BASIC_AUTH_TOKEN):
         raise PermissionDenied
@@ -88,7 +88,7 @@ def process_repo_view(request, repo_id: int):
     return HttpResponse()
 
 
-def connected_repos(request):
+def connected_repos(request: HttpRequest) -> JsonResponse:
     """Endpoint for README badge.
 
     https://img.shields.io/badges/endpoint-badge
@@ -101,6 +101,6 @@ def connected_repos(request):
     })
 
 
-def index(request):
+def index(request: HttpRequest) -> HttpResponse:
     """Show index page."""
     return render(request, 'index.html')

@@ -23,7 +23,7 @@
 """Github repository installation."""
 
 import random
-from typing import final, override
+from typing import final, override, Protocol
 
 import attrs
 from github import Github
@@ -34,9 +34,16 @@ from main.services.revive_config.gh_revive_config import GhReviveConfig
 from main.services.revive_config.merged_config import MergedConfig
 
 
+class RepoInstallation(Protocol):
+    """Repository installation."""
+
+    def register(self) -> None:
+        """Registering new repositories."""
+
+
 @final
 @attrs.define(frozen=True)
-class GhRepoInstallation:
+class GhRepoInstallation(RepoInstallation):
     """Github repository installation."""
 
     _repos: list
@@ -44,7 +51,7 @@ class GhRepoInstallation:
     _gh: Github
 
     @override
-    def register(self):
+    def register(self) -> None:
         """Registering new repositories."""
         for repo in self._repos:
             repo_db_record = GhRepo.objects.create(

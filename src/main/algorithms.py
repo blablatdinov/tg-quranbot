@@ -33,10 +33,10 @@ from lxml import etree
 from main.models import TouchRecord
 
 
-def files_changes_count(repo_path: Path, files_for_check: list[Path]):
+def files_changes_count(repo_path: Path, files_for_check: list[Path]) -> dict[Path, int]:
     """Count of commits in the file."""
     repo = Repo(repo_path)
-    file_change_count: dict[str | PathLike[str], int] = defaultdict(int)
+    file_change_count: dict[Path, int] = defaultdict(int)
     for commit in repo.iter_commits():
         for item in commit.stats.files.items():
             filename, stats = item
@@ -48,10 +48,10 @@ def files_changes_count(repo_path: Path, files_for_check: list[Path]):
 def files_sorted_by_last_changes(
     repo_path: Path,
     files_for_check: list[Path],
-):
+) -> dict[Path, int]:
     """Count days after last file changing."""
     repo = Repo(repo_path)
-    file_last_commit: dict[PathLike[str], int] = {}
+    file_last_commit: dict[Path, int] = {}
     now = datetime.datetime.now(tz=datetime.UTC)
     for file in files_for_check:
         try:
@@ -66,7 +66,7 @@ def files_sorted_by_last_changes_from_db(
     repo_id: int,
     real_points: dict[Path, int],
     relative_to: PathLike,
-):
+) -> dict[Path, int]:
     """Count days after last file changing."""
     today = datetime.datetime.now(tz=datetime.UTC).date()
     touch_records = {}
@@ -74,22 +74,22 @@ def files_sorted_by_last_changes_from_db(
         touch_records[Path(str_path)] = (today - date).days
     res = {}
     for key, value in real_points.items():
-        res[key] = min(
+        res[key] = int(min(
             touch_records.get(key.relative_to(relative_to), float('inf')),
             value,
-        )
+        ))
     return res
 
 
-def apply_coefficient(file_point_map: dict[PathLike[str], int], coefficient: float):
+def apply_coefficient(file_point_map: dict[Path, int], coefficient: float) -> dict[Path, int]:
     """Apply coefficient for rating."""
     return {
-        file: points * coefficient
+        Path(file): int(points * coefficient)
         for file, points in file_point_map.items()
     }
 
 
-def file_editors_count(repo_path, files_for_check: list[Path]):
+def file_editors_count(repo_path: Path, files_for_check: list[Path]) -> dict[Path, int]:
     """Count editors by git commits for each file."""
     repo = Repo(repo_path)
     file_editors_map = defaultdict(set)
@@ -105,7 +105,7 @@ def file_editors_count(repo_path, files_for_check: list[Path]):
     }
 
 
-def lines_count(files_for_check: list[Path]):
+def lines_count(files_for_check: list[Path]) -> dict[Path, int]:
     """Count lines for each file."""
     return {
         file: file.read_text().count('\n')
@@ -114,23 +114,23 @@ def lines_count(files_for_check: list[Path]):
 
 
 def merge_rating(
-    *file_point_maps: dict[PathLike[str], int],
-):
+    *file_point_maps: dict[Path, int],
+) -> dict[Path, int]:
     """Merge ratings.
 
     Function sum points for file from different ratings
     """
-    res: dict[PathLike[str], int] = defaultdict(int)
+    res: dict[Path, int] = defaultdict(int)
     for file_points_map in file_point_maps:
         for file, points in file_points_map.items():
             res[file] += points
     return res
 
 
-def code_coverage_rating(coverage_xml: str):
+def code_coverage_rating(coverage_xml: str) -> dict[Path, int]:
     """Count coverage per file."""
     tree = etree.fromstring(coverage_xml, etree.XMLParser())  # noqa: S320 . TODO
     return {
-        file.xpath('./@name')[0]: float(file.xpath('./@line-rate')[0])  # type: ignore [union-attr,index,arg-type]
+        Path(file.xpath('./@name')[0]): int(float(file.xpath('./@line-rate')[0]) * 100)  # type: ignore [union-attr,index,arg-type]
         for file in tree.xpath('.//class')  # type: ignore [union-attr,index,arg-type]
     }

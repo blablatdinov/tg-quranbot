@@ -39,7 +39,7 @@ class FkClonedRepo(ClonedRepo):
     _zipped_repo: Path
 
     @override
-    def clone_to(self, path: Path):
+    def clone_to(self, path: Path) -> Path:
         """Unzipping repo from archieve."""
         with zipfile.ZipFile(self._zipped_repo, 'r') as zip_ref:
             zip_ref.extractall(path)
