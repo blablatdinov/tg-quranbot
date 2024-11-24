@@ -69,6 +69,6 @@ class AyatTextSearchQuery(TextSearchQuery):
             msg = "User hasn't search query"
             self._logger.error(msg)
             raise UserHasNotSearchQueryError(msg)
-        seqrch_query = redis_value.decode('utf-8')
-        self._logger.info('Read value: {0}'.format(seqrch_query))
-        return seqrch_query
+        search_query = redis_value.decode('utf-8')
+        self._logger.info('Read value: {0}'.format(search_query))
+        return search_query
