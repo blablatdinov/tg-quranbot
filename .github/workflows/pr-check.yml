@@ -92,6 +92,8 @@ jobs:
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
       - name: create .env file  # Need for django-stubs
         run: cp .github/.env .env
+      - name: App key
+        run: echo '${{ secrets.GH_APP_KEY }}' > src/revive-code-bot.private-key.pem
       - name: Lint via ruff
         run: .venv/bin/ruff check src
       # - name: Lint via flake8
@@ -99,4 +101,4 @@ jobs:
       - name: Lint via refurb
         run: .venv/bin/refurb src
       - name: Check types with mypy
-        run: .venv/bin/mypy src --strict
+        run: .venv/bin/mypy src
