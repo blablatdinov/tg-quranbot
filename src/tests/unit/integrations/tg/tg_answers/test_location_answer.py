@@ -34,6 +34,6 @@ async def test():
 
 
 async def test_not_match():
-    got = await TgLocationAnswer(FkAnswer()).build(FkUpdate('{}'))  # noqa: P103 it is empty json
+    got = await TgLocationAnswer(FkAnswer()).build(FkUpdate.empty_ctor())
 
     assert got == []
