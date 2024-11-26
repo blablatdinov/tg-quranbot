@@ -60,7 +60,7 @@ class StatusAnswer(TgAnswer):
             ),
         ).build(update)
 
-    async def _measure_pgsql(self) -> str:
+    async def _measure_pgsql(self) -> str:  # noqa: NPM100. Fix it
         db_start = time.time()
         await self._pgsql.execute('SELECT 1')
         return 'DB: {0} ms'.format(float(
@@ -70,7 +70,7 @@ class StatusAnswer(TgAnswer):
             ),
         ))
 
-    async def _measure_redis(self) -> str:
+    async def _measure_redis(self) -> str:  # noqa: NPM100. Fix it
         redis_start = time.time()
         await self._redis.ping()
         return 'Redis: {0} ms'.format(float(

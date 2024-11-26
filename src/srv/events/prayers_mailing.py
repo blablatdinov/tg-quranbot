@@ -134,8 +134,12 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
             self._events_sink,
         ).update(to=False)
 
-    async def _iteration(self, answer: TgAnswer, chat_id: int, unsubscribed_users: list[User]) -> None:
-        # TODO #802 Удалить или обосновать необходимость метода `PrayersMailingPublishedEvent._iteration`
+    async def _iteration(  # noqa: NPM100. Fix it
+        self,
+        answer: TgAnswer,
+        chat_id: int,
+        unsubscribed_users: list[User],
+    ) -> None:
         try:
             await LoggedAnswer(
                 SendableAnswer(

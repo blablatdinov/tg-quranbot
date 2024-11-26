@@ -94,7 +94,11 @@ class RbmqEventHook(EventHook):
                     msg: DeliveredMessage = await channel.basic_get(queue_name)
                     await self._event_handler(msg, chnl)
 
-    async def _event_handler(self, message: DeliveredMessage, chnl: aio_pika.abc.AbstractChannel) -> None:
+    async def _event_handler(  # noqa: NPM100. Fix it
+        self,
+        message: DeliveredMessage,
+        chnl: aio_pika.abc.AbstractChannel,
+    ) -> None:
         if not message.body:
             return
         try:
@@ -108,7 +112,7 @@ class RbmqEventHook(EventHook):
             )
         await message.channel.basic_ack(message.delivery.delivery_tag)  # type: ignore [union-attr, arg-type]
 
-    async def _inner_handler(self, message: DeliveredMessage) -> None:
+    async def _inner_handler(self, message: DeliveredMessage) -> None:  # noqa: NPM100. Fix it
         decoded_body = message.body.decode('utf-8')
         self._logger.info('Taked event {0}'.format(decoded_body))
         body_json = JsonDoc.from_string(decoded_body)  # type: ignore [no-untyped-call]

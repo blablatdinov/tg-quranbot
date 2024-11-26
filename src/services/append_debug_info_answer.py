@@ -73,7 +73,11 @@ class AppendDebugInfoAnswer(TgAnswer):
             ],
         )
 
-    def _build_new_requests(self, origin_requests: list[httpx.Request], debug_params: list[str]) -> list[httpx.Request]:
+    def _build_new_requests(  # noqa: NPM100. Fix it
+        self,
+        origin_requests: list[httpx.Request],
+        debug_params: list[str],
+    ) -> list[httpx.Request]:
         debug_str = '\n\n!----- DEBUG INFO -----!\n\n{0}\n\n!----- END DEBUG INFO -----!'.format(
             '\n'.join(debug_params),
         )

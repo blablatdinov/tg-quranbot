@@ -845,6 +845,20 @@ files = [
 flake8 = ">=5"
 
 [[package]]
+name = "flake8-no-private-methods"
+version = "0.0.1"
+description = "This is how python package should look like!"
+optional = false
+python-versions = "<4.0,>=3.9"
+files = [
+    {file = "flake8_no_private_methods-0.0.1-py3-none-any.whl", hash = "sha256:224bccd71b245b0069c694b95d267aede04eb757614b2ecd644fc5418e3f10c3"},
+    {file = "flake8_no_private_methods-0.0.1.tar.gz", hash = "sha256:7cf9bbd191a879e3ebd9654f0eb97f04a02a3da60754e545320008bcc4f73d64"},
+]
+
+[package.dependencies]
+flake8 = ">=5.0.0"
+
+[[package]]
 name = "flake8-override"
 version = "0.0.4"
 description = "This is how python package should look like!"
@@ -1202,8 +1216,6 @@ optional = false
 python-versions = "*"
 files = [
     {file = "jsonpath-ng-1.7.0.tar.gz", hash = "sha256:f6f5f7fd4e5ff79c785f1573b394043b39849fb2bb47bcead935d12b00beab3c"},
-    {file = "jsonpath_ng-1.7.0-py2-none-any.whl", hash = "sha256:898c93fc173f0c336784a3fa63d7434297544b7198124a68f9a3ef9597b0ae6e"},
-    {file = "jsonpath_ng-1.7.0-py3-none-any.whl", hash = "sha256:f3d7f9e848cba1b6da28c55b1c26ff915dc9e0b1ba7e752a53d6da8d5cbd00b6"},
 ]
 
 [package.dependencies]
@@ -3622,4 +3634,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "ea7fe0167072bac0fbcf67a41ca960743bc673374f77a06977dafa23539dbb20"
+content-hash = "673ec44ce5f517529914545120fd2e985ab694c2075230723ce7e7c979f5e6dc"
