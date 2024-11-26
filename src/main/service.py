@@ -41,6 +41,7 @@ from main.services.revive_config.merged_config import MergedConfig
 from main.services.revive_config.pg_revive_config import PgReviveConfig
 from main.services.revive_config.pg_updated_revive_config import PgUpdatedReviveConfig
 from main.services.revive_config.revive_config import ConfigDict
+from main.services.revive_config.safe_disk_revive_config import SafeDiskReviveConfig
 from main.services.synchronize_touch_records import PgSynchronizeTouchRecords
 
 
@@ -92,11 +93,15 @@ def process_repo(repo_id: int, cloned_repo: ClonedRepo, new_issue: NewIssue) -> 
     """Processing repo."""
     with tempfile.TemporaryDirectory() as tmpdirname:
         repo_path = cloned_repo.clone_to(Path(tmpdirname))
+        pg_config = PgReviveConfig(repo_id)
         config = PgUpdatedReviveConfig(
             repo_id,
             MergedConfig.ctor(
-                PgReviveConfig(repo_id),
-                DiskReviveConfig(repo_path),
+                pg_config,
+                SafeDiskReviveConfig(
+                    DiskReviveConfig(repo_path),
+                    pg_config,
+                ),
             ),
         ).parse()
         got = files_sorted_by_last_changes_from_db(

@@ -33,14 +33,14 @@ def test() -> None:
             'glob': '**/*.js',
         })),
         FkReviveConfig(ConfigDict({
-            'cron': '* * * * *',
-            'limit': 20,
+            'cron': '1 1 1 1 1',
+            'limit': 10,
             'glob': '**/*.py',
         })),
     ).parse()
 
     assert got == {
-        'cron': '* * * * *',
+        'cron': '1 1 1 1 1',
         'glob': '**/*.py',
-        'limit': 20,
+        'limit': 10,
     }
