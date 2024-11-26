@@ -25,6 +25,7 @@
 from types import ModuleType
 
 import pytest
+import requests_mock
 from django.test import Client
 
 
@@ -37,3 +38,9 @@ def anon() -> Client:
 def baker() -> ModuleType:
     from model_bakery import baker as _baker  # noqa: PLC0415. Conflict with fixture name
     return _baker
+
+
+@pytest.fixture
+def mock_http():
+    with requests_mock.Mocker() as http_mocker:
+        yield http_mocker
