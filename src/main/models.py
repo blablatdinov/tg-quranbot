@@ -28,12 +28,21 @@ from django.db import models
 
 
 @final
+class RepoStatusEnum(models.TextChoices):
+    """Repository status."""
+
+    active = 'active'
+    inactive = 'inactive'
+
+
+@final
 class GhRepo(models.Model):
     """Table contain github repos."""
 
     full_name = models.CharField(max_length=512, unique=True)
     has_webhook = models.BooleanField()
     installation_id = models.BigIntegerField()
+    status = models.CharField(max_length=16, choices=RepoStatusEnum.choices)
 
     class Meta:
         db_table = 'gh_repos'

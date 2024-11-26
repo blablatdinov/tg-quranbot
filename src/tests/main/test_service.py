@@ -26,8 +26,8 @@ import pytest
 from django.conf import settings
 
 from main.service import process_repo
-from main.services.github_objs.fk_new_issue import FkNewIssue
 from main.services.github_objs.fk_cloned_repo import FkClonedRepo
+from main.services.github_objs.fk_new_issue import FkNewIssue
 
 pytestmark = [pytest.mark.django_db]
 
