@@ -49,7 +49,7 @@ def gh_webhook(request: HttpRequest) -> HttpResponse:
                 request_json['repositories_added'],
                 installation_id,
                 gh,
-            )
+            ).register()
             gh.close()
         elif gh_event == 'ping':
             pg_repo = GhRepo.objects.get(full_name=request_json['repository']['full_name'])

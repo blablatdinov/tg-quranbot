@@ -28,6 +28,8 @@ from pathlib import Path
 import pytest
 from django.conf import settings
 
+from main.models import GhRepo
+
 pytestmark = [pytest.mark.django_db]
 
 
@@ -40,13 +42,18 @@ def gh_repo(baker):
 
 @pytest.fixture
 def mock_github(mock_http):
-    mock_http.post(
-        'https://api.github.com:443/app/installations/1/access_tokens',
+    mock_http.register_uri(
+        'POST',
+        re.compile(r'https://api.github.com:443/app/installations/\d+/access_tokens'),
         text=Path(settings.BASE_DIR / 'tests/fixtures/gh_app_access_tokens_response.json').read_text(encoding='utf-8'),
     )
     mock_http.get(
         'https://api.github.com:443/repos/blablatdinov/gotemir',
         text=Path(settings.BASE_DIR / 'tests/fixtures/gh_repos_response.json').read_text(encoding='utf-8'),
+    )
+    mock_http.post(
+        'https://api.github.com:443/repos/blablatdinov/gotemir/hooks',
+        text=Path(settings.BASE_DIR / 'tests/fixtures/gh_hooks_response.json').read_text(encoding='utf-8'),
     )
     return mock_http
 
@@ -139,3 +146,27 @@ def test_filled_revive_config(anon, gh_repo):
 
     assert response.status_code == 200
     assert config.cron_expression == '16 4 * * *'
+
+
+def test_add_installation(client, empty_revive_config) -> None:
+    response = client.post(
+        '/hook/github',
+        Path(settings.BASE_DIR / 'tests/fixtures/installation_added.json').read_text(encoding='utf-8'),
+        content_type='application/json',
+        headers={
+            'Accept': '*/*',
+            'Content-Type': 'application/json',
+            'User-Agent': 'GitHub-Hookshot/9729b30',
+            'X-GitHub-Delivery': '18faf6d0-3662-11ef-9e2b-0e81d1f2cc20',
+            'X-GitHub-Event': 'installation_repositories',  # TODO: make test for other events
+            'X-GitHub-Hook-ID': '487229453',
+            'X-GitHub-Hook-Installation-Target-ID': '874924',
+            'X-GitHub-Hook-Installation-Target-Type': 'integration',
+        },
+    )
+
+    assert response.status_code == 200
+    assert GhRepo.objects.filter(
+        full_name='blablatdinov/gotemir',
+        installation_id=52326552,
+    ).count() == 1
