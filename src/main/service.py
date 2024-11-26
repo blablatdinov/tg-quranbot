@@ -50,22 +50,22 @@ def update_config(repo_full_name: str) -> None:
     """Update config."""
     repo = GhRepo.objects.get(full_name=repo_full_name)
     pg_revive_config = PgReviveConfig(repo.id)
+    gh_repo = pygithub_client(repo.installation_id).get_repo(repo.full_name)
     try:
-        gh_repo = pygithub_client(repo.installation_id).get_repo(repo.full_name)
+        config = PgUpdatedReviveConfig(
+            repo.id,
+            MergedConfig.ctor(
+                pg_revive_config,
+                GhReviveConfig(
+                    gh_repo,
+                    pg_revive_config,
+                ),
+            ),
+        ).parse()
     except GithubException:
         repo.status = RepoStatusEnum.inactive
         repo.save()
         return
-    config = PgUpdatedReviveConfig(
-        repo.id,
-        MergedConfig.ctor(
-            pg_revive_config,
-            GhReviveConfig(
-                gh_repo,
-                pg_revive_config,
-            ),
-        ),
-    ).parse()
     response = requests.put(
         '{0}/api/jobs'.format(settings.SCHEDULER_HOST),
         {

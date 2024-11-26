@@ -69,8 +69,9 @@ def mock_github(mock_http):
 
 @pytest.fixture
 def mock_github_permission_denied(mock_github):
-    mock_github.get(
-        'https://api.github.com:443/repos/blablatdinov/gotemir',
+    mock_github.register_uri(
+        'GET',
+        re.compile(r'https://api.github.com:443/repos/blablatdinov/gotemir/contents/.revive-bot.*'),
         status_code=403,
     )
     return mock_github
