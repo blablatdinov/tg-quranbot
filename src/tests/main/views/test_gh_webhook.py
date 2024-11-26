@@ -35,7 +35,24 @@ pytestmark = [pytest.mark.django_db]
 
 @pytest.fixture
 def gh_repo(baker):
-    repo = baker.make('main.GhRepo', full_name='blablatdinov/gotemir', installation_id=1)
+    repo = baker.make(
+        'main.GhRepo',
+        full_name='blablatdinov/gotemir',
+        installation_id=1,
+        status=RepoStatusEnum.active,
+    )
+    baker.make('main.RepoConfig', repo=repo)
+    return repo
+
+
+@pytest.fixture
+def inactive_gh_repo(baker):
+    repo = baker.make(
+        'main.GhRepo',
+        full_name='blablatdinov/gotemir',
+        installation_id=1,
+        status=RepoStatusEnum.inactive,
+    )
     baker.make('main.RepoConfig', repo=repo)
     return repo
 
@@ -173,6 +190,7 @@ def test_filled_revive_config(anon, gh_repo):
     config = gh_repo.repoconfig_set.earliest('id')
 
     assert response.status_code == 200
+    assert response.content == b'Config updated'
     assert config.cron_expression == '16 4 * * *'
 
 
@@ -223,3 +241,24 @@ def test_push_permission_denied(client, gh_repo) -> None:
 
     assert response.status_code == 200
     assert gh_repo.status == RepoStatusEnum.inactive
+
+
+def test_skip_inactive_repo(anon, inactive_gh_repo):
+    response = anon.post(
+        '/hook/github',
+        Path(settings.BASE_DIR / 'tests/fixtures/push_event.json').read_text(encoding='utf-8'),
+        content_type='application/json',
+        headers={
+            'Accept': '*/*',
+            'Content-Type': 'application/json',
+            'User-Agent': 'GitHub-Hookshot/9729b30',
+            'X-GitHub-Delivery': '18faf6d0-3662-11ef-9e2b-0e81d1f2cc20',
+            'X-GitHub-Event': 'push',
+            'X-GitHub-Hook-ID': '487229453',
+            'X-GitHub-Hook-Installation-Target-ID': '874924',
+            'X-GitHub-Hook-Installation-Target-Type': 'integration',
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.content == b'Skip as inactive'

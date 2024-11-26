@@ -28,14 +28,14 @@ from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from main.models import GhRepo
+from main.models import GhRepo, RepoStatusEnum
 from main.service import is_default_branch, update_config
 from main.services.github_objs.gh_repo_installation import GhRepoInstallation
 from main.services.github_objs.github_client import pygithub_client
 
 
 @csrf_exempt
-def gh_webhook(request: HttpRequest) -> HttpResponse:
+def gh_webhook(request: HttpRequest) -> HttpResponse:  # noqa: PLR0911. TODO
     """Process webhooks from github."""
     with transaction.atomic():
         gh_event = request.headers.get('X-GitHub-Event')
@@ -51,12 +51,17 @@ def gh_webhook(request: HttpRequest) -> HttpResponse:
                 gh,
             ).register()
             gh.close()
+            return HttpResponse('Repos installed')
         elif gh_event == 'ping':
             pg_repo = GhRepo.objects.get(full_name=request_json['repository']['full_name'])
             pg_repo.has_webhook = True
             pg_repo.save()
+            return HttpResponse('Webhooks installed')
         elif gh_event == 'push':
+            if GhRepo.objects.get(full_name=request_json['repository']['full_name']).status != RepoStatusEnum.active:
+                return HttpResponse('Skip as inactive')
             if not is_default_branch(request_json):
-                return HttpResponse()
+                return HttpResponse('Skip not default branch')
             update_config(request_json['repository']['full_name'])
-        return HttpResponse()
+            return HttpResponse('Config updated')
+        return HttpResponse('Unprocessable event type')
