@@ -24,6 +24,7 @@ from typing import final
 
 import attrs
 import pytest
+from django.conf import settings
 
 from main.services.github_objs.gh_repo_installation import GhRepoInstallation
 
@@ -56,7 +57,17 @@ class FkGh:
         return FkRepo()
 
 
+@pytest.fixture
+def mock_scheduler(mock_http):
+    mock_http.put(
+        '{0}/api/jobs'.format(settings.SCHEDULER_HOST),
+        status_code=200,
+    )
+    return mock_http
+
+
 # TODO: create asserts
+@pytest.mark.usefixtures('mock_scheduler')
 def test() -> None:
     GhRepoInstallation(
         [{'full_name': 'owner_name/repo_name'}],

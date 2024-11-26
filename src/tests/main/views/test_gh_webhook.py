@@ -41,6 +41,15 @@ def gh_repo(baker):
 
 
 @pytest.fixture
+def mock_scheduler(mock_http):
+    mock_http.put(
+        '{0}/api/jobs'.format(settings.SCHEDULER_HOST),
+        status_code=200,
+    )
+    return mock_http
+
+
+@pytest.fixture
 def mock_github(mock_http):
     mock_http.register_uri(
         'POST',
@@ -103,7 +112,7 @@ def filled_revive_config(mock_github):
     )
 
 
-@pytest.mark.usefixtures('gh_repo', 'empty_revive_config')
+@pytest.mark.usefixtures('gh_repo', 'empty_revive_config', 'mock_scheduler')
 def test_empty_revive_config(anon):
     response = anon.post(
         '/hook/github',
@@ -124,7 +133,7 @@ def test_empty_revive_config(anon):
     assert response.status_code == 200
 
 
-@pytest.mark.usefixtures('filled_revive_config')
+@pytest.mark.usefixtures('filled_revive_config', 'mock_scheduler')
 def test_filled_revive_config(anon, gh_repo):
     response = anon.post(
         '/hook/github',
@@ -148,7 +157,8 @@ def test_filled_revive_config(anon, gh_repo):
     assert config.cron_expression == '16 4 * * *'
 
 
-def test_add_installation(client, empty_revive_config) -> None:
+@pytest.mark.usefixtures('empty_revive_config', 'mock_scheduler')
+def test_add_installation(client) -> None:
     response = client.post(
         '/hook/github',
         Path(settings.BASE_DIR / 'tests/fixtures/installation_added.json').read_text(encoding='utf-8'),

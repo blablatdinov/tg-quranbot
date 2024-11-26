@@ -116,3 +116,5 @@ CSRF_TRUSTED_ORIGINS = ['https://revive-code-bot.ilaletdinov.ru']
 BASIC_AUTH_TOKEN = env('BASIC_AUTH_TOKEN')
 
 GH_APP_KEY = (BASE_DIR / 'revive-code-bot.private-key.pem').read_text()
+
+SCHEDULER_HOST = env('SCHEDULER_HOST')
