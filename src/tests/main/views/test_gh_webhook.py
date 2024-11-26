@@ -112,6 +112,15 @@ def filled_revive_config(mock_github):
     )
 
 
+@pytest.fixture
+def mock_permission_denied(mock_http):
+    mock_http.register_uri(
+        'POST',
+        re.compile(r'https://api.github.com:443/app/installations/\d+/access_tokens'),
+        text=Path(settings.BASE_DIR / 'tests/fixtures/gh_app_access_tokens_response.json').read_text(encoding='utf-8'),
+    )
+
+
 @pytest.mark.usefixtures('gh_repo', 'empty_revive_config', 'mock_scheduler')
 def test_empty_revive_config(anon):
     response = anon.post(

@@ -27,8 +27,9 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+from github.GithubException import GithubException
 
-from main.models import GhRepo
+from main.models import GhRepo, RepoStatusEnum
 from main.service import process_repo
 from main.services.github_objs.gh_cloned_repo import GhClonedRepo
 from main.services.github_objs.gh_new_issue import GhNewIssue
@@ -41,9 +42,13 @@ def process_repo_view(request: HttpRequest, repo_id: int) -> HttpResponse:
     if request.headers['Authentication'] != 'Basic {0}'.format(settings.BASIC_AUTH_TOKEN):
         raise PermissionDenied
     repo = get_object_or_404(GhRepo, id=repo_id)
-    process_repo(
-        repo.id,
-        GhClonedRepo(repo),
-        GhNewIssue(pygithub_client(repo.installation_id).get_repo(repo.full_name)),
-    )
+    try:
+        process_repo(
+            repo.id,
+            GhClonedRepo(repo),
+            GhNewIssue(pygithub_client(repo.installation_id).get_repo(repo.full_name)),
+        )
+    except GithubException:
+        repo.status = RepoStatusEnum.inactive
+        repo.save()
     return HttpResponse()
