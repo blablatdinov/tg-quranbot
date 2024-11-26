@@ -20,22 +20,13 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""Routers."""
+"""HTTP controller for render index page."""
 
-from django.contrib import admin
-from django.urls import path
+from django.http import HttpRequest
+from django.http.response import HttpResponse
+from django.shortcuts import render
 
-from main.views.connected_repos import connected_repos
-from main.views.gh_webhook import gh_webhook
-from main.views.healthcheck import healthcheck
-from main.views.index import index
-from main.views.process_repo import process_repo_view
 
-urlpatterns = [
-    path('', index),
-    path('health-check/', healthcheck),
-    path('hook/github', gh_webhook),
-    path('process-repo/<int:repo_id>', process_repo_view),
-    path('connected-repos/', connected_repos),
-    path('admin/', admin.site.urls),
-]
+def index(request: HttpRequest) -> HttpResponse:
+    """Show index page."""
+    return render(request, 'index.html')

@@ -65,7 +65,7 @@ class GhRepoInstallation(RepoInstallation):
             gh_repo.create_hook(
                 'web',
                 {
-                    'url': 'https://www.rehttp.net/p/https%3A%2F%2Frevive-code-bot.ilaletdinov.ru%2Fhook%2Fgithub',
+                    'url': 'https://www.rehttp.net/p/https://revive-code-bot.ilaletdinov.ru/hook/github',
                     'content_type': 'json',
                 },
                 ['issues', 'issue_comment', 'push'],

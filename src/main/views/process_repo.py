@@ -20,22 +20,30 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""Routers."""
+"""HTTP controller for process repo."""
 
-from django.contrib import admin
-from django.urls import path
+from django.conf import settings
+from django.core.exceptions import PermissionDenied
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 
-from main.views.connected_repos import connected_repos
-from main.views.gh_webhook import gh_webhook
-from main.views.healthcheck import healthcheck
-from main.views.index import index
-from main.views.process_repo import process_repo_view
+from main.models import GhRepo
+from main.service import process_repo
+from main.services.github_objs.gh_cloned_repo import GhClonedRepo
+from main.services.github_objs.gh_new_issue import GhNewIssue
+from main.services.github_objs.github_client import pygithub_client
 
-urlpatterns = [
-    path('', index),
-    path('health-check/', healthcheck),
-    path('hook/github', gh_webhook),
-    path('process-repo/<int:repo_id>', process_repo_view),
-    path('connected-repos/', connected_repos),
-    path('admin/', admin.site.urls),
-]
+
+@csrf_exempt
+def process_repo_view(request: HttpRequest, repo_id: int) -> HttpResponse:
+    """Webhook for process repo."""
+    if request.headers['Authentication'] != 'Basic {0}'.format(settings.BASIC_AUTH_TOKEN):
+        raise PermissionDenied
+    repo = get_object_or_404(GhRepo, id=repo_id)
+    process_repo(
+        repo.id,
+        GhClonedRepo(repo),
+        GhNewIssue(pygithub_client(repo.installation_id).get_repo(repo.full_name)),
+    )
+    return HttpResponse()

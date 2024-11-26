@@ -20,22 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""Routers."""
+"""HTTP healthcheck."""
 
-from django.contrib import admin
-from django.urls import path
 
-from main.views.connected_repos import connected_repos
-from main.views.gh_webhook import gh_webhook
-from main.views.healthcheck import healthcheck
-from main.views.index import index
-from main.views.process_repo import process_repo_view
+from django.http import HttpRequest, JsonResponse
 
-urlpatterns = [
-    path('', index),
-    path('health-check/', healthcheck),
-    path('hook/github', gh_webhook),
-    path('process-repo/<int:repo_id>', process_repo_view),
-    path('connected-repos/', connected_repos),
-    path('admin/', admin.site.urls),
-]
+
+def healthcheck(request: HttpRequest) -> JsonResponse:
+    """Endpoint for checking app."""
+    return JsonResponse({
+        'app': 'ok',
+    })

@@ -20,30 +20,18 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""HTTP controllers."""
+"""Github webhook."""
 
 import json
 
-from django.conf import settings
-from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.http import HttpRequest, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from main.models import GhRepo
-from main.service import is_default_branch, process_repo, update_config
-from main.services.github_objs.gh_cloned_repo import GhClonedRepo
-from main.services.github_objs.gh_new_issue import GhNewIssue
+from main.service import is_default_branch, update_config
 from main.services.github_objs.gh_repo_installation import GhRepoInstallation
 from main.services.github_objs.github_client import pygithub_client
-
-
-def healthcheck(request: HttpRequest) -> JsonResponse:
-    """Endpoint for checking app."""
-    return JsonResponse({
-        'app': 'ok',
-    })
 
 
 @csrf_exempt
@@ -72,35 +60,3 @@ def gh_webhook(request: HttpRequest) -> HttpResponse:
                 return HttpResponse()
             update_config(request_json['repository']['full_name'])
         return HttpResponse()
-
-
-@csrf_exempt
-def process_repo_view(request: HttpRequest, repo_id: int) -> HttpResponse:
-    """Webhook for process repo."""
-    if request.headers['Authentication'] != 'Basic {0}'.format(settings.BASIC_AUTH_TOKEN):
-        raise PermissionDenied
-    repo = get_object_or_404(GhRepo, id=repo_id)
-    process_repo(
-        repo.id,
-        GhClonedRepo(repo),
-        GhNewIssue(pygithub_client(repo.installation_id).get_repo(repo.full_name)),
-    )
-    return HttpResponse()
-
-
-def connected_repos(request: HttpRequest) -> JsonResponse:
-    """Endpoint for README badge.
-
-    https://img.shields.io/badges/endpoint-badge
-    """
-    return JsonResponse({
-        'schemaVersion': 1,
-        'label': 'Connected repos',
-        'message': str(GhRepo.objects.count()),
-        'color': 'blue',
-    })
-
-
-def index(request: HttpRequest) -> HttpResponse:
-    """Show index page."""
-    return render(request, 'index.html')
