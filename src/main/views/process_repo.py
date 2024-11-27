@@ -51,4 +51,4 @@ def process_repo_view(request: HttpRequest, repo_id: int) -> HttpResponse:
     except GithubException:
         repo.status = RepoStatusEnum.inactive
         repo.save()
-    return HttpResponse()
+    return HttpResponse(status=201)
