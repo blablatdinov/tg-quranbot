@@ -24,6 +24,37 @@ code review may be needed for those files.
 
 ## Configure
 
+You can install the bot either via GitHub Marketplace or manually.
+
+### Option 1: Install via GitHub Marketplace (Recommended)
+
+1. Visit the bot's GitHub [Marketplace page](https://github.com/marketplace/revive-code-bot).
+2. Click Install and follow the prompts to grant access to the bot.
+3. After installation, the bot will automatically start working with your repository.
+
+### Option 2: Manual Installation
+
+If you cannot use GitHub Marketplace, follow these two steps to configure the bot manually:
+
+#### Step 1: Grant Access to the Bot
+
+1. Open your GitHub repository.
+2. Go to Settings > Collaborators and teams.
+3. In the Collaborators section, click Invite a collaborator.
+4. Enter the bot's GitHub username (e.g., `@revive-bot`) and send the invitation.
+
+#### Step 2: Add a Webhook
+
+1. Open your repository and go to Settings > Webhooks.
+2. Click "Add webhook".
+3. Use the following URL as the Payload URL:
+`https://www.rehttp.net/p/https://revive-code-bot.ilaletdinov.ru/hook/github`
+4. Set the Content type to `application/json`.
+5. Select "Issue comments", "Issues", "Pushes" event as the trigger event.
+6. Click "Add webhook" to save.
+
+---
+
 To configure the app, create a `.revive-bot.yml` file in the root of your repository with the following options:
 
 ```yaml
