@@ -1106,13 +1106,13 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "hypothesis"
-version = "6.119.4"
+version = "6.120.0"
 description = "A library for property-based testing"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "hypothesis-6.119.4-py3-none-any.whl", hash = "sha256:333958da7855048850c3d2b6a929d44a3c89ca9eafcfddcacc3570140915eba5"},
-    {file = "hypothesis-6.119.4.tar.gz", hash = "sha256:1a7d12709c0e96c1d85aca76d1594b34b5958623e00511592eba674acd4f3392"},
+    {file = "hypothesis-6.120.0-py3-none-any.whl", hash = "sha256:b00382043bd88f79097be4773e2a7c22de7eac47a872c7c8c2cf6031d684d1c9"},
+    {file = "hypothesis-6.120.0.tar.gz", hash = "sha256:f3dea6518610333b091281d48881c9f5d6b1c1dfc3a08b029d1e72de60cd5549"},
 ]
 
 [package.dependencies]
@@ -1216,6 +1216,8 @@ optional = false
 python-versions = "*"
 files = [
     {file = "jsonpath-ng-1.7.0.tar.gz", hash = "sha256:f6f5f7fd4e5ff79c785f1573b394043b39849fb2bb47bcead935d12b00beab3c"},
+    {file = "jsonpath_ng-1.7.0-py2-none-any.whl", hash = "sha256:898c93fc173f0c336784a3fa63d7434297544b7198124a68f9a3ef9597b0ae6e"},
+    {file = "jsonpath_ng-1.7.0-py3-none-any.whl", hash = "sha256:f3d7f9e848cba1b6da28c55b1c26ff915dc9e0b1ba7e752a53d6da8d5cbd00b6"},
 ]
 
 [package.dependencies]
@@ -3634,4 +3636,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "673ec44ce5f517529914545120fd2e985ab694c2075230723ce7e7c979f5e6dc"
+content-hash = "90688ef04cb427467a38c195a63a3f4c38ebccf5463a5e31d953a3980f7f757b"
