@@ -20,18 +20,31 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+# TODO: rename file
+
 """Creating github client."""
 
 from pathlib import Path
 
 from django.conf import settings
 from github import Auth, Github
+from github.GithubException import GithubException, UnknownObjectException
+from github.Repository import Repository
 
 
-def pygithub_client(installation_id: int) -> Github:
-    """Pygithub client."""
-    auth = Auth.AppAuth(
-        874924,
-        Path(settings.BASE_DIR / 'revive-code-bot.private-key.pem').read_text(encoding='utf-8'),
-    )
-    return Github(auth=auth.get_installation_auth(installation_id))
+def github_repo(installation_id: int, full_name: str) -> Repository:
+    """Fetch github repo.
+
+    TODO: make object
+    """
+    try:
+        return Github(
+            auth=Auth.AppAuth(
+                874924,
+                Path(settings.BASE_DIR / 'revive-code-bot.private-key.pem').read_text(encoding='utf-8'),
+            ).get_installation_auth(installation_id),
+        ).get_repo(full_name)
+    except (GithubException, UnknownObjectException):
+        return Github(
+            auth=Auth.Token(settings.GH_TOKEN),
+        ).get_repo(full_name)

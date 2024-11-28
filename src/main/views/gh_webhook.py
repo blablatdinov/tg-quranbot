@@ -28,10 +28,9 @@ from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from main.models import GhRepo, RepoStatusEnum
-from main.service import is_default_branch, update_config
+from main.models import RepoStatusEnum
+from main.service import get_or_create_repo, is_default_branch, update_config
 from main.services.github_objs.gh_repo_installation import GhRepoInstallation
-from main.services.github_objs.github_client import pygithub_client
 
 
 @csrf_exempt
@@ -44,21 +43,19 @@ def gh_webhook(request: HttpRequest) -> HttpResponse:  # noqa: PLR0911. TODO
         request_json = json.loads(request.body)
         if gh_event in {'installation', 'installation_repositories'}:
             installation_id = request_json['installation']['id']
-            gh = pygithub_client(installation_id)
             GhRepoInstallation(
                 request_json['repositories_added'],
                 installation_id,
-                gh,
             ).register()
-            gh.close()
             return HttpResponse('Repos installed')
-        elif gh_event == 'ping':
-            pg_repo = GhRepo.objects.get(full_name=request_json['repository']['full_name'])
-            pg_repo.has_webhook = True
-            pg_repo.save()
+        pg_repo = get_or_create_repo(
+            request_json['repository']['full_name'],
+            int(request.headers['X-Github-Hook-Installation-Target-Id']),
+        )
+        if gh_event == 'ping':
             return HttpResponse('Webhooks installed')
         elif gh_event == 'push':
-            if GhRepo.objects.get(full_name=request_json['repository']['full_name']).status != RepoStatusEnum.active:
+            if pg_repo.status != RepoStatusEnum.active:
                 return HttpResponse('Skip as inactive')
             if not is_default_branch(request_json):
                 return HttpResponse('Skip not default branch')

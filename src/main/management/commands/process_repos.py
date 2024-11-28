@@ -30,7 +30,7 @@ from main.models import GhRepo
 from main.service import process_repo
 from main.services.github_objs.gh_cloned_repo import GhClonedRepo
 from main.services.github_objs.gh_new_issue import GhNewIssue
-from main.services.github_objs.github_client import pygithub_client
+from main.services.github_objs.github_client import github_repo
 
 
 class Command(BaseCommand):
@@ -46,5 +46,5 @@ class Command(BaseCommand):
             process_repo(
                 repo.id,
                 GhClonedRepo(repo),
-                GhNewIssue(pygithub_client(repo.installation_id).get_repo(repo.full_name)),
+                GhNewIssue(github_repo(repo.installation_id, repo.full_name)),
             )

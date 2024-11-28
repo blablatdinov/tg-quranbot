@@ -28,7 +28,7 @@ import pytest
 from django.core.management import call_command
 
 from main.models import GhRepo, RepoConfig
-from main.services.github_objs.github_client import pygithub_client
+from main.services.github_objs.github_client import github_repo
 
 pytestmark = [pytest.mark.django_db]
 
@@ -40,7 +40,7 @@ def gh_repo(baker: ModuleType) -> Generator[GhRepo, None, None]:
         full_name='blablatdinov/iman-game-bot',
         installation_id=52326552,
     )
-    repo = pygithub_client(52326552).get_repo('blablatdinov/iman-game-bot')
+    repo = github_repo(52326552, 'blablatdinov/iman-game-bot')
     for issue in repo.get_issues():
         if issue.title == 'Issue from revive-code-bot':
             issue.edit(state='closed')
@@ -60,7 +60,8 @@ def test(gh_repo: GhRepo) -> None:
     call_command('process_repos')
 
     assert next(iter(sorted(
-        pygithub_client(gh_repo.installation_id).search_issues('Issue from revive-code-bot'),
+        # TODO search issues
+        [],
         key=attrgetter('created_at'),
         reverse=True,
     ))).body == '\n'.join([

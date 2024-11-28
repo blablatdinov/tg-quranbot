@@ -22,6 +22,7 @@
 
 """Service utils."""
 
+import random
 import tempfile
 from pathlib import Path
 from typing import TypedDict
@@ -32,10 +33,11 @@ from django.template import Context, Template
 from github.GithubException import GithubException
 
 from main.algorithms import files_sorted_by_last_changes, files_sorted_by_last_changes_from_db
-from main.models import GhRepo, RepoStatusEnum
+from main.models import GhRepo, RepoConfig, RepoStatusEnum
 from main.services.github_objs.cloned_repo import ClonedRepo
-from main.services.github_objs.github_client import pygithub_client
+from main.services.github_objs.github_client import github_repo
 from main.services.github_objs.new_issue import NewIssue
+from main.services.revive_config.default_revive_config import DefaultReviveConfig
 from main.services.revive_config.disk_revive_config import DiskReviveConfig
 from main.services.revive_config.gh_revive_config import GhReviveConfig
 from main.services.revive_config.merged_config import MergedConfig
@@ -46,11 +48,34 @@ from main.services.revive_config.safe_disk_revive_config import SafeDiskReviveCo
 from main.services.synchronize_touch_records import PgSynchronizeTouchRecords
 
 
+def get_or_create_repo(repo_full_name: str, installation_id: int) -> GhRepo:
+    """Get or create repository db record."""
+    pg_repo = GhRepo.objects.filter(full_name=repo_full_name)
+    if pg_repo.exists():
+        return pg_repo.earliest('id')
+    new_repo = GhRepo.objects.create(
+        full_name=repo_full_name,
+        installation_id=installation_id,
+        has_webhook=True,
+    )
+    config = MergedConfig.ctor(
+        GhReviveConfig(
+            github_repo(installation_id, repo_full_name),
+            DefaultReviveConfig(random),
+        ),
+    )
+    RepoConfig.objects.create(
+        repo=new_repo,
+        cron_expression=config.parse()['cron'],
+    )
+    return new_repo
+
+
 def update_config(repo_full_name: str) -> None:
     """Update config."""
     repo = GhRepo.objects.get(full_name=repo_full_name)
     pg_revive_config = PgReviveConfig(repo.id)
-    gh_repo = pygithub_client(repo.installation_id).get_repo(repo.full_name)
+    gh_repo = github_repo(repo.installation_id, repo.full_name)
     try:
         config = PgUpdatedReviveConfig(
             repo.id,
@@ -143,7 +168,7 @@ def _define_files_for_search(repo_path: Path, config: ConfigDict) -> list[Path]:
     return [
         x
         for x in repo_path.glob(config['glob'] or '**/*')
-        if '.git' not in str(x)  # TODO .github/workflows dir case
+        if '.git' not in str(x) and x.is_file()  # TODO .github/workflows dir case
     ]
 
 
