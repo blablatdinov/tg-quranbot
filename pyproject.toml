@@ -52,7 +52,7 @@ more-itertools = "10.5.0"
 [tool.poetry.group.dev.dependencies]
 # tests
 pytest-cov = "6.0.0"
-pytest = "8.3.3"
+pytest = "8.3.4"
 pytest-asyncio = "0.24.0"
 pytest-mock = "3.14.0"
 pytest-lazy-fixtures = "1.1.1"
