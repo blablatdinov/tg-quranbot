@@ -79,7 +79,7 @@ wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-py
 ruff = "0.8.1"
 refurb = "2.0.0"
 fixit = "2.1.0"
-pylint = "3.3.1"
+pylint = "3.3.2"
 ondivi = "0.6.0"
 flake8-final = "0.0.3"
 flake8-override = "0.0.4"
