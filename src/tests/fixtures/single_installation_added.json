@@ -1,0 +1,82 @@
+{
+  "action": "created",
+  "installation": {
+    "id": 52326552,
+    "client_id": "Iv1.4adfa4cc1703c37a",
+    "account": {
+      "login": "yegor256",
+      "id": 526301,
+      "node_id": "MDQ6VXNlcjUyNjMwMQ==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/526301?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/yegor256",
+      "html_url": "https://github.com/yegor256",
+      "followers_url": "https://api.github.com/users/yegor256/followers",
+      "following_url": "https://api.github.com/users/yegor256/following{/other_user}",
+      "gists_url": "https://api.github.com/users/yegor256/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/yegor256/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/yegor256/subscriptions",
+      "organizations_url": "https://api.github.com/users/yegor256/orgs",
+      "repos_url": "https://api.github.com/users/yegor256/repos",
+      "events_url": "https://api.github.com/users/yegor256/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/yegor256/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "repository_selection": "selected",
+    "access_tokens_url": "https://api.github.com/app/installations/57904101/access_tokens",
+    "repositories_url": "https://api.github.com/installation/repositories",
+    "html_url": "https://github.com/settings/installations/57904101",
+    "app_id": 874924,
+    "app_slug": "revive-code-bot",
+    "target_id": 526301,
+    "target_type": "User",
+    "permissions": {
+      "contents": "read",
+      "issues": "write",
+      "metadata": "read",
+      "pull_requests": "read",
+      "repository_hooks": "write"
+    },
+    "events": [],
+    "created_at": "2024-12-03T10:26:30.000+03:00",
+    "updated_at": "2024-12-03T10:26:31.000+03:00",
+    "single_file_name": null,
+    "has_multiple_single_files": false,
+    "single_file_paths": [],
+    "suspended_by": null,
+    "suspended_at": null
+  },
+  "repositories": [
+    {
+      "id": 28924109,
+      "node_id": "MDEwOlJlcG9zaXRvcnkyODkyNDEwOQ==",
+      "name": "takes",
+      "full_name": "blablatdinov/gotemir",
+      "private": false
+    }
+  ],
+  "requester": null,
+  "sender": {
+    "login": "yegor256",
+    "id": 526301,
+    "node_id": "MDQ6VXNlcjUyNjMwMQ==",
+    "avatar_url": "https://avatars.githubusercontent.com/u/526301?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/yegor256",
+    "html_url": "https://github.com/yegor256",
+    "followers_url": "https://api.github.com/users/yegor256/followers",
+    "following_url": "https://api.github.com/users/yegor256/following{/other_user}",
+    "gists_url": "https://api.github.com/users/yegor256/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/yegor256/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/yegor256/subscriptions",
+    "organizations_url": "https://api.github.com/users/yegor256/orgs",
+    "repos_url": "https://api.github.com/users/yegor256/repos",
+    "events_url": "https://api.github.com/users/yegor256/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/yegor256/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  }
+}

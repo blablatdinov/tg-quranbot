@@ -219,6 +219,31 @@ def test_add_installation(client) -> None:
     ).count() == 1
 
 
+@pytest.mark.usefixtures('empty_revive_config', 'mock_scheduler')
+def test_add_single_installation(client) -> None:
+    response = client.post(
+        '/hook/github',
+        Path(settings.BASE_DIR / 'tests/fixtures/single_installation_added.json').read_text(encoding='utf-8'),
+        content_type='application/json',
+        headers={
+            'Accept': '*/*',
+            'Content-Type': 'application/json',
+            'User-Agent': 'GitHub-Hookshot/9729b30',
+            'X-GitHub-Delivery': '18faf6d0-3662-11ef-9e2b-0e81d1f2cc20',
+            'X-GitHub-Event': 'installation',
+            'X-GitHub-Hook-ID': '487229453',
+            'X-GitHub-Hook-Installation-Target-ID': '874924',
+            'X-GitHub-Hook-Installation-Target-Type': 'integration',
+        },
+    )
+
+    assert response.status_code == 200
+    assert GhRepo.objects.filter(
+        full_name='blablatdinov/gotemir',
+        installation_id=52326552,
+    ).count() == 1
+
+
 @pytest.mark.usefixtures('mock_github_permission_denied')
 def test_push_permission_denied(client, gh_repo) -> None:
     response = client.post(

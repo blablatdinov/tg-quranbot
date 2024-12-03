@@ -41,7 +41,14 @@ def gh_webhook(request: HttpRequest) -> HttpResponse:  # noqa: PLR0911. TODO
         if not gh_event:
             return HttpResponse(status=422)
         request_json = json.loads(request.body)
-        if gh_event in {'installation', 'installation_repositories'}:
+        if gh_event == 'installation':
+            installation_id = request_json['installation']['id']
+            GhRepoInstallation(
+                request_json['repositories'],
+                installation_id,
+            ).register()
+            return HttpResponse('Repos installed')
+        elif gh_event == 'installation_repositories':
             installation_id = request_json['installation']['id']
             GhRepoInstallation(
                 request_json['repositories_added'],
