@@ -22,27 +22,24 @@
 
 import pytest
 
-from app_types.fk_async_str import FkAsyncStr
-from integrations.tg.fk_coordinates import FkCoordinates
-from srv.prayers.pg_city import PgCity
+from app_types.fk_async_int import FkAsyncInt
+from srv.podcasts.pg_podcast import PgPodcast
 
 
 @pytest.fixture
-async def _db_city(city_factory):
-    await city_factory('e9fa0fff-4e6a-47c8-8654-09adf913734a', 'Казань')
+async def _db_podcast(pgsql):
+    await pgsql.execute('\n'.join([
+        'INSERT INTO files (file_id, created_at)',
+        "VALUES ('818dfe43-3a21-49d7-ada4-826443d20991', '2024-10-29')",
+    ]))
+    await pgsql.execute('\n'.join([
+        'INSERT INTO podcasts (podcast_id, file_id)',
+        "VALUES (759, '818dfe43-3a21-49d7-ada4-826443d20991')",
+    ]))
 
 
-@pytest.mark.usefixtures('_db_city')
-async def test_pg_city(pgsql):
-    city = PgCity(FkAsyncStr('e9fa0fff-4e6a-47c8-8654-09adf913734a'), pgsql)
+@pytest.mark.usefixtures('_db_podcast')
+async def test(pgsql):
+    podcast = PgPodcast(FkAsyncInt(759), pgsql)
 
-    assert str(await city.city_id()) == 'e9fa0fff-4e6a-47c8-8654-09adf913734a'
-    assert await city.name() == 'Казань'
-
-
-@pytest.mark.usefixtures('_db_city', '_mock_nominatim')
-async def test_ctors(pgsql):
-    city_by_name = PgCity.name_ctor('Казань', pgsql)
-    city_by_location = PgCity.location_ctor(FkCoordinates(55.7887, 49.1221), pgsql)
-
-    assert str(await city_by_name.city_id()) == str(await city_by_location.city_id())
+    assert await podcast.podcast_id() == 759
