@@ -63,7 +63,6 @@ class MarkuppedPodcastAnswer(TgAnswer):
         chat_id = TgChatId(update)
         return await TgAnswerMarkup(
             FileAnswer(
-                self._debug_mode,
                 TelegramFileIdAnswer(
                     TgChatIdAnswer(
                         TgAudioAnswer(
@@ -82,6 +81,7 @@ class MarkuppedPodcastAnswer(TgAnswer):
                     ),
                     await self._podcast.file_link(),
                 ),
+                self._debug_mode,
             ),
             PodcastKeyboard(self._pgsql, self._podcast),
         ).build(update)

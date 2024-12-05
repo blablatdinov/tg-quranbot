@@ -60,7 +60,6 @@ class AyatByIdAnswer(TgAnswer):
                 result_ayat, TgHtmlMessageAnswerToSender(self._empty_answer), self._pgsql,
             ),
             FileAnswer(
-                self._debug_mode,
                 TelegramFileIdAnswer(
                     TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
                     await result_ayat.audio(),
@@ -69,5 +68,6 @@ class AyatByIdAnswer(TgAnswer):
                     TgHtmlMessageAnswerToSender(self._empty_answer),
                     await (await result_ayat.audio()).file_link(),
                 ),
+                self._debug_mode,
             ),
         ).build(update)

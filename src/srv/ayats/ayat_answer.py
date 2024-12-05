@@ -72,7 +72,6 @@ class AyatAnswer(TgAnswer):
                 disabled=True,
             ),
             FileAnswer(
-                self._debug_mode,
                 TelegramFileIdAnswer(
                     TgAnswerToSender(TgAudioAnswer(self._empty_answer)),
                     await self._ayat.audio(),
@@ -81,5 +80,6 @@ class AyatAnswer(TgAnswer):
                     TgHtmlMessageAnswerToSender(self._empty_answer),
                     await (await self._ayat.audio()).file_link(),
                 ),
+                self._debug_mode,
             ),
         ).build(update)
