@@ -28,7 +28,7 @@ authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 package-mode = false
 
 [tool.poetry.dependencies]
-python = ">=3.12,<3.13"
+python = ">=3.13,<3.14"
 loguru = "0.7.2"
 quranbot-schema-registry = "0.0.28"
 sentry-sdk = "2.19.1"
