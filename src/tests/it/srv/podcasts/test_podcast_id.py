@@ -23,7 +23,6 @@
 import pytest
 
 from srv.podcasts.podcast_id import PodcastId
-from app_types.fk_async_int import FkAsyncInt
 
 
 @pytest.fixture

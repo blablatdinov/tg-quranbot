@@ -20,23 +20,16 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
-
-import attrs
-import httpx
-
 from app_types.fk_update import FkUpdate
-from integrations.tg.tg_answers import TgAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.files.file_answer import FileAnswer
-from srv.files.fk_file import FkFile
 
 
 async def test():
     got = await FileAnswer(
-        True,
         FkAnswer(),
         FkAnswer(),
+        debug_mode=True,
     ).build(FkUpdate.empty_ctor())
 
     assert got[0].url == 'https://some.domain'

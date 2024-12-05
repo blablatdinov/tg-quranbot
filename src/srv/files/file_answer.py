@@ -36,9 +36,9 @@ from srv.files.tg_file_id_not_filled_safe_answer import TgFileIdNotFilledSafeAns
 class FileAnswer(TgAnswer):
     """Класс ответа с файлом."""
 
-    _debug_mode: SupportsBool
     _telegram_file_id_answer: TgAnswer
     _file_link_answer: TgAnswer
+    _debug_mode: SupportsBool
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

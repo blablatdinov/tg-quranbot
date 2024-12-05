@@ -22,8 +22,8 @@
 
 import pytest
 
-from srv.podcasts.pg_podcast import PgPodcast
 from app_types.fk_async_int import FkAsyncInt
+from srv.podcasts.pg_podcast import PgPodcast
 
 
 @pytest.fixture

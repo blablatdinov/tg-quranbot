@@ -23,8 +23,8 @@
 import pytest
 
 from app_types.fk_async_str import FkAsyncStr
-from srv.prayers.city_id_by_name import CityIdByName
 from exceptions.content_exceptions import CityNotSupportedError
+from srv.prayers.city_id_by_name import CityIdByName
 
 
 @pytest.fixture
