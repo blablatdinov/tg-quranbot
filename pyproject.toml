@@ -84,7 +84,7 @@ ondivi = "0.6.0"
 flake8-final = "0.0.3"
 flake8-override = "0.0.4"
 flake8-no-json = "0.0.2"
-vulture = "2.13"
+vulture = "2.14"
 sqlfluff = "3.2.5"
 flake8-no-private-methods = "0.0.1"
 # other
