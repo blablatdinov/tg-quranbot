@@ -38,7 +38,6 @@ test-free-files:
   - src/integrations/tg/app_with_get_me.py
   - src/integrations/tg/bulk_sendable_answer.py
   - src/integrations/tg/cached_tg_update.py
-  - src/integrations/tg/callback_query.py
   - src/integrations/tg/database_connected_app.py
   - src/integrations/tg/exceptions/update_parse_exceptions.py
   - src/integrations/tg/inline_query_id.py
@@ -58,7 +57,6 @@ test-free-files:
   - src/integrations/tg/tg_answers/skipable_answer.py
   - src/integrations/tg/tg_answers/text_answer.py
   - src/integrations/tg/tg_answers/tg_answer.py
-  - src/integrations/tg/tg_chat_id.py
   - src/integrations/tg/tg_message_coordinates.py
   - src/integrations/tg/typing_action.py
   - src/integrations/tg/udpates_url_interface.py
@@ -196,9 +194,6 @@ test-helpers:
   - .*conftest.py
   - .*__init__.py
   # TODO
-  - src/tests/unit/integrations/tg/test_callback_query_data.py
-  - src/tests/unit/integrations/tg/test_chat_id.py
-  - src/tests/unit/integrations/tg/tg_answers/test_answer_markup.py
   - src/tests/unit/integrations/tg/tg_answers/test_callback_regex_answer.py
   - src/tests/unit/integrations/tg/tg_answers/test_keyboard_edit_answer.py
   - src/tests/unit/integrations/tg/tg_answers/test_skip_not_processable_answer.py

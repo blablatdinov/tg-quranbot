@@ -31,7 +31,7 @@ from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.tg_answers.audio_answer import TgAudioAnswer
 from integrations.tg.tg_answers.chat_id_answer import TgChatIdAnswer
-from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
+from integrations.tg.tg_answers.tg_answer_markup import TgAnswerMarkup
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from integrations.tg.tg_answers.tg_answer import TgAnswer

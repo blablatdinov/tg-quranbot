@@ -35,7 +35,7 @@ from handlers.podcast_message_text_not_exists_safe_answer import PodcastMessageT
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.message_id import TgMessageId
 from integrations.tg.tg_answers import TgAnswerToSender, TgKeyboardEditAnswer, TgMessageIdAnswer
-from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
+from integrations.tg.tg_answers.tg_answer_markup import TgAnswerMarkup
 from integrations.tg.tg_answers.tg_answer import TgAnswer
 from integrations.tg.tg_chat_id import TgChatId
 from services.reset_state_answer import ResetStateAnswer
