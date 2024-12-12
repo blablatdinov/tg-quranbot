@@ -31,6 +31,6 @@ tasks:
     cmds:
       - docker compose up -d
 
-  # test:
-  #   cmds:
-  #     - docker compose exec -t 
+  test:
+    cmds:
+      - docker compose exec -t 

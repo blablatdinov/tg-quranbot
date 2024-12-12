@@ -27,6 +27,14 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile.dev
-    command: .venv/bin/python main.py run_polling
+    command: poetry run python main.py run_polling
+    volumes:
+      - .env:/.env
+
+  tests:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    command: poetry run pytest src --ignore=src/tests/e2e --cov=src --cov-report html --cov-fail-under=96
     volumes:
       - .env:/.env
