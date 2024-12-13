@@ -32,7 +32,6 @@ from integrations.tg.tg_answers.empty_answer import TgEmptyAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 from integrations.tg.tg_answers.html_parse_answer import TgHtmlParseAnswer
 from integrations.tg.tg_answers.link_preview_options import TgLinkPreviewOptions
-from integrations.tg.tg_answers.markup_answer import TgAnswerMarkup
 from integrations.tg.tg_answers.measure_answer import TgMeasureAnswer
 from integrations.tg.tg_answers.message_answer import TgMessageAnswer
 from integrations.tg.tg_answers.message_id_answer import TgMessageIdAnswer
@@ -41,3 +40,4 @@ from integrations.tg.tg_answers.message_regex_answer import TgMessageRegexAnswer
 from integrations.tg.tg_answers.reply_source_answer import TgReplySourceAnswer
 from integrations.tg.tg_answers.text_answer import TgTextAnswer
 from integrations.tg.tg_answers.tg_answer import TgAnswer
+from integrations.tg.tg_answers.tg_answer_markup import TgAnswerMarkup
