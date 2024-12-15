@@ -57,11 +57,12 @@ class TouchRecord(models.Model):
     """Table contain record about touching files."""
 
     gh_repo = models.ForeignKey(GhRepo, on_delete=models.PROTECT)
-    path = models.CharField(max_length=1024, unique=True)
+    path = models.CharField(max_length=1024)
     date = models.DateField()
 
     class Meta:
         db_table = 'touch_records'
+        unique_together = ('gh_repo', 'path')
 
     def __str__(self) -> str:
         """String representation."""
