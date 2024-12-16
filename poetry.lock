@@ -2,13 +2,13 @@
 
 [[package]]
 name = "aio-pika"
-version = "9.5.3"
+version = "9.5.4"
 description = "Wrapper around the aiormq for asyncio and humans"
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "aio_pika-9.5.3-py3-none-any.whl", hash = "sha256:9cdbc3350a76a04947348f07fa606bb76bb2d1bcb36523cc5452210e32a5041b"},
-    {file = "aio_pika-9.5.3.tar.gz", hash = "sha256:95c19605ad2918e46ae39ead9a4991d5a8738dceedef11ff352b62eb3f935f36"},
+    {file = "aio_pika-9.5.4-py3-none-any.whl", hash = "sha256:a308f904cd4f97e2705662fe23cde37c6c7eddde0e1ea17467028fac6c474e15"},
+    {file = "aio_pika-9.5.4.tar.gz", hash = "sha256:5a1bad96a75fa5ac3aa5b2bbd3eca971ea9abda70693e4334e6e629639f8a8fc"},
 ]
 
 [package.dependencies]
@@ -3625,4 +3625,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "7ebd304a3b808b398a6e252156d6de5b0903aab89dbd2042e263f074906c9c6e"
+content-hash = "8b0ef0fcefc515a7ce6a632b85bc61b3e2dc359cd7dc06c8ab9f92faaa573b65"
