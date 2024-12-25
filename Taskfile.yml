@@ -33,4 +33,4 @@ tasks:
 
   compose-test:
     cmds:
-      - docker compose exec -t 
+      - docker compose run tests
