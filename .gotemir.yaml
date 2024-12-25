@@ -194,9 +194,6 @@ test-helpers:
   - .*conftest.py
   - .*__init__.py
   # TODO
-  - src/tests/unit/integrations/tg/tg_answers/test_callback_regex_answer.py
-  - src/tests/unit/integrations/tg/tg_answers/test_keyboard_edit_answer.py
-  - src/tests/unit/integrations/tg/tg_answers/test_skip_not_processable_answer.py
   - src/tests/unit/services/test_append_update_id_answer.py
   - src/tests/unit/services/test_intable_regex.py
   - src/tests/unit/srv/ayats/test_cached_ayat_search_query_answer.py
