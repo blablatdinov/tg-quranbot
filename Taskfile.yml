@@ -1,6 +1,6 @@
 # The MIT License (MIT).
 #
-# Copyright (c) 2018-2024 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+# Copyright (c) 2018-2025 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,14 +23,14 @@
 version: 3
 
 tasks:
-  setup:
+  compose-setup:
     cmds:
       - docker compose build
 
-  run:
+  compose-run:
     cmds:
       - docker compose up -d
 
-  test:
+  compose-test:
     cmds:
       - docker compose exec -t 
