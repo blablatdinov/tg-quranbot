@@ -134,3 +134,8 @@ def _mock_nominatim(respx_mock):
         200,
         text=Path('src/tests/fixtures/nominatim_response.json').read_text(encoding='utf-8'),
     ))
+
+
+@pytest.fixture
+def settings():
+    return Settings(_env_file=BASE_DIR.parent / '.env')
