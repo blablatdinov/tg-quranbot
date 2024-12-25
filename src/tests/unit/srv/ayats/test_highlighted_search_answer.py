@@ -36,9 +36,6 @@ async def test():
 
     assert len(got) == 1
     assert got[0].url.params['text'] == '<b>How to write tests</b> in python?'
-    # assert urllib.parse.unquote(
-    #     str(got[0].url),
-    # ) == 'https://some.domain?text=<b>How to write tests</b> in python?'
 
 
 async def test_key_error():
