@@ -20,7 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import urllib
 
 from app_types.fk_update import FkUpdate
 from integrations.tg.tg_answers.fk_answer import FkAnswer
