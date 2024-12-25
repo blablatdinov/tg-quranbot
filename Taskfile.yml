@@ -33,4 +33,9 @@ tasks:
 
   compose-test:
     cmds:
-      - docker compose run tests
+      - docker compose run qbot task tests
+
+  tests:
+    cmds:
+      - poetry run mypy src
+      - poetry run pytest --ignore=src/tests/e2e --cov=src --cov-report html --cov-fail-under=96
