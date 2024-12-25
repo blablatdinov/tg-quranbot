@@ -35,9 +35,10 @@ async def test():
     ).build(FkUpdate.empty_ctor())
 
     assert len(got) == 1
-    assert urllib.parse.unquote(
-        str(got[0].url),
-    ) == 'https://some.domain?text=<b>How to write tests</b> in python?'
+    assert got[0].url.params['text'] == '<b>How to write tests</b> in python?'
+    # assert urllib.parse.unquote(
+    #     str(got[0].url),
+    # ) == 'https://some.domain?text=<b>How to write tests</b> in python?'
 
 
 async def test_key_error():
@@ -47,9 +48,7 @@ async def test_key_error():
     ).build(FkUpdate.empty_ctor())
 
     assert len(got) == 1
-    assert urllib.parse.unquote(
-        str(got[0].url),
-    ) == 'https://some.domain'
+    assert str(got[0].url) == 'https://some.domain'
 
 
 async def test_other_text():
@@ -58,6 +57,4 @@ async def test_other_text():
     ).build(FkUpdate.empty_ctor())
 
     assert len(got) == 1
-    assert urllib.parse.unquote(
-        str(got[0].url),
-    ) == 'https://some.domain?text=How to write documentation'
+    assert got[0].url.params['text'] == 'How to write documentation'
