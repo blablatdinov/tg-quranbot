@@ -39,11 +39,33 @@ tasks:
     cmds:
       - docker compose run --rm qbot bash
 
+  compose-fmt:
+    cmds:
+      - docker compose run --rm qbot task fmt
+
+  compose-lint:
+    cmds:
+      - docker compose run --rm qbot task lint
+
   tests:
     cmds:
       - poetry run mypy src
-      # - poetry run pytest src/tests/it/srv/users/test_pg_user.py::test_user
       - poetry run pytest --ignore=src/tests/e2e --cov=src --cov-report html --cov-fail-under=96
+
+  fmt:
+    cmds:
+      - poetry run isort src
+      - poetry run ruff check src --fix --output-format=concise
+
+  lint:
+    cmds:
+      - poetry run ruff check src --output-format=concise
+      - poetry run flake8 src
+      - poetry run refurb src
+      - poetry run fixit src
+      - poetry run pylint src | poetry run ondivi --only-violations
+      - poetry run mypy src
+      - poetry run sqlfluff lint migrations --dialect postgres
 
   clean:
     cmds:
