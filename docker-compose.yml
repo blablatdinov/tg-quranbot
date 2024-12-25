@@ -43,7 +43,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: qbot
-    ports: 
+    ports:
       - "5432:5432"
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
@@ -54,7 +54,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: qbot
-    ports: 
+    ports:
       - "6379:6379"
     volumes:
       - ./redis-data:/data
