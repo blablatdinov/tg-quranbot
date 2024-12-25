@@ -1,6 +1,6 @@
 # The MIT License (MIT).
 #
-# Copyright (c) 2018-2025 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+# Copyright (c) 2018-2024 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,27 +19,57 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
+---
+version: '3.3'
 
-FROM python:3.13.1-slim as base
-ENV PIP_DISABLE_PIP_VERSION_CHECK=1
-WORKDIR /app
+services:
+  qbot:
+    container_name: 'qbot'
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    command: poetry run python main.py run_polling
+    volumes:
+      - .env:/.env
+      - ./:/app
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
 
-FROM base as poetry
-RUN pip install poetry==1.8.4
-COPY poetry.lock pyproject.toml /app/
-RUN poetry export --without dev -o requirements.txt
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: qbot
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
 
-FROM base as build
-COPY --from=poetry /app/requirements.txt /tmp/requirements.txt
-RUN cat /tmp/requirements.txt
-RUN apt-get update && apt-get install gcc=4:12.2.0-3 -y
-RUN python -m venv /app/.venv && /app/.venv/bin/pip install -r /tmp/requirements.txt
+  redis:
+    image: redis:6
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: qbot
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
 
-FROM python:3.12.7-slim as runtime
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./rabbitmq-data/data/:/var/lib/rabbitmq/
+      - ./rabbitmq-data/log/:/var/log/rabbitmq
 
-# Copy only requirements to cache them in docker layer
-WORKDIR /app
-COPY --from=build /app/.venv /app/.venv
-
-# Creating folders, and files for a project:
-COPY src /app
+volumes:
+  postgres-data:
+  redis-data:
+  rabbitmq-data:

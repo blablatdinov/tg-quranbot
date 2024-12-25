@@ -243,3 +243,9 @@ me.session-journal
 .vscode
 
 .cspellcache
+
+# docker compose volumes
+
+postgres-data/
+rabbitmq-data/
+redis-data/
