@@ -24,6 +24,7 @@ version: '3.3'
 
 services:
   qbot:
+    # FIXME: использовать имя контейнера, чтобы было проще его удалить
     build:
       context: .
       dockerfile: ./Dockerfile.dev

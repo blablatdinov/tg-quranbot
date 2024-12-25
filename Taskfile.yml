@@ -39,3 +39,8 @@ tasks:
     cmds:
       - poetry run mypy src
       - poetry run pytest --ignore=src/tests/e2e --cov=src --cov-report html --cov-fail-under=96
+
+  clean:
+    cmds:
+      - git clean -f -d -x -e .env -e me.session
+      - docker rmi bot-qbot -f
