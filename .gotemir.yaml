@@ -46,14 +46,10 @@ test-free-files:
   - src/integrations/tg/polling_updates.py
   - src/integrations/tg/sendable.py
   - src/integrations/tg/sendable_answer.py
-  - src/integrations/tg/tg_answers/callback_query_regex_answer.py
   - src/integrations/tg/tg_answers/delete_message_answer.py
   - src/integrations/tg/tg_answers/edit_message_text.py
   - src/integrations/tg/tg_answers/link_preview_options.py
-  - src/integrations/tg/tg_answers/markup_answer.py
   - src/integrations/tg/tg_answers/message_answer_to_sender.py
-  - src/integrations/tg/tg_answers/message_keyboard_edit_answer.py
-  - src/integrations/tg/tg_answers/skip_not_processable.py
   - src/integrations/tg/tg_answers/skipable_answer.py
   - src/integrations/tg/tg_answers/text_answer.py
   - src/integrations/tg/tg_answers/tg_answer.py
@@ -84,7 +80,6 @@ test-free-files:
   - src/services/err_redirect_json_path.py
   - src/services/fork_cli_app.py
   - src/services/help_answer.py
-  - src/services/instable_regex.py
   - src/services/json_path.py
   - src/services/json_path_value.py
   - src/services/match_many_json_path.py
@@ -109,7 +104,6 @@ test-free-files:
   - src/srv/ayats/ayat_id_by_sura_ayat_num.py
   - src/srv/ayats/ayat_link.py
   - src/srv/ayats/ayats_by_text_query.py
-  - src/srv/ayats/cached_ayat_search_query.py
   - src/srv/ayats/cached_text_search_query.py
   - src/srv/ayats/favorite_ayat_answer.py
   - src/srv/ayats/favorite_ayat_page.py
@@ -124,7 +118,6 @@ test-free-files:
   - src/srv/ayats/pg_ayat_identifier.py
   - src/srv/ayats/search_ayat_by_text.py
   - src/srv/ayats/search_query.py
-  - src/srv/ayats/sura_not_found_safe_answer.py
   - src/srv/ayats/text_search_neighbor_ayats.py
   - src/srv/ayats/text_search_query.py
   - src/srv/ayats/user_has_not_search_query_safe_answer.py
@@ -195,9 +188,6 @@ test-helpers:
   - .*__init__.py
   # TODO
   - src/tests/unit/services/test_append_update_id_answer.py
-  - src/tests/unit/services/test_intable_regex.py
-  - src/tests/unit/srv/ayats/test_cached_ayat_search_query_answer.py
-  - src/tests/unit/srv/ayats/test_sura_not_found_answer.py
   - src/tests/unit/srv/prayers/test_podcasts_reaction_change_answer.py
   - src/tests/unit/srv/prayers/test_ramadan_prayer_text_unit.py
   - src/tests/unit/test_reset_state_answer.py
