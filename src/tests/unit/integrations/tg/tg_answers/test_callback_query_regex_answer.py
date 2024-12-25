@@ -34,7 +34,7 @@ async def test():
 
 
 async def test_without_callback():
-    got = await TgCallbackQueryRegexAnswer('hello', FkAnswer()).build(FkUpdate.empty_ctor())  # noqa: P103 it is empty json
+    got = await TgCallbackQueryRegexAnswer('hello', FkAnswer()).build(FkUpdate.empty_ctor())
 
     assert got == []
 
