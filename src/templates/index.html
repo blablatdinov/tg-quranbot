@@ -64,6 +64,45 @@ OR OTHER DEALINGS IN THE SOFTWARE.
         Helps maintain code quality by encouraging regular reviews.
         Reduces the risk of having outdated or unmaintained code.
       </p>
+      <h2>Configure:</h2>
+      <p>You can install the bot either via GitHub Marketplace or manually.</p>
+      <h3>Option 1: Install via GitHub Marketplace (Recommended)</h3>
+      <p>1. Visit the bot's GitHub <a href="https://github.com/marketplace/revive-code-bot">Marketplace page</a></p>
+      <p>2. Click Install and follow the prompts to grant access to the bot.</p>
+      <p>3. After installation, the bot will automatically start working with your repository.</p>
+      <h3>Option 2: Manual Installation</h3>
+      <p>If you cannot use GitHub Marketplace, follow these two steps to configure the bot manually:</p>
+      <h3>Step 1: Grant Access to the Bot</h3>
+      <p>1. Open your GitHub repository.</p>
+      <p>2. Go to Settings > Collaborators and teams.</p>
+      <p>3. In the Collaborators section, click Invite a collaborator.</p>
+      <p>4. Enter the bot's GitHub username (e.g., <code>@revive-bot</code>) and send the invitation.</p>
+      <h3>Step 2: Add a Webhook</h3>
+      <p>1. Open your repository and go to Settings > Webhooks.</p>
+      <p>2. Click "Add webhook".</p>
+      <p>
+        3. Use the following URL as the Payload URL:
+        <code>https://www.rehttp.net/p/https://revive-code-bot.ilaletdinov.ru/hook/github</code>
+      </p>
+      <p>4. Set the Content type to `application/json`.</p>
+      <p>5. Select "Issue comments", "Issues", "Pushes" event as the trigger event.</p>
+      <p>6. Click "Add webhook" to save.</p>
+      <hr>
+      <p>To configure the app, create a <code>.revive-bot.yml</code> file in the root of your repository with the
+        following options:</p>
+      <pre>
+# Schedule when the bot checks for stagnant files (cron format)
+# Visit https://crontab.guru
+cron: '11 2 6 * *'  # Runs on the 6th day of each month at 02:11 AM
+
+# Define file patterns to analyze using glob syntax
+# glob: '**/*.py'  # Analyze all Python files
+# glob: 'src/**/*.js'  # Analyze JavaScript files in the src directory and its subdirectories
+glob: '**/*.py'  # Example: analyze all Python files
+
+# Limit the maximum number of files listed in an issue
+limit: 5
+      </pre>
       <h2>See also:</h2>
       <hr>
       <a href="https://github.com/blablatdinov/revive-scheduler">revive-scheduler</a>
