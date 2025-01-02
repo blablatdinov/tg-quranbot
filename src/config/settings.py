@@ -26,6 +26,7 @@ from pathlib import Path
 
 import environ  # type: ignore [import-untyped]
 import sentry_sdk
+from django.core.exceptions import DisallowedHost
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -134,4 +135,5 @@ if SENTRY_KEY:
         _experiments={
             'continuous_profiling_auto_start': True,
         },
+        ignore_errors=[DisallowedHost],
     )
