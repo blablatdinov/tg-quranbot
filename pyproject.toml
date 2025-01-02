@@ -39,6 +39,7 @@ pyyaml = "6.0.2"
 attrs = "24.3.0"
 lxml = "5.3.0"
 cron-validator = "1.0.8"
+sentry-sdk = {extras = ["django"], version = "^2.19.2"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "8.3.4"

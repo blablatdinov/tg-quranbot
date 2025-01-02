@@ -22,6 +22,8 @@
 
 """Django settings."""
 
+import sentry_sdk
+
 from pathlib import Path
 
 import environ  # type: ignore [import-untyped]
@@ -120,3 +122,14 @@ GH_APP_KEY = (BASE_DIR / 'revive-code-bot.private-key.pem').read_text()
 SCHEDULER_HOST = env('SCHEDULER_HOST')
 
 GH_TOKEN = env('GH_TOKEN')
+
+SENTRY_KEY = env('SENTRY_KEY', str, default=None)
+
+if SENTRY_KEY:
+    sentry_sdk.init(
+        dsn=f'https://{SENTRY_KEY}@o1351389.ingest.us.sentry.io/4508574747656192',
+        traces_sample_rate=1.0,
+        _experiments={
+            'continuous_profiling_auto_start': True,
+        },
+    )
