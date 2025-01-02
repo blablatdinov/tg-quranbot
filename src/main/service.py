@@ -30,9 +30,9 @@ from typing import TypedDict
 import requests
 from django.conf import settings
 from django.template import Context, Template
-from github.GithubException import GithubException
 
 from main.algorithms import files_sorted_by_last_changes, files_sorted_by_last_changes_from_db
+from main.exceptions import UnavailableRepoError
 from main.models import GhRepo, RepoConfig, RepoStatusEnum
 from main.services.github_objs.cloned_repo import ClonedRepo
 from main.services.github_objs.github_client import github_repo
@@ -87,7 +87,7 @@ def update_config(repo_full_name: str) -> None:
                 ),
             ),
         ).parse()
-    except GithubException:
+    except UnavailableRepoError:
         repo.status = RepoStatusEnum.inactive
         repo.save()
         return

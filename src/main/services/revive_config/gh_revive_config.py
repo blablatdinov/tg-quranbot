@@ -26,10 +26,10 @@ from contextlib import suppress
 from typing import final, override
 
 import attrs
-from github.GithubException import UnknownObjectException
+from github.GithubException import GithubException, UnknownObjectException
 from github.Repository import Repository
 
-from main.exceptions import UnexpectedGhFileContentError
+from main.exceptions import UnavailableRepoError, UnexpectedGhFileContentError
 from main.services.revive_config.revive_config import ConfigDict, ReviveConfig
 from main.services.revive_config.str_config import StrReviveConfig
 
@@ -49,7 +49,10 @@ class GhReviveConfig(ReviveConfig):
         config = self._default_config.parse()
         for variant in variants:
             with suppress(UnknownObjectException):
-                file = self._gh_repo.get_contents(variant)
+                try:
+                    file = self._gh_repo.get_contents(variant)
+                except GithubException as err:
+                    raise UnavailableRepoError from err
                 if isinstance(file, list):
                     raise UnexpectedGhFileContentError
                 config |= StrReviveConfig(

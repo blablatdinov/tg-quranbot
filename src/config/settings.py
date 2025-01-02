@@ -22,11 +22,10 @@
 
 """Django settings."""
 
-import sentry_sdk
-
 from pathlib import Path
 
 import environ  # type: ignore [import-untyped]
+import sentry_sdk
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -125,8 +124,11 @@ GH_TOKEN = env('GH_TOKEN')
 
 SENTRY_KEY = env('SENTRY_KEY', str, default=None)
 
+ENVIRONMENT = env('ENVIRONMENT', str, default='development')
+
 if SENTRY_KEY:
     sentry_sdk.init(
+        environment=ENVIRONMENT,
         dsn=f'https://{SENTRY_KEY}@o1351389.ingest.us.sentry.io/4508574747656192',
         traces_sample_rate=1.0,
         _experiments={

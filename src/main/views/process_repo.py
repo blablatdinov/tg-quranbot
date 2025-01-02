@@ -27,8 +27,8 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from github.GithubException import GithubException
 
+from main.exceptions import UnavailableRepoError
 from main.models import GhRepo, RepoStatusEnum
 from main.service import process_repo
 from main.services.github_objs.gh_cloned_repo import GhClonedRepo
@@ -48,7 +48,7 @@ def process_repo_view(request: HttpRequest, repo_id: int) -> HttpResponse:
             GhClonedRepo(repo),
             GhNewIssue(github_repo(repo.installation_id, repo.full_name)),
         )
-    except GithubException:
+    except UnavailableRepoError:
         repo.status = RepoStatusEnum.inactive
         repo.save()
     return HttpResponse(status=201)

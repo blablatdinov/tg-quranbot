@@ -28,6 +28,7 @@ from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from main.exceptions import UnavailableRepoError
 from main.models import RepoStatusEnum
 from main.service import get_or_create_repo, is_default_branch, update_config
 from main.services.github_objs.gh_repo_installation import GhRepoInstallation
@@ -55,10 +56,13 @@ def gh_webhook(request: HttpRequest) -> HttpResponse:  # noqa: PLR0911. TODO
                 installation_id,
             ).register()
             return HttpResponse('Repos installed')
-        pg_repo = get_or_create_repo(
-            request_json['repository']['full_name'],
-            int(request.headers['X-Github-Hook-Installation-Target-Id']),
-        )
+        try:
+            pg_repo = get_or_create_repo(
+                request_json['repository']['full_name'],
+                int(request.headers['X-Github-Hook-Installation-Target-Id']),
+            )
+        except UnavailableRepoError:
+            return HttpResponse('Repo unavailable', status=404)
         if gh_event == 'ping':
             return HttpResponse('Webhooks installed')
         elif gh_event == 'push':
