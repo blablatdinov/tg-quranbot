@@ -3,7 +3,7 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 WORKDIR /app
 
 FROM base as poetry
-RUN pip install poetry==1.7.1
+RUN pip install poetry==1.8.5
 COPY poetry.lock pyproject.toml /app/
 RUN poetry export --without dev -o requirements.txt
 

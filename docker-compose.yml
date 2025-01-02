@@ -19,19 +19,48 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
+---
+version: '3.3'
 
-run:
-	poetry run python src/manage.py runserver
+services:
 
-lint:
-	poetry run isort src
-	poetry run ruff check src --fix
-	# poetry run flake8 src
-	poetry run refurb src
-	poetry run mypy src
+  app:
+    container_name: 'revive-code-bot'
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    command: poetry run python src/manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .env:/.env
+      - ./:/app
+    depends_on:
+      - postgres
+      - redis
 
-test:
-	cd src && poetry run pytest -m 'not integration' --cov=. --cov-report=term-missing:skip-covered -vv
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: revive-code-bot
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
 
-clean:
-	git clean -fdx -e .env -e src/revive-code-bot.private-key.pem
+  redis:
+    image: redis:6
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: revive-code-bot
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+
+volumes:
+  postgres-data:
+  redis-data:

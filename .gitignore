@@ -179,3 +179,7 @@ pyrightconfig.json
 
 # Github auth private key
 *.pem
+
+# docker volumes
+postgres-data
+redis-data
