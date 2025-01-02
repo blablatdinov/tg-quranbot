@@ -149,11 +149,17 @@ def process_repo(repo_id: int, cloned_repo: ClonedRepo, new_issue: NewIssue) -> 
     new_issue.create(
         'Issue from revive-code-bot',
         Template('\n'.join([
+            '## Potentially Stagnant Files Identified\n'
+            'This issue was automatically created by Revive Code Bot to highlight files that',
+            "haven't been updated for a long time or may require review. Regular updates and reviews",
+            'of such files help maintain the quality and relevance of the project codebase.',
             '{% for file in files %}- [ ] `{{ file }}`\n{% endfor %}\n',
-            'Expected actions:\n'
-            '1. Create new issues with reference to this issue',
-            '2. Clean files must be marked in checklist',
-            '3. Close issue',
+            '## Recommended Actions:',
+            '1. Create separate issues for each file (referencing this issue for context).',
+            '2. Review the listed files:',
+            '  - Update or remove outdated files.',
+            '  - Mark relevant files as reviewed in the checklist below.',
+            '3. Once all files have been reviewed, close this issue.',
         ])).render(Context({
             'files': file_list,
         })),
