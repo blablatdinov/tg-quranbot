@@ -42,7 +42,7 @@ class DiskReviveConfig(ReviveConfig):
     @override
     def parse(self) -> ConfigDict:
         """Parsing file from file."""
-        config_file = list(self._repo_path.glob('.revive-bot.*'))
+        config_file = list(self._repo_path.glob('.revive-code-bot.*'))
         if not config_file:
             raise ConfigFileNotFoundError
         return StrReviveConfig(next(iter(config_file)).read_text()).parse()

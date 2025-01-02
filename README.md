@@ -41,7 +41,7 @@ If you cannot use GitHub Marketplace, follow these two steps to configure the bo
 1. Open your GitHub repository.
 2. Go to Settings > Collaborators and teams.
 3. In the Collaborators section, click Invite a collaborator.
-4. Enter the bot's GitHub username (e.g., `@revive-bot`) and send the invitation.
+4. Enter the bot's GitHub username (e.g., `@revive-code-bot`) and send the invitation.
 
 #### Step 2: Add a Webhook
 
@@ -55,7 +55,7 @@ If you cannot use GitHub Marketplace, follow these two steps to configure the bo
 
 ---
 
-To configure the app, create a `.revive-bot.yml` file in the root of your repository with the following options:
+To configure the app, create a `.revive-code-bot.yml` file in the root of your repository with the following options:
 
 ```yaml
 # Schedule when the bot checks for stagnant files (cron format)

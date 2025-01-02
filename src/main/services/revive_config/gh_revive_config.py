@@ -45,7 +45,7 @@ class GhReviveConfig(ReviveConfig):
     @override
     def parse(self) -> ConfigDict:
         """Read from github."""
-        variants = ('.revive-bot.yaml', '.revive-bot.yml')
+        variants = ('.revive-code-bot.yaml', '.revive-code-bot.yml')
         config = self._default_config.parse()
         for variant in variants:
             with suppress(UnknownObjectException):

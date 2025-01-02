@@ -88,7 +88,7 @@ def mock_github(mock_http):
 def mock_github_permission_denied(mock_github):
     mock_github.register_uri(
         'GET',
-        re.compile(r'https://api.github.com:443/repos/blablatdinov/gotemir/contents/.revive-bot.*'),
+        re.compile(r'https://api.github.com:443/repos/blablatdinov/gotemir/contents/.revive-code-bot.*'),
         status_code=403,
     )
     return mock_github
@@ -98,7 +98,7 @@ def mock_github_permission_denied(mock_github):
 def empty_revive_config(mock_github):
     mock_github.register_uri(
         'GET',
-        re.compile(r'https://api.github.com:443/repos/blablatdinov/gotemir/contents/.revive-bot.*'),
+        re.compile(r'https://api.github.com:443/repos/blablatdinov/gotemir/contents/.revive-code-bot.*'),
         status_code=404,
         text='\n'.join([
             '{',
@@ -114,25 +114,25 @@ def empty_revive_config(mock_github):
 def filled_revive_config(mock_github):
     mock_github.register_uri(
         'GET',
-        re.compile(r'https://api.github.com:443/repos/blablatdinov/gotemir/contents/.revive-bot.*'),
+        re.compile(r'https://api.github.com:443/repos/blablatdinov/gotemir/contents/.revive-code-bot.*'),
         status_code=200,
         text='\n'.join([
             '{',
-            '  "name": ".revive-bot.yml",',
-            '  "path": ".revive-bot.yml",',
+            '  "name": ".revive-code-bot.yml",',
+            '  "path": ".revive-code-bot.yml",',
             '  "sha": "0d65cbc61abdd1ce508d90aa188d814f99eb1666",',
             '  "size": 30,',
-            '  "url": "https://api.github.com/repos/blablatdinov/iman-game-bot/contents/.revive-bot.yml?ref=master",',
-            '  "html_url": "https://github.com/blablatdinov/iman-game-bot/blob/master/.revive-bot.yml",',
+            '  "url": "https://api.github.com/repos/blablatdinov/iman-game-bot/contents/.revive-code-bot.yml?ref=master",',
+            '  "html_url": "https://github.com/blablatdinov/iman-game-bot/blob/master/.revive-code-bot.yml",',
             '  "git_url": "https://api.github.com/repos/blablatdinov/iman-game-bot/git/blobs/0d65cbc61abdd1ce508d90aa188d814f99eb1666",',
-            '  "download_url": "https://raw.githubusercontent.com/blablatdinov/iman-game-bot/master/.revive-bot.yml",',
+            '  "download_url": "https://raw.githubusercontent.com/blablatdinov/iman-game-bot/master/.revive-code-bot.yml",',
             '  "type": "file",',
             '  "content": "LS0tCmxpbWl0OiA1CmNyb246IDE2IDQgKiAqICoK\\n",',
             '  "encoding": "base64",',
             '  "_links": {',
-            '    "self": "https://api.github.com/repos/blablatdinov/iman-game-bot/contents/.revive-bot.yml?ref=master",',
+            '    "self": "https://api.github.com/repos/blablatdinov/iman-game-bot/contents/.revive-code-bot.yml?ref=master",',
             '    "git": "https://api.github.com/repos/blablatdinov/iman-game-bot/git/blobs/0d65cbc61abdd1ce508d90aa188d814f99eb1666",',
-            '    "html": "https://github.com/blablatdinov/iman-game-bot/blob/master/.revive-bot.yml"',
+            '    "html": "https://github.com/blablatdinov/iman-game-bot/blob/master/.revive-code-bot.yml"',
             '  }',
             '}',
         ]),
