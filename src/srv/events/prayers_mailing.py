@@ -52,7 +52,7 @@ from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import Sink
 from srv.prayers.fk_prayer_date import FkPrayerDate
-from srv.prayers.prayers_text import PrayersText
+from srv.prayers.pg_prayers_text import PgPrayersText
 from srv.prayers.ramadan_prayer_text import RamadanPrayerText
 from srv.prayers.user_city_id import UserCityId
 from srv.users.fk_user import FkUser
@@ -107,7 +107,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                             TgTextAnswer(
                                 TgMessageAnswer(self._empty_answer),
                                 RamadanPrayerText(
-                                    PrayersText(
+                                    PgPrayersText(
                                         self._pgsql,
                                         date,
                                         UserCityId(self._pgsql, active_user[CHAT_ID]),

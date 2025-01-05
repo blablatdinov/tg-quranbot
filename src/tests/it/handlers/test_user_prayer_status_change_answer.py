@@ -33,7 +33,7 @@ from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.prayers.fk_prayer_date import FkPrayerDate
-from srv.prayers.prayers_text import PrayersText
+from srv.prayers.pg_prayers_text import PgPrayersText
 
 
 @pytest.fixture
@@ -198,7 +198,7 @@ async def test_today(pgsql, fake_redis, time_machine, settings_ctor):
 
 @pytest.mark.usefixtures('_generated_prayers')
 async def test_prayers_text(pgsql, settings_ctor):
-    got = await PrayersText(
+    got = await PgPrayersText(
         pgsql,
         FkPrayerDate(datetime.datetime(2023, 12, 19, tzinfo=pytz.timezone('Europe/Moscow'))),
         FkAsyncStr('080fd3f4-678e-4a1c-97d2-4460700fe7ac'),

@@ -36,7 +36,7 @@ TIME_LITERAL: Final = 'time'
 
 @final
 @attrs.define(frozen=True)
-class PrayersText(AsyncSupportsStr):
+class PgPrayersText(AsyncSupportsStr):
     """Текст сообщения с намазами."""
 
     _pgsql: Database
