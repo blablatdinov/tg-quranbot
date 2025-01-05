@@ -121,6 +121,9 @@ class QuranbotAnswer(TgAnswer):
                             logger,
                         ),
                     ),
+                    # TODO #1428:30min Интегрировать просмотр времени намаза с сайта https://namaz.today
+                    #  Нужно встроить feature flag, чтобы включать и выключать эту функцию
+                    #  для отдельных пользователей
                     TgMessageRegexAnswer(
                         'Время намаза',
                         PrayerTimeAnswer.new_prayers_ctor(
