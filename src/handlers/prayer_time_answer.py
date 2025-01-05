@@ -49,11 +49,11 @@ from srv.message_not_found_safe_answer import MessageNotFoundSafeAnswer
 from srv.prayers.date_from_user_prayer_id import DateFromUserPrayerId
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.pagination_per_day_date import PaginationPerDayDate
+from srv.prayers.pg_prayers_text import PgPrayersText
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 from srv.prayers.prayers_mark_as_date import PrayersMarkAsDate
 from srv.prayers.prayers_request_date import PrayersRequestDate
-from srv.prayers.prayers_text import PrayersText
 from srv.prayers.ramadan_prayer_text import RamadanPrayerText
 from srv.prayers.user_city_id import UserCityId
 from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
@@ -198,7 +198,7 @@ class PrayerTimeAnswer(TgAnswer):
                             TgTextAnswer(
                                 self._origin,
                                 RamadanPrayerText(
-                                    PrayersText(
+                                    PgPrayersText(
                                         self._pgsql,
                                         self._prayers_date,
                                         UserCityId(self._pgsql, TgChatId(update)),

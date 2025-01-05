@@ -20,35 +20,27 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
+from typing import final, override
 
-import pytz
+import attrs
 
-from app_types.fk_async_str import FkAsyncStr
-from app_types.fk_update import FkUpdate
-from srv.prayers.fk_prayer_date import FkPrayerDate
-from srv.prayers.pg_prayers_text import PgPrayersText
-from srv.prayers.ramadan_prayer_text import RamadanPrayerText
+from app_types.async_supports_str import AsyncSupportsStr
 
 
-async def test(pgsql, prayers_factory):
-    await prayers_factory('2023-12-19')
-    got = await RamadanPrayerText(
-        PgPrayersText(
-            pgsql,
-            FkPrayerDate(datetime.datetime(2023, 12, 19, tzinfo=pytz.timezone('Europe/Moscow'))),
-            FkAsyncStr('080fd3f4-678e-4a1c-97d2-4460700fe7ac'),
-            FkUpdate('{"message":{"text":"Время намаза"}}'),
-        ),
-        ramadan_mode=True,
-    ).to_str()
+@final
+@attrs.define(frozen=True)
+class NtPrayersText(AsyncSupportsStr):
+    """Текст сообщения с намазами с сайта https://namaz.today ."""
 
-    assert got == '\n'.join([
-        'Время намаза для г. Kazan (19.12.2023)\n',
-        'Иртәнге: 05:43 <i>- Конец сухура</i>',
-        'Восход: 08:02',
-        'Өйлә: 12:00',
-        'Икенде: 13:21',
-        'Ахшам: 15:07 <i>- Ифтар</i>',
-        'Ястү: 17:04',
-    ])
+    @override
+    async def to_str(self) -> str:
+        """Строковое представление.
+
+        :return: str
+        :raises PrayersNotFoundError: намазы не найдены
+        """
+        # TODO #1428:30min Написать парсер для времени намаза с сайта https://namaz.today
+        #  https://namaz.today/city/kazan
+        # TODO #1428:30min Написать декоратор, который будет создавать запись prayer_at_user
+        # TODO #1428:30min Определить как получать время намаза по дате
+        return ''

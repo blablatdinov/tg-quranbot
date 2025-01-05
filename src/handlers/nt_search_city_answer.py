@@ -20,35 +20,28 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
+from typing import final, override
 
-import pytz
+import attrs
+import httpx
 
-from app_types.fk_async_str import FkAsyncStr
-from app_types.fk_update import FkUpdate
-from srv.prayers.fk_prayer_date import FkPrayerDate
-from srv.prayers.pg_prayers_text import PgPrayersText
-from srv.prayers.ramadan_prayer_text import RamadanPrayerText
+from app_types.update import Update
+from integrations.tg.tg_answers.tg_answer import TgAnswer
 
 
-async def test(pgsql, prayers_factory):
-    await prayers_factory('2023-12-19')
-    got = await RamadanPrayerText(
-        PgPrayersText(
-            pgsql,
-            FkPrayerDate(datetime.datetime(2023, 12, 19, tzinfo=pytz.timezone('Europe/Moscow'))),
-            FkAsyncStr('080fd3f4-678e-4a1c-97d2-4460700fe7ac'),
-            FkUpdate('{"message":{"text":"Время намаза"}}'),
-        ),
-        ramadan_mode=True,
-    ).to_str()
+@final
+@attrs.define(frozen=True)
+class NtSearchCityAnswer(TgAnswer):
+    """Ответ со списком городов для выбора с сайта https://namaz.today ."""
 
-    assert got == '\n'.join([
-        'Время намаза для г. Kazan (19.12.2023)\n',
-        'Иртәнге: 05:43 <i>- Конец сухура</i>',
-        'Восход: 08:02',
-        'Өйлә: 12:00',
-        'Икенде: 13:21',
-        'Ахшам: 15:07 <i>- Ифтар</i>',
-        'Ястү: 17:04',
-    ])
+    @override
+    async def build(self, update: Update) -> list[httpx.Request]:
+        """Обработка запроса.
+
+        :param update: Update
+        :return: list[httpx.Request]
+        """
+        # TODO #1428:30min Написать парсер для городов с сайта https://namaz.today
+        #  https://namaz.today/city.php?term=каз
+        # TODO #1428:30min Определить как у пользователя будет храниться выбранный город
+        return []

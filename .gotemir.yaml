@@ -155,7 +155,7 @@ test-free-files:
   - src/srv/prayers/prayers_mark_as_date.py
   - src/srv/prayers/prayers_request_date.py
   - src/srv/prayers/prayers_stts.py
-  - src/srv/prayers/prayers_text.py
+  - src/srv/prayers/pg_prayers_text.py
   - src/srv/prayers/updated_user_city.py
   - src/srv/prayers/user_prayer_status.py
   - src/srv/prayers/user_prayer_stts.py
