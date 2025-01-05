@@ -63,4 +63,5 @@ class NtSearchCityAnswer(TgAnswer):
         """
         # TODO #1428:30min Написать парсер для городов с сайта https://namaz.today
         #  https://namaz.today/city.php?term=каз
+        # TODO #1428:30min Определить как у пользователя будет храниться выбранный город
         return []

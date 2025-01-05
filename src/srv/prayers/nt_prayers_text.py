@@ -42,5 +42,6 @@ class NtPrayersText(AsyncSupportsStr):
         :raises PrayersNotFoundError: намазы не найдены
         """
         # TODO #1428:30min Написать парсер для времени намаза с сайта https://namaz.today
+        #  https://namaz.today/city/kazan
         # TODO #1428:30min Написать декоратор, который будет создавать запись prayer_at_user
         return ''
