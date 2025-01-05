@@ -51,14 +51,8 @@ from srv.users.redis_user_state import RedisUserState
 
 @final
 @attrs.define(frozen=True)
-class SearchCityAnswer(TgAnswer):
-    """Ответ со списком городов для выбора."""
-
-    _pgsql: Database
-    _empty_answer: TgAnswer
-    _debug_mode: SupportsBool
-    _redis: Redis
-    _logger: LogSink
+class NtSearchCityAnswer(TgAnswer):
+    """Ответ со списком городов для выбора с сайта https://namaz.today ."""
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -67,42 +61,6 @@ class SearchCityAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        answer_to_sender = TgAnswerToSender(TgMessageAnswer(self._empty_answer))
-        try:
-            city = PgCity.name_ctor(str(MessageText(update)), self._pgsql)
-        except MessageTextNotFoundError:
-            city = PgCity.location_ctor(TgMessageCoordinates(update), self._pgsql)
-        return await UserNotRegisteredSafeAnswer(
-            PgNewUser.ctor(TgChatId(update), self._pgsql, self._logger),
-            TgSkipNotProcessable(
-                TgAnswerFork.ctor(
-                    self._logger,
-                    TgMessageRegexAnswer(
-                        '.+',
-                        CityNotSupportedAnswer(
-                            ResetStateAnswer(
-                                ChangeCityAnswer(
-                                    answer_to_sender,
-                                    PgUpdatedUserCity(city, TgChatId(update), self._pgsql),
-                                    city,
-                                ),
-                                CachedUserState(
-                                    RedisUserState(self._redis, TgChatId(update), self._logger),
-                                ),
-                            ),
-                            answer_to_sender,
-                        ),
-                    ),
-                    TgLocationAnswer(
-                        CityNotSupportedAnswer(
-                            ChangeCityAnswer(
-                                answer_to_sender,
-                                PgUpdatedUserCity(city, TgChatId(update), self._pgsql),
-                                city,
-                            ),
-                            answer_to_sender,
-                        ),
-                    ),
-                ),
-            ),
-        ).build(update)
+        # TODO #1428:30min Написать парсер для городов с сайта https://namaz.today
+        #  https://namaz.today/city.php?term=каз
+        return []

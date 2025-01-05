@@ -36,11 +36,11 @@ from handlers.full_start_answer import FullStartAnswer
 from handlers.next_day_ayats import NextDayAyats
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.pagination_per_day_prayer_answer import PaginationPerDayPrayerAnswer
+from handlers.pg_search_city_answer import PgSearchCityAnswer
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
 from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
 from handlers.search_ayat_by_numbers_answer import SearchAyatByNumbersAnswer
-from handlers.search_city_answer import SearchCityAnswer
 from handlers.skipped_prayers_answer import SkippedPrayersAnswer
 from handlers.status_answer import StatusAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
@@ -254,7 +254,7 @@ class QuranbotAnswer(TgAnswer):
                     ),
                     StepAnswer(
                         UserStep.city_search.value,
-                        SearchCityAnswer(pgsql, empty_answer, settings.DEBUG, redis, logger),
+                        PgSearchCityAnswer(pgsql, empty_answer, settings.DEBUG, redis, logger),
                         redis,
                         logger,
                     ),
