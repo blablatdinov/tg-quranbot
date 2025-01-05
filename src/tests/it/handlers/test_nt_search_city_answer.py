@@ -28,7 +28,7 @@ from handlers.nt_search_city_answer import NtSearchCityAnswer
 
 # TODO #1428:30min Написать парсер тест для класса NtSearchCityAnswer.
 async def test():
-    got = await NtSearchCityAnswer().build(
+    await NtSearchCityAnswer().build(
         FkUpdate(ujson.dumps({
             'message': {'text': 'Kazan'},
             'chat': {'id': 384957},

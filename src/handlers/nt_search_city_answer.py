@@ -24,29 +24,9 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
-from redis.asyncio import Redis
 
-from app_types.logger import LogSink
-from app_types.supports_bool import SupportsBool
 from app_types.update import Update
-from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
-from integrations.tg.message_text import MessageText
-from integrations.tg.tg_answers import TgAnswerFork, TgAnswerToSender, TgMessageAnswer, TgMessageRegexAnswer
-from integrations.tg.tg_answers.location_answer import TgLocationAnswer
-from integrations.tg.tg_answers.skip_not_processable import TgSkipNotProcessable
 from integrations.tg.tg_answers.tg_answer import TgAnswer
-from integrations.tg.tg_chat_id import TgChatId
-from integrations.tg.tg_message_coordinates import TgMessageCoordinates
-from services.reset_state_answer import ResetStateAnswer
-from srv.prayers.change_city_answer import ChangeCityAnswer
-from srv.prayers.city_not_supported_answer import CityNotSupportedAnswer
-from srv.prayers.pg_city import PgCity
-from srv.prayers.pg_updated_user_city import PgUpdatedUserCity
-from srv.prayers.user_not_registered_safe_answer import UserNotRegisteredSafeAnswer
-from srv.users.cached_user_state import CachedUserState
-from srv.users.pg_new_user import PgNewUser
-from srv.users.redis_user_state import RedisUserState
 
 
 @final
