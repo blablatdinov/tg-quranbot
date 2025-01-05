@@ -72,6 +72,7 @@ class PgPrayersText(AsyncSupportsStr):
                 await CityNameById(self._pgsql, self._city_id).to_str(),
                 await self._date.parse(self._update),
             )
+        # TODO #1428:30min Форматирование дублируется в NtPrayersText, следует вынести в отдельный объект
         template = '\n'.join([
             'Время намаза для г. {city_name} ({date})\n',
             'Иртәнге: {fajr_prayer_time}',
