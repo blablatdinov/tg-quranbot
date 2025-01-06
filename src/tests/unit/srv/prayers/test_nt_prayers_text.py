@@ -20,9 +20,36 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+from pathlib import Path
+
+import httpx
+import pytest
+
 from srv.prayers.nt_prayers_text import NtPrayersText
 
 
-# TODO #1428:30min Имплементировать тест для NtPrayersText
+@pytest.fixture
+def nt_mock(respx_mock):
+    respx_mock.get('https://namaz.today/city/kazan').mock(return_value=httpx.Response(
+        200,
+        text=Path('src/tests/fixtures/nt_response.html').read_text(encoding='utf-8'),
+    ))
+
+
+@pytest.mark.usefixtures('nt_mock')
 async def test():
-    await NtPrayersText('kazan').to_str()
+    got = await NtPrayersText('kazan').to_str()
+
+    assert got == '\n'.join([
+        'Время намаза для г. kazan (06.01.2025)',
+        '',
+        'Иртәнге: 05:53',
+        'Восход: 08:11',
+        'Өйлә: 11:50',
+        'Икенде: 13:39',
+        'Ахшам: 15:28',
+        'Ястү: 17:25',
+    ])
+
+
+# TODO #1440:30min тест для получения времени намаза по дате
