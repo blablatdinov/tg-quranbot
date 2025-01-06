@@ -27,6 +27,8 @@ test-free-files:
   - src/exceptions.*
   - src/tests/.*
   - .*fk_.*\.py
+  # protocols:
+  - src/srv/prayers/prayers_info.py
   # TODO
   - src/handlers/full_start_answer.py
   - src/handlers/pagination_per_day_prayer_answer.py
@@ -155,7 +157,7 @@ test-free-files:
   - src/srv/prayers/prayers_mark_as_date.py
   - src/srv/prayers/prayers_request_date.py
   - src/srv/prayers/prayers_stts.py
-  - src/srv/prayers/pg_prayers_text.py
+  - src/srv/prayers/pg_prayers_info.py
   - src/srv/prayers/updated_user_city.py
   - src/srv/prayers/user_prayer_status.py
   - src/srv/prayers/user_prayer_stts.py
@@ -183,6 +185,8 @@ test-free-files:
   - src/srv/users/user_state.py
   - src/srv/users/user_step.py
   - src/srv/users/valid_chat_id.py
+  # TODO #1438:30min Написать тесты на src/srv/prayers/prayers_text.py
+  - src/srv/prayers/prayers_text.py
 test-helpers:
   - .*conftest.py
   - .*__init__.py
