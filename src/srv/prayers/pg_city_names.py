@@ -23,25 +23,32 @@
 from typing import final, override
 
 import attrs
-import httpx
+from databases import Database
 
-from app_types.update import Update
-from integrations.tg.tg_answers.tg_answer import TgAnswer
+from app_types.listable import AsyncListable
 
 
 @final
 @attrs.define(frozen=True)
-class NtSearchCityAnswer(TgAnswer):
-    """Ответ со списком городов для выбора с сайта https://namaz.today ."""
+class PgCityNames(AsyncListable):
+    """Имена городов из базы postgres."""
+
+    _pgsql: Database
+    _query: str
 
     @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Обработка запроса.
+    async def to_list(self) -> list[str]:
+        """Список строк.
 
-        :param update: Update
-        :return: list[httpx.Request]
+        :returns: list[str]
         """
-        # TODO #1428:30min Написать парсер для городов с сайта https://namaz.today
-        #  https://namaz.today/city.php?term=каз
-        # TODO #1428:30min Определить как у пользователя будет храниться выбранный город
-        return []
+        search_query = '%{0}%'.format(self._query)
+        db_query = '\n'.join([
+            'SELECT name',
+            'FROM cities',
+            'WHERE name ILIKE :search_query',
+        ])
+        return [
+            row['name']
+            for row in await self._pgsql.fetch_all(db_query, {'search_query': search_query})
+        ]

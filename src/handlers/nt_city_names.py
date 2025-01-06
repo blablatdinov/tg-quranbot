@@ -20,36 +20,34 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import pytest
-import ujson
+from typing import final, override
 
-from app_types.fk_log_sink import FkLogSink
-from app_types.fk_update import FkUpdate
-from handlers.pg_search_city_answer import PgSearchCityAnswer
-from integrations.tg.tg_answers.fk_answer import FkAnswer
+import attrs
+import httpx
 
-
-async def test_message(pgsql, fake_redis):
-    debug = False
-    got = await PgSearchCityAnswer(pgsql, FkAnswer(), debug, fake_redis, FkLogSink()).build(
-        FkUpdate(ujson.dumps({
-            'message': {'text': 'Kazan'},
-            'chat': {'id': 384957},
-        })),
-    )
-
-    assert got[0].url.params['text'] == 'Этот город не поддерживается'
+from app_types.listable import AsyncListable
 
 
-@pytest.mark.usefixtures('_mock_nominatim')
-async def test_location(pgsql, fake_redis):
-    debug = False
-    got = await PgSearchCityAnswer(pgsql, FkAnswer(), debug, fake_redis, FkLogSink()).build(
-        FkUpdate(ujson.dumps({
-            'chat': {'id': 34847935},
-            'latitude': 55.7887,
-            'longitude': 49.1221,
-        })),
-    )
+@final
+@attrs.define(frozen=True)
+class NtCityNames(AsyncListable):
+    """Имена городов с сайта https://namaz.today ."""
 
-    assert got[0].url.params['text'] == 'Этот город не поддерживается'
+    _query: str
+
+    @override
+    async def to_list(self) -> list[str]:
+        """Список строк.
+
+        :returns: list[str]
+        """
+        async with httpx.AsyncClient() as http_client:
+            response = await http_client.get('https://namaz.today/city.php?term={0}'.format(self._query))
+            # TODO #1432:30min Обрабатывать не найденные города
+            response.raise_for_status()
+        # TODO #1432:30min После имплементации #1433 подставлять в city_id реальные значения
+        # TODO #1428:30min Определить как у пользователя будет храниться выбранный город
+        return [
+            city['city']
+            for city in response.json()
+        ]

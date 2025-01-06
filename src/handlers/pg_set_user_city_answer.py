@@ -51,8 +51,8 @@ from srv.users.redis_user_state import RedisUserState
 
 @final
 @attrs.define(frozen=True)
-class PgSearchCityAnswer(TgAnswer):
-    """Ответ со списком городов для выбора."""
+class PgSetUserCityAnswer(TgAnswer):
+    """Сохранение города пользователя из сообщения или локации."""
 
     _pgsql: Database
     _empty_answer: TgAnswer

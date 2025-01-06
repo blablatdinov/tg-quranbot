@@ -20,35 +20,18 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
+import pytest
 
-import attrs
-from databases import Database
-
-from app_types.listable import AsyncListable
+from srv.prayers.pg_city_names import PgCityNames
 
 
-@final
-@attrs.define(frozen=True)
-class CityNames(AsyncListable):
-    """Имена городов."""
+@pytest.fixture
+async def _db_city(city_factory):
+    await city_factory('e9fa0fff-4e6a-47c8-8654-09adf913734a', 'Казань')
 
-    _pgsql: Database
-    _query: str
 
-    @override
-    async def to_list(self) -> list[str]:
-        """Список строк.
+@pytest.mark.usefixtures('_db_city')
+async def test(pgsql):
+    names = await PgCityNames(pgsql, 'Ка').to_list()
 
-        :returns: list[str]
-        """
-        search_query = '%{0}%'.format(self._query)
-        db_query = '\n'.join([
-            'SELECT name',
-            'FROM cities',
-            'WHERE name ILIKE :search_query',
-        ])
-        return [
-            row['name']
-            for row in await self._pgsql.fetch_all(db_query, {'search_query': search_query})
-        ]
+    assert names == ['Казань']
