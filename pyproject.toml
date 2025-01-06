@@ -50,7 +50,7 @@ refurb = "2.0.0"
 pytest-cov = "6.0.0"
 pytest-django = "4.9.0"
 time-machine = "2.16.0"
-model-bakery = "1.20.0"
+model-bakery = "1.20.1"
 faker = "33.3.0"
 mypy = "1.13.0"
 django-stubs = {extras = ["compatible-mypy"], version = "5.1.1"}
