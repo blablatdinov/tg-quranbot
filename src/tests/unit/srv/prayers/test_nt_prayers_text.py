@@ -20,12 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import datetime
 from pathlib import Path
 
 import httpx
 import pytest
 
 from srv.prayers.nt_prayers_text import NtPrayersText
+from srv.prayers.fk_prayer_date import FkPrayerDate
 
 
 @pytest.fixture
@@ -37,8 +39,9 @@ def nt_mock(respx_mock):
 
 
 @pytest.mark.usefixtures('nt_mock')
-async def test():
-    got = await NtPrayersText('kazan').to_str()
+async def test_today(time_machine):
+    time_machine.move_to('2025-01-06')
+    got = await NtPrayersText('kazan', FkPrayerDate(datetime.date(2025, 1, 6))).to_str()
 
     assert got == '\n'.join([
         'Время намаза для г. kazan (06.01.2025)',
@@ -52,4 +55,23 @@ async def test():
     ])
 
 
-# TODO #1440:30min тест для получения времени намаза по дате
+@pytest.mark.usefixtures('nt_mock')
+async def test_by_date():
+    got = await NtPrayersText(
+        'kazan',
+        # TODO #1450:30min Пока возможно получать время намаза только в рамках текущего месяца.
+        #  В таблице на странице https://namaz.today/city/kazan приведены данные только на текущий месяц
+        #  Оставил коммент с вопросом, пока ждем решения
+        FkPrayerDate(datetime.date(2025, 1, 20)),
+    ).to_str()
+
+    assert got == '\n'.join([
+        'Время намаза для г. kazan (06.01.2025)',
+        '',
+        'Иртәнге: 05:44',
+        'Восход: 07:57',
+        'Өйлә: 11:56',
+        'Икенде: 14:02',
+        'Ахшам: 15:53',
+        'Ястү: 17:44',
+    ])

@@ -29,6 +29,8 @@ import pytz
 from lxml import etree
 
 from app_types.async_supports_str import AsyncSupportsStr
+from srv.prayers.prayer_date import PrayerDate
+from app_types.fk_update import FkUpdate
 
 
 @final
@@ -37,6 +39,7 @@ class NtPrayersText(AsyncSupportsStr):
     """Текст сообщения с намазами с сайта https://namaz.today ."""
 
     _city_name: str
+    _date: PrayerDate
 
     @override
     async def to_str(self) -> str:
@@ -49,7 +52,11 @@ class NtPrayersText(AsyncSupportsStr):
             response = await http_client.get('https://namaz.today/city/{0}'.format(self._city_name))
             response.raise_for_status()
         tree = etree.fromstring(response.text, etree.HTMLParser())  # noqa: S320. Trust https://namaz.today
-        rows = tree.xpath('//tr[@class="success"]')[0].xpath('./td')
+        table_rows = tree.xpath("//section[@id='content-tab1']//tbody/tr")
+        for row in table_rows:
+            if row.xpath('./td')[0].text == str((await self._date.parse(FkUpdate.empty_ctor())).day):
+                rows = row.xpath('./td')
+                break
         template = '\n'.join([
             'Время намаза для г. {city_name} ({date})\n',
             'Иртәнге: {fajr_prayer_time}',
