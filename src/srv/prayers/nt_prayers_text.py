@@ -21,10 +21,11 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-from typing import final, override, Final
+from typing import final, override
 
 import attrs
 import httpx
+import pytz
 from lxml import etree
 
 from app_types.async_supports_str import AsyncSupportsStr
@@ -47,9 +48,8 @@ class NtPrayersText(AsyncSupportsStr):
         async with httpx.AsyncClient() as http_client:
             response = await http_client.get('https://namaz.today/city/{0}'.format(self._city_name))
             response.raise_for_status()
-        tree = etree.fromstring(response.text, etree.HTMLParser())
+        tree = etree.fromstring(response.text, etree.HTMLParser())  # noqa: S320. Trust https://namaz.today
         rows = tree.xpath('//tr[@class="success"]')[0].xpath('./td')
-        print([elem.text for elem in rows])
         template = '\n'.join([
             'Время намаза для г. {city_name} ({date})\n',
             'Иртәнге: {fajr_prayer_time}',
@@ -59,7 +59,6 @@ class NtPrayersText(AsyncSupportsStr):
             'Ахшам: {magrib_prayer_time}',
             'Ястү: {ishaa_prayer_time}',
         ])
-        time_format = '%H:%M'
         # TODO #1428:30min Написать декоратор, который будет создавать запись prayer_at_user
         # TODO #1428:30min Определить как получать время намаза по дате
         return template.format(
@@ -67,7 +66,7 @@ class NtPrayersText(AsyncSupportsStr):
             #  в аттрибуте лежит slug для города, а не название, которое
             #  должен видеть пользователь
             city_name=self._city_name,
-            date=datetime.datetime.now().strftime('%d.%m.%Y'),
+            date=datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
             fajr_prayer_time=rows[1].text,
             sunrise_prayer_time=rows[2].text,
             dhuhr_prayer_time=rows[3].text,
