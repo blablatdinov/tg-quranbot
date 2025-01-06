@@ -20,9 +20,13 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import datetime
 from typing import final, override
 
 import attrs
+import httpx
+import pytz
+from lxml import etree
 
 from app_types.async_supports_str import AsyncSupportsStr
 
@@ -32,6 +36,8 @@ from app_types.async_supports_str import AsyncSupportsStr
 class NtPrayersText(AsyncSupportsStr):
     """Текст сообщения с намазами с сайта https://namaz.today ."""
 
+    _city_name: str
+
     @override
     async def to_str(self) -> str:
         """Строковое представление.
@@ -39,8 +45,32 @@ class NtPrayersText(AsyncSupportsStr):
         :return: str
         :raises PrayersNotFoundError: намазы не найдены
         """
-        # TODO #1428:30min Написать парсер для времени намаза с сайта https://namaz.today
-        #  https://namaz.today/city/kazan
+        async with httpx.AsyncClient() as http_client:
+            response = await http_client.get('https://namaz.today/city/{0}'.format(self._city_name))
+            response.raise_for_status()
+        tree = etree.fromstring(response.text, etree.HTMLParser())  # noqa: S320. Trust https://namaz.today
+        rows = tree.xpath('//tr[@class="success"]')[0].xpath('./td')
+        template = '\n'.join([
+            'Время намаза для г. {city_name} ({date})\n',
+            'Иртәнге: {fajr_prayer_time}',
+            'Восход: {sunrise_prayer_time}',
+            'Өйлә: {dhuhr_prayer_time}',
+            'Икенде: {asr_prayer_time}',
+            'Ахшам: {magrib_prayer_time}',
+            'Ястү: {ishaa_prayer_time}',
+        ])
         # TODO #1428:30min Написать декоратор, который будет создавать запись prayer_at_user
         # TODO #1428:30min Определить как получать время намаза по дате
-        return ''
+        return template.format(
+            # TODO #1435:30min заменить self._city_name
+            #  в аттрибуте лежит slug для города, а не название, которое
+            #  должен видеть пользователь
+            city_name=self._city_name,
+            date=datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
+            fajr_prayer_time=rows[1].text,
+            sunrise_prayer_time=rows[2].text,
+            dhuhr_prayer_time=rows[3].text,
+            asr_prayer_time=rows[4].text,
+            magrib_prayer_time=rows[5].text,
+            ishaa_prayer_time=rows[6].text,
+        )

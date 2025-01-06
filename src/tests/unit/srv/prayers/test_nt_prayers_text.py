@@ -25,4 +25,4 @@ from srv.prayers.nt_prayers_text import NtPrayersText
 
 # TODO #1428:30min Имплементировать тест для NtPrayersText
 async def test():
-    await NtPrayersText().to_str()
+    await NtPrayersText('kazan').to_str()
