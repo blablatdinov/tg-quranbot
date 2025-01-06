@@ -37,6 +37,7 @@ from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
 @final
 @attrs.define(frozen=True)
 class NtPrayersInfo(PrayersInfo):
+    """Информация о времени намаза с сайта https://namaz.today ."""
 
     _city_name: str
     _date: PrayerDate
@@ -45,6 +46,7 @@ class NtPrayersInfo(PrayersInfo):
     #  Возможно поможет решение #1438
     @override
     async def to_dict(self) -> PrayerMessageTextDict:  # noqa: WPS210
+        """Словарь с данными для отправки пользователю."""
         async with httpx.AsyncClient() as http_client:
             response = await http_client.get('https://namaz.today/city/{0}'.format(self._city_name))
             response.raise_for_status()

@@ -38,6 +38,7 @@ TIME_LITERAL: Final = 'time'
 @final
 @attrs.define(frozen=True)
 class PgPrayersInfo(PrayersInfo):
+    """Информация о времени намаза из БД."""
 
     _pgsql: Database
     _date: PrayerDate
@@ -46,6 +47,7 @@ class PgPrayersInfo(PrayersInfo):
 
     @override
     async def to_dict(self) -> PrayerMessageTextDict:
+        """Словарь с данными для отправки пользователю."""
         query = '\n'.join([
             'SELECT',
             '    c.name AS city_name,',

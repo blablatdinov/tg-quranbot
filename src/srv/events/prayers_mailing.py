@@ -117,7 +117,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                                         ),
                                         self._settings.RAMADAN_MODE,
                                     ),
-                                )
+                                ),
                             ),
                             active_user[CHAT_ID],
                         ),

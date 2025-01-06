@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final
+from typing import final, override
 
 import attrs
 
@@ -30,9 +30,11 @@ from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
 @final
 @attrs.define(frozen=True)
 class FkPrayersInfo(PrayersInfo):
+    """Фейковый объект, хранящий информацию о времени намаза."""
 
     _origin: PrayerMessageTextDict
 
+    @override
     async def to_dict(self) -> PrayerMessageTextDict:
         """Словарь с данными для отправки пользователю."""
         return self._origin

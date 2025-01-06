@@ -25,6 +25,8 @@ from typing import Protocol, TypedDict, final
 
 @final
 class PrayerMessageTextDict(TypedDict):
+    """Словарь с данными для отправки пользователю."""
+
     city_name: str
     date: str
     fajr_prayer_time: str
@@ -36,6 +38,7 @@ class PrayerMessageTextDict(TypedDict):
 
 
 class PrayersInfo(Protocol):
+    """Информация о времени намаза."""
 
     async def to_dict(self) -> PrayerMessageTextDict:
         """Словарь с данными для отправки пользователю."""

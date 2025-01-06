@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final
+from typing import final, override
 
 import attrs
 
@@ -31,10 +31,13 @@ from srv.prayers.prayers_info import PrayersInfo
 @final
 @attrs.define(frozen=True)
 class PrayersText(AsyncSupportsStr):
+    """Информация о времени намаза в текстовом виде."""
 
     _prayer_info: PrayersInfo
 
+    @override
     async def to_str(self) -> str:
+        """Строковое представление."""
         origin = await self._prayer_info.to_dict()
         template = '\n'.join([
             'Время намаза для г. {city_name} ({date})\n',
