@@ -54,10 +54,10 @@ from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 from srv.prayers.prayers_mark_as_date import PrayersMarkAsDate
 from srv.prayers.prayers_request_date import PrayersRequestDate
+from srv.prayers.prayers_text import PrayersText
 from srv.prayers.ramadan_prayer_info import RamadanPrayerInfo
 from srv.prayers.user_city_id import UserCityId
 from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
-from srv.prayers.prayers_text import PrayersText
 
 
 @final

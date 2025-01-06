@@ -20,13 +20,12 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Protocol, TypedDict, final
-from app_types.stringable import SupportsStr
-from app_types.async_supports_str import AsyncSupportsStr
+from typing import final
 
 import attrs
 
-from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
+from app_types.async_supports_str import AsyncSupportsStr
+from srv.prayers.prayers_info import PrayersInfo
 
 
 @final

@@ -53,8 +53,8 @@ from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import Sink
 from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.pg_prayers_info import PgPrayersInfo
-from srv.prayers.ramadan_prayer_info import RamadanPrayerInfo
 from srv.prayers.prayers_text import PrayersText
+from srv.prayers.ramadan_prayer_info import RamadanPrayerInfo
 from srv.prayers.user_city_id import UserCityId
 from srv.users.fk_user import FkUser
 from srv.users.pg_updated_users_status import PgUpdatedUsersStatus
