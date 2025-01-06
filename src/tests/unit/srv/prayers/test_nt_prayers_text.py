@@ -22,8 +22,8 @@
 
 from pathlib import Path
 
-import pytest
 import httpx
+import pytest
 
 from srv.prayers.nt_prayers_text import NtPrayersText
 
