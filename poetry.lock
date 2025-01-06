@@ -3104,24 +3104,23 @@ files = [
 
 [[package]]
 name = "wemake-python-styleguide"
-version = "0.19.2"
+version = "1.0.0"
 description = "The strictest and most opinionated python linter ever"
 optional = false
-python-versions = "^3.10"
+python-versions = ">=3.10"
 files = []
 develop = false
 
 [package.dependencies]
 attrs = "*"
-flake8 = "^7.1"
-pygments = "^2.4"
-typing_extensions = ">=4.0"
+flake8 = ">=7.1,<8.0"
+pygments = ">=2.5,<3.0"
 
 [package.source]
 type = "git"
 url = "https://github.com/wemake-services/wemake-python-styleguide"
 reference = "master"
-resolved_reference = "e8d3aff724c610e92e54130398064ceda91000ba"
+resolved_reference = "be135c21e48147304a42162988fe23d7c4f587c3"
 
 [[package]]
 name = "win32-setctime"
