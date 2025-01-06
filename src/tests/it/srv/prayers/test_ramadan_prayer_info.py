@@ -27,28 +27,29 @@ import pytz
 from app_types.fk_async_str import FkAsyncStr
 from app_types.fk_update import FkUpdate
 from srv.prayers.fk_prayer_date import FkPrayerDate
-from srv.prayers.pg_prayers_text import PgPrayersText
-from srv.prayers.ramadan_prayer_text import RamadanPrayerText
+from srv.prayers.pg_prayers_info import PgPrayersInfo
+from srv.prayers.ramadan_prayer_info import RamadanPrayerInfo
 
 
 async def test(pgsql, prayers_factory):
     await prayers_factory('2023-12-19')
-    got = await RamadanPrayerText(
-        PgPrayersText(
+    got = await RamadanPrayerInfo(
+        PgPrayersInfo(
             pgsql,
             FkPrayerDate(datetime.datetime(2023, 12, 19, tzinfo=pytz.timezone('Europe/Moscow'))),
             FkAsyncStr('080fd3f4-678e-4a1c-97d2-4460700fe7ac'),
             FkUpdate('{"message":{"text":"Время намаза"}}'),
         ),
         ramadan_mode=True,
-    ).to_str()
+    ).to_dict()
 
-    assert got == '\n'.join([
-        'Время намаза для г. Kazan (19.12.2023)\n',
-        'Иртәнге: 05:43 <i>- Конец сухура</i>',
-        'Восход: 08:02',
-        'Өйлә: 12:00',
-        'Икенде: 13:21',
-        'Ахшам: 15:07 <i>- Ифтар</i>',
-        'Ястү: 17:04',
-    ])
+    assert got == {
+        'asr_prayer_time': '13:21',
+        'city_name': 'Kazan',
+        'date': '19.12.2023',
+        'dhuhr_prayer_time': '12:00',
+        'fajr_prayer_time': '05:43 <i>- Конец сухура</i>',
+        'ishaa_prayer_time': '17:04',
+        'magrib_prayer_time': '15:07 <i>- Ифтар</i>',
+        'sunrise_prayer_time': '08:02',
+    }

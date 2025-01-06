@@ -28,7 +28,7 @@ import pytest
 
 from exceptions.prayer_exceptions import PrayersNotFoundError
 from srv.prayers.fk_prayer_date import FkPrayerDate
-from srv.prayers.nt_prayers_text import NtPrayersText
+from srv.prayers.nt_prayers_info import NtPrayersInfo
 
 
 @pytest.fixture
@@ -42,40 +42,40 @@ def nt_mock(respx_mock):
 @pytest.mark.usefixtures('nt_mock')
 async def test_today(time_machine):
     time_machine.move_to('2025-01-06')
-    got = await NtPrayersText(
+    got = await NtPrayersInfo(
         'kazan',
         FkPrayerDate(datetime.date(2025, 1, 6)),
-    ).to_str()
+    ).to_dict()
 
-    assert got == '\n'.join([
-        'Время намаза для г. kazan (06.01.2025)',
-        '',
-        'Иртәнге: 05:53',
-        'Восход: 08:11',
-        'Өйлә: 11:50',
-        'Икенде: 13:39',
-        'Ахшам: 15:28',
-        'Ястү: 17:25',
-    ])
+    assert got == {
+        'asr_prayer_time': '13:39',
+        'city_name': 'kazan',
+        'date': '06.01.2025',
+        'dhuhr_prayer_time': '11:50',
+        'fajr_prayer_time': '05:53',
+        'ishaa_prayer_time': '17:25',
+        'magrib_prayer_time': '15:28',
+        'sunrise_prayer_time': '08:11',
+    }
 
 
 @pytest.mark.usefixtures('nt_mock')
 async def test_by_date():
-    got = await NtPrayersText(
+    got = await NtPrayersInfo(
         'kazan',
         FkPrayerDate(datetime.date(2025, 1, 20)),
-    ).to_str()
+    ).to_dict()
 
-    assert got == '\n'.join([
-        'Время намаза для г. kazan (20.01.2025)',
-        '',
-        'Иртәнге: 05:44',
-        'Восход: 07:57',
-        'Өйлә: 11:56',
-        'Икенде: 14:02',
-        'Ахшам: 15:53',
-        'Ястү: 17:44',
-    ])
+    assert got == {
+        'asr_prayer_time': '14:02',
+        'city_name': 'kazan',
+        'date': '20.01.2025',
+        'dhuhr_prayer_time': '11:56',
+        'fajr_prayer_time': '05:44',
+        'ishaa_prayer_time': '17:44',
+        'magrib_prayer_time': '15:53',
+        'sunrise_prayer_time': '07:57',
+    }
 
 
 # TODO #1450:30min Пока возможно получать время намаза только в рамках текущего месяца.
@@ -84,7 +84,7 @@ async def test_by_date():
 @pytest.mark.usefixtures('nt_mock')
 async def test_unavailable_date():
     with pytest.raises(PrayersNotFoundError):
-        await NtPrayersText(
+        await NtPrayersInfo(
             'kazan',
             FkPrayerDate(datetime.date(2025, 2, 20)),
-        ).to_str()
+        ).to_dict()
