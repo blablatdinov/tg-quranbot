@@ -25,13 +25,13 @@ import ujson
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
-from handlers.pg_search_city_answer import PgSearchCityAnswer
+from handlers.pg_set_user_city_answer import PgSetUserCityAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 async def test_message(pgsql, fake_redis):
     debug = False
-    got = await PgSearchCityAnswer(pgsql, FkAnswer(), debug, fake_redis, FkLogSink()).build(
+    got = await PgSetUserCityAnswer(pgsql, FkAnswer(), debug, fake_redis, FkLogSink()).build(
         FkUpdate(ujson.dumps({
             'message': {'text': 'Kazan'},
             'chat': {'id': 384957},
@@ -44,7 +44,7 @@ async def test_message(pgsql, fake_redis):
 @pytest.mark.usefixtures('_mock_nominatim')
 async def test_location(pgsql, fake_redis):
     debug = False
-    got = await PgSearchCityAnswer(pgsql, FkAnswer(), debug, fake_redis, FkLogSink()).build(
+    got = await PgSetUserCityAnswer(pgsql, FkAnswer(), debug, fake_redis, FkLogSink()).build(
         FkUpdate(ujson.dumps({
             'chat': {'id': 34847935},
             'latitude': 55.7887,

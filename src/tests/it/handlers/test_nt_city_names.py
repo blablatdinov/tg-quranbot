@@ -24,14 +24,12 @@ import httpx
 import pytest
 import ujson
 
-from app_types.fk_update import FkUpdate
-from handlers.nt_search_city_answer import NtSearchCityAnswer
-from srv.prayers.fk_city import FkCity
+from handlers.nt_city_names import NtCityNames
 
 
 @pytest.fixture
 def nt_mock(respx_mock):
-    respx_mock.get('https://namaz.today/city.php?term=Казань').mock(
+    respx_mock.get('https://namaz.today/city.php?term=Каза').mock(
         return_value=httpx.Response(
             status_code=200,
             text=ujson.dumps([{
@@ -48,14 +46,10 @@ def nt_mock(respx_mock):
     )
 
 
-# TODO #1428:30min Написать парсер тест для класса NtSearchCityAnswer.
 @pytest.mark.usefixtures('nt_mock')
 async def test():
-    got = await NtSearchCityAnswer().build(
-        FkUpdate(ujson.dumps({
-            'message': {'text': 'Казань'},
-            'chat': {'id': 384957},
-        })),
-    )
+    got = await NtCityNames(
+        'Каза',
+    ).to_list()
 
-    assert got == [FkCity('', 'Казань')]
+    assert got == ['Казань']

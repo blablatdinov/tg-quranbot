@@ -34,13 +34,13 @@ from integrations.tg.inline_query import InlineQuery
 from integrations.tg.inline_query_id import InlineQueryId
 from integrations.tg.tg_answers import TgAnswer
 from services.debug_answer import DebugAnswer
-from srv.prayers.city_names import CityNames
+from srv.prayers.pg_city_names import PgCityNames
 
 
 @final
 @attrs.define(frozen=True)
 class InlineQueryAnswer(TgAnswer):
-    """Ответ на инлайн поиск."""
+    """Ответ на инлайн поиск городов."""
 
     _origin: TgAnswer
     _pgsql: Database
@@ -58,7 +58,7 @@ class InlineQueryAnswer(TgAnswer):
         except InlineQueryNotFoundError as err:
             raise NotProcessableUpdateError from err
         origin_requests = await DebugAnswer(self._origin).build(update)
-        city_names = await CityNames(self._pgsql, inline_query_data).to_list()
+        city_names = await PgCityNames(self._pgsql, inline_query_data).to_list()
         return [
             httpx.Request(
                 origin_requests[0].method,

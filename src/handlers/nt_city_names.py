@@ -25,32 +25,29 @@ from typing import final, override
 import attrs
 import httpx
 
-from app_types.update import Update
-from integrations.tg.tg_answers.tg_answer import TgAnswer
-from srv.prayers.fk_city import FkCity
-from integrations.tg.message_text import MessageText
+from app_types.listable import AsyncListable
 
 
 @final
 @attrs.define(frozen=True)
-class NtSearchCityAnswer(TgAnswer):
-    """Ответ со списком городов для выбора с сайта https://namaz.today ."""
+class NtCityNames(AsyncListable):
+    """Имена городов с сайта https://namaz.today ."""
+
+    _query: str
 
     @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Обработка запроса.
+    async def to_list(self) -> list[str]:
+        """Список строк.
 
-        :param update: Update
-        :return: list[httpx.Request]
+        :returns: list[str]
         """
-        query = str(MessageText(update))
         async with httpx.AsyncClient() as http_client:
-            response = await http_client.get('https://namaz.today/city.php?term={0}'.format(query))
+            response = await http_client.get('https://namaz.today/city.php?term={0}'.format(self._query))
             # TODO #1432:30min Обрабатывать не найденные города
             response.raise_for_status()
         # TODO #1432:30min После имплементации #1433 подставлять в city_id реальные значения
         # TODO #1428:30min Определить как у пользователя будет храниться выбранный город
         return [
-            FkCity('', city['city'])
+            city['city']
             for city in response.json()
         ]

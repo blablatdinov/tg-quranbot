@@ -30,8 +30,8 @@ from app_types.listable import AsyncListable
 
 @final
 @attrs.define(frozen=True)
-class CityNames(AsyncListable):
-    """Имена городов."""
+class PgCityNames(AsyncListable):
+    """Имена городов из базы postgres."""
 
     _pgsql: Database
     _query: str

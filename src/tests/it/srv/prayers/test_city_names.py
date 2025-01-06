@@ -22,7 +22,7 @@
 
 import pytest
 
-from srv.prayers.city_names import CityNames
+from srv.prayers.pg_city_names import PgCityNames
 
 
 @pytest.fixture
@@ -32,6 +32,6 @@ async def _db_city(city_factory):
 
 @pytest.mark.usefixtures('_db_city')
 async def test(pgsql):
-    names = await CityNames(pgsql, 'Ка').to_list()
+    names = await PgCityNames(pgsql, 'Ка').to_list()
 
     assert names == ['Казань']
