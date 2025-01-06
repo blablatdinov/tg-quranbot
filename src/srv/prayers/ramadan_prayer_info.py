@@ -20,31 +20,31 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+from copy import deepcopy
 from typing import final, override
 
 import attrs
 
-from app_types.async_supports_str import AsyncSupportsStr
+from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
 
 
 @final
 @attrs.define(frozen=True)
-class RamadanPrayerText(AsyncSupportsStr):
+class RamadanPrayerInfo(PrayersInfo):
     """Изменяющий декоратор для обозначения времени сухура и ифтара."""
 
-    _origin: AsyncSupportsStr
+    _origin: PrayersInfo
     _ramadan_mode: bool
 
     @override
-    async def to_str(self) -> str:
-        """Строковое представление.
+    async def to_dict(self) -> PrayerMessageTextDict:
+        """Словарь с преобразованным временем сухура и ифтара.
 
         :return: str
         """
         if not self._ramadan_mode:
-            return await self._origin.to_str()
-        source_str = await self._origin.to_str()
-        splitted_source_str = source_str.split('\n')
-        splitted_source_str[2] = '{0} <i>- Конец сухура</i>'.format(splitted_source_str[2])
-        splitted_source_str[6] = '{0} <i>- Ифтар</i>'.format(splitted_source_str[6])
-        return '\n'.join(splitted_source_str)
+            return await self._origin.to_dict()
+        source_dict = deepcopy(await self._origin.to_dict())
+        source_dict['fajr_prayer_time'] = '{0} <i>- Конец сухура</i>'.format(source_dict['fajr_prayer_time'])
+        source_dict['magrib_prayer_time'] = '{0} <i>- Ифтар</i>'.format(source_dict['magrib_prayer_time'])
+        return source_dict

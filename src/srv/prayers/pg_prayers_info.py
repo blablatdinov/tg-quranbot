@@ -30,14 +30,14 @@ from app_types.update import Update
 from exceptions.prayer_exceptions import PrayersNotFoundError
 from integrations.city_name_by_id import CityNameById
 from srv.prayers.prayer_date import PrayerDate
+from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
 
 TIME_LITERAL: Final = 'time'
 
 
 @final
 @attrs.define(frozen=True)
-class PgPrayersText(AsyncSupportsStr):
-    """Текст сообщения с намазами."""
+class PgPrayersInfo(PrayersInfo):
 
     _pgsql: Database
     _date: PrayerDate
@@ -45,12 +45,7 @@ class PgPrayersText(AsyncSupportsStr):
     _update: Update
 
     @override
-    async def to_str(self) -> str:
-        """Строковое представление.
-
-        :return: str
-        :raises PrayersNotFoundError: намазы не найдены
-        """
+    async def to_dict(self) -> PrayerMessageTextDict:
         query = '\n'.join([
             'SELECT',
             '    c.name AS city_name,',
@@ -72,24 +67,14 @@ class PgPrayersText(AsyncSupportsStr):
                 await CityNameById(self._pgsql, self._city_id).to_str(),
                 await self._date.parse(self._update),
             )
-        # TODO #1428:30min Форматирование дублируется в NtPrayersText, следует вынести в отдельный объект
-        template = '\n'.join([
-            'Время намаза для г. {city_name} ({date})\n',
-            'Иртәнге: {fajr_prayer_time}',
-            'Восход: {sunrise_prayer_time}',
-            'Өйлә: {dhuhr_prayer_time}',
-            'Икенде: {asr_prayer_time}',
-            'Ахшам: {magrib_prayer_time}',
-            'Ястү: {ishaa_prayer_time}',
-        ])
         time_format = '%H:%M'
-        return template.format(
-            city_name=rows[0]['city_name'],
-            date=rows[0]['day'].strftime('%d.%m.%Y'),
-            fajr_prayer_time=rows[0][TIME_LITERAL].strftime(time_format),
-            sunrise_prayer_time=rows[1][TIME_LITERAL].strftime(time_format),
-            dhuhr_prayer_time=rows[2][TIME_LITERAL].strftime(time_format),
-            asr_prayer_time=rows[3][TIME_LITERAL].strftime(time_format),
-            magrib_prayer_time=rows[4][TIME_LITERAL].strftime(time_format),
-            ishaa_prayer_time=rows[5][TIME_LITERAL].strftime(time_format),
-        )
+        return PrayerMessageTextDict({
+            'city_name': rows[0]['city_name'],
+            'date': rows[0]['day'].strftime('%d.%m.%Y'),
+            'fajr_prayer_time': rows[0][TIME_LITERAL].strftime(time_format),
+            'sunrise_prayer_time': rows[1][TIME_LITERAL].strftime(time_format),
+            'dhuhr_prayer_time': rows[2][TIME_LITERAL].strftime(time_format),
+            'asr_prayer_time': rows[3][TIME_LITERAL].strftime(time_format),
+            'magrib_prayer_time': rows[4][TIME_LITERAL].strftime(time_format),
+            'ishaa_prayer_time': rows[5][TIME_LITERAL].strftime(time_format),
+        })

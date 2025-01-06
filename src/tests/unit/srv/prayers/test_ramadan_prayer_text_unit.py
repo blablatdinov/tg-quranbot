@@ -22,44 +22,46 @@
 
 import pytest
 
-from app_types.fk_async_str import FkAsyncStr
-from srv.prayers.ramadan_prayer_text import RamadanPrayerText
+from srv.prayers.fk_prayers_info import FkPrayersInfo
+from srv.prayers.ramadan_prayer_info import RamadanPrayerInfo
 
 
 @pytest.fixture
-def prayer_time_text():
-    return '\n'.join([
-        'Время намаза для г. Казань (21.10.2023)\n',
-        'Иртәнге: 04:22',
-        'Восход: 06:26',
-        'Өйлә: 12:00',
-        'Икенде: 14:35',
-        'Ахшам: 16:30',
-        'Ястү: 18:12',
-    ])
+def prayer_time_info():
+    return {
+        'city_name': 'Казань',
+        'date': '21.10.2023',
+        'fajr_prayer_time': '04:22',
+        'sunrise_prayer_time': '06:26',
+        'dhuhr_prayer_time': '12:00',
+        'asr_prayer_time': '14:35',
+        'magrib_prayer_time': '16:30',
+        'ishaa_prayer_time': '18:12',
+    }
 
 
-async def test_not_ramadan_mode(prayer_time_text):
-    got = await RamadanPrayerText(
-        FkAsyncStr(prayer_time_text),
+async def test_not_ramadan_mode(prayer_time_info):
+    got = await RamadanPrayerInfo(
+        FkPrayersInfo(prayer_time_info),
         ramadan_mode=False,
-    ).to_str()
+    ).to_dict()
 
-    assert got == prayer_time_text
+    assert got == prayer_time_info
 
 
-async def test_ramadan_mode(prayer_time_text):
-    got = await RamadanPrayerText(
-        FkAsyncStr(prayer_time_text),
+async def test_ramadan_mode(prayer_time_info):
+    got = await RamadanPrayerInfo(
+        FkPrayersInfo(prayer_time_info),
         ramadan_mode=True,
-    ).to_str()
+    ).to_dict()
 
-    assert got == '\n'.join([
-        'Время намаза для г. Казань (21.10.2023)\n',
-        'Иртәнге: 04:22 <i>- Конец сухура</i>',
-        'Восход: 06:26',
-        'Өйлә: 12:00',
-        'Икенде: 14:35',
-        'Ахшам: 16:30 <i>- Ифтар</i>',
-        'Ястү: 18:12',
-    ])
+    assert got == {
+        'asr_prayer_time': '14:35',
+        'city_name': 'Казань',
+        'date': '21.10.2023',
+        'dhuhr_prayer_time': '12:00',
+        'fajr_prayer_time': '04:22 <i>- Конец сухура</i>',
+        'ishaa_prayer_time': '18:12',
+        'magrib_prayer_time': '16:30 <i>- Ифтар</i>',
+        'sunrise_prayer_time': '06:26',
+    }
