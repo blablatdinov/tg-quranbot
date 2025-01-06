@@ -20,17 +20,42 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import httpx
+import pytest
 import ujson
 
 from app_types.fk_update import FkUpdate
 from handlers.nt_search_city_answer import NtSearchCityAnswer
+from srv.prayers.fk_city import FkCity
+
+
+@pytest.fixture
+def nt_mock(respx_mock):
+    respx_mock.get('https://namaz.today/city.php?term=Казань').mock(
+        return_value=httpx.Response(
+            status_code=200,
+            text=ujson.dumps([{
+                'ID': '125',
+                'value': ' '.join([
+                    '<span class="city-1-item">Казань</span>',
+                    '» <span class="city-2-item">Республика Татарстан</span>',
+                    '» <span class="city-1-item">Россия</span>',
+                ]),
+                'url': 'https://namaz.today/city/kazan',
+                'city': 'Казань',
+            }]),
+        ),
+    )
 
 
 # TODO #1428:30min Написать парсер тест для класса NtSearchCityAnswer.
+@pytest.mark.usefixtures('nt_mock')
 async def test():
-    await NtSearchCityAnswer().build(
+    got = await NtSearchCityAnswer().build(
         FkUpdate(ujson.dumps({
-            'message': {'text': 'Kazan'},
+            'message': {'text': 'Казань'},
             'chat': {'id': 384957},
         })),
     )
+
+    assert got == [FkCity('', 'Казань')]

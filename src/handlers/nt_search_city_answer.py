@@ -27,6 +27,8 @@ import httpx
 
 from app_types.update import Update
 from integrations.tg.tg_answers.tg_answer import TgAnswer
+from srv.prayers.fk_city import FkCity
+from integrations.tg.message_text import MessageText
 
 
 @final
@@ -41,7 +43,14 @@ class NtSearchCityAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        # TODO #1428:30min Написать парсер для городов с сайта https://namaz.today
-        #  https://namaz.today/city.php?term=каз
+        query = str(MessageText(update))
+        async with httpx.AsyncClient() as http_client:
+            response = await http_client.get('https://namaz.today/city.php?term={0}'.format(query))
+            # TODO #1432:30min Обрабатывать не найденные города
+            response.raise_for_status()
+        # TODO #1432:30min После имплементации #1433 подставлять в city_id реальные значения
         # TODO #1428:30min Определить как у пользователя будет храниться выбранный город
-        return []
+        return [
+            FkCity('', city['city'])
+            for city in response.json()
+        ]
