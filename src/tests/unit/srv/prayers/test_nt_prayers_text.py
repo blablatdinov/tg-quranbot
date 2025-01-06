@@ -26,6 +26,7 @@ from pathlib import Path
 import httpx
 import pytest
 
+from exceptions.prayer_exceptions import PrayersNotFoundError
 from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.nt_prayers_text import NtPrayersText
 
@@ -41,7 +42,10 @@ def nt_mock(respx_mock):
 @pytest.mark.usefixtures('nt_mock')
 async def test_today(time_machine):
     time_machine.move_to('2025-01-06')
-    got = await NtPrayersText('kazan', FkPrayerDate(datetime.date(2025, 1, 6))).to_str()
+    got = await NtPrayersText(
+        'kazan',
+        FkPrayerDate(datetime.date(2025, 1, 6)),
+    ).to_str()
 
     assert got == '\n'.join([
         'Время намаза для г. kazan (06.01.2025)',
@@ -59,14 +63,11 @@ async def test_today(time_machine):
 async def test_by_date():
     got = await NtPrayersText(
         'kazan',
-        # TODO #1450:30min Пока возможно получать время намаза только в рамках текущего месяца.
-        #  В таблице на странице https://namaz.today/city/kazan приведены данные только на текущий месяц
-        #  Оставил коммент с вопросом, пока ждем решения
         FkPrayerDate(datetime.date(2025, 1, 20)),
     ).to_str()
 
     assert got == '\n'.join([
-        'Время намаза для г. kazan (06.01.2025)',
+        'Время намаза для г. kazan (20.01.2025)',
         '',
         'Иртәнге: 05:44',
         'Восход: 07:57',
@@ -75,3 +76,15 @@ async def test_by_date():
         'Ахшам: 15:53',
         'Ястү: 17:44',
     ])
+
+
+# TODO #1450:30min Пока возможно получать время намаза только в рамках текущего месяца.
+#  В таблице на странице https://namaz.today/city/kazan приведены данные только на текущий месяц
+#  Оставил коммент с вопросом, пока ждем решения
+@pytest.mark.usefixtures('nt_mock')
+async def test_unavailable_date():
+    with pytest.raises(PrayersNotFoundError):
+        await NtPrayersText(
+            'kazan',
+            FkPrayerDate(datetime.date(2025, 2, 20)),
+        ).to_str()

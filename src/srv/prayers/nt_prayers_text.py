@@ -30,6 +30,7 @@ from lxml import etree
 
 from app_types.async_supports_str import AsyncSupportsStr
 from app_types.fk_update import FkUpdate
+from exceptions.prayer_exceptions import PrayersNotFoundError
 from srv.prayers.prayer_date import PrayerDate
 
 
@@ -41,8 +42,10 @@ class NtPrayersText(AsyncSupportsStr):
     _city_name: str
     _date: PrayerDate
 
+    # TODO #1450:30min Исправить сложность функции (WPS210) и удалить noqa комментарий
+    #  Возможно поможет решение #1438
     @override
-    async def to_str(self) -> str:
+    async def to_str(self) -> str:  # noqa: WPS210
         """Строковое представление.
 
         :return: str
@@ -53,8 +56,11 @@ class NtPrayersText(AsyncSupportsStr):
             response.raise_for_status()
         tree = etree.fromstring(response.text, etree.HTMLParser())  # noqa: S320. Trust https://namaz.today
         table_rows = tree.xpath("//section[@id='content-tab1']//tbody/tr")
+        date = await self._date.parse(FkUpdate.empty_ctor())
+        if date.month != datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).month:
+            raise PrayersNotFoundError(self._city_name, date)
         for row in table_rows:
-            if row.xpath('./td')[0].text == str((await self._date.parse(FkUpdate.empty_ctor())).day):
+            if row.xpath('./td')[0].text == str(date.day):
                 rows = row.xpath('./td')
                 break
         template = '\n'.join([
@@ -73,7 +79,7 @@ class NtPrayersText(AsyncSupportsStr):
             #  в аттрибуте лежит slug для города, а не название, которое
             #  должен видеть пользователь
             city_name=self._city_name,
-            date=datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
+            date=date.strftime('%d.%m.%Y'),
             fajr_prayer_time=rows[1].text,
             sunrise_prayer_time=rows[2].text,
             dhuhr_prayer_time=rows[3].text,
