@@ -29,8 +29,8 @@ import pytz
 from lxml import etree
 
 from app_types.async_supports_str import AsyncSupportsStr
-from srv.prayers.prayer_date import PrayerDate
 from app_types.fk_update import FkUpdate
+from srv.prayers.prayer_date import PrayerDate
 
 
 @final

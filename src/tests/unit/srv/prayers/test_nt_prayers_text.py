@@ -26,8 +26,8 @@ from pathlib import Path
 import httpx
 import pytest
 
-from srv.prayers.nt_prayers_text import NtPrayersText
 from srv.prayers.fk_prayer_date import FkPrayerDate
+from srv.prayers.nt_prayers_text import NtPrayersText
 
 
 @pytest.fixture
