@@ -39,6 +39,10 @@ tasks:
     cmds:
       - docker compose run --rm qbot bash
 
+  compose-psql:
+    cmds:
+      - docker compose run --rm qbot psql -h postgres -U admin -d qbot
+
   compose-fmt:
     cmds:
       - docker compose run --rm qbot task fmt
