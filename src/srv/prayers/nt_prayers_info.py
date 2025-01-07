@@ -42,8 +42,6 @@ class NtPrayersInfo(PrayersInfo):
     _city_name: str
     _date: PrayerDate
 
-    # TODO #1450:30min Исправить сложность функции (WPS210) и удалить noqa комментарий
-    #  Возможно поможет решение #1438
     @override
     async def to_dict(self) -> PrayerMessageTextDict:
         """Словарь с данными для отправки пользователю."""
