@@ -20,14 +20,11 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO #1443:30min Перенести файл в unit тесты
-#  city_names не относится к handlers
-
 import httpx
 import pytest
 import ujson
 
-from handlers.nt_city_names import NtCityNames
+from srv.prayers.nt_city_names import NtCityNames
 
 
 @pytest.fixture
