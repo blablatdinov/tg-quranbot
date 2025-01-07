@@ -103,7 +103,7 @@ class RbmqEventHook(EventHook):
             return
         try:
             await self._inner_handler(message)
-        except Exception:  # pylint: disable=broad-exception-caught
+        except Exception:
             # Catching all exceptions because app entry.
             self._logger.exception('Fail on process event')
             await chnl.default_exchange.publish(
