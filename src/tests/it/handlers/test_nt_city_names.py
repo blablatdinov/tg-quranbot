@@ -20,6 +20,9 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+# TODO #1443:30min Перенести файл в unit тесты
+#  city_names не относится к handlers
+
 import httpx
 import pytest
 import ujson
@@ -46,6 +49,16 @@ def nt_mock(respx_mock):
     )
 
 
+@pytest.fixture
+def nt_mock_empty(respx_mock):
+    respx_mock.get('https://namaz.today/city.php?term=8$@90').mock(
+        return_value=httpx.Response(
+            status_code=200,
+            text='[]',
+        ),
+    )
+
+
 @pytest.mark.usefixtures('nt_mock')
 async def test():
     got = await NtCityNames(
@@ -53,3 +66,12 @@ async def test():
     ).to_list()
 
     assert got == ['Казань']
+
+
+@pytest.mark.usefixtures('nt_mock_empty')
+async def test_empty_list():
+    got = await NtCityNames(
+        '8$@90',
+    ).to_list()
+
+    assert got == []
