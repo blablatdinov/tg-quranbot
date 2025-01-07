@@ -26,7 +26,7 @@
 ALTER TABLE cities ADD CONSTRAINT cities_uniq_name UNIQUE (name);
 
 CREATE TABLE namaz_today_cities (
-    city_id character varying, 
+    city_id character varying,
     link character varying
 );
 
