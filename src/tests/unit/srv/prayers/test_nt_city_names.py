@@ -24,7 +24,7 @@ import httpx
 import pytest
 import ujson
 
-from handlers.nt_city_names import NtCityNames
+from srv.prayers.nt_city_names import NtCityNames
 
 
 @pytest.fixture
@@ -46,6 +46,16 @@ def nt_mock(respx_mock):
     )
 
 
+@pytest.fixture
+def nt_mock_empty(respx_mock):
+    respx_mock.get('https://namaz.today/city.php?term=8$@90').mock(
+        return_value=httpx.Response(
+            status_code=200,
+            text='[]',
+        ),
+    )
+
+
 @pytest.mark.usefixtures('nt_mock')
 async def test():
     got = await NtCityNames(
@@ -53,3 +63,12 @@ async def test():
     ).to_list()
 
     assert got == ['Казань']
+
+
+@pytest.mark.usefixtures('nt_mock_empty')
+async def test_empty_list():
+    got = await NtCityNames(
+        '8$@90',
+    ).to_list()
+
+    assert got == []

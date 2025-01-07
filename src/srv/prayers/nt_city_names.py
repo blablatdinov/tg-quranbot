@@ -43,7 +43,6 @@ class NtCityNames(AsyncListable):
         """
         async with httpx.AsyncClient() as http_client:
             response = await http_client.get('https://namaz.today/city.php?term={0}'.format(self._query))
-            # TODO #1432:30min Обрабатывать не найденные города
             response.raise_for_status()
         # TODO #1432:30min После имплементации #1433 подставлять в city_id реальные значения
         # TODO #1428:30min Определить как у пользователя будет храниться выбранный город
