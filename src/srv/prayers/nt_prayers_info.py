@@ -45,20 +45,20 @@ class NtPrayersInfo(PrayersInfo):
     # TODO #1450:30min Исправить сложность функции (WPS210) и удалить noqa комментарий
     #  Возможно поможет решение #1438
     @override
-    async def to_dict(self) -> PrayerMessageTextDict:  # noqa: WPS210
+    async def to_dict(self) -> PrayerMessageTextDict:
         """Словарь с данными для отправки пользователю."""
         async with httpx.AsyncClient() as http_client:
             response = await http_client.get('https://namaz.today/city/{0}'.format(self._city_name))
             response.raise_for_status()
         tree = etree.fromstring(response.text, etree.HTMLParser())  # noqa: S320. Trust https://namaz.today
-        table_rows = tree.xpath("//section[@id='content-tab1']//tbody/tr")
         date = await self._date.parse(FkUpdate.empty_ctor())
         if date.month != datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).month:
             raise PrayersNotFoundError(self._city_name, date)
-        for row in table_rows:
-            if row.xpath('./td')[0].text == str(date.day):
-                rows = row.xpath('./td')
-                break
+        rows = next(iter(
+            row
+            for row in tree.xpath("//section[@id='content-tab1']//tbody/tr")
+            if row.xpath('./td')[0].text == str(date.day)
+        ))
         # TODO #1428:30min Написать декоратор, который будет создавать запись prayer_at_user
         return PrayerMessageTextDict({
             'city_name': tree.xpath('//h1/text()')[0].split('.')[0],
