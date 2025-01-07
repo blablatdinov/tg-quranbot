@@ -60,12 +60,8 @@ class NtPrayersInfo(PrayersInfo):
                 rows = row.xpath('./td')
                 break
         # TODO #1428:30min Написать декоратор, который будет создавать запись prayer_at_user
-        # TODO #1428:30min Определить как получать время намаза по дате
-        # TODO #1435:30min заменить self._city_name
-        #  в аттрибуте лежит slug для города, а не название, которое
-        #  должен видеть пользователь
         return PrayerMessageTextDict({
-            'city_name': self._city_name,
+            'city_name': tree.xpath('//h1/text()')[0].split('.')[0],
             'date': date.strftime('%d.%m.%Y'),
             'fajr_prayer_time': rows[1].text,
             'sunrise_prayer_time': rows[2].text,

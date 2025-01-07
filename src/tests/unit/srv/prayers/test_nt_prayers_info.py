@@ -49,7 +49,7 @@ async def test_today(time_machine):
 
     assert got == {
         'asr_prayer_time': '13:39',
-        'city_name': 'kazan',
+        'city_name': 'Казань',
         'date': '06.01.2025',
         'dhuhr_prayer_time': '11:50',
         'fajr_prayer_time': '05:53',
@@ -68,7 +68,7 @@ async def test_by_date():
 
     assert got == {
         'asr_prayer_time': '14:02',
-        'city_name': 'kazan',
+        'city_name': 'Казань',
         'date': '20.01.2025',
         'dhuhr_prayer_time': '11:56',
         'fajr_prayer_time': '05:44',
