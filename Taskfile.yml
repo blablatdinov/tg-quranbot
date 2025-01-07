@@ -25,7 +25,7 @@ version: 3
 tasks:
   compose-setup:
     cmds:
-      - docker compose build --no-cache
+      - docker compose build
 
   compose-run:
     cmds:
@@ -41,7 +41,7 @@ tasks:
 
   compose-psql:
     cmds:
-      - docker compose run --rm qbot psql -h postgres -U admin -d qbot
+      - docker compose run --rm qbot task psql
 
   compose-fmt:
     cmds:
@@ -55,6 +55,10 @@ tasks:
     cmds:
       - poetry run mypy src
       - poetry run pytest --ignore=src/tests/e2e --cov=src --cov-report html --cov-fail-under=96
+
+  psql:
+    cmds:
+      - PGPASSWORD=admin psql -h postgres -U admin -d qbot
 
   fmt:
     cmds:
