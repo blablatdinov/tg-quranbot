@@ -23,12 +23,14 @@
 import datetime
 from typing import final, override
 
-import pytz
 import attrs
+import pytz
 from databases import Database
 
 from srv.prayers.pg_city import PgCity
+from srv.prayers.pg_new_prayers_at_user import PgNewPrayersAtUser
 from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
+from integrations.tg.fk_chat_id import ChatId
 
 
 @final
@@ -38,6 +40,7 @@ class NtUserPrayersInfo(PrayersInfo):
 
     _origin: PrayersInfo
     _pgsql: Database
+    _chat_id: ChatId
 
     @override
     async def to_dict(self) -> PrayerMessageTextDict:
@@ -46,6 +49,13 @@ class NtUserPrayersInfo(PrayersInfo):
         origin = await self._origin.to_dict()
         city = PgCity.name_ctor(origin['city_name'], self._pgsql)
         city_id = await city.city_id()
+        day = (
+            datetime.datetime
+            .strptime(origin['date'], '%d.%m.%Y')
+            .replace(tzinfo=pytz.timezone('Europe/Moscow'))
+            .date()
+        )
+        # TODO #1472:30min Обработать случай если для этого города уже есть запись в таблице prayers на эту дату
         await self._pgsql.execute_many(
             '\n'.join([
                 'INSERT INTO prayers (name, time, city_id, day)',
@@ -60,9 +70,7 @@ class NtUserPrayersInfo(PrayersInfo):
                         origin[key], '%H:%M',  # type: ignore [literal-required]
                     ).replace(tzinfo=pytz.timezone('Europe/Moscow')).time(),
                     'city_id': city_id,
-                    'day': datetime.datetime.strptime(
-                        origin['date'], '%d.%m.%Y',
-                    ).replace(tzinfo=pytz.timezone('Europe/Moscow')).date(),
+                    'day': day,
                 }
                 for prayer_name, key in zip(
                     [
@@ -85,4 +93,19 @@ class NtUserPrayersInfo(PrayersInfo):
                 )
             ],
         )
+        await PgNewPrayersAtUser(int(self._chat_id), self._pgsql).create(day)
+        # prayer_ids = [
+        #     row['prayer_id']
+        #     for row in await self._pgsql.fetch_all(
+        #         'SELECT prayer_id, name FROM prayers WHERE city_id = :city_id AND day = :day',
+        #         {
+        #             'city_id': str(city_id),
+        #             'day': day,
+        #         },
+        #     )
+        # ]
+        # prayer_group_id = str(uuid.uuid4())
+        # await self._pgsql.fetch_val(
+        #     'INSERT INTO prayers_at_user_groups VALUES (:prayer_group_id)', {'prayer_group_id': prayer_group_id},
+        # )
         return origin
