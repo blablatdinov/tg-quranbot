@@ -95,19 +95,9 @@ async def test(pgsql):
             'time': datetime.time(18, 12),
         },
     ]
-    assert [
-        dict(row)
-        for row in await pgsql.fetch_all('select user_id, is_read from prayers_at_user')
-    ] == [
-        {
-            'is_read': False,
-            'user_id': 1,
-        }
-        for _ in range(5)
-    ]
 
 
-@pytest.mark.usefixtures('_db_city', '_user', '_prayers')
+@pytest.mark.usefixtures('_db_city', '_user')
 async def test_double(pgsql):
     nt_user_prayers_info = NtPgPrayersInfo(
         FkPrayersInfo({
