@@ -56,7 +56,8 @@ class NtUserPrayersInfo(PrayersInfo):
                 {
                     'name': prayer_name,
                     'time': datetime.datetime.strptime(
-                        origin[key], '%H:%M',
+                        # Keys are checked in the loop
+                        origin[key], '%H:%M',  # type: ignore [literal-required]
                     ).replace(tzinfo=pytz.timezone('Europe/Moscow')).time(),
                     'city_id': city_id,
                     'day': datetime.datetime.strptime(
