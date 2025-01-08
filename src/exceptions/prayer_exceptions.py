@@ -47,5 +47,5 @@ class PrayersNotFoundError(BaseAppError):
 
 @final
 @attrs.define(frozen=True)
-class PrayersAlreadyExists(BaseAppError):
+class PrayersAlreadyExistsError(BaseAppError):
     """Произошла попытка дубриования строк в таблице prayers."""

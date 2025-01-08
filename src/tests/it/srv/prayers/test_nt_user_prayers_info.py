@@ -25,11 +25,11 @@ import uuid
 
 import pytest
 
+from exceptions.prayer_exceptions import PrayersAlreadyExistsError
 from integrations.tg.fk_chat_id import FkChatId
 from srv.prayers.fk_city import FkCity
 from srv.prayers.fk_prayers_info import FkPrayersInfo
 from srv.prayers.nt_user_prayers_info import NtUserPrayersInfo
-from exceptions.prayer_exceptions import PrayersAlreadyExists
 
 
 @pytest.fixture
@@ -126,7 +126,7 @@ async def test_double(pgsql):
         FkChatId(1),
     )
     await nt_user_prayers_info.to_dict()
-    with pytest.raises(PrayersAlreadyExists):
+    with pytest.raises(PrayersAlreadyExistsError):
         await nt_user_prayers_info.to_dict()
 
     assert await pgsql.fetch_val('select count(*) from prayers') == 6

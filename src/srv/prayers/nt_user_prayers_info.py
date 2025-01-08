@@ -25,14 +25,14 @@ from typing import final, override
 
 import attrs
 import pytz
-from databases import Database
 from asyncpg.exceptions import UniqueViolationError
+from databases import Database
 
+from exceptions.prayer_exceptions import PrayersAlreadyExistsError
 from integrations.tg.fk_chat_id import ChatId
 from srv.prayers.pg_city import PgCity
 from srv.prayers.pg_new_prayers_at_user import PgNewPrayersAtUser
 from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
-from exceptions.prayer_exceptions import PrayersAlreadyExists
 
 
 @final
@@ -93,8 +93,8 @@ class NtUserPrayersInfo(PrayersInfo):
                     )
                 ],
             )
-        except UniqueViolationError as err :
-            raise PrayersAlreadyExists from err
+        except UniqueViolationError as err:
+            raise PrayersAlreadyExistsError from err
         # TODO #1472:30min Создание стоит вынести в отдельный декоратор
         await PgNewPrayersAtUser(int(self._chat_id), self._pgsql).create(day)
         return origin
