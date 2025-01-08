@@ -23,11 +23,13 @@
 import datetime
 from typing import final, override
 
-import pytz
 import attrs
+import pytz
 from databases import Database
 
+from integrations.tg.fk_chat_id import ChatId
 from srv.prayers.pg_city import PgCity
+from srv.prayers.pg_new_prayers_at_user import PgNewPrayersAtUser
 from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
 
 
@@ -38,14 +40,20 @@ class NtUserPrayersInfo(PrayersInfo):
 
     _origin: PrayersInfo
     _pgsql: Database
+    _chat_id: ChatId
 
     @override
     async def to_dict(self) -> PrayerMessageTextDict:
         """Словарь с данными для отправки пользователю."""
-        # TODO #1467:30min Написать sql запросы для вставки в таблицу prayers_at_user
         origin = await self._origin.to_dict()
-        city = PgCity.name_ctor(origin['city_name'], self._pgsql)
-        city_id = await city.city_id()
+        city_id = await PgCity.name_ctor(origin['city_name'], self._pgsql).city_id()
+        day = (
+            datetime.datetime
+            .strptime(origin['date'], '%d.%m.%Y')
+            .replace(tzinfo=pytz.timezone('Europe/Moscow'))
+            .date()
+        )
+        # TODO #1472:30min Обработать случай если для этого города уже есть запись в таблице prayers на эту дату
         await self._pgsql.execute_many(
             '\n'.join([
                 'INSERT INTO prayers (name, time, city_id, day)',
@@ -60,9 +68,7 @@ class NtUserPrayersInfo(PrayersInfo):
                         origin[key], '%H:%M',  # type: ignore [literal-required]
                     ).replace(tzinfo=pytz.timezone('Europe/Moscow')).time(),
                     'city_id': city_id,
-                    'day': datetime.datetime.strptime(
-                        origin['date'], '%d.%m.%Y',
-                    ).replace(tzinfo=pytz.timezone('Europe/Moscow')).date(),
+                    'day': day,
                 }
                 for prayer_name, key in zip(
                     [
@@ -85,4 +91,6 @@ class NtUserPrayersInfo(PrayersInfo):
                 )
             ],
         )
+        # TODO #1472:30min Создание стоит вынести в отдельный декоратор
+        await PgNewPrayersAtUser(int(self._chat_id), self._pgsql).create(day)
         return origin

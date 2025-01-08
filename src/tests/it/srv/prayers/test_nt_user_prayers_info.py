@@ -21,9 +21,12 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
+import uuid
 
 import pytest
 
+from integrations.tg.fk_chat_id import FkChatId
+from srv.prayers.fk_city import FkCity
 from srv.prayers.fk_prayers_info import FkPrayersInfo
 from srv.prayers.nt_user_prayers_info import NtUserPrayersInfo
 
@@ -33,9 +36,12 @@ async def _db_city(city_factory):
     await city_factory('e9fa0fff-4e6a-47c8-8654-09adf913734a', 'Казань')
 
 
-# TODO #1467:30min написать тест для проверки в таблице prayers_at_user
-#  и раскоментировать assert
-@pytest.mark.usefixtures('_db_city')
+@pytest.fixture
+async def _user(user_factory):
+    await user_factory(1, city=FkCity(uuid.UUID('e9fa0fff-4e6a-47c8-8654-09adf913734a'), 'Казань'))
+
+
+@pytest.mark.usefixtures('_db_city', '_user')
 async def test(pgsql):
     await NtUserPrayersInfo(
         FkPrayersInfo({
@@ -49,6 +55,7 @@ async def test(pgsql):
             'ishaa_prayer_time': '18:12',
         }),
         pgsql,
+        FkChatId(1),
     ).to_dict()
 
     assert [dict(row) for row in await pgsql.fetch_all('select city_id, day, name, time from prayers')] == [
@@ -89,4 +96,13 @@ async def test(pgsql):
             'time': datetime.time(18, 12),
         },
     ]
-    # assert list(await pgsql.fetch_all('select * from prayers_at_user')) != []  # noqa: ERA001
+    assert [
+        dict(row)
+        for row in await pgsql.fetch_all('select user_id, is_read from prayers_at_user')
+    ] == [
+        {
+            'is_read': False,
+            'user_id': 1,
+        }
+        for _ in range(5)
+    ]
