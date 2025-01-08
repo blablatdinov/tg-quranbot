@@ -31,7 +31,7 @@ async def _db_city(city_factory):
     await city_factory('e9fa0fff-4e6a-47c8-8654-09adf913734a', 'Казань')
 
 
-# TODO 1436:30min написать тест для NtUserPrayersInfo и убрать декоратор skip
+# TODO #1436:30min написать тест для NtUserPrayersInfo и убрать декоратор skip
 @pytest.mark.usefixtures('_db_city')
 @pytest.mark.skip
 async def test(pgsql):
