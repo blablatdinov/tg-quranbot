@@ -26,4 +26,4 @@
 -- # TODO: #1475:30min Написать rollback для миграций
 
 ALTER TABLE prayers
-ADD UNIQUE (city_id, name, day);
+ADD CONSTRAINT prayers_unique UNIQUE (city_id, name, day);
