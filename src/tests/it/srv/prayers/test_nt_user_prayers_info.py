@@ -25,6 +25,7 @@ import uuid
 
 import pytest
 
+from exceptions.prayer_exceptions import PrayersAlreadyExistsError
 from integrations.tg.fk_chat_id import FkChatId
 from srv.prayers.fk_city import FkCity
 from srv.prayers.fk_prayers_info import FkPrayersInfo
@@ -106,3 +107,26 @@ async def test(pgsql):
         }
         for _ in range(5)
     ]
+
+
+@pytest.mark.usefixtures('_db_city', '_user')
+async def test_double(pgsql):
+    nt_user_prayers_info = NtUserPrayersInfo(
+        FkPrayersInfo({
+            'city_name': 'Казань',
+            'date': '21.10.2023',
+            'fajr_prayer_time': '04:22',
+            'sunrise_prayer_time': '06:26',
+            'dhuhr_prayer_time': '12:00',
+            'asr_prayer_time': '14:35',
+            'magrib_prayer_time': '16:30',
+            'ishaa_prayer_time': '18:12',
+        }),
+        pgsql,
+        FkChatId(1),
+    )
+    await nt_user_prayers_info.to_dict()
+    with pytest.raises(PrayersAlreadyExistsError):
+        await nt_user_prayers_info.to_dict()
+
+    assert await pgsql.fetch_val('select count(*) from prayers') == 6

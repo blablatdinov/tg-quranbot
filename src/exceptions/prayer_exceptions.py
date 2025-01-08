@@ -43,3 +43,9 @@ class PrayersNotFoundError(BaseAppError):
 
     city_name: str
     date: datetime.date
+
+
+@final
+@attrs.define(frozen=True)
+class PrayersAlreadyExistsError(BaseAppError):
+    """Произошла попытка дублирования строк в таблице prayers."""
