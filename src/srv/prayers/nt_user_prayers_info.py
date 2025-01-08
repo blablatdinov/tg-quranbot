@@ -46,8 +46,7 @@ class NtUserPrayersInfo(PrayersInfo):
     async def to_dict(self) -> PrayerMessageTextDict:
         """Словарь с данными для отправки пользователю."""
         origin = await self._origin.to_dict()
-        city = PgCity.name_ctor(origin['city_name'], self._pgsql)
-        city_id = await city.city_id()
+        city_id = await PgCity.name_ctor(origin['city_name'], self._pgsql).city_id()
         day = (
             datetime.datetime
             .strptime(origin['date'], '%d.%m.%Y')
@@ -92,5 +91,6 @@ class NtUserPrayersInfo(PrayersInfo):
                 )
             ],
         )
+        # TODO #1472:30min Создание стоит вынести в отдельный декоратор
         await PgNewPrayersAtUser(int(self._chat_id), self._pgsql).create(day)
         return origin

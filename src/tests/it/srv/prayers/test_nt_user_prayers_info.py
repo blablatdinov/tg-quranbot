@@ -21,6 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
+import uuid
 
 import pytest
 
@@ -37,7 +38,7 @@ async def _db_city(city_factory):
 
 @pytest.fixture
 async def _user(user_factory):
-    await user_factory(1, city=FkCity('e9fa0fff-4e6a-47c8-8654-09adf913734a', 'Казань'))
+    await user_factory(1, city=FkCity(uuid.UUID('e9fa0fff-4e6a-47c8-8654-09adf913734a'), 'Казань'))
 
 
 @pytest.mark.usefixtures('_db_city', '_user')
