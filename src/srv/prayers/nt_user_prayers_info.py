@@ -20,11 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import datetime
 from typing import final, override
 
+import pytz
 import attrs
 from databases import Database
 
+from srv.prayers.pg_city import PgCity
 from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
 
 
@@ -39,5 +42,47 @@ class NtUserPrayersInfo(PrayersInfo):
     @override
     async def to_dict(self) -> PrayerMessageTextDict:
         """Словарь с данными для отправки пользователю."""
-        # TODO #1436:30min Написать sql запросы для вставки в таблицу prayers и prayers_at_user
-        return await self._origin.to_dict()
+        # TODO #1467:30min Написать sql запросы для вставки в таблицу prayers_at_user
+        origin = await self._origin.to_dict()
+        city = PgCity.name_ctor(origin['city_name'], self._pgsql)
+        city_id = await city.city_id()
+        await self._pgsql.execute_many(
+            '\n'.join([
+                'INSERT INTO prayers (name, time, city_id, day)',
+                'VALUES',
+                '(:name, :time, :city_id, :day)',
+            ]),
+            [
+                {
+                    'name': prayer_name,
+                    'time': datetime.datetime.strptime(
+                        # Keys are checked in the loop
+                        origin[key], '%H:%M',  # type: ignore [literal-required]
+                    ).replace(tzinfo=pytz.timezone('Europe/Moscow')).time(),
+                    'city_id': city_id,
+                    'day': datetime.datetime.strptime(
+                        origin['date'], '%d.%m.%Y',
+                    ).replace(tzinfo=pytz.timezone('Europe/Moscow')).date(),
+                }
+                for prayer_name, key in zip(
+                    [
+                        'fajr',
+                        'sunrise',
+                        'dhuhr',
+                        'asr',
+                        'maghrib',
+                        "isha'a",
+                    ],
+                    [
+                        'fajr_prayer_time',
+                        'sunrise_prayer_time',
+                        'dhuhr_prayer_time',
+                        'asr_prayer_time',
+                        'magrib_prayer_time',
+                        'ishaa_prayer_time',
+                    ],
+                    strict=True,
+                )
+            ],
+        )
+        return origin
