@@ -24,10 +24,10 @@ import datetime
 
 import pytest
 
+from integrations.tg.fk_chat_id import FkChatId
+from srv.prayers.fk_city import FkCity
 from srv.prayers.fk_prayers_info import FkPrayersInfo
 from srv.prayers.nt_user_prayers_info import NtUserPrayersInfo
-from srv.prayers.fk_city import FkCity
-from integrations.tg.fk_chat_id import FkChatId
 
 
 @pytest.fixture
