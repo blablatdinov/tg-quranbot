@@ -26,7 +26,6 @@ import uuid
 import pytest
 
 from exceptions.prayer_exceptions import PrayersAlreadyExistsError
-from integrations.tg.fk_chat_id import FkChatId
 from srv.prayers.fk_city import FkCity
 from srv.prayers.fk_prayers_info import FkPrayersInfo
 from srv.prayers.nt_pg_prayers_info import NtPgPrayersInfo
