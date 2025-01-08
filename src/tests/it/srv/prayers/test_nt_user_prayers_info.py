@@ -34,7 +34,7 @@ async def _db_city(city_factory):
 
 
 # TODO #1467:30min написать тест для проверки в таблице prayers_at_user
-#  и расскоментировать assert
+#  и раскоментировать assert
 @pytest.mark.usefixtures('_db_city')
 async def test(pgsql):
     await NtUserPrayersInfo(
