@@ -20,6 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import datetime
+
 import pytest
 
 from srv.prayers.fk_prayers_info import FkPrayersInfo
@@ -31,9 +33,9 @@ async def _db_city(city_factory):
     await city_factory('e9fa0fff-4e6a-47c8-8654-09adf913734a', 'Казань')
 
 
-# TODO #1436:30min написать тест для NtUserPrayersInfo и убрать декоратор skip
+# TODO #1467:30min написать тест для проверки в таблице prayers_at_user
+#  и расскоментировать assert
 @pytest.mark.usefixtures('_db_city')
-@pytest.mark.skip
 async def test(pgsql):
     await NtUserPrayersInfo(
         FkPrayersInfo({
@@ -49,4 +51,48 @@ async def test(pgsql):
         pgsql,
     ).to_dict()
 
-    assert list(await pgsql.fetch_all('select * from prayers_at_user')) != []
+    assert [dict(row) for row in await pgsql.fetch_all('select * from prayers')] == [
+        {
+            'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
+            'day': datetime.date(2023, 10, 21),
+            'name': 'fajr',
+            'prayer_id': 1,
+            'time': datetime.time(4, 22),
+        },
+        {
+            'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
+            'day': datetime.date(2023, 10, 21),
+            'name': 'sunrise',
+            'prayer_id': 2,
+            'time': datetime.time(6, 26),
+        },
+        {
+            'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
+            'day': datetime.date(2023, 10, 21),
+            'name': 'dhuhr',
+            'prayer_id': 3,
+            'time': datetime.time(12, 0),
+        },
+        {
+            'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
+            'day': datetime.date(2023, 10, 21),
+            'name': 'asr',
+            'prayer_id': 4,
+            'time': datetime.time(14, 35),
+        },
+        {
+            'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
+            'day': datetime.date(2023, 10, 21),
+            'name': 'maghrib',
+            'prayer_id': 5,
+            'time': datetime.time(16, 30),
+        },
+        {
+            'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
+            'day': datetime.date(2023, 10, 21),
+            'name': "isha'a",
+            'prayer_id': 6,
+            'time': datetime.time(18, 12),
+        },
+    ]
+    # assert list(await pgsql.fetch_all('select * from prayers_at_user')) != []  # noqa: ERA001
