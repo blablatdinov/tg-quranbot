@@ -56,7 +56,6 @@ async def test(pgsql):
             'ishaa_prayer_time': '18:12',
         }),
         pgsql,
-        FkChatId(1),
     ).to_dict()
 
     assert [dict(row) for row in await pgsql.fetch_all('select city_id, day, name, time from prayers')] == [
@@ -123,7 +122,6 @@ async def test_double(pgsql):
             'ishaa_prayer_time': '18:12',
         }),
         pgsql,
-        FkChatId(1),
     )
     await nt_user_prayers_info.to_dict()
     with pytest.raises(PrayersAlreadyExistsError):
