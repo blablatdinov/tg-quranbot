@@ -26,11 +26,13 @@ from typing import final, override
 import attrs
 import pytz
 from databases import Database
+from asyncpg.exceptions import UniqueViolationError
 
 from integrations.tg.fk_chat_id import ChatId
 from srv.prayers.pg_city import PgCity
 from srv.prayers.pg_new_prayers_at_user import PgNewPrayersAtUser
 from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
+from exceptions.prayer_exceptions import PrayersAlreadyExists
 
 
 @final
@@ -53,44 +55,46 @@ class NtUserPrayersInfo(PrayersInfo):
             .replace(tzinfo=pytz.timezone('Europe/Moscow'))
             .date()
         )
-        # TODO #1472:30min Обработать случай если для этого города уже есть запись в таблице prayers на эту дату
-        await self._pgsql.execute_many(
-            '\n'.join([
-                'INSERT INTO prayers (name, time, city_id, day)',
-                'VALUES',
-                '(:name, :time, :city_id, :day)',
-            ]),
-            [
-                {
-                    'name': prayer_name,
-                    'time': datetime.datetime.strptime(
-                        # Keys are checked in the loop
-                        origin[key], '%H:%M',  # type: ignore [literal-required]
-                    ).replace(tzinfo=pytz.timezone('Europe/Moscow')).time(),
-                    'city_id': city_id,
-                    'day': day,
-                }
-                for prayer_name, key in zip(
-                    [
-                        'fajr',
-                        'sunrise',
-                        'dhuhr',
-                        'asr',
-                        'maghrib',
-                        "isha'a",
-                    ],
-                    [
-                        'fajr_prayer_time',
-                        'sunrise_prayer_time',
-                        'dhuhr_prayer_time',
-                        'asr_prayer_time',
-                        'magrib_prayer_time',
-                        'ishaa_prayer_time',
-                    ],
-                    strict=True,
-                )
-            ],
-        )
+        try:
+            await self._pgsql.execute_many(
+                '\n'.join([
+                    'INSERT INTO prayers (name, time, city_id, day)',
+                    'VALUES',
+                    '(:name, :time, :city_id, :day)',
+                ]),
+                [
+                    {
+                        'name': prayer_name,
+                        'time': datetime.datetime.strptime(
+                            # Keys are checked in the loop
+                            origin[key], '%H:%M',  # type: ignore [literal-required]
+                        ).replace(tzinfo=pytz.timezone('Europe/Moscow')).time(),
+                        'city_id': city_id,
+                        'day': day,
+                    }
+                    for prayer_name, key in zip(
+                        [
+                            'fajr',
+                            'sunrise',
+                            'dhuhr',
+                            'asr',
+                            'maghrib',
+                            "isha'a",
+                        ],
+                        [
+                            'fajr_prayer_time',
+                            'sunrise_prayer_time',
+                            'dhuhr_prayer_time',
+                            'asr_prayer_time',
+                            'magrib_prayer_time',
+                            'ishaa_prayer_time',
+                        ],
+                        strict=True,
+                    )
+                ],
+            )
+        except UniqueViolationError as err :
+            raise PrayersAlreadyExists from err
         # TODO #1472:30min Создание стоит вынести в отдельный декоратор
         await PgNewPrayersAtUser(int(self._chat_id), self._pgsql).create(day)
         return origin
