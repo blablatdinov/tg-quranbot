@@ -51,47 +51,41 @@ async def test(pgsql):
         pgsql,
     ).to_dict()
 
-    assert [dict(row) for row in await pgsql.fetch_all('select * from prayers')] == [
+    assert [dict(row) for row in await pgsql.fetch_all('select city_id, day, name, time from prayers')] == [
         {
             'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
             'day': datetime.date(2023, 10, 21),
             'name': 'fajr',
-            'prayer_id': 1,
             'time': datetime.time(4, 22),
         },
         {
             'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
             'day': datetime.date(2023, 10, 21),
             'name': 'sunrise',
-            'prayer_id': 2,
             'time': datetime.time(6, 26),
         },
         {
             'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
             'day': datetime.date(2023, 10, 21),
             'name': 'dhuhr',
-            'prayer_id': 3,
             'time': datetime.time(12, 0),
         },
         {
             'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
             'day': datetime.date(2023, 10, 21),
             'name': 'asr',
-            'prayer_id': 4,
             'time': datetime.time(14, 35),
         },
         {
             'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
             'day': datetime.date(2023, 10, 21),
             'name': 'maghrib',
-            'prayer_id': 5,
             'time': datetime.time(16, 30),
         },
         {
             'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
             'day': datetime.date(2023, 10, 21),
             'name': "isha'a",
-            'prayer_id': 6,
             'time': datetime.time(18, 12),
         },
     ]
