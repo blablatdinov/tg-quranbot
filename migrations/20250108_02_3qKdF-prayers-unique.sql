@@ -23,5 +23,7 @@
 -- Prayers unique
 -- depends: 20250108_01_vNbUw-prayers-unique
 
+-- # TODO: #1475:30min Написать rollback для миграций
+
 ALTER TABLE prayers
 ADD UNIQUE (name, day);
