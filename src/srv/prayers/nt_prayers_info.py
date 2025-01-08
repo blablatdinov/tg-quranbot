@@ -57,7 +57,6 @@ class NtPrayersInfo(PrayersInfo):
             for row in tree.xpath("//section[@id='content-tab1']//tbody/tr")
             if row.xpath('./td')[0].text == str(date.day)
         ))
-        # TODO #1428:30min Написать декоратор, который будет создавать запись prayer_at_user
         return PrayerMessageTextDict({
             'city_name': tree.xpath('//h1/text()')[0].split('.')[0],
             'date': date.strftime('%d.%m.%Y'),
