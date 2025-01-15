@@ -24,7 +24,7 @@ FROM python:3.12.7-slim
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 WORKDIR /app
-RUN pip install poetry==1.8.4
+RUN pip install poetry==2.0.1
 RUN apt-get update && apt-get install gcc=4:12.2.0-3 curl postgresql-client -y
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /bin
 COPY poetry.lock pyproject.toml /app/
