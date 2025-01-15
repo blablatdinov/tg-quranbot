@@ -62,7 +62,7 @@ from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
 
 @final
 @attrs.define(frozen=True)
-class PrayerTimeAnswer(TgAnswer):
+class PgPrayerTimeAnswer(TgAnswer):
     """Ответ с временами намаза.
 
     _pgsql: Database - соединение с БД postgres

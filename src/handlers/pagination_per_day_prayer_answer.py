@@ -29,7 +29,7 @@ from redis.asyncio import Redis
 
 from app_types.logger import LogSink
 from app_types.update import Update
-from handlers.prayer_time_answer import PrayerTimeAnswer
+from handlers.pg_prayer_time_answer import PgPrayerTimeAnswer
 from integrations.tg.tg_answers import TgAnswer
 from settings import Settings
 
@@ -53,7 +53,7 @@ class PaginationPerDayPrayerAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        return await PrayerTimeAnswer.pagination_per_day_ctor(
+        return await PgPrayerTimeAnswer.pagination_per_day_ctor(
             self._pgsql,
             self._origin,
             self._admin_chat_ids,

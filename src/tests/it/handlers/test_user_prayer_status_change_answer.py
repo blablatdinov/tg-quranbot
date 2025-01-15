@@ -29,7 +29,7 @@ import ujson
 from app_types.fk_async_str import FkAsyncStr
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
-from handlers.prayer_time_answer import PrayerTimeAnswer
+from handlers.pg_prayer_time_answer import PgPrayerTimeAnswer
 from handlers.user_prayer_status_change_answer import UserPrayerStatusChangeAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.prayers.fk_prayer_date import FkPrayerDate
@@ -58,7 +58,7 @@ def prayer_time_answer(
     fake_redis,
     settings_ctor,
 ):
-    return PrayerTimeAnswer.new_prayers_ctor(
+    return PgPrayerTimeAnswer.new_prayers_ctor(
         pgsql, FkAnswer(), [123], fake_redis, FkLogSink(), settings_ctor(),
     )
 
@@ -66,7 +66,7 @@ def prayer_time_answer(
 async def test_new_prayer_times(pgsql, fake_redis, time_machine, settings_ctor, prayers_factory):
     await prayers_factory('2023-12-19')
     time_machine.move_to('2023-12-19')
-    got = await PrayerTimeAnswer.new_prayers_ctor(
+    got = await PgPrayerTimeAnswer.new_prayers_ctor(
         pgsql, FkAnswer(), [123], fake_redis, FkLogSink(), settings_ctor(),
     ).build(
         FkUpdate(ujson.dumps({

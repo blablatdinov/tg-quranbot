@@ -20,47 +20,48 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import re
 from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
-from redis.asyncio import Redis
 
-from app_types.logger import LogSink
+from app_types.stringable import SupportsStr
 from app_types.update import Update
-from handlers.pg_prayer_time_answer import PgPrayerTimeAnswer
+from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
 from integrations.tg.tg_answers.tg_answer import TgAnswer
-from settings import Settings
-from srv.prayers.prayer_status import PrayerStatus
-from srv.prayers.user_prayer_status import UserPrayerStatus
+from integrations.tg.tg_chat_id import TgChatId
 
 
 @final
 @attrs.define(frozen=True)
-class UserPrayerStatusChangeAnswer(TgAnswer):
-    """Ответ с изменением статуса прочитанности намаза."""
+class TgChatIdRegexAnswer(TgAnswer, SupportsStr):
+    """Маршрутизация ответов по регулярному выражению в идентификаторе пользователя."""
 
-    _empty_answer: TgAnswer
-    _pgsql: Database
-    _redis: Redis
-    _logger: LogSink
-    _settings: Settings
+    _pattern: str
+    _answer: TgAnswer
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
-        """Обработка запроса.
+        """Собрать ответ.
 
         :param update: Update
         :return: list[httpx.Request]
         """
-        prayer_status = PrayerStatus.update_ctor(update)
-        await UserPrayerStatus(self._pgsql).change(prayer_status)
-        return await PgPrayerTimeAnswer.edited_markup_ctor(
-            self._pgsql,
-            self._empty_answer,
-            [123],
-            self._redis,
-            self._logger,
-            self._settings,
-        ).build(update)
+        if 'callback_query' in str(update):
+            return []
+        try:
+            regex_result = re.search(self._pattern, str(TgChatId(update)))
+        except (AttributeError, MessageTextNotFoundError):
+            return []
+        if not regex_result:
+            return []
+        return await self._answer.build(update)
+
+    @override
+    def __str__(self) -> str:
+        """Строковое представление.
+
+        :return: str
+        """
+        return 'TgMessageRegexAnswer. pattern: {0}'.format(self._pattern)
