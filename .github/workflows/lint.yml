@@ -50,7 +50,7 @@ jobs:
         run: .venv/bin/sqlfluff lint migrations --dialect postgres
       - name: Checking files for compliance with editorconfig
         run: |
-          VERSION="v3.0.3"
+          VERSION="v3.1.2"
           curl -O -L -C - https://github.com/editorconfig-checker/editorconfig-checker/releases/download/$VERSION/ec-linux-amd64.tar.gz
           tar xzf ec-linux-amd64.tar.gz
           bin/ec-linux-amd64

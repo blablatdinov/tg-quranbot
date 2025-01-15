@@ -25,7 +25,7 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 WORKDIR /app
 
 FROM base as poetry
-RUN pip install poetry==1.8.4
+RUN pip install poetry==2.0.1
 COPY poetry.lock pyproject.toml /app/
 RUN poetry export --without dev -o requirements.txt
 
