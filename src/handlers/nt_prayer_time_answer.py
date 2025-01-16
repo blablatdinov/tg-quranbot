@@ -20,11 +20,13 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import datetime
 from collections.abc import Sequence
 from typing import final, override
 
 import attrs
 import httpx
+import pytz
 from databases import Database
 from redis.asyncio import Redis
 
@@ -47,6 +49,7 @@ from services.user_prayer_keyboard import UserPrayersKeyboard
 from settings import Settings
 from srv.message_not_found_safe_answer import MessageNotFoundSafeAnswer
 from srv.prayers.date_from_user_prayer_id import DateFromUserPrayerId
+from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.nt_prayers_info import NtPrayersInfo
 from srv.prayers.pagination_per_day_date import PaginationPerDayDate
@@ -56,13 +59,12 @@ from srv.prayers.prayers_mark_as_date import PrayersMarkAsDate
 from srv.prayers.prayers_request_date import PrayersRequestDate
 from srv.prayers.prayers_text import PrayersText
 from srv.prayers.ramadan_prayer_info import RamadanPrayerInfo
-from srv.prayers.user_city_id import UserCityId
 from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
 
 
 @final
 @attrs.define(frozen=True)
-class PgPrayerTimeAnswer(TgAnswer):
+class NtPrayerTimeAnswer(TgAnswer):
     """Ответ с временами намаза.
 
     _pgsql: Database - соединение с БД postgres
@@ -191,6 +193,7 @@ class PgPrayerTimeAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
+        # TODO #1434:30min Убрать дублирование с PgPrayerTimeAnswer
         return await UserWithoutCitySafeAnswer(
             PrayersExpiredAnswer(
                 TgMessageIdAnswer(
@@ -200,11 +203,15 @@ class PgPrayerTimeAnswer(TgAnswer):
                                 self._origin,
                                 PrayersText(
                                     RamadanPrayerInfo(
+                                        # TODO #1434:30min кэшировать NtPrayersInfo
                                         NtPrayersInfo(
-                                            self._pgsql,
-                                            self._prayers_date,
-                                            UserCityId(self._pgsql, TgChatId(update)),
-                                            update,
+                                            # TODO #1434:30min Передавать реальное имя города
+                                            'Казань',
+                                            # TODO #1434:30min Передавать реальную дату
+                                            #  по аналогии с PgPrayerTimeAnswer
+                                            FkPrayerDate(
+                                                datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).date(),
+                                            ),
                                         ),
                                         self._settings.RAMADAN_MODE,
                                     ),

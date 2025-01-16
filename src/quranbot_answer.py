@@ -124,7 +124,8 @@ class QuranbotAnswer(TgAnswer):
                     ),
                     TgMessageRegexAnswer(
                         'Время намаза',
-                        TgAnswerFork(
+                        TgAnswerFork.ctor(
+                            logger,
                             TgChatIdRegexAnswer(
                                 '358610865',
                                 PgPrayerTimeAnswer.new_prayers_ctor(

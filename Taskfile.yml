@@ -63,7 +63,7 @@ tasks:
   fmt:
     cmds:
       - poetry run isort src
-      - poetry run ruff check src --fix --output-format=concise
+      - poetry run ruff check src --fix --fix-only
 
   lint:
     cmds:
