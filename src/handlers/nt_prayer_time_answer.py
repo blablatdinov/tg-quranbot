@@ -48,6 +48,7 @@ from integrations.tg.tg_chat_id import TgChatId
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from settings import Settings
 from srv.message_not_found_safe_answer import MessageNotFoundSafeAnswer
+from srv.prayers.cd_prayers_info import CdPrayersInfo
 from srv.prayers.date_from_user_prayer_id import DateFromUserPrayerId
 from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
@@ -194,6 +195,13 @@ class NtPrayerTimeAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         # TODO #1434:30min Убрать дублирование с PgPrayerTimeAnswer
+        # TODO #1434:30min Передавать реальное имя города
+        city_name = 'Казань'
+        # TODO #1434:30min Передавать реальную дату
+        #  по аналогии с PgPrayerTimeAnswer
+        date = FkPrayerDate(
+            datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).date(),
+        )
         return await UserWithoutCitySafeAnswer(
             PrayersExpiredAnswer(
                 TgMessageIdAnswer(
@@ -203,15 +211,14 @@ class NtPrayerTimeAnswer(TgAnswer):
                                 self._origin,
                                 PrayersText(
                                     RamadanPrayerInfo(
-                                        # TODO #1434:30min кэшировать NtPrayersInfo
-                                        NtPrayersInfo(
-                                            # TODO #1434:30min Передавать реальное имя города
-                                            'Казань',
-                                            # TODO #1434:30min Передавать реальную дату
-                                            #  по аналогии с PgPrayerTimeAnswer
-                                            FkPrayerDate(
-                                                datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).date(),
+                                        CdPrayersInfo(
+                                            NtPrayersInfo(
+                                                city_name,
+                                                date,
                                             ),
+                                            self._redis,
+                                            city_name,
+                                            date,
                                         ),
                                         self._settings.RAMADAN_MODE,
                                     ),
