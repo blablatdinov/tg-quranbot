@@ -187,6 +187,10 @@ test-free-files:
   - src/srv/users/valid_chat_id.py
   # TODO #1438:30min Написать тесты на src/srv/prayers/prayers_text.py
   - src/srv/prayers/prayers_text.py
+  # TODO #1438:30min Написать тесты на src/handlers/nt_prayer_time_answer.py
+  - src/handlers/nt_prayer_time_answer.py
+  # TODO #1438:30min Написать тесты на src/integrations/tg/tg_answers/tg_chat_id_regex_answer.py
+  - src/integrations/tg/tg_answers/tg_chat_id_regex_answer.py
 test-helpers:
   - .*conftest.py
   - .*__init__.py
