@@ -52,8 +52,9 @@ jobs:
         run: |
           VERSION="v3.1.2"
           curl -O -L -C - https://github.com/editorconfig-checker/editorconfig-checker/releases/download/$VERSION/ec-linux-amd64.tar.gz
-          tar xzf ec-linux-amd64.tar.gz
-          bin/ec-linux-amd64
+          mkdir ec
+          tar -xzf ec-linux-amd64.tar.gz -C ec
+          git ls-files | xargs ec/bin/ec-linux-amd64 -v
       # TODO #1428:30min Включить vulture
       #  стоит придумать способ как игнорировать пока неиспользуемый код
       #  При pdd некоторые классы не используются
