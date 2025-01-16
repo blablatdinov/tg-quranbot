@@ -36,9 +36,9 @@ from handlers.full_start_answer import FullStartAnswer
 from handlers.next_day_ayats import NextDayAyats
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.pagination_per_day_prayer_answer import PaginationPerDayPrayerAnswer
+from handlers.pg_prayer_time_answer import PgPrayerTimeAnswer
 from handlers.pg_set_user_city_answer import PgSetUserCityAnswer
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
-from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
 from handlers.search_ayat_by_numbers_answer import SearchAyatByNumbersAnswer
 from handlers.skipped_prayers_answer import SkippedPrayersAnswer
@@ -55,6 +55,7 @@ from integrations.tg.tg_answers import (
     TgTextAnswer,
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
+from integrations.tg.tg_answers.tg_chat_id_regex_answer import TgChatIdRegexAnswer
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
 from services.help_answer import HelpAnswer
@@ -121,18 +122,32 @@ class QuranbotAnswer(TgAnswer):
                             logger,
                         ),
                     ),
-                    # TODO #1428:30min Интегрировать просмотр времени намаза с сайта https://namaz.today
-                    #  Нужно встроить feature flag, чтобы включать и выключать эту функцию
-                    #  для отдельных пользователей
                     TgMessageRegexAnswer(
                         'Время намаза',
-                        PrayerTimeAnswer.new_prayers_ctor(
-                            pgsql,
-                            empty_answer,
-                            settings.admin_chat_ids(),
-                            redis,
+                        TgAnswerFork.ctor(
                             logger,
-                            settings,
+                            TgChatIdRegexAnswer(
+                                '358610865',
+                                PgPrayerTimeAnswer.new_prayers_ctor(
+                                    pgsql,
+                                    empty_answer,
+                                    settings.admin_chat_ids(),
+                                    redis,
+                                    logger,
+                                    settings,
+                                ),
+                            ),
+                            TgChatIdRegexAnswer(
+                                '.*',
+                                PgPrayerTimeAnswer.new_prayers_ctor(
+                                    pgsql,
+                                    empty_answer,
+                                    settings.admin_chat_ids(),
+                                    redis,
+                                    logger,
+                                    settings,
+                                ),
+                            ),
                         ),
                     ),
                     TgMessageRegexAnswer(
