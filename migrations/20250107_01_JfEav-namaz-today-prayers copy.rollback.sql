@@ -20,8 +20,15 @@
 -- OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 -- OR OTHER DEALINGS IN THE SOFTWARE.
 
--- Prayers unique
--- depends: 20250108_01_vNbUw-prayers-unique
+-- Namaz today prayers
+-- depends: 20240930_01_pdRsM-ru-ayat-sound
 
-ALTER TABLE prayers
-ADD CONSTRAINT prayers_unique UNIQUE (city_id, name, day);
+ALTER TABLE ONLY public.namaz_today_cities
+DROP CONSTRAINT namaz_today_cities_city_id_fkey;
+
+ALTER TABLE ONLY public.namaz_today_cities
+DROP CONSTRAINT namaz_today_cities_pkey;
+
+DROP TABLE IF EXISTS public.namaz_today_cities;
+
+ALTER TABLE cities DROP CONSTRAINT IF EXISTS cities_uniq_name;
