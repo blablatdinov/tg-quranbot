@@ -22,24 +22,19 @@
 
 FROM python:3.12.7-slim as base
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 WORKDIR /app
 
 FROM base as poetry
 RUN pip install poetry==2.0.1
 COPY poetry.lock pyproject.toml /app/
-RUN poetry export --without dev -o requirements.txt
-
-FROM base as build
-COPY --from=poetry /app/requirements.txt /tmp/requirements.txt
-RUN cat /tmp/requirements.txt
-RUN apt-get update && apt-get install gcc=4:12.2.0-3 -y
-RUN python -m venv /app/.venv && /app/.venv/bin/pip install -r /tmp/requirements.txt
+RUN poetry install --without dev
 
 FROM python:3.12.7-slim as runtime
 
 # Copy only requirements to cache them in docker layer
 WORKDIR /app
-COPY --from=build /app/.venv /app/.venv
+COPY --from=poetry /app/.venv /app/.venv
 
 # Creating folders, and files for a project:
 COPY src /app
