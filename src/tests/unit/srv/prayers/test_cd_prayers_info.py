@@ -21,12 +21,13 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
+import uuid
 from typing import final, override
 
-
 from srv.prayers.cd_prayers_info import CdPrayersInfo
+from srv.prayers.fk_city import FkCity
 from srv.prayers.fk_prayer_date import FkPrayerDate
-from srv.prayers.prayers_info import PrayersInfo, PrayerMessageTextDict
+from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
 
 
 @final
@@ -56,7 +57,7 @@ async def test(fake_redis):
     cd_prayer_info = CdPrayersInfo(
         _FkPrayersInfo(),
         fake_redis,
-        'kazan',
+        FkCity(uuid.uuid4(), 'kazan'),
         FkPrayerDate(datetime.date(2025, 1, 6)),
     )
     await cd_prayer_info.to_dict()

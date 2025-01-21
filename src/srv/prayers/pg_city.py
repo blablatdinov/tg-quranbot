@@ -30,8 +30,10 @@ from app_types.async_supports_str import AsyncSupportsStr
 from app_types.fk_async_str import FkAsyncStr
 from integrations.nominatim_city_name import NominatimCityName
 from integrations.tg.coordinates import Coordinates
+from integrations.tg.fk_chat_id import ChatId
 from srv.prayers.city import City
 from srv.prayers.city_id_by_name import CityIdByName
+from srv.prayers.user_city_id import UserCityId
 
 
 @final
@@ -61,6 +63,11 @@ class PgCity(City):
         :return: City
         """
         return cls(CityIdByName(NominatimCityName(location), pgsql), pgsql)
+
+    @classmethod
+    def user_ctor(cls, user_id: ChatId, pgsql: Database) -> City:
+        """Конструктор для идентификатора пользователя."""
+        return cls(UserCityId(pgsql, user_id), pgsql)
 
     @override
     async def city_id(self) -> uuid.UUID:
