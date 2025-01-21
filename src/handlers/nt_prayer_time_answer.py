@@ -54,6 +54,7 @@ from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.nt_prayers_info import NtPrayersInfo
 from srv.prayers.pagination_per_day_date import PaginationPerDayDate
+from srv.prayers.pg_city import PgCity
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 from srv.prayers.prayers_mark_as_date import PrayersMarkAsDate
@@ -195,8 +196,7 @@ class NtPrayerTimeAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         # TODO #1434:30min Убрать дублирование с PgPrayerTimeAnswer
-        # TODO #1434:30min Передавать реальное имя города
-        city_name = 'Казань'
+        city = PgCity.user_ctor(TgChatId(update), self._pgsql)
         # TODO #1434:30min Передавать реальную дату
         #  по аналогии с PgPrayerTimeAnswer
         date = FkPrayerDate(
@@ -213,11 +213,11 @@ class NtPrayerTimeAnswer(TgAnswer):
                                     RamadanPrayerInfo(
                                         CdPrayersInfo(
                                             NtPrayersInfo(
-                                                city_name,
+                                                city,
                                                 date,
                                             ),
                                             self._redis,
-                                            city_name,
+                                            city,
                                             date,
                                         ),
                                         self._settings.RAMADAN_MODE,

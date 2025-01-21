@@ -21,12 +21,14 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
+import uuid
 from pathlib import Path
 
 import httpx
 import pytest
 
 from exceptions.prayer_exceptions import PrayersNotFoundError
+from srv.prayers.fk_city import FkCity
 from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.nt_prayers_info import NtPrayersInfo
 
@@ -43,7 +45,7 @@ def nt_mock(respx_mock):
 async def test_today(time_machine):
     time_machine.move_to('2025-01-06')
     got = await NtPrayersInfo(
-        'kazan',
+        FkCity(uuid.uuid4(), 'kazan'),
         FkPrayerDate(datetime.date(2025, 1, 6)),
     ).to_dict()
 
@@ -62,7 +64,7 @@ async def test_today(time_machine):
 @pytest.mark.usefixtures('nt_mock')
 async def test_by_date():
     got = await NtPrayersInfo(
-        'kazan',
+        FkCity(uuid.uuid4(), 'kazan'),
         FkPrayerDate(datetime.date(2025, 1, 20)),
     ).to_dict()
 
@@ -85,6 +87,6 @@ async def test_by_date():
 async def test_unavailable_date():
     with pytest.raises(PrayersNotFoundError):
         await NtPrayersInfo(
-            'kazan',
+            FkCity(uuid.uuid4(), 'kazan'),
             FkPrayerDate(datetime.date(2025, 2, 20)),
         ).to_dict()

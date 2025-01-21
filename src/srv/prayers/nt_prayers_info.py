@@ -30,6 +30,7 @@ from lxml import etree
 
 from app_types.fk_update import FkUpdate
 from exceptions.prayer_exceptions import PrayersNotFoundError
+from srv.prayers.city import City
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
 
@@ -39,19 +40,21 @@ from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
 class NtPrayersInfo(PrayersInfo):
     """Информация о времени намаза с сайта https://namaz.today ."""
 
-    _city_name: str
+    _city: City
     _date: PrayerDate
 
+    # TODO #1501:30min Исправить кол-во переменных и удалить noqa комментарий
     @override
-    async def to_dict(self) -> PrayerMessageTextDict:
+    async def to_dict(self) -> PrayerMessageTextDict:  # noqa: WPS210
         """Словарь с данными для отправки пользователю."""
+        city_name = await self._city.name()
         async with httpx.AsyncClient() as http_client:
-            response = await http_client.get('https://namaz.today/city/{0}'.format(self._city_name))
+            response = await http_client.get('https://namaz.today/city/{0}'.format(city_name))
             response.raise_for_status()
         tree = etree.fromstring(response.text, etree.HTMLParser())  # noqa: S320. Trust https://namaz.today
         date = await self._date.parse(FkUpdate.empty_ctor())
         if date.month != datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).month:
-            raise PrayersNotFoundError(self._city_name, date)
+            raise PrayersNotFoundError(city_name, date)
         rows = next(iter(
             row
             for row in tree.xpath("//section[@id='content-tab1']//tbody/tr")
