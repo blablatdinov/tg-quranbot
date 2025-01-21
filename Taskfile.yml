@@ -23,6 +23,7 @@
 version: 3
 
 tasks:
+
   compose-setup:
     cmds:
       - docker compose build

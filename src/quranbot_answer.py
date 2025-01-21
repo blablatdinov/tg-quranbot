@@ -70,6 +70,7 @@ from srv.podcasts.random_podcast_answer import RandomPodcastAnswer
 from srv.prayers.inline_query_answer import InlineQueryAnswer
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.users.user_step import UserStep
+from handlers.nt_prayer_time_answer import NtPrayerTimeAnswer
 
 
 @final
@@ -128,7 +129,7 @@ class QuranbotAnswer(TgAnswer):
                             logger,
                             TgChatIdRegexAnswer(
                                 '358610865',
-                                PgPrayerTimeAnswer.new_prayers_ctor(
+                                NtPrayerTimeAnswer.new_prayers_ctor(
                                     pgsql,
                                     empty_answer,
                                     settings.admin_chat_ids(),
