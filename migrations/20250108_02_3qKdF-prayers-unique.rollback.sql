@@ -25,5 +25,5 @@
 
 -- # TODO: #1475:30min Написать rollback для миграций
 
-ALTER TABLE prayers 
+ALTER TABLE prayers
 DROP CONSTRAINT IF EXISTS prayers_unique;
