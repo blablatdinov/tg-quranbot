@@ -20,13 +20,11 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
 from collections.abc import Sequence
 from typing import final, override
 
 import attrs
 import httpx
-import pytz
 from databases import Database
 from redis.asyncio import Redis
 
@@ -50,7 +48,6 @@ from settings import Settings
 from srv.message_not_found_safe_answer import MessageNotFoundSafeAnswer
 from srv.prayers.cd_prayers_info import CdPrayersInfo
 from srv.prayers.date_from_user_prayer_id import DateFromUserPrayerId
-from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.nt_prayers_info import NtPrayersInfo
 from srv.prayers.pagination_per_day_date import PaginationPerDayDate
