@@ -197,11 +197,6 @@ class NtPrayerTimeAnswer(TgAnswer):
         """
         # TODO #1434:30min Убрать дублирование с PgPrayerTimeAnswer
         city = PgCity.user_ctor(TgChatId(update), self._pgsql)
-        # TODO #1434:30min Передавать реальную дату
-        #  по аналогии с PgPrayerTimeAnswer
-        date = FkPrayerDate(
-            datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).date(),
-        )
         return await UserWithoutCitySafeAnswer(
             PrayersExpiredAnswer(
                 TgMessageIdAnswer(
@@ -214,11 +209,11 @@ class NtPrayerTimeAnswer(TgAnswer):
                                         CdPrayersInfo(
                                             NtPrayersInfo(
                                                 city,
-                                                date,
+                                                self._prayers_date,
                                             ),
                                             self._redis,
                                             city,
-                                            date,
+                                            self._prayers_date,
                                         ),
                                         self._settings.RAMADAN_MODE,
                                     ),
