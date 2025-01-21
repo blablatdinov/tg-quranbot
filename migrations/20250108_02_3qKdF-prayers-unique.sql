@@ -21,7 +21,7 @@
 -- OR OTHER DEALINGS IN THE SOFTWARE.
 
 -- Prayers unique
--- depends: 20250108_01_vNbUw-prayers-unique
+-- depends: 20250107_01_JfEav-namaz-today-prayers
 
 ALTER TABLE prayers
 ADD CONSTRAINT prayers_unique UNIQUE (city_id, name, day);
