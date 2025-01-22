@@ -47,6 +47,7 @@ class PgCityNames(AsyncListable):
             'SELECT name',
             'FROM cities',
             'WHERE name ILIKE :search_query',
+            'LIMIT 20',
         ])
         return [
             row['name']
