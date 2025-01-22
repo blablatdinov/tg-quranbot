@@ -31,7 +31,10 @@ from srv.prayers.pg_city_names import PgCityNames
 async def _db_cities(city_factory, faker):
     await city_factory('e9fa0fff-4e6a-47c8-8654-09adf913734a', 'Казань')
     for _ in range(25):
-        await city_factory(str(uuid.uuid4()), 'Ка{0}'.format(faker.address()))
+        await city_factory(
+            str(uuid.uuid4()),
+            'Ка{0}'.format(faker.address()),
+        )
 
 
 @pytest.mark.usefixtures('_db_cities')
