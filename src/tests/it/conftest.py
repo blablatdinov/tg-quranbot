@@ -64,6 +64,7 @@ async def pgsql(_migrate):
         'podcasts',
         'users',
         'prayers',
+        'namaz_today_cities',
         'cities',
         'ayats',
         'suras',
