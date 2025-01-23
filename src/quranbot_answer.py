@@ -34,6 +34,7 @@ from handlers.decrement_skipped_prayer_answer import DecrementSkippedPrayerAnswe
 from handlers.favorites_answer import FavoriteAyatsAnswer
 from handlers.full_start_answer import FullStartAnswer
 from handlers.next_day_ayats import NextDayAyats
+from handlers.nt_prayer_time_answer import NtPrayerTimeAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.pagination_per_day_prayer_answer import PaginationPerDayPrayerAnswer
 from handlers.pg_prayer_time_answer import PgPrayerTimeAnswer
@@ -70,7 +71,6 @@ from srv.podcasts.random_podcast_answer import RandomPodcastAnswer
 from srv.prayers.inline_query_answer import InlineQueryAnswer
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.users.user_step import UserStep
-from handlers.nt_prayer_time_answer import NtPrayerTimeAnswer
 
 
 @final

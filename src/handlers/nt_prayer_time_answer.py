@@ -52,7 +52,6 @@ from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.nt_prayers_info import NtPrayersInfo
 from srv.prayers.pagination_per_day_date import PaginationPerDayDate
 from srv.prayers.pg_city import PgCity
-from srv.prayers.fk_city import FkCity
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 from srv.prayers.prayers_mark_as_date import PrayersMarkAsDate
@@ -194,8 +193,7 @@ class NtPrayerTimeAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         # TODO #1434:30min Убрать дублирование с PgPrayerTimeAnswer
-        # city = PgCity.user_ctor(TgChatId(update), self._pgsql)
-        city = FkCity('', 'kazan')
+        city = PgCity.user_ctor(TgChatId(update), self._pgsql)
         return await UserWithoutCitySafeAnswer(
             PrayersExpiredAnswer(
                 TgMessageIdAnswer(
@@ -209,6 +207,7 @@ class NtPrayerTimeAnswer(TgAnswer):
                                             NtPrayersInfo(
                                                 city,
                                                 self._prayers_date,
+                                                self._pgsql,
                                             ),
                                             self._redis,
                                             city,

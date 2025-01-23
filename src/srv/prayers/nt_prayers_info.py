@@ -26,11 +26,13 @@ from typing import final, override
 import attrs
 import httpx
 import pytz
+from databases import Database
 from lxml import etree
 
 from app_types.fk_update import FkUpdate
 from exceptions.prayer_exceptions import PrayersNotFoundError
 from srv.prayers.city import City
+from srv.prayers.nt_prayers_url import NtPrayersUrl
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
 
@@ -42,6 +44,7 @@ class NtPrayersInfo(PrayersInfo):
 
     _city: City
     _date: PrayerDate
+    _pgsql: Database
 
     # TODO #1501:30min Исправить кол-во переменных и удалить noqa комментарий
     @override
@@ -49,7 +52,9 @@ class NtPrayersInfo(PrayersInfo):
         """Словарь с данными для отправки пользователю."""
         city_name = await self._city.name()
         async with httpx.AsyncClient() as http_client:
-            response = await http_client.get('https://namaz.today/city/{0}'.format(city_name))
+            response = await http_client.get(
+                await NtPrayersUrl(self._city, self._pgsql).to_str(),
+            )
             response.raise_for_status()
         tree = etree.fromstring(response.text, etree.HTMLParser())  # noqa: S320. Trust https://namaz.today
         date = await self._date.parse(FkUpdate.empty_ctor())
