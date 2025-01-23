@@ -91,5 +91,5 @@ async def test_unavailable_date(pgsql):
         await NtPrayersInfo(
             FkCity(uuid.uuid4(), 'kazan'),
             FkPrayerDate(datetime.date(2025, 2, 20)),
-        pgsql,
+            pgsql,
         ).to_dict()
