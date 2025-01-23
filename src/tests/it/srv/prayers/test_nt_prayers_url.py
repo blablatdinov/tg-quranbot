@@ -21,19 +21,20 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import uuid
+
 import pytest
 
-from srv.prayers.nt_prayers_url import NtPrayersUrl
 from srv.prayers.fk_city import FkCity
+from srv.prayers.nt_prayers_url import NtPrayersUrl
 
 
 @pytest.fixture
 async def city(city_factory, pgsql):
-    city_id = str(uuid.uuid4())
-    await city_factory(city_id, 'Казань')
+    city_id = uuid.uuid4()
+    await city_factory(str(city_id), 'Казань')
     await pgsql.execute(
         'INSERT INTO namaz_today_cities (city_id, link) VALUES (:city_id, :link)',
-        {'city_id': city_id, 'link': 'https://namaz.today/city/kazan'}
+        {'city_id': str(city_id), 'link': 'https://namaz.today/city/kazan'},
     )
     return FkCity(city_id, 'Казань')
 
