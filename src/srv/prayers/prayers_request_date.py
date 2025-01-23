@@ -50,5 +50,5 @@ class PrayersRequestDate(PrayerDate):
             return await ParsedDate(
                 MessageText(update),
             ).date()
-        except MessageTextNotFoundError:
+        except (MessageTextNotFoundError, ValueError):
             return datetime.datetime.now(pytz.timezone('Europe/Moscow')).date()
