@@ -44,5 +44,4 @@ class NtPrayersUrl(AsyncSupportsStr):
     async def to_str(self) -> str:
         """Строковое представление."""
         # TODO #1428:30min доставать данные из БД
-        # TODO #1428:30min написать тест
         return 'https://namaz.today/city/{0}'.format('kazan')
