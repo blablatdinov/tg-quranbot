@@ -30,5 +30,6 @@ RUN pip install poetry==1.8.5
 RUN apt-get update && apt-get install gcc=4:12.2.0-3 curl -y
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /bin
 COPY poetry.lock pyproject.toml /app
+RUN poetry lock --no-update
 RUN poetry install
 COPY . /app

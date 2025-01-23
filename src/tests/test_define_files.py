@@ -68,6 +68,7 @@ def touch_records(baker: ModuleType, gh_repo: GhRepo) -> TouchRecord:
 @pytest.fixture
 def repo_path(faker: Faker, time_machine: TimeMachineFixture) -> Generator[Path, None, None]:
     """Path to temorary git repo."""
+    faker.seed_instance(0)
     temp_dir = tempfile.TemporaryDirectory()
     temp_dir_path = Path(temp_dir.name)
     repo = Repo.init(temp_dir_path)

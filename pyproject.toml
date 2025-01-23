@@ -57,6 +57,7 @@ django-stubs = {extras = ["compatible-mypy"], version = "5.1.2"}
 lxml-stubs = "0.5.1"
 types-requests = "2.32.0.20241016"
 requests-mock = "1.12.1"
+pytest-randomly = "3.16.0"
 
 [build-system]
 requires = ["poetry-core"]

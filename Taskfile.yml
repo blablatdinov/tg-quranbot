@@ -50,7 +50,7 @@ tasks:
 
   test:
     cmds:
-      - poetry run pytest
+      - poetry run pytest src -m 'not integration' -vv
 
   migrate:
     cmds:
