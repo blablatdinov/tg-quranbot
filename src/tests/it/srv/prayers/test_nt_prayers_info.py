@@ -42,11 +42,12 @@ def nt_mock(respx_mock):
 
 
 @pytest.mark.usefixtures('nt_mock')
-async def test_today(time_machine):
+async def test_today(time_machine, pgsql):
     time_machine.move_to('2025-01-06')
     got = await NtPrayersInfo(
         FkCity(uuid.uuid4(), 'kazan'),
         FkPrayerDate(datetime.date(2025, 1, 6)),
+        pgsql,
     ).to_dict()
 
     assert got == {
@@ -62,10 +63,11 @@ async def test_today(time_machine):
 
 
 @pytest.mark.usefixtures('nt_mock')
-async def test_by_date():
+async def test_by_date(pgsql):
     got = await NtPrayersInfo(
         FkCity(uuid.uuid4(), 'kazan'),
         FkPrayerDate(datetime.date(2025, 1, 20)),
+        pgsql,
     ).to_dict()
 
     assert got == {
@@ -84,9 +86,10 @@ async def test_by_date():
 #  В таблице на странице https://namaz.today/city/kazan приведены данные только на текущий месяц
 #  Оставил коммент с вопросом, пока ждем решения
 @pytest.mark.usefixtures('nt_mock')
-async def test_unavailable_date():
+async def test_unavailable_date(pgsql):
     with pytest.raises(PrayersNotFoundError):
         await NtPrayersInfo(
             FkCity(uuid.uuid4(), 'kazan'),
             FkPrayerDate(datetime.date(2025, 2, 20)),
+            pgsql,
         ).to_dict()

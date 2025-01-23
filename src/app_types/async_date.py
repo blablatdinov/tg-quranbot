@@ -21,34 +21,11 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-from typing import final, override
-
-import attrs
-import pytz
-
-from app_types.update import Update
-from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
-from integrations.tg.message_text import MessageText
-from srv.prayers.parsed_date import ParsedDate
-from srv.prayers.prayer_date import PrayerDate
+from typing import Protocol
 
 
-@final
-@attrs.define(frozen=True)
-class PrayersRequestDate(PrayerDate):
-    """Дата намаза."""
+class AsyncDate(Protocol):
+    """Интерфейс даты для вычисления с возможностью переключения контекста."""
 
-    @override
-    async def parse(self, update: Update) -> datetime.date:
-        """Парсинг из текста сообщения.
-
-        :param update: Update
-        :return: datetime.date
-        :raises ValueError: время намаза не соответствует формату
-        """
-        try:
-            return await ParsedDate(
-                MessageText(update),
-            ).date()
-        except (MessageTextNotFoundError, ValueError):
-            return datetime.datetime.now(pytz.timezone('Europe/Moscow')).date()
+    async def date(self) -> datetime.date:
+        """Дата."""

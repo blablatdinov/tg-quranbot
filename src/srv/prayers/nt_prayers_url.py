@@ -20,35 +20,28 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
 from typing import final, override
 
 import attrs
-import pytz
+from databases import Database
 
-from app_types.update import Update
-from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
-from integrations.tg.message_text import MessageText
-from srv.prayers.parsed_date import ParsedDate
-from srv.prayers.prayer_date import PrayerDate
+from app_types.async_supports_str import AsyncSupportsStr
+from srv.prayers.city import City
 
 
 @final
 @attrs.define(frozen=True)
-class PrayersRequestDate(PrayerDate):
-    """Дата намаза."""
+class NtPrayersUrl(AsyncSupportsStr):
+    """Url, по которому можно посмотреть время намаза для города на сайте https://namaz.today .
+
+    Пример: https://namaz.today/city/kazan
+    """
+
+    _city: City
+    _pgsql: Database
 
     @override
-    async def parse(self, update: Update) -> datetime.date:
-        """Парсинг из текста сообщения.
-
-        :param update: Update
-        :return: datetime.date
-        :raises ValueError: время намаза не соответствует формату
-        """
-        try:
-            return await ParsedDate(
-                MessageText(update),
-            ).date()
-        except (MessageTextNotFoundError, ValueError):
-            return datetime.datetime.now(pytz.timezone('Europe/Moscow')).date()
+    async def to_str(self) -> str:
+        """Строковое представление."""
+        # TODO #1428:30min доставать данные из БД
+        return 'https://namaz.today/city/{0}'.format('kazan')

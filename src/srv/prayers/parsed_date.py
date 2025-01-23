@@ -21,34 +21,33 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
+from contextlib import suppress
 from typing import final, override
 
 import attrs
 import pytz
 
-from app_types.update import Update
-from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
-from integrations.tg.message_text import MessageText
-from srv.prayers.parsed_date import ParsedDate
-from srv.prayers.prayer_date import PrayerDate
+from app_types.async_date import AsyncDate
+from app_types.stringable import SupportsStr
 
 
 @final
 @attrs.define(frozen=True)
-class PrayersRequestDate(PrayerDate):
+class ParsedDate(AsyncDate):
     """Дата намаза."""
 
-    @override
-    async def parse(self, update: Update) -> datetime.date:
-        """Парсинг из текста сообщения.
+    _msg_text: SupportsStr
 
-        :param update: Update
-        :return: datetime.date
-        :raises ValueError: время намаза не соответствует формату
-        """
-        try:
-            return await ParsedDate(
-                MessageText(update),
-            ).date()
-        except (MessageTextNotFoundError, ValueError):
-            return datetime.datetime.now(pytz.timezone('Europe/Moscow')).date()
+    @override
+    async def date(self) -> datetime.date:
+        """Спарсить дату из сообщения."""
+        date = str(self._msg_text).rsplit(' ', maxsplit=1)[-1]
+        formats = ('%d.%m.%Y', '%d-%m-%Y')  # noqa: WPS323 not string formatting
+        for fmt in formats:
+            with suppress(ValueError):
+                return datetime.datetime.strptime(date, fmt).astimezone(
+                    pytz.timezone('Europe/Moscow'),
+                ).date()
+        msg = "time data '{0}' does not match formats {1}".format(date, formats)
+        # TODO #1428:30min Написать кастомное исключение
+        raise ValueError(msg)

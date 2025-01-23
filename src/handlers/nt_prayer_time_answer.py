@@ -207,6 +207,7 @@ class NtPrayerTimeAnswer(TgAnswer):
                                             NtPrayersInfo(
                                                 city,
                                                 self._prayers_date,
+                                                self._pgsql,
                                             ),
                                             self._redis,
                                             city,

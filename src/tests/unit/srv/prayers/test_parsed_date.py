@@ -20,35 +20,25 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
-from typing import final, override
+import re
 
-import attrs
-import pytz
+import pytest
 
-from app_types.update import Update
-from integrations.tg.exceptions.update_parse_exceptions import MessageTextNotFoundError
+from app_types.fk_update import FkUpdate
 from integrations.tg.message_text import MessageText
 from srv.prayers.parsed_date import ParsedDate
-from srv.prayers.prayer_date import PrayerDate
 
 
-@final
-@attrs.define(frozen=True)
-class PrayersRequestDate(PrayerDate):
-    """Дата намаза."""
-
-    @override
-    async def parse(self, update: Update) -> datetime.date:
-        """Парсинг из текста сообщения.
-
-        :param update: Update
-        :return: datetime.date
-        :raises ValueError: время намаза не соответствует формату
-        """
-        try:
-            return await ParsedDate(
-                MessageText(update),
-            ).date()
-        except (MessageTextNotFoundError, ValueError):
-            return datetime.datetime.now(pytz.timezone('Europe/Moscow')).date()
+async def test_fail_format():
+    error_text = re.escape(
+        ' '.join([
+            "time data 'invalid-date' does not match",
+            "formats ('%d.%m.%Y', '%d-%m-%Y')",  # noqa: WPS323 not string formatting
+        ]),
+    )
+    with pytest.raises(ValueError, match=error_text):
+        await ParsedDate(
+            MessageText(
+                FkUpdate('{"message":{"text":"Время намаза invalid-date"}}'),
+            ),
+        ).date()

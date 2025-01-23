@@ -21,7 +21,6 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-import re
 
 import pytest
 import ujson
@@ -47,14 +46,3 @@ async def test_with_date(query, expected):
     ))
 
     assert got == expected
-
-
-async def test_fail_format():
-    error_text = re.escape(
-        ' '.join([
-            "time data 'invalid-date' does not match",
-            "formats ('%d.%m.%Y', '%d-%m-%Y')",  # noqa: WPS323 not string formatting
-        ]),
-    )
-    with pytest.raises(ValueError, match=error_text):
-        await PrayersRequestDate().parse(FkUpdate('{"message":{"text":"Время намаза invalid-date"}}'))
