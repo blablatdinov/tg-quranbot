@@ -27,8 +27,8 @@ from typing import final, override
 import attrs
 import pytz
 
-from app_types.stringable import SupportsStr
 from app_types.async_date import AsyncDate
+from app_types.stringable import SupportsStr
 
 
 @final

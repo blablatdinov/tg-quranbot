@@ -20,16 +20,13 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
 import re
 
 import pytest
-import ujson
 
 from app_types.fk_update import FkUpdate
-from srv.prayers.prayers_request_date import PrayersRequestDate
-from srv.prayers.parsed_date import ParsedDate
 from integrations.tg.message_text import MessageText
+from srv.prayers.parsed_date import ParsedDate
 
 
 async def test_fail_format():

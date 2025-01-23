@@ -21,7 +21,6 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-import re
 
 import pytest
 import ujson
