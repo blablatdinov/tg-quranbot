@@ -28,22 +28,20 @@ import ujson
 
 from app_types.fk_update import FkUpdate
 from srv.prayers.prayers_request_date import PrayersRequestDate
+from srv.prayers.parsed_date import ParsedDate
+from integrations.tg.message_text import MessageText
 
 
-async def test(time_machine):
-    time_machine.move_to('2023-10-11')
-    got = await PrayersRequestDate().parse(FkUpdate('{"message":{"text":"Время намаза"}}'))
-
-    assert got == datetime.date(2023, 10, 11)
-
-
-@pytest.mark.parametrize(('query', 'expected'), [
-    ('Время намаза 10.10.2023', datetime.date(2023, 10, 10)),
-    ('Время намаза 15-10-2023', datetime.date(2023, 10, 15)),
-])
-async def test_with_date(query, expected):
-    got = await PrayersRequestDate().parse(FkUpdate(
-        ujson.dumps({'message': {'text': query}}),
-    ))
-
-    assert got == expected
+async def test_fail_format():
+    error_text = re.escape(
+        ' '.join([
+            "time data 'invalid-date' does not match",
+            "formats ('%d.%m.%Y', '%d-%m-%Y')",  # noqa: WPS323 not string formatting
+        ]),
+    )
+    with pytest.raises(ValueError, match=error_text):
+        await ParsedDate(
+            MessageText(
+                FkUpdate('{"message":{"text":"Время намаза invalid-date"}}'),
+            ),
+        ).date()
