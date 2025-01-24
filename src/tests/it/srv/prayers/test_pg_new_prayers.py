@@ -20,6 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import datetime
 import uuid
 
 import pytest
@@ -29,13 +30,11 @@ from srv.prayers.pg_new_prayers import PgNewPrayers
 
 @pytest.fixture
 async def city(city_factory):
-    await city_factory(str(uuid.uuid4()), 'Казань')
+    return await city_factory(str(uuid.uuid4()), 'Казань')
 
 
-# TODO #1428:30min решить проблему с созданием намазов и снять маркер skip
-# TODO #1428:30min написать assert
-@pytest.mark.skip
 async def test(pgsql, city):
+    city_id = await city.city_id()
     await PgNewPrayers(
         {
             'asr_prayer_time': '13:39',
@@ -49,3 +48,42 @@ async def test(pgsql, city):
         },
         pgsql,
     ).create()
+
+    # TODO #1525:30min проверить правильно ли сохраняется время в БД
+    assert [
+        dict(row)
+        for row in await pgsql.fetch_all(
+            'SELECT city_id, day, name FROM prayers',
+        )
+    ] == [
+        {
+            'city_id': city_id,
+            'day': datetime.date(2025, 1, 6),
+            'name': 'Иртәнге',
+        },
+        {
+            'city_id': city_id,
+            'day': datetime.date(2025, 1, 6),
+            'name': 'Восход',
+        },
+        {
+            'city_id': city_id,
+            'day': datetime.date(2025, 1, 6),
+            'name': 'Өйлә',
+        },
+        {
+            'city_id': city_id,
+            'day': datetime.date(2025, 1, 6),
+            'name': 'Икенде',
+        },
+        {
+            'city_id': city_id,
+            'day': datetime.date(2025, 1, 6),
+            'name': 'Ахшам',
+        },
+        {
+            'city_id': city_id,
+            'day': datetime.date(2025, 1, 6),
+            'name': 'Ястү',
+        },
+    ]
