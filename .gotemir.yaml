@@ -184,6 +184,7 @@ test-free-files:
   - src/srv/users/updated_users_status_event.py
   - src/srv/users/user.py
   - src/srv/users/user_state.py
+  - src/srv/prayers/pg_saved_prayers_info.py
   - src/srv/users/user_step.py
   - src/srv/users/valid_chat_id.py
   # TODO #1438:30min Написать тесты на src/srv/prayers/prayers_text.py

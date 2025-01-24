@@ -52,6 +52,7 @@ from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.nt_prayers_info import NtPrayersInfo
 from srv.prayers.pagination_per_day_date import PaginationPerDayDate
 from srv.prayers.pg_city import PgCity
+from srv.prayers.pg_saved_prayers_info import PgSavedPrayersInfo
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 from srv.prayers.prayers_mark_as_date import PrayersMarkAsDate
@@ -204,9 +205,12 @@ class NtPrayerTimeAnswer(TgAnswer):
                                 PrayersText(
                                     RamadanPrayerInfo(
                                         CdPrayersInfo(
-                                            NtPrayersInfo(
-                                                city,
-                                                self._prayers_date,
+                                            PgSavedPrayersInfo(
+                                                NtPrayersInfo(
+                                                    city,
+                                                    self._prayers_date,
+                                                    self._pgsql,
+                                                ),
                                                 self._pgsql,
                                             ),
                                             self._redis,

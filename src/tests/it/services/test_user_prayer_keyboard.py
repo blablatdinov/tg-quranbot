@@ -27,7 +27,7 @@ from itertools import chain, repeat
 import pytest
 
 from app_types.fk_update import FkUpdate
-from exceptions.internal_exceptions import PrayerAtUserNotCreatedError
+from exceptions.prayer_exceptions import PrayersNotFoundError
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.pg_updated_user_city import PgUpdatedUserCity
@@ -112,7 +112,7 @@ async def test(pgsql, user, execution_number):
 
 
 async def test_empty(pgsql, user):
-    with pytest.raises(PrayerAtUserNotCreatedError):
+    with pytest.raises(PrayersNotFoundError):
         await UserPrayersKeyboard(
             pgsql,
             FkPrayerDate(datetime.date(2024, 6, 5)),

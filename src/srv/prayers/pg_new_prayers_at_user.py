@@ -29,6 +29,7 @@ from asyncpg.exceptions import UniqueViolationError
 from databases import Database
 
 from exceptions.internal_exceptions import PrayerAtUserAlreadyExistsError, PrayerAtUserNotCreatedError
+from exceptions.prayer_exceptions import PrayersNotFoundError
 from integrations.tg.fk_chat_id import ChatId
 from srv.prayers.new_prayers_at_user import NewPrayersAtUser
 
@@ -53,21 +54,43 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
         await self._pgsql.fetch_val(
             'INSERT INTO prayers_at_user_groups VALUES (:prayer_group_id)', {'prayer_group_id': prayer_group_id},
         )
+        exists_prayers = await self._pgsql.fetch_val(
+            '\n'.join([
+                'SELECT COUNT(*) FROM prayers AS p',
+                'INNER JOIN cities AS c ON p.city_id = c.city_id',
+                'INNER JOIN users AS u ON u.city_id = c.city_id',
+                'WHERE u.chat_id = :chat_id',
+                '  AND p.day = :date',
+            ]),
+            {'chat_id': int(self._chat_id), 'date': date},
+        )
+        if not exists_prayers:
+            raise PrayersNotFoundError(
+                await self._pgsql.fetch_val(
+                    '\n'.join([
+                        'SELECT c.name FROM users AS u',
+                        'INNER JOIN cities AS c ON u.city_id = c.city_id',
+                        'WHERE u.chat_id = :chat_id',
+                    ]),
+                    {'chat_id': int(self._chat_id)},
+                ),
+                date,
+            )
         query = '\n'.join([
             'INSERT INTO prayers_at_user',
             '(user_id, prayer_id, is_read, prayer_group_id)',
-            'SELECT',
+            '  SELECT',
             '    :chat_id,',
             '    p.prayer_id,',
             '    false,',
             '    :prayer_group_id',
-            'FROM prayers AS p',
-            'INNER JOIN cities AS c ON p.city_id = c.city_id',
-            'INNER JOIN users AS u ON u.city_id = c.city_id',
-            "WHERE p.day = :date AND u.chat_id = :chat_id AND p.name <> 'sunrise'",
-            'ORDER BY',
+            '  FROM prayers AS p',
+            '  INNER JOIN cities AS c ON p.city_id = c.city_id',
+            '  INNER JOIN users AS u ON u.city_id = c.city_id',
+            "  WHERE p.day = :date AND u.chat_id = :chat_id AND p.name <> 'sunrise'",
+            '  ORDER BY',
             "    ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
-            'RETURNING *',
+            '  RETURNING *',
         ])
         try:
             created_prayers = await self._pgsql.fetch_all(query, {
