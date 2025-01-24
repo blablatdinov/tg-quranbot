@@ -86,9 +86,9 @@ class PgNewPrayers(NewPrayers):
                     {
                         'name': name,
                         'time': (
-                            datetime.datetime  # noqa: DTZ007
-                            # TODO #1525:30min учесть часовой пояс и удалить "noqa" комментарий
+                            datetime.datetime
                             .strptime(self._prayer_dict[key], '%H:%M')  # type: ignore[literal-required]
+                            .astimezone(pytz.timezone('Europe/Moscow'))
                         ),
                         'city_id': city_id,
                         'day': day,

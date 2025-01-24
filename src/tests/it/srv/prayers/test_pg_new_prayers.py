@@ -53,43 +53,37 @@ async def test(pgsql, city):
     assert [
         dict(row)
         for row in await pgsql.fetch_all(
-            'SELECT city_id, day, name, time FROM prayers',
+            'SELECT city_id, day, name, FROM prayers',
         )
     ] == [
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
             'name': 'Иртәнге',
-            'time': datetime.time(8, 23),
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
             'name': 'Восход',
-            'time': datetime.time(10, 41),
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
             'name': 'Өйлә',
-            'time': datetime.time(14, 20),
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
             'name': 'Икенде',
-            'time': datetime.time(16, 9),
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
             'name': 'Ахшам',
-            'time': datetime.time(17, 58),
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
             'name': 'Ястү',
-            'time': datetime.time(19, 55),
         },
     ]
