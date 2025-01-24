@@ -44,6 +44,7 @@ class PgNewPrayers(NewPrayers):
     _prayer_dict: PrayerMessageTextDict
     _pgsql: Database
 
+    # TODO #1428:30min Встроить создание намаза при запросе пользователем из namaz.today
     @override
     async def create(self) -> None:
         """Создать."""

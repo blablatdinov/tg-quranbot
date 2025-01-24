@@ -32,6 +32,8 @@ async def city(city_factory):
     await city_factory(str(uuid.uuid4()), 'Казань')
 
 
+# TODO #1428:30min решить проблему с созданием намазов и снять маркер skip
+# TODO #1428:30min написать assert
 @pytest.mark.skip
 async def test(pgsql, city):
     await PgNewPrayers(
