@@ -59,7 +59,7 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
                 'SELECT COUNT(*) FROM prayers AS p',
                 'INNER JOIN cities AS c ON p.city_id = c.city_id',
                 'INNER JOIN users AS u ON u.city_id = c.city_id',
-                "WHERE u.chat_id = :chat_id",
+                'WHERE u.chat_id = :chat_id',
                 '  AND p.day = :date',
             ]),
             {'chat_id': int(self._chat_id), 'date': date},

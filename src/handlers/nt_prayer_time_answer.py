@@ -52,6 +52,7 @@ from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.nt_prayers_info import NtPrayersInfo
 from srv.prayers.pagination_per_day_date import PaginationPerDayDate
 from srv.prayers.pg_city import PgCity
+from srv.prayers.pg_saved_prayers_info import PgSavedPrayersInfo
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
 from srv.prayers.prayers_mark_as_date import PrayersMarkAsDate
@@ -59,7 +60,6 @@ from srv.prayers.prayers_request_date import PrayersRequestDate
 from srv.prayers.prayers_text import PrayersText
 from srv.prayers.ramadan_prayer_info import RamadanPrayerInfo
 from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
-from srv.prayers.pg_saved_prayers_info import PgSavedPrayersInfo
 
 
 @final

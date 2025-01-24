@@ -20,24 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
 from typing import final, override
 
 import attrs
-import httpx
-import pytz
 from databases import Database
-from lxml import etree
 
-from app_types.fk_update import FkUpdate
-from exceptions.prayer_exceptions import PrayersNotFoundError
-from srv.prayers.city import City
-from srv.prayers.nt_prayers_url import NtPrayersUrl
-from srv.prayers.prayer_date import PrayerDate
-from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
-from exceptions.internal_exceptions import CityNotFoundError, PrayerAtUserAlreadyExistsError, PrayerNotCreatedError, PrayerAlreadyExistsError
-from asyncpg.exceptions import UniqueViolationError
 from srv.prayers.pg_new_prayers import PgNewPrayers
+from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
+
 
 @final
 @attrs.define(frozen=True)
@@ -51,7 +41,6 @@ class PgSavedPrayersInfo(PrayersInfo):
     async def to_dict(self) -> PrayerMessageTextDict:
         """Словарь с данными для отправки пользователю."""
         origin = await self._origin.to_dict()
-        assert False
         await PgNewPrayers(
             origin,
             self._pgsql,
