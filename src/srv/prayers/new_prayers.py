@@ -24,8 +24,8 @@ import datetime
 from typing import Protocol
 
 
-class NewPrayersAtUser(Protocol):
-    """Новые записи о статусе намаза."""
+class NewPrayers(Protocol):
+    """Новые записи намаза."""
 
     async def create(self, date: datetime.date) -> None:
         """Создать.

@@ -20,34 +20,30 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
-from typing import final, override
+import uuid
 
-import attrs
+import pytest
 
-from srv.prayers.exist_user_prayers import ExistUserPrayers
-from srv.prayers.new_prayers import NewPrayersAtUser
+from srv.prayers.pg_new_prayers import PgNewPrayers
 
 
-@final
-@attrs.define(frozen=True)
-class PgCityChangeSafeUserPrayers(NewPrayersAtUser):
-    """Предохранитель от создания времени намаза при смене города.
+@pytest.fixture
+async def city(city_factory):
+    await city_factory(str(uuid.uuid4()), 'Казань')
 
-    https://github.com/blablatdinov/tg-quranbot/issues/979
-    """
 
-    _origin: NewPrayersAtUser
-    _exist_user_prayers: ExistUserPrayers
-
-    @override
-    async def create(self, date: datetime.date) -> None:
-        """Создать.
-
-        :param date: datetime.date
-        """
-        exist_user_prayers = await self._exist_user_prayers.fetch()
-        prayers_count = 5
-        if len(exist_user_prayers) == prayers_count:
-            return
-        await self._origin.create(date)
+@pytest.mark.skip
+async def test(pgsql, city):
+    await PgNewPrayers(
+        {
+            'asr_prayer_time': '13:39',
+            'city_name': 'Казань',
+            'date': '06.01.2025',
+            'dhuhr_prayer_time': '11:50',
+            'fajr_prayer_time': '05:53',
+            'ishaa_prayer_time': '17:25',
+            'magrib_prayer_time': '15:28',
+            'sunrise_prayer_time': '08:11',
+        },
+        pgsql,
+    ).create()

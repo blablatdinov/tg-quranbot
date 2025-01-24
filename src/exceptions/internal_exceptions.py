@@ -90,3 +90,15 @@ class PrayerAtUserAlreadyExistsError(BaseAppError):
 @attrs.define(frozen=True)
 class PrayerAtUserNotCreatedError(BaseAppError):
     """Времена намазов не созданы."""
+
+
+@final
+@attrs.define(frozen=True)
+class PrayerNotCreatedError(BaseAppError):
+    """Времена намазов не созданы."""
+
+
+@final
+@attrs.define(frozen=True)
+class CityNotFoundError(BaseAppError):
+    """Город не найден."""
