@@ -88,6 +88,12 @@ class PrayerAtUserAlreadyExistsError(BaseAppError):
 
 @final
 @attrs.define(frozen=True)
+class PrayerAlreadyExistsError(BaseAppError):
+    """Времена намазов на эту дату и город уже существуют."""
+
+
+@final
+@attrs.define(frozen=True)
 class PrayerAtUserNotCreatedError(BaseAppError):
     """Времена намазов не созданы."""
 

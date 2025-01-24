@@ -59,6 +59,7 @@ from srv.prayers.prayers_request_date import PrayersRequestDate
 from srv.prayers.prayers_text import PrayersText
 from srv.prayers.ramadan_prayer_info import RamadanPrayerInfo
 from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
+from srv.prayers.pg_saved_prayers_info import PgSavedPrayersInfo
 
 
 @final
@@ -204,9 +205,12 @@ class NtPrayerTimeAnswer(TgAnswer):
                                 PrayersText(
                                     RamadanPrayerInfo(
                                         CdPrayersInfo(
-                                            NtPrayersInfo(
-                                                city,
-                                                self._prayers_date,
+                                            PgSavedPrayersInfo(
+                                                NtPrayersInfo(
+                                                    city,
+                                                    self._prayers_date,
+                                                    self._pgsql,
+                                                ),
                                                 self._pgsql,
                                             ),
                                             self._redis,
