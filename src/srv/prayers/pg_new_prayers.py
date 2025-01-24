@@ -68,9 +68,13 @@ class PgNewPrayers(NewPrayers):
             'Ахшам',
             'Ястү',
         )
+        day = (
+            datetime.datetime
+            .strptime(self._prayer_dict['date'], '%d.%m.%Y')
+            .astimezone(pytz.timezone('Europe/Moscow'))
+        )
         try:
-            # TODO #1428:30min Решить проблему с типами и удалить "ignore" комментарий
-            created_prayers = await self._pgsql.execute_many(  # type: ignore[func-returns-value]
+            await self._pgsql.execute_many(
                 '\n'.join([
                     'INSERT INTO prayers',
                     '(name, time, city_id, day)',
@@ -87,16 +91,16 @@ class PgNewPrayers(NewPrayers):
                             .astimezone(pytz.timezone('Europe/Moscow'))
                         ),
                         'city_id': city_id,
-                        'day': (
-                            datetime.datetime
-                            .strptime(self._prayer_dict['date'], '%d.%m.%Y')
-                            .astimezone(pytz.timezone('Europe/Moscow'))
-                        ),
+                        'day': day,
                     }
                     for key, name in zip(keys, names, strict=True)
                 ],
             )
         except UniqueViolationError as err:
             raise PrayerAtUserAlreadyExistsError from err
+        created_prayers = await self._pgsql.fetch_all(
+            'SELECT COUNT(*) FROM prayers WHERE city_id = :city_id AND day = :day',
+            {'city_id': city_id, 'day': day},
+        )
         if not created_prayers:
             raise PrayerNotCreatedError

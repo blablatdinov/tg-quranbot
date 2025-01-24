@@ -20,6 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import datetime
 import uuid
 
 import pytest
@@ -29,13 +30,11 @@ from srv.prayers.pg_new_prayers import PgNewPrayers
 
 @pytest.fixture
 async def city(city_factory):
-    await city_factory(str(uuid.uuid4()), 'Казань')
+    return await city_factory(str(uuid.uuid4()), 'Казань')
 
 
-# TODO #1428:30min решить проблему с созданием намазов и снять маркер skip
-# TODO #1428:30min написать assert
-@pytest.mark.skip
 async def test(pgsql, city):
+    city_id = await city.city_id()
     await PgNewPrayers(
         {
             'asr_prayer_time': '13:39',
@@ -49,3 +48,48 @@ async def test(pgsql, city):
         },
         pgsql,
     ).create()
+
+    assert [dict(row) for row in await pgsql.fetch_all('SELECT * FROM prayers')] == [
+        {
+            'city_id': city_id,
+            'day': datetime.date(2025, 1, 6),
+            'name': 'Иртәнге',
+            'prayer_id': 1,
+            'time': datetime.time(8, 23),
+        },
+        {
+            'city_id': city_id,
+            'day': datetime.date(2025, 1, 6),
+            'name': 'Восход',
+            'prayer_id': 2,
+            'time': datetime.time(10, 41),
+        },
+        {
+            'city_id': city_id,
+            'day': datetime.date(2025, 1, 6),
+            'name': 'Өйлә',
+            'prayer_id': 3,
+            'time': datetime.time(14, 20),
+        },
+        {
+            'city_id': city_id,
+            'day': datetime.date(2025, 1, 6),
+            'name': 'Икенде',
+            'prayer_id': 4,
+            'time': datetime.time(16, 9),
+        },
+        {
+            'city_id': city_id,
+            'day': datetime.date(2025, 1, 6),
+            'name': 'Ахшам',
+            'prayer_id': 5,
+            'time': datetime.time(17, 58),
+        },
+        {
+            'city_id': city_id,
+            'day': datetime.date(2025, 1, 6),
+            'name': 'Ястү',
+            'prayer_id': 6,
+            'time': datetime.time(19, 55),
+        },
+    ]
