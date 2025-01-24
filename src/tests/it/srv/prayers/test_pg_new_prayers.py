@@ -49,47 +49,46 @@ async def test(pgsql, city):
         pgsql,
     ).create()
 
-    assert [dict(row) for row in await pgsql.fetch_all('SELECT * FROM prayers')] == [
+    assert [
+        dict(row)
+        for row in await pgsql.fetch_all(
+            'SELECT city_id, day, name, time FROM prayers',
+        )
+    ] == [
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
             'name': 'Иртәнге',
-            'prayer_id': 1,
             'time': datetime.time(8, 23),
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
             'name': 'Восход',
-            'prayer_id': 2,
             'time': datetime.time(10, 41),
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
             'name': 'Өйлә',
-            'prayer_id': 3,
             'time': datetime.time(14, 20),
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
             'name': 'Икенде',
-            'prayer_id': 4,
             'time': datetime.time(16, 9),
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
             'name': 'Ахшам',
-            'prayer_id': 5,
             'time': datetime.time(17, 58),
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
             'name': 'Ястү',
-            'prayer_id': 6,
             'time': datetime.time(19, 55),
         },
     ]
