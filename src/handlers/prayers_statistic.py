@@ -30,7 +30,7 @@ from dateutil import rrule
 
 from app_types.async_supports_str import AsyncSupportsStr
 from integrations.tg.fk_chat_id import ChatId
-from srv.prayers.new_prayers import NewPrayersAtUser
+from srv.prayers.new_prayers_at_user import NewPrayersAtUser
 from srv.prayers.prayer_names import PrayerNames
 
 

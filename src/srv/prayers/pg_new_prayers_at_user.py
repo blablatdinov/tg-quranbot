@@ -30,7 +30,7 @@ from databases import Database
 
 from exceptions.internal_exceptions import PrayerAtUserAlreadyExistsError, PrayerAtUserNotCreatedError
 from integrations.tg.fk_chat_id import ChatId
-from srv.prayers.new_prayers import NewPrayersAtUser
+from srv.prayers.new_prayers_at_user import NewPrayersAtUser
 
 
 @final

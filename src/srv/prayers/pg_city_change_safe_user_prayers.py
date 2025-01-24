@@ -26,7 +26,7 @@ from typing import final, override
 import attrs
 
 from srv.prayers.exist_user_prayers import ExistUserPrayers
-from srv.prayers.new_prayers import NewPrayersAtUser
+from srv.prayers.new_prayers_at_user import NewPrayersAtUser
 
 
 @final

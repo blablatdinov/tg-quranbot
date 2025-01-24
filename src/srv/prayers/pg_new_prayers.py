@@ -24,14 +24,11 @@ import datetime
 from typing import final, override
 
 import attrs
+import pytz
 from asyncpg.exceptions import UniqueViolationError
 from databases import Database
 
-from exceptions.internal_exceptions import (
-    CityNotFoundError,
-    PrayerAtUserAlreadyExistsError,
-    PrayerNotCreatedError,
-)
+from exceptions.internal_exceptions import CityNotFoundError, PrayerAtUserAlreadyExistsError, PrayerNotCreatedError
 from srv.prayers.new_prayers import NewPrayers
 from srv.prayers.prayers_info import PrayerMessageTextDict
 
@@ -45,8 +42,9 @@ class PgNewPrayers(NewPrayers):
     _pgsql: Database
 
     # TODO #1428:30min Встроить создание намаза при запросе пользователем из namaz.today
+    # TODO #1428:30min Уменьшить кол-во локальных переменных и удалить noqa комментарий
     @override
-    async def create(self) -> None:
+    async def create(self) -> None:  # noqa: WPS210
         """Создать."""
         city_id = await self._pgsql.fetch_val(
             'SELECT city_id FROM cities WHERE name = :name',
@@ -71,7 +69,8 @@ class PgNewPrayers(NewPrayers):
             'Ястү',
         )
         try:
-            created_prayers = await self._pgsql.execute_many(
+            # TODO #1428:30min Решить проблему с типами и удалить "ignore" комментарий
+            created_prayers = await self._pgsql.execute_many(  # type: ignore[func-returns-value]
                 '\n'.join([
                     'INSERT INTO prayers',
                     '(name, time, city_id, day)',
@@ -82,12 +81,20 @@ class PgNewPrayers(NewPrayers):
                 [
                     {
                         'name': name,
-                        'time': datetime.datetime.strptime(self._prayer_dict[key], '%H:%M'),
+                        'time': (
+                            datetime.datetime
+                            .strptime(self._prayer_dict[key], '%H:%M')  # type: ignore[literal-required]
+                            .astimezone(pytz.timezone('Europe/Moscow'))
+                        ),
                         'city_id': city_id,
-                        'day': datetime.datetime.strptime(self._prayer_dict['date'], '%d.%m.%Y'),
+                        'day': (
+                            datetime.datetime
+                            .strptime(self._prayer_dict['date'], '%d.%m.%Y')
+                            .astimezone(pytz.timezone('Europe/Moscow'))
+                        ),
                     }
-                    for key, name in zip(keys, names)
-                ]
+                    for key, name in zip(keys, names, strict=True)
+                ],
             )
         except UniqueViolationError as err:
             raise PrayerAtUserAlreadyExistsError from err
