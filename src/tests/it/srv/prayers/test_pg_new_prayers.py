@@ -49,6 +49,7 @@ async def test(pgsql, city):
         pgsql,
     ).create()
 
+    # TODO #1525:30min проверить правильно ли сохраняется время в БД
     assert [
         dict(row)
         for row in await pgsql.fetch_all(
