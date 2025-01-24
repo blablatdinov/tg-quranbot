@@ -20,14 +20,13 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
 from typing import Protocol
 
 
-class NewPrayersAtUser(Protocol):
+class NewPrayers(Protocol):
     """Новые записи намаза."""
 
-    async def create(self, date: datetime.date) -> None:
+    async def create(self) -> None:
         """Создать.
 
         :param date: datetime.date

@@ -20,15 +20,32 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
-from typing import Protocol
+import uuid
+
+import pytest
+
+from srv.prayers.pg_new_prayers import PgNewPrayers
 
 
-class NewPrayersAtUser(Protocol):
-    """Новые записи намаза."""
+@pytest.fixture
+async def city(city_factory):
+    await city_factory(str(uuid.uuid4()), 'Казань')
 
-    async def create(self, date: datetime.date) -> None:
-        """Создать.
 
-        :param date: datetime.date
-        """
+# TODO #1428:30min решить проблему с созданием намазов и снять маркер skip
+# TODO #1428:30min написать assert
+@pytest.mark.skip
+async def test(pgsql, city):
+    await PgNewPrayers(
+        {
+            'asr_prayer_time': '13:39',
+            'city_name': 'Казань',
+            'date': '06.01.2025',
+            'dhuhr_prayer_time': '11:50',
+            'fajr_prayer_time': '05:53',
+            'ishaa_prayer_time': '17:25',
+            'magrib_prayer_time': '15:28',
+            'sunrise_prayer_time': '08:11',
+        },
+        pgsql,
+    ).create()
