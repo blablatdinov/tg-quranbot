@@ -53,7 +53,7 @@ async def test(pgsql, city):
     assert [
         dict(row)
         for row in await pgsql.fetch_all(
-            'SELECT city_id, day, name, FROM prayers',
+            'SELECT city_id, day, name FROM prayers',
         )
     ] == [
         {
