@@ -57,8 +57,8 @@ class ValidatedSearchQuery(SearchQuery):
         """
         try:
             ayat_num = int(self._origin.ayat())
-        except ValueError:
-            raise AyatNotFoundError
+        except ValueError as err:
+            raise AyatNotFoundError from err
         if ayat_num < 1:
             raise AyatNotFoundError
         return ayat_num
