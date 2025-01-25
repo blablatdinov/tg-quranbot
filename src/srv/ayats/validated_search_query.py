@@ -61,4 +61,4 @@ class ValidatedSearchQuery(SearchQuery):
             raise AyatNotFoundError from err
         if ayat_num < 1:
             raise AyatNotFoundError
-        return ayat_num
+        return str(ayat_num)
