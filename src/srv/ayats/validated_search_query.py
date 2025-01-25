@@ -55,9 +55,10 @@ class ValidatedSearchQuery(SearchQuery):
         :return: str
         :raises AyatNotFoundError: if ayat not found
         """
-        ayat_num = self._origin.ayat()
-        if not ayat_num.isdigit():
+        try:
+            ayat_num = int(self._origin.ayat())
+        except ValueError as err:
+            raise AyatNotFoundError from err
+        if ayat_num < 1:
             raise AyatNotFoundError
-        if int(ayat_num) < 1:
-            raise AyatNotFoundError
-        return ayat_num
+        return str(ayat_num)
