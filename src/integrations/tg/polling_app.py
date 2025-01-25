@@ -49,4 +49,3 @@ class PollingApp(Runable):
                 for update in update_list:
                     self._logger.debug('Update: {update}', update=update)
                     task_group.create_task(self._sendable.send(update))
-                    await asyncio.sleep(0.1)
