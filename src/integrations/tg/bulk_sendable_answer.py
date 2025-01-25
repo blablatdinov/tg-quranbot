@@ -21,11 +21,10 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import asyncio
-from itertools import chain
 from typing import final, override
 
 import attrs
-from more_itertools import distribute
+from more_itertools import flatten
 
 from app_types.logger import LogSink
 from app_types.update import Update
@@ -50,14 +49,13 @@ class BulkSendableAnswer(Sendable):
         :param update: Update
         :return: list[dict]
         """
-        tasks = [
-            UserNotSubscribedSafeSendable(
-                SendableAnswer(answer, self._logger),
-            ).send(update)
-            for answer in self._answers
-        ]
-        groupped_tasks = []
         async with asyncio.TaskGroup() as task_group:
-            for coro in tasks:
-                groupped_tasks.append(task_group.create_task(coro))
-        return [item.result() for item in groupped_tasks]
+            groupped_tasks = [
+                task_group.create_task(
+                    UserNotSubscribedSafeSendable(
+                        SendableAnswer(answer, self._logger),
+                    ).send(update),
+                )
+                for answer in self._answers
+            ]
+        return list(flatten([task.result() for task in groupped_tasks]))
