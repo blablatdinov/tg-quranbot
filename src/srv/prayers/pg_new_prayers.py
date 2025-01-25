@@ -98,9 +98,10 @@ class PgNewPrayers(NewPrayers):
             )
         except UniqueViolationError as err:
             raise PrayerAtUserAlreadyExistsError from err
-        created_prayers = await self._pgsql.fetch_all(
+        created_prayers = await self._pgsql.fetch_val(
             'SELECT COUNT(*) FROM prayers WHERE city_id = :city_id AND day = :day',
             {'city_id': city_id, 'day': day},
         )
+        print('!!!', created_prayers)
         if not created_prayers:
             raise PrayerNotCreatedError
