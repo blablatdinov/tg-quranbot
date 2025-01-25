@@ -50,7 +50,7 @@ class BulkSendableAnswer(Sendable):
         :return: list[dict]
         """
         async with asyncio.TaskGroup() as task_group:
-            groupped_tasks = [
+            tasks = [
                 task_group.create_task(
                     UserNotSubscribedSafeSendable(
                         SendableAnswer(answer, self._logger),
@@ -58,4 +58,4 @@ class BulkSendableAnswer(Sendable):
                 )
                 for answer in self._answers
             ]
-        return list(flatten([task.result() for task in groupped_tasks]))
+        return list(flatten([task.result() for task in tasks]))
