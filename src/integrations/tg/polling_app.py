@@ -44,11 +44,9 @@ class PollingApp(Runable):
     async def run(self) -> None:
         """Запуск."""
         self._logger.info('Start app on polling')
-        background_tasks = set()
-        async for update_list in self._updates:
-            for update in update_list:
-                self._logger.debug('Update: {update}', update=update)
-                task = asyncio.create_task(self._sendable.send(update))
-                background_tasks.add(task)
-                task.add_done_callback(background_tasks.discard)
-                await asyncio.sleep(0.1)
+        async with asyncio.TaskGroup() as task_group:
+            async for update_list in self._updates:
+                for update in update_list:
+                    self._logger.debug('Update: {update}', update=update)
+                    task_group.create_task(self._sendable.send(update))
+                    await asyncio.sleep(0.1)

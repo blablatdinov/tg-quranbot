@@ -56,8 +56,8 @@ class BulkSendableAnswer(Sendable):
             ).send(update)
             for answer in self._answers
         ]
-        responses: list[dict] = []
-        for sendable_slice in distribute(10, tasks):
-            res_list = await asyncio.gather(*sendable_slice)
-            responses.extend(list(chain.from_iterable(res_list)))
-        return responses
+        groupped_tasks = []
+        async with asyncio.TaskGroup() as task_group:
+            for coro in tasks:
+                groupped_tasks.append(task_group.create_task(coro))
+        return [item.result() for item in groupped_tasks]
