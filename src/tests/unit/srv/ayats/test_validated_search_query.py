@@ -76,6 +76,7 @@ def test_fail_sura(sura_id):
 @example('1iw')
 @example('1,5')
 @example('1-5')
+@example('²')
 def test_fail(ayat_num):
     query = ValidatedSearchQuery(FkSearchQuery(1, ayat_num))
     with pytest.raises(AyatNotFoundError):
