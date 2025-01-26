@@ -36,7 +36,7 @@ django = "5.1.5"
 django-environ = "0.12.0"
 pygithub = "2.5.0"
 pyyaml = "6.0.2"
-attrs = "24.3.0"
+attrs = "25.1.0"
 lxml = "5.3.0"
 cron-validator = "1.0.8"
 sentry-sdk = {extras = ["django"], version = "^2.19.2"}
