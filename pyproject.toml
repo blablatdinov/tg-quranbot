@@ -43,7 +43,6 @@ sentry-sdk = {extras = ["django"], version = "^2.19.2"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "8.3.4"
-isort = "6.0.0"
 ruff = "0.9.3"
 wemake-python-styleguide = "1.0.0"
 refurb = "2.0.0"
@@ -95,7 +94,6 @@ ignore = [
   "FBT002",  # Boolean-typed positional argument in function definition
   "FIX002",  # Line contains TODO, consider resolving the issue
   "FLY002",  # We not use f-strings
-  "I001",    # Conflict with isort
   "RUF100",  # WPS primary linter
   "RUF001",  # Project contain cyrillic symbols
   "RUF002",  # Project contain cyrillic symbols

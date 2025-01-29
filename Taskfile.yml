@@ -57,7 +57,7 @@ tasks:
       - poetry run python src/manage.py makemigrations
       - poetry run python src/manage.py migrate
 
-  lint:
+  fmt:
     cmds:
       - poetry run isort src
       - poetry run ruff check src --fix
