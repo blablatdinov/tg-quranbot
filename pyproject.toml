@@ -33,7 +33,7 @@ loguru = "0.7.3"
 quranbot-schema-registry = "0.0.28"
 sentry-sdk = "2.20.0"
 httpx = "0.28.1"
-pytz = "2024.2"
+pytz = "2025.1"
 databases = {extras = ["asyncpg"], version = "0.9.0"}
 attrs = "25.1.0"
 jsonpath-ng = "1.7.0"
