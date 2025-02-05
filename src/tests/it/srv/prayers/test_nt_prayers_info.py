@@ -63,7 +63,8 @@ async def test_today(time_machine, pgsql):
 
 
 @pytest.mark.usefixtures('nt_mock')
-async def test_by_date(pgsql):
+async def test_by_date(pgsql, time_machine):
+    time_machine.move_to('2025-01-14')
     got = await NtPrayersInfo(
         FkCity(uuid.uuid4(), 'kazan'),
         FkPrayerDate(datetime.date(2025, 1, 20)),
@@ -86,7 +87,8 @@ async def test_by_date(pgsql):
 #  В таблице на странице https://namaz.today/city/kazan приведены данные только на текущий месяц
 #  Оставил коммент с вопросом, пока ждем решения
 @pytest.mark.usefixtures('nt_mock')
-async def test_unavailable_date(pgsql):
+async def test_unavailable_date(pgsql, time_machine):
+    time_machine.move_to('2025-01-14')
     with pytest.raises(PrayersNotFoundError):
         await NtPrayersInfo(
             FkCity(uuid.uuid4(), 'kazan'),
