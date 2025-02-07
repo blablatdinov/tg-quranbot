@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-FROM python:3.12.7-slim as base
+FROM python:3.13.2-slim as base
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 WORKDIR /app
@@ -30,7 +30,7 @@ RUN pip install poetry==2.0.1
 COPY poetry.lock pyproject.toml /app/
 RUN poetry install --without dev
 
-FROM python:3.12.7-slim as runtime
+FROM python:3.13.2-slim as runtime
 
 # Copy only requirements to cache them in docker layer
 WORKDIR /app
