@@ -204,7 +204,7 @@ class NtPrayerTimeAnswer(TgAnswer):
                                 self._origin,
                                 PrayersText(
                                     RamadanPrayerInfo(
-                                        CdPrayersInfo(
+                                        # CdPrayersInfo(
                                             PgSavedPrayersInfo(
                                                 NtPrayersInfo(
                                                     city,
@@ -213,10 +213,10 @@ class NtPrayerTimeAnswer(TgAnswer):
                                                 ),
                                                 self._pgsql,
                                             ),
-                                            self._redis,
-                                            city,
-                                            self._prayers_date,
-                                        ),
+                                        #     self._redis,
+                                        #     city,
+                                        #     self._prayers_date,
+                                        # ),
                                         self._settings.RAMADAN_MODE,
                                     ),
                                 ),
