@@ -1473,6 +1473,20 @@ flake8 = ">=7.1,<8.0"
 pygments = ">=2.4,<3.0"
 
 [[package]]
+name = "whitenoise"
+version = "6.9.0"
+description = "Radically simplified static file serving for WSGI applications"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "whitenoise-6.9.0-py3-none-any.whl", hash = "sha256:c8a489049b7ee9889617bb4c274a153f3d979e8f51d2efd0f5b403caf41c57df"},
+    {file = "whitenoise-6.9.0.tar.gz", hash = "sha256:8c4a7c9d384694990c26f3047e118c691557481d624f069b7f7752a2f735d609"},
+]
+
+[package.extras]
+brotli = ["brotli"]
+
+[[package]]
 name = "wrapt"
 version = "1.17.0"
 description = "Module for decorators, wrappers and monkey patching."
@@ -1549,4 +1563,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "46cc8be640f18fcf9053da0157c2dcec468fb698e0657ac0adbdbc7bc20407cc"
+content-hash = "5c894dd3b7a6752646f68e6a54768fa69e448bfeb7cd72c5e6b02448556f6aa4"
