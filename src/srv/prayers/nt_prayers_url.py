@@ -27,6 +27,7 @@ from databases import Database
 
 from app_types.async_supports_str import AsyncSupportsStr
 from srv.prayers.city import City
+from exceptions.internal_exceptions import CityNotFoundError
 
 
 @final
@@ -43,7 +44,10 @@ class NtPrayersUrl(AsyncSupportsStr):
     @override
     async def to_str(self) -> str:
         """Строковое представление."""
-        return await self._pgsql.fetch_val(
+        link = await self._pgsql.fetch_val(
             'SELECT link FROM namaz_today_cities WHERE city_id = :city_id',
             {'city_id': str(await self._city.city_id())},
         )
+        if not link:
+            raise CityNotFoundError
+        return link
