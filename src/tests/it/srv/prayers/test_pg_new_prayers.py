@@ -59,31 +59,31 @@ async def test(pgsql, city):
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
-            'name': 'Иртәнге',
+            'name': 'fajr',
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
-            'name': 'Восход',
+            'name': 'sunrise',
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
-            'name': 'Өйлә',
+            'name': 'dhuhr',
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
-            'name': 'Икенде',
+            'name': 'asr',
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
-            'name': 'Ахшам',
+            'name': 'maghrib',
         },
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
-            'name': 'Ястү',
+            'name': "isha''a",
         },
     ]
