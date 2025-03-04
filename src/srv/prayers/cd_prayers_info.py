@@ -20,14 +20,13 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
 from typing import final, override
 
 import attrs
 import ujson
 from redis.asyncio import Redis
-from app_types.fk_update import FkUpdate
 
+from app_types.fk_update import FkUpdate
 from srv.prayers.city import City
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
