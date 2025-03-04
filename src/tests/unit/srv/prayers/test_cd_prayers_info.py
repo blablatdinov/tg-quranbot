@@ -73,3 +73,4 @@ async def test(fake_redis):
         'magrib_prayer_time': '15:53',
         'sunrise_prayer_time': '07:57',
     }
+    assert await fake_redis.keys() == [b'prayers:kazan:2025-01-06']
