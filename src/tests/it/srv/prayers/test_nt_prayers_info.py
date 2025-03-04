@@ -41,11 +41,22 @@ def nt_mock(respx_mock):
     ))
 
 
+@pytest.fixture
+async def city(city_factory, pgsql):
+    city_id = uuid.uuid4()
+    await city_factory(str(city_id), 'Казань')
+    await pgsql.execute(
+        'INSERT INTO namaz_today_cities (city_id, link) VALUES (:city_id, :link)',
+        {'city_id': str(city_id), 'link': 'https://namaz.today/city/kazan'},
+    )
+    return FkCity(city_id, 'Казань')
+
+
 @pytest.mark.usefixtures('nt_mock')
-async def test_today(time_machine, pgsql):
+async def test_today(time_machine, pgsql, city):
     time_machine.move_to('2025-01-06')
     got = await NtPrayersInfo(
-        FkCity(uuid.uuid4(), 'kazan'),
+        city,
         FkPrayerDate(datetime.date(2025, 1, 6)),
         pgsql,
     ).to_dict()
@@ -63,10 +74,10 @@ async def test_today(time_machine, pgsql):
 
 
 @pytest.mark.usefixtures('nt_mock')
-async def test_by_date(pgsql, time_machine):
+async def test_by_date(pgsql, time_machine, city):
     time_machine.move_to('2025-01-14')
     got = await NtPrayersInfo(
-        FkCity(uuid.uuid4(), 'kazan'),
+        city,
         FkPrayerDate(datetime.date(2025, 1, 20)),
         pgsql,
     ).to_dict()
@@ -87,11 +98,11 @@ async def test_by_date(pgsql, time_machine):
 #  В таблице на странице https://namaz.today/city/kazan приведены данные только на текущий месяц
 #  Оставил коммент с вопросом, пока ждем решения
 @pytest.mark.usefixtures('nt_mock')
-async def test_unavailable_date(pgsql, time_machine):
+async def test_unavailable_date(pgsql, time_machine, city):
     time_machine.move_to('2025-01-14')
     with pytest.raises(PrayersNotFoundError):
         await NtPrayersInfo(
-            FkCity(uuid.uuid4(), 'kazan'),
+            city,
             FkPrayerDate(datetime.date(2025, 2, 20)),
             pgsql,
         ).to_dict()
