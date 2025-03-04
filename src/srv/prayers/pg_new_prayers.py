@@ -66,7 +66,7 @@ class PgNewPrayers(NewPrayers):
             'dhuhr',
             'asr',
             'maghrib',
-            "isha''a",
+            "isha'a",
         )
         day = (
             datetime.datetime
