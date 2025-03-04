@@ -43,7 +43,6 @@ class NtPrayersUrl(AsyncSupportsStr):
     @override
     async def to_str(self) -> str:
         """Строковое представление."""
-        # TODO #1428:30min доставать данные из БД
         return await self._pgsql.fetch_val(
             'SELECT link FROM namaz_today_cities WHERE city_id = :city_id',
             {'city_id': str(await self._city.city_id())},
