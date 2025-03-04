@@ -26,6 +26,7 @@ import attrs
 import ujson
 from redis.asyncio import Redis
 
+from app_types.fk_update import FkUpdate
 from srv.prayers.city import City
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
@@ -44,7 +45,10 @@ class CdPrayersInfo(PrayersInfo):
     @override
     async def to_dict(self) -> PrayerMessageTextDict:
         """Словарь с данными для отправки пользователю."""
-        key = 'prayers:{0}:{1}'.format(await self._city.name(), self._date)
+        key = 'prayers:{0}:{1}'.format(
+            await self._city.name(),
+            (await self._date.parse(FkUpdate.empty_ctor())).strftime('%Y-%m-%d'),
+        )
         cached = await self._rds.get(key)
         if cached:
             return ujson.loads(cached)

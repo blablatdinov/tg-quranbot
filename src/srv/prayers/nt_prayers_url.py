@@ -26,8 +26,8 @@ import attrs
 from databases import Database
 
 from app_types.async_supports_str import AsyncSupportsStr
-from srv.prayers.city import City
 from exceptions.internal_exceptions import CityNotFoundError
+from srv.prayers.city import City
 
 
 @final

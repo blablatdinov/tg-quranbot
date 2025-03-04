@@ -131,6 +131,7 @@ select = ["ALL"]
 preview = true
 fixable = [
   "F401",   # Unused import
+  "I001",   # Import block is un-sorted or un-formatted
 ]
 ignore = [
   "ANN101",  # Missing type annotation for `self` in method
@@ -148,7 +149,6 @@ ignore = [
   "FBT002",  # Boolean-typed positional argument in function definition
   "FIX002",  # Line contains T0DO, consider resolving the issue
   "FLY002",  # We not use f-strings
-  "I001",    # Conflict with isort
   "INP001",  # File ... is part of an implicit namespace package. Add an `__init__.py`.
   "RUF100",  # WPS primary linter
   "RUF001",  # Project contain cyrillic symbols
