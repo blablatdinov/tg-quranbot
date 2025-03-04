@@ -61,12 +61,7 @@ class PgNewPrayers(NewPrayers):
             'ishaa_prayer_time',
         )
         names = (
-            'Иртәнге',
-            'Восход',
-            'Өйлә',
-            'Икенде',
-            'Ахшам',
-            'Ястү',
+            'fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', "isha''a"
         )
         day = (
             datetime.datetime
