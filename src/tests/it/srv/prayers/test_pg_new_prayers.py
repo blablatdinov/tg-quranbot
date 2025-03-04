@@ -84,6 +84,6 @@ async def test(pgsql, city):
         {
             'city_id': city_id,
             'day': datetime.date(2025, 1, 6),
-            'name': "isha''a",
+            'name': "isha'a",
         },
     ]
