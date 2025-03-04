@@ -28,7 +28,7 @@ import pytz
 from asyncpg.exceptions import UniqueViolationError
 from databases import Database
 
-from exceptions.internal_exceptions import CityNotFoundError, PrayerAtUserAlreadyExistsError, PrayerNotCreatedError
+from exceptions.internal_exceptions import CityNotFoundError, PrayerAlreadyExistsError, PrayerNotCreatedError
 from srv.prayers.new_prayers import NewPrayers
 from srv.prayers.prayers_info import PrayerMessageTextDict
 
@@ -61,12 +61,12 @@ class PgNewPrayers(NewPrayers):
             'ishaa_prayer_time',
         )
         names = (
-            'Иртәнге',
-            'Восход',
-            'Өйлә',
-            'Икенде',
-            'Ахшам',
-            'Ястү',
+            'fajr',
+            'sunrise',
+            'dhuhr',
+            'asr',
+            'maghrib',
+            "isha''a",
         )
         day = (
             datetime.datetime
@@ -97,8 +97,8 @@ class PgNewPrayers(NewPrayers):
                 ],
             )
         except UniqueViolationError as err:
-            raise PrayerAtUserAlreadyExistsError from err
-        created_prayers = await self._pgsql.fetch_all(
+            raise PrayerAlreadyExistsError from err
+        created_prayers = await self._pgsql.fetch_val(
             'SELECT COUNT(*) FROM prayers WHERE city_id = :city_id AND day = :day',
             {'city_id': city_id, 'day': day},
         )

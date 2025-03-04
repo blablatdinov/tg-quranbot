@@ -51,7 +51,7 @@ class TgChatIdRegexAnswer(TgAnswer, SupportsStr):
         if 'callback_query' in str(update):
             return []
         try:
-            regex_result = re.search(self._pattern, str(TgChatId(update)))
+            regex_result = re.search(self._pattern, str(int(TgChatId(update))))
         except (AttributeError, MessageTextNotFoundError):
             return []
         if not regex_result:

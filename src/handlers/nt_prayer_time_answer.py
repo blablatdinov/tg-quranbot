@@ -46,7 +46,6 @@ from integrations.tg.tg_chat_id import TgChatId
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from settings import Settings
 from srv.message_not_found_safe_answer import MessageNotFoundSafeAnswer
-from srv.prayers.cd_prayers_info import CdPrayersInfo
 from srv.prayers.date_from_user_prayer_id import DateFromUserPrayerId
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.nt_prayers_info import NtPrayersInfo
@@ -60,6 +59,7 @@ from srv.prayers.prayers_request_date import PrayersRequestDate
 from srv.prayers.prayers_text import PrayersText
 from srv.prayers.ramadan_prayer_info import RamadanPrayerInfo
 from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
+from srv.prayers.cd_prayers_info import CdPrayersInfo
 
 
 @final
@@ -212,6 +212,7 @@ class NtPrayerTimeAnswer(TgAnswer):
                                                     self._pgsql,
                                                 ),
                                                 self._pgsql,
+                                                self._logger,
                                             ),
                                             self._redis,
                                             city,
