@@ -20,13 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
 from integrations.tg.tg_answers import TgCallbackQueryRegexAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
 async def test():
-    got = await TgCallbackQueryRegexAnswer('target', FkAnswer()).build(
+    got = await TgCallbackQueryRegexAnswer('target', FkAnswer(), FkLogSink()).build(
         FkUpdate('{"callback_query":{"data":"target"}}'),
     )
 
@@ -34,13 +35,17 @@ async def test():
 
 
 async def test_without_callback():
-    got = await TgCallbackQueryRegexAnswer('hello', FkAnswer()).build(FkUpdate.empty_ctor())
+    got = await TgCallbackQueryRegexAnswer(
+        'hello',
+        FkAnswer(),
+        FkLogSink(),
+    ).build(FkUpdate.empty_ctor())
 
     assert got == []
 
 
 async def test_not_match():
-    got = await TgCallbackQueryRegexAnswer('target', FkAnswer()).build(
+    got = await TgCallbackQueryRegexAnswer('target', FkAnswer(), FkLogSink()).build(
         FkUpdate('{"callback_query":{"data":"other_value"}}'),
     )
 

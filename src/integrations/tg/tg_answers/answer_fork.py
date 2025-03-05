@@ -20,8 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import traceback
 from collections.abc import Iterable
-from contextlib import suppress
 from typing import final, override
 
 import attrs
@@ -68,12 +68,19 @@ class TgAnswerFork(TgAnswer):
         :return: list[httpx.Request]
         :raises NotProcessableUpdateError: if not found matches
         """
+        exceptions = (
+            CoordinatesNotFoundError,
+            CallbackQueryNotFoundError,
+            MessageIdNotFoundError,
+            InlineQueryNotFoundError,
+        )
         for answer in self._answers:
-            with suppress(
-                CoordinatesNotFoundError, CallbackQueryNotFoundError, MessageIdNotFoundError, InlineQueryNotFoundError,
-            ):
+            try:
                 origin_requests = await answer.build(update)
-                if origin_requests:
-                    self._logger.debug('Update processed by: {handler}', handler=answer)
-                    return origin_requests
+            except exceptions as err:
+                self._logger.debug('Fork iteration error: {0}. Traceback: {1}'.format(str(err), traceback.format_exc()))
+                continue
+            if origin_requests:
+                self._logger.debug('Update processed by: {handler}', handler=answer)
+                return origin_requests
         raise NotProcessableUpdateError
