@@ -78,5 +78,5 @@ tasks:
 
   clean:
     cmds:
-      - git clean -f -d -x -e .env -e me.session
+      - git clean -f -d -x -e .env -e me.session -e .venv
       - docker rmi bot-qbot -f
