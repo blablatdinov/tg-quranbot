@@ -26,6 +26,7 @@ from typing import final, override
 import attrs
 import httpx
 
+from app_types.logger import LogSink
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.exceptions.update_parse_exceptions import CallbackQueryNotFoundError
@@ -39,6 +40,7 @@ class TgCallbackQueryRegexAnswer(TgAnswer):
 
     _pattern: str
     _answer: TgAnswer
+    _logger: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -48,9 +50,16 @@ class TgCallbackQueryRegexAnswer(TgAnswer):
         :return: list[httpx.Request]
         """
         try:
-            regex_result = re.search(self._pattern, str(CallbackQueryData(update)))
+            callback_query = str(CallbackQueryData(update))
         except CallbackQueryNotFoundError:
+            self._logger.debug('Fail on parse callback query data')
             return []
+        self._logger.debug('Try match callback query pattern: "{0}", query data: "{1}"'.format(
+            self._pattern, callback_query,
+        ))
+        regex_result = re.search(self._pattern, callback_query)
         if not regex_result:
+            self._logger.debug('Callback query regex not matched')
             return []
+        self._logger.debug('Callback query regex matched. Regex result: {0}'.format(regex_result))
         return await self._answer.build(update)

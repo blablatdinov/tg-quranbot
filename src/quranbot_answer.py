@@ -36,8 +36,6 @@ from handlers.full_start_answer import FullStartAnswer
 from handlers.next_day_ayats import NextDayAyats
 from handlers.nt_prayer_time_answer import NtPrayerTimeAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
-from handlers.pagination_per_day_prayer_answer import PaginationPerDayPrayerAnswer
-from handlers.pg_prayer_time_answer import PgPrayerTimeAnswer
 from handlers.pg_set_user_city_answer import PgSetUserCityAnswer
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
@@ -56,7 +54,6 @@ from integrations.tg.tg_answers import (
     TgTextAnswer,
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
-from integrations.tg.tg_answers.tg_chat_id_regex_answer import TgChatIdRegexAnswer
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
 from services.help_answer import HelpAnswer
@@ -125,30 +122,13 @@ class QuranbotAnswer(TgAnswer):
                     ),
                     TgMessageRegexAnswer(
                         'Время намаза',
-                        TgAnswerFork.ctor(
+                        NtPrayerTimeAnswer.new_prayers_ctor(
+                            pgsql,
+                            empty_answer,
+                            settings.admin_chat_ids(),
+                            redis,
                             logger,
-                            TgChatIdRegexAnswer(
-                                '358610865',
-                                NtPrayerTimeAnswer.new_prayers_ctor(
-                                    pgsql,
-                                    empty_answer,
-                                    settings.admin_chat_ids(),
-                                    redis,
-                                    logger,
-                                    settings,
-                                ),
-                            ),
-                            TgChatIdRegexAnswer(
-                                '.*',
-                                PgPrayerTimeAnswer.new_prayers_ctor(
-                                    pgsql,
-                                    empty_answer,
-                                    settings.admin_chat_ids(),
-                                    redis,
-                                    logger,
-                                    settings,
-                                ),
-                            ),
+                            settings,
                         ),
                     ),
                     TgMessageRegexAnswer(
@@ -228,17 +208,19 @@ class QuranbotAnswer(TgAnswer):
                     TgCallbackQueryRegexAnswer(
                         '(mark_readed|mark_not_readed)',
                         UserPrayerStatusChangeAnswer(empty_answer, pgsql, redis, logger, settings),
+                        logger,
                     ),
                     TgCallbackQueryRegexAnswer(
                         'pagPrDay',
-                        PaginationPerDayPrayerAnswer(
-                            empty_answer,
+                        NtPrayerTimeAnswer.pagination_per_day_ctor(
                             pgsql,
+                            empty_answer,
                             settings.admin_chat_ids(),
                             redis,
                             logger,
                             settings,
                         ),
+                        logger,
                     ),
                     TgCallbackQueryRegexAnswer(
                         '(like|dislike)',
@@ -249,24 +231,29 @@ class QuranbotAnswer(TgAnswer):
                             pgsql,
                             logger,
                         ),
+                        logger,
                     ),
                     TgCallbackQueryRegexAnswer(
                         'getAyat',
                         AyatByIdAnswer(settings.DEBUG, empty_answer, pgsql),
+                        logger,
                     ),
                     TgCallbackQueryRegexAnswer(
                         'decr',
                         DecrementSkippedPrayerAnswer(empty_answer, pgsql),
+                        logger,
                     ),
                     TgCallbackQueryRegexAnswer(
                         'nextDayAyats',
                         NextDayAyats(empty_answer, pgsql),
+                        logger,
                     ),
                     StepAnswer(
                         UserStep.ayat_search.value,
                         TgCallbackQueryRegexAnswer(
                             'getSAyat',
                             PaginateBySearchAyat(empty_answer, redis, pgsql, settings, logger),
+                            logger,
                         ),
                         redis,
                         logger,
@@ -280,16 +267,19 @@ class QuranbotAnswer(TgAnswer):
                     TgCallbackQueryRegexAnswer(
                         'getFAyat',
                         FavoriteAyatPage(settings.DEBUG, empty_answer, pgsql),
+                        logger,
                     ),
                     TgCallbackQueryRegexAnswer(
                         '(addToFavor|removeFromFavor)',
                         ChangeFavoriteAyatAnswer(pgsql, empty_answer, redis, logger),
+                        logger,
                     ),
                     InlineQueryAnswer(empty_answer, pgsql),
                 ),
                 TgAnswerToSender(
                     TgMessageAnswer(empty_answer),
                 ),
+                logger,
             ),
         )
 

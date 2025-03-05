@@ -48,6 +48,7 @@ from settings import Settings
 from srv.message_not_found_safe_answer import MessageNotFoundSafeAnswer
 from srv.prayers.cd_prayers_info import CdPrayersInfo
 from srv.prayers.date_from_user_prayer_id import DateFromUserPrayerId
+from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.nt_prayers_info import NtPrayersInfo
 from srv.prayers.pagination_per_day_date import PaginationPerDayDate
@@ -195,6 +196,7 @@ class NtPrayerTimeAnswer(TgAnswer):
         """
         # TODO #1434:30min Убрать дублирование с PgPrayerTimeAnswer
         city = PgCity.user_ctor(TgChatId(update), self._pgsql)
+        prayer_date = FkPrayerDate(await self._prayers_date.parse(update))
         return await UserWithoutCitySafeAnswer(
             PrayersExpiredAnswer(
                 TgMessageIdAnswer(
@@ -208,7 +210,7 @@ class NtPrayerTimeAnswer(TgAnswer):
                                             PgSavedPrayersInfo(
                                                 NtPrayersInfo(
                                                     city,
-                                                    self._prayers_date,
+                                                    prayer_date,
                                                     self._pgsql,
                                                 ),
                                                 self._pgsql,
@@ -216,7 +218,7 @@ class NtPrayerTimeAnswer(TgAnswer):
                                             ),
                                             self._redis,
                                             city,
-                                            self._prayers_date,
+                                            prayer_date,
                                         ),
                                         self._settings.RAMADAN_MODE,
                                     ),
@@ -224,7 +226,7 @@ class NtPrayerTimeAnswer(TgAnswer):
                             ),
                             UserPrayersKeyboard(
                                 self._pgsql,
-                                self._prayers_date,
+                                prayer_date,
                                 TgChatId(update),
                             ),
                         ),

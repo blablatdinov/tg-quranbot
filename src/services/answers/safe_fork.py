@@ -20,11 +20,13 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+import traceback
 from typing import final, override
 
 import attrs
 import httpx
 
+from app_types.logger import LogSink
 from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError
 from integrations.tg.tg_answers import TgAnswer, TgTextAnswer
@@ -37,6 +39,7 @@ class SafeFork(TgAnswer):
 
     _origin: TgAnswer
     _message_answer: TgAnswer
+    _log: LogSink
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -47,7 +50,8 @@ class SafeFork(TgAnswer):
         """
         try:
             return await self._origin.build(update)
-        except NotProcessableUpdateError:
+        except NotProcessableUpdateError as err:
+            self._log.error('Error on process update: {0}. Traceback: {1}'.format(err, traceback.format_exc()))
             return await TgTextAnswer.str_ctor(
                 self._message_answer, 'Я не знаю как отвечать на такое сообщение',
             ).build(update)
