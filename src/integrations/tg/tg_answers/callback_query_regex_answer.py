@@ -49,14 +49,15 @@ class TgCallbackQueryRegexAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        self._logger.debug('Try match callback query pattern: "{0}", query data: "{1}"'.format(
-            self._pattern, str(CallbackQueryData(update)),
-        ))
         try:
-            regex_result = re.search(self._pattern, str(CallbackQueryData(update)))
+            callback_query = str(CallbackQueryData(update))
         except CallbackQueryNotFoundError:
             self._logger.debug('Fail on parse callback query data')
             return []
+        self._logger.debug('Try match callback query pattern: "{0}", query data: "{1}"'.format(
+            self._pattern, callback_query,
+        ))
+        regex_result = re.search(self._pattern, callback_query)
         if not regex_result:
             self._logger.debug('Callback query regex not matched')
             return []
