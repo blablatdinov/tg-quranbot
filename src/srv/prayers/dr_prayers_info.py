@@ -20,18 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
 from typing import final, override
-from app_types.stringable import SupportsStr
 
 import attrs
 import httpx
-import pytz
 from databases import Database
-from lxml import etree
 
 from app_types.fk_update import FkUpdate
-from exceptions.prayer_exceptions import PrayersNotFoundError
+from app_types.stringable import SupportsStr
 from srv.prayers.city import City
 from srv.prayers.dr_prayers_url import DrPrayersUrl
 from srv.prayers.prayer_date import PrayerDate
@@ -45,9 +41,10 @@ class _NormalizedTime(SupportsStr):
     _time_str: str
 
     @override
-    def __str__(self):
+    def __str__(self) -> str:
+        """Строковое представление."""
         hours, minutes = map(int, self._time_str.split(':'))
-        return "{0:02}:{1:02}".format(hours, minutes)
+        return '{0:02}:{1:02}'.format(hours, minutes)
 
 
 @final
@@ -72,8 +69,6 @@ class DrPrayersInfo(PrayersInfo):
             splitted_line = line.split(';')
             if splitted_line[0] == date.strftime('%Y-%m-%d'):
                 break
-        from pprint import pprint
-        pprint(list(enumerate(splitted_line)))
         return PrayerMessageTextDict({
             'city_name': await self._city.name(),
             'date': date.strftime('%d.%m.%Y'),

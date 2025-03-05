@@ -21,16 +21,14 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-import uuid
 from pathlib import Path
 
 import httpx
 import pytest
 
-from exceptions.prayer_exceptions import PrayersNotFoundError
+from srv.prayers.dr_prayers_info import DrPrayersInfo
 from srv.prayers.fk_city import FkCity
 from srv.prayers.fk_prayer_date import FkPrayerDate
-from srv.prayers.dr_prayers_info import DrPrayersInfo
 
 
 @pytest.fixture
