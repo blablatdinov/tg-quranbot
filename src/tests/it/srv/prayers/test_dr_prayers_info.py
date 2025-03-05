@@ -21,6 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
+import uuid
 from pathlib import Path
 
 import httpx
@@ -43,7 +44,7 @@ def dr_mock(respx_mock):
 async def test_today(time_machine, pgsql):
     time_machine.move_to('2025-01-06')
     got = await DrPrayersInfo(
-        FkCity('', 'Казань'),
+        FkCity(uuid.uuid4(), 'Казань'),
         FkPrayerDate(datetime.date(2025, 1, 6)),
         pgsql,
     ).to_dict()
