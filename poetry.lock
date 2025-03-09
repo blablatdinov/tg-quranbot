@@ -697,14 +697,14 @@ flake8 = ">=5.0.0"
 
 [[package]]
 name = "furl"
-version = "2.1.3"
+version = "2.1.4"
 description = "URL manipulation made simple."
 optional = false
 python-versions = "*"
 groups = ["main"]
 files = [
-    {file = "furl-2.1.3-py2.py3-none-any.whl", hash = "sha256:9ab425062c4217f9802508e45feb4a83e54324273ac4b202f1850363309666c0"},
-    {file = "furl-2.1.3.tar.gz", hash = "sha256:5a6188fe2666c484a12159c18be97a1977a71d632ef5bb867ef15f54af39cc4e"},
+    {file = "furl-2.1.4-py2.py3-none-any.whl", hash = "sha256:da34d0b34e53ffe2d2e6851a7085a05d96922b5b578620a37377ff1dbeeb11c8"},
+    {file = "furl-2.1.4.tar.gz", hash = "sha256:877657501266c929269739fb5f5980534a41abd6bbabcb367c136d1d3b2a6015"},
 ]
 
 [package.dependencies]
@@ -3625,4 +3625,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "1b1b09f7255f376cbc8ff5e3b250b077ba3692bd19c7aad5277cfff65f730720"
+content-hash = "7ec6c66126322a0989d775feab8597b09589a7d9ac0e96fe43e0ccc6e02c9185"
