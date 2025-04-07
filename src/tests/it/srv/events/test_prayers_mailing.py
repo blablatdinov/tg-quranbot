@@ -167,7 +167,7 @@ async def test(pgsql, fake_redis, time_machine, settings_ctor, mock_http_routes,
     settings = settings_ctor(  # noqa: S106. Not secure issue
         rabbitmq_host=settings.RABBITMQ_HOST,
         rabbitmq_user='guest',
-        rabbitmq_pass='guest',  # noqa: S106. Not secure issue
+        rabbitmq_pass='guest',  # noqa: S106 . Not secure issue
         rabbitmq_vhost='',
         daily_prayers=True,
         admin_chat_ids='358610865',
@@ -191,7 +191,7 @@ async def test_ramadan_mode(pgsql, fake_redis, time_machine, settings_ctor, mock
     settings = settings_ctor(  # noqa: S106. Not secure issue
         rabbitmq_host=settings.RABBITMQ_HOST,
         rabbitmq_user='guest',
-        rabbitmq_pass='guest',  # noqa: S106. Not secure issue
+        rabbitmq_pass='guest',  # noqa: S106 . Not secure issue
         rabbitmq_vhost='',
         daily_prayers=True,
         admin_chat_ids='358610865',
