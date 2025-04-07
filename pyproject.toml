@@ -160,8 +160,8 @@ ignore = [
   "UP032",   # We not use f-strings
   "UP004",   # Class `PrayerReaction` inherits from `object`
   "TD",      # "t0do" formats
-  "TCH001",  # Move application import `...` into a type-checking block
-  "TCH002",  # Move third-party import into a type-checking block
+  "TC001",   # Move application import `...` into a type-checking block
+  "TC002",   # Move third-party import into a type-checking block
   "PLR630",  # We not respect staticmethods
   "G001",    # Only .format for strings
   "TRY400",  # logger.error enable
