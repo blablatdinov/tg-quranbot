@@ -41,7 +41,7 @@ class FkKeyboard(Keyboard):
 
         :return: Keyboard
         """
-        return cls('{}')  # noqa: P103 it is empty json
+        return cls('{}')
 
     @override
     async def generate(self, update: Update) -> str:
