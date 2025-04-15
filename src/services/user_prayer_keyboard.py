@@ -30,6 +30,7 @@ from databases import Database
 
 from app_types.update import Update
 from exceptions.internal_exceptions import PrayerAtUserAlreadyExistsError
+from exceptions.prayer_exceptions import InvalidUserPrayersCountError
 from integrations.tg.fk_chat_id import ChatId
 from services.answers.resized_keyboard import Keyboard
 from srv.prayers.pg_city_change_safe_user_prayers import PgCityChangeSafeUserPrayers
@@ -72,6 +73,8 @@ class UserPrayersKeyboard(Keyboard):
             self._chat_id,
             parsed_date,
         ).fetch()
+        if len(prayers) > 5:
+            raise InvalidUserPrayersCountError
         readed_buttons_line = [
             {
                 'text': '✅' if user_prayer['is_read'] else '❌',

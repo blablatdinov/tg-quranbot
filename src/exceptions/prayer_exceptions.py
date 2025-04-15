@@ -49,3 +49,9 @@ class PrayersNotFoundError(BaseAppError):
 @attrs.define(frozen=True)
 class PrayersAlreadyExistsError(BaseAppError):
     """Произошла попытка дублирования строк в таблице prayers."""
+
+
+@final
+@attrs.define(frozen=True)
+class InvalidUserPrayersCountError(BaseAppError):
+    """Некорректное кол-во времен намазов."""
