@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-FROM python:3.12.7-slim
+FROM python:3.13.3-slim
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 ENV EC_VERSION="v3.1.2"
@@ -34,6 +34,6 @@ RUN curl -O -L -C - https://github.com/editorconfig-checker/editorconfig-checker
     mv /tmp/bin/ec-linux-amd64 /root/.local/bin/ec
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /bin
 COPY poetry.lock pyproject.toml /app/
-# RUN poetry install
+RUN poetry install
 COPY src/ /app/src
 COPY Taskfile.yml /app

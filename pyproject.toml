@@ -28,7 +28,7 @@ authors = ["Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>"]
 package-mode = false
 
 [tool.poetry.dependencies]
-python = ">=3.12,<3.13"
+python = ">=3.13,<3.14"
 loguru = "0.7.3"
 quranbot-schema-registry = "0.0.28"
 sentry-sdk = "2.26.0"
@@ -48,7 +48,7 @@ jinja2 = "3.1.6"
 ujson = "5.10.0"
 pydantic-settings = "2.8.1"
 more-itertools = "10.6.0"
-lxml = "^5.3.0"
+lxml = "5.3.0"
 
 [tool.poetry.group.dev.dependencies]
 # tests
