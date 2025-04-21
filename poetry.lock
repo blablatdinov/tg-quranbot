@@ -3046,14 +3046,14 @@ files = [
 
 [[package]]
 name = "telethon"
-version = "1.39.0"
+version = "1.40.0"
 description = "Full-featured Telegram client library for Python 3"
 optional = false
 python-versions = ">=3.5"
 groups = ["dev"]
 files = [
-    {file = "Telethon-1.39.0-py3-none-any.whl", hash = "sha256:aa9f394b94be144799a6f6a93ab463867bc7c63503ede9631751940a98f6c703"},
-    {file = "telethon-1.39.0.tar.gz", hash = "sha256:35d4795d8c91deac515fb0bcb3723866b924de1c724e1d5c230460e96f284a63"},
+    {file = "Telethon-1.40.0-py3-none-any.whl", hash = "sha256:146fd4cb2a7afa66bc67f9c2167756096a37b930f65711a3e7399ec9874dcfa7"},
+    {file = "telethon-1.40.0.tar.gz", hash = "sha256:40e83326877a2e68b754d4b6d0d1ca5ac924110045b039e02660f2d67add97db"},
 ]
 
 [package.dependencies]
@@ -3670,4 +3670,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "fa46e9c39b7009b81cbcd98f4d4c059bdbd6298662144af0b6b83bf1f1838647"
+content-hash = "d8129d805bb4496ee2b6811916ee83acb6d53d6de9ee05e026a6233c19f8bd34"
