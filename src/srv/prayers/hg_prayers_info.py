@@ -47,7 +47,7 @@ class HgPrayersInfo(PrayersInfo):
     _pgsql: Database
 
     @override
-    async def to_dict(self) -> PrayerMessageTextDict:  # noqa: WPS210
+    async def to_dict(self) -> PrayerMessageTextDict:
         """Словарь с данными для отправки пользователю."""
         city_name = await self._city.name()
         async with httpx.AsyncClient() as http_client:
@@ -56,23 +56,30 @@ class HgPrayersInfo(PrayersInfo):
                 'https://halalguide.me/kazan/namaz-time/may-2025',
             )
             response.raise_for_status()
-        tree = etree.fromstring(response.text, etree.HTMLParser())  # noqa: S320. Trust https://namaz.today
+        tree = etree.fromstring(response.text, etree.HTMLParser())  # noqa: S320. Trust https://halalguide.me
         date = await self._date.parse(FkUpdate.empty_ctor())
         if date.month != datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).month:
             raise PrayersNotFoundError(city_name, date)
+        table = [
+            row.xpath('.//text()')
+            for row in tree.xpath("//div[@class='table_wrapper']//tr")
+        ]
+        prayers = []
+        for line in table:
+            prayers.append([elem.strip() for elem in line if elem.strip() and elem.strip() != 'Today'])
         rows = next(iter(
             row
-            # TODO #1672:30min Поправить xpath выражение
-            for row in tree.xpath("//div[@class='table-wrapper']//tbody/tr")
-            if row.xpath('./td')[0].text == str(date.day)
+            for row in prayers
+            if row[0] == str(date.day)
         ))
         return PrayerMessageTextDict({
-            'city_name': tree.xpath('//h1/text()')[0].split('.')[0],
+            'city_name': tree.xpath('//h1/text()')[0].split('.')[1].strip(),
+            # TODO #1677:30min Исправить индексы намазов
             'date': date.strftime('%d.%m.%Y'),
-            'fajr_prayer_time': rows[1].text,
-            'sunrise_prayer_time': rows[2].text,
-            'dhuhr_prayer_time': rows[3].text,
-            'asr_prayer_time': rows[4].text,
-            'magrib_prayer_time': rows[5].text,
-            'ishaa_prayer_time': rows[6].text,
+            'fajr_prayer_time': rows[1],
+            'sunrise_prayer_time': rows[2],
+            'dhuhr_prayer_time': rows[3],
+            'asr_prayer_time': rows[4],
+            'magrib_prayer_time': rows[5],
+            'ishaa_prayer_time': rows[6],
         })

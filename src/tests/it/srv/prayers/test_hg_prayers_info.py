@@ -53,7 +53,7 @@ async def city(city_factory, pgsql):
 
 
 # TODO #1672:30min Исправить тесты и убрать маркер skip
-@pytest.mark.skip
+# @pytest.mark.skip
 @pytest.mark.usefixtures('hg_mock')
 async def test_today(time_machine, pgsql, city):
     time_machine.move_to('2025-01-06')
