@@ -80,12 +80,10 @@ class HgPrayersInfo(PrayersInfo):
         ))
         return PrayerMessageTextDict({
             'city_name': tree.xpath('//h1/text()')[0].split('.')[1].strip(),
-            # TODO #1677:30min Исправить индексы намазов
             'date': date.strftime('%d.%m.%Y'),
-            'fajr_prayer_time': rows[1],
-            'sunrise_prayer_time': rows[2],
-            'dhuhr_prayer_time': rows[3],
-            'asr_prayer_time': rows[4],
-            'magrib_prayer_time': rows[5],
-            'ishaa_prayer_time': rows[6],
+            'fajr_prayer_time': rows[2],
+            'sunrise_prayer_time': rows[3],
+            'dhuhr_prayer_time': rows[4],
+            'asr_prayer_time': rows[5],
+            'magrib_prayer_time': rows[6], 'ishaa_prayer_time': rows[7],
         })
