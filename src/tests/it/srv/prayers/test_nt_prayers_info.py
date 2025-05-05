@@ -78,7 +78,7 @@ async def test_by_date(pgsql, time_machine, city):
     time_machine.move_to('2025-01-14')
     got = await NtPrayersInfo(
         city,
-        FkPrayerDate(datetime.date(2025, 3, 20)),
+        FkPrayerDate(datetime.date(2025, 1, 20)),
         pgsql,
     ).to_dict()
 
