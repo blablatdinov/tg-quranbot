@@ -23,7 +23,7 @@
 -- halal guide cities
 -- depends: 20250108_02_3qKdF-prayers-unique
 
--- #TODO: #1678:30min заполнить таблицу данными из https://halalguide.me/sitemap-namaz.xml
+-- # TODO: #1678:30min заполнить таблицу данными из https://halalguide.me/sitemap-namaz.xml
 
 CREATE TABLE halal_guide_cities (
     city_id character varying,
