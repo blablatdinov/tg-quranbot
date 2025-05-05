@@ -53,7 +53,7 @@ async def city(city_factory, pgsql):
 
 
 # TODO #1672:30min Исправить тесты и убрать маркер skip
-@pytest.mark.skip()
+@pytest.mark.skip
 @pytest.mark.usefixtures('hg_mock')
 async def test_today(time_machine, pgsql, city):
     time_machine.move_to('2025-01-06')
@@ -76,7 +76,7 @@ async def test_today(time_machine, pgsql, city):
 
 
 @pytest.mark.usefixtures('hg_mock')
-@pytest.mark.skip()
+@pytest.mark.skip
 async def test_by_date(pgsql, time_machine, city):
     time_machine.move_to('2025-01-14')
     got = await HgPrayersInfo(
