@@ -23,6 +23,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 <!--
 # TODO #1428:30min Описать парсеры для https://namaz.today
+# TODO #1672:30min Описать парсеры для https://halalguide.me
 -->
 # Требования к разделу "Время намаза"
 
