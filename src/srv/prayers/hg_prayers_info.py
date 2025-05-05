@@ -32,12 +32,11 @@ from lxml import etree
 from app_types.fk_update import FkUpdate
 from exceptions.prayer_exceptions import PrayersNotFoundError
 from srv.prayers.city import City
-from srv.prayers.nt_prayers_url import NtPrayersUrl
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
 
 
-# TODO #1672:30min Встроить HgPrayersInfo как спосо получения времени намаза
+# TODO #1672:30min Встроить HgPrayersInfo как способ получения времени намаза
 @final
 @attrs.define(frozen=True)
 class HgPrayersInfo(PrayersInfo):
