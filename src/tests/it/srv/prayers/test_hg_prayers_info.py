@@ -53,25 +53,24 @@ async def city(city_factory, pgsql):
 
 
 # TODO #1672:30min Исправить тесты и убрать маркер skip
-@pytest.mark.skip
 @pytest.mark.usefixtures('hg_mock')
 async def test_today(time_machine, pgsql, city):
-    time_machine.move_to('2025-01-06')
+    time_machine.move_to('2025-05-05')
     got = await HgPrayersInfo(
         city,
-        FkPrayerDate(datetime.date(2025, 1, 6)),
+        FkPrayerDate(datetime.date(2025, 5, 5)),
         pgsql,
     ).to_dict()
 
     assert got == {
-        'asr_prayer_time': '13:39',
+        'asr_prayer_time': '16:57',
         'city_name': 'Казань',
-        'date': '06.01.2025',
-        'dhuhr_prayer_time': '11:50',
-        'fajr_prayer_time': '05:53',
-        'ishaa_prayer_time': '17:25',
-        'magrib_prayer_time': '15:28',
-        'sunrise_prayer_time': '08:11',
+        'date': '05.05.2025',
+        'dhuhr_prayer_time': '12:00',
+        'fajr_prayer_time': '01:48',
+        'ishaa_prayer_time': '21:00',
+        'magrib_prayer_time': '19:30',
+        'sunrise_prayer_time': '03:48',
     }
 
 
