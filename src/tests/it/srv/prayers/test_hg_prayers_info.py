@@ -45,7 +45,7 @@ async def city(city_factory, pgsql):
     city_id = uuid.uuid4()
     await city_factory(str(city_id), 'Казань')
     await pgsql.execute(
-        'INSERT INTO namaz_today_cities (city_id, link) VALUES (:city_id, :link)',
+        'INSERT INTO halal_guide_cities (city_id, link) VALUES (:city_id, :link)',
         {'city_id': str(city_id), 'link': 'https://halalguide.me/kazan/namaz-time'},
     )
     return FkCity(city_id, 'Казань')
