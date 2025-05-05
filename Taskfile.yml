@@ -85,6 +85,7 @@ tasks:
   lint:
     cmds:
       - poetry run ruff check src --output-format=concise
+      - git ls-files | xargs ec
       - poetry run flake8 src
       - poetry run mypy src
       - poetry run sqlfluff lint migrations --dialect postgres
