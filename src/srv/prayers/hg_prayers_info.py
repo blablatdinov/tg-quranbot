@@ -46,8 +46,9 @@ class HgPrayersInfo(PrayersInfo):
     _date: PrayerDate
     _pgsql: Database
 
+    # TODO #1677:30min Уменьшить сложность метода, убрать noqa комментарии
     @override
-    async def to_dict(self) -> PrayerMessageTextDict:
+    async def to_dict(self) -> PrayerMessageTextDict:  # noqa: WPS210, WPS221
         """Словарь с данными для отправки пользователю."""
         city_name = await self._city.name()
         async with httpx.AsyncClient() as http_client:
@@ -64,9 +65,10 @@ class HgPrayersInfo(PrayersInfo):
             row.xpath('.//text()')
             for row in tree.xpath("//div[@class='table_wrapper']//tr")
         ]
-        prayers = []
-        for line in table:
-            prayers.append([elem.strip() for elem in line if elem.strip() and elem.strip() != 'Today'])
+        prayers = [
+            [elem.strip() for elem in line if elem.strip() and elem.strip() != 'Today']
+            for line in table
+        ]
         rows = next(iter(
             row
             for row in prayers
