@@ -32,6 +32,7 @@ from lxml import etree
 from app_types.fk_update import FkUpdate
 from exceptions.prayer_exceptions import PrayersNotFoundError
 from srv.prayers.city import City
+from srv.prayers.hg_prayers_url import HgPrayersUrl
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
 
@@ -51,14 +52,13 @@ class HgPrayersInfo(PrayersInfo):
     async def to_dict(self) -> PrayerMessageTextDict:  # noqa: WPS210
         """Словарь с данными для отправки пользователю."""
         city_name = await self._city.name()
+        date = await self._date.parse(FkUpdate.empty_ctor())
         async with httpx.AsyncClient() as http_client:
             response = await http_client.get(
-                # TODO #1672:30min Генерировать url по аналогии с NtPrayersUrl
-                'https://halalguide.me/kazan/namaz-time/may-2025',
+                await HgPrayersUrl(self._city, self._pgsql, date).to_str(),
             )
             response.raise_for_status()
         tree = etree.fromstring(response.text, etree.HTMLParser())  # noqa: S320. Trust https://halalguide.me
-        date = await self._date.parse(FkUpdate.empty_ctor())
         if date.month != datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).month:
             raise PrayersNotFoundError(city_name, date)
         table = [
