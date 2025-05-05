@@ -57,9 +57,22 @@ tasks:
       - poetry run python src/main.py run_polling
 
   tests:
+    deps: [type-check]
+    cmds:
+      - poetry run pytest --ignore=src/tests/e2e --cov=src --cov-report html --cov-fail-under=96
+
+  type-check:
     cmds:
       - poetry run mypy src
-      - poetry run pytest --ignore=src/tests/e2e --cov=src --cov-report html --cov-fail-under=96
+
+  syntax-check:
+    cmds:
+      - poetry run ruff check src --select=F --ignore=F401,F841
+
+  test:
+    deps: [syntax-check,type-check]
+    cmds:
+      - poetry run pytest {{.CLI_ARGS}}
 
   psql:
     cmds:
@@ -80,3 +93,7 @@ tasks:
     cmds:
       - git clean -f -d -x -e .env -e me.session -e .venv
       - docker rmi bot-qbot -f
+
+  migration:
+    cmds:
+      - poetry run yoyo new -m {{.CLI_ARGS}} --sql

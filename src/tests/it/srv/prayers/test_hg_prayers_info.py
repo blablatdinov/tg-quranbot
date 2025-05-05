@@ -30,14 +30,14 @@ import pytest
 from exceptions.prayer_exceptions import PrayersNotFoundError
 from srv.prayers.fk_city import FkCity
 from srv.prayers.fk_prayer_date import FkPrayerDate
-from srv.prayers.nt_prayers_info import NtPrayersInfo
+from srv.prayers.hg_prayers_info import HgPrayersInfo
 
 
 @pytest.fixture
-def nt_mock(respx_mock):
-    respx_mock.get('https://namaz.today/city/kazan').mock(return_value=httpx.Response(
+def hg_mock(respx_mock):
+    respx_mock.get('https://halalguide.me/kazan/namaz-time/may-2025').mock(return_value=httpx.Response(
         200,
-        text=Path('src/tests/fixtures/nt_response.html').read_text(encoding='utf-8'),
+        text=Path('src/tests/fixtures/hg_response.html').read_text(encoding='utf-8'),
     ))
 
 
@@ -45,17 +45,18 @@ def nt_mock(respx_mock):
 async def city(city_factory, pgsql):
     city_id = uuid.uuid4()
     await city_factory(str(city_id), 'Казань')
-    await pgsql.execute(
-        'INSERT INTO namaz_today_cities (city_id, link) VALUES (:city_id, :link)',
-        {'city_id': str(city_id), 'link': 'https://namaz.today/city/kazan'},
-    )
+    # TODO #1672:30min создать таблицу в БД для хранения url
+    # await pgsql.execute(
+    #     'INSERT INTO namaz_today_cities (city_id, link) VALUES (:city_id, :link)',
+    #     {'city_id': str(city_id), 'link': 'https://namaz.today/city/kazan'},
+    # )
     return FkCity(city_id, 'Казань')
 
 
-@pytest.mark.usefixtures('nt_mock')
+@pytest.mark.usefixtures('hg_mock')
 async def test_today(time_machine, pgsql, city):
     time_machine.move_to('2025-01-06')
-    got = await NtPrayersInfo(
+    got = await HgPrayersInfo(
         city,
         FkPrayerDate(datetime.date(2025, 1, 6)),
         pgsql,
@@ -73,12 +74,12 @@ async def test_today(time_machine, pgsql, city):
     }
 
 
-@pytest.mark.usefixtures('nt_mock')
+@pytest.mark.usefixtures('hg_mock')
 async def test_by_date(pgsql, time_machine, city):
     time_machine.move_to('2025-01-14')
-    got = await NtPrayersInfo(
+    got = await HgPrayersInfo(
         city,
-        FkPrayerDate(datetime.date(2025, 3, 20)),
+        FkPrayerDate(datetime.date(2025, 1, 20)),
         pgsql,
     ).to_dict()
 
@@ -92,17 +93,3 @@ async def test_by_date(pgsql, time_machine, city):
         'magrib_prayer_time': '15:53',
         'sunrise_prayer_time': '07:57',
     }
-
-
-# TODO #1450:30min Пока возможно получать время намаза только в рамках текущего месяца.
-#  В таблице на странице https://namaz.today/city/kazan приведены данные только на текущий месяц
-#  Оставил коммент с вопросом, пока ждем решения
-@pytest.mark.usefixtures('nt_mock')
-async def test_unavailable_date(pgsql, time_machine, city):
-    time_machine.move_to('2025-01-14')
-    with pytest.raises(PrayersNotFoundError):
-        await NtPrayersInfo(
-            city,
-            FkPrayerDate(datetime.date(2025, 2, 20)),
-            pgsql,
-        ).to_dict()
