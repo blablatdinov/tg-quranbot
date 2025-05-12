@@ -1561,14 +1561,14 @@ files = [
 
 [[package]]
 name = "ondivi"
-version = "0.7.1"
+version = "0.7.2"
 description = ""
 optional = false
 python-versions = "<4.0,>=3.9"
 groups = ["dev"]
 files = [
-    {file = "ondivi-0.7.1-py3-none-any.whl", hash = "sha256:e839c2a16983039f01f1f711288abcb31080a5a932e3be09fc0de0a5f1d53c74"},
-    {file = "ondivi-0.7.1.tar.gz", hash = "sha256:d5903ae13b613a5fa4fec8c403ab7f0d16ab0cabf35fe9c609f6bd5e90e9c4cf"},
+    {file = "ondivi-0.7.2-py3-none-any.whl", hash = "sha256:d9d7ac6ca4e07f1726cf47192f1fb24726933a78d73b604cb3c7e035168dc0dc"},
+    {file = "ondivi-0.7.2.tar.gz", hash = "sha256:3688943582454a161c955cdce4afc17e1be5cbaa1f62623fe07cbb9cd5eadae7"},
 ]
 
 [package.dependencies]
@@ -3685,4 +3685,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "219ccb11986aacfa73484f0abf889951a3e20fe01d67547c271f1057699e51b3"
+content-hash = "4b60220c8a0b357fc86a8a3ea6b4630d663c61912d116a8712b1015500126a78"
