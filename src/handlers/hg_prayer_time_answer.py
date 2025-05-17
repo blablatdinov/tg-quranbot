@@ -49,8 +49,8 @@ from srv.message_not_found_safe_answer import MessageNotFoundSafeAnswer
 from srv.prayers.cd_prayers_info import CdPrayersInfo
 from srv.prayers.date_from_user_prayer_id import DateFromUserPrayerId
 from srv.prayers.fk_prayer_date import FkPrayerDate
-from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.hg_prayers_info import HgPrayersInfo
+from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.pagination_per_day_date import PaginationPerDayDate
 from srv.prayers.pg_city import PgCity
 from srv.prayers.pg_saved_prayers_info import PgSavedPrayersInfo

@@ -33,9 +33,9 @@ from handlers.concrete_podcast_answer import ConcretePodcastAnswer
 from handlers.decrement_skipped_prayer_answer import DecrementSkippedPrayerAnswer
 from handlers.favorites_answer import FavoriteAyatsAnswer
 from handlers.full_start_answer import FullStartAnswer
+from handlers.hg_prayer_time_answer import HgPrayerTimeAnswer
 from handlers.next_day_ayats import NextDayAyats
 from handlers.nt_prayer_time_answer import NtPrayerTimeAnswer
-from handlers.hg_prayer_time_answer import HgPrayerTimeAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.pg_set_user_city_answer import PgSetUserCityAnswer
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
@@ -55,6 +55,7 @@ from integrations.tg.tg_answers import (
     TgTextAnswer,
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
+from integrations.tg.tg_answers.tg_chat_id_regex_answer import TgChatIdRegexAnswer
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
 from services.help_answer import HelpAnswer
@@ -69,7 +70,6 @@ from srv.podcasts.random_podcast_answer import RandomPodcastAnswer
 from srv.prayers.inline_query_answer import InlineQueryAnswer
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.users.user_step import UserStep
-from integrations.tg.tg_answers.tg_chat_id_regex_answer import TgChatIdRegexAnswer
 
 
 @final
