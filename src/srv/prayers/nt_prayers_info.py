@@ -51,7 +51,7 @@ class NtPrayersInfo(PrayersInfo):
     async def to_dict(self) -> PrayerMessageTextDict:  # noqa: WPS210
         """Словарь с данными для отправки пользователю."""
         city_name = await self._city.name()
-        async with httpx.AsyncClient() as http_client:
+        async with httpx.AsyncClient(cookies={'asr_method': '1'}) as http_client:
             response = await http_client.get(
                 await NtPrayersUrl(self._city, self._pgsql).to_str(),
             )
