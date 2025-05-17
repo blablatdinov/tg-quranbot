@@ -64,4 +64,4 @@ class TgChatIdRegexAnswer(TgAnswer, SupportsStr):
 
         :return: str
         """
-        return 'TgMessageRegexAnswer. pattern: {0}'.format(self._pattern)
+        return 'TgChatIdRegexAnswer. pattern: {0}'.format(self._pattern)

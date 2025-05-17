@@ -51,8 +51,11 @@ class HgPrayersInfo(PrayersInfo):
     @override
     async def to_dict(self) -> PrayerMessageTextDict:  # noqa: WPS210
         """Словарь с данными для отправки пользователю."""
+        assert False
         city_name = await self._city.name()
         date = await self._date.parse(FkUpdate.empty_ctor())
+        from loguru import logger
+        logger.info(f'!!! {city_name}')
         async with httpx.AsyncClient() as http_client:
             response = await http_client.get(
                 await HgPrayersUrl(self._city, self._pgsql, date).to_str(),

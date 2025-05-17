@@ -53,6 +53,7 @@ tasks:
       - docker compose run --rm qbot task lint
 
   run:
+    deps: [syntax-check, type-check]
     cmds:
       - poetry run python src/main.py run_polling
 

@@ -35,6 +35,7 @@ from handlers.favorites_answer import FavoriteAyatsAnswer
 from handlers.full_start_answer import FullStartAnswer
 from handlers.next_day_ayats import NextDayAyats
 from handlers.nt_prayer_time_answer import NtPrayerTimeAnswer
+from handlers.hg_prayer_time_answer import HgPrayerTimeAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.pg_set_user_city_answer import PgSetUserCityAnswer
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
@@ -68,6 +69,7 @@ from srv.podcasts.random_podcast_answer import RandomPodcastAnswer
 from srv.prayers.inline_query_answer import InlineQueryAnswer
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.users.user_step import UserStep
+from integrations.tg.tg_answers.tg_chat_id_regex_answer import TgChatIdRegexAnswer
 
 
 @final
@@ -122,13 +124,30 @@ class QuranbotAnswer(TgAnswer):
                     ),
                     TgMessageRegexAnswer(
                         'Время намаза',
-                        NtPrayerTimeAnswer.new_prayers_ctor(
-                            pgsql,
-                            empty_answer,
-                            settings.admin_chat_ids(),
-                            redis,
+                        TgAnswerFork.ctor(
                             logger,
-                            settings,
+                            TgChatIdRegexAnswer(
+                                '358610865',
+                                HgPrayerTimeAnswer.new_prayers_ctor(
+                                    pgsql,
+                                    empty_answer,
+                                    settings.admin_chat_ids(),
+                                    redis,
+                                    logger,
+                                    settings,
+                                ),
+                            ),
+                            TgChatIdRegexAnswer(
+                                '.+',
+                                NtPrayerTimeAnswer.new_prayers_ctor(
+                                    pgsql,
+                                    empty_answer,
+                                    settings.admin_chat_ids(),
+                                    redis,
+                                    logger,
+                                    settings,
+                                ),
+                            ),
                         ),
                     ),
                     TgMessageRegexAnswer(
