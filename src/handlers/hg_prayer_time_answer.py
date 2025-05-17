@@ -194,7 +194,7 @@ class HgPrayerTimeAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        # TODO #1675:30min Убрать дублирование с PgPrayerTimeAnswer
+        # TODO #1675:30min Убрать дублирование с PgPrayerTimeAnswer dfd4956ff3dbeee418d5f0ccb11923cf
         city = PgCity.user_ctor(TgChatId(update), self._pgsql)
         prayer_date = FkPrayerDate(await self._prayers_date.parse(update))
         return await UserWithoutCitySafeAnswer(
