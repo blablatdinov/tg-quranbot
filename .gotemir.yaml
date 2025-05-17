@@ -191,6 +191,8 @@ test-free-files:
   - src/srv/prayers/prayers_text.py
   # TODO #1438:30min Написать тесты на src/handlers/nt_prayer_time_answer.py
   - src/handlers/nt_prayer_time_answer.py
+  # TODO #1675:30min Написать тесты на src/handlers/hg_prayer_time_answer.py
+  - src/handlers/hg_prayer_time_answer.py
   # TODO #1438:30min Написать тесты на src/integrations/tg/tg_answers/tg_chat_id_regex_answer.py
   - src/integrations/tg/tg_answers/tg_chat_id_regex_answer.py
   # TODO #1428:30min Написать тесты на NtPrayersUrl
