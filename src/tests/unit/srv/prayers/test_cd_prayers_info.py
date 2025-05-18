@@ -24,6 +24,7 @@ import datetime
 import uuid
 from typing import final, override
 
+from app_types.fk_log_sink import FkLogSink
 from srv.prayers.cd_prayers_info import CdPrayersInfo
 from srv.prayers.fk_city import FkCity
 from srv.prayers.fk_prayer_date import FkPrayerDate
@@ -59,6 +60,7 @@ async def test(fake_redis):
         fake_redis,
         FkCity(uuid.uuid4(), 'kazan'),
         FkPrayerDate(datetime.date(2025, 1, 6)),
+        FkLogSink(),
     )
     await cd_prayer_info.to_dict()
     got = await cd_prayer_info.to_dict()

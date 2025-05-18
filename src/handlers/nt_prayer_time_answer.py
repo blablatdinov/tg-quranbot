@@ -219,6 +219,7 @@ class NtPrayerTimeAnswer(TgAnswer):
                                             self._redis,
                                             city,
                                             prayer_date,
+                                            self._logger,
                                         ),
                                         self._settings.RAMADAN_MODE,
                                     ),

@@ -165,6 +165,7 @@ ignore = [
   "PLR630",  # We not respect staticmethods
   "G001",    # Only .format for strings
   "TRY400",  # logger.error enable
+  "PLE1205", # Too many arguments for `logging` format string
 ]
 external = [
   "WPS",

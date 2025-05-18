@@ -27,6 +27,7 @@ from pathlib import Path
 import httpx
 import pytest
 
+from app_types.fk_log_sink import FkLogSink
 from srv.prayers.fk_city import FkCity
 from srv.prayers.fk_prayer_date import FkPrayerDate
 from srv.prayers.hg_prayers_info import HgPrayersInfo
@@ -59,6 +60,7 @@ async def test_today(time_machine, pgsql, city):
         city,
         FkPrayerDate(datetime.date(2025, 5, 5)),
         pgsql,
+        FkLogSink(),
     ).to_dict()
 
     assert got == {
@@ -81,6 +83,7 @@ async def test_by_date(pgsql, time_machine, city):
         city,
         FkPrayerDate(datetime.date(2025, 1, 20)),
         pgsql,
+        FkLogSink(),
     ).to_dict()
 
     assert got == {
