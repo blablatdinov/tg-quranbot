@@ -30,6 +30,7 @@ from databases import Database
 from lxml import etree
 
 from app_types.fk_update import FkUpdate
+from app_types.logger import LogSink
 from exceptions.prayer_exceptions import PrayersNotFoundError
 from srv.prayers.city import City
 from srv.prayers.hg_prayers_url import HgPrayersUrl
@@ -46,6 +47,7 @@ class HgPrayersInfo(PrayersInfo):
     _city: City
     _date: PrayerDate
     _pgsql: Database
+    _logger: LogSink
 
     # TODO #1677:30min Уменьшить сложность метода, убрать noqa комментарии
     @override
@@ -78,7 +80,7 @@ class HgPrayersInfo(PrayersInfo):
             for row in prayers
             if row[0] == str(date.day)
         ))
-        return PrayerMessageTextDict({
+        prs_info = PrayerMessageTextDict({
             'city_name': tree.xpath('//h1/text()')[0].split('.')[1].strip(),
             'date': date.strftime('%d.%m.%Y'),
             'fajr_prayer_time': rows[2],
@@ -87,3 +89,5 @@ class HgPrayersInfo(PrayersInfo):
             'asr_prayer_time': rows[5],
             'magrib_prayer_time': rows[6], 'ishaa_prayer_time': rows[7],
         })
+        self._logger.debug('Parsed from halal guide: %s', prs_info)
+        return prs_info

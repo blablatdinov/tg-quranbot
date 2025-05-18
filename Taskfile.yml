@@ -96,6 +96,10 @@ tasks:
       - git clean -f -d -x -e .env -e me.session -e .venv
       - docker rmi bot-qbot -f
 
+  clear-cache:
+    cmds:
+      - redis-cli -h redis FLUSHALL
+
   migration:
     cmds:
       - poetry run yoyo new -m {{.CLI_ARGS}} --sql

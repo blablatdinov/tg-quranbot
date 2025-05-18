@@ -27,7 +27,7 @@ ENV EC_VERSION="v3.1.2"
 ENV PATH="/root/.local/bin:$PATH"
 WORKDIR /app
 RUN pip install poetry==2.0.1
-RUN apt-get update && apt-get install gcc=4:12.2.0-3 curl postgresql-client git -y
+RUN apt-get update && apt-get install gcc=4:12.2.0-3 curl postgresql-client git redis -y
 RUN curl -O -L -C - https://github.com/editorconfig-checker/editorconfig-checker/releases/download/$EC_VERSION/ec-linux-amd64.tar.gz && \
     tar xzf ec-linux-amd64.tar.gz -C /tmp && \
     mkdir -p /root/.local/bin && \
