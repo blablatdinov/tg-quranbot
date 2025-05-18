@@ -72,7 +72,6 @@ class UserPrayersKeyboard(Keyboard):
             self._chat_id,
             parsed_date,
         ).fetch()
-        print('!!!', prayers)
         readed_buttons_line = [
             {
                 'text': '✅' if user_prayer['is_read'] else '❌',
