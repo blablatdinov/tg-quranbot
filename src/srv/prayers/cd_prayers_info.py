@@ -57,5 +57,5 @@ class CdPrayersInfo(PrayersInfo):
             return ujson.loads(cached)
         origin = await self._origin.to_dict()
         await self._rds.set(key, ujson.dumps(origin))
-        self._logger.debug('Cache by key {} writted, value: {}', key, origin)
+        self._logger.debug('Cache by key {} written, value: {}', key, origin)
         return origin
