@@ -122,7 +122,6 @@ test-free-files:
   - src/srv/ayats/pg_ayat_identifier.py
   - src/srv/ayats/search_ayat_by_text.py
   - src/srv/ayats/search_query.py
-  - src/srv/ayats/text_search_neighbor_ayats.py
   - src/srv/events/ayat_changed_event.py
   - src/srv/events/event_fork.py
   - src/srv/events/event_hook.py
