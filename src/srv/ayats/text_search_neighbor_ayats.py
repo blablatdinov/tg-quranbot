@@ -47,6 +47,12 @@ class TextSearchNeighborAyats(NeighborAyats):
 
     @classmethod
     def ctor(cls, pgsql: Database, ayat_id: int, query: TextSearchQuery) -> NeighborAyats:
+        """Конструктор объекта.
+
+        :param pgsql: Database
+        :param ayat_id: int
+        :param query: TextSearchQuery
+        """
         return cls(
             pgsql,
             ayat_id,
@@ -56,7 +62,7 @@ class TextSearchNeighborAyats(NeighborAyats):
                 'FROM ayats',
                 'WHERE ayats.content ILIKE :search_query',
                 'ORDER BY ayats.ayat_id',
-            ])
+            ]),
         )
 
     @override
