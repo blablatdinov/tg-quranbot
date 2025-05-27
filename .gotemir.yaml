@@ -30,6 +30,7 @@ test-free-files:
   # protocols:
   - src/srv/prayers/prayers_info.py
   - src/srv/prayers/new_prayers.py
+  - src/srv/ayats/text_search_query.py
   # TODO
   - src/handlers/full_start_answer.py
   - src/handlers/pagination_per_day_prayer_answer.py
@@ -122,8 +123,6 @@ test-free-files:
   - src/srv/ayats/search_ayat_by_text.py
   - src/srv/ayats/search_query.py
   - src/srv/ayats/text_search_neighbor_ayats.py
-  - src/srv/ayats/text_search_query.py
-  - src/srv/ayats/user_has_not_search_query_safe_answer.py
   - src/srv/events/ayat_changed_event.py
   - src/srv/events/event_fork.py
   - src/srv/events/event_hook.py
