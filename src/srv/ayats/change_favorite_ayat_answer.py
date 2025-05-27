@@ -134,7 +134,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                             TgKeyboardEditAnswer(TgAnswerToSender(self._origin)),
                             AyatAnswerKeyboard(
                                 result_ayat,
-                                TextSearchNeighborAyats(
+                                TextSearchNeighborAyats.ctor(
                                     self._pgsql,
                                     status.ayat_id(),
                                     AyatTextSearchQuery(self._redis, chat_id, self._logger),

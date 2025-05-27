@@ -26,7 +26,8 @@ import pytest
 import pytz
 
 from exceptions.content_exceptions import AyatNotFoundError
-from srv.ayats.pg_neighbor_ayats import PgNeighborAyats
+from srv.ayats.fk_text_search_query import FkTextSearchQuery
+from srv.ayats.text_search_neighbor_ayats import TextSearchNeighborAyats
 
 
 @pytest.fixture
@@ -103,8 +104,8 @@ async def _db_ayat(pgsql):
 
 
 @pytest.mark.usefixtures('_db_ayat')
-async def test_first(pgsql):
-    neighbor = PgNeighborAyats(pgsql, 1)
+async def test_search_first(pgsql):
+    neighbor = TextSearchNeighborAyats.ctor(pgsql, 1, FkTextSearchQuery('Content'))
 
     with pytest.raises(AyatNotFoundError):
         await neighbor.left_neighbor()
@@ -113,8 +114,8 @@ async def test_first(pgsql):
 
 
 @pytest.mark.usefixtures('_db_ayat')
-async def test_last(pgsql):
-    neighbor = PgNeighborAyats(pgsql, 3)
+async def test_search_last(pgsql):
+    neighbor = TextSearchNeighborAyats.ctor(pgsql, 3, FkTextSearchQuery('Content'))
 
     with pytest.raises(AyatNotFoundError):
         await neighbor.right_neighbor()

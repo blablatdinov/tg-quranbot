@@ -87,7 +87,7 @@ class SearchAyatByTextCallbackAnswer(TgAnswer):
             result_ayat,
             AyatAnswerKeyboard(
                 result_ayat,
-                TextSearchNeighborAyats(
+                TextSearchNeighborAyats.ctor(
                     self._pgsql,
                     await result_ayat.identifier().ayat_id(),
                     CachedTextSearchQuery(

@@ -38,17 +38,26 @@ _AYAT_ID_LITERAL: Final = 'ayat_id'
 @final
 @attrs.define(frozen=True)
 class TextSearchNeighborAyats(NeighborAyats):
-    """Класс для работы с сосденими аятами, при текстовом поиске."""
+    """Класс для работы с соседними аятами, при текстовом поиске."""
 
     _pgsql: Database
     _ayat_id: int
     _query: TextSearchQuery
-    _search_sql_query = '\n'.join([
-        'SELECT ayats.ayat_id',
-        'FROM ayats',
-        'WHERE ayats.content ILIKE :search_query',
-        'ORDER BY ayats.ayat_id',
-    ])
+    _search_sql_query: str
+
+    @classmethod
+    def ctor(cls, pgsql: Database, ayat_id: int, query: TextSearchQuery) -> NeighborAyats:
+        return cls(
+            pgsql,
+            ayat_id,
+            query,
+            '\n'.join([
+                'SELECT ayats.ayat_id',
+                'FROM ayats',
+                'WHERE ayats.content ILIKE :search_query',
+                'ORDER BY ayats.ayat_id',
+            ])
+        )
 
     @override
     async def left_neighbor(self) -> Ayat:

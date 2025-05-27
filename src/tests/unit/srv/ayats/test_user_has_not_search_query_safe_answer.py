@@ -21,15 +21,16 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 from typing import final, override
-import attrs
 
-from app_types.update import Update
-from app_types.fk_update import FkUpdate
+import attrs
 import httpx
-from srv.ayats.user_has_not_search_query_safe_answer import UserHasNotSearchQuerySafeAnswer
+
+from app_types.fk_update import FkUpdate
+from app_types.update import Update
+from exceptions.content_exceptions import UserHasNotSearchQueryError
 from integrations.tg.tg_answers import TgAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
-from exceptions.content_exceptions import UserHasNotSearchQueryError
+from srv.ayats.user_has_not_search_query_safe_answer import UserHasNotSearchQuerySafeAnswer
 
 
 @final
