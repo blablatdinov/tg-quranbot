@@ -27,11 +27,11 @@ from databases import Database
 
 from app_types.fk_async_int import FkAsyncInt
 from app_types.intable import AsyncInt
+from exceptions.internal_exceptions import UserNotFoundError
 from srv.users.chat_id_by_legacy_id import ChatIdByLegacyId
 from srv.users.pg_valid_chat_id import PgValidChatId
 from srv.users.user import User
 from srv.users.valid_chat_id import ValidChatId
-from exceptions.internal_exceptions import UserNotFoundError
 
 
 @final
