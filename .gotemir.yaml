@@ -183,7 +183,6 @@ test-free-files:
   - src/srv/users/pg_updated_users_status.py
   - src/srv/users/pg_users.py
   - src/srv/users/pg_valid_chat_id.py
-  - src/srv/users/redis_user_state.py
   - src/srv/users/updated_users_status_event.py
   - src/srv/prayers/pg_saved_prayers_info.py
   - src/srv/users/user_step.py
