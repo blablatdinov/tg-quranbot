@@ -57,7 +57,10 @@ class ChatIdByLegacyId(AsyncInt):
             'FROM users',
             'WHERE legacy_id = :legacy_id',
         ])
-        query_result = await self._pgsql.fetch_val(query, {'legacy_id': await self._legacy_id.to_int()})
+        query_result = await self._pgsql.fetch_val(
+            query,
+            {'legacy_id': await self._legacy_id.to_int()},
+        )
         if not query_result:
             raise UserNotFoundError
         return query_result
