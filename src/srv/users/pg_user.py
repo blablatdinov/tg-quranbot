@@ -81,10 +81,13 @@ class PgUser(User):
             'FROM users',
             'WHERE chat_id = :chat_id',
         ])
-        val = await self._pgsql.fetch_val(query, {'chat_id': await self._chat_id.to_int()})
-        if not val:
+        query_result = await self._pgsql.fetch_val(
+            query,
+            {'chat_id': await self._chat_id.to_int()},
+        )
+        if not query_result:
             raise UserNotFoundError
-        return val
+        return query_result
 
     @override
     async def is_active(self) -> bool:
@@ -97,7 +100,10 @@ class PgUser(User):
             'FROM users',
             'WHERE chat_id = :chat_id',
         ])
-        val = await self._pgsql.fetch_val(query, {'chat_id': await self._chat_id.to_int()})
-        if not val:
+        query_result = await self._pgsql.fetch_val(
+            query,
+            {'chat_id': await self._chat_id.to_int()},
+        )
+        if not query_result:
             raise UserNotFoundError
-        return val
+        return query_result
