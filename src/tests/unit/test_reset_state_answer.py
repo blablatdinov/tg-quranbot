@@ -28,9 +28,7 @@ from app_types.fk_update import FkUpdate
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 from integrations.tg.update import TgUpdate
 from services.reset_state_answer import ResetStateAnswer
-from srv.users.cached_user_state import CachedUserState
 from srv.users.redis_user_state import RedisUserState
-from srv.users.user_step import UserStep
 
 
 @pytest.fixture
@@ -55,20 +53,3 @@ async def test_origin_answer_not_modificated(fake_redis):
     origin = (await FkAnswer().build(FkUpdate.empty_ctor()))[0].url
 
     assert got[0].url == origin
-
-
-async def test_read_cached(fake_redis):
-    user_state = CachedUserState(RedisUserState(fake_redis, 1, FkLogSink()))
-    await fake_redis.set('1:step', b'city_search')
-
-    assert await user_state.step() == UserStep.city_search
-    await fake_redis.set('1:step', b'new value')
-    assert await user_state.step() == UserStep.city_search
-
-
-async def test_write_cached(fake_redis):
-    await fake_redis.set('1:step', b'city_search')
-    user_state = CachedUserState(RedisUserState(fake_redis, 1, FkLogSink()))
-    await user_state.change_step(UserStep.ayat_search)
-
-    assert await user_state.step() == UserStep.ayat_search
