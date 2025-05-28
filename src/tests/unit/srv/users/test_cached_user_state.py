@@ -30,7 +30,7 @@ from srv.users.user_step import UserStep
 
 
 @final
-class SeUserState(UserState):
+class SeUserState(UserState):  # noqa: PEO200. Fake object for test
 
     def __init__(self, step: UserStep):
         self._cnt = 0
