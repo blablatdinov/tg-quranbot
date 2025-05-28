@@ -24,7 +24,9 @@ from typing import final, override
 
 import pytest
 
+from app_types.fk_log_sink import FkLogSink
 from srv.users.cached_user_state import CachedUserState
+from srv.users.redis_user_state import RedisUserState
 from srv.users.user_state import UserState
 from srv.users.user_step import UserStep
 
@@ -60,3 +62,20 @@ async def test():
 
     await cd_user_state.step()
     assert await cd_user_state.step() == UserStep.city_search
+
+
+async def test_read_cached(fake_redis):
+    user_state = CachedUserState(RedisUserState(fake_redis, 1, FkLogSink()))
+    await fake_redis.set('1:step', b'city_search')
+
+    assert await user_state.step() == UserStep.city_search
+    await fake_redis.set('1:step', b'new value')
+    assert await user_state.step() == UserStep.city_search
+
+
+async def test_write_cached(fake_redis):
+    await fake_redis.set('1:step', b'city_search')
+    user_state = CachedUserState(RedisUserState(fake_redis, 1, FkLogSink()))
+    await user_state.change_step(UserStep.ayat_search)
+
+    assert await user_state.step() == UserStep.ayat_search
