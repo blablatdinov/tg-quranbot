@@ -23,8 +23,8 @@
 import pytest
 
 from app_types.fk_async_int import FkAsyncInt
-from srv.users.pg_user import PgUser
 from exceptions.internal_exceptions import UserNotFoundError
+from srv.users.pg_user import PgUser
 
 
 @pytest.fixture
