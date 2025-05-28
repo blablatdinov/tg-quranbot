@@ -41,9 +41,9 @@ class FkFavoriteAyats(AsyncListable[Ayat]):
     @override
     async def to_list(self) -> list[Ayat]:
         return [
-            FkAyat(FkIdentifier(1, 1, '1-7'), '', FkFile()),
-            FkAyat(FkIdentifier(2, 1, '1-7'), '', FkFile()),
-            FkAyat(FkIdentifier(3, 1, '1-7'), '', FkFile()),
+            FkAyat(FkIdentifier(1, 1, '1-7'), '', FkFile.empty_ctor()),
+            FkAyat(FkIdentifier(2, 1, '1-7'), '', FkFile.empty_ctor()),
+            FkAyat(FkIdentifier(3, 1, '1-7'), '', FkFile.empty_ctor()),
         ]
 
 

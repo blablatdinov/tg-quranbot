@@ -20,12 +20,34 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from app_types.fk_update import FkUpdate
-from integrations.tg.tg_answers import TgAudioAnswer
-from integrations.tg.tg_answers.fk_answer import FkAnswer
+from typing import final, override
+
+from srv.users.cached_user_state import CachedUserState
+from srv.users.user_state import UserState
+from srv.users.fk_user_state import FkUserState
+from srv.users.user_step import UserStep
+
+
+@final
+class SeUserState(UserState):
+
+    def __init__(self, step: UserStep):
+        self._cnt = 0
+        self._step = step
+
+    @override
+    async def step(self) -> UserStep:
+        if self._cnt == 0:
+            return self._step
+        raise Exception
+
+    @override
+    async def change_step(self, step: UserStep) -> None:
+        raise NotImplementedError
 
 
 async def test():
-    got = await TgAudioAnswer(FkAnswer()).build(FkUpdate.empty_ctor())
+    cd_user_state = CachedUserState(FkUserState(UserStep.city_search))
 
-    assert str(got[0].url).endswith('/sendAudio')
+    await cd_user_state.step() == UserStep.city_search
+    assert await cd_user_state.step() == UserStep.city_search
