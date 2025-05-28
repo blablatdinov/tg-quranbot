@@ -40,9 +40,10 @@ class ChatIdByLegacyId(AsyncInt):
 
     _pgsql: Database
     _legacy_id: AsyncInt
-    
+
     @classmethod
     def int_ctor(cls, database: Database, legacy_id: int) -> AsyncInt:
+        """Конструктор для legacy_id в формате числа."""
         return cls(database, FkAsyncInt(legacy_id))
 
     @override
