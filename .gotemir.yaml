@@ -176,7 +176,6 @@ test-free-files:
   - src/srv/start/start_answer.py
   - src/srv/start/user_already_active.py
   - src/srv/start/user_already_exists.py
-  - src/srv/users/cached_user_state.py
   - src/srv/users/pg_active_users.py
   - src/srv/users/pg_new_user.py
   - src/srv/users/pg_new_user_with_event.py
