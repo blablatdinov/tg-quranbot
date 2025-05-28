@@ -25,14 +25,14 @@ from typing import SupportsFloat, final, override
 import attrs
 
 from app_types.rounded_float import RoundedFloat
-from app_types.fk_float import FkFloat
 
 
-def test():
-    got = float(
-        RoundedFloat(
-            FkFloat(0.222), 1,
-        ),
-    )
+@attrs.define(frozen=True)
+@final
+class FkFloat(SupportsFloat):
 
-    assert got == 0.2
+    _origin: float
+
+    @override
+    def __float__(self):
+        return self._origin
