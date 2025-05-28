@@ -20,43 +20,11 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
-
-import attrs
-from databases import Database
-
-from app_types.intable import AsyncInt
-from app_types.fk_async_int import FkAsyncInt
+import pytest
 from exceptions.internal_exceptions import UserNotFoundError
+from srv.users.chat_id_by_legacy_id import ChatIdByLegacyId
 
 
-@final
-@attrs.define(frozen=True)
-class ChatIdByLegacyId(AsyncInt):
-    """Идентификатор чата по старому идентификатору в БД.
-
-    Остались реферальные ссылки, сгенерированные на предыдущей версии бота
-    """
-
-    _pgsql: Database
-    _legacy_id: AsyncInt
-    
-    @classmethod
-    def int_ctor(cls, database: Database, legacy_id: int) -> AsyncInt:
-        return cls(database, FkAsyncInt(legacy_id))
-
-    @override
-    async def to_int(self) -> int:
-        """Числовое представление.
-
-        :return: int
-        """
-        query = '\n'.join([
-            'SELECT chat_id',
-            'FROM users',
-            'WHERE legacy_id = :legacy_id',
-        ])
-        query_result = await self._pgsql.fetch_val(query, {'legacy_id': await self._legacy_id.to_int()})
-        if not query_result:
-            raise UserNotFoundError
-        return query_result
+async def test_not_found(pgsql):
+    with pytest.raises(UserNotFoundError):
+        await ChatIdByLegacyId.int_ctor(pgsql, 1).to_int()
