@@ -25,8 +25,8 @@ from typing import final, override
 import attrs
 from databases import Database
 
-from app_types.intable import AsyncInt
 from app_types.fk_async_int import FkAsyncInt
+from app_types.intable import AsyncInt
 from exceptions.internal_exceptions import UserNotFoundError
 
 

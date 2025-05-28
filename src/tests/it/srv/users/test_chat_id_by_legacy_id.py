@@ -21,6 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import pytest
+
 from exceptions.internal_exceptions import UserNotFoundError
 from srv.users.chat_id_by_legacy_id import ChatIdByLegacyId
 
