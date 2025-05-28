@@ -73,7 +73,6 @@ test-free-files:
   - src/integrations/tg/cached_tg_update.py
   - src/integrations/tg/database_connected_app.py
   - src/integrations/tg/exceptions/update_parse_exceptions.py
-  - src/integrations/tg/inline_query_id.py
   - src/integrations/tg/polling_app.py
   - src/integrations/tg/polling_updates.py
   - src/integrations/tg/sendable_answer.py

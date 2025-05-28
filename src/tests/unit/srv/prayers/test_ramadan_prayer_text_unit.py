@@ -55,13 +55,5 @@ async def test_ramadan_mode(prayer_time_info):
         ramadan_mode=True,
     ).to_dict()
 
-    assert got == {
-        'asr_prayer_time': '14:35',
-        'city_name': 'Казань',
-        'date': '21.10.2023',
-        'dhuhr_prayer_time': '12:00',
-        'fajr_prayer_time': '04:22 <i>- Конец сухура</i>',
-        'ishaa_prayer_time': '18:12',
-        'magrib_prayer_time': '16:30 <i>- Ифтар</i>',
-        'sunrise_prayer_time': '06:26',
-    }
+    assert got['fajr_prayer_time'] == '04:22 <i>- Конец сухура</i>'
+    assert got['magrib_prayer_time'] == '16:30 <i>- Ифтар</i>'

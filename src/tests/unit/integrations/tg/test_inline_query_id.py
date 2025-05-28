@@ -22,7 +22,7 @@
 
 import pytest
 
-from integrations.tg.inline_query import InlineQuery
+from integrations.tg.inline_query_id import InlineQueryId
 from integrations.tg.update import TgUpdate
 
 
@@ -31,7 +31,7 @@ def inline_query_update(inline_query_update_factory):
     return inline_query_update_factory('Search')
 
 
-def test(inline_query_update):
-    got = str(InlineQuery(TgUpdate.str_ctor(inline_query_update)))
+def test_inline_query_id(inline_query_update):
+    got = int(InlineQueryId(TgUpdate.str_ctor(inline_query_update)))
 
-    assert got == 'Search'
+    assert got == 1540221937896102808
