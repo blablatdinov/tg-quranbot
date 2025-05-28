@@ -60,7 +60,7 @@ class PgUser(User):
         :param pgsql: Database
         :return: User
         """
-        return cls(PgValidChatId(pgsql, FkAsyncInt(chat_id)), pgsql)
+        return cls(PgValidChatId.int_ctor(pgsql, chat_id), pgsql)
 
     @override
     async def chat_id(self) -> int:
