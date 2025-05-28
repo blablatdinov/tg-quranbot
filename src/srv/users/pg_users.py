@@ -52,7 +52,7 @@ class PgUsers(AsyncListable):
             'WHERE chat_id IN ({0})',
         ])
         query = query_template.format(
-            ','.join(list(map(str, self._chat_ids))),
+            ','.join([str(elem) for elem in  self._chat_ids]),
         )
         rows = await self._pgsql.fetch_all(query)
         return [

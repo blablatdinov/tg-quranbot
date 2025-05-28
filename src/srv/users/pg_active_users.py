@@ -51,6 +51,6 @@ class PgActiveUsers(AsyncListable):
         ])
         rows = await self._pgsql.fetch_all(query)
         return [
-            PgUser(FkValidChatId.int_ctor(row['chat_id']), self._pgsql)
+            PgUser.int_ctor(row['chat_id'], self._pgsql)
             for row in rows
         ]
