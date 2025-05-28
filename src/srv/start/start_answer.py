@@ -28,7 +28,6 @@ import httpx
 from databases import Database
 
 from app_types.async_int_or_none import AsyncIntOrNone
-from app_types.fk_async_int import FkAsyncInt
 from app_types.update import Update
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers import TgAnswer, TgAnswerList, TgAnswerToSender, TgChatIdAnswer, TgTextAnswer
