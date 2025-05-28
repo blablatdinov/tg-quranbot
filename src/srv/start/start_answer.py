@@ -64,7 +64,7 @@ class StartAnswer(TgAnswer):
             ),
         )
         start_message = self._admin_message
-        ayat_message = PgAyat(FkAsyncInt(1), self._pgsql)
+        ayat_message = PgAyat.from_int(1, self._pgsql)
         await self._new_tg_user.create(referrer_chat_id)
         referrer_chat_id_calculated = await referrer_chat_id.to_int()
         if referrer_chat_id_calculated:
