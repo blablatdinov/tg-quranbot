@@ -23,7 +23,6 @@
 import pytest
 
 from integrations.tg.inline_query import InlineQuery
-from integrations.tg.inline_query_id import InlineQueryId
 from integrations.tg.update import TgUpdate
 
 
