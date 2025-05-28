@@ -37,6 +37,7 @@ class FkFile(TgFile):
 
     @classmethod
     def empty_ctor(cls) -> TgFile:
+        """Конструктор для создания объекта с пустыми значениями."""
         return cls('', '')
 
     @override
