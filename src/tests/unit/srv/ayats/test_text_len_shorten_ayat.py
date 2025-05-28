@@ -35,7 +35,7 @@ async def test_text_len_safe_ayat():
         FkAyat(
             FkIdentifier(272, 2, '282'),
             ayat_content,
-            FkFile('', ''),
+            FkFile.empty_ctor(),
         ),
     ).to_str()
 

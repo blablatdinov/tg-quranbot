@@ -35,6 +35,10 @@ class FkFile(TgFile):
     _file_id: str
     _link: str
 
+    @classmethod
+    def empty_ctor(cls) -> TgFile:
+        return cls('', '')
+
     @override
     async def tg_file_id(self) -> TgFileId:
         """Идентификатор файла в телеграм.
