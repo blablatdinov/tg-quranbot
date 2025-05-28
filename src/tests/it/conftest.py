@@ -125,7 +125,7 @@ async def db_ayat(pgsql):
     return FkAyat(
         FkIdentifier(1, 1, '1-7'),
         '',
-        FkFile('', ''),
+        FkFile.empty_ctor(),
     )
 
 

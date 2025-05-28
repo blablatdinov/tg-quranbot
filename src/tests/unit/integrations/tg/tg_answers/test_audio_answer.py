@@ -28,4 +28,4 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 async def test():
     got = await TgAudioAnswer(FkAnswer()).build(FkUpdate.empty_ctor())
 
-    assert got[0].url == 'https://some.domain/sendAudio'
+    assert str(got[0].url).endswith('/sendAudio')

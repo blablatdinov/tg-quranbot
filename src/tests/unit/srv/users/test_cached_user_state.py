@@ -22,36 +22,41 @@
 
 from typing import final, override
 
-import attrs
+import pytest
 
-from srv.files.tg_file import FileLink, TgFile, TgFileId
+from srv.users.cached_user_state import CachedUserState
+from srv.users.user_state import UserState
+from srv.users.user_step import UserStep
 
 
 @final
-@attrs.define(frozen=True)
-class FkFile(TgFile):
-    """Фейковый файл."""
+class SeUserState(UserState):  # noqa: PEO200. Fake object for test
 
-    _file_id: str
-    _link: str
-
-    @classmethod
-    def empty_ctor(cls) -> TgFile:
-        """Конструктор для создания объекта с пустыми значениями."""
-        return cls('', '')
+    def __init__(self, step: UserStep):
+        self._cnt = 0
+        self._step = step
 
     @override
-    async def tg_file_id(self) -> TgFileId:
-        """Идентификатор файла в телеграм.
-
-        :return: TgFileId
-        """
-        return self._file_id
+    async def step(self) -> UserStep:
+        if self._cnt == 0:
+            self._cnt += 1
+            return self._step
+        raise AssertionError
 
     @override
-    async def file_link(self) -> FileLink:
-        """Идентификатор файла в телеграм.
+    async def change_step(self, step: UserStep) -> None:
+        raise NotImplementedError
 
-        :return: FileLink
-        """
-        return self._link
+
+async def test_without_cd():
+    user_state = SeUserState(UserStep.city_search)
+    await user_state.step()
+    with pytest.raises(AssertionError):
+        await user_state.step()
+
+
+async def test():
+    cd_user_state = CachedUserState(SeUserState(UserStep.city_search))
+
+    await cd_user_state.step()
+    assert await cd_user_state.step() == UserStep.city_search
