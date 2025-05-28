@@ -25,7 +25,6 @@ from typing import final, override
 import attrs
 from databases import Database
 
-from app_types.fk_async_int import FkAsyncInt
 from app_types.listable import AsyncListable
 from srv.users.pg_user import PgUser
 from srv.users.user import User
@@ -57,6 +56,6 @@ class PgUsers(AsyncListable):
         )
         rows = await self._pgsql.fetch_all(query)
         return [
-            PgUser(FkAsyncInt(row['chat_id']), self._pgsql)
+            PgUser.int_ctor(row['chat_id'], self._pgsql)
             for row in rows
         ]
