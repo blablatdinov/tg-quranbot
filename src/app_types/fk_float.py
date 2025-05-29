@@ -24,15 +24,14 @@ from typing import SupportsFloat, final, override
 
 import attrs
 
-from app_types.rounded_float import RoundedFloat
-
 
 @attrs.define(frozen=True)
 @final
 class FkFloat(SupportsFloat):
+    """Фейк для интерфеса SupportsFloat."""
 
     _origin: float
 
     @override
-    def __float__(self):
+    def __float__(self) -> float:
         return self._origin

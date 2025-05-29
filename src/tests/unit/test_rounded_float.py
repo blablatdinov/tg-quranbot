@@ -20,12 +20,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import SupportsFloat, final, override
-
-import attrs
-
-from app_types.rounded_float import RoundedFloat
 from app_types.fk_float import FkFloat
+from app_types.rounded_float import RoundedFloat
 
 
 def test():
