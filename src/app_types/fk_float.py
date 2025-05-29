@@ -20,15 +20,18 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from app_types.fk_float import FkFloat
-from app_types.rounded_float import RoundedFloat
+from typing import SupportsFloat, final, override
+
+import attrs
 
 
-def test():
-    got = float(
-        RoundedFloat(
-            FkFloat(0.222), 1,
-        ),
-    )
+@attrs.define(frozen=True)
+@final
+class FkFloat(SupportsFloat):
+    """Фейк для интерфейса SupportsFloat."""
 
-    assert got == 0.2
+    _origin: float
+
+    @override
+    def __float__(self) -> float:
+        return self._origin
