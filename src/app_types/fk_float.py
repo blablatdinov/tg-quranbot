@@ -28,7 +28,7 @@ import attrs
 @attrs.define(frozen=True)
 @final
 class FkFloat(SupportsFloat):
-    """Фейк для интерфеса SupportsFloat."""
+    """Фейк для интерфейса SupportsFloat."""
 
     _origin: float
 
