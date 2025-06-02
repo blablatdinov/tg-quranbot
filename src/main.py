@@ -54,6 +54,8 @@ from srv.events.prayer_created_event import PrayerCreatedEvent
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
 from srv.events.rabbitmq_sink import RabbitmqSink
 from srv.events.rbmq_event_hook import RbmqEventHook
+from metrics.measured_answer import MeasuredAnswer
+from prometheus_client import start_http_server, Counter, Summary, Gauge
 
 
 def main(sys_args: list[str]) -> None:
@@ -69,6 +71,7 @@ def main(sys_args: list[str]) -> None:
             dsn=settings.SENTRY_DSN,
             enable_tracing=True,
         )
+    start_http_server(9091)
     quranbot_polling_app = CliApp(
         DatabaseConnectedApp(
             pgsql,
@@ -86,12 +89,14 @@ def main(sys_args: list[str]) -> None:
                     LoggedAnswer(
                         SendableAnswer(
                             TgMeasureAnswer(
-                                QuranbotAnswer.ctor(
-                                    pgsql,
-                                    redis,
-                                    rabbitmq_sink,
-                                    settings,
-                                    logger,
+                                MeasuredAnswer(
+                                    QuranbotAnswer.ctor(
+                                        pgsql,
+                                        redis,
+                                        rabbitmq_sink,
+                                        settings,
+                                        logger,
+                                    ),
                                 ),
                                 logger,
                             ),
