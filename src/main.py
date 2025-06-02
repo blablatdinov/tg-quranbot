@@ -24,6 +24,7 @@ import sys
 
 import sentry_sdk
 from loguru import logger
+from prometheus_client import start_http_server
 from redis import asyncio as aioredis
 
 from db.connection import pgsql
@@ -37,6 +38,7 @@ from integrations.tg.udpates_with_offset_url import UpdatesWithOffsetURL
 from integrations.tg.updates_timeout import UpdatesTimeout
 from integrations.tg.updates_url import UpdatesURL
 from integrations.tg.upddates_long_pollinig_url import UpdatesLongPollingURL
+from metrics.measured_answer import MeasuredAnswer
 from quranbot_answer import QuranbotAnswer
 from services.cli_app import CliApp
 from services.command_cli_app import CommandCliApp
@@ -54,8 +56,6 @@ from srv.events.prayer_created_event import PrayerCreatedEvent
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
 from srv.events.rabbitmq_sink import RabbitmqSink
 from srv.events.rbmq_event_hook import RbmqEventHook
-from metrics.measured_answer import MeasuredAnswer
-from prometheus_client import start_http_server, Counter, Summary, Gauge
 
 
 def main(sys_args: list[str]) -> None:
@@ -71,7 +71,7 @@ def main(sys_args: list[str]) -> None:
             dsn=settings.SENTRY_DSN,
             enable_tracing=True,
         )
-    start_http_server(9091)
+    start_http_server(settings.PROMETHEUS_PORT)
     quranbot_polling_app = CliApp(
         DatabaseConnectedApp(
             pgsql,

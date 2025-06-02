@@ -22,5 +22,4 @@
 
 from prometheus_client import Counter
 
-
 BOT_REQUESTS = Counter('bot_requests_total', 'Total number of requests to the bot')
