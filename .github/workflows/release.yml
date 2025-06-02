@@ -147,37 +147,10 @@ jobs:
       - name: Get tag name
         id: tag_name
         run: echo "::set-output name=TAG_NAME::$(echo ${GITHUB_REF#refs/tags/})"
-      - name: Generate docker-compose.yml
-        run: |
-          echo 'version: "3.3"
-          services:
-            qbot:
-              image: blablatdinov/tg-quranbot:${{ steps.tag_name.outputs.TAG_NAME }}
-              command: .venv/bin/python main.py run_polling
-              restart: always
-              volumes:
-                - .env:/.env
-
-            event_receiver:
-              image: blablatdinov/tg-quranbot:${{ steps.tag_name.outputs.TAG_NAME }}
-              command: .venv/bin/python main.py receive_events
-              restart: always
-              volumes:
-                - .env:/.env
-
-            scheduler:
-              image: blablatdinov/tg-quranbot:${{ steps.tag_name.outputs.TAG_NAME }}
-              command: .venv/bin/python scheduler_entry.py
-              restart: always
-              volumes:
-                - .env:/.env
-          ' > docker-compose.yml
-          cat docker-compose.yml
       - name: Deploy with docker-compose on remote server
         run: |
           ssh www@87.249.49.217 'echo "Connected!"'
-          scp docker-compose.yml www@87.249.49.217:/home/www/code/tg-quranbot/docker-compose.yml
-          ssh www@87.249.49.217 'cd /home/www/code/tg-quranbot/ && docker compose up -d'
+          ssh www@87.249.49.217 'cd /home/www/code/tg-quranbot/ && TAG_NAME=${{ steps.tag_name.outputs.TAG_NAME }} docker compose up -f infra/docker-compose.prod.yml -d'
 
   change-pyproject-version:
     # needs: checks
