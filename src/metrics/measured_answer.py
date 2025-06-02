@@ -20,25 +20,17 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
-
 import attrs
-import httpx
-
 from integrations.tg.tg_answers import TgAnswer
-from integrations.tg.update import Update
 from metrics.prometheus import BOT_REQUESTS
 
 
-@final
 @attrs.define(frozen=True)
 class MeasuredAnswer(TgAnswer):
-    """Декоратор для экспорта метрик в grafana."""
 
     _origin: TgAnswer
 
-    @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа."""
+    async def build(self, update):
         BOT_REQUESTS.inc()
         return await self._origin.build(update)
+

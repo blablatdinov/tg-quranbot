@@ -56,6 +56,8 @@ from srv.events.prayer_created_event import PrayerCreatedEvent
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
 from srv.events.rabbitmq_sink import RabbitmqSink
 from srv.events.rbmq_event_hook import RbmqEventHook
+from metrics.measured_answer import MeasuredAnswer
+from prometheus_client import start_http_server, Counter, Summary, Gauge
 
 
 def main(sys_args: list[str]) -> None:
