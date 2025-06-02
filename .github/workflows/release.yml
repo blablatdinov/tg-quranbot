@@ -150,7 +150,7 @@ jobs:
       - name: Deploy with docker-compose on remote server
         run: |
           ssh www@87.249.49.217 'echo "Connected!"'
-          ssh www@87.249.49.217 'cd /home/www/code/tg-quranbot/ && TAG_NAME=${{ steps.tag_name.outputs.TAG_NAME }} docker compose up -f infra/docker-compose.prod.yml -d'
+          ssh www@87.249.49.217 'cd /home/www/code/tg-quranbot/ && TAG_NAME=${{ steps.tag_name.outputs.TAG_NAME }} docker compose up -f infra/docker-compose.prod.yml --env-file=.env -d'
 
   change-pyproject-version:
     # needs: checks
