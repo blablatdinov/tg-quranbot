@@ -26,19 +26,23 @@ services:
   qbot:
     image: blablatdinov/tg-quranbot:${TAG_NAME}
     command: .venv/bin/python main.py run_polling
-    # restart: always
-    ports:
-      - "9091:9091"
+    restart: always
+    volumes:
+      - .env:/.env
 
   event_receiver:
     image: blablatdinov/tg-quranbot:${TAG_NAME}
     command: .venv/bin/python main.py receive_events
-    # restart: always
+    restart: always
+    volumes:
+      - .env:/.env
 
   scheduler:
     image: blablatdinov/tg-quranbot:${TAG_NAME}
     command: .venv/bin/python scheduler_entry.py
-    # restart: always
+    restart: always
+    volumes:
+      - .env:/.env
 
   prometheus:
     image: prom/prometheus
