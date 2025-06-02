@@ -27,16 +27,54 @@ services:
     image: blablatdinov/tg-quranbot:${TAG_NAME}
     command: .venv/bin/python main.py run_polling
     restart: always
+    ports:
+      - "9091:9091"
+    environment:
+      - API_TOKEN=${API_TOKEN}
+      - DATABASE_URL=${DATABASE_URL}
+      - DEBUG=${DEBUG}
+      - REDIS_DSN=${REDIS_DSN}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - ADMIN_CHAT_IDS=${ADMIN_CHAT_IDS}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASS=${RABBITMQ_PASS}
+      - RABBITMQ_VHOST=${RABBITMQ_VHOST}
+      - RAMADAN_MODE=${RAMADAN_MODE}
 
   event_receiver:
     image: blablatdinov/tg-quranbot:${TAG_NAME}
     command: .venv/bin/python main.py receive_events
     restart: always
+    environment:
+      - API_TOKEN=${API_TOKEN}
+      - DATABASE_URL=${DATABASE_URL}
+      - DEBUG=${DEBUG}
+      - REDIS_DSN=${REDIS_DSN}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - ADMIN_CHAT_IDS=${ADMIN_CHAT_IDS}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASS=${RABBITMQ_PASS}
+      - RABBITMQ_VHOST=${RABBITMQ_VHOST}
+      - RAMADAN_MODE=${RAMADAN_MODE}
 
   scheduler:
     image: blablatdinov/tg-quranbot:${TAG_NAME}
     command: .venv/bin/python scheduler_entry.py
     restart: always
+    environment:
+      - API_TOKEN=${API_TOKEN}
+      - DATABASE_URL=${DATABASE_URL}
+      - DEBUG=${DEBUG}
+      - REDIS_DSN=${REDIS_DSN}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - ADMIN_CHAT_IDS=${ADMIN_CHAT_IDS}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASS=${RABBITMQ_PASS}
+      - RABBITMQ_VHOST=${RABBITMQ_VHOST}
+      - RAMADAN_MODE=${RAMADAN_MODE}
 
   prometheus:
     image: prom/prometheus
