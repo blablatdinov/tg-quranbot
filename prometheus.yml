@@ -1,7 +1,0 @@
-global:
-  scrape_interval: 15s
-
-scrape_configs:
-  - job_name: 'telegram_bot'
-    static_configs:
-      - targets: ['qbot:9091'] # или IP вашего хоста
