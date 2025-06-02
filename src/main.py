@@ -56,6 +56,7 @@ from srv.events.prayer_created_event import PrayerCreatedEvent
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
 from srv.events.rabbitmq_sink import RabbitmqSink
 from srv.events.rbmq_event_hook import RbmqEventHook
+from settings import settings
 
 
 def main(sys_args: list[str]) -> None:
@@ -63,7 +64,6 @@ def main(sys_args: list[str]) -> None:
 
     :param sys_args: list[str]
     """
-    settings = Settings(_env_file=BASE_DIR.parent / '.env')
     rabbitmq_sink = RabbitmqSink(settings, logger)
     redis = aioredis.from_url(str(settings.REDIS_DSN))
     if settings.SENTRY_DSN:

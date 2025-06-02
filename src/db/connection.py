@@ -22,6 +22,6 @@
 
 from databases import Database
 
-from settings import BASE_DIR, Settings
+from settings import settings
 
-pgsql = Database(str(Settings(_env_file=BASE_DIR.parent / '.env').DATABASE_URL))
+pgsql = Database(str(settings.DATABASE_URL))

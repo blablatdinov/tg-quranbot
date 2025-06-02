@@ -30,10 +30,10 @@ from loguru import logger
 
 from settings import BASE_DIR, Settings
 from srv.events.rabbitmq_sink import RabbitmqSink
+from settings import settings
 
 logging.basicConfig()
 logging.getLogger('apscheduler').setLevel(logging.DEBUG)
-settings = Settings(_env_file=BASE_DIR.parent / '.env')
 
 
 async def _morning_ayats_task() -> None:  # noqa: NPM100. Fix it

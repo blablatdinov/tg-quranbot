@@ -60,3 +60,7 @@ class Settings(BaseSettings):  # noqa: PEO200
             int(chat_id.strip())
             for chat_id in self.ADMIN_CHAT_IDS.strip().split(',')
         ]
+
+
+env_file = BASE_DIR.parent / '.env'
+settings = Settings(_env_file=env_file if env_file.exists() else None)
