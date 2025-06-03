@@ -21,7 +21,6 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-import uuid
 from typing import final, override
 
 from app_types.fk_log_sink import FkLogSink

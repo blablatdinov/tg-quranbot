@@ -21,7 +21,6 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-import uuid
 
 import pytest
 

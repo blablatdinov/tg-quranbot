@@ -37,7 +37,7 @@ class FkCity(City):
     _name: str
 
     @classmethod
-    def name_ctor(cls, name: str):
+    def name_ctor(cls, name: str) -> City:
         """Конструктор с генерацией uuid."""
         return cls(uuid.uuid4(), name)
 
