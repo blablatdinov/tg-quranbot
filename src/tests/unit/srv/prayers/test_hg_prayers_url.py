@@ -22,10 +22,11 @@
 
 import datetime
 import uuid
+
 import pytest
 
-from srv.prayers.hg_prayers_url import HgPrayersUrl
 from srv.prayers.fk_city import FkCity
+from srv.prayers.hg_prayers_url import HgPrayersUrl
 
 
 class FkDb:
@@ -34,7 +35,7 @@ class FkDb:
         return 'https://halalguide.me/innopolis/namaz-time/'
 
 
-@pytest.mark.parametrize(('month_num', 'month_name'), (
+@pytest.mark.parametrize(('month_num', 'month_name'), [
     (1, 'january'),
     (2, 'february'),
     (3, 'march'),
@@ -47,12 +48,12 @@ class FkDb:
     (10, 'october'),
     (11, 'november'),
     (12, 'december'),
-))
+])
 async def test_month_names(month_num, month_name):
     got = await HgPrayersUrl(
         FkCity(uuid.uuid4(), ''),
-        FkDb(),  # type: ignore
-        datetime.datetime(2025, month_num, 1).date(),
+        FkDb(),  # type: ignore [arg-type]
+        datetime.datetime(2025, month_num, 1, tzinfo=datetime.UTC).date(),
     ).to_str()
 
     assert got == 'https://halalguide.me/innopolis/namaz-time/{0}-2025'.format(month_name)
