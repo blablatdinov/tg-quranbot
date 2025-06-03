@@ -29,9 +29,10 @@ from srv.prayers.fk_city import FkCity
 from srv.prayers.hg_prayers_url import HgPrayersUrl
 
 
-class FkDb:
+# Disabled checks for stub
+class FkDb:  # noqa: PEO200, FIN100
 
-    async def fetch_val(self, *args, **kwargs):
+    async def fetch_val(self, *args, **kwargs):  # noqa: OVR100
         return 'https://halalguide.me/innopolis/namaz-time/'
 
 
