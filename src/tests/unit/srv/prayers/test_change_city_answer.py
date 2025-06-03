@@ -50,7 +50,7 @@ async def test():
     got = await ChangeCityAnswer(
         FkAnswer(),
         FkUpdateUserCity(),
-        FkCity(uuid.uuid4(), 'Казань'),
+        FkCity.name_ctor('Казань'),
     ).build(FkUpdate.empty_ctor())
 
     assert got[0].url.params['text'] == 'Вам будет приходить время намаза для города Казань'

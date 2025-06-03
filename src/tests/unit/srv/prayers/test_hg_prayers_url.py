@@ -52,7 +52,7 @@ class FkDb:  # noqa: PEO200, FIN100
 ])
 async def test_month_names(month_num, month_name):
     got = await HgPrayersUrl(
-        FkCity(uuid.uuid4(), ''),
+        FkCity.name_ctor('Innopolis'),
         FkDb(),  # type: ignore [arg-type]
         datetime.datetime(2025, month_num, 1, tzinfo=datetime.UTC).date(),
     ).to_str()
