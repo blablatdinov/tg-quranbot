@@ -34,25 +34,25 @@ class FkDb:
         return 'https://halalguide.me/innopolis/namaz-time/'
 
 
-@pytest.mark.parametrize(('month_num', 'link'), (
-    (1, 'https://halalguide.me/innopolis/namaz-time/january-2025'),
-    (2, 'https://halalguide.me/innopolis/namaz-time/february-2025'),
-    (3, 'https://halalguide.me/innopolis/namaz-time/march-2025'),
-    (4, 'https://halalguide.me/innopolis/namaz-time/april-2025'),
-    (5, 'https://halalguide.me/innopolis/namaz-time/may-2025'),
-    (6, 'https://halalguide.me/innopolis/namaz-time/june-2025'),
-    (7, 'https://halalguide.me/innopolis/namaz-time/july-2025'),
-    (8, 'https://halalguide.me/innopolis/namaz-time/august-2025'),
-    (9, 'https://halalguide.me/innopolis/namaz-time/september-2025'),
-    (10, 'https://halalguide.me/innopolis/namaz-time/october-2025'),
-    (11, 'https://halalguide.me/innopolis/namaz-time/november-2025'),
-    (12, 'https://halalguide.me/innopolis/namaz-time/december-2025'),
+@pytest.mark.parametrize(('month_num', 'month_name'), (
+    (1, 'january'),
+    (2, 'february'),
+    (3, 'march'),
+    (4, 'april'),
+    (5, 'may'),
+    (6, 'june'),
+    (7, 'july'),
+    (8, 'august'),
+    (9, 'september'),
+    (10, 'october'),
+    (11, 'november'),
+    (12, 'december'),
 ))
-async def test_month_names(month_num, link):
+async def test_month_names(month_num, month_name):
     got = await HgPrayersUrl(
         FkCity(uuid.uuid4(), ''),
         FkDb(),  # type: ignore
         datetime.datetime(2025, month_num, 1).date(),
     ).to_str()
 
-    assert got == link
+    assert got == 'https://halalguide.me/innopolis/namaz-time/{0}-2025'.format(month_name)
