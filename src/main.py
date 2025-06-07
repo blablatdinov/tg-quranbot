@@ -39,6 +39,7 @@ from integrations.tg.updates_timeout import UpdatesTimeout
 from integrations.tg.updates_url import UpdatesURL
 from integrations.tg.upddates_long_pollinig_url import UpdatesLongPollingURL
 from metrics.measured_answer import MeasuredAnswer
+from metrics.prometheus import BOT_REQUESTS
 from quranbot_answer import QuranbotAnswer
 from services.cli_app import CliApp
 from services.command_cli_app import CommandCliApp
@@ -56,7 +57,6 @@ from srv.events.prayer_created_event import PrayerCreatedEvent
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
 from srv.events.rabbitmq_sink import RabbitmqSink
 from srv.events.rbmq_event_hook import RbmqEventHook
-from metrics.prometheus import BOT_REQUESTS
 
 
 def main(sys_args: list[str]) -> None:

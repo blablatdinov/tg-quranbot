@@ -24,6 +24,10 @@ from typing import Protocol
 
 
 class Counter(Protocol):
+    """Протокол счетчика.
+
+    Является интерфейсом для prometheus метрик
+    """
 
     def inc(self) -> None:
         """Увеличение значения счетчика."""
