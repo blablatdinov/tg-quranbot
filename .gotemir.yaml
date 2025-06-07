@@ -27,6 +27,8 @@ test-free-files:
   - src/exceptions.*
   - src/tests/.*
   - .*fk_.*\.py
+  # File with prometheus metrics:
+  - src/metrics/prometheus.py
   # protocols:
   - src/srv/prayers/prayers_info.py
   - src/srv/prayers/new_prayers.py

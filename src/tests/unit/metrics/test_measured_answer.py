@@ -20,26 +20,26 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
-
-import attrs
-import httpx
-
 from app_types.counter import Counter
-from integrations.tg.tg_answers import TgAnswer
-from integrations.tg.update import Update
+from app_types.fk_update import FkUpdate
+from integrations.tg.tg_answers.fk_answer import FkAnswer
+from metrics.measured_answer import MeasuredAnswer
 
 
-@final
-@attrs.define(frozen=True)
-class MeasuredAnswer(TgAnswer):
-    """Декоратор для экспорта метрик в grafana."""
+class FkCounter(Counter):
 
-    _origin: TgAnswer
-    _counter: Counter
+    def __init__(self) -> None:
+        self._val = 0
 
-    @override
-    async def build(self, update: Update) -> list[httpx.Request]:
-        """Сборка ответа."""
-        self._counter.inc()
-        return await self._origin.build(update)
+    def inc(self) -> None:
+        self._val += 1
+
+    def get(self) -> int:
+        return self._val
+
+
+async def test():
+    cnt = FkCounter()
+    await MeasuredAnswer(FkAnswer(), cnt).build(FkUpdate.empty_ctor())
+
+    assert cnt.get() == 1
