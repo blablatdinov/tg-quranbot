@@ -20,22 +20,26 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
+from typing import final, override
+
 from app_types.counter import Counter
 from app_types.fk_update import FkUpdate
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 from metrics.measured_answer import MeasuredAnswer
 
 
-class FkCounter(Counter):
+@final
+class FkCounter(Counter):  # noqa: PEO200
 
     def __init__(self) -> None:
-        self._val = 0
+        self._counter_val = 0
 
+    @override
     def inc(self) -> None:
-        self._val += 1
+        self._counter_val += 1
 
     def get(self) -> int:
-        return self._val
+        return self._counter_val
 
 
 async def test():
