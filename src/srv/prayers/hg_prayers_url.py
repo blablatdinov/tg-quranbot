@@ -55,7 +55,7 @@ class HgPrayersUrl(AsyncSupportsStr):
             raise CityNotFoundError
         return str(
             furl(link) / '{0}-{1}'.format(
-                self._date.strftime('%b').lower(),
+                self._date.strftime('%B').lower(),
                 self._date.year,
             ),
         )

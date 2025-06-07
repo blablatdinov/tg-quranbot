@@ -21,7 +21,6 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 import datetime
-import uuid
 from typing import final, override
 
 from app_types.fk_log_sink import FkLogSink
@@ -58,7 +57,7 @@ async def test(fake_redis):
     cd_prayer_info = CdPrayersInfo(
         _FkPrayersInfo(),
         fake_redis,
-        FkCity(uuid.uuid4(), 'kazan'),
+        FkCity.name_ctor('kazan'),
         FkPrayerDate(datetime.date(2025, 1, 6)),
         FkLogSink(),
     )

@@ -20,39 +20,40 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import uuid
-from typing import final, override
+import datetime
 
-import attrs
+import pytest
 
-from srv.prayers.city import City
+from srv.prayers.fk_city import FkCity
+from srv.prayers.hg_prayers_url import HgPrayersUrl
 
 
-@final
-@attrs.define(frozen=True)
-class FkCity(City):
-    """Стаб города."""
+# Disabled checks for stub
+class FkDb:  # noqa: PEO200, FIN100
 
-    _city_id: uuid.UUID
-    _name: str
+    async def fetch_val(self, *args, **kwargs):  # noqa: OVR100
+        return 'https://halalguide.me/innopolis/namaz-time/'
 
-    @classmethod
-    def name_ctor(cls, name: str) -> City:
-        """Конструктор с генерацией uuid."""
-        return cls(uuid.uuid4(), name)
 
-    @override
-    async def city_id(self) -> uuid.UUID:
-        """Идентификатор города.
+@pytest.mark.parametrize(('month_num', 'month_name'), [
+    (1, 'january'),
+    (2, 'february'),
+    (3, 'march'),
+    (4, 'april'),
+    (5, 'may'),
+    (6, 'june'),
+    (7, 'july'),
+    (8, 'august'),
+    (9, 'september'),
+    (10, 'october'),
+    (11, 'november'),
+    (12, 'december'),
+])
+async def test_month_names(month_num, month_name):
+    got = await HgPrayersUrl(
+        FkCity.name_ctor('Innopolis'),
+        FkDb(),  # type: ignore [arg-type]
+        datetime.datetime(2025, month_num, 1, tzinfo=datetime.UTC).date(),
+    ).to_str()
 
-        :return: uuid.UUID
-        """
-        return self._city_id
-
-    @override
-    async def name(self) -> str:
-        """Имя города.
-
-        :return: name
-        """
-        return self._name
+    assert got == 'https://halalguide.me/innopolis/namaz-time/{0}-2025'.format(month_name)

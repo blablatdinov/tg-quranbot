@@ -20,7 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import uuid
 from typing import final, override
 
 import attrs
@@ -50,7 +49,7 @@ async def test():
     got = await ChangeCityAnswer(
         FkAnswer(),
         FkUpdateUserCity(),
-        FkCity(uuid.uuid4(), 'Казань'),
+        FkCity.name_ctor('Казань'),
     ).build(FkUpdate.empty_ctor())
 
     assert got[0].url.params['text'] == 'Вам будет приходить время намаза для города Казань'

@@ -103,3 +103,8 @@ tasks:
   migration:
     cmds:
       - poetry run yoyo new -m {{.CLI_ARGS}} --sql
+
+  cspell-baseline:
+    desc: "Generate cspell baseline"
+    cmds:
+      - git ls-files | grep -v -E 'src/tests/fixtures/' | xargs cspell --words-only | sort -uf > cspell_custom_words.txt

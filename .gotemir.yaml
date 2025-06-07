@@ -193,8 +193,6 @@ test-free-files:
   - src/handlers/hg_prayer_time_answer.py
   # TODO #1438:30min Написать тесты на src/integrations/tg/tg_answers/tg_chat_id_regex_answer.py
   - src/integrations/tg/tg_answers/tg_chat_id_regex_answer.py
-  # TODO #1428:30min Написать тесты на NtPrayersUrl
-  - src/srv/prayers/nt_prayers_url.py
   # TODO #1676:30min Написать тесты на HgPrayersUrl
   - src/srv/prayers/hg_prayers_url.py
 test-helpers:
