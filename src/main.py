@@ -44,7 +44,7 @@ from services.cli_app import CliApp
 from services.command_cli_app import CommandCliApp
 from services.fork_cli_app import ForkCliApp
 from services.logged_answer import LoggedAnswer
-from settings import BASE_DIR, Settings
+from settings import settings
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.check_user_status import CheckUsersStatus
 from srv.events.event_fork import EventFork
@@ -56,7 +56,6 @@ from srv.events.prayer_created_event import PrayerCreatedEvent
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
 from srv.events.rabbitmq_sink import RabbitmqSink
 from srv.events.rbmq_event_hook import RbmqEventHook
-from settings import settings
 
 
 def main(sys_args: list[str]) -> None:
