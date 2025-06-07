@@ -20,8 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 ---
-version: "3.3"
----
 server:
   http_listen_port: 9080
   grpc_listen_port: 0
@@ -33,12 +31,31 @@ clients:
   - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
-- job_name: docker
-  docker_sd_configs:
-    - host: unix:///var/run/docker.sock
-  relabel_configs:
-    - source_labels: ['__meta_docker_container_name']
-      regex: '/(.*)'
-      target_label: 'container'
-    - source_labels: ['__meta_docker_container_log_stream']
-      target_label: 'logstream'
+  - job_name: docker
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+    relabel_configs:
+      - source_labels: [__meta_docker_container_name]
+        regex: "/(.*)"
+        target_label: container
+      - source_labels: [__meta_docker_container_label_job]
+        target_label: job
+      - source_labels: [__meta_docker_container_label_service]
+        target_label: service
+      - source_labels: [__meta_docker_container_name]
+        regex: "/(.*)"
+        target_label: job
+      - source_labels: [__meta_docker_container_log_stream]
+        target_label: stream
+      - source_labels: [__meta_docker_container_image]
+        target_label: image
+    pipeline_stages:
+      - json:
+          expressions:
+            log: log
+            stream: stream
+      - labels:
+          stream:
+      - output:
+          source: log

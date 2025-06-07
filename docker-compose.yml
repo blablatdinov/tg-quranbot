@@ -39,6 +39,11 @@ services:
       - rabbitmq
     ports:
       - "9091:9091"
+    logging:
+      driver: "json-file"
+      options:
+        labels: "app=qbot,job=qbot,service=telegram"
+        tag: "qbot-{{.Name}}"
 
   postgres:
     image: postgres:13
@@ -78,7 +83,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
 
@@ -91,8 +96,26 @@ services:
     depends_on:
       - prometheus
 
+  loki:
+    image: grafana/loki:2.8.4
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail:2.8.4
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./infra/promtail-config.yml:/etc/promtail/config.yml
+    depends_on:
+      - loki
+
 volumes:
   postgres-data:
   redis-data:
   rabbitmq-data:
   grafana-storage:
+  loki_data:

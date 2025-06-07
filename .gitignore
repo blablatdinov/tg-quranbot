@@ -249,3 +249,6 @@ me.session-journal
 postgres-data/
 rabbitmq-data/
 redis-data/
+loki_data/
+
+# end docker compose volumes

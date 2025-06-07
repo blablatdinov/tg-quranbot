@@ -44,7 +44,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        labels: "app=qbot,service=telegram"
+        labels: "app=qbot,job=qbot,service=telegram"
         tag: "qbot-{{.Name}}"
 
   event_receiver:
