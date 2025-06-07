@@ -24,6 +24,7 @@ import sys
 
 import sentry_sdk
 from loguru import logger
+from prometheus_client import start_http_server
 from redis import asyncio as aioredis
 
 from db.connection import pgsql
@@ -37,12 +38,14 @@ from integrations.tg.udpates_with_offset_url import UpdatesWithOffsetURL
 from integrations.tg.updates_timeout import UpdatesTimeout
 from integrations.tg.updates_url import UpdatesURL
 from integrations.tg.upddates_long_pollinig_url import UpdatesLongPollingURL
+from metrics.measured_answer import MeasuredAnswer
+from metrics.prometheus import BOT_REQUESTS
 from quranbot_answer import QuranbotAnswer
 from services.cli_app import CliApp
 from services.command_cli_app import CommandCliApp
 from services.fork_cli_app import ForkCliApp
 from services.logged_answer import LoggedAnswer
-from settings import BASE_DIR, Settings
+from settings import settings
 from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.check_user_status import CheckUsersStatus
 from srv.events.event_fork import EventFork
@@ -61,7 +64,6 @@ def main(sys_args: list[str]) -> None:
 
     :param sys_args: list[str]
     """
-    settings = Settings(_env_file=BASE_DIR.parent / '.env')
     rabbitmq_sink = RabbitmqSink(settings, logger)
     redis = aioredis.from_url(str(settings.REDIS_DSN))
     if settings.SENTRY_DSN:
@@ -69,6 +71,7 @@ def main(sys_args: list[str]) -> None:
             dsn=settings.SENTRY_DSN,
             enable_tracing=True,
         )
+    start_http_server(settings.PROMETHEUS_PORT)
     quranbot_polling_app = CliApp(
         DatabaseConnectedApp(
             pgsql,
@@ -86,12 +89,15 @@ def main(sys_args: list[str]) -> None:
                     LoggedAnswer(
                         SendableAnswer(
                             TgMeasureAnswer(
-                                QuranbotAnswer.ctor(
-                                    pgsql,
-                                    redis,
-                                    rabbitmq_sink,
-                                    settings,
-                                    logger,
+                                MeasuredAnswer(
+                                    QuranbotAnswer.ctor(
+                                        pgsql,
+                                        redis,
+                                        rabbitmq_sink,
+                                        settings,
+                                        logger,
+                                    ),
+                                    BOT_REQUESTS,
                                 ),
                                 logger,
                             ),

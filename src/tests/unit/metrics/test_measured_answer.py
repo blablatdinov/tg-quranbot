@@ -20,8 +20,30 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from databases import Database
+from typing import final, override
 
-from settings import settings
+from app_types.counter import Counter
+from app_types.fk_update import FkUpdate
+from integrations.tg.tg_answers.fk_answer import FkAnswer
+from metrics.measured_answer import MeasuredAnswer
 
-pgsql = Database(str(settings.DATABASE_URL))
+
+@final
+class FkCounter(Counter):  # noqa: PEO200
+
+    def __init__(self) -> None:
+        self._counter_val = 0
+
+    @override
+    def inc(self) -> None:
+        self._counter_val += 1
+
+    def get(self) -> int:
+        return self._counter_val
+
+
+async def test():
+    cnt = FkCounter()
+    await MeasuredAnswer(FkAnswer(), cnt).build(FkUpdate.empty_ctor())
+
+    assert cnt.get() == 1

@@ -20,8 +20,26 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from databases import Database
+from typing import final, override
 
-from settings import settings
+import attrs
+import httpx
 
-pgsql = Database(str(settings.DATABASE_URL))
+from app_types.counter import Counter
+from integrations.tg.tg_answers import TgAnswer
+from integrations.tg.update import Update
+
+
+@final
+@attrs.define(frozen=True)
+class MeasuredAnswer(TgAnswer):
+    """Декоратор для экспорта метрик в grafana."""
+
+    _origin: TgAnswer
+    _counter: Counter
+
+    @override
+    async def build(self, update: Update) -> list[httpx.Request]:
+        """Сборка ответа."""
+        self._counter.inc()
+        return await self._origin.build(update)

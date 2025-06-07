@@ -20,8 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from databases import Database
+from prometheus_client import Counter
 
-from settings import settings
-
-pgsql = Database(str(settings.DATABASE_URL))
+BOT_REQUESTS = Counter('bot_requests_total', 'Total number of requests to the bot')

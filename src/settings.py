@@ -49,6 +49,7 @@ class Settings(BaseSettings):  # noqa: PEO200
     DAILY_AYATS: bool = False
     DAILY_PRAYERS: bool = False
     RAMADAN_MODE: bool = False
+    PROMETHEUS_PORT: int = 9091
 
     def admin_chat_ids(self) -> list[int]:  # noqa: OVR100
         """Список идентификаторов админов.
@@ -59,3 +60,7 @@ class Settings(BaseSettings):  # noqa: PEO200
             int(chat_id.strip())
             for chat_id in self.ADMIN_CHAT_IDS.strip().split(',')
         ]
+
+
+env_file = BASE_DIR.parent / '.env'
+settings = Settings(_env_file=env_file if env_file.exists() else None)

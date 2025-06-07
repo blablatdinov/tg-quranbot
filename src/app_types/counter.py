@@ -20,8 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from databases import Database
+from typing import Protocol
 
-from settings import settings
 
-pgsql = Database(str(settings.DATABASE_URL))
+class Counter(Protocol):
+    """Протокол счетчика.
+
+    Является интерфейсом для prometheus метрик
+    """
+
+    def inc(self) -> None:
+        """Увеличение значения счетчика."""
