@@ -37,6 +37,7 @@ from handlers.next_day_ayats import NextDayAyats
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.pg_set_user_city_answer import PgSetUserCityAnswer
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
+from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
 from handlers.search_ayat_by_numbers_answer import SearchAyatByNumbersAnswer
 from handlers.skipped_prayers_answer import SkippedPrayersAnswer
@@ -53,7 +54,6 @@ from integrations.tg.tg_answers import (
     TgTextAnswer,
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
-from integrations.tg.tg_answers.tg_chat_id_regex_answer import TgChatIdRegexAnswer
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
 from services.help_answer import HelpAnswer
@@ -68,7 +68,6 @@ from srv.podcasts.random_podcast_answer import RandomPodcastAnswer
 from srv.prayers.inline_query_answer import InlineQueryAnswer
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.users.user_step import UserStep
-from handlers.prayer_time_answer import PrayerTimeAnswer
 
 
 @final

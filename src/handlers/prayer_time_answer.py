@@ -33,7 +33,6 @@ from app_types.update import Update
 from integrations.tg.message_id import TgMessageId
 from integrations.tg.tg_answers import (
     TgAnswer,
-    TgAnswerFork,
     TgAnswerMarkup,
     TgAnswerToSender,
     TgHtmlParseAnswer,
@@ -43,7 +42,6 @@ from integrations.tg.tg_answers import (
     TgTextAnswer,
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
-from integrations.tg.tg_answers.tg_chat_id_regex_answer import TgChatIdRegexAnswer
 from integrations.tg.tg_chat_id import TgChatId
 from services.user_prayer_keyboard import UserPrayersKeyboard
 from settings import Settings
@@ -56,15 +54,14 @@ from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.nt_prayers_info import NtPrayersInfo
 from srv.prayers.pagination_per_day_date import PaginationPerDayDate
 from srv.prayers.pg_city import PgCity
-from srv.prayers.pg_prayers_info import PgPrayersInfo
 from srv.prayers.pg_saved_prayers_info import PgSavedPrayersInfo
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
+from srv.prayers.prayers_info import PrayersInfo
 from srv.prayers.prayers_mark_as_date import PrayersMarkAsDate
 from srv.prayers.prayers_request_date import PrayersRequestDate
 from srv.prayers.prayers_text import PrayersText
 from srv.prayers.ramadan_prayer_info import RamadanPrayerInfo
-from srv.prayers.user_city_id import UserCityId
 from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
 
 
@@ -201,41 +198,21 @@ class PrayerTimeAnswer(TgAnswer):
         """
         city = PgCity.user_ctor(TgChatId(update), self._pgsql)
         prayer_date = FkPrayerDate(await self._prayers_date.parse(update))
-        nt_prayers_info = CdPrayersInfo(
-            PgSavedPrayersInfo(
-                NtPrayersInfo(
-                    city,
-                    prayer_date,
-                    self._pgsql,
-                ),
+        prayers_info: PrayersInfo
+        me_chat_id = 358610865
+        if int(TgChatId(update)) == me_chat_id:
+            prayers_info = HgPrayersInfo(
+                city,
+                prayer_date,
                 self._pgsql,
                 self._logger,
-            ),
-            self._redis,
-            city,
-            prayer_date,
-            self._logger,
-        )
-        hg_prayers_info = CdPrayersInfo(
-            PgSavedPrayersInfo(
-                HgPrayersInfo(
-                    city,
-                    prayer_date,
-                    self._pgsql,
-                    self._logger,
-                ),
-                self._pgsql,
-                self._logger,
-            ),
-            self._redis,
-            city,
-            prayer_date,
-            self._logger,
-        )
-        if int(TgChatId(update)) == 358610865:
-            prayers_info = hg_prayers_info
+            )
         else:
-            prayers_info = nt_prayers_info
+            prayers_info = NtPrayersInfo(
+                city,
+                prayer_date,
+                self._pgsql,
+            )
         return await UserWithoutCitySafeAnswer(
             PrayersExpiredAnswer(
                 TgMessageIdAnswer(
@@ -245,7 +222,17 @@ class PrayerTimeAnswer(TgAnswer):
                                 self._origin,
                                 PrayersText(
                                     RamadanPrayerInfo(
-                                        prayers_info,
+                                        CdPrayersInfo(
+                                            PgSavedPrayersInfo(
+                                                prayers_info,
+                                                self._pgsql,
+                                                self._logger,
+                                            ),
+                                            self._redis,
+                                            city,
+                                            prayer_date,
+                                            self._logger,
+                                        ),
                                         self._settings.RAMADAN_MODE,
                                     ),
                                 ),
