@@ -33,12 +33,11 @@ from handlers.concrete_podcast_answer import ConcretePodcastAnswer
 from handlers.decrement_skipped_prayer_answer import DecrementSkippedPrayerAnswer
 from handlers.favorites_answer import FavoriteAyatsAnswer
 from handlers.full_start_answer import FullStartAnswer
-from handlers.hg_prayer_time_answer import HgPrayerTimeAnswer
 from handlers.next_day_ayats import NextDayAyats
-from handlers.nt_prayer_time_answer import NtPrayerTimeAnswer
 from handlers.paginate_by_search_ayat import PaginateBySearchAyat
 from handlers.pg_set_user_city_answer import PgSetUserCityAnswer
 from handlers.podcast_reaction_change_answer import PodcastReactionChangeAnswer
+from handlers.prayer_time_answer import PrayerTimeAnswer
 from handlers.search_ayat_by_keyword_answer import SearchAyatByKeywordAnswer
 from handlers.search_ayat_by_numbers_answer import SearchAyatByNumbersAnswer
 from handlers.skipped_prayers_answer import SkippedPrayersAnswer
@@ -55,7 +54,6 @@ from integrations.tg.tg_answers import (
     TgTextAnswer,
 )
 from integrations.tg.tg_answers.message_answer_to_sender import TgHtmlMessageAnswerToSender
-from integrations.tg.tg_answers.tg_chat_id_regex_answer import TgChatIdRegexAnswer
 from services.answers.change_state_answer import ChangeStateAnswer
 from services.answers.safe_fork import SafeFork
 from services.help_answer import HelpAnswer
@@ -124,30 +122,13 @@ class QuranbotAnswer(TgAnswer):
                     ),
                     TgMessageRegexAnswer(
                         'Время намаза',
-                        TgAnswerFork.ctor(
+                        PrayerTimeAnswer.new_prayers_ctor(
+                            pgsql,
+                            empty_answer,
+                            settings.admin_chat_ids(),
+                            redis,
                             logger,
-                            TgChatIdRegexAnswer(
-                                '358610865',
-                                HgPrayerTimeAnswer.new_prayers_ctor(
-                                    pgsql,
-                                    empty_answer,
-                                    settings.admin_chat_ids(),
-                                    redis,
-                                    logger,
-                                    settings,
-                                ),
-                            ),
-                            TgChatIdRegexAnswer(
-                                '.+',
-                                NtPrayerTimeAnswer.new_prayers_ctor(
-                                    pgsql,
-                                    empty_answer,
-                                    settings.admin_chat_ids(),
-                                    redis,
-                                    logger,
-                                    settings,
-                                ),
-                            ),
+                            settings,
                         ),
                     ),
                     TgMessageRegexAnswer(
@@ -231,7 +212,7 @@ class QuranbotAnswer(TgAnswer):
                     ),
                     TgCallbackQueryRegexAnswer(
                         'pagPrDay',
-                        NtPrayerTimeAnswer.pagination_per_day_ctor(
+                        PrayerTimeAnswer.pagination_per_day_ctor(
                             pgsql,
                             empty_answer,
                             settings.admin_chat_ids(),
