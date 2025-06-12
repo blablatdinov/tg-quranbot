@@ -53,7 +53,7 @@ prometheus-client = "0.22.1"
 
 [tool.poetry.group.dev.dependencies]
 # tests
-pytest-cov = "6.1.1"
+pytest-cov = "6.2.0"
 pytest = "8.4.0"
 pytest-asyncio = "1.0.0"
 pytest-mock = "3.14.1"
