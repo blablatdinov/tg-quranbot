@@ -2994,19 +2994,19 @@ sqlcipher = ["sqlcipher3_binary"]
 
 [[package]]
 name = "sqlfluff"
-version = "3.4.0"
+version = "3.4.1"
 description = "The SQL Linter for Humans"
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "sqlfluff-3.4.0-py3-none-any.whl", hash = "sha256:115e3f1bf1dc1318c58426ba3299eb682642cb67b5d12d9ea7c42b5e23aeabd6"},
-    {file = "sqlfluff-3.4.0.tar.gz", hash = "sha256:6e1ea2d39b20cc791a1a009c234afaf043b448c7f2eb1c11551316fb41f36f47"},
+    {file = "sqlfluff-3.4.1-py3-none-any.whl", hash = "sha256:caa262247763dd2cb10bc437cb91d57e0b8e534277b30d7e3beae6dfec946422"},
+    {file = "sqlfluff-3.4.1.tar.gz", hash = "sha256:3c03464be46cfe7c83d11a753d5aa76f7b8e030ff018d5e61a8683d43002f31e"},
 ]
 
 [package.dependencies]
 chardet = "*"
-click = "*"
+click = "<=8.3.0"
 colorama = ">=0.3"
 diff-cover = ">=2.5.0"
 Jinja2 = "*"
@@ -3684,4 +3684,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "8c57748cb412a812dfae5a691489b637e52f6be05787cb6097ffb3450ca76a1d"
+content-hash = "a79177aca3e295b35d62013368546ba219d71de59563a9efd5cd1ab1661e9a7a"
