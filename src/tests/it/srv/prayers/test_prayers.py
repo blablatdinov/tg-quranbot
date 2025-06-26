@@ -26,7 +26,7 @@ import pytest
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
-from handlers.pg_prayer_time_answer import PgPrayerTimeAnswer
+from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 
@@ -40,7 +40,7 @@ async def _user(city_factory, user_factory):
 @pytest.mark.usefixtures('_user')
 async def test_not_found_prayer(pgsql, fake_redis, time_machine, settings_ctor):
     time_machine.move_to('2023-08-30')
-    got = await PgPrayerTimeAnswer.new_prayers_ctor(
+    got = await PrayerTimeAnswer.new_prayers_ctor(
         pgsql, FkAnswer(), [321], fake_redis, FkLogSink(), settings_ctor(ramadan_mode=True),
     ).build(FkUpdate('{"chat":{"id":123},"message":{"message_id":1,"text":"Время намаза"}}'))
 

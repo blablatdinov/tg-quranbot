@@ -167,6 +167,7 @@ ignore = [
   "G001",    # Only .format for strings
   "TRY400",  # logger.error enable
   "PLE1205", # Too many arguments for `logging` format string
+  "SIM108",  # Use ternary operator
 ]
 external = [
   "WPS",
