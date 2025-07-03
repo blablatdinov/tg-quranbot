@@ -41,7 +41,7 @@ from tests.creating_test_db import apply_migrations, create_db, drop_db
 def _migrate():
     create_db()
     connection = psycopg2.connect(
-        str(Settings(_env_file=BASE_DIR.parent / '.env').DATABASE_URL),
+        str(Settings(_env_file=BASE_DIR.parent / '.env').test_database_url())
     )
     connection.autocommit = True
     cursor = connection.cursor()
@@ -53,7 +53,7 @@ def _migrate():
 
 @pytest.fixture
 async def pgsql(_migrate):
-    db_url = str(Settings(_env_file=BASE_DIR.parent / '.env').DATABASE_URL)
+    db_url = str(Settings(_env_file=BASE_DIR.parent / '.env').test_database_url())
     database = Database(db_url)
     await database.connect()
     yield database

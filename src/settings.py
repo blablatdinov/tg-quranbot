@@ -61,6 +61,14 @@ class Settings(BaseSettings):  # noqa: PEO200
             for chat_id in self.ADMIN_CHAT_IDS.strip().split(',')
         ]
 
+    def test_database_url(self) -> PostgresDsn:
+        """URL для тестовой базы данных."""
+        origin_path = self.DATABASE_URL.path or ''
+        return PostgresDsn(
+            str(self.DATABASE_URL)
+            .replace(origin_path, (self.DATABASE_URL.path or '') + '_test')
+        )
+
 
 env_file = BASE_DIR.parent / '.env'
 settings = Settings(_env_file=env_file if env_file.exists() else None)
