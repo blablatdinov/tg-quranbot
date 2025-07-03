@@ -62,5 +62,6 @@ class RedisUserState(UserState):
         await self._redis.set(
             '{0}:step'.format(int(self._chat_id)),
             step.value,
+            ex=60 * 60 * 24,
         )
         self._logger.info('State {0} for user {1} setted'.format(step, int(self._chat_id)))
