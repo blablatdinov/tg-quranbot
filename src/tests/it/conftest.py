@@ -41,7 +41,7 @@ from tests.creating_test_db import apply_migrations, create_db, drop_db
 def _migrate():
     create_db()
     connection = psycopg2.connect(
-        str(Settings(_env_file=BASE_DIR.parent / '.env').test_database_url())
+        str(Settings(_env_file=BASE_DIR.parent / '.env').test_database_url()),
     )
     connection.autocommit = True
     cursor = connection.cursor()

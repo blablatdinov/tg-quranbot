@@ -66,7 +66,7 @@ class Settings(BaseSettings):  # noqa: PEO200
         origin_path = self.DATABASE_URL.path or ''
         return PostgresDsn(
             str(self.DATABASE_URL)
-            .replace(origin_path, (self.DATABASE_URL.path or '') + '_test')
+            .replace(origin_path, (self.DATABASE_URL.path or '') + '_test'),
         )
 
 
