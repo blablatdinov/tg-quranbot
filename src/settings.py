@@ -61,12 +61,12 @@ class Settings(BaseSettings):  # noqa: PEO200
             for chat_id in self.ADMIN_CHAT_IDS.strip().split(',')
         ]
 
-    def test_database_url(self) -> PostgresDsn:
+    def test_database_url(self) -> PostgresDsn:  # noqa: OVR100
         """URL для тестовой базы данных."""
         origin_path = self.DATABASE_URL.path or ''
         return PostgresDsn(
             str(self.DATABASE_URL)
-            .replace(origin_path, (self.DATABASE_URL.path or '') + '_test'),
+            .replace(origin_path, '{0}_test'.format(origin_path)),
         )
 
 
