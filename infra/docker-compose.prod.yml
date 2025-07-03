@@ -41,6 +41,11 @@ services:
       - RABBITMQ_PASS=${RABBITMQ_PASS}
       - RABBITMQ_VHOST=${RABBITMQ_VHOST}
       - RAMADAN_MODE=${RAMADAN_MODE}
+    logging:
+      driver: "json-file"
+      options:
+        labels: "app=qbot,job=qbot,service=telegram"
+        tag: "qbot-{{.Name}}"
 
   event_receiver:
     image: blablatdinov/tg-quranbot:${TAG_NAME}
@@ -58,6 +63,11 @@ services:
       - RABBITMQ_PASS=${RABBITMQ_PASS}
       - RABBITMQ_VHOST=${RABBITMQ_VHOST}
       - RAMADAN_MODE=${RAMADAN_MODE}
+    logging:
+      driver: "json-file"
+      options:
+        labels: "app=event_reciever,service=events"
+        tag: "event_reciever-{{.Name}}"
 
   scheduler:
     image: blablatdinov/tg-quranbot:${TAG_NAME}
@@ -75,6 +85,23 @@ services:
       - RABBITMQ_PASS=${RABBITMQ_PASS}
       - RABBITMQ_VHOST=${RABBITMQ_VHOST}
       - RAMADAN_MODE=${RAMADAN_MODE}
+
+  loki:
+    image: grafana/loki:2.8.4
+    ports:
+      - "3100:3100"
+    volumes:
+      - ../loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail:2.8.4
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./promtail-config.yml:/etc/promtail/config.yml
+    depends_on:
+      - loki
 
   prometheus:
     image: prom/prometheus
@@ -95,7 +122,5 @@ services:
       - prometheus
 
 volumes:
-  postgres-data:
-  redis-data:
-  rabbitmq-data:
   grafana-storage:
+  loki_data:
