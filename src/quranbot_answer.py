@@ -21,6 +21,7 @@
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
 from typing import final, override
+import uuid
 
 import attrs
 import httpx
@@ -68,7 +69,7 @@ from srv.podcasts.random_podcast_answer import RandomPodcastAnswer
 from srv.prayers.inline_query_answer import InlineQueryAnswer
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.users.user_step import UserStep
-
+from settings import REQUEST_ID_VAR
 
 @final
 @attrs.define(frozen=True)
@@ -290,4 +291,5 @@ class QuranbotAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
+        REQUEST_ID_VAR.set(str(uuid.uuid4()))
         return await self._answer.build(update)

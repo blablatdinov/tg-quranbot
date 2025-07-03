@@ -22,9 +22,12 @@
 
 from pathlib import Path
 from typing import final
+import contextvars
 
 from pydantic import PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings
+
+REQUEST_ID_VAR = contextvars.ContextVar("request_id", default='')
 
 BASE_DIR = Path(__file__).parent  # Path to src dir
 
