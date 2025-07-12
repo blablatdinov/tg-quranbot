@@ -2254,14 +2254,14 @@ testing = ["fields", "hunter", "process-tests", "pytest-xdist", "virtualenv"]
 
 [[package]]
 name = "pytest-lazy-fixtures"
-version = "1.1.4"
+version = "1.2.0"
 description = "Allows you to use fixtures in @pytest.mark.parametrize."
 optional = false
-python-versions = "<4.0,>=3.8"
+python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "pytest_lazy_fixtures-1.1.4-py3-none-any.whl", hash = "sha256:1504b6e267657d70d34829fce2580cedd4d3f8558491d6c03fab9b525ec77f2b"},
-    {file = "pytest_lazy_fixtures-1.1.4.tar.gz", hash = "sha256:c494b52d798890033d64b28687a4d52807c8b0f606d56316e139df0cbe116c57"},
+    {file = "pytest_lazy_fixtures-1.2.0-py3-none-any.whl", hash = "sha256:1ec9822de004ad01914f51f85668eaa4a7125bef4b5887459b065630407966f4"},
+    {file = "pytest_lazy_fixtures-1.2.0.tar.gz", hash = "sha256:2dd3327c8131049f65943f369463112d2ffcbebf663b323b6e6c4dae9a035fa4"},
 ]
 
 [package.dependencies]
@@ -3684,4 +3684,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "8d708129770ae736939c13108a09831ef7305061df56ea1e3484e73574810a2c"
+content-hash = "d9d877cb1f8917ba2a80ade576c2a4cb7cafba233b3c71e1b4570d4308da83f2"
