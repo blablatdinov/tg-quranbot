@@ -57,7 +57,7 @@ def bot_name():
 
 @pytest.fixture
 def _clear_db(settings):
-    qbot_connection = psycopg2.connect(str(settings.DATABASE_URL))
+    qbot_connection = psycopg2.connect(str(settings.test_database_url()))
     qbot_connection.autocommit = True
     cursor = qbot_connection.cursor()
     tables = (
@@ -73,7 +73,7 @@ def _clear_db(settings):
 
 @pytest.fixture
 def db_conn(settings):
-    connection = psycopg2.connect(str(settings.DATABASE_URL))
+    connection = psycopg2.connect(str(settings.test_database_url()))
     connection.autocommit = True
     yield connection
     connection.close()

@@ -49,6 +49,7 @@ from srv.message_not_found_safe_answer import MessageNotFoundSafeAnswer
 from srv.prayers.cd_prayers_info import CdPrayersInfo
 from srv.prayers.date_from_user_prayer_id import DateFromUserPrayerId
 from srv.prayers.fk_prayer_date import FkPrayerDate
+from srv.prayers.hg_prayers_info import HgPrayersInfo
 from srv.prayers.invite_set_city_answer import InviteSetCityAnswer
 from srv.prayers.nt_prayers_info import NtPrayersInfo
 from srv.prayers.pagination_per_day_date import PaginationPerDayDate
@@ -56,6 +57,7 @@ from srv.prayers.pg_city import PgCity
 from srv.prayers.pg_saved_prayers_info import PgSavedPrayersInfo
 from srv.prayers.prayer_date import PrayerDate
 from srv.prayers.prayers_expired_answer import PrayersExpiredAnswer
+from srv.prayers.prayers_info import PrayersInfo
 from srv.prayers.prayers_mark_as_date import PrayersMarkAsDate
 from srv.prayers.prayers_request_date import PrayersRequestDate
 from srv.prayers.prayers_text import PrayersText
@@ -65,7 +67,7 @@ from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
 
 @final
 @attrs.define(frozen=True)
-class NtPrayerTimeAnswer(TgAnswer):
+class PrayerTimeAnswer(TgAnswer):
     """Ответ с временами намаза.
 
     _pgsql: Database - соединение с БД postgres
@@ -194,9 +196,23 @@ class NtPrayerTimeAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        # TODO #1434:30min Убрать дублирование с PgPrayerTimeAnswer
         city = PgCity.user_ctor(TgChatId(update), self._pgsql)
         prayer_date = FkPrayerDate(await self._prayers_date.parse(update))
+        prayers_info: PrayersInfo
+        me_chat_id = 358610865
+        if int(TgChatId(update)) == me_chat_id:
+            prayers_info = HgPrayersInfo(
+                city,
+                prayer_date,
+                self._pgsql,
+                self._logger,
+            )
+        else:
+            prayers_info = NtPrayersInfo(
+                city,
+                prayer_date,
+                self._pgsql,
+            )
         return await UserWithoutCitySafeAnswer(
             PrayersExpiredAnswer(
                 TgMessageIdAnswer(
@@ -208,11 +224,7 @@ class NtPrayerTimeAnswer(TgAnswer):
                                     RamadanPrayerInfo(
                                         CdPrayersInfo(
                                             PgSavedPrayersInfo(
-                                                NtPrayersInfo(
-                                                    city,
-                                                    prayer_date,
-                                                    self._pgsql,
-                                                ),
+                                                prayers_info,
                                                 self._pgsql,
                                                 self._logger,
                                             ),
@@ -227,7 +239,7 @@ class NtPrayerTimeAnswer(TgAnswer):
                             ),
                             UserPrayersKeyboard(
                                 self._pgsql,
-                                prayer_date,
+                                self._prayers_date,
                                 TgChatId(update),
                             ),
                         ),

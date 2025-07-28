@@ -51,4 +51,5 @@ class PgSavedPrayersInfo(PrayersInfo):
             ).create()
         except PrayerAlreadyExistsError:
             self._logger.info('Prayer info "{0}" already exists'.format(origin))
+        self._logger.debug('Saved prayer info: {info}', info=origin)
         return origin
