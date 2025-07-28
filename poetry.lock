@@ -602,14 +602,14 @@ tzdata = "*"
 
 [[package]]
 name = "fakeredis"
-version = "2.30.1"
+version = "2.30.2"
 description = "Python implementation of redis API, can be used for testing purposes."
 optional = false
 python-versions = ">=3.7"
 groups = ["dev"]
 files = [
-    {file = "fakeredis-2.30.1-py3-none-any.whl", hash = "sha256:b594a9c20aef8b94c4d923f489210ef443e4001e62ad3cd73b9a01298dcef743"},
-    {file = "fakeredis-2.30.1.tar.gz", hash = "sha256:6489f2926e39815c9bf0fce80751635e0898e333c43a767825adf101180dbc45"},
+    {file = "fakeredis-2.30.2-py3-none-any.whl", hash = "sha256:743106c677aaf82f5c811ac3f0ddf2387efb736a2ecfc414c58b04d1102ce54f"},
+    {file = "fakeredis-2.30.2.tar.gz", hash = "sha256:6b75697d3257a2684abdb65a5df70ed6dca9d34ae37bc8cf84ba627d432831c3"},
 ]
 
 [package.dependencies]
@@ -622,6 +622,7 @@ cf = ["pyprobables (>=0.6)"]
 json = ["jsonpath-ng (>=1.6,<2.0)"]
 lua = ["lupa (>=2.1,<3.0)"]
 probabilistic = ["pyprobables (>=0.6)"]
+valkey = ["valkey (>=6)"]
 
 [[package]]
 name = "flake8"
@@ -3684,4 +3685,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "3ea088d51d9c9152e452bc784d9f5783d8459da91fefb853744c576195fd0240"
+content-hash = "4f8f63dcc2811f585d757199ba4689001d0dc8d8683eae3f10fb07f604017e12"
