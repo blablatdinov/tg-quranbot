@@ -23,6 +23,7 @@
 import pytest
 
 from app_types.fk_async_int import FkAsyncInt
+from exceptions.internal_exceptions import UserNotFoundError
 from srv.users.pg_user import PgUser
 
 
@@ -60,3 +61,14 @@ async def test_legacy_id_ctor(pgsql, legacy_id):
     )
 
     assert await user.chat_id() == 1
+
+
+@pytest.mark.usefixtures('db_user')
+async def test_not_found(pgsql):
+    user = PgUser(FkAsyncInt(9843), pgsql)
+
+    assert await user.chat_id() == 9843
+    with pytest.raises(UserNotFoundError):
+        await user.day()
+    with pytest.raises(UserNotFoundError):
+        await user.is_active()
