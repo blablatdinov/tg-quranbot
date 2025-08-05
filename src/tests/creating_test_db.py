@@ -30,16 +30,17 @@ settings = Settings(_env_file=BASE_DIR.parent / '.env')
 
 
 def create_db() -> None:
+    db = settings.test_database_url()
     connection = psycopg2.connect(
-        str(settings.DATABASE_URL).replace('quranbot_test', 'postgres'),
+        str(settings.test_database_url()).replace(db.path or '', '/postgres'),
     )
     connection.autocommit = True
     cursor = connection.cursor()
     try:
-        cursor.execute('CREATE DATABASE quranbot_test')
+        cursor.execute('CREATE DATABASE {0}'.format((db.path or '')[1:]))
     except psycopg2.errors.DuplicateDatabase:
         drop_db()
-        cursor.execute('CREATE DATABASE quranbot_test')
+        cursor.execute('CREATE DATABASE {0}'.format((db.path or '')[1:]))
     connection.close()
 
 
@@ -57,7 +58,7 @@ def apply_migrations(cursor) -> None:
 
 
 def fill_test_db() -> None:
-    qbot_connection = psycopg2.connect(str(settings.DATABASE_URL))
+    qbot_connection = psycopg2.connect(str(settings.test_database_url()))
     qbot_connection.autocommit = True
     qbot_cursor = qbot_connection.cursor()
     apply_migrations(qbot_cursor)
@@ -77,7 +78,7 @@ def fill_test_db() -> None:
 
 def drop_db() -> None:
     connection = psycopg2.connect(
-        str(settings.DATABASE_URL).replace('quranbot_test', 'postgres'),
+        str(settings.test_database_url()).replace('quranbot_test', 'postgres'),
     )
     connection.autocommit = True
     cursor = connection.cursor()
