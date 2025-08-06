@@ -2,19 +2,18 @@
 
 [[package]]
 name = "aio-pika"
-version = "9.5.5"
+version = "9.5.7"
 description = "Wrapper around the aiormq for asyncio and humans"
 optional = false
-python-versions = "<4.0,>=3.9"
+python-versions = "<4.0,>=3.10"
 groups = ["main"]
 files = [
-    {file = "aio_pika-9.5.5-py3-none-any.whl", hash = "sha256:94e0ac3666398d6a28b0c3b530c1febf4c6d4ececb345620727cfd7bfe1c02e0"},
-    {file = "aio_pika-9.5.5.tar.gz", hash = "sha256:3d2f25838860fa7e209e21fc95555f558401f9b49a832897419489f1c9e1d6a4"},
+    {file = "aio_pika-9.5.7-py3-none-any.whl", hash = "sha256:684316a0e92157754bb2d6927c5568fd997518b123add342e97405aa9066772b"},
+    {file = "aio_pika-9.5.7.tar.gz", hash = "sha256:0569b59d3c7b36ca76abcb213cdc3677e2a4710a3c371dd27359039f9724f4ee"},
 ]
 
 [package.dependencies]
-aiormq = ">=6.8,<6.9"
-exceptiongroup = ">=1,<2"
+aiormq = ">=6.8,<7.0"
 yarl = "*"
 
 [[package]]
@@ -566,24 +565,6 @@ files = [
 flake8 = ">=7.1,<8.0"
 flake8-final = "*"
 flake8-override = "*"
-
-[[package]]
-name = "exceptiongroup"
-version = "1.3.0"
-description = "Backport of PEP 654 (exception groups)"
-optional = false
-python-versions = ">=3.7"
-groups = ["main"]
-files = [
-    {file = "exceptiongroup-1.3.0-py3-none-any.whl", hash = "sha256:4d111e6e0c13d0644cad6ddaa7ed0261a0b36971f6d23e7ec9b4b9097da78a10"},
-    {file = "exceptiongroup-1.3.0.tar.gz", hash = "sha256:b241f5885f560bc56a59ee63ca4c6a8bfa46ae4ad651af316d4e81817bb9fd88"},
-]
-
-[package.dependencies]
-typing-extensions = {version = ">=4.6.0", markers = "python_version < \"3.13\""}
-
-[package.extras]
-test = ["pytest (>=6)"]
 
 [[package]]
 name = "faker"
@@ -3727,4 +3708,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "7968b826e756e95183861c9eac09c4d40c580bcd3510106068323f454fb71fa2"
+content-hash = "3b98071b0d51f892a58c280da3b02a6773dcc36a2684f2510516b126cd0aec73"
