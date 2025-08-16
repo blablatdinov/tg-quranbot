@@ -59,7 +59,6 @@ files = [
 [package.dependencies]
 idna = ">=2.8"
 sniffio = ">=1.1"
-typing_extensions = {version = ">=4.5", markers = "python_version < \"3.13\""}
 
 [package.extras]
 doc = ["Sphinx (>=8.2,<9.0)", "packaging", "sphinx-autodoc-typehints (>=1.2.0)", "sphinx_rtd_theme"]
@@ -2460,7 +2459,6 @@ files = [
 [package.dependencies]
 attrs = ">=22.2.0"
 rpds-py = ">=0.7.0"
-typing-extensions = {version = ">=4.4.0", markers = "python_version < \"3.13\""}
 
 [[package]]
 name = "regex"
@@ -3708,5 +3706,5 @@ type = ["pytest-mypy"]
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.12,<3.13"
-content-hash = "d14fee6c553c09dd0f1a40d35ce8fadb4cc505e25ff3866ce3f5ffc2f576c4e0"
+python-versions = ">=3.13,<3.14"
+content-hash = "f2e23a29bf9c1f4e5a3a8a0cc186b15305f13a2676d48746365a2834f7cd0af5"
