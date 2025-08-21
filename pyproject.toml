@@ -78,7 +78,7 @@ types-ujson = "5.10.0.20250326"
 asyncpg-stubs = "0.30.2"
 # style checks
 wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master" }
-ruff = "0.12.9"
+ruff = "0.12.10"
 ondivi = "0.7.2"
 flake8-final = "0.0.3"
 flake8-override = "0.0.4"
