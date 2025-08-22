@@ -73,7 +73,7 @@ mypy = "1.17.1"
 types-pytz = "2025.2.0.20250809"
 types-redis = "4.6.0.20241004"
 types-pytest-lazy-fixture = "0.6.3.20240707"
-types-python-dateutil = "2.9.0.20250809"
+types-python-dateutil = "2.9.0.20250822"
 types-ujson = "5.10.0.20250326"
 asyncpg-stubs = "0.30.2"
 # style checks
