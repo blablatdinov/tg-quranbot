@@ -33,7 +33,7 @@ class FkLogSink(LogSink):  # noqa: PEO200. Class for testing, has mutable state
 
     def __init__(self) -> None:
         """Ctor."""
-        self.stack = []
+        self.stack = []  # noqa: PEO101. Fake objectsrc/app_types/millis.py
 
     def info(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003, WPS110
         """Информационный уровень.
