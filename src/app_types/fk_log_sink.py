@@ -29,11 +29,11 @@ from app_types.logger import LogSink
 class FkLogSink(LogSink):  # noqa: PEO200. Class for testing, has mutable state
     """Фейковый логгер."""
 
-    stack: list[str]
+    stack: list[str]  # noqa: PEO300. Fake object
 
     def __init__(self) -> None:
         """Ctor."""
-        self.stack = []  # noqa: PEO101. Fake objectsrc/app_types/millis.py
+        self.stack = []  # noqa: PEO101. Fake object
 
     def info(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003, WPS110
         """Информационный уровень.
