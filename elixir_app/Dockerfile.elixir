@@ -1,0 +1,52 @@
+# Используем официальный образ Elixir
+FROM elixir:1.15-alpine AS builder
+
+# Устанавливаем зависимости для сборки
+RUN apk add --no-cache build-base git
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+# Копируем файлы конфигурации
+COPY mix.exs mix.lock ./
+COPY config config
+
+# Устанавливаем зависимости
+RUN mix local.hex --force && \
+    mix local.rebar --force && \
+    mix deps.get --only prod
+
+# Копируем исходный код
+COPY lib lib
+COPY priv priv
+
+# Компилируем приложение
+RUN mix compile
+
+# Создаем релиз
+RUN mix release
+
+# Создаем финальный образ
+FROM alpine:3.18
+
+# Устанавливаем зависимости для запуска
+RUN apk add --no-cache openssl ncurses-libs libstdc++
+
+# Создаем пользователя для безопасности
+RUN addgroup -g 1000 -S quranbot && \
+    adduser -u 1000 -S quranbot -G quranbot
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+# Копируем релиз из builder образа
+COPY --from=builder --chown=quranbot:quranbot /app/_build/prod/rel/quran_bot ./
+
+# Переключаемся на пользователя quranbot
+USER quranbot
+
+# Открываем порт для метрик (опционально)
+EXPOSE 9568
+
+# Запускаем приложение
+CMD ["bin/quran_bot", "start"] 
