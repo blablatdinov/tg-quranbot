@@ -39,7 +39,7 @@ class FkCity(City):
     @classmethod
     def name_ctor(cls, name: str) -> City:
         """Конструктор с генерацией uuid."""
-        return cls(uuid.uuid4(), name)
+        return cls(uuid.uuid4(), name)  # noqa: PEO102
 
     @override
     async def city_id(self) -> uuid.UUID:

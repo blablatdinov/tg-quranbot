@@ -53,7 +53,7 @@ class TextSearchNeighborAyats(NeighborAyats):
         :param ayat_id: int
         :param query: TextSearchQuery
         """
-        return cls(
+        return cls(  # noqa: PEO102
             pgsql,
             ayat_id,
             query,

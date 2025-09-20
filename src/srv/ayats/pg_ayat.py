@@ -86,7 +86,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         :param database: Database
         :return: Ayat
         """
-        return PgAyat.from_int(
+        return PgAyat.from_int(  # noqa: PEO102
             int(IntableRegex(callback_query)),
             database,
         )

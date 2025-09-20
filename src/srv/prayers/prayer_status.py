@@ -44,7 +44,7 @@ class PrayerStatus(PrayerStts):
         :param update: Update
         :return: PrayerStatusInterface
         """
-        return cls(str(CallbackQueryData(update)))
+        return cls(str(CallbackQueryData(update)))  # noqa: PEO102
 
     @override
     def user_prayer_id(self) -> int:
