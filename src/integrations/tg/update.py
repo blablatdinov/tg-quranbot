@@ -43,7 +43,7 @@ class TgUpdate(Update):
         :param raw_update: SupportsStr
         :return: TgUpdate
         """
-        return cls(ujson.loads(str(raw_update)))
+        return cls(ujson.loads(str(raw_update)))  # noqa: PEO102
 
     @override
     def __str__(self) -> str:

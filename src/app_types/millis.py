@@ -39,7 +39,7 @@ class Millis(SupportsFloat):
         :param seconds: float
         :return: Millis
         """
-        return Millis(seconds * 1000)
+        return Millis(seconds * 1000)  # noqa: PEO102
 
     @override
     def __float__(self) -> float:
