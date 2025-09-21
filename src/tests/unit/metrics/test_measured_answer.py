@@ -38,7 +38,7 @@ class FkCounter(Counter):  # noqa: PEO200
     def inc(self) -> None:
         self._counter_val += 1
 
-    def get(self) -> int:
+    def get(self) -> int:  # noqa: PEO601, OVR100
         return self._counter_val
 
 

@@ -33,5 +33,5 @@ class FkFloat(SupportsFloat):
     _origin: float
 
     @override
-    def __float__(self) -> float:
+    def __float__(self) -> float:  # noqa: PEO602. fake object
         return self._origin
