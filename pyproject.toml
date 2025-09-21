@@ -81,7 +81,7 @@ wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-py
 ruff = "0.12.12"
 ondivi = "0.7.2"
 flake8-final = "0.0.3"
-flake8-override = "0.0.4"
+flake8-override = "0.1.0"
 flake8-no-json = "0.0.2"
 vulture = "2.14"
 sqlfluff = "3.4.2"
