@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final
+from typing import final, override
 
 from app_types.logger import LogSink
 
@@ -35,6 +35,7 @@ class FkLogSink(LogSink):  # noqa: PEO200. Class for testing, has mutable state
         """Ctor."""
         self.stack = []  # noqa: PEO101. Fake object
 
+    @override
     def info(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003, WPS110
         """Информационный уровень.
 
@@ -43,6 +44,7 @@ class FkLogSink(LogSink):  # noqa: PEO200. Class for testing, has mutable state
         """
         self.stack.append('INFO {0}'.format(args[0]))
 
+    @override
     def debug(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         """Уровень для отладки.
 
@@ -51,6 +53,7 @@ class FkLogSink(LogSink):  # noqa: PEO200. Class for testing, has mutable state
         """
         self.stack.append('DEBUG {0}'.format(args[0]))
 
+    @override
     def error(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         """Уровень для ошибок.
 
@@ -59,6 +62,7 @@ class FkLogSink(LogSink):  # noqa: PEO200. Class for testing, has mutable state
         """
         self.stack.append('ERROR {0}'.format(args[0]))
 
+    @override
     def exception(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         """Уровень для исключений.
 
