@@ -50,7 +50,7 @@ class AyatTextSearchQuery(TextSearchQuery):
         """
         key = self._key_template.format(int(self._chat_id))
         self._logger.info('Try writing key: {0}, value: {1}'.format(key, query))
-        await self._redis.set(key, query)
+        await self._redis.set(key, query, ex=60 * 60 * 24)
         self._logger.info('Key: {0} wrote'.format(
             self._key_template.format(int(self._chat_id)),
         ))

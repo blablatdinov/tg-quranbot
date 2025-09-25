@@ -24,7 +24,7 @@ import pytest
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
-from handlers.pg_prayer_time_answer import PgPrayerTimeAnswer
+from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.tg_answers.empty_answer import TgEmptyAnswer
 
 
@@ -47,7 +47,7 @@ async def _prayers(pgsql, city_factory, user_factory):
 @pytest.mark.usefixtures('_prayers')
 async def test(pgsql, fake_redis, settings_ctor, message_update_factory, time_machine):
     time_machine.move_to('2023-12-19')
-    got = await PgPrayerTimeAnswer.new_prayers_ctor(
+    got = await PrayerTimeAnswer.new_prayers_ctor(
         pgsql,
         TgEmptyAnswer(''),
         [347594735],
