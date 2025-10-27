@@ -20,17 +20,17 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import json
 import pytest
-from services.answers.change_state_answer import ChangeStateAnswer
-from integrations.tg.tg_answers.fk_answer import FkAnswer
-from srv.users.user_step import UserStep
+
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
+from integrations.tg.tg_answers.fk_answer import FkAnswer
+from services.answers.change_state_answer import ChangeStateAnswer
 from srv.users.redis_user_state import RedisUserState
+from srv.users.user_step import UserStep
 
 
-@pytest.fixture()
+@pytest.fixture
 async def state(fake_redis):
     await RedisUserState(
         fake_redis, 534, FkLogSink(),
