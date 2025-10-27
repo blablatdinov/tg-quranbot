@@ -98,7 +98,6 @@ test-free-files:
   - src/main.py
   - src/quranbot_answer.py
   - src/scheduler_entry.py
-  - src/services/answers/change_state_answer.py
   - src/services/answers/default_keyboard.py
   - src/services/answers/resized_keyboard.py
   - src/services/answers/safe_fork.py
