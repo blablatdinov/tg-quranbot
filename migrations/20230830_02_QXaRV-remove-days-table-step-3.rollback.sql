@@ -24,7 +24,7 @@
 -- depends: 20230830_01_neA0R-remove-days-table-step-1
 
 CREATE TABLE prayer_days (
-    date date NOT NULL
+    date date NOT NULL  -- noqa: RF04
 );
 
 ALTER TABLE ONLY prayer_days ADD CONSTRAINT prayer_days_pkey PRIMARY KEY (date);
