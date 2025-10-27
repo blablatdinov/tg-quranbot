@@ -27,7 +27,7 @@ from databases import Database
 
 from integrations.tg.fk_chat_id import ChatId
 from srv.podcasts.changed_podcast_reaction import PODCAST_ID_LITERAL, USER_ID_LITERAL, ChangedPodcastReaction
-from srv.podcasts.podcast_reaction import PodcastReactions
+from srv.podcasts.podcast_reactions import PodcastReactions
 
 
 @final

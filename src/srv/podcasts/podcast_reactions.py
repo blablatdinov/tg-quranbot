@@ -20,13 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Protocol
-
-from srv.prayers.prayer_message_text_dict import PrayerMessageTextDict
+from typing import Literal, Protocol
 
 
-class PrayersInfo(Protocol):
-    """Информация о времени намаза."""
+class PodcastReactions(Protocol):
+    """Реакция на подкаст."""
 
-    async def to_dict(self) -> PrayerMessageTextDict:
-        """Словарь с данными для отправки пользователю."""
+    def podcast_id(self) -> int:
+        """Идентификатор подкаста."""
+
+    def status(self) -> Literal['like', 'dislike']:
+        """Реакция."""

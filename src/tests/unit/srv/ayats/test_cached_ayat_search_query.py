@@ -35,17 +35,17 @@ from srv.ayats.cached_ayat_search_query import CachedAyatSearchQueryAnswer
 
 @final
 @attrs.define(frozen=True)
-class FakeError(Exception):
+class _FakeError(Exception):
     pass
 
 
 @final
 @attrs.define(frozen=True)
-class TgAnswerFake(TgAnswer):
+class _TgAnswerFake(TgAnswer):
 
     @override
     async def build(self, update):
-        raise FakeError
+        raise _FakeError
 
 
 @pytest.fixture
@@ -70,9 +70,9 @@ def update():
 
 
 async def test(update, fake_redis):
-    with suppress(FakeError):
+    with suppress(_FakeError):
         await CachedAyatSearchQueryAnswer(
-            TgAnswerFake(), fake_redis, FkLogSink(),
+            _TgAnswerFake(), fake_redis, FkLogSink(),
         ).build(TgUpdate.str_ctor(update))
 
     assert await fake_redis.get('358610865:ayat_search_query') == 'камни'.encode()

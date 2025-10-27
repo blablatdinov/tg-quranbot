@@ -20,13 +20,17 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Protocol
+import pytest
 
-from srv.prayers.prayer_message_text_dict import PrayerMessageTextDict
+from srv.podcasts.parsed_podcast_reaction import ParsedPodcastReaction
 
 
-class PrayersInfo(Protocol):
-    """Информация о времени намаза."""
+@pytest.mark.parametrize(('callback_data', 'prayer_id', 'status'), [
+    ('like(123)', 123, 'like'),
+    ('dislike(7854)', 7854, 'dislike'),
+])
+def test(callback_data, prayer_id, status):
+    reaction = ParsedPodcastReaction(callback_data)
 
-    async def to_dict(self) -> PrayerMessageTextDict:
-        """Словарь с данными для отправки пользователю."""
+    assert reaction.podcast_id() == prayer_id
+    assert reaction.status() == status
