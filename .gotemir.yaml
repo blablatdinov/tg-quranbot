@@ -27,6 +27,8 @@ test-free-files:
   - src/exceptions.*
   - src/tests/.*
   - .*fk_.*\.py
+  # DTO:
+  - src/srv/prayers/prayer_message_text_dict.py
   # File with prometheus metrics:
   - src/metrics/prometheus.py
   # protocols:
@@ -56,6 +58,7 @@ test-free-files:
   - src/srv/prayers/prayers_stts.py
   - src/srv/prayers/updated_user_city.py
   - src/srv/prayers/user_prayer_stts.py
+  - src/srv/podcasts/podcast_reactions.py
   # Почему-то существует 2 одинаковых протокола
   - src/srv/start/new_user.py
   - src/srv/users/new_user.py
