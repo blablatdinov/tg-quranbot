@@ -87,7 +87,7 @@ jobs:
           files: ./coverage.xml
           # fail_ci_if_error: true
       - name: Check dependencies relevance
-        run: .venv/bin/deltaver poetry.lock --format lock
+        run: .venv/bin/deltaver poetry.lock --format poetry-lock
 
   gotemir:
     runs-on: ubuntu-24.04

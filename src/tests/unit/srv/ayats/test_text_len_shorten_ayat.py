@@ -30,7 +30,9 @@ from srv.files.fk_file import FkFile
 
 
 async def test_text_len_safe_ayat():
-    ayat_content = Path(BASE_DIR / 'tests/fixtures/2_282_ayat_rendered.txt').read_text(encoding='utf-8').strip()
+    ayat_content = Path(  # noqa: ASYNC240
+        BASE_DIR / 'tests/fixtures/2_282_ayat_rendered.txt',
+    ).read_text(encoding='utf-8').strip()
     got = await TextLenSafeAyat(
         FkAyat(
             FkIdentifier(272, 2, '282'),
@@ -40,5 +42,7 @@ async def test_text_len_safe_ayat():
     ).to_str()
 
     assert len(got) <= 4096
-    assert got == Path(BASE_DIR / 'tests/fixtures/2_282_ayat_shorten.txt').read_text(encoding='utf-8').strip()
+    assert got == Path(  # noqa: ASYNC240
+        BASE_DIR / 'tests/fixtures/2_282_ayat_shorten.txt',
+    ).read_text(encoding='utf-8').strip()
     assert '</i>' in got

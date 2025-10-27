@@ -31,7 +31,7 @@ import pytz
 async def _prayers_from_csv(pgsql, city_factory, user_factory) -> None:
     lines = [
         line.split(';')
-        for line in Path('src/tests/fixtures/prayers.csv').read_text(encoding='utf-8').splitlines()
+        for line in Path('src/tests/fixtures/prayers.csv').read_text(encoding='utf-8').splitlines()  # noqa: ASYNC240
     ]
     city = await city_factory('bc932b25-707e-4af1-8b6e-facb5e6dfa9b', 'Казань')
     await user_factory(358610865, city=city)
@@ -59,7 +59,9 @@ async def _prayers_from_csv(pgsql, city_factory, user_factory) -> None:
     )
     lines = [
         line.split(';')
-        for line in Path('src/tests/fixtures/prayers_at_user.csv').read_text(encoding='utf-8').splitlines()
+        for line in Path(  # noqa: ASYNC240
+            'src/tests/fixtures/prayers_at_user.csv',
+        ).read_text(encoding='utf-8').splitlines()
     ]
     query = '\n'.join([
         'INSERT INTO prayers_at_user (prayer_at_user_id, user_id, prayer_id, is_read)',

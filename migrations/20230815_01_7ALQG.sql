@@ -24,19 +24,19 @@
 -- depends:
 
 CREATE TABLE public.admin_messages (
-    key character varying NOT NULL,
-    text character varying
+    key character varying NOT NULL,  -- noqa: RF04
+    text character varying  -- noqa: RF04
 );
 
 
 CREATE TABLE public.ayats (
     ayat_id integer NOT NULL,
     public_id character varying NOT NULL,
-    day integer,
+    day integer,  -- noqa: RF04
     sura_id integer NOT NULL,
     audio_id character varying NOT NULL,
     ayat_number character varying(10) NOT NULL,
-    content character varying NOT NULL,
+    content character varying NOT NULL,  -- noqa: RF04
     arab_text character varying NOT NULL,
     transliteration character varying NOT NULL
 );
@@ -53,7 +53,7 @@ ALTER SEQUENCE public.ayats_ayat_id_seq OWNED BY public.ayats.ayat_id;
 
 CREATE TABLE public.cities (
     city_id character varying NOT NULL,
-    name character varying
+    name character varying  -- noqa: RF04
 );
 
 CREATE TABLE public.favorite_ayats (
@@ -75,13 +75,13 @@ CREATE TABLE public.podcasts (
 );
 
 CREATE TABLE public.prayer_days (
-    date date NOT NULL
+    date date NOT NULL  -- noqa: RF04
 );
 
 CREATE TABLE public.prayers (
     prayer_id integer NOT NULL,
-    name character varying,
-    time time without time zone NOT NULL,
+    name character varying,  -- noqa: RF04
+    time time without time zone NOT NULL,  -- noqa: RF04
     city_id character varying,
     day_id date
 );
@@ -138,8 +138,8 @@ ALTER SEQUENCE public.suras_sura_id_seq OWNED BY public.suras.sura_id;
 CREATE TABLE public.users (
     chat_id bigint NOT NULL,
     is_active boolean DEFAULT true NOT NULL,
-    comment character varying,
-    day integer,
+    comment character varying,  -- noqa: RF04
+    day integer,  -- noqa: RF04
     city_id character varying,
     referrer_id integer,
     legacy_id integer
