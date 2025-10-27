@@ -35,10 +35,3 @@ class PrayerMessageTextDict(TypedDict):
     asr_prayer_time: str
     magrib_prayer_time: str
     ishaa_prayer_time: str
-
-
-class PrayersInfo(Protocol):
-    """Информация о времени намаза."""
-
-    async def to_dict(self) -> PrayerMessageTextDict:
-        """Словарь с данными для отправки пользователю."""
