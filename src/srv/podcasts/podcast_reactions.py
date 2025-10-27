@@ -20,17 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import pytest
-
-from srv.podcasts.parsed_podcast_reaction import ParsedPodcastReaction
+from typing import Literal, Protocol
 
 
-@pytest.mark.parametrize(('callback_data', 'prayer_id', 'status'), [
-    ('like(123)', 123, 'like'),
-    ('dislike(7854)', 7854, 'dislike'),
-])
-def test(callback_data, prayer_id, status):
-    reaction = ParsedPodcastReaction(callback_data)
+class PodcastReactions(Protocol):
+    """Реакция на подкаст."""
 
-    assert reaction.podcast_id() == prayer_id
-    assert reaction.status() == status
+    def podcast_id(self) -> int:
+        """Идентификатор подкаста."""
+
+    def status(self) -> Literal['like', 'dislike']:
+        """Реакция."""

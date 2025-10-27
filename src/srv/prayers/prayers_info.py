@@ -20,21 +20,9 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Protocol, TypedDict, final
+from typing import Protocol
 
-
-@final
-class PrayerMessageTextDict(TypedDict):
-    """Словарь с данными для отправки пользователю."""
-
-    city_name: str
-    date: str
-    fajr_prayer_time: str
-    sunrise_prayer_time: str
-    dhuhr_prayer_time: str
-    asr_prayer_time: str
-    magrib_prayer_time: str
-    ishaa_prayer_time: str
+from srv.prayers.prayer_message_text_dict import PrayerMessageTextDict
 
 
 class PrayersInfo(Protocol):

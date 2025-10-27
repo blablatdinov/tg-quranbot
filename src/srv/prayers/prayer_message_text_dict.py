@@ -20,17 +20,25 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import pytest
-
-from srv.podcasts.parsed_podcast_reaction import ParsedPodcastReaction
+from typing import Protocol, TypedDict, final
 
 
-@pytest.mark.parametrize(('callback_data', 'prayer_id', 'status'), [
-    ('like(123)', 123, 'like'),
-    ('dislike(7854)', 7854, 'dislike'),
-])
-def test(callback_data, prayer_id, status):
-    reaction = ParsedPodcastReaction(callback_data)
+@final
+class PrayerMessageTextDict(TypedDict):
+    """Словарь с данными для отправки пользователю."""
 
-    assert reaction.podcast_id() == prayer_id
-    assert reaction.status() == status
+    city_name: str
+    date: str
+    fajr_prayer_time: str
+    sunrise_prayer_time: str
+    dhuhr_prayer_time: str
+    asr_prayer_time: str
+    magrib_prayer_time: str
+    ishaa_prayer_time: str
+
+
+class PrayersInfo(Protocol):
+    """Информация о времени намаза."""
+
+    async def to_dict(self) -> PrayerMessageTextDict:
+        """Словарь с данными для отправки пользователю."""

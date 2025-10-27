@@ -40,11 +40,11 @@ from integrations.tg.tg_answers.tg_answer_markup import TgAnswerMarkup
 from integrations.tg.tg_chat_id import TgChatId
 from services.reset_state_answer import ResetStateAnswer
 from srv.podcasts.markupped_podcast_answer import MarkuppedPodcastAnswer
+from srv.podcasts.parsed_podcast_reaction import ParsedPodcastReaction
 from srv.podcasts.pg_changed_podcast_reaction import PgChangedPoodcastReaction
 from srv.podcasts.pg_podcast import PgPodcast
 from srv.podcasts.podcast_answer import PodcastAnswer
 from srv.podcasts.podcast_keyboard import PodcastKeyboard
-from srv.podcasts.podcast_reaction import ParsedPodcastReaction
 from srv.users.cached_user_state import CachedUserState
 from srv.users.redis_user_state import RedisUserState
 

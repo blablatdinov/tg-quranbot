@@ -20,22 +20,13 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Literal, Protocol, final, override
+from typing import Literal, final, override
 
 import attrs
 
 from app_types.stringable import SupportsStr
 from services.instable_regex import IntableRegex
-
-
-class PodcastReactions(Protocol):
-    """Реакция на подкаст."""
-
-    def podcast_id(self) -> int:
-        """Идентификатор подкаста."""
-
-    def status(self) -> Literal['like', 'dislike']:
-        """Реакция."""
+from srv.podcasts.podcast_reactions import PodcastReactions
 
 
 @final
