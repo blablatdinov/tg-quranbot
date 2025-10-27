@@ -42,7 +42,7 @@ async def test_text_len_safe_ayat():
     ).to_str()
 
     assert len(got) <= 4096
-    assert got == Path(
+    assert got == Path(  # noqa: ASYNC240
         BASE_DIR / 'tests/fixtures/2_282_ayat_shorten.txt',
-    ).read_text(encoding='utf-8').strip()  # noqa: ASYNC240
+    ).read_text(encoding='utf-8').strip()
     assert '</i>' in got

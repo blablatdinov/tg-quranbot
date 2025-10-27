@@ -60,7 +60,7 @@ async def _prayers_from_csv(pgsql, city_factory, user_factory) -> None:
     lines = [
         line.split(';')
         for line in Path(  # noqa: ASYNC240
-            'src/tests/fixtures/prayers_at_user.csv'
+            'src/tests/fixtures/prayers_at_user.csv',
         ).read_text(encoding='utf-8').splitlines()
     ]
     query = '\n'.join([
