@@ -37,7 +37,11 @@ from srv.prayers.hg_prayers_info import HgPrayersInfo
 def hg_mock(respx_mock):
     respx_mock.get('https://halalguide.me/kazan/namaz-time/may-2025').mock(return_value=httpx.Response(
         200,
-        text=Path('src/tests/fixtures/hg_response.html').read_text(encoding='utf-8'),
+        text=Path('src/tests/fixtures/hg_response_may.html').read_text(encoding='utf-8'),
+    ))
+    respx_mock.get('https://halalguide.me/kazan/namaz-time/january-2025').mock(return_value=httpx.Response(
+        200,
+        text=Path('src/tests/fixtures/hg_response_january.html').read_text(encoding='utf-8'),
     ))
 
 
@@ -52,7 +56,6 @@ async def city(city_factory, pgsql):
     return FkCity(city_id, 'Казань')
 
 
-# TODO #1672:30min Исправить тесты и убрать маркер skip
 @pytest.mark.usefixtures('hg_mock')
 async def test_today(time_machine, pgsql, city):
     time_machine.move_to('2025-05-05')
@@ -76,7 +79,6 @@ async def test_today(time_machine, pgsql, city):
 
 
 @pytest.mark.usefixtures('hg_mock')
-@pytest.mark.skip
 async def test_by_date(pgsql, time_machine, city):
     time_machine.move_to('2025-01-14')
     got = await HgPrayersInfo(
@@ -90,9 +92,9 @@ async def test_by_date(pgsql, time_machine, city):
         'asr_prayer_time': '14:02',
         'city_name': 'Казань',
         'date': '20.01.2025',
-        'dhuhr_prayer_time': '11:56',
+        'dhuhr_prayer_time': '12:00',
         'fajr_prayer_time': '05:44',
         'ishaa_prayer_time': '17:44',
         'magrib_prayer_time': '15:53',
-        'sunrise_prayer_time': '07:57',
+        'sunrise_prayer_time': '07:53',
     }
