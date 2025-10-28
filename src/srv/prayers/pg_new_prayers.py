@@ -88,7 +88,8 @@ class PgNewPrayers(NewPrayers):
                         'time': (
                             datetime.datetime
                             .strptime(self._prayer_dict[key], '%H:%M')  # type: ignore[literal-required]
-                            .astimezone(pytz.timezone('Europe/Moscow'))
+                            .replace(tzinfo=pytz.timezone('Europe/Moscow'))
+                            # .astimezone(pytz.timezone('Europe/Moscow'))
                         ),
                         'city_id': city_id,
                         'day': day,
