@@ -29,7 +29,7 @@ from app_types.fk_async_int import FkAsyncInt
 from app_types.intable import AsyncInt
 from exceptions.base_exception import BaseAppError
 from exceptions.user import StartMessageNotContainReferrerError
-from services.instable_regex import IntableRegex
+from services.intable_regex import IntableRegex
 from srv.users.pg_user import PgUser
 from srv.users.pg_valid_chat_id import PgValidChatId
 

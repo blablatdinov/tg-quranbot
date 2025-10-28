@@ -24,7 +24,7 @@ from typing import TypeAlias, final, override
 
 import attrs
 
-from services.instable_regex import IntableRegex
+from services.intable_regex import IntableRegex
 from srv.ayats.ayat_identifier import AyatId
 from srv.ayats.favorite_ayat_status import FavoriteAyatStatus
 

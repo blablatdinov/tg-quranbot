@@ -30,7 +30,7 @@ from app_types.fk_async_int import FkAsyncInt
 from app_types.intable import AsyncInt
 from app_types.stringable import SupportsStr
 from exceptions.content_exceptions import AyatNotFoundError
-from services.instable_regex import IntableRegex
+from services.intable_regex import IntableRegex
 from srv.ayats.ayat import Ayat, AyatText
 from srv.ayats.ayat_id_by_public_id import AyatIdByPublicId
 from srv.ayats.ayat_id_by_sura_ayat_num import AyatIdBySuraAyatNum

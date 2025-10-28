@@ -31,7 +31,7 @@ from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
 from integrations.tg.tg_answers import TgAnswer
 from integrations.tg.tg_chat_id import TgChatId
-from services.instable_regex import IntableRegex
+from services.intable_regex import IntableRegex
 from srv.ayats.ayat_answer import AyatAnswer
 from srv.ayats.ayat_answer_keyboard import AyatAnswerKeyboard
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum

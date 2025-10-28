@@ -26,7 +26,7 @@ import attrs
 
 from app_types.update import Update
 from integrations.tg.callback_query import CallbackQueryData
-from services.instable_regex import IntableRegex
+from services.intable_regex import IntableRegex
 from srv.prayers.prayers_stts import PrayerStts
 
 
