@@ -22,7 +22,7 @@
 
 import pytest
 
-from services.instable_regex import IntableRegex
+from services.intable_regex import IntableRegex
 
 
 @pytest.mark.parametrize(('input_', 'expected'), [

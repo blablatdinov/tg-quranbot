@@ -25,7 +25,7 @@ from typing import TypeAlias, final, override
 import attrs
 
 from app_types.stringable import SupportsStr
-from services.instable_regex import IntableRegex
+from services.intable_regex import IntableRegex
 
 _AyatNum: TypeAlias = str
 

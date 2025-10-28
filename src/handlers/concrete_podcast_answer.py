@@ -33,7 +33,7 @@ from app_types.supports_bool import SupportsBool
 from app_types.update import Update
 from integrations.tg.message_text import MessageText
 from integrations.tg.tg_answers.tg_answer import TgAnswer
-from services.instable_regex import IntableRegex
+from services.intable_regex import IntableRegex
 from srv.podcasts.markupped_podcast_answer import MarkuppedPodcastAnswer
 from srv.podcasts.pg_podcast import PgPodcast
 from srv.podcasts.podcast_answer import PodcastAnswer
