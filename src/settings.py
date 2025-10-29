@@ -22,9 +22,12 @@
 
 from pathlib import Path
 from typing import final
+import contextvars
 
 from pydantic import PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings
+
+REQUEST_ID_VAR = contextvars.ContextVar("request_id", default='')
 
 BASE_DIR = Path(__file__).parent  # Path to src dir
 
@@ -60,6 +63,14 @@ class Settings(BaseSettings):  # noqa: PEO200
             int(chat_id.strip())
             for chat_id in self.ADMIN_CHAT_IDS.strip().split(',')
         ]
+
+    def test_database_url(self) -> PostgresDsn:  # noqa: OVR100
+        """URL для тестовой базы данных."""
+        origin_path = self.DATABASE_URL.path or ''
+        return PostgresDsn(
+            str(self.DATABASE_URL)
+            .replace(origin_path, '{0}_test'.format(origin_path)),
+        )
 
 
 env_file = BASE_DIR.parent / '.env'

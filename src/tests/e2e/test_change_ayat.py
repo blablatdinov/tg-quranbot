@@ -32,7 +32,7 @@ import ujson
 @pytest.fixture
 def _revert_changes(settings):
     yield
-    qbot_connection = psycopg2.connect(str(settings.DATABASE_URL))
+    qbot_connection = psycopg2.connect(str(settings.test_database_url()))
     qbot_connection.autocommit = True
     cursor = qbot_connection.cursor()
     cursor.execute('DELETE FROM ayats WHERE ayat_id = 1')

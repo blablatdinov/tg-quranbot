@@ -89,5 +89,5 @@ class HgPrayersInfo(PrayersInfo):
             'asr_prayer_time': rows[5],
             'magrib_prayer_time': rows[6], 'ishaa_prayer_time': rows[7],
         })
-        self._logger.debug('Parsed from halal guide: %s', prs_info)
+        self._logger.debug('Parsed from halal guide: {info}', info=prs_info)
         return prs_info

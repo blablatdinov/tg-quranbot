@@ -29,7 +29,7 @@ from redis.asyncio import Redis
 
 from app_types.logger import LogSink
 from app_types.update import Update
-from handlers.pg_prayer_time_answer import PgPrayerTimeAnswer
+from handlers.prayer_time_answer import PrayerTimeAnswer
 from integrations.tg.tg_answers.tg_answer import TgAnswer
 from settings import Settings
 from srv.prayers.prayer_status import PrayerStatus
@@ -56,7 +56,7 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
         """
         prayer_status = PrayerStatus.update_ctor(update)
         await UserPrayerStatus(self._pgsql).change(prayer_status)
-        return await PgPrayerTimeAnswer.edited_markup_ctor(
+        return await PrayerTimeAnswer.edited_markup_ctor(
             self._pgsql,
             self._empty_answer,
             [123],
