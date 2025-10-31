@@ -46,7 +46,7 @@ services:
         tag: "qbot-{{.Name}}"
 
   postgres:
-    image: postgres:17
+    image: postgres:18
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
