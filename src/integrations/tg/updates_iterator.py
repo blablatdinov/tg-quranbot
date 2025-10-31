@@ -28,7 +28,7 @@ from app_types.update import Update
 class UpdatesIterator(Protocol):
     """Интерфейс итератора по обновлениям."""
 
-    def __aiter__(self) -> 'UpdatesIterator':
+    def __aiter__(self) -> UpdatesIterator:
         """Точка входа в итератор."""
 
     async def __anext__(self) -> list[Update]:

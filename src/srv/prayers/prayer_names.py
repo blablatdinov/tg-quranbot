@@ -44,7 +44,7 @@ class PrayerNames(enum.Enum):
         return tuple(field.name for field in cls.fields_without_sunrise())
 
     @classmethod
-    def fields_without_sunrise(cls) -> tuple['PrayerNames', ...]:
+    def fields_without_sunrise(cls) -> tuple[PrayerNames, ...]:
         """Намазы без рассвета.
 
         Время рассвета важно, т.к. это время завершения периода утреннего намаза

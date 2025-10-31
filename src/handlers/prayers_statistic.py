@@ -96,12 +96,15 @@ class PrayersStatistic(AsyncSupportsStr):
             'WHERE pau.user_id = :chat_id',
             "ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
         ])
-        return list(batched(
-            await self._pgsql.fetch_all(query, {
-                'chat_id': int(self._chat_id),
-            }),
-            5,
-        ))
+        return list(
+            batched(
+                await self._pgsql.fetch_all(query, {
+                    'chat_id': int(self._chat_id),
+                }),
+                5,
+                strict=False,
+            ),
+        )
 
     async def _dates_range(self) -> list[datetime.date]:  # noqa: NPM100. Fix it
         query = '\n'.join([
