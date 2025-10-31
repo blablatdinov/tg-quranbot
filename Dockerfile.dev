@@ -20,14 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-FROM python:3.12.7-slim
+FROM python:3.14.0-slim
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 ENV EC_VERSION="v3.1.2"
 ENV PATH="/root/.local/bin:$PATH"
 WORKDIR /app
 RUN pip install poetry==2.0.1
-RUN apt-get update && apt-get install gcc=4:12.2.0-3 curl postgresql-client git redis -y
+RUN apt-get update && apt-get install gcc curl postgresql-client git redis -y
 RUN curl -O -L -C - https://github.com/editorconfig-checker/editorconfig-checker/releases/download/$EC_VERSION/ec-linux-amd64.tar.gz && \
     tar xzf ec-linux-amd64.tar.gz -C /tmp && \
     mkdir -p /root/.local/bin && \
