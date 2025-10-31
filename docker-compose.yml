@@ -46,7 +46,7 @@ services:
         tag: "qbot-{{.Name}}"
 
   postgres:
-    image: postgres:13
+    image: postgres:17
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
@@ -58,7 +58,7 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
 
   redis:
-    image: redis:6
+    image: redis:8
     ports:
       - "6345:6379"
     volumes:
@@ -79,7 +79,7 @@ services:
       - ./rabbitmq-data/log/:/var/log/rabbitmq
 
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v3.7.3
     ports:
       - "9090:9090"
     volumes:
@@ -88,7 +88,7 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
 
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:12.2
     ports:
       - "3000:3000"
     volumes:
