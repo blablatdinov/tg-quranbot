@@ -43,7 +43,7 @@ class PollingUpdatesIterator(UpdatesIterator):  # noqa: PEO200. It is generator 
     _offset: int = 0
 
     @override
-    def __aiter__(self) -> 'UpdatesIterator':
+    def __aiter__(self) -> UpdatesIterator:
         """Точка входа в итератор.
 
         :return: UpdatesIteratorInterface

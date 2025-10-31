@@ -166,6 +166,9 @@ ignore = [
   "G001",    # Only .format for strings
   "TRY400",  # logger.error enable
   "PLE1205", # Too many arguments for `logging` format string
+  "TC003",   # Move standard library import `collections.abc.Iterable` into a type-checking block
+  "UP046",   # Generic class `...` uses `...` subclass instead of type parameters
+  "UP040",   # Type alias `...` uses `...` annotation instead of the `type` keyword
 ]
 external = [
   "WPS",

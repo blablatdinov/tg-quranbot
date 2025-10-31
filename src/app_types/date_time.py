@@ -20,12 +20,12 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import datetime
+import datetime as dt
 from typing import Protocol
 
 
 class DateTime(Protocol):
     """Интерфейс даты/времени."""
 
-    def datetime(self) -> datetime.datetime:
+    def datetime(self) -> dt.datetime:
         """Дата/время."""
