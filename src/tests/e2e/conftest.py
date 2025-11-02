@@ -175,9 +175,15 @@ def wait_event(rbmq_channel, queues):
 
 @pytest.fixture
 def tg_client(bot_name):
-    asyncio.set_event_loop(asyncio.new_event_loop())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     settings = Settings(_env_file=BASE_DIR.parent / '.env')
-    with TelegramClient('me', settings.TELEGRAM_CLIENT_ID, settings.TELEGRAM_CLIENT_HASH) as client:
+    client = TelegramClient('me', settings.TELEGRAM_CLIENT_ID, settings.TELEGRAM_CLIENT_HASH)
+    try:
+        client.start()
         all_messages = [message.id for message in client.iter_messages('@WokeUpSmiled_bot')]
         client.delete_messages(entity=bot_name, message_ids=all_messages[UGGLY_OFFSET:])
         yield client
+    finally:
+        client.disconnect()
+        loop.close()
