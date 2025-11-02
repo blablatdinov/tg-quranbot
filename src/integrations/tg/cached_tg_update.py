@@ -25,7 +25,7 @@ from typing import Final, TypedDict, final, override
 from app_types.update import Update
 
 STR_LITERAL: Final = 'str'
-ASDICT_LITERAL: Final = 'str'
+ASDICT_LITERAL: Final = 'asdict'
 
 
 @final
