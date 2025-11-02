@@ -17,7 +17,6 @@ jobs:
           POSTGRES_USER: almazilaletdinov
           POSTGRES_DB: postgres
           POSTGRES_PASSWORD: password
-          RABBITMQ_DEFAULT_VHOST: default_vhost
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -34,6 +33,7 @@ jobs:
         env:
           RABBITMQ_DEFAULT_USER: user
           RABBITMQ_DEFAULT_PASS: pass
+          RABBITMQ_DEFAULT_VHOST: default_vhost
         options: --health-cmd "rabbitmqctl status" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
