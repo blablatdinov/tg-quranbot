@@ -20,14 +20,17 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Protocol, final
+from typing import final
+
 import attrs
+
 from integrations.tg.udpates_url_interface import UpdatesURLInterface
 
 
 @final
 @attrs.define(frozen=True)
 class FkUpdatesURL(UpdatesURLInterface):
+    """Fake updates url."""
 
     _origin: str
 

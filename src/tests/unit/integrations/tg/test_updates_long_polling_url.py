@@ -20,13 +20,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from integrations.tg.updates_long_polling_url import UpdatesLongPollingURL
 from integrations.tg.fk_udpates_url import FkUpdatesURL
+from integrations.tg.updates_long_polling_url import UpdatesLongPollingURL
 
-async def test() -> None:
-    got = await UpdatesLongPollingURL(
+
+def test() -> None:
+    got = UpdatesLongPollingURL(
         FkUpdatesURL('https://fk.url'),
         0,
     ).generate(0)
 
-    assert got == ''
+    assert got == 'https://fk.url?timeout=0'
