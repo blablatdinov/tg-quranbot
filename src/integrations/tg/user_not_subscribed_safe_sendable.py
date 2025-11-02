@@ -48,11 +48,11 @@ class UserNotSubscribedSafeSendable(Sendable):
         try:
             responses = await self._origin.send(update)
         except TelegramIntegrationsError as err:
-            error_messages = [
+            error_messages = {
                 'chat not found',
                 'bot was blocked by the user',
                 'user is deactivated',
-            ]
+            }
             for error_message in error_messages:
                 if error_message not in str(err):
                     continue
