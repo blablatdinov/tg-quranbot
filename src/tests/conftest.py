@@ -95,7 +95,7 @@ def settings_ctor():
         rabbitmq_user='',
         rabbitmq_pass='',
         rabbitmq_host='',
-        rabbitmq_vhost='',
+        rabbitmq_vhost='default_vhost',
         daily_ayats=False,
         daily_prayers=False,
         ramadan_mode=False,
