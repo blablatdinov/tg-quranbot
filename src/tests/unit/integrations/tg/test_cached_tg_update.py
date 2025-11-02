@@ -20,35 +20,48 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
-
+import pytest
+from typing import final
 import attrs
-import httpx
 
-from app_types.logger import LogSink
-from app_types.runable import Runable
-from exceptions.base_exception import InternalBotError
+from integrations.tg.cached_tg_update import CachedTgUpdate
+from app_types.fk_update import FkUpdate
+from app_types.update import Update
 
 
 @final
-@attrs.define(frozen=True)
-class AppWithGetMe(Runable):
-    """Объект для запуска с предварительным запросом getMe."""
+class _SeUpdate(Update):
 
-    _origin: Runable
-    _token: str
-    _logger: LogSink
+    def __init__(self, origin: Update):
+        self._origin = origin
+        self._flag = False
 
-    @override
-    async def run(self) -> None:
-        """Запуск.
+    def __str__(self):
+        if self._flag:
+            raise Exception
+        self._flag = True
+        return str(self._origin)
 
-        :raises InternalBotError: в случае не успешного запроса к getMe
-        """
-        async with httpx.AsyncClient(timeout=5) as client:
-            response = await client.get('https://api.telegram.org/bot{0}/getMe'.format(self._token))
-            print(response)
-            if response.status_code != httpx.codes.OK:
-                raise InternalBotError(response.text)
-            self._logger.info(response.content)
-        await self._origin.run()
+    def asdict(self):
+        if self._flag:
+            raise Exception
+        self._flag = True
+        return self._origin.asdict()
+
+
+def test_str():
+    cd_update = CachedTgUpdate(
+        _SeUpdate(
+            FkUpdate.empty_ctor(),
+        ),
+    )
+    assert str(cd_update) == str(cd_update)
+
+
+def test_dict():
+    cd_update = CachedTgUpdate(
+        _SeUpdate(
+            FkUpdate('{"key":"val"}'),
+        ),
+    )
+    assert cd_update.asdict() == cd_update.asdict()

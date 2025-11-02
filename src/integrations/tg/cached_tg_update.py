@@ -20,8 +20,6 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-# flake8: noqa: WPS226
-
 from typing import TypedDict, final, override
 
 from app_types.update import Update
@@ -30,7 +28,6 @@ from app_types.update import Update
 class _CacheDict(TypedDict):
 
     str: str
-    parsed: None
     asdict: dict
 
 
@@ -46,7 +43,6 @@ class CachedTgUpdate(Update):
         self._origin = origin
         self._cache: _CacheDict = {
             'str': '',
-            'parsed': None,
             'asdict': {},
         }
 
@@ -66,6 +62,8 @@ class CachedTgUpdate(Update):
 
         :return: dict
         """
+        print(not self._cache['asdict'])
         if not self._cache['asdict']:
             self._cache['asdict'] = self._origin.asdict()
+        print('cached', self._cache['asdict'])
         return self._cache['asdict']

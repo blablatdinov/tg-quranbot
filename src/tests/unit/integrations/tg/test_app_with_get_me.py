@@ -20,35 +20,22 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
+import pytest
 
-import attrs
-import httpx
-
-from app_types.logger import LogSink
-from app_types.runable import Runable
-from exceptions.base_exception import InternalBotError
+from integrations.tg.app_with_get_me import AppWithGetMe
+from app_types.fk_runable import FkRunable
+from app_types.fk_log_sink import FkLogSink
 
 
-@final
-@attrs.define(frozen=True)
-class AppWithGetMe(Runable):
-    """Объект для запуска с предварительным запросом getMe."""
+@pytest.fixture()
+async def mock_http(respx_mock):
+    respx_mock.get('https://api.telegram.org/botfakeToken/getMe')
 
-    _origin: Runable
-    _token: str
-    _logger: LogSink
 
-    @override
-    async def run(self) -> None:
-        """Запуск.
-
-        :raises InternalBotError: в случае не успешного запроса к getMe
-        """
-        async with httpx.AsyncClient(timeout=5) as client:
-            response = await client.get('https://api.telegram.org/bot{0}/getMe'.format(self._token))
-            print(response)
-            if response.status_code != httpx.codes.OK:
-                raise InternalBotError(response.text)
-            self._logger.info(response.content)
-        await self._origin.run()
+@pytest.mark.usefixtures('mock_http')
+async def test():
+    await AppWithGetMe(
+        FkRunable(),
+        'fakeToken',
+        FkLogSink(),
+    ).run()

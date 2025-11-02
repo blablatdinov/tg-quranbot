@@ -20,35 +20,15 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final, override
-
-import attrs
-import httpx
-
-from app_types.logger import LogSink
 from app_types.runable import Runable
-from exceptions.base_exception import InternalBotError
+
+from typing import Protocol, final
+import attrs
 
 
 @final
 @attrs.define(frozen=True)
-class AppWithGetMe(Runable):
-    """Объект для запуска с предварительным запросом getMe."""
+class FkRunable(Runable):
 
-    _origin: Runable
-    _token: str
-    _logger: LogSink
-
-    @override
     async def run(self) -> None:
-        """Запуск.
-
-        :raises InternalBotError: в случае не успешного запроса к getMe
-        """
-        async with httpx.AsyncClient(timeout=5) as client:
-            response = await client.get('https://api.telegram.org/bot{0}/getMe'.format(self._token))
-            print(response)
-            if response.status_code != httpx.codes.OK:
-                raise InternalBotError(response.text)
-            self._logger.info(response.content)
-        await self._origin.run()
+        """Запуск."""
