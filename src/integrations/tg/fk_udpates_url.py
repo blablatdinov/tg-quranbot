@@ -23,40 +23,21 @@
 from typing import final, override
 
 import attrs
-import ujson
 
-from app_types.update import Update
-from exceptions.internal_exceptions import TelegramIntegrationsError
-from integrations.tg.sendable import Sendable
+from integrations.tg.udpates_url_interface import UpdatesURLInterface
 
 
 @final
 @attrs.define(frozen=True)
-class UserNotSubscribedSafeSendable(Sendable):
-    """Декоратор для обработки отписанных пользователей."""
+class FkUpdatesURL(UpdatesURLInterface):
+    """Fake updates url."""
 
-    _origin: Sendable
+    _origin: str
 
     @override
-    async def send(self, update: Update) -> list[dict]:
-        """Отправка.
+    def generate(self, update_id: int) -> str:
+        """Генерация.
 
-        :param update: Update
-        :return: list[dict]
-        :raises TelegramIntegrationsError: если ошибка не связана с блокировкой бота
+        :param update_id: int
         """
-        try:
-            responses = await self._origin.send(update)
-        except TelegramIntegrationsError as err:
-            error_messages = {
-                'chat not found',
-                'bot was blocked by the user',
-                'user is deactivated',
-            }
-            for error_message in error_messages:
-                if error_message not in str(err):
-                    continue
-                dict_response = ujson.loads(str(err))
-                return [dict_response]
-            raise TelegramIntegrationsError(str(err)) from err
-        return responses
+        return self._origin

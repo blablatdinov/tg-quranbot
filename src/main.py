@@ -35,9 +35,9 @@ from integrations.tg.polling_updates import PollingUpdatesIterator
 from integrations.tg.sendable_answer import SendableAnswer
 from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer
 from integrations.tg.udpates_with_offset_url import UpdatesWithOffsetURL
+from integrations.tg.updates_long_polling_url import UpdatesLongPollingURL
 from integrations.tg.updates_timeout import UpdatesTimeout
 from integrations.tg.updates_url import UpdatesURL
-from integrations.tg.upddates_long_pollinig_url import UpdatesLongPollingURL
 from metrics.measured_answer import MeasuredAnswer
 from metrics.prometheus import BOT_REQUESTS
 from quranbot_answer import QuranbotAnswer
