@@ -22,13 +22,13 @@
 
 import pytest
 
-from integrations.tg.app_with_get_me import AppWithGetMe
-from app_types.fk_runable import FkRunable
 from app_types.fk_log_sink import FkLogSink
+from app_types.fk_runable import FkRunable
+from integrations.tg.app_with_get_me import AppWithGetMe
 
 
-@pytest.fixture()
-async def mock_http(respx_mock):
+@pytest.fixture
+def mock_http(respx_mock):
     respx_mock.get('https://api.telegram.org/botfakeToken/getMe')
 
 

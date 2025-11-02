@@ -62,8 +62,6 @@ class CachedTgUpdate(Update):
 
         :return: dict
         """
-        print(not self._cache['asdict'])
         if not self._cache['asdict']:
             self._cache['asdict'] = self._origin.asdict()
-        print('cached', self._cache['asdict'])
         return self._cache['asdict']

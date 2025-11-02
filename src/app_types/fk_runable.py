@@ -20,15 +20,17 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from app_types.runable import Runable
+from typing import final
 
-from typing import Protocol, final
 import attrs
+
+from app_types.runable import Runable
 
 
 @final
 @attrs.define(frozen=True)
 class FkRunable(Runable):
+    """Fake runable."""
 
     async def run(self) -> None:
         """Запуск."""

@@ -47,7 +47,6 @@ class AppWithGetMe(Runable):
         """
         async with httpx.AsyncClient(timeout=5) as client:
             response = await client.get('https://api.telegram.org/bot{0}/getMe'.format(self._token))
-            print(response)
             if response.status_code != httpx.codes.OK:
                 raise InternalBotError(response.text)
             self._logger.info(response.content)

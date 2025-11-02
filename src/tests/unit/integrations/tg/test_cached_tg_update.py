@@ -20,13 +20,11 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-import pytest
 from typing import final
-import attrs
 
-from integrations.tg.cached_tg_update import CachedTgUpdate
 from app_types.fk_update import FkUpdate
 from app_types.update import Update
+from integrations.tg.cached_tg_update import CachedTgUpdate
 
 
 @final
@@ -38,13 +36,15 @@ class _SeUpdate(Update):
 
     def __str__(self):
         if self._flag:
-            raise Exception
+            # Exception for test
+            raise Exception  # noqa: TRY002
         self._flag = True
         return str(self._origin)
 
     def asdict(self):
         if self._flag:
-            raise Exception
+            # Exception for test
+            raise Exception  # noqa: TRY002
         self._flag = True
         return self._origin.asdict()
 
@@ -55,7 +55,9 @@ def test_str():
             FkUpdate.empty_ctor(),
         ),
     )
-    assert str(cd_update) == str(cd_update)
+    init_val = str(cd_update)
+    cached_val = str(cd_update)
+    assert init_val == cached_val
 
 
 def test_dict():
@@ -64,4 +66,6 @@ def test_dict():
             FkUpdate('{"key":"val"}'),
         ),
     )
-    assert cd_update.asdict() == cd_update.asdict()
+    init_val = cd_update.asdict()
+    cached_val = cd_update.asdict()
+    assert init_val == cached_val
