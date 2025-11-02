@@ -34,7 +34,7 @@ tasks:
 
   compose-test:
     cmds:
-      - docker compose run --rm qbot task tests
+      - docker compose run --rm qbot poetry run pytest {{.CLI_ARGS}}
 
   compose-bash:
     cmds:

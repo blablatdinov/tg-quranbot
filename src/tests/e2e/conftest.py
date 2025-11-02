@@ -138,7 +138,8 @@ def queues():
 @pytest.fixture(scope='session')
 def rbmq_channel(queues, settings):
     connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='localhost',
+        host=settings.RABBITMQ_HOST,
+        virtual_host=settings.RABBITMQ_VHOST,
         port=5672,
         credentials=pika.PlainCredentials(settings.RABBITMQ_USER, settings.RABBITMQ_PASS),
     ))
