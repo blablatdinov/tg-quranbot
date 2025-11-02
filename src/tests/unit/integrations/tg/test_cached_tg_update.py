@@ -20,53 +20,53 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Final, TypedDict, final, override
+from typing import final
 
+from app_types.fk_update import FkUpdate
 from app_types.update import Update
-
-STR_LITERAL: Final = 'str'
-ASDICT_LITERAL: Final = 'asdict'
+from integrations.tg.cached_tg_update import CachedTgUpdate
 
 
 @final
-class _CacheDict(TypedDict):
+# object with side effect for testing
+class _SeUpdate(Update):  # noqa: PEO200
 
-    str: str
-    asdict: dict
-
-
-@final
-# object for caching
-class CachedTgUpdate(Update):  # noqa: PEO200
-    """Декоратор, для избежания повторной десериализации."""
-
-    def __init__(self, origin: Update) -> None:
-        """Ctor.
-
-        :param origin: Update - оригинальный объект обновления
-        """
+    def __init__(self, origin: Update):
         self._origin = origin
-        self._cache: _CacheDict = {
-            STR_LITERAL: '',
-            ASDICT_LITERAL: {},
-        }
+        self._flag = False
 
-    @override
-    def __str__(self) -> str:
-        """Приведение к строке.
+    def __str__(self):
+        if self._flag:
+            # Exception for test
+            raise Exception  # noqa: TRY002
+        self._flag = True
+        return str(self._origin)
 
-        :return: str
-        """
-        if not self._cache[STR_LITERAL]:
-            self._cache[STR_LITERAL] = str(self._origin)
-        return self._cache[STR_LITERAL]
+    def asdict(self):
+        if self._flag:
+            # Exception for test
+            raise Exception  # noqa: TRY002
+        self._flag = True
+        return self._origin.asdict()
 
-    @override
-    def asdict(self) -> dict:
-        """Словарь.
 
-        :return: dict
-        """
-        if not self._cache[ASDICT_LITERAL]:
-            self._cache[ASDICT_LITERAL] = self._origin.asdict()
-        return self._cache[ASDICT_LITERAL]
+def test_str():
+    cd_update = CachedTgUpdate(
+        _SeUpdate(
+            FkUpdate.empty_ctor(),
+        ),
+    )
+    init_val = str(cd_update)
+    cached_val = str(cd_update)
+    assert init_val == cached_val
+
+
+def test_dict():
+    cd_update = CachedTgUpdate(
+        _SeUpdate(
+            FkUpdate('{"key":"val"}'),
+        ),
+    )
+    init_val = cd_update.asdict()
+    cached_val = cd_update.asdict()
+    assert init_val == cached_val

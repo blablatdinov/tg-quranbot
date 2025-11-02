@@ -25,64 +25,85 @@ test-free-files:
   - .*app_types.*
   - src/db/connection.py
   - src/exceptions.*
+  - src/integrations/tg/exceptions.*
   - src/tests/.*
+  # Fake objects:
   - .*fk_.*\.py
   # DTO:
   - src/srv/prayers/prayer_message_text_dict.py
   # File with prometheus metrics:
   - src/metrics/prometheus.py
+  #############################
   # protocols:
-  - src/srv/prayers/prayers_info.py
-  - src/srv/prayers/new_prayers.py
-  - src/srv/ayats/text_search_query.py
+  - src/app_types/runable.py
+  - src/app_types/async_int_or_none.py
+  - src/app_types/counter.py
+  - src/app_types/update.py
+  - src/app_types/supports_bool.py
+  - src/app_types/stringable.py
+  - src/app_types/date_time.py
+  - src/app_types/async_date.py
+  - src/srv/events/recieved_event.py
+  - src/app_types/async_supports_str.py
+  - src/app_types/intable.py
+  - src/app_types/listable.py
+  - src/app_types/logger.py
+  - src/app_types/sync_runable.py
   - src/integrations/tg/keyboard.py
-  - src/integrations/tg/sendable.py
-  - src/integrations/tg/tg_answers/tg_answer.py
-  - src/integrations/tg/udpates_url_interface.py
-  - src/integrations/tg/updates_iterator.py
-  - src/services/debug_param.py
-  - src/srv/ayats/ayat_identifier.py
-  - src/srv/ayats/favorite_ayat_status.py
-  - src/srv/ayats/neighbor_ayats.py
-  - src/srv/ayats/neighbor_ayats_buttons.py
-  - src/srv/ayats/search_query.py
   - src/srv/events/event_hook.py
+  - src/integrations/tg/coordinates.py
   - src/srv/events/sink.py
+  - src/app_types/async_date_time.py
   - src/srv/files/tg_file.py
-  - src/srv/podcasts/changed_podcast_reaction.py
-  - src/srv/podcasts/podcast_reaction.py
-  - src/srv/prayers/city.py  # Почему у этого интерфейса есть тест
-  - src/srv/prayers/exist_user_prayers.py
-  - src/srv/prayers/new_prayers_at_user.py
-  - src/srv/prayers/prayer_date.py  # Почему у этого интерфейса есть тест?
-  - src/srv/prayers/prayers_stts.py
-  - src/srv/prayers/updated_user_city.py
-  - src/srv/prayers/user_prayer_stts.py
-  - src/srv/podcasts/podcast_reactions.py
-  # Почему-то существует 2 одинаковых протокола
-  - src/srv/start/new_user.py
+  - src/app_types/async_supports_bool.py
+  - src/services/json_path.py
+  - src/services/debug_param.py
+  - src/integrations/tg/udpates_url_interface.py
+  - src/integrations/tg/sendable.py
+  - src/srv/users/valid_chat_id.py
+  - src/integrations/tg/tg_answers/tg_answer.py
   - src/srv/users/new_user.py
-  - src/srv/users/updated_users_status.py
   - src/srv/users/user.py
   - src/srv/users/user_state.py
-  # TODO
-  - src/handlers/full_start_answer.py
-  - src/handlers/pagination_per_day_prayer_answer.py
-  - src/handlers/podcast_message_text_not_exists_safe_answer.py
-  - src/handlers/prayers_statistic.py
-  - src/handlers/search_ayat_by_keyword_answer.py
-  - src/handlers/search_ayat_by_numbers_answer.py
-  - src/handlers/skipped_prayers_keyboard.py
-  - src/integrations/tg/app_with_get_me.py
+  - src/srv/users/updated_users_status.py
+  - src/integrations/tg/updates_iterator.py
+  - src/srv/podcasts/podcast_reactions.py
+  - src/srv/podcasts/changed_podcast_reaction.py
+  - src/srv/podcasts/podcast.py
+  - src/srv/ayats/ayat_identifier.py
+  - src/srv/ayats/text_search_query.py
+  - src/srv/ayats/neighbor_ayats_buttons.py
+  - src/srv/ayats/neighbor_ayats.py
+  - src/srv/ayats/favorite_ayat_status.py
+  - src/srv/ayats/ayat.py
+  - src/srv/admin_messages/admin_message.py
+  - src/srv/ayats/search_query.py
+  - src/srv/prayers/city.py
+  - src/srv/prayers/updated_user_city.py
+  - src/srv/prayers/prayers_info.py
+  - src/srv/prayers/exist_user_prayers.py
+  - src/srv/prayers/user_prayer_stts.py
+  - src/srv/prayers/new_prayers.py
+  - src/srv/prayers/prayers_stts.py
+  - src/srv/start/new_user.py
+  - src/srv/prayers/new_prayers_at_user.py
+  - src/srv/prayers/prayer_date.py
+  #############################
+  #############################
+  # Fix later:
   - src/integrations/tg/bulk_sendable_answer.py
-  - src/integrations/tg/cached_tg_update.py
   - src/integrations/tg/database_connected_app.py
-  - src/integrations/tg/exceptions/update_parse_exceptions.py
   - src/integrations/tg/polling_app.py
   - src/integrations/tg/polling_updates.py
   - src/integrations/tg/sendable_answer.py
   - src/integrations/tg/tg_answers/delete_message_answer.py
   - src/integrations/tg/tg_answers/edit_message_text.py
+  - src/handlers/full_start_answer.py
+  - src/handlers/podcast_message_text_not_exists_safe_answer.py
+  - src/handlers/prayers_statistic.py
+  - src/handlers/search_ayat_by_keyword_answer.py
+  - src/handlers/search_ayat_by_numbers_answer.py
+  - src/handlers/skipped_prayers_keyboard.py
   - src/integrations/tg/tg_answers/link_preview_options.py
   - src/integrations/tg/tg_answers/message_answer_to_sender.py
   - src/integrations/tg/tg_answers/skipable_answer.py
@@ -93,7 +114,6 @@ test-free-files:
   - src/integrations/tg/update.py
   - src/integrations/tg/updates_timeout.py
   - src/integrations/tg/updates_url.py
-  - src/integrations/tg/upddates_long_pollinig_url.py
   - src/integrations/tg/user_not_subscribed_safe_sendable.py
   - src/main.py
   - src/quranbot_answer.py
@@ -110,7 +130,6 @@ test-free-files:
   - src/services/err_redirect_json_path.py
   - src/services/fork_cli_app.py
   - src/services/help_answer.py
-  - src/services/json_path.py
   - src/services/json_path_value.py
   - src/services/match_many_json_path.py
   - src/services/reset_state_answer.py
@@ -119,9 +138,7 @@ test-free-files:
   - src/services/time_debug_param.py
   - src/services/update_id_debug_param.py
   - src/settings.py
-  - src/srv/admin_messages/admin_message.py
   - src/srv/admin_messages/pg_admin_message.py
-  - src/srv/ayats/ayat.py
   - src/srv/ayats/ayat_answer.py
   - src/srv/ayats/ayat_answer_keyboard.py
   - src/srv/ayats/ayat_by_id_answer.py
@@ -150,7 +167,6 @@ test-free-files:
   - src/srv/events/prayer_created_event.py
   - src/srv/events/rabbitmq_sink.py
   - src/srv/events/rbmq_event_hook.py
-  - src/srv/events/recieved_event.py
   - src/srv/files/tg_file_id_not_filled_safe_answer.py
   - src/srv/message_not_found_safe_answer.py
   - src/srv/podcasts/markupped_podcast_answer.py
@@ -165,12 +181,12 @@ test-free-files:
   - src/srv/prayers/pg_city_change_safe_user_prayers.py
   - src/srv/prayers/pg_exist_user_prayers.py
   - src/srv/prayers/pg_new_prayers_at_user.py
+  - src/srv/prayers/pg_prayers_info.py
+  - src/srv/prayers/pg_saved_prayers_info.py
   - src/srv/prayers/pg_updated_user_city.py
   - src/srv/prayers/prayer_names.py
   - src/srv/prayers/prayers_expired_answer.py
   - src/srv/prayers/prayers_mark_as_date.py
-  - src/srv/prayers/prayers_request_date.py
-  - src/srv/prayers/pg_prayers_info.py
   - src/srv/prayers/user_prayer_status.py
   - src/srv/prayers/user_without_city_safe_answer.py
   - src/srv/start/new_tg_user.py
@@ -186,9 +202,8 @@ test-free-files:
   - src/srv/users/pg_users.py
   - src/srv/users/pg_valid_chat_id.py
   - src/srv/users/updated_users_status_event.py
-  - src/srv/prayers/pg_saved_prayers_info.py
   - src/srv/users/user_step.py
-  - src/srv/users/valid_chat_id.py
+  #############################
   # TODO #1438:30min Написать тесты на src/srv/prayers/prayers_text.py
   - src/srv/prayers/prayers_text.py
   # TODO #1438:30min Написать тесты на src/handlers/nt_prayer_time_answer.py
