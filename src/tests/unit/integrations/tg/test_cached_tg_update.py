@@ -28,7 +28,8 @@ from integrations.tg.cached_tg_update import CachedTgUpdate
 
 
 @final
-class _SeUpdate(Update):
+# object with side effect for testing
+class _SeUpdate(Update):  # noqa: PEO200
 
     def __init__(self, origin: Update):
         self._origin = origin

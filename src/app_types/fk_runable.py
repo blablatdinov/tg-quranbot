@@ -20,7 +20,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import final
+from typing import final, override
 
 import attrs
 
@@ -32,5 +32,6 @@ from app_types.runable import Runable
 class FkRunable(Runable):
     """Fake runable."""
 
+    @override
     async def run(self) -> None:
         """Запуск."""

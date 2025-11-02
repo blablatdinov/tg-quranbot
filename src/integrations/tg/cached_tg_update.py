@@ -20,11 +20,15 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 # OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import TypedDict, final, override
+from typing import TypedDict, final, override, Final
 
 from app_types.update import Update
 
+STR_LITERAL: Final = 'str'
+ASDICT_LITERAL: Final = 'str'
 
+
+@final
 class _CacheDict(TypedDict):
 
     str: str
@@ -32,7 +36,8 @@ class _CacheDict(TypedDict):
 
 
 @final
-class CachedTgUpdate(Update):
+# object for caching
+class CachedTgUpdate(Update):  # noqa: PEO200
     """Декоратор, для избежания повторной десериализации."""
 
     def __init__(self, origin: Update) -> None:
@@ -42,8 +47,8 @@ class CachedTgUpdate(Update):
         """
         self._origin = origin
         self._cache: _CacheDict = {
-            'str': '',
-            'asdict': {},
+            STR_LITERAL: '',
+            ASDICT_LITERAL: {},
         }
 
     @override
@@ -52,9 +57,9 @@ class CachedTgUpdate(Update):
 
         :return: str
         """
-        if not self._cache['str']:
-            self._cache['str'] = str(self._origin)
-        return self._cache['str']
+        if not self._cache[STR_LITERAL]:
+            self._cache[STR_LITERAL] = str(self._origin)
+        return self._cache[STR_LITERAL]
 
     @override
     def asdict(self) -> dict:
@@ -62,6 +67,6 @@ class CachedTgUpdate(Update):
 
         :return: dict
         """
-        if not self._cache['asdict']:
-            self._cache['asdict'] = self._origin.asdict()
-        return self._cache['asdict']
+        if not self._cache[ASDICT_LITERAL]:
+            self._cache[ASDICT_LITERAL] = self._origin.asdict()
+        return self._cache[ASDICT_LITERAL]
