@@ -40,14 +40,13 @@ class _CacheDict(TypedDict):
 class CachedTgUpdate(Update):  # noqa: PEO200
     """Декоратор, для избежания повторной десериализации."""
 
-    # object for caching
-    def __init__(self, origin: Update) -> None:  # noqa: PEO101
+    def __init__(self, origin: Update) -> None:
         """Ctor.
 
         :param origin: Update - оригинальный объект обновления
         """
         self._origin = origin
-        self._cache: _CacheDict = {
+        self._cache: _CacheDict = {  # noqa: PEO101
             STR_LITERAL: '',
             ASDICT_LITERAL: {},
         }
