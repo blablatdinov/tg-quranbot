@@ -40,7 +40,8 @@ class _CacheDict(TypedDict):
 class CachedTgUpdate(Update):  # noqa: PEO200
     """Декоратор, для избежания повторной десериализации."""
 
-    def __init__(self, origin: Update) -> None:
+    # object for caching
+    def __init__(self, origin: Update) -> None:  # noqa: PEO101
         """Ctor.
 
         :param origin: Update - оригинальный объект обновления
