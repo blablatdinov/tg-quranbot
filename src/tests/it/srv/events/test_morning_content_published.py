@@ -149,9 +149,9 @@ async def users(user_factory):
 async def test(pgsql, users, settings_ctor, settings):
     settings = settings_ctor(  # noqa: S106. Not secure issue
         rabbitmq_host=settings.RABBITMQ_HOST,
-        rabbitmq_user='admin',
-        rabbitmq_pass='admin',  # noqa: S106 . Not secure issue
-        rabbitmq_vhost='default_vhost',
+        rabbitmq_user='guest',
+        rabbitmq_pass='guest',  # noqa: S106 . Not secure issue
+        rabbitmq_vhost='',
         daily_ayats='on',
     )
     await MorningContentPublishedEvent(
