@@ -65,7 +65,7 @@ async def test_legacy_id_ctor(pgsql, legacy_id):
 
 @pytest.mark.usefixtures('db_user')
 async def test_not_found(pgsql):
-    user = PgUser(FkAsyncInt(9843), pgsql)
+    user = PgUser.int_ctor(FkAsyncInt(9843), pgsql)
 
     assert await user.chat_id() == 9843
     with pytest.raises(UserNotFoundError):
