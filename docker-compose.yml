@@ -88,7 +88,7 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
 
   grafana:
-    image: grafana/grafana:12.2
+    image: grafana/grafana:12.3
     ports:
       - "3000:3000"
     volumes:
