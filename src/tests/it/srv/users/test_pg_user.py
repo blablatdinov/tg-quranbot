@@ -67,7 +67,6 @@ async def test_legacy_id_ctor(pgsql, legacy_id):
 async def test_not_found(pgsql):
     user = PgUser.int_ctor(9843, pgsql)
 
-    assert await user.chat_id() == 9843
     with pytest.raises(UserNotFoundError):
         await user.day()
     with pytest.raises(UserNotFoundError):

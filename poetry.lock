@@ -604,19 +604,21 @@ ujson = ">=1.19"
 
 [[package]]
 name = "eo-styleguide"
-version = "0.1.0"
+version = "0.1.1"
 description = "Pyeo is an advanced static analysis tool tailored specifically to enforce the principles advocated by Elegant Objects (elegantobjects.org) in Python projects. It serves as a quality control instrument to ensure that your Python code adheres to the core tenets of elegance, simplicity, and maintainability."
 optional = false
-python-versions = "<4.0,>=3.9"
+python-versions = "<4.0,>=3.10"
 groups = ["main"]
 files = [
-    {file = "eo_styleguide-0.1.0-py3-none-any.whl", hash = "sha256:9616b7dacfe68cc61b27e346d3f3f8b90fd7a86df1539b717734740de5f8d3ed"},
-    {file = "eo_styleguide-0.1.0.tar.gz", hash = "sha256:ced0a8377cb8ea54ee1e237b78abd969cfe2ed3b56dffb207ec60a359973083d"},
+    {file = "eo_styleguide-0.1.1-py3-none-any.whl", hash = "sha256:96760b1f3727b151ee55cce514d286478ff4468d906b1f11b2b0c593691173a0"},
+    {file = "eo_styleguide-0.1.1.tar.gz", hash = "sha256:8c681325a7c2a4f7f8ee2d41ba5f06fff93cfaa23698d26de52f2b3a5c2bd2a8"},
 ]
 
 [package.dependencies]
 flake8 = ">=7.1,<8.0"
 flake8-final = "*"
+flake8-no-private-methods = "*"
+flake8-one-class = "*"
 flake8-override = "*"
 
 [[package]]
@@ -711,7 +713,7 @@ version = "0.0.1"
 description = "This is how python package should look like!"
 optional = false
 python-versions = "<4.0,>=3.9"
-groups = ["dev"]
+groups = ["main", "dev"]
 files = [
     {file = "flake8_no_private_methods-0.0.1-py3-none-any.whl", hash = "sha256:224bccd71b245b0069c694b95d267aede04eb757614b2ecd644fc5418e3f10c3"},
     {file = "flake8_no_private_methods-0.0.1.tar.gz", hash = "sha256:7cf9bbd191a879e3ebd9654f0eb97f04a02a3da60754e545320008bcc4f73d64"},
@@ -719,6 +721,21 @@ files = [
 
 [package.dependencies]
 flake8 = ">=5.0.0"
+
+[[package]]
+name = "flake8-one-class"
+version = "0.0.1"
+description = "flake8 plugin for check and inheritance of implementations"
+optional = false
+python-versions = "<4.0,>=3.9"
+groups = ["main"]
+files = [
+    {file = "flake8_one_class-0.0.1-py3-none-any.whl", hash = "sha256:3c47e5ba03516891af5b77c5e231772bdf4c37ab2ce14919caacb35451e0b862"},
+    {file = "flake8_one_class-0.0.1.tar.gz", hash = "sha256:15673b02671b4889144d889e8da14dac5ac7af1f33f5633ab411739a58aefe4f"},
+]
+
+[package.dependencies]
+flake8 = ">=7.1,<8.0"
 
 [[package]]
 name = "flake8-override"
@@ -3936,4 +3953,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "0b630dec3a00c15de543e8de66e522a94a66eaa9026ac24aa043f09c617aa17d"
+content-hash = "6fcd30a8bf2175a4df0090a00ed740cd15c92af7d2dbc2a6d832298460099884"
