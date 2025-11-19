@@ -103,6 +103,6 @@ class PgUser(User):
             query,
             {'chat_id': await self._chat_id.to_int()},
         )
-        if not query_result:
+        if query_result is None:
             raise UserNotFoundError
         return query_result
