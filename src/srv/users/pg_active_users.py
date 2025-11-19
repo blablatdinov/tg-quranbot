@@ -26,7 +26,6 @@ import attrs
 from databases import Database
 
 from app_types.listable import AsyncListable
-from srv.users.fk_valid_chat_id import FkValidChatId
 from srv.users.pg_user import PgUser
 from srv.users.user import User
 
@@ -51,6 +50,6 @@ class PgActiveUsers(AsyncListable):
         ])
         rows = await self._pgsql.fetch_all(query)
         return [
-            PgUser(FkValidChatId.int_ctor(row['chat_id']), self._pgsql)
+            PgUser.int_ctor(row['chat_id'], self._pgsql)
             for row in rows
         ]

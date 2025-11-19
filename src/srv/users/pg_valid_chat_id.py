@@ -45,7 +45,7 @@ class PgValidChatId(ValidChatId):
 
         :param pgsql: Database
         :param int_value: SupportsInt
-        :return: FkValidChatId
+        :return: ValidChatId
         """
         return cls(pgsql, FkAsyncInt(int_value))
 

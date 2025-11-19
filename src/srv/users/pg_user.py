@@ -25,8 +25,8 @@ from typing import final, override
 import attrs
 from databases import Database
 
-from app_types.fk_async_int import FkAsyncInt
 from app_types.intable import AsyncInt
+from exceptions.internal_exceptions import UserNotFoundError
 from srv.users.chat_id_by_legacy_id import ChatIdByLegacyId
 from srv.users.pg_valid_chat_id import PgValidChatId
 from srv.users.user import User
@@ -59,7 +59,7 @@ class PgUser(User):
         :param pgsql: Database
         :return: User
         """
-        return cls(PgValidChatId(pgsql, FkAsyncInt(chat_id)), pgsql)
+        return cls(PgValidChatId.int_ctor(pgsql, chat_id), pgsql)
 
     @override
     async def chat_id(self) -> int:
@@ -80,7 +80,13 @@ class PgUser(User):
             'FROM users',
             'WHERE chat_id = :chat_id',
         ])
-        return await self._pgsql.fetch_val(query, {'chat_id': await self._chat_id.to_int()})
+        query_result = await self._pgsql.fetch_val(
+            query,
+            {'chat_id': await self._chat_id.to_int()},
+        )
+        if not query_result:
+            raise UserNotFoundError
+        return query_result
 
     @override
     async def is_active(self) -> bool:
@@ -93,4 +99,10 @@ class PgUser(User):
             'FROM users',
             'WHERE chat_id = :chat_id',
         ])
-        return await self._pgsql.fetch_val(query, {'chat_id': await self._chat_id.to_int()})
+        query_result = await self._pgsql.fetch_val(
+            query,
+            {'chat_id': await self._chat_id.to_int()},
+        )
+        if query_result is None:
+            raise UserNotFoundError
+        return query_result
