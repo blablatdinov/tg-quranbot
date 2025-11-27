@@ -87,7 +87,7 @@ services:
       - RAMADAN_MODE=${RAMADAN_MODE}
 
   loki:
-    image: grafana/loki:3.6.1
+    image: grafana/loki:3.6.2
     ports:
       - "3100:3100"
     volumes:
