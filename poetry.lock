@@ -163,14 +163,14 @@ gssauth = ["gssapi", "sspilib"]
 
 [[package]]
 name = "asyncpg-stubs"
-version = "0.31.0"
+version = "0.31.1"
 description = "asyncpg stubs"
 optional = false
 python-versions = "<4.0,>=3.9"
 groups = ["dev"]
 files = [
-    {file = "asyncpg_stubs-0.31.0-py3-none-any.whl", hash = "sha256:1aab612494c21aa9965238bba3892d9e7378c311561102b2bcf90a72b5afddb5"},
-    {file = "asyncpg_stubs-0.31.0.tar.gz", hash = "sha256:43a1665dbe3e6596c16d9d083d568604bec2babf1e18fcb8950041674c0cac60"},
+    {file = "asyncpg_stubs-0.31.1-py3-none-any.whl", hash = "sha256:96c0cf3786948f313207b990d26bf3430daf385ca2913ba65d9dd0ede6bf8bf4"},
+    {file = "asyncpg_stubs-0.31.1.tar.gz", hash = "sha256:6d7342417f867365c98b67d5ae40cb57ce6b2a9eb921fff39d9296961fca18be"},
 ]
 
 [package.dependencies]
@@ -4046,4 +4046,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "751ae0a2b06622e79845286a72688f7663c4523a95c2b11c2b4757047ee9a33a"
+content-hash = "491b1a69b5ffcfa4ec83ae9cf535107d88afb98d45b98e456b351744f3a5aa1d"
