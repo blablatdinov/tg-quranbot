@@ -97,7 +97,7 @@ services:
       - prometheus
 
   loki:
-    image: grafana/loki:3.6.2
+    image: grafana/loki:3.6.3
     ports:
       - "3100:3100"
     volumes:
