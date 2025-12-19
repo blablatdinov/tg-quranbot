@@ -79,7 +79,7 @@ asyncpg-stubs = "0.31.1"
 # style checks
 wemake-python-styleguide = { git = "https://github.com/wemake-services/wemake-python-styleguide", branch="master" }
 ruff = "0.14.9"
-ondivi = "0.7.2"
+ondivi = "0.7.3"
 flake8-final = "0.0.3"
 flake8-override = "0.1.0"
 flake8-no-json = "0.0.2"
