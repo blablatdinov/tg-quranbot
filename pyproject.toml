@@ -70,7 +70,7 @@ flake8-no-private-methods = "0.0.1"
 # other
 deltaver = "1.0.0"
 yoyo-migrations = "9.0.0"
-faker = "39.1.0"
+faker = "40.1.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
