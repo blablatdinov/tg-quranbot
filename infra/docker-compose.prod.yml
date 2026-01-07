@@ -85,7 +85,7 @@ services:
       - loki
 
   prometheus:
-    image: prom/prometheus:v3.9.0
+    image: prom/prometheus:v3.9.1
     ports:
       - "9090:9090"
     volumes:
