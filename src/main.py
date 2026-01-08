@@ -46,7 +46,7 @@ def main(sys_args: list[str]) -> None:
 
     :param sys_args: list[str]
     """
-    sink = RabbitmqSink(settings, logger) if settings.sink_enable else FkSink(settings, logger)
+    sink = RabbitmqSink(settings, logger) if settings.SINK_ENABLE else FkSink(settings, logger)
     redis = aioredis.from_url(str(settings.REDIS_DSN))
     if settings.SENTRY_DSN:
         sentry_sdk.init(
