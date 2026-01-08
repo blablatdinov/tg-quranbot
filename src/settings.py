@@ -31,6 +31,7 @@ class Settings(BaseSettings):  # noqa: PEO200
     DAILY_PRAYERS: bool = False
     RAMADAN_MODE: bool = False
     PROMETHEUS_PORT: int = 9091
+    SINK_ENABLE: bool = False
 
     def admin_chat_ids(self) -> list[int]:  # noqa: OVR100
         """Список идентификаторов админов.
