@@ -31,6 +31,7 @@ from srv.events.ayat_changed_event import RbmqAyatChangedEvent
 from srv.events.check_user_status import CheckUsersStatus
 from srv.events.event_fork import EventFork
 from srv.events.event_hook_app import EventHookApp
+from srv.events.fk_sink import FkSink
 from srv.events.mailing_created import MailingCreatedEvent
 from srv.events.message_deleted import MessageDeleted
 from srv.events.morning_content_published import MorningContentPublishedEvent
@@ -45,7 +46,7 @@ def main(sys_args: list[str]) -> None:
 
     :param sys_args: list[str]
     """
-    rabbitmq_sink = RabbitmqSink(settings, logger)
+    sink = RabbitmqSink(settings, logger) if settings.sink_enable else FkSink(settings, logger)
     redis = aioredis.from_url(str(settings.REDIS_DSN))
     if settings.SENTRY_DSN:
         sentry_sdk.init(
@@ -74,7 +75,7 @@ def main(sys_args: list[str]) -> None:
                                     QuranbotAnswer.ctor(
                                         pgsql,
                                         redis,
-                                        rabbitmq_sink,
+                                        sink,
                                         settings,
                                         logger,
                                     ),
@@ -84,7 +85,7 @@ def main(sys_args: list[str]) -> None:
                             ),
                             logger,
                         ),
-                        rabbitmq_sink,
+                        sink,
                     ),
                     logger,
                 ),
@@ -110,34 +111,34 @@ def main(sys_args: list[str]) -> None:
                         TgEmptyAnswer(settings.API_TOKEN),
                         pgsql,
                         settings,
-                        rabbitmq_sink,
+                        sink,
                         logger,
                     )),
                     EventFork('Mailing.DailyPrayers', 1, PrayersMailingPublishedEvent(
                         TgEmptyAnswer(settings.API_TOKEN),
                         pgsql,
                         settings,
-                        rabbitmq_sink,
+                        sink,
                         logger,
                         redis,
                     )),
                     EventFork('Mailing.Created', 1, MailingCreatedEvent(
                         TgEmptyAnswer(settings.API_TOKEN),
                         pgsql,
-                        rabbitmq_sink,
+                        sink,
                         logger,
                         settings,
                     )),
                     EventFork('User.CheckStatus', 1, CheckUsersStatus(
                         TgEmptyAnswer(settings.API_TOKEN),
                         pgsql,
-                        rabbitmq_sink,
+                        sink,
                         logger,
                     )),
                     EventFork('Messages.Deleted', 2, MessageDeleted(
                         TgEmptyAnswer(settings.API_TOKEN),
                         pgsql,
-                        rabbitmq_sink,
+                        sink,
                         logger,
                     )),
                     EventFork('Prayers.Created', 2, PrayerCreatedEvent(pgsql)),
