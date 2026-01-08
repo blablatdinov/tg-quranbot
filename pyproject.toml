@@ -12,7 +12,7 @@ package-mode = false
 python = ">=3.14,<3.15"
 loguru = "0.7.3"
 quranbot-schema-registry = "0.0.28"
-sentry-sdk = "2.48.0"
+sentry-sdk = "2.49.0"
 httpx = "0.28.1"
 pytz = "2025.2"
 databases = {extras = ["asyncpg"], version = "0.9.0"}
