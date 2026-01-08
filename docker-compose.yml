@@ -67,6 +67,8 @@ services:
       - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
+    profiles:
+      - observers
 
   grafana:
     image: grafana/grafana:12.3
@@ -76,6 +78,8 @@ services:
       - grafana-storage:/var/lib/grafana
     depends_on:
       - prometheus
+    profiles:
+      - observers
 
   loki:
     image: grafana/loki:3.6.3
@@ -84,6 +88,8 @@ services:
     volumes:
       - ./loki_data:/loki
     command: -config.file=/etc/loki/local-config.yaml
+    profiles:
+      - observers
 
   promtail:
     image: grafana/promtail:3.6.3
@@ -93,6 +99,8 @@ services:
       - ./infra/promtail-config.yml:/etc/promtail/config.yml
     depends_on:
       - loki
+    profiles:
+      - observers
 
 volumes:
   postgres-data:
