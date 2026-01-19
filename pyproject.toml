@@ -65,7 +65,7 @@ flake8-final = "0.0.3"
 flake8-override = "0.1.0"
 flake8-no-json = "0.0.2"
 vulture = "2.14"
-sqlfluff = "3.5.0"
+sqlfluff = "4.0.0"
 flake8-no-private-methods = "0.0.1"
 # other
 deltaver = "1.0.0"
