@@ -17,8 +17,8 @@ class Settings(BaseSettings):  # noqa: PEO200
     REDIS_DSN: RedisDsn
     DEBUG: bool
     DATABASE_URL: PostgresDsn
-    DATABASE_POOL_MIN_SIZE: int = 1,
-    DATABASE_POOL_MAX_SIZE: int = 3,
+    DATABASE_POOL_MIN_SIZE: int = 1
+    DATABASE_POOL_MAX_SIZE: int = 3
     API_TOKEN: str
     RABBITMQ_USER: str
     RABBITMQ_PASS: str
