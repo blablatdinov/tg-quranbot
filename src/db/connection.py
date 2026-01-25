@@ -5,4 +5,8 @@ from databases import Database
 
 from settings import settings
 
-pgsql = Database(str(settings.DATABASE_URL))
+pgsql = Database(
+    str(settings.DATABASE_URL),
+    min_size=settings.DATABASE_POOL_MIN_SIZE,
+    max_size=settings.DATABASE_POOL_MAX_SIZE,
+)
