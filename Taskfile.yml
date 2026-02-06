@@ -36,7 +36,6 @@ tasks:
   run:
     deps: [syntax-check, type-check]
     cmds:
-      # - poetry run watchfiles 'python src/main.py run_polling' src
       - poetry run watchmedo auto-restart --patterns='*.py' --recursive -- poetry run python src/main.py run_polling
 
   tests:
