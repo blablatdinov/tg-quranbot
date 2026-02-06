@@ -4,6 +4,7 @@
 version: '3.3'
 
 services:
+
   qbot:
     container_name: 'qbot'
     restart: unless-stopped
@@ -14,6 +15,7 @@ services:
     volumes:
       - .env:/.env
       - ./:/app
+      - qbot-venv:/app/.venv
     depends_on:
       - postgres
       - redis
@@ -108,3 +110,4 @@ volumes:
   rabbitmq-data:
   grafana-storage:
   loki_data:
+  qbot-venv:
