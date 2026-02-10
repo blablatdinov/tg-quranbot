@@ -17,10 +17,10 @@ from srv.prayers.hg_prayers_url import HgPrayersUrl
 @attrs.define(frozen=True)
 class FkDb:
 
-    _val: str | None
+    _origin_val: str | None
 
     async def fetch_val(self, *args, **kwargs) -> str | None:  # noqa: OVR100
-        return self._val
+        return self._origin_val
 
 
 @pytest.mark.parametrize(('month_num', 'month_name'), [
