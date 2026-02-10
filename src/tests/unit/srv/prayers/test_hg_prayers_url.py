@@ -2,18 +2,25 @@
 # SPDX-License-Identifier: MIT
 
 import datetime
+from typing import final
 
+import attrs
 import pytest
 
+from exceptions.internal_exceptions import CityNotFoundError
 from srv.prayers.fk_city import FkCity
 from srv.prayers.hg_prayers_url import HgPrayersUrl
 
 
 # Disabled checks for stub
-class FkDb:  # noqa: PEO200, FIN100
+@final
+@attrs.define(frozen=True)
+class FkDb:
 
-    async def fetch_val(self, *args, **kwargs):  # noqa: OVR100
-        return 'https://halalguide.me/innopolis/namaz-time/'
+    _origin_val: str | None
+
+    async def fetch_val(self, *args, **kwargs) -> str | None:  # noqa: OVR100
+        return self._origin_val
 
 
 @pytest.mark.parametrize(('month_num', 'month_name'), [
@@ -33,8 +40,17 @@ class FkDb:  # noqa: PEO200, FIN100
 async def test_month_names(month_num, month_name):
     got = await HgPrayersUrl(
         FkCity.name_ctor('Innopolis'),
-        FkDb(),  # type: ignore [arg-type]
+        FkDb('https://halalguide.me/innopolis/namaz-time/'),  # type: ignore [arg-type]
         datetime.datetime(2025, month_num, 1, tzinfo=datetime.UTC).date(),
     ).to_str()
 
     assert got == 'https://halalguide.me/innopolis/namaz-time/{0}-2025'.format(month_name)
+
+
+async def test_without_link():
+    with pytest.raises(CityNotFoundError):
+        await HgPrayersUrl(
+            FkCity.name_ctor('Innopolis'),
+            FkDb(None),  # type: ignore [arg-type]
+            datetime.datetime(2025, 1, 1, tzinfo=datetime.UTC).date(),
+        ).to_str()
