@@ -25,7 +25,6 @@ class PrayersRequestDate(PrayerDate):
 
         :param update: Update
         :return: datetime.date
-        :raises ValueError: время намаза не соответствует формату
         """
         try:
             return await ParsedDate(
