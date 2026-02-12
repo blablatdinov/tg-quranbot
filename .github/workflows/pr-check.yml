@@ -23,7 +23,7 @@ jobs:
       TZ: "Europe/Moscow"
     services:
       postgres:
-        image: postgres:17.7
+        image: postgres:17.8
         env:
           POSTGRES_USER: almazilaletdinov
           POSTGRES_DB: postgres
