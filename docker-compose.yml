@@ -84,7 +84,7 @@ services:
       - observers
 
   loki:
-    image: grafana/loki:3.6.7
+    image: grafana/loki:3.6.8
     ports:
       - "3100:3100"
     volumes:
