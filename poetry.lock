@@ -3798,14 +3798,14 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "vulture"
-version = "2.15"
+version = "2.16"
 description = "Find dead code"
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "vulture-2.15-py3-none-any.whl", hash = "sha256:a3d8ebef918694326620eb128fa783486c8d285b23381c2b457d864ac056ef8d"},
-    {file = "vulture-2.15.tar.gz", hash = "sha256:f9d8b4ce29c69950d323f21dceab4a4d6c694403dffbed7713c4691057e561fe"},
+    {file = "vulture-2.16-py3-none-any.whl", hash = "sha256:6e0f1c312cef1c87856957e5c2ca9608834a7c794c2180477f30bf0e4cc58eee"},
+    {file = "vulture-2.16.tar.gz", hash = "sha256:f8d9f6e2af03011664a3c6c240c9765b3f392917d3135fddca6d6a68d359f717"},
 ]
 
 [[package]]
@@ -4080,4 +4080,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "037bc58f80ce0b608af02ad8617b70d6b95c1caa9d9b56fce0702369e67273a8"
+content-hash = "505eadac8c75bafed8556c9b3e84db0a68b9e663405bc3d663f58561dd1eaa07"
