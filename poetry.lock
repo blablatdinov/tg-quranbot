@@ -3292,14 +3292,14 @@ sqlcipher = ["sqlcipher3_binary"]
 
 [[package]]
 name = "sqlfluff"
-version = "4.0.4"
+version = "4.1.0"
 description = "The SQL Linter for Humans"
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "sqlfluff-4.0.4-py3-none-any.whl", hash = "sha256:e8b883ec165cb8d08d9f17cca60d831bcc6c193280a13bdc81f9ac84276294c0"},
-    {file = "sqlfluff-4.0.4.tar.gz", hash = "sha256:3f443e18b49ec7062132ae0ef0e2f6e56fc485a2044e9f09ea12a17872efd987"},
+    {file = "sqlfluff-4.1.0-py3-none-any.whl", hash = "sha256:ae11123ca4a697abadbd2783f85f04e58c36e7dd26ae8024f400efccc6a44631"},
+    {file = "sqlfluff-4.1.0.tar.gz", hash = "sha256:83dd4c081afb48c0af861833015a18b13d52726bfe52a286246dbd7a64b7d111"},
 ]
 
 [package.dependencies]
@@ -3317,7 +3317,7 @@ tblib = "*"
 tqdm = "*"
 
 [package.extras]
-rs = ["sqlfluffrs (==4.0.4)"]
+rs = ["sqlfluffrs (==4.1.0)"]
 
 [[package]]
 name = "sqlparse"
@@ -4080,4 +4080,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "505eadac8c75bafed8556c9b3e84db0a68b9e663405bc3d663f58561dd1eaa07"
+content-hash = "eda1cf9656a921688fecaa45fc56e30d46f9832ce40031919b3ba4dce8dc3b85"
