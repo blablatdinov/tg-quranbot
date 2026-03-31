@@ -629,14 +629,14 @@ flake8-override = "*"
 
 [[package]]
 name = "faker"
-version = "40.11.1"
+version = "40.12.0"
 description = "Faker is a Python package that generates fake data for you."
 optional = false
 python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "faker-40.11.1-py3-none-any.whl", hash = "sha256:3af3a213ba8fb33ce6ba2af7aef2ac91363dae35d0cec0b2b0337d189e5bee2a"},
-    {file = "faker-40.11.1.tar.gz", hash = "sha256:61965046e79e8cfde4337d243eac04c0d31481a7c010033141103b43f603100c"},
+    {file = "faker-40.12.0-py3-none-any.whl", hash = "sha256:6238a4058a8b581892e3d78fe5fdfa7568739e1c8283e4ede83f1dde0bfc1a3b"},
+    {file = "faker-40.12.0.tar.gz", hash = "sha256:58b5a9054c367bd5fb2e948634105364cc570e78a98a8e5161a74691c45f158f"},
 ]
 
 [package.dependencies]
@@ -4080,4 +4080,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "f566a572e557231bd22d0149e7c88a1d40c3baffbbc7f107aa5ed20682b09138"
+content-hash = "b0c91d55f02729e773bca328fb1237819d6e255546bf5de603c541755037611b"
