@@ -3,7 +3,7 @@
 
 import asyncio
 from collections.abc import Iterator
-from typing import SupportsInt, final, override, cast
+from typing import SupportsInt, cast, final, override
 
 import attrs
 import httpx
@@ -35,4 +35,4 @@ class RetriedSendable(Sendable):
                 backoff = next(self._backoff)
                 self._logger.info('Attempt {0} failed. Wait {1} seconds'.format(attempt, backoff))
                 await asyncio.sleep(backoff)
-        raise cast(Exception, last_exception)
+        raise cast('Exception', last_exception)
