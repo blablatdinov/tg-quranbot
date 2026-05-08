@@ -12,10 +12,16 @@ import attrs
 class DefaultBackoff(Iterator[int]):
     """Итератор для задержки между отправкой сообщений."""
 
+    def __init__(self) -> None:
+        """Ctor."""
+        self._step = 0
+
     @override
     def __next__(self) -> int:
         """Получить следующий элемент."""
-        return 1
+        val = [2, 3, 5][self._step]
+        self._step += 1
+        return val
 
     @override
     def __iter__(self) -> Self:
