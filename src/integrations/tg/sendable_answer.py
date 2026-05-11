@@ -13,6 +13,7 @@ from app_types.update import Update
 from exceptions.internal_exceptions import TelegramIntegrationsError
 from integrations.tg.sendable import Sendable
 from integrations.tg.tg_answers.tg_answer import TgAnswer
+from settings import Settings
 
 
 @final
@@ -22,6 +23,7 @@ class SendableAnswer(Sendable):
 
     _answer: TgAnswer
     _logger: LogSink
+    _settings: Settings
 
     @override
     async def send(self, update: Update) -> list[dict]:
@@ -33,7 +35,7 @@ class SendableAnswer(Sendable):
         """
         responses = []
         success_status = 200
-        async with httpx.AsyncClient(timeout=5) as client:
+        async with httpx.AsyncClient(timeout=self._settings.TG_TIMEOUT) as client:
             for request in await self._answer.build(update):
                 self._logger.debug('Try send request to: {0}'.format(
                     url_parse.unquote(str(request.url)),

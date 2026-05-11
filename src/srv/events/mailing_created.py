@@ -93,6 +93,7 @@ class MailingCreatedEvent(ReceivedEvent):
                 SendableAnswer(
                     answer,
                     self._log_sink,
+                    self._settings,
                 ),
                 self._events_sink,
                 mailing_id,
