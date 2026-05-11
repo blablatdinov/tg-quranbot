@@ -55,7 +55,7 @@ async def test(pgsql, settings_ctor):
         pgsql,
         FkSink(),
         FkLogSink(),
-        settings_ctor(admin_chat_ids='93754').ADMIN_CHAT_IDS,
+        settings_ctor(admin_chat_ids='93754'),
     ).process(
         JsonDoc({'data': {
             'mailing_id': str(uuid.uuid4()),
