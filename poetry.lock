@@ -719,18 +719,18 @@ flake8 = ">=5"
 
 [[package]]
 name = "flake8-no-private-methods"
-version = "0.0.1"
+version = "0.0.2"
 description = "This is how python package should look like!"
 optional = false
-python-versions = "<4.0,>=3.9"
+python-versions = "<4.0,>=3.10"
 groups = ["main", "dev"]
 files = [
-    {file = "flake8_no_private_methods-0.0.1-py3-none-any.whl", hash = "sha256:224bccd71b245b0069c694b95d267aede04eb757614b2ecd644fc5418e3f10c3"},
-    {file = "flake8_no_private_methods-0.0.1.tar.gz", hash = "sha256:7cf9bbd191a879e3ebd9654f0eb97f04a02a3da60754e545320008bcc4f73d64"},
+    {file = "flake8_no_private_methods-0.0.2-py3-none-any.whl", hash = "sha256:100cfb263eaf81bec792832eaad8e42224647932d30b97574ac4ef927f35dd6c"},
+    {file = "flake8_no_private_methods-0.0.2.tar.gz", hash = "sha256:e01b21ddf408aa9f47f5da20b6aab2a7cec0f753a25a817f4ee4d14ed00f1817"},
 ]
 
 [package.dependencies]
-flake8 = ">=5.0.0"
+flake8 = ">=6.1.0"
 
 [[package]]
 name = "flake8-one-class"
@@ -4103,4 +4103,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "dbe4ea10a47ce5b000f310aa2e678b2b579848d822e115fb2300842f79b4c6ec"
+content-hash = "c0b4ca7d1b237ed54ac3e197a378ba4c5cf4e4dc8bbff2a3224c3a33a4039b91"
