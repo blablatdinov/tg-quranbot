@@ -13,6 +13,7 @@ from integrations.tg.sendable import Sendable
 from integrations.tg.sendable_answer import SendableAnswer
 from integrations.tg.tg_answers.tg_answer import TgAnswer
 from integrations.tg.user_not_subscribed_safe_sendable import UserNotSubscribedSafeSendable
+from settings import Settings
 
 
 @final
@@ -22,6 +23,7 @@ class BulkSendableAnswer(Sendable):
 
     _answers: list[TgAnswer]
     _logger: LogSink
+    _settings: Settings
 
     @override
     async def send(self, update: Update) -> list[dict]:
@@ -34,7 +36,7 @@ class BulkSendableAnswer(Sendable):
             tasks = [
                 task_group.create_task(
                     UserNotSubscribedSafeSendable(
-                        SendableAnswer(answer, self._logger),
+                        SendableAnswer(answer, self._logger, self._settings),
                     ).send(update),
                 )
                 for answer in self._answers

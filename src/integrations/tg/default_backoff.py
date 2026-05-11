@@ -8,18 +8,19 @@ import attrs
 
 
 @final
-@attrs.define(frozen=True)
+@attrs.define()
 class DefaultBackoff(Iterator[int]):
     """Итератор для задержки между отправкой сообщений."""
 
-    def __init__(self) -> None:
-        """Ctor."""
-        self._step = 0
+    _step: int = 0
 
     @override
     def __next__(self) -> int:
         """Получить следующий элемент."""
-        val = [2, 3, 5][self._step]
+        arr = [2, 3, 5]
+        if self._step >= len(arr):
+            raise StopIteration
+        val = arr[self._step]
         self._step += 1
         return val
 
