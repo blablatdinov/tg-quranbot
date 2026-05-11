@@ -69,7 +69,7 @@ vulture = "2.16"
 sqlfluff = "4.1.0"
 flake8-no-private-methods = "0.0.1"
 # other
-deltaver = "1.0.0"
+deltaver = "1.0.1"
 yoyo-migrations = "9.0.0"
 faker = "40.13.0"
 
