@@ -46,9 +46,9 @@ async def _users(user_factory):
 
 
 @pytest.mark.usefixtures('_users', '_mock_actives')
-async def test_user_status(pgsql):
+async def test_user_status(pgsql, settings):
     await CheckUsersStatus(
-        FkAnswer(), pgsql, FkSink(), FkLogSink(),
+        FkAnswer(), pgsql, FkSink(), FkLogSink(), settings,
     ).process(JsonDoc({}))
 
     assert [
@@ -58,9 +58,9 @@ async def test_user_status(pgsql):
 
 
 @pytest.mark.usefixtures('_users', '_mock_unsubscribed')
-async def test_unsubscribed(pgsql):
+async def test_unsubscribed(pgsql, settings):
     await CheckUsersStatus(
-        FkAnswer(), pgsql, FkSink(), FkLogSink(),
+        FkAnswer(), pgsql, FkSink(), FkLogSink(), settings,
     ).process(JsonDoc({}))
 
     assert [

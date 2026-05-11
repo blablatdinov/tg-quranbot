@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+import math
+
 from app_types.fk_float import FkFloat
 from app_types.rounded_float import RoundedFloat
 
@@ -12,4 +14,4 @@ def test():
         ),
     )
 
-    assert got == 0.2
+    assert math.isclose(got, 0.2)
