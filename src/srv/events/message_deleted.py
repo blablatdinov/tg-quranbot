@@ -11,6 +11,7 @@ from app_types.fk_update import FkUpdate
 from app_types.logger import LogSink
 from integrations.tg.sendable_answer import SendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer, TgMessageDeleteAnswer, TgMessageIdAnswer
+from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import Sink
 
@@ -24,6 +25,7 @@ class MessageDeleted(ReceivedEvent):
     _pgsql: Database
     _events_sink: Sink
     _logger: LogSink
+    _settings: Settings
 
     @override
     async def process(self, json_doc: Json) -> None:
@@ -40,4 +42,5 @@ class MessageDeleted(ReceivedEvent):
                 json_doc.path('$.data.message_id')[0],
             ),
             self._logger,
+            self._settings,
         ).send(FkUpdate.empty_ctor())

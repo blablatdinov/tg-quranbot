@@ -22,10 +22,11 @@ def _mock_http(respx_mock):
 
 
 @pytest.mark.usefixtures('_mock_http')
-async def test(pgsql):
+async def test(pgsql, settings):
     await MessageDeleted(
         TgEmptyAnswer('token'),
         pgsql,
         FkSink(),
         FkLogSink(),
+        settings,
     ).process(JsonDoc({'data': {'chat_id': 37945, 'message_id': 893457}}))

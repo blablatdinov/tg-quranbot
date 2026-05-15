@@ -11,8 +11,10 @@ from redis import asyncio as aioredis
 from db.connection import pgsql
 from integrations.tg.app_with_get_me import AppWithGetMe
 from integrations.tg.database_connected_app import DatabaseConnectedApp
+from integrations.tg.default_backoff import DefaultBackoff
 from integrations.tg.polling_app import PollingApp
 from integrations.tg.polling_updates import PollingUpdatesIterator
+from integrations.tg.retried_sendable import RetriedSendable
 from integrations.tg.sendable_answer import SendableAnswer
 from integrations.tg.tg_answers import TgEmptyAnswer, TgMeasureAnswer
 from integrations.tg.udpates_with_offset_url import UpdatesWithOffsetURL
@@ -69,21 +71,27 @@ def main(sys_args: list[str]) -> None:
                         UpdatesTimeout(),
                     ),
                     LoggedAnswer(
-                        SendableAnswer(
-                            TgMeasureAnswer(
-                                MeasuredAnswer(
-                                    QuranbotAnswer.ctor(
-                                        pgsql,
-                                        redis,
-                                        sink,
-                                        settings,
-                                        logger,
+                        RetriedSendable(
+                            SendableAnswer(
+                                TgMeasureAnswer(
+                                    MeasuredAnswer(
+                                        QuranbotAnswer.ctor(
+                                            pgsql,
+                                            redis,
+                                            sink,
+                                            settings,
+                                            logger,
+                                        ),
+                                        BOT_REQUESTS,
                                     ),
-                                    BOT_REQUESTS,
+                                    logger,
                                 ),
                                 logger,
+                                settings,
                             ),
                             logger,
+                            5,
+                            DefaultBackoff(),
                         ),
                         sink,
                     ),
@@ -134,12 +142,14 @@ def main(sys_args: list[str]) -> None:
                         pgsql,
                         sink,
                         logger,
+                        settings,
                     )),
                     EventFork('Messages.Deleted', 2, MessageDeleted(
                         TgEmptyAnswer(settings.API_TOKEN),
                         pgsql,
                         sink,
                         logger,
+                        settings,
                     )),
                     EventFork('Prayers.Created', 2, PrayerCreatedEvent(pgsql)),
                 ),

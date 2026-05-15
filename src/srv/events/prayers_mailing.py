@@ -129,6 +129,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                 SendableAnswer(
                     answer,
                     self._log_sink,
+                    self._settings,
                 ),
                 self._events_sink,
                 uuid.uuid4(),

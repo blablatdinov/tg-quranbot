@@ -14,6 +14,7 @@ from integrations.tg.bulk_sendable_answer import BulkSendableAnswer
 from integrations.tg.tg_answers import TgAnswer, TgChatIdAnswer
 from integrations.tg.tg_answers.chat_action import TgChatAction
 from integrations.tg.typing_action import TypingAction
+from settings import Settings
 from srv.events.recieved_event import ReceivedEvent
 from srv.events.sink import Sink
 from srv.users.pg_active_users import PgActiveUsers
@@ -32,6 +33,7 @@ class CheckUsersStatus(ReceivedEvent):
     _pgsql: Database
     _events_sink: Sink
     _logger: LogSink
+    _settings: Settings
 
     @override
     async def process(self, json_doc: Json) -> None:
@@ -45,6 +47,7 @@ class CheckUsersStatus(ReceivedEvent):
             await BulkSendableAnswer(
                 await self._answers(users),
                 self._logger,
+                self._settings,
             ).send(FkUpdate.empty_ctor()),
             strict=True,
         )
