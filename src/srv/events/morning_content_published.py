@@ -3,9 +3,11 @@
 
 import uuid
 from collections.abc import Iterator
-from typing import final, override
+from typing import Any, final, override
 
 import attrs
+from eljson.json import Json
+from jinja2 import Template
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -71,7 +73,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
             ])))
             rows = query_result.fetchall()
         unsubscribed_users: list[User] = []
-        for answer, chat_id in self._zipped_ans_chat_ids(rows):
+        for answer, chat_id in self._zipped_ans_chat_ids(list(rows)):
             await self._iteration(answer, chat_id, unsubscribed_users)
         await UpdatedUsersStatusEvent(
             PgUpdatedUsersStatus(self._pgsql, FkAsyncListable(unsubscribed_users)),
@@ -82,11 +84,13 @@ class MorningContentPublishedEvent(ReceivedEvent):
             await conn.execute(text('\n'.join([
                 'UPDATE users',
                 'SET day = day + 1',
-                "WHERE is_active = 't' AND chat_id IN ({0})".format(','.join([str(dict(row)['chat_id']) for row in rows])),
+                "WHERE is_active = 't' AND chat_id IN ({0})".format(
+                    ','.join([str(dict(row)['chat_id']) for row in rows]),
+                ),
             ])))
             await conn.commit()
 
-    def _zipped_ans_chat_ids(self, rows) -> Iterator[tuple[TgAnswer, int]]:  # noqa: NPM100. Fix it
+    def _zipped_ans_chat_ids(self, rows: list[Any]) -> Iterator[tuple[TgAnswer, int]]:
         return zip(
             [
                 TgLinkPreviewOptions(
@@ -156,7 +160,3 @@ class MorningContentPublishedEvent(ReceivedEvent):
             for error_message in error_messages:
                 if error_message in str(err):
                     unsubscribed_users.append(FkUser(chat_id, 0, is_active=False))  # noqa: PERF401
-
-
-from eljson.json import Json
-from jinja2 import Template

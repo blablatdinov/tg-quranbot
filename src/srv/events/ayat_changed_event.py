@@ -4,6 +4,7 @@
 from typing import TypeAlias, final, override
 
 import attrs
+from eljson.json import Json
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from srv.ayats.pg_ayat import PgAyat
@@ -28,6 +29,3 @@ class RbmqAyatChangedEvent(AyatChangedEvent):
         """
         pg_ayat = PgAyat.ayat_changed_event_ctor(json_doc, self._pgsql)
         await pg_ayat.change(json_doc)
-
-
-from eljson.json import Json

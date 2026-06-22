@@ -6,6 +6,8 @@ from typing import final, override
 
 import attrs
 import pytz
+from eljson.json import Json
+from loguru import logger
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -45,7 +47,3 @@ class PrayerCreatedEvent(ReceivedEvent):
             )
             await conn.commit()
         logger.info('Prayer created')
-
-
-from eljson.json import Json
-from loguru import logger

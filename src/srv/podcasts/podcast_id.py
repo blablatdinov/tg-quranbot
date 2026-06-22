@@ -51,8 +51,11 @@ class PodcastId(AsyncInt):
         if podcast_id:
             async with self._pgsql.connect() as conn:
                 await conn.execute(
-                    text('INSERT INTO podcast_reactions (podcast_id, user_id, reaction) VALUES (:podcast_id, :user_id, :reaction)'),
+                    text(
+                        'INSERT INTO podcast_reactions (podcast_id, user_id, reaction) '
+                        'VALUES (:podcast_id, :user_id, :reaction)',
+                    ),
                     {'podcast_id': podcast_id, 'user_id': int(self._chat_id), 'reaction': 'showed'},
                 )
                 await conn.commit()
-        return podcast_id if podcast_id else 0
+        return podcast_id or 0

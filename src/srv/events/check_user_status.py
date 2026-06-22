@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from eljson.json import Json
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.fk_update import FkUpdate
@@ -71,6 +72,3 @@ class CheckUsersStatus(ReceivedEvent):
             )
             for user in await users.to_list()
         ]
-
-
-from eljson.json import Json

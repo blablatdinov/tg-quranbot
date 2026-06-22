@@ -9,6 +9,7 @@ from typing import Final, final, override
 import attrs
 import pytz
 import ujson
+from eljson.json import Json
 from redis.asyncio import Redis
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -145,6 +146,3 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
             for error_message in error_messages:
                 if error_message in str(err):
                     unsubscribed_users.append(FkUser(chat_id, 0, is_active=False))  # noqa: PERF401
-
-
-from eljson.json import Json

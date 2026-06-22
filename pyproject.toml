@@ -176,6 +176,7 @@ max-args = 6
   "ANN",     # Annotations
   "PLR2004", # Magic value
   "PLR0913", # Too many arguments to function call
+  "PYI034",  # __aenter__ usually returns self
 ]
 
 [tool.deltaver]
