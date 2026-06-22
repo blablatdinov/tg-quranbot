@@ -68,11 +68,11 @@ class PgCity(City):
         """
         query = 'SELECT name FROM cities WHERE city_id = :city_id'
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text(query),
                 {'city_id': await self._city_id.to_str()},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
             raise CityNotFoundError
         return row[0]

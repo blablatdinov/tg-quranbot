@@ -28,11 +28,11 @@ class CityIdByName(AsyncSupportsStr):
         """
         query = 'SELECT city_id FROM cities WHERE name = :name'
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text(query),
                 {'name': await self._name.to_str()},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
             raise CityNotSupportedError
         return row[0]

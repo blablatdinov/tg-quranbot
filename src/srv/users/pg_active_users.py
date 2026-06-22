@@ -31,9 +31,9 @@ class PgActiveUsers(AsyncListable):
             "WHERE is_active = 't'",
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query))
-            rows = result.fetchall()
+            query_result = await conn.execute(text(query))
+            rows = query_result.fetchall()
         return [
-            PgUser.int_ctor(dict(row._mapping)['chat_id'], self._pgsql)
+            PgUser.int_ctor(dict(row)['chat_id'], self._pgsql)
             for row in rows
         ]

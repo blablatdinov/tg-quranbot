@@ -29,11 +29,11 @@ class PgNewPrayers(NewPrayers):
     async def create(self) -> None:  # noqa: WPS210
         """Создать."""
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text('SELECT city_id FROM cities WHERE name = :name'),
                 {'name': self._prayer_dict['city_name']},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
             raise CityNotFoundError
         city_id = row[0]
@@ -87,11 +87,11 @@ class PgNewPrayers(NewPrayers):
         except UniqueViolationError as err:
             raise PrayerAlreadyExistsError from err
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text('SELECT COUNT(*) FROM prayers WHERE city_id = :city_id AND day = :day'),
                 {'city_id': city_id, 'day': day},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         created_prayers = row[0] if row else 0
         if not created_prayers:
             raise PrayerNotCreatedError

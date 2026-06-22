@@ -30,11 +30,11 @@ class PgChangedPoodcastReaction(ChangedPodcastReaction):
             'WHERE user_id = :user_id AND podcast_id = :podcast_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {
+            query_result = await conn.execute(text(query), {
                 USER_ID_LITERAL: int(self._chat_id),
                 PODCAST_ID_LITERAL: self._reaction.podcast_id(),
             })
-            row = result.fetchone()
+            row = query_result.fetchone()
         prayer_existed_reaction = row[0] if row else None
         if prayer_existed_reaction:
             if prayer_existed_reaction == self._reaction.status():

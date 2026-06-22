@@ -63,11 +63,11 @@ class PgUser(User):
             'WHERE chat_id = :chat_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text(query),
                 {'chat_id': await self._chat_id.to_int()},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
             raise UserNotFoundError
         return row[0]
@@ -84,11 +84,11 @@ class PgUser(User):
             'WHERE chat_id = :chat_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text(query),
                 {'chat_id': await self._chat_id.to_int()},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
             raise UserNotFoundError
         return row[0]

@@ -40,7 +40,7 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
             )
             await conn.commit()
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text('\n'.join([
                     'SELECT COUNT(*) FROM prayers AS p',
                     'INNER JOIN cities AS c ON p.city_id = c.city_id',
@@ -50,11 +50,11 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
                 ])),
                 {'chat_id': int(self._chat_id), 'date': date},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         exists_prayers = row[0] if row else 0
         if not exists_prayers:
             async with self._pgsql.connect() as conn:
-                result = await conn.execute(
+                query_result = await conn.execute(
                     text('\n'.join([
                         'SELECT c.name FROM users AS u',
                         'INNER JOIN cities AS c ON u.city_id = c.city_id',
@@ -62,7 +62,7 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
                     ])),
                     {'chat_id': int(self._chat_id)},
                 )
-                row = result.fetchone()
+                row = query_result.fetchone()
             city_name = row[0] if row else None
             raise PrayersNotFoundError(str(city_name) if city_name else '', date)
         query = '\n'.join([
@@ -83,12 +83,12 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
         ])
         try:
             async with self._pgsql.connect() as conn:
-                result = await conn.execute(text(query), {
+                query_result = await conn.execute(text(query), {
                     'chat_id': int(self._chat_id),
                     'prayer_group_id': prayer_group_id,
                     'date': date,
                 })
-                rows = result.fetchall()
+                rows = query_result.fetchall()
                 await conn.commit()
         except UniqueViolationError as err:
             raise PrayerAtUserAlreadyExistsError from err

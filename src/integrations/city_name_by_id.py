@@ -29,11 +29,11 @@ class CityNameById(CityName):
         :raises CityNotSupportedError: City not found
         """
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text('SELECT name FROM cities WHERE city_id = :city_id'),
                 {'city_id': await self._city_id.to_str()},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         city_name = row[0] if row else None
         if not city_name:
             raise CityNotSupportedError

@@ -32,9 +32,9 @@ class PgCityNames(AsyncListable):
             'LIMIT 20',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(db_query), {'search_query': search_query})
-            rows = result.fetchall()
+            query_result = await conn.execute(text(db_query), {'search_query': search_query})
+            rows = query_result.fetchall()
         return [
-            dict(row._mapping)['name']
+            dict(row)['name']
             for row in rows
         ]

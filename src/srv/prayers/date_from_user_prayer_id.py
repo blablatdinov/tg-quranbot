@@ -34,10 +34,11 @@ class DateFromUserPrayerId(PrayerDate):
             'WHERE prayer_at_user_id = :prayer_at_user_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {
+            query_result = await conn.execute(text(query), {
                 'prayer_at_user_id': PrayerStatus.update_ctor(update).user_prayer_id(),
             })
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
-            raise ValueError('Prayer not found')
+            err_msg = 'Prayer not found'
+            raise ValueError(err_msg)
         return row[0]

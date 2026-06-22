@@ -43,17 +43,17 @@ class PgPrayersInfo(PrayersInfo):
             "    ARRAY_POSITION(ARRAY['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {
+            query_result = await conn.execute(text(query), {
                 'date': await self._date.parse(self._update),
                 'city_id': await self._city_id.to_str(),
             })
-            rows = result.fetchall()
+            rows = query_result.fetchall()
         if not rows:
             raise PrayersNotFoundError(
                 await CityNameById(self._pgsql, self._city_id).to_str(),
                 await self._date.parse(self._update),
             )
-        rows_dict = [dict(row._mapping) for row in rows]
+        rows_dict = [dict(row) for row in rows]
         time_format = '%H:%M'
         return PrayerMessageTextDict({
             'city_name': rows_dict[0]['city_name'],

@@ -33,11 +33,11 @@ class PgFile(TgFile):
             'WHERE file_id = :file_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {'file_id': str(self._file_id)})
-            row = result.fetchone()
+            query_result = await conn.execute(text(query), {'file_id': str(self._file_id)})
+            row = query_result.fetchone()
         if row is None:
             raise BotFileNotFoundError
-        return dict(row._mapping)['telegram_file_id']
+        return dict(row)['telegram_file_id']
 
     @override
     async def file_link(self) -> FileLink:
@@ -52,8 +52,8 @@ class PgFile(TgFile):
             'WHERE file_id = :file_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {'file_id': str(self._file_id)})
-            row = result.fetchone()
+            query_result = await conn.execute(text(query), {'file_id': str(self._file_id)})
+            row = query_result.fetchone()
         if row is None:
             raise BotFileNotFoundError
-        return dict(row._mapping)['link']
+        return dict(row)['link']

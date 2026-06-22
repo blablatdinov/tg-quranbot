@@ -117,12 +117,12 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         ])
         ayat_id = await self._ayat_id.to_int()
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {'ayat_id': ayat_id})
-            row = result.fetchone()
+            query_result = await conn.execute(text(query), {'ayat_id': ayat_id})
+            row = query_result.fetchone()
         if row is None:
             msg = 'Аят с id={0} не найден'.format(ayat_id)
             raise AyatNotFoundError(msg)
-        row_dict = dict(row._mapping)
+        row_dict = dict(row)
         template = '<a href="{link}">{sura}:{ayat})</a>\n{arab_text}\n\n{content}\n\n<i>{transliteration}</i>'
         return template.format(
             link=str(AyatLink(row_dict['sura_link'], row_dict['sura_num'], row_dict['ayat_num'])),
@@ -148,12 +148,12 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         ])
         ayat_id = await self._ayat_id.to_int()
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {'ayat_id': ayat_id})
-            row = result.fetchone()
+            query_result = await conn.execute(text(query), {'ayat_id': ayat_id})
+            row = query_result.fetchone()
         if row is None:
             msg = 'Аят с id={0} не найден'.format(ayat_id)
             raise AyatNotFoundError(msg)
-        return PgFile(dict(row._mapping)['file_id'], self._pgsql)
+        return PgFile(dict(row)['file_id'], self._pgsql)
 
     @override
     async def change(self, event_body: Json) -> None:  # type: ignore[override]

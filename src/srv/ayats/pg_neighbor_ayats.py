@@ -37,11 +37,11 @@ class PgNeighborAyats(NeighborAyats):
             'WHERE ayat_id = :ayat_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {_AYAT_ID_LITERAL: self._ayat_id - 1})
-            row = result.fetchone()
+            query_result = await conn.execute(text(query), {_AYAT_ID_LITERAL: self._ayat_id - 1})
+            row = query_result.fetchone()
         if row is None:
             raise AyatNotFoundError
-        return TextLenSafeAyat(PgAyat.from_int(dict(row._mapping)[_AYAT_ID_LITERAL], self._pgsql))
+        return TextLenSafeAyat(PgAyat.from_int(dict(row)[_AYAT_ID_LITERAL], self._pgsql))
 
     @override
     async def right_neighbor(self) -> Ayat:
@@ -56,11 +56,11 @@ class PgNeighborAyats(NeighborAyats):
             'WHERE ayats.ayat_id = :ayat_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {_AYAT_ID_LITERAL: self._ayat_id + 1})
-            row = result.fetchone()
+            query_result = await conn.execute(text(query), {_AYAT_ID_LITERAL: self._ayat_id + 1})
+            row = query_result.fetchone()
         if row is None:
             raise AyatNotFoundError
-        return TextLenSafeAyat(PgAyat.from_int(dict(row._mapping)[_AYAT_ID_LITERAL], self._pgsql))
+        return TextLenSafeAyat(PgAyat.from_int(dict(row)[_AYAT_ID_LITERAL], self._pgsql))
 
     @override
     async def page(self) -> str:
@@ -69,14 +69,14 @@ class PgNeighborAyats(NeighborAyats):
         :return: str
         """
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text('SELECT COUNT(*) FROM ayats'))
-            row = result.fetchone()
+            query_result = await conn.execute(text('SELECT COUNT(*) FROM ayats'))
+            row = query_result.fetchone()
         ayats_count = row[0] if row else 0
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text('SELECT COUNT(*) FROM ayats WHERE ayat_id <= :ayat_id'),
                 {_AYAT_ID_LITERAL: self._ayat_id},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         actual_page_num = row[0] if row else 0
         return 'стр. {0}/{1}'.format(actual_page_num, ayats_count)

@@ -40,13 +40,13 @@ class PodcastId(AsyncInt):
             'ORDER BY RANDOM()',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {'chat_id': int(self._chat_id)})
-            row = result.fetchone()
+            query_result = await conn.execute(text(query), {'chat_id': int(self._chat_id)})
+            row = query_result.fetchone()
         podcast_id = row[0] if row else None
         if not podcast_id:
             async with self._pgsql.connect() as conn:
-                result = await conn.execute(text('SELECT podcast_id FROM podcasts ORDER BY RANDOM()'))
-                row = result.fetchone()
+                query_result = await conn.execute(text('SELECT podcast_id FROM podcasts ORDER BY RANDOM()'))
+                row = query_result.fetchone()
             podcast_id = row[0] if row else None
         if podcast_id:
             async with self._pgsql.connect() as conn:

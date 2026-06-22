@@ -33,7 +33,7 @@ class NextDayAyats(TgAnswer):
         :return: list[httpx.Request]
         """
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text('\n'.join([
+            query_result = await conn.execute(text('\n'.join([
                 'SELECT',
                 '  a.sura_id,',
                 '  a.ayat_number,',
@@ -45,7 +45,7 @@ class NextDayAyats(TgAnswer):
                 'WHERE u.chat_id = :chat_id',
                 'ORDER BY a.ayat_id',
             ])), {'chat_id': int(TgChatId(update))})
-            ayats = [dict(row._mapping) for row in result.fetchall()]
+            ayats = [dict(row) for row in query_result.fetchall()]
             await conn.execute(text('\n'.join([
                 'UPDATE users',
                 'SET day = day + 1',

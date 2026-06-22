@@ -34,8 +34,8 @@ class UserCityId(AsyncSupportsStr):
             'WHERE u.chat_id = :chat_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {'chat_id': int(self._chat_id)})
-            row = result.fetchone()
+            query_result = await conn.execute(text(query), {'chat_id': int(self._chat_id)})
+            row = query_result.fetchone()
         if row is None:
             raise UserHasNotCityIdError
         return row[0]

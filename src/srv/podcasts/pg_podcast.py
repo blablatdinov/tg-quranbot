@@ -45,15 +45,15 @@ class PgPodcast(Podcast):
             'WHERE p.podcast_id = :podcast_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text(query),
                 {'podcast_id': await self._podcast_id.to_int()},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
             msg = 'Подкасты не найдены'
             raise InternalBotError(msg)
-        row_dict = dict(row._mapping)
+        row_dict = dict(row)
         if not row_dict['telegram_file_id']:
             raise TelegramFileIdNotFilledError
         return row_dict['telegram_file_id']
@@ -72,12 +72,12 @@ class PgPodcast(Podcast):
             'WHERE p.podcast_id = :podcast_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text(query),
                 {'podcast_id': await self._podcast_id.to_int()},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
             msg = 'Подкасты не найдены'
             raise InternalBotError(msg)
-        return dict(row._mapping)['link']
+        return dict(row)['link']

@@ -27,12 +27,12 @@ class PgAdminMessage(AdminMessage):
         :return: str
         """
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text('SELECT text FROM admin_messages m WHERE m.key = :key'),
                 {'key': self._key},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
             msg = 'Не найдено административное сообщение с ключом {0}'.format(self._key)
             raise InternalBotError(msg)
-        return dict(row._mapping)['text']
+        return dict(row)['text']

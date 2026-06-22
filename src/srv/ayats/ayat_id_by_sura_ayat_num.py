@@ -43,14 +43,14 @@ class AyatIdBySuraAyatNum(AsyncInt):
             '    )',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {
+            query_result = await conn.execute(text(query), {
                 'sura_id': self._query.sura(),
                 'ayat_comma_prefix': '%,{0}'.format(self._query.ayat()),
                 'ayat_comma_postfix': '%{0},'.format(self._query.ayat()),
                 'ayat_num': int(self._query.ayat()),
                 'ayat_num_str': self._query.ayat(),
             })
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
             raise AyatNotFoundError
-        return dict(row._mapping)['ayat_id']
+        return dict(row)['ayat_id']

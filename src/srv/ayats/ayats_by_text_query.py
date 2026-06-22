@@ -37,14 +37,14 @@ class AyatsByTextQuery(AsyncListable):
             'ORDER BY a.ayat_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {
+            query_result = await conn.execute(text(query), {
                 'search_query': '%{0}%'.format(self._query),
             })
-            rows = result.fetchall()
+            rows = query_result.fetchall()
         return [
             TextLenSafeAyat(
                 PgAyat(
-                    FkAsyncInt(dict(row._mapping)['id']),
+                    FkAsyncInt(dict(row)['id']),
                     self._pgsql,
                 ),
             )

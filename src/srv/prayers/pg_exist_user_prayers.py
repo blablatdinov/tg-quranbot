@@ -38,15 +38,15 @@ class PgExistUserPrayers(ExistUserPrayers):
             'ORDER BY pau.prayer_at_user_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(select_query), {
+            query_result = await conn.execute(text(select_query), {
                 'date': self._date,
                 'chat_id': int(self._chat_id),
             })
-            rows = result.fetchall()
+            rows = query_result.fetchall()
         return [
             {
-                'prayer_at_user_id': dict(row._mapping)['prayer_at_user_id'],
-                'is_read': dict(row._mapping)['is_read'],
+                'prayer_at_user_id': dict(row)['prayer_at_user_id'],
+                'is_read': dict(row)['is_read'],
             }
             for row in rows
         ]

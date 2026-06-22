@@ -79,8 +79,8 @@ class PrayersStatistic(AsyncSupportsStr):
             "ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {'chat_id': int(self._chat_id)})
-            rows = [dict(row._mapping) for row in result.fetchall()]
+            query_result = await conn.execute(text(query), {'chat_id': int(self._chat_id)})
+            rows = [dict(row) for row in query_result.fetchall()]
         return list(
             batched(
                 rows,
@@ -98,8 +98,8 @@ class PrayersStatistic(AsyncSupportsStr):
             "ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {'chat_id': int(self._chat_id)})
-            rows = [dict(row._mapping) for row in result.fetchall()]
+            query_result = await conn.execute(text(query), {'chat_id': int(self._chat_id)})
+            rows = [dict(row) for row in query_result.fetchall()]
         if not rows:
             return []
         return [

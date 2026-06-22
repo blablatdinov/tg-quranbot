@@ -64,7 +64,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
         :param json_doc: Json
         """
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text('\n'.join([
+            query_result = await conn.execute(text('\n'.join([
                 'SELECT u.chat_id',
                 'FROM users AS u',
                 "WHERE u.is_active = 't' {0}".format(
@@ -75,7 +75,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                 ),
                 'ORDER BY u.chat_id',
             ])))
-            rows = result.fetchall()
+            rows = query_result.fetchall()
         unsubscribed_users: list[User] = []
         date = FkPrayerDate(
             add(
@@ -84,7 +84,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
             ).date(),
         )
         for active_user in rows:
-            active_user_dict = dict(active_user._mapping)
+            active_user_dict = dict(active_user)
             await self._iteration(
                 TgHtmlParseAnswer(
                     TgAnswerMarkup(

@@ -39,15 +39,15 @@ class FavoriteAyatsAfterRemove(AsyncListable):
             'ORDER BY fa.ayat_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text(query),
                 {'chat_id': int(self._chat_id), 'ayat_id': self._ayat_id},
             )
-            rows = result.fetchall()
+            rows = query_result.fetchall()
         ayats = []
         flag = True
         for row in rows:
-            row_dict = dict(row._mapping)
+            row_dict = dict(row)
             if row_dict['ayat_id'] > self._ayat_id and flag:
                 ayats.append(TextLenSafeAyat(PgAyat.from_int(self._ayat_id, self._pgsql)))
                 flag = False

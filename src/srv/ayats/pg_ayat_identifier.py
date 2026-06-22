@@ -43,11 +43,11 @@ class PgAyatIdentifier(AyatIdentifier):
         ])
         ayat_id = await self.ayat_id()
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {'ayat_id': ayat_id})
-            row = result.fetchone()
+            query_result = await conn.execute(text(query), {'ayat_id': ayat_id})
+            row = query_result.fetchone()
         if row is None:
             raise AyatNotFoundError
-        return dict(row._mapping)['sura_id']
+        return dict(row)['sura_id']
 
     @override
     async def ayat_num(self) -> AyatNum:
@@ -63,8 +63,8 @@ class PgAyatIdentifier(AyatIdentifier):
         ])
         ayat_id = await self.ayat_id()
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {'ayat_id': ayat_id})
-            row = result.fetchone()
+            query_result = await conn.execute(text(query), {'ayat_id': ayat_id})
+            row = query_result.fetchone()
         if row is None:
             raise AyatNotFoundError
-        return dict(row._mapping)['ayat_number']
+        return dict(row)['ayat_number']

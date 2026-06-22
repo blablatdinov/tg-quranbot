@@ -34,10 +34,10 @@ class AyatIsFavor(AsyncSupportsBool):
             'WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text(query),
                 {'ayat_id': await self._ayat.identifier().ayat_id(), 'chat_id': self._chat_id},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         count = row[0] if row else 0
         return bool(count)

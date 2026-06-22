@@ -39,7 +39,7 @@ class PgValidChatId(ValidChatId):
         :raises UserNotFoundError: если пользователь не найден
         """
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text('\n'.join([
                     'SELECT chat_id',
                     'FROM users',
@@ -47,7 +47,7 @@ class PgValidChatId(ValidChatId):
                 ])),
                 {'chat_id': await self._unreliable.to_int()},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
             raise UserNotFoundError
         return row[0]

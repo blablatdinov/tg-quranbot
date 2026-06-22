@@ -33,10 +33,10 @@ class AyatIdByPublicId(AsyncInt):
             'WHERE public_id = :public_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(text(query), {
+            query_result = await conn.execute(text(query), {
                 'public_id': str(self._public_id),
             })
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
             raise AyatNotFoundError
-        return dict(row._mapping)['ayat_id']
+        return dict(row)['ayat_id']

@@ -30,11 +30,11 @@ class HgPrayersUrl(AsyncSupportsStr):
     async def to_str(self) -> str:
         """Строковое представление."""
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text('SELECT link FROM halal_guide_cities WHERE city_id = :city_id'),
                 {'city_id': str(await self._city.city_id())},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
             raise CityNotFoundError
         link = row[0]

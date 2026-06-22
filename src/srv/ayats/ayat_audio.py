@@ -35,15 +35,15 @@ class AyatAudio(TgFile):
             'WHERE a.ayat_id = :ayat_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text(query),
                 {'ayat_id': await self._ayat_id.to_int()},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
             msg = 'Аят с id={0} не найден'.format(await self._ayat_id.to_int())
             raise InternalBotError(msg)
-        return dict(row._mapping)['file_id']
+        return dict(row)['file_id']
 
     @override
     async def file_link(self) -> FileLink:
@@ -59,12 +59,12 @@ class AyatAudio(TgFile):
             'WHERE a.ayat_id = :ayat_id',
         ])
         async with self._pgsql.connect() as conn:
-            result = await conn.execute(
+            query_result = await conn.execute(
                 text(query),
                 {'ayat_id': await self._ayat_id.to_int()},
             )
-            row = result.fetchone()
+            row = query_result.fetchone()
         if row is None:
             msg = 'Аят с id={0} не найден'.format(await self._ayat_id.to_int())
             raise InternalBotError(msg)
-        return dict(row._mapping)['link']
+        return dict(row)['link']
