@@ -5,9 +5,9 @@ from typing import final, override
 
 import attrs
 import httpx
+from jinja2 import Template
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
-from jinja2 import Template
 
 from app_types.update import Update
 from integrations.tg.fk_keyboard import FkKeyboard

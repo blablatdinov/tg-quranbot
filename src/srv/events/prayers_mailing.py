@@ -9,9 +9,9 @@ from typing import Final, final, override
 import attrs
 import pytz
 import ujson
+from redis.asyncio import Redis
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
-from redis.asyncio import Redis
 
 from app_types.fk_async_listable import FkAsyncListable
 from app_types.fk_update import FkUpdate

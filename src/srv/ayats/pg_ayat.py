@@ -4,15 +4,14 @@
 from typing import final, override
 
 import attrs
+from eljson.json import Json
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.fk_async_int import FkAsyncInt
 from app_types.intable import AsyncInt
 from app_types.stringable import SupportsStr
-from eljson.json import Json
 from exceptions.content_exceptions import AyatNotFoundError
-from integrations.tg.fk_chat_id import ChatId
 from services.intable_regex import IntableRegex
 from srv.ayats.ayat import Ayat, AyatText
 from srv.ayats.ayat_id_by_public_id import AyatIdByPublicId

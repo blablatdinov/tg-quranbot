@@ -6,9 +6,9 @@ from itertools import batched
 from typing import final, override
 
 import attrs
+from dateutil import rrule
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
-from dateutil import rrule
 
 from app_types.async_supports_str import AsyncSupportsStr
 from integrations.tg.fk_chat_id import ChatId

@@ -9,9 +9,9 @@ import aio_pika
 import attrs
 import ujson
 from aiormq.abc import DeliveredMessage
-from sqlalchemy.ext.asyncio import AsyncEngine
 from eljson.json_doc import JsonDoc
 from quranbot_schema_registry import validate_schema
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.logger import LogSink
 from settings import Settings

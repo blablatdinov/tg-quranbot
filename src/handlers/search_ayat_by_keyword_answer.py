@@ -5,8 +5,8 @@ from typing import final, override
 
 import attrs
 import httpx
-from sqlalchemy.ext.asyncio import AsyncEngine
 from redis.asyncio import Redis
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
