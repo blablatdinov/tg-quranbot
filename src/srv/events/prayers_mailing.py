@@ -9,8 +9,8 @@ from typing import Final, final, override
 import attrs
 import pytz
 import ujson
-from databases import Database
-from eljson.json import Json
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 from redis.asyncio import Redis
 
 from app_types.fk_async_listable import FkAsyncListable
@@ -51,29 +51,31 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
     """Обработка события о рассылке времени намаза на следующий день."""
 
     _empty_answer: TgAnswer
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _settings: Settings
     _events_sink: Sink
     _log_sink: LogSink
     _redis: Redis
 
     @override
-    async def process(self, json_doc: Json) -> None:
+    async def process(self, json_doc: Json) -> None:  # type: ignore[override]
         """Обработка события.
 
         :param json_doc: Json
         """
-        active_users = await self._pgsql.fetch_all('\n'.join([
-            'SELECT u.chat_id',
-            'FROM users AS u',
-            "WHERE u.is_active = 't' {0}".format(
-                'AND u.chat_id IN ({0})'.format(
-                    ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
-                )
-                if self._settings.DAILY_PRAYERS == 'off' else '',
-            ),
-            'ORDER BY u.chat_id',
-        ]))
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text('\n'.join([
+                'SELECT u.chat_id',
+                'FROM users AS u',
+                "WHERE u.is_active = 't' {0}".format(
+                    'AND u.chat_id IN ({0})'.format(
+                        ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
+                    )
+                    if self._settings.DAILY_PRAYERS == 'off' else '',
+                ),
+                'ORDER BY u.chat_id',
+            ])))
+            rows = result.fetchall()
         unsubscribed_users: list[User] = []
         date = FkPrayerDate(
             add(
@@ -81,7 +83,8 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                 datetime.timedelta(days=1),
             ).date(),
         )
-        for active_user in active_users:
+        for active_user in rows:
+            active_user_dict = dict(active_user._mapping)
             await self._iteration(
                 TgHtmlParseAnswer(
                     TgAnswerMarkup(
@@ -93,23 +96,23 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                                         PgPrayersInfo(
                                             self._pgsql,
                                             date,
-                                            UserCityId(self._pgsql, active_user[CHAT_ID]),
+                                            UserCityId(self._pgsql, active_user_dict[CHAT_ID]),
                                             FkUpdate.empty_ctor(),
                                         ),
                                         self._settings.RAMADAN_MODE,
                                     ),
                                 ),
                             ),
-                            active_user[CHAT_ID],
+                            active_user_dict[CHAT_ID],
                         ),
                         UserPrayersKeyboard(
                             self._pgsql,
                             date,
-                            TgChatId(FkUpdate(ujson.dumps({'chat': {'id': active_user[CHAT_ID]}}))),
+                            TgChatId(FkUpdate(ujson.dumps({'chat': {'id': active_user_dict[CHAT_ID]}}))),
                         ),
                     ),
                 ),
-                active_user[CHAT_ID],
+                active_user_dict[CHAT_ID],
                 unsubscribed_users,
             )
         await UpdatedUsersStatusEvent(
@@ -142,3 +145,6 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
             for error_message in error_messages:
                 if error_message in str(err):
                     unsubscribed_users.append(FkUser(chat_id, 0, is_active=False))  # noqa: PERF401
+
+
+from eljson.json import Json

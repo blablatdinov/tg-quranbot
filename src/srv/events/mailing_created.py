@@ -5,8 +5,8 @@ import uuid
 from typing import final, override
 
 import attrs
-from databases import Database
-from eljson.json import Json
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.fk_async_listable import FkAsyncListable
 from app_types.fk_update import FkUpdate
@@ -31,26 +31,29 @@ class MailingCreatedEvent(ReceivedEvent):
     """Обработка события об утренней рассылки с аятми."""
 
     _empty_answer: TgAnswer
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _events_sink: Sink
     _log_sink: LogSink
     _settings: Settings
 
     @override
-    async def process(self, json_doc: Json) -> None:
+    async def process(self, json_doc: Json) -> None:  # type: ignore[override]
         """Обработка события.
 
         :param json_doc: Json
         :raises UnreacheableError: unreacheable state
         """
         if json_doc.path('$.data.group')[0] == 'all':
-            chat_ids = [
-                row['chat_id']
-                for row in await self._pgsql.fetch_all('\n'.join([
+            async with self._pgsql.connect() as conn:
+                result = await conn.execute(text('\n'.join([
                     'SELECT chat_id',
                     'FROM users',
                     "WHERE is_active = 't'",
-                ]))
+                ])))
+                rows = result.fetchall()
+            chat_ids = [
+                dict(row._mapping)['chat_id']
+                for row in rows
             ]
         elif json_doc.path('$.data.group')[0] == 'admins':
             chat_ids = self._settings.admin_chat_ids()
@@ -106,3 +109,6 @@ class MailingCreatedEvent(ReceivedEvent):
             for error_message in error_messages:
                 if error_message in str(err):
                     unsubscribed_users.append(FkUser(chat_id, 0, is_active=False))  # noqa: PERF401
+
+
+from eljson.json import Json

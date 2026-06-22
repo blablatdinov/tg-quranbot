@@ -5,7 +5,7 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
+from sqlalchemy.ext.asyncio import AsyncEngine
 from redis.asyncio import Redis
 
 from app_types.logger import LogSink
@@ -27,7 +27,7 @@ class PaginateBySearchAyat(TgAnswer):
 
     _empty_answer: TgAnswer
     _redis: Redis
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _settings: Settings
     _logger: LogSink
 

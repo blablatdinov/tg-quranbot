@@ -9,26 +9,16 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.intable import AsyncInt
 from exceptions.base_exception import InternalBotError
-from exceptions.content_exceptions import TelegramFileIdNotFilledError
-from srv.files.tg_file import FileLink, TgFileId
-from srv.podcasts.podcast import Podcast
+from srv.files.tg_file import FileLink, TgFile, TgFileId
 
 
 @final
 @attrs.define(frozen=True)
-class PgPodcast(Podcast):
-    """Объект подкаста."""
+class AyatAudio(TgFile):
+    """Аудио аята."""
 
-    _podcast_id: AsyncInt
+    _ayat_id: AsyncInt
     _pgsql: AsyncEngine
-
-    @override
-    async def podcast_id(self) -> int:
-        """Идентификатор подкаста.
-
-        :return: int
-        """
-        return await self._podcast_id.to_int()
 
     @override
     async def tg_file_id(self) -> TgFileId:
@@ -39,24 +29,21 @@ class PgPodcast(Podcast):
         :raises TelegramFileIdNotFilledError: идентификатор файла не заполнен
         """
         query = '\n'.join([
-            'SELECT f.telegram_file_id',
-            'FROM podcasts AS p',
-            'INNER JOIN files AS f ON p.file_id = f.file_id',
-            'WHERE p.podcast_id = :podcast_id',
+            'SELECT cf.file_id',
+            'FROM ayats AS a',
+            'INNER JOIN files AS cf ON a.ar_audio_id = cf.file_id',
+            'WHERE a.ayat_id = :ayat_id',
         ])
         async with self._pgsql.connect() as conn:
             result = await conn.execute(
                 text(query),
-                {'podcast_id': await self._podcast_id.to_int()},
+                {'ayat_id': await self._ayat_id.to_int()},
             )
             row = result.fetchone()
         if row is None:
-            msg = 'Подкасты не найдены'
+            msg = 'Аят с id={0} не найден'.format(await self._ayat_id.to_int())
             raise InternalBotError(msg)
-        row_dict = dict(row._mapping)
-        if not row_dict['telegram_file_id']:
-            raise TelegramFileIdNotFilledError
-        return row_dict['telegram_file_id']
+        return dict(row._mapping)['file_id']
 
     @override
     async def file_link(self) -> FileLink:
@@ -66,18 +53,18 @@ class PgPodcast(Podcast):
         :raises InternalBotError: если таблилца с подкастами не заполнена
         """
         query = '\n'.join([
-            'SELECT f.link',
-            'FROM podcasts AS p',
-            'INNER JOIN files AS f ON p.file_id = f.file_id',
-            'WHERE p.podcast_id = :podcast_id',
+            'SELECT cf.link',
+            'FROM ayats AS a',
+            'INNER JOIN files AS cf ON a.ar_audio_id = cf.file_id',
+            'WHERE a.ayat_id = :ayat_id',
         ])
         async with self._pgsql.connect() as conn:
             result = await conn.execute(
                 text(query),
-                {'podcast_id': await self._podcast_id.to_int()},
+                {'ayat_id': await self._ayat_id.to_int()},
             )
             row = result.fetchone()
         if row is None:
-            msg = 'Подкасты не найдены'
+            msg = 'Аят с id={0} не найден'.format(await self._ayat_id.to_int())
             raise InternalBotError(msg)
         return dict(row._mapping)['link']

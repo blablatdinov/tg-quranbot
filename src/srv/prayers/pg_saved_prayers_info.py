@@ -4,7 +4,7 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.logger import LogSink
 from exceptions.internal_exceptions import PrayerAlreadyExistsError
@@ -18,7 +18,7 @@ class PgSavedPrayersInfo(PrayersInfo):
     """Информация о времени намаза, сохраненная в postgres."""
 
     _origin: PrayersInfo
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _logger: LogSink
 
     @override

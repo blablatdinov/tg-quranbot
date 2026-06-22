@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from integrations.tg.fk_chat_id import ChatId
 from srv.podcasts.changed_podcast_reaction import PODCAST_ID_LITERAL, USER_ID_LITERAL, ChangedPodcastReaction
@@ -16,7 +17,7 @@ from srv.podcasts.podcast_reactions import PodcastReactions
 class PgChangedPoodcastReaction(ChangedPodcastReaction):
     """Реакция на подкаст в БД postgres."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _chat_id: ChatId
     _reaction: PodcastReactions
 
@@ -28,10 +29,13 @@ class PgChangedPoodcastReaction(ChangedPodcastReaction):
             'FROM podcast_reactions',
             'WHERE user_id = :user_id AND podcast_id = :podcast_id',
         ])
-        prayer_existed_reaction = await self._pgsql.fetch_val(query, {
-            USER_ID_LITERAL: int(self._chat_id),
-            PODCAST_ID_LITERAL: self._reaction.podcast_id(),
-        })
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text(query), {
+                USER_ID_LITERAL: int(self._chat_id),
+                PODCAST_ID_LITERAL: self._reaction.podcast_id(),
+            })
+            row = result.fetchone()
+        prayer_existed_reaction = row[0] if row else None
         if prayer_existed_reaction:
             if prayer_existed_reaction == self._reaction.status():
                 query = '\n'.join([
@@ -39,28 +43,34 @@ class PgChangedPoodcastReaction(ChangedPodcastReaction):
                     "SET reaction = 'showed'",
                     'WHERE user_id = :user_id AND podcast_id = :podcast_id',
                 ])
-                await self._pgsql.execute(query, {
-                    USER_ID_LITERAL: int(self._chat_id),
-                    PODCAST_ID_LITERAL: self._reaction.podcast_id(),
-                })
+                async with self._pgsql.connect() as conn:
+                    await conn.execute(text(query), {
+                        USER_ID_LITERAL: int(self._chat_id),
+                        PODCAST_ID_LITERAL: self._reaction.podcast_id(),
+                    })
+                    await conn.commit()
             else:
                 query = '\n'.join([
                     'UPDATE podcast_reactions',
                     'SET reaction = :reaction',
                     'WHERE user_id = :user_id AND podcast_id = :podcast_id',
                 ])
-                await self._pgsql.execute(query, {
-                    'reaction': self._reaction.status(),
-                    USER_ID_LITERAL: int(self._chat_id),
-                    PODCAST_ID_LITERAL: self._reaction.podcast_id(),
-                })
+                async with self._pgsql.connect() as conn:
+                    await conn.execute(text(query), {
+                        'reaction': self._reaction.status(),
+                        USER_ID_LITERAL: int(self._chat_id),
+                        PODCAST_ID_LITERAL: self._reaction.podcast_id(),
+                    })
+                    await conn.commit()
         else:
             query = '\n'.join([
                 'INSERT INTO podcast_reactions (podcast_id, user_id, reaction)',
                 'VALUES (:podcast_id, :user_id, :reaction)',
             ])
-            await self._pgsql.execute(query, {
-                PODCAST_ID_LITERAL: self._reaction.podcast_id(),
-                USER_ID_LITERAL: int(self._chat_id),
-                'reaction': self._reaction.status(),
-            })
+            async with self._pgsql.connect() as conn:
+                await conn.execute(text(query), {
+                    PODCAST_ID_LITERAL: self._reaction.podcast_id(),
+                    USER_ID_LITERAL: int(self._chat_id),
+                    'reaction': self._reaction.status(),
+                })
+                await conn.commit()

@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.listable import AsyncListable
 from srv.users.updated_users_status import UpdatedUsersStatus
@@ -16,7 +17,7 @@ from srv.users.user import User
 class PgUpdatedUsersStatus(UpdatedUsersStatus):
     """Обновление статусов пользователей."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _users: AsyncListable[User]
 
     @override
@@ -37,4 +38,6 @@ class PgUpdatedUsersStatus(UpdatedUsersStatus):
             str(await user.chat_id())
             for user in users
         ]))
-        await self._pgsql.execute(query, {'to': to})
+        async with self._pgsql.connect() as conn:
+            await conn.execute(text(query), {'to': to})
+            await conn.commit()

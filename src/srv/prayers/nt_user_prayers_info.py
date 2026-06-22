@@ -7,7 +7,7 @@ from typing import final, override
 
 import attrs
 import pytz
-from databases import Database
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from exceptions.internal_exceptions import PrayerAtUserAlreadyExistsError
 from integrations.tg.fk_chat_id import ChatId
@@ -21,7 +21,7 @@ class NtUserPrayersInfo(PrayersInfo):
     """Декоратор для создания записи о времени намаза в таблице prayers_at_user."""
 
     _origin: PrayersInfo
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _chat_id: ChatId
 
     @override

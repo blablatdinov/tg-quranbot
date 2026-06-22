@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from exceptions.base_exception import InternalBotError
 from srv.admin_messages.admin_message import AdminMessage
@@ -16,7 +17,7 @@ class PgAdminMessage(AdminMessage):
     """Административное сообщение."""
 
     _key: str
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def to_str(self) -> str:
@@ -25,10 +26,13 @@ class PgAdminMessage(AdminMessage):
         :raises InternalBotError: возбуждается если административное сообщение с переданным ключом не найдено
         :return: str
         """
-        record = await self._pgsql.fetch_one(
-            'SELECT text FROM admin_messages m WHERE m.key = :key', {'key': self._key},
-        )
-        if not record:
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(
+                text('SELECT text FROM admin_messages m WHERE m.key = :key'),
+                {'key': self._key},
+            )
+            row = result.fetchone()
+        if row is None:
             msg = 'Не найдено административное сообщение с ключом {0}'.format(self._key)
             raise InternalBotError(msg)
-        return record['text']
+        return dict(row._mapping)['text']

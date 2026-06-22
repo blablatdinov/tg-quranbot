@@ -5,8 +5,8 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
 from redis.asyncio import Redis
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.logger import LogSink
 from app_types.update import Update
@@ -23,7 +23,7 @@ class UserPrayerStatusChangeAnswer(TgAnswer):
     """Ответ с изменением статуса прочитанности намаза."""
 
     _empty_answer: TgAnswer
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _redis: Redis
     _logger: LogSink
     _settings: Settings

@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.async_supports_str import AsyncSupportsStr
 from exceptions.internal_exceptions import CityNotFoundError
@@ -20,15 +21,17 @@ class NtPrayersUrl(AsyncSupportsStr):
     """
 
     _city: City
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def to_str(self) -> str:
         """Строковое представление."""
-        link = await self._pgsql.fetch_val(
-            'SELECT link FROM namaz_today_cities WHERE city_id = :city_id',
-            {'city_id': str(await self._city.city_id())},
-        )
-        if not link:
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(
+                text('SELECT link FROM namaz_today_cities WHERE city_id = :city_id'),
+                {'city_id': str(await self._city.city_id())},
+            )
+            row = result.fetchone()
+        if row is None:
             raise CityNotFoundError
-        return link
+        return row[0]

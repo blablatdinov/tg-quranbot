@@ -4,13 +4,15 @@
 from typing import final, override
 
 import attrs
-from databases import Database
-from eljson.json import Json
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.fk_async_int import FkAsyncInt
 from app_types.intable import AsyncInt
 from app_types.stringable import SupportsStr
+from eljson.json import Json
 from exceptions.content_exceptions import AyatNotFoundError
+from integrations.tg.fk_chat_id import ChatId
 from services.intable_regex import IntableRegex
 from srv.ayats.ayat import Ayat, AyatText
 from srv.ayats.ayat_id_by_public_id import AyatIdByPublicId
@@ -29,14 +31,14 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
     """Аят."""
 
     _ayat_id: AsyncInt
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @classmethod
-    def by_sura_ayat_num(cls, sura_ayat_num: SupportsStr, database: Database) -> Ayat:
+    def by_sura_ayat_num(cls, sura_ayat_num: SupportsStr, database: AsyncEngine) -> Ayat:
         """Конструктор для поиска по номеру суры, аята.
 
         :param sura_ayat_num: Stringable
-        :param database: Database
+        :param database: AsyncEngine
         :return: Ayat
         """
         return PgAyat(
@@ -50,21 +52,21 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         )
 
     @classmethod
-    def from_int(cls, ayat_id: int, database: Database) -> Ayat:
+    def from_int(cls, ayat_id: int, database: AsyncEngine) -> Ayat:
         """Конструктор для числа.
 
         :param ayat_id: int
-        :param database: Database
+        :param database: AsyncEngine
         :return: Ayat
         """
         return PgAyat(FkAsyncInt(ayat_id), database)
 
     @classmethod
-    def from_callback_query(cls, callback_query: SupportsStr, database: Database) -> Ayat:
+    def from_callback_query(cls, callback_query: SupportsStr, database: AsyncEngine) -> Ayat:
         """Создать аят из данных нажатой inline кнопки.
 
         :param callback_query: SupportsStr
-        :param database: Database
+        :param database: AsyncEngine
         :return: Ayat
         """
         return PgAyat.from_int(  # noqa: PEO102
@@ -73,11 +75,11 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         )
 
     @classmethod
-    def ayat_changed_event_ctor(cls, event_body: Json, pgsql: Database) -> Ayat:
+    def ayat_changed_event_ctor(cls, event_body: Json, pgsql: AsyncEngine) -> Ayat:  # type: ignore[override]
         """Конструктор для события изменения аята.
 
         :param event_body: Json
-        :param pgsql: Database
+        :param pgsql: AsyncEngine
         :return: Ayat
         """
         return cls(
@@ -114,18 +116,21 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
             'WHERE a.ayat_id = :ayat_id',
         ])
         ayat_id = await self._ayat_id.to_int()
-        row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
-        if not row:
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text(query), {'ayat_id': ayat_id})
+            row = result.fetchone()
+        if row is None:
             msg = 'Аят с id={0} не найден'.format(ayat_id)
             raise AyatNotFoundError(msg)
+        row_dict = dict(row._mapping)
         template = '<a href="{link}">{sura}:{ayat})</a>\n{arab_text}\n\n{content}\n\n<i>{transliteration}</i>'
         return template.format(
-            link=str(AyatLink(row['sura_link'], row['sura_num'], row['ayat_num'])),
-            sura=row['sura_num'],
-            ayat=row['ayat_num'],
-            arab_text=row['arab_text'],
-            content=row['content'],
-            transliteration=row['transliteration'],
+            link=str(AyatLink(row_dict['sura_link'], row_dict['sura_num'], row_dict['ayat_num'])),
+            sura=row_dict['sura_num'],
+            ayat=row_dict['ayat_num'],
+            arab_text=row_dict['arab_text'],
+            content=row_dict['content'],
+            transliteration=row_dict['transliteration'],
         )
 
     @override
@@ -142,14 +147,16 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
             'WHERE a.ayat_id = :ayat_id',
         ])
         ayat_id = await self._ayat_id.to_int()
-        row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
-        if not row:
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text(query), {'ayat_id': ayat_id})
+            row = result.fetchone()
+        if row is None:
             msg = 'Аят с id={0} не найден'.format(ayat_id)
             raise AyatNotFoundError(msg)
-        return PgFile(row['file_id'], self._pgsql)
+        return PgFile(dict(row._mapping)['file_id'], self._pgsql)
 
     @override
-    async def change(self, event_body: Json) -> None:
+    async def change(self, event_body: Json) -> None:  # type: ignore[override]
         """Изменить содержимое аята.
 
         :param event_body: Json
@@ -165,12 +172,14 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
             '    transliteration = :transliteration',
             'WHERE ayat_id = :ayat_id',
         ])
-        await self._pgsql.execute(query, {
-            'ayat_id': await self._ayat_id.to_int(),
-            'day': event_body.path('$.data.day')[0],
-            'ar_audio_id': event_body.path('$.data.audio_id')[0],
-            'ayat_number': event_body.path('$.data.ayat_number')[0],
-            'content': event_body.path('$.data.content')[0],
-            'arab_text': event_body.path('$.data.arab_text')[0],
-            'transliteration': event_body.path('$.data.transliteration')[0],
-        })
+        async with self._pgsql.connect() as conn:
+            await conn.execute(text(query), {
+                'ayat_id': await self._ayat_id.to_int(),
+                'day': event_body.path('$.data.day')[0],
+                'ar_audio_id': event_body.path('$.data.audio_id')[0],
+                'ayat_number': event_body.path('$.data.ayat_number')[0],
+                'content': event_body.path('$.data.content')[0],
+                'arab_text': event_body.path('$.data.arab_text')[0],
+                'transliteration': event_body.path('$.data.transliteration')[0],
+            })
+            await conn.commit()

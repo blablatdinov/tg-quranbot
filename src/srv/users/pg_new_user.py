@@ -5,7 +5,8 @@ from typing import final, override
 
 import attrs
 from asyncpg import ForeignKeyViolationError, UniqueViolationError
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.async_int_or_none import AsyncIntOrNone
 from app_types.fk_async_int_or_none import FkAsyncIntOrNone
@@ -23,15 +24,15 @@ class PgNewUser(NewUser):
 
     _referrer_chat_id: AsyncIntOrNone
     _new_user_chat_id: ChatId
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _logger: LogSink
 
     @classmethod
-    def ctor(cls, new_user_chat_id: ChatId, pgsql: Database, logger: LogSink) -> NewUser:
+    def ctor(cls, new_user_chat_id: ChatId, pgsql: AsyncEngine, logger: LogSink) -> NewUser:
         """Конструктор без реферера.
 
         :param new_user_chat_id: ChatId
-        :param pgsql: Database
+        :param pgsql: AsyncEngine
         :param logger: LogSink
         :return: NewUser
         """
@@ -58,10 +59,12 @@ class PgNewUser(NewUser):
             'RETURNING (chat_id, referrer_id)',
         ])
         try:
-            await self._pgsql.fetch_one(
-                query,
-                {'chat_id': chat_id, 'referrer_id': await self._referrer_chat_id.to_int()},
-            )
+            async with self._pgsql.connect() as conn:
+                await conn.execute(
+                    text(query),
+                    {'chat_id': chat_id, 'referrer_id': await self._referrer_chat_id.to_int()},
+                )
+                await conn.commit()
         except UniqueViolationError as err:
             raise UserAlreadyExistsError from err
         except ForeignKeyViolationError as err:

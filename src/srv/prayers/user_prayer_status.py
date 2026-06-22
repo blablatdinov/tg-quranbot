@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from srv.prayers.prayers_stts import PrayerStts
 from srv.prayers.user_prayer_stts import UserPrayerStts
@@ -15,7 +16,7 @@ from srv.prayers.user_prayer_stts import UserPrayerStts
 class UserPrayerStatus(UserPrayerStts):
     """Статус прочитанности намаза."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def change(self, prayer_status: PrayerStts) -> None:
@@ -28,7 +29,9 @@ class UserPrayerStatus(UserPrayerStts):
             'SET is_read = :is_read',
             'WHERE prayer_at_user_id = :prayer_id',
         ])
-        await self._pgsql.execute(query, {
-            'is_read': prayer_status.change_to(),
-            'prayer_id': prayer_status.user_prayer_id(),
-        })
+        async with self._pgsql.connect() as conn:
+            await conn.execute(text(query), {
+                'is_read': prayer_status.change_to(),
+                'prayer_id': prayer_status.user_prayer_id(),
+            })
+            await conn.commit()

@@ -7,7 +7,7 @@ from typing import final, override
 
 import attrs
 import ujson
-from databases import Database
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.update import Update
 from exceptions.internal_exceptions import PrayerAtUserAlreadyExistsError
@@ -24,7 +24,7 @@ from srv.prayers.prayer_date import PrayerDate
 class UserPrayersKeyboard(Keyboard):
     """Клавиатура времен намаза."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _date: PrayerDate
     _chat_id: ChatId
 

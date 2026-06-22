@@ -6,7 +6,8 @@ import datetime
 import psycopg2
 import pytest
 import pytz
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from settings import BASE_DIR, Settings
 from srv.ayats.fk_ayat import FkAyat
@@ -35,9 +36,8 @@ def _migrate():
 @pytest.fixture
 async def pgsql(_migrate):
     db_url = str(Settings(_env_file=BASE_DIR.parent / '.env').DATABASE_URL)
-    database = Database(db_url)
-    await database.connect()
-    yield database
+    engine = create_async_engine(db_url)
+    yield engine
     tables = (
         'prayers_at_user',
         'favorite_ayats',
@@ -53,56 +53,60 @@ async def pgsql(_migrate):
         'files',
         'admin_messages',
     )
-    for table in tables:
-        await database.execute('DELETE FROM {0}'.format(table))  # noqa: S608
-    await database.execute("SELECT setval('podcasts_podcast_id_seq', 1, false)")
-    await database.execute("SELECT setval('prayers_at_user_prayer_at_user_id_seq', 1, false)")
-    await database.disconnect()
+    async with engine.connect() as conn:
+        for table in tables:
+            await conn.execute(text('DELETE FROM {0}'.format(table)))  # noqa: S608
+        await conn.execute(text("SELECT setval('podcasts_podcast_id_seq', 1, false)"))
+        await conn.execute(text("SELECT setval('prayers_at_user_prayer_at_user_id_seq', 1, false)"))
+        await conn.commit()
+    await engine.dispose()
 
 
 @pytest.fixture
 async def db_ayat(pgsql):
     created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
-    await pgsql.execute(
-        '\n'.join([
-            'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
-            "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
-        ]),
-        {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at},
-    )
-    await pgsql.execute('\n'.join([
-        'INSERT INTO suras (sura_id, link) VALUES',
-        "(1, '/link-to-sura')",
-    ]))
-    await pgsql.execute(
-        '\n'.join([
-            'INSERT INTO ayats',
-            '(ayat_id, sura_id, public_id, day, ar_audio_id, ayat_number, content, arab_text, transliteration)',
-            'VALUES',
-            '(',
-            '  :ayat_id,',
-            '  :sura_id,',
-            '  :public_id,',
-            '  :day,',
-            '  :ar_audio_id,',
-            '  :ayat_number,',
-            '  :content,',
-            '  :arab_text,',
-            '  :transliteration',
-            ')',
-        ]),
-        {
-            'ayat_id': 1,
-            'sura_id': 1,
-            'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
-            'day': 1,
-            'ar_audio_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90',
-            'ayat_number': '1-7',
-            'content': 'Content',
-            'arab_text': 'Arab text',
-            'transliteration': 'Transliteration',
-        },
-    )
+    async with pgsql.connect() as conn:
+        await conn.execute(
+            text('\n'.join([
+                'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
+                "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
+            ])),
+            {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at},
+        )
+        await conn.execute(text('\n'.join([
+            'INSERT INTO suras (sura_id, link) VALUES',
+            "(1, '/link-to-sura')",
+        ])))
+        await conn.execute(
+            text('\n'.join([
+                'INSERT INTO ayats',
+                '(ayat_id, sura_id, public_id, day, ar_audio_id, ayat_number, content, arab_text, transliteration)',
+                'VALUES',
+                '(',
+                '  :ayat_id,',
+                '  :sura_id,',
+                '  :public_id,',
+                '  :day,',
+                '  :ar_audio_id,',
+                '  :ayat_number,',
+                '  :content,',
+                '  :arab_text,',
+                '  :transliteration',
+                ')',
+            ])),
+            {
+                'ayat_id': 1,
+                'sura_id': 1,
+                'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
+                'day': 1,
+                'ar_audio_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90',
+                'ayat_number': '1-7',
+                'content': 'Content',
+                'arab_text': 'Arab text',
+                'transliteration': 'Transliteration',
+            },
+        )
+        await conn.commit()
     return FkAyat(
         FkIdentifier(1, 1, '1-7'),
         '',
@@ -113,10 +117,12 @@ async def db_ayat(pgsql):
 @pytest.fixture
 def city_factory(pgsql):
     async def _city_factory(city_id, name):  # noqa: WPS430
-        await pgsql.execute(
-            'INSERT INTO cities (city_id, name) VALUES (:city_id, :city_name)',
-            {'city_id': city_id, 'city_name': name},
-        )
+        async with pgsql.connect() as conn:
+            await conn.execute(
+                text('INSERT INTO cities (city_id, name) VALUES (:city_id, :city_name)'),
+                {'city_id': city_id, 'city_name': name},
+            )
+            await conn.commit()
         return FkCity(city_id, name)
     return _city_factory
 
@@ -130,19 +136,21 @@ def user_factory(pgsql):
         legacy_id: int | None = None,
         is_active: bool = True,
     ):  # noqa: WPS430
-        await pgsql.execute(
-            '\n'.join([
-                'INSERT INTO users (chat_id, day, city_id, is_active, legacy_id) VALUES',
-                '(:chat_id, :day, :city_id, :is_active, :legacy_id)',
-            ]),
-            {
-                'chat_id': chat_id,
-                'day': day or 2,
-                'city_id': await city.city_id() if city else None,
-                'legacy_id': legacy_id or None,
-                'is_active': is_active,
-            },
-        )
+        async with pgsql.connect() as conn:
+            await conn.execute(
+                text('\n'.join([
+                    'INSERT INTO users (chat_id, day, city_id, is_active, legacy_id) VALUES',
+                    '(:chat_id, :day, :city_id, :is_active, :legacy_id)',
+                ])),
+                {
+                    'chat_id': chat_id,
+                    'day': day or 2,
+                    'city_id': await city.city_id() if city else None,
+                    'legacy_id': legacy_id or None,
+                    'is_active': is_active,
+                },
+            )
+            await conn.commit()
         return PgUser.int_ctor(chat_id, pgsql)
     return _user_factory
 
@@ -162,5 +170,7 @@ async def prayers_factory(pgsql, city_factory, user_factory):
             "(5, 'maghrib', '15:07:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '{0}'),",
             "(6, 'isha''a', '17:04:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '{0}')",
         ]).format(date_as_str)
-        await pgsql.execute(query)
+        async with pgsql.connect() as conn:
+            await conn.execute(text(query))
+            await conn.commit()
     return _prayers_factory

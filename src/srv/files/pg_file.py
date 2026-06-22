@@ -5,7 +5,8 @@ import uuid
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from exceptions.content_exceptions import BotFileNotFoundError
 from srv.files.tg_file import FileLink, TgFile, TgFileId
@@ -17,7 +18,7 @@ class PgFile(TgFile):
     """Объект файла в postgres."""
 
     _file_id: uuid.UUID
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def tg_file_id(self) -> TgFileId:
@@ -31,10 +32,12 @@ class PgFile(TgFile):
             'FROM files',
             'WHERE file_id = :file_id',
         ])
-        row = await self._pgsql.fetch_one(query, {'file_id': str(self._file_id)})
-        if not row:
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text(query), {'file_id': str(self._file_id)})
+            row = result.fetchone()
+        if row is None:
             raise BotFileNotFoundError
-        return row['telegram_file_id']
+        return dict(row._mapping)['telegram_file_id']
 
     @override
     async def file_link(self) -> FileLink:
@@ -48,7 +51,9 @@ class PgFile(TgFile):
             'FROM files',
             'WHERE file_id = :file_id',
         ])
-        row = await self._pgsql.fetch_one(query, {'file_id': str(self._file_id)})
-        if not row:
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text(query), {'file_id': str(self._file_id)})
+            row = result.fetchone()
+        if row is None:
             raise BotFileNotFoundError
-        return row['link']
+        return dict(row._mapping)['link']

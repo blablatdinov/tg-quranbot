@@ -4,7 +4,8 @@
 from typing import Final, final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.async_supports_str import AsyncSupportsStr
 from app_types.update import Update
@@ -21,7 +22,7 @@ TIME_LITERAL: Final = 'time'
 class PgPrayersInfo(PrayersInfo):
     """Информация о времени намаза из БД."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _date: PrayerDate
     _city_id: AsyncSupportsStr
     _update: Update
@@ -41,23 +42,26 @@ class PgPrayersInfo(PrayersInfo):
             'ORDER BY',
             "    ARRAY_POSITION(ARRAY['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
         ])
-        rows = await self._pgsql.fetch_all(query, {
-            'date': await self._date.parse(self._update),
-            'city_id': await self._city_id.to_str(),
-        })
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text(query), {
+                'date': await self._date.parse(self._update),
+                'city_id': await self._city_id.to_str(),
+            })
+            rows = result.fetchall()
         if not rows:
             raise PrayersNotFoundError(
                 await CityNameById(self._pgsql, self._city_id).to_str(),
                 await self._date.parse(self._update),
             )
+        rows_dict = [dict(row._mapping) for row in rows]
         time_format = '%H:%M'
         return PrayerMessageTextDict({
-            'city_name': rows[0]['city_name'],
-            'date': rows[0]['day'].strftime('%d.%m.%Y'),
-            'fajr_prayer_time': rows[0][TIME_LITERAL].strftime(time_format),
-            'sunrise_prayer_time': rows[1][TIME_LITERAL].strftime(time_format),
-            'dhuhr_prayer_time': rows[2][TIME_LITERAL].strftime(time_format),
-            'asr_prayer_time': rows[3][TIME_LITERAL].strftime(time_format),
-            'magrib_prayer_time': rows[4][TIME_LITERAL].strftime(time_format),
-            'ishaa_prayer_time': rows[5][TIME_LITERAL].strftime(time_format),
+            'city_name': rows_dict[0]['city_name'],
+            'date': rows_dict[0]['day'].strftime('%d.%m.%Y'),
+            'fajr_prayer_time': rows_dict[0][TIME_LITERAL].strftime(time_format),
+            'sunrise_prayer_time': rows_dict[1][TIME_LITERAL].strftime(time_format),
+            'dhuhr_prayer_time': rows_dict[2][TIME_LITERAL].strftime(time_format),
+            'asr_prayer_time': rows_dict[3][TIME_LITERAL].strftime(time_format),
+            'magrib_prayer_time': rows_dict[4][TIME_LITERAL].strftime(time_format),
+            'ishaa_prayer_time': rows_dict[5][TIME_LITERAL].strftime(time_format),
         })

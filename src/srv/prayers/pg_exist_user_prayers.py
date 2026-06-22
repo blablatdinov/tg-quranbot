@@ -5,7 +5,8 @@ import datetime
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from integrations.tg.fk_chat_id import ChatId
 from srv.prayers.exist_user_prayers import ExistUserPrayers
@@ -17,7 +18,7 @@ from srv.prayers.exist_user_prayers_dict import ExistUserPrayersDict
 class PgExistUserPrayers(ExistUserPrayers):
     """Существующие времена намаза у пользователя."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _chat_id: ChatId
     _date: datetime.date
 
@@ -36,13 +37,16 @@ class PgExistUserPrayers(ExistUserPrayers):
             "WHERE p.day = :date AND pau.user_id = :chat_id AND p.name <> 'sunrise'",
             'ORDER BY pau.prayer_at_user_id',
         ])
-        return [
-            {
-                'prayer_at_user_id': record['prayer_at_user_id'],
-                'is_read': record['is_read'],
-            }
-            for record in await self._pgsql.fetch_all(select_query, {
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text(select_query), {
                 'date': self._date,
                 'chat_id': int(self._chat_id),
             })
+            rows = result.fetchall()
+        return [
+            {
+                'prayer_at_user_id': dict(row._mapping)['prayer_at_user_id'],
+                'is_read': dict(row._mapping)['is_read'],
+            }
+            for row in rows
         ]

@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.intable import AsyncInt
 from exceptions.content_exceptions import AyatNotFoundError
@@ -18,7 +19,7 @@ class AyatIdBySuraAyatNum(AsyncInt):
     """Поиск аятов по номеру суры, аята."""
 
     _query: SearchQuery
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def to_int(self) -> AyatId:
@@ -41,13 +42,15 @@ class AyatIdBySuraAyatNum(AsyncInt):
             '        )',
             '    )',
         ])
-        row = await self._pgsql.fetch_one(query, {
-            'sura_id': self._query.sura(),
-            'ayat_comma_prefix': '%,{0}'.format(self._query.ayat()),
-            'ayat_comma_postfix': '%{0},'.format(self._query.ayat()),
-            'ayat_num': int(self._query.ayat()),
-            'ayat_num_str': self._query.ayat(),
-        })
-        if not row:
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text(query), {
+                'sura_id': self._query.sura(),
+                'ayat_comma_prefix': '%,{0}'.format(self._query.ayat()),
+                'ayat_comma_postfix': '%{0},'.format(self._query.ayat()),
+                'ayat_num': int(self._query.ayat()),
+                'ayat_num_str': self._query.ayat(),
+            })
+            row = result.fetchone()
+        if row is None:
             raise AyatNotFoundError
-        return row['ayat_id']
+        return dict(row._mapping)['ayat_id']

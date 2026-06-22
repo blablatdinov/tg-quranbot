@@ -6,7 +6,7 @@ from typing import final, override
 import attrs
 import httpx
 import ujson
-from databases import Database
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.update import Update
 from exceptions.internal_exceptions import NotProcessableUpdateError
@@ -24,7 +24,7 @@ class InlineQueryAnswer(TgAnswer):
     """Ответ на инлайн поиск городов."""
 
     _origin: TgAnswer
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

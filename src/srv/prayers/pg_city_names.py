@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.listable import AsyncListable
 
@@ -14,7 +15,7 @@ from app_types.listable import AsyncListable
 class PgCityNames(AsyncListable):
     """Имена городов из базы postgres."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _query: str
 
     @override
@@ -30,7 +31,10 @@ class PgCityNames(AsyncListable):
             'WHERE name ILIKE :search_query',
             'LIMIT 20',
         ])
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text(db_query), {'search_query': search_query})
+            rows = result.fetchall()
         return [
-            row['name']
-            for row in await self._pgsql.fetch_all(db_query, {'search_query': search_query})
+            dict(row._mapping)['name']
+            for row in rows
         ]

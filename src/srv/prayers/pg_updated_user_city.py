@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from exceptions.internal_exceptions import UserNotFoundError
 from integrations.tg.fk_chat_id import ChatId
@@ -19,7 +20,7 @@ class PgUpdatedUserCity(UpdatedUserCity):
 
     _city: City
     _chat_id: ChatId
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def update(self) -> None:
@@ -33,9 +34,11 @@ class PgUpdatedUserCity(UpdatedUserCity):
             'WHERE chat_id = :chat_id',
             'RETURNING *',
         ])
-        updated_rows = await self._pgsql.fetch_all(query, {
-            'city_id': str(await self._city.city_id()),
-            'chat_id': int(self._chat_id),
-        })
-        if not updated_rows:
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text(query), {
+                'city_id': str(await self._city.city_id()),
+                'chat_id': int(self._chat_id),
+            })
+            rows = result.fetchall()
+        if not rows:
             raise UserNotFoundError

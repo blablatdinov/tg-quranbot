@@ -7,7 +7,8 @@ from typing import final, override
 import attrs
 import pytz
 from asyncpg.exceptions import UniqueViolationError
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from exceptions.prayer_exceptions import PrayersAlreadyExistsError
 from srv.prayers.pg_city import PgCity
@@ -20,7 +21,7 @@ class NtPgPrayersInfo(PrayersInfo):
     """Декоратор для создания записи о времени намаза в таблице prayers."""
 
     _origin: PrayersInfo
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def to_dict(self) -> PrayerMessageTextDict:
@@ -34,18 +35,12 @@ class NtPgPrayersInfo(PrayersInfo):
             .date()
         )
         try:
-            await self._pgsql.execute_many(
-                '\n'.join([
-                    'INSERT INTO prayers (name, time, city_id, day)',
-                    'VALUES',
-                    '(:name, :time, :city_id, :day)',
-                ]),
-                [
+            async with self._pgsql.connect() as conn:
+                for params in [
                     {
                         'name': prayer_name,
                         'time': datetime.datetime.strptime(
-                            # Keys are checked in the loop
-                            origin[key], '%H:%M',  # type: ignore [literal-required]
+                            origin[key], '%H:%M',  # type: ignore[literal-required]
                         ).replace(tzinfo=pytz.timezone('Europe/Moscow')).time(),
                         'city_id': city_id,
                         'day': day,
@@ -69,8 +64,16 @@ class NtPgPrayersInfo(PrayersInfo):
                         ],
                         strict=True,
                     )
-                ],
-            )
+                ]:
+                    await conn.execute(
+                        text('\n'.join([
+                            'INSERT INTO prayers (name, time, city_id, day)',
+                            'VALUES',
+                            '(:name, :time, :city_id, :day)',
+                        ])),
+                        params,
+                    )
+                await conn.commit()
         except UniqueViolationError as err:
             raise PrayersAlreadyExistsError from err
         return origin

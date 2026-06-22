@@ -4,8 +4,7 @@
 from typing import final, override
 
 import attrs
-from databases import Database
-from eljson.json import Json
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.fk_update import FkUpdate
 from app_types.listable import AsyncListable
@@ -29,12 +28,12 @@ class CheckUsersStatus(ReceivedEvent):
     """Статусы пользователей."""
 
     _empty_answer: TgAnswer
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _events_sink: Sink
     _logger: LogSink
 
     @override
-    async def process(self, json_doc: Json) -> None:
+    async def process(self, json_doc: Json) -> None:  # type: ignore[override]
         """Обработка события.
 
         :param json_doc: Json
@@ -72,3 +71,6 @@ class CheckUsersStatus(ReceivedEvent):
             )
             for user in await users.to_list()
         ]
+
+
+from eljson.json import Json

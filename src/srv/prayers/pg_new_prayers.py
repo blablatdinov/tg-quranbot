@@ -7,7 +7,8 @@ from typing import final, override
 import attrs
 import pytz
 from asyncpg.exceptions import UniqueViolationError
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from exceptions.internal_exceptions import CityNotFoundError, PrayerAlreadyExistsError, PrayerNotCreatedError
 from srv.prayers.new_prayers import NewPrayers
@@ -20,19 +21,22 @@ class PgNewPrayers(NewPrayers):
     """Новые записи о статусе намаза."""
 
     _prayer_dict: PrayerMessageTextDict
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     # TODO #1428:30min Встроить создание намаза при запросе пользователем из namaz.today
     # TODO #1428:30min Уменьшить кол-во локальных переменных и удалить noqa комментарий
     @override
     async def create(self) -> None:  # noqa: WPS210
         """Создать."""
-        city_id = await self._pgsql.fetch_val(
-            'SELECT city_id FROM cities WHERE name = :name',
-            {'name': self._prayer_dict['city_name']},
-        )
-        if not city_id:
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(
+                text('SELECT city_id FROM cities WHERE name = :name'),
+                {'name': self._prayer_dict['city_name']},
+            )
+            row = result.fetchone()
+        if row is None:
             raise CityNotFoundError
+        city_id = row[0]
         keys = (
             'fajr_prayer_time',
             'sunrise_prayer_time',
@@ -55,15 +59,8 @@ class PgNewPrayers(NewPrayers):
             .astimezone(pytz.timezone('Europe/Moscow'))
         )
         try:
-            await self._pgsql.execute_many(
-                '\n'.join([
-                    'INSERT INTO prayers',
-                    '(name, time, city_id, day)',
-                    'VALUES',
-                    '(:name, :time, :city_id, :day)',
-                    'RETURNING *',
-                ]),
-                [
+            async with self._pgsql.connect() as conn:
+                for params in [
                     {
                         'name': name,
                         'time': (
@@ -75,13 +72,26 @@ class PgNewPrayers(NewPrayers):
                         'day': day,
                     }
                     for key, name in zip(keys, names, strict=True)
-                ],
-            )
+                ]:
+                    await conn.execute(
+                        text('\n'.join([
+                            'INSERT INTO prayers',
+                            '(name, time, city_id, day)',
+                            'VALUES',
+                            '(:name, :time, :city_id, :day)',
+                            'RETURNING *',
+                        ])),
+                        params,
+                    )
+                await conn.commit()
         except UniqueViolationError as err:
             raise PrayerAlreadyExistsError from err
-        created_prayers = await self._pgsql.fetch_val(
-            'SELECT COUNT(*) FROM prayers WHERE city_id = :city_id AND day = :day',
-            {'city_id': city_id, 'day': day},
-        )
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(
+                text('SELECT COUNT(*) FROM prayers WHERE city_id = :city_id AND day = :day'),
+                {'city_id': city_id, 'day': day},
+            )
+            row = result.fetchone()
+        created_prayers = row[0] if row else 0
         if not created_prayers:
             raise PrayerNotCreatedError

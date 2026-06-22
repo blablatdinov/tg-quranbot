@@ -7,8 +7,8 @@ from typing import final, override
 import attrs
 import httpx
 import pytz
-from databases import Database
 from lxml import etree
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.fk_update import FkUpdate
 from exceptions.prayer_exceptions import PrayersNotFoundError
@@ -25,7 +25,7 @@ class NtPrayersInfo(PrayersInfo):
 
     _city: City
     _date: PrayerDate
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     # TODO #1501:30min Исправить кол-во переменных и удалить noqa комментарий
     @override

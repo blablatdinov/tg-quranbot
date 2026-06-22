@@ -5,7 +5,7 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
+from sqlalchemy.ext.asyncio import AsyncEngine
 from redis.asyncio import Redis
 
 from app_types.logger import LogSink
@@ -35,7 +35,7 @@ from srv.users.redis_user_state import RedisUserState
 class PgSetUserCityAnswer(TgAnswer):
     """Сохранение города пользователя из сообщения или локации."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _empty_answer: TgAnswer
     _debug_mode: SupportsBool
     _redis: Redis

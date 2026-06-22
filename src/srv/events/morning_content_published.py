@@ -6,10 +6,8 @@ from collections.abc import Iterator
 from typing import final, override
 
 import attrs
-from databases import Database
-from databases.interfaces import Record
-from eljson.json import Json
-from jinja2 import Template
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.fk_async_listable import FkAsyncListable
 from app_types.fk_update import FkUpdate
@@ -36,40 +34,42 @@ class MorningContentPublishedEvent(ReceivedEvent):
     """Обработка события об утренней рассылки с аятми."""
 
     _empty_answer: TgAnswer
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _settings: Settings
     _events_sink: Sink
     _log_sink: LogSink
 
     @override
-    async def process(self, json_doc: Json) -> None:
+    async def process(self, json_doc: Json) -> None:  # type: ignore[override]
         """Обработка события.
 
         :param json_doc: Json
         """
-        rows = await self._pgsql.fetch_all('\n'.join([
-            'SELECT',
-            '    u.chat_id,',
-            "    STRING_AGG(a.sura_id::character varying, ',') as sura_ids,",
-            "    STRING_AGG(a.ayat_number, '|' ORDER BY a.ayat_id) as ayat_nums,",
-            '    STRING_AGG(',
-            '        a.content,',
-            "        '|sep|'",
-            '        ORDER BY a.ayat_id',
-            '    ) AS content,',
-            "    STRING_AGG(s.link, '|sep|' ORDER BY a.ayat_id) AS sura_link",
-            'FROM public.ayats AS a',
-            'JOIN public.users AS u ON a.day = u.day',
-            'JOIN suras AS s ON a.sura_id = s.sura_id',
-            "WHERE u.is_active = 't' {0}".format(
-                'AND u.chat_id IN ({0})'.format(
-                    ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
-                )
-                if self._settings.DAILY_AYATS == 'off' else '',
-            ),
-            'GROUP BY u.chat_id',
-            'ORDER BY u.chat_id',
-        ]))
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text('\n'.join([
+                'SELECT',
+                '    u.chat_id,',
+                "    STRING_AGG(a.sura_id::character varying, ',') as sura_ids,",
+                "    STRING_AGG(a.ayat_number, '|' ORDER BY a.ayat_id) as ayat_nums,",
+                '    STRING_AGG(',
+                '        a.content,',
+                "        '|sep|'",
+                '        ORDER BY a.ayat_id',
+                '    ) AS content,',
+                "    STRING_AGG(s.link, '|sep|' ORDER BY a.ayat_id) AS sura_link",
+                'FROM public.ayats AS a',
+                'JOIN public.users AS u ON a.day = u.day',
+                'JOIN suras AS s ON a.sura_id = s.sura_id',
+                "WHERE u.is_active = 't' {0}".format(
+                    'AND u.chat_id IN ({0})'.format(
+                        ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
+                    )
+                    if self._settings.DAILY_AYATS == 'off' else '',
+                ),
+                'GROUP BY u.chat_id',
+                'ORDER BY u.chat_id',
+            ])))
+            rows = result.fetchall()
         unsubscribed_users: list[User] = []
         for answer, chat_id in self._zipped_ans_chat_ids(rows):
             await self._iteration(answer, chat_id, unsubscribed_users)
@@ -78,13 +78,15 @@ class MorningContentPublishedEvent(ReceivedEvent):
             FkAsyncListable(unsubscribed_users),
             self._events_sink,
         ).update(to=False)
-        await self._pgsql.execute('\n'.join([
-            'UPDATE users',
-            'SET day = day + 1',
-            "WHERE is_active = 't' AND chat_id IN ({0})".format(','.join([str(row['chat_id']) for row in rows])),
-        ]))
+        async with self._pgsql.connect() as conn:
+            await conn.execute(text('\n'.join([
+                'UPDATE users',
+                'SET day = day + 1',
+                "WHERE is_active = 't' AND chat_id IN ({0})".format(','.join([str(dict(row._mapping)['chat_id']) for row in rows])),
+            ])))
+            await conn.commit()
 
-    def _zipped_ans_chat_ids(self, rows: list[Record]) -> Iterator[tuple[TgAnswer, int]]:  # noqa: NPM100. Fix it
+    def _zipped_ans_chat_ids(self, rows) -> Iterator[tuple[TgAnswer, int]]:  # noqa: NPM100. Fix it
         return zip(
             [
                 TgLinkPreviewOptions(
@@ -93,7 +95,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
                             TgTextAnswer.str_ctor(
                                 TgChatIdAnswer(
                                     TgMessageAnswer(self._empty_answer),
-                                    row['chat_id'],
+                                    dict(row._mapping)['chat_id'],
                                 ),
                                 Template(''.join([
                                     '{% for ayat in ayats %}',
@@ -108,13 +110,13 @@ class MorningContentPublishedEvent(ReceivedEvent):
                                             'content': ayat_content,
                                         }
                                         for sura_id, ayat_num, ayat_content in zip(
-                                            row['sura_ids'].split(','),
-                                            row['ayat_nums'].split('|'),
-                                            row['content'].split('|sep|'),
+                                            dict(row._mapping)['sura_ids'].split(','),
+                                            dict(row._mapping)['ayat_nums'].split('|'),
+                                            dict(row._mapping)['content'].split('|sep|'),
                                             strict=True,
                                         )
                                     ],
-                                    'sura_link': row['sura_link'].split('|sep|')[0],
+                                    'sura_link': dict(row._mapping)['sura_link'].split('|sep|')[0],
                                 }),
                             ),
                             FkKeyboard(
@@ -126,7 +128,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
                 )
                 for row in rows
             ],
-            [row['chat_id'] for row in rows],
+            [dict(row._mapping)['chat_id'] for row in rows],
             strict=True,
         )
 
@@ -154,3 +156,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
             for error_message in error_messages:
                 if error_message in str(err):
                     unsubscribed_users.append(FkUser(chat_id, 0, is_active=False))  # noqa: PERF401
+
+
+from eljson.json import Json
+from jinja2 import Template

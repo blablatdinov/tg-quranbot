@@ -5,7 +5,8 @@ from collections.abc import Sequence
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.listable import AsyncListable
 from integrations.tg.fk_chat_id import ChatId
@@ -22,7 +23,7 @@ class FavoriteAyatsAfterRemove(AsyncListable):
 
     _chat_id: ChatId
     _ayat_id: AyatId
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def to_list(self) -> Sequence[Ayat]:
@@ -37,14 +38,18 @@ class FavoriteAyatsAfterRemove(AsyncListable):
             'WHERE u.chat_id = :chat_id OR fa.ayat_id = :ayat_id',
             'ORDER BY fa.ayat_id',
         ])
-        rows = await self._pgsql.fetch_all(
-            query, {'chat_id': int(self._chat_id), 'ayat_id': self._ayat_id},
-        )
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(
+                text(query),
+                {'chat_id': int(self._chat_id), 'ayat_id': self._ayat_id},
+            )
+            rows = result.fetchall()
         ayats = []
         flag = True
         for row in rows:
-            if row['ayat_id'] > self._ayat_id and flag:
+            row_dict = dict(row._mapping)
+            if row_dict['ayat_id'] > self._ayat_id and flag:
                 ayats.append(TextLenSafeAyat(PgAyat.from_int(self._ayat_id, self._pgsql)))
                 flag = False
-            ayats.append(TextLenSafeAyat(PgAyat.from_int(row['ayat_id'], self._pgsql)))
+            ayats.append(TextLenSafeAyat(PgAyat.from_int(row_dict['ayat_id'], self._pgsql)))
         return ayats

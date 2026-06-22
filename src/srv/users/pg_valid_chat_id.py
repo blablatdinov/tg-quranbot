@@ -4,7 +4,8 @@
 from typing import SupportsInt, final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.fk_async_int import FkAsyncInt
 from app_types.intable import AsyncInt
@@ -17,14 +18,14 @@ from srv.users.valid_chat_id import ValidChatId
 class PgValidChatId(ValidChatId):
     """Проверенный идентификатор чата в БД postgres."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _unreliable: AsyncInt
 
     @classmethod
-    def int_ctor(cls, pgsql: Database, int_value: SupportsInt) -> ValidChatId:
+    def int_ctor(cls, pgsql: AsyncEngine, int_value: SupportsInt) -> ValidChatId:
         """Числовой конструктор.
 
-        :param pgsql: Database
+        :param pgsql: AsyncEngine
         :param int_value: SupportsInt
         :return: ValidChatId
         """
@@ -37,14 +38,16 @@ class PgValidChatId(ValidChatId):
         :return: int
         :raises UserNotFoundError: если пользователь не найден
         """
-        chat_id = await self._pgsql.fetch_val(
-            '\n'.join([
-                'SELECT chat_id',
-                'FROM users',
-                'WHERE chat_id = :chat_id',
-            ]),
-            {'chat_id': await self._unreliable.to_int()},
-        )
-        if not chat_id:
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(
+                text('\n'.join([
+                    'SELECT chat_id',
+                    'FROM users',
+                    'WHERE chat_id = :chat_id',
+                ])),
+                {'chat_id': await self._unreliable.to_int()},
+            )
+            row = result.fetchone()
+        if row is None:
             raise UserNotFoundError
-        return chat_id
+        return row[0]

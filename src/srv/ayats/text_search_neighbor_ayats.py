@@ -4,7 +4,8 @@
 from typing import Final, final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat import Ayat
@@ -21,16 +22,16 @@ _AYAT_ID_LITERAL: Final = 'ayat_id'
 class TextSearchNeighborAyats(NeighborAyats):
     """Класс для работы с соседними аятами, при текстовом поиске."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _ayat_id: int
     _query: TextSearchQuery
     _search_sql_query: str
 
     @classmethod
-    def ctor(cls, pgsql: Database, ayat_id: int, query: TextSearchQuery) -> NeighborAyats:
+    def ctor(cls, pgsql: AsyncEngine, ayat_id: int, query: TextSearchQuery) -> NeighborAyats:
         """Конструктор объекта.
 
-        :param pgsql: Database
+        :param pgsql: AsyncEngine
         :param ayat_id: int
         :param query: TextSearchQuery
         """
@@ -54,11 +55,14 @@ class TextSearchNeighborAyats(NeighborAyats):
         :raises AyatNotFoundError: if ayat not found
         """
         search_query = '%{0}%'.format(await self._query.read())
-        rows = await self._pgsql.fetch_all(self._search_sql_query, {'search_query': search_query})
-        for idx, row in enumerate(rows[1:], start=1):
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text(self._search_sql_query), {'search_query': search_query})
+            rows = result.fetchall()
+        rows_dict = [dict(row._mapping) for row in rows]
+        for idx, row in enumerate(rows_dict[1:], start=1):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 return TextLenSafeAyat(
-                    PgAyat.from_int(rows[idx - 1][_AYAT_ID_LITERAL], self._pgsql),
+                    PgAyat.from_int(rows_dict[idx - 1][_AYAT_ID_LITERAL], self._pgsql),
                 )
         raise AyatNotFoundError
 
@@ -70,11 +74,14 @@ class TextSearchNeighborAyats(NeighborAyats):
         :raises AyatNotFoundError: if ayat not found
         """
         search_query = '%{0}%'.format(await self._query.read())
-        rows = await self._pgsql.fetch_all(self._search_sql_query, {'search_query': search_query})
-        for idx, row in enumerate(rows[:-1]):
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text(self._search_sql_query), {'search_query': search_query})
+            rows = result.fetchall()
+        rows_dict = [dict(row._mapping) for row in rows]
+        for idx, row in enumerate(rows_dict[:-1]):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 return TextLenSafeAyat(
-                    PgAyat.from_int(rows[idx + 1][_AYAT_ID_LITERAL], self._pgsql),
+                    PgAyat.from_int(rows_dict[idx + 1][_AYAT_ID_LITERAL], self._pgsql),
                 )
         raise AyatNotFoundError
 
@@ -85,11 +92,14 @@ class TextSearchNeighborAyats(NeighborAyats):
         :return: str
         """
         actual_page_num = 0
-        rows = await self._pgsql.fetch_all(
-            self._search_sql_query,
-            {'search_query': '%{0}%'.format(await self._query.read())},
-        )
-        for idx, row in enumerate(rows, start=1):
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(
+                text(self._search_sql_query),
+                {'search_query': '%{0}%'.format(await self._query.read())},
+            )
+            rows = result.fetchall()
+        rows_dict = [dict(row._mapping) for row in rows]
+        for idx, row in enumerate(rows_dict, start=1):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 actual_page_num = idx
-        return 'стр. {0}/{1}'.format(actual_page_num, len(rows))
+        return 'стр. {0}/{1}'.format(actual_page_num, len(rows_dict))

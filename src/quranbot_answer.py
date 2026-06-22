@@ -5,8 +5,8 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
 from redis.asyncio import Redis
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.logger import LogSink
 from app_types.update import Update
@@ -63,7 +63,7 @@ class QuranbotAnswer(TgAnswer):
     @classmethod
     def ctor(
         cls,
-        pgsql: Database,
+        pgsql: AsyncEngine,
         redis: Redis,
         event_sink: Sink,
         settings: Settings,
@@ -71,7 +71,7 @@ class QuranbotAnswer(TgAnswer):
     ) -> TgAnswer:
         """Конструктор класса.
 
-        :param pgsql: Database
+        :param pgsql: AsyncEngine
         :param redis: Redis
         :param event_sink: SinkInterface
         :param settings: Settings

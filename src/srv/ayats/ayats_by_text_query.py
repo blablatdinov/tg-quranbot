@@ -5,7 +5,8 @@ from collections.abc import Sequence
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.fk_async_int import FkAsyncInt
 from app_types.listable import AsyncListable
@@ -21,7 +22,7 @@ class AyatsByTextQuery(AsyncListable):
     """Список аятов, найденных по текстовому запросу."""
 
     _query: SupportsStr
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def to_list(self) -> Sequence[Ayat]:
@@ -35,13 +36,15 @@ class AyatsByTextQuery(AsyncListable):
             'WHERE a.content ILIKE :search_query',
             'ORDER BY a.ayat_id',
         ])
-        rows = await self._pgsql.fetch_all(query, {
-            'search_query': '%{0}%'.format(self._query),
-        })
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text(query), {
+                'search_query': '%{0}%'.format(self._query),
+            })
+            rows = result.fetchall()
         return [
             TextLenSafeAyat(
                 PgAyat(
-                    FkAsyncInt(row['id']),
+                    FkAsyncInt(dict(row._mapping)['id']),
                     self._pgsql,
                 ),
             )

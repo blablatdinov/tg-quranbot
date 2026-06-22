@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.intable import AsyncInt
 from integrations.tg.fk_chat_id import ChatId
@@ -18,7 +19,7 @@ class PodcastId(AsyncInt):
     Достаем случайный идентификатор подкаста, который пользователю еще не попадался
     """
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _chat_id: ChatId
 
     @override
@@ -38,11 +39,20 @@ class PodcastId(AsyncInt):
             ')',
             'ORDER BY RANDOM()',
         ])
-        podcast_id = await self._pgsql.fetch_val(query, {'chat_id': int(self._chat_id)})
+        async with self._pgsql.connect() as conn:
+            result = await conn.execute(text(query), {'chat_id': int(self._chat_id)})
+            row = result.fetchone()
+        podcast_id = row[0] if row else None
         if not podcast_id:
-            return await self._pgsql.fetch_val('SELECT podcast_id FROM podcasts ORDER BY RANDOM()')
-        await self._pgsql.execute(
-            'INSERT INTO podcast_reactions (podcast_id, user_id, reaction) VALUES (:podcast_id, :user_id, :reaction)',
-            {'podcast_id': podcast_id, 'user_id': int(self._chat_id), 'reaction': 'showed'},
-        )
-        return podcast_id
+            async with self._pgsql.connect() as conn:
+                result = await conn.execute(text('SELECT podcast_id FROM podcasts ORDER BY RANDOM()'))
+                row = result.fetchone()
+            podcast_id = row[0] if row else None
+        if podcast_id:
+            async with self._pgsql.connect() as conn:
+                await conn.execute(
+                    text('INSERT INTO podcast_reactions (podcast_id, user_id, reaction) VALUES (:podcast_id, :user_id, :reaction)'),
+                    {'podcast_id': podcast_id, 'user_id': int(self._chat_id), 'reaction': 'showed'},
+                )
+                await conn.commit()
+        return podcast_id if podcast_id else 0

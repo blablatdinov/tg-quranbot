@@ -5,7 +5,7 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.update import Update
 from integrations.tg.tg_answers import TgAnswer, TgAnswerMarkup, TgTextAnswer
@@ -25,7 +25,7 @@ class AyatByIdMessageAnswer(TgAnswer):
 
     _result_ayat: Ayat
     _message_answer: TgAnswer
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
