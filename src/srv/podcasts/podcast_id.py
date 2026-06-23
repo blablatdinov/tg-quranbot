@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from typing import final, override
+from typing import cast, final, override
 
 import attrs
 from sqlalchemy import text
@@ -45,7 +45,10 @@ class PodcastId(AsyncInt):
                 {'chat_id': int(self._chat_id)},
             )).scalar()
             if not podcast_id:
-                return (await conn.execute(text('SELECT podcast_id FROM podcasts ORDER BY RANDOM()'))).scalar()
+                podcast_id = (await conn.execute(
+                    text('SELECT podcast_id FROM podcasts ORDER BY RANDOM()'),
+                )).scalar()
+                return cast('int', podcast_id)
             await conn.execute(
                 text('\n'.join([
                     'INSERT INTO podcast_reactions (podcast_id, user_id, reaction)',

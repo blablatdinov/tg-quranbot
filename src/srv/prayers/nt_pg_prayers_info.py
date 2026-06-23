@@ -77,5 +77,5 @@ class NtPgPrayersInfo(PrayersInfo):
         except IntegrityError as err:
             if 'duplicate key value violates unique constraint' in str(err):
                 raise PrayersAlreadyExistsError from err
-            raise err
+            raise
         return origin
