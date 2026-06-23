@@ -68,4 +68,4 @@ class PodcastKeyboard(Keyboard):
                     'callback_data': 'dislike({0})'.format(podcast_id),
                 },
             ]],
-        })it/handlers/test_next_day_ayats.py
+        })

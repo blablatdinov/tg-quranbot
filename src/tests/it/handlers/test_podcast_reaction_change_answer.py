@@ -7,6 +7,7 @@ import uuid
 import pytest
 import pytz
 import ujson
+from sqlalchemy import text
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
@@ -18,50 +19,56 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 async def _once_podcast(pgsql, user_factory):
     file_id = str(uuid.uuid4())
     await user_factory(905)
-    await pgsql.execute(
-        '\n'.join([
-            'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
-            "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
-        ]),
-        {'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))},
-    )
-    await pgsql.execute(
-        'INSERT INTO podcasts (podcast_id, public_id, file_id) VALUES (:podcast_id, :public_id, :file_id)',
-        {'podcast_id': 5, 'public_id': str(uuid.uuid4()), 'file_id': file_id},
-    )
+    async with pgsql.connect() as conn:
+        await conn.execute(
+            text('\n'.join([
+                'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
+                "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
+            ])),
+            {'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))},
+        )
+        await conn.execute(
+            text('INSERT INTO podcasts (podcast_id, public_id, file_id) VALUES (:podcast_id, :public_id, :file_id)'),
+            {'podcast_id': 5, 'public_id': str(uuid.uuid4()), 'file_id': file_id},
+        )
+        await conn.commit()
 
 
 @pytest.fixture
 async def _podcasts(pgsql, user_factory):
     file_ids = [uuid.uuid4() for _ in range(3)]
-    await pgsql.execute_many('INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)', [
-        {
-            'file_id': str(file_id),
-            'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
-        }
-        for file_id in file_ids
-    ])
-    await pgsql.execute_many('INSERT INTO podcasts (podcast_id, file_id) VALUES (:podcast_id, :file_id)', [
-        {
-            'podcast_id': podcast_id,
-            'file_id': str(file_id),
-        } for podcast_id, file_id in enumerate(file_ids, start=1)
-    ])
-    await user_factory(1)
+    async with pgsql.connect() as conn:
+        await conn.execute(text('INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)'), [
+            {
+                'file_id': str(file_id),
+                'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
+            }
+            for file_id in file_ids
+        ])
+        await conn.execute(text('INSERT INTO podcasts (podcast_id, file_id) VALUES (:podcast_id, :file_id)'), [
+            {
+                'podcast_id': podcast_id,
+                'file_id': str(file_id),
+            } for podcast_id, file_id in enumerate(file_ids, start=1)
+        ])
+        await user_factory(1)
+        await conn.commit()
 
 
 @pytest.fixture
 async def _existed_reaction(pgsql, _podcasts):
-    query = '\n'.join([
-        'INSERT INTO podcast_reactions (user_id, podcast_id, reaction)',
-        "VALUES (1, 1, 'like')",
-    ])
-    await pgsql.execute(query)
-    query = '\n'.join([
-        'INSERT INTO podcast_reactions (user_id, podcast_id, reaction)',
-        "VALUES (1, 2, 'dislike')",
-    ])
-    await pgsql.execute(query)
+    async with pgsql.connect() as conn:
+        query = '\n'.join([
+            'INSERT INTO podcast_reactions (user_id, podcast_id, reaction)',
+            "VALUES (1, 1, 'like')",
+        ])
+        await conn.execute(text(query))
+        query = '\n'.join([
+            'INSERT INTO podcast_reactions (user_id, podcast_id, reaction)',
+            "VALUES (1, 2, 'dislike')",
+        ])
+        await conn.execute(text(query))
+        await conn.commit()
 
 
 @pytest.mark.usefixtures('_once_podcast')
