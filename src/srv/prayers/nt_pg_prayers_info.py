@@ -36,43 +36,42 @@ class NtPgPrayersInfo(PrayersInfo):
         )
         try:
             async with self._pgsql.connect() as conn:
-                for params in [
-                    {
-                        'name': prayer_name,
-                        'time': datetime.datetime.strptime(
-                            origin[key], '%H:%M',  # type: ignore[literal-required]
-                        ).replace(tzinfo=pytz.timezone('Europe/Moscow')).time(),
-                        'city_id': str(city_id),
-                        'day': day,
-                    }
-                    for prayer_name, key in zip(
-                        [
-                            'fajr',
-                            'sunrise',
-                            'dhuhr',
-                            'asr',
-                            'maghrib',
-                            "isha'a",
-                        ],
-                        [
-                            'fajr_prayer_time',
-                            'sunrise_prayer_time',
-                            'dhuhr_prayer_time',
-                            'asr_prayer_time',
-                            'magrib_prayer_time',
-                            'ishaa_prayer_time',
-                        ],
-                        strict=True,
-                    )
-                ]:
-                    await conn.execute(
-                        text('\n'.join([
-                            'INSERT INTO prayers (name, time, city_id, day)',
-                            'VALUES',
-                            '(:name, :time, :city_id, :day)',
-                        ])),
-                        params,
-                    )
+                await conn.execute(
+                    text('\n'.join([
+                        'INSERT INTO prayers (name, time, city_id, day)',
+                        'VALUES',
+                        '(:name, :time, :city_id, :day)',
+                    ])),
+                    [
+                        {
+                            'name': prayer_name,
+                            'time': datetime.datetime.strptime(
+                                origin[key], '%H:%M',  # type: ignore[literal-required]
+                            ).replace(tzinfo=pytz.timezone('Europe/Moscow')).time(),
+                            'city_id': str(city_id),
+                            'day': day,
+                        }
+                        for prayer_name, key in zip(
+                            [
+                                'fajr',
+                                'sunrise',
+                                'dhuhr',
+                                'asr',
+                                'maghrib',
+                                "isha'a",
+                            ],
+                            [
+                                'fajr_prayer_time',
+                                'sunrise_prayer_time',
+                                'dhuhr_prayer_time',
+                                'asr_prayer_time',
+                                'magrib_prayer_time',
+                                'ishaa_prayer_time',
+                            ],
+                            strict=True,
+                        )
+                    ],
+                )
                 await conn.commit()
         except IntegrityError as err:
             if 'duplicate key value violates unique constraint' in str(err):

@@ -60,29 +60,28 @@ class PgNewPrayers(NewPrayers):
         )
         try:
             async with self._pgsql.connect() as conn:
-                for params in [
-                    {
-                        'name': name,
-                        'time': (
-                            datetime.datetime
-                            .strptime(self._prayer_dict[key], '%H:%M')  # type: ignore[literal-required]
-                            .replace(tzinfo=pytz.timezone('Europe/Moscow'))
-                        ),
-                        'city_id': city_id,
-                        'day': day,
-                    }
-                    for key, name in zip(keys, names, strict=True)
-                ]:
-                    await conn.execute(
-                        text('\n'.join([
-                            'INSERT INTO prayers',
-                            '(name, time, city_id, day)',
-                            'VALUES',
-                            '(:name, :time, :city_id, :day)',
-                            'RETURNING *',
-                        ])),
-                        params,
-                    )
+                await conn.execute(
+                    text('\n'.join([
+                        'INSERT INTO prayers',
+                        '(name, time, city_id, day)',
+                        'VALUES',
+                        '(:name, :time, :city_id, :day)',
+                        'RETURNING *',
+                    ])),
+                    [
+                        {
+                            'name': name,
+                            'time': (
+                                datetime.datetime
+                                .strptime(self._prayer_dict[key], '%H:%M')  # type: ignore[literal-required]
+                                .replace(tzinfo=pytz.timezone('Europe/Moscow'))
+                            ),
+                            'city_id': city_id,
+                            'day': day,
+                        }
+                        for key, name in zip(keys, names, strict=True)
+                    ],
+                )
                 await conn.commit()
         except UniqueViolationError as err:
             raise PrayerAlreadyExistsError from err
