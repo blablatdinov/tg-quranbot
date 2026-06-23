@@ -6,6 +6,7 @@ import datetime
 from itertools import chain, repeat
 
 import pytest
+from sqlalchemy import text
 
 from app_types.fk_update import FkUpdate
 from exceptions.prayer_exceptions import PrayersNotFoundError
@@ -34,31 +35,33 @@ async def _prayers(pgsql, cities):
         datetime.time(hour, 30)
         for hour in range(4, 10)
     ]
-    await pgsql.execute_many(
-        '\n'.join([
-            'INSERT INTO prayers (prayer_id, name, time, city_id, day)',
-            'VALUES (:prayer_id, :prayer_name, :time, :city_id, :day)',
-        ]),
-        [
-            {
-                'prayer_id': pr_id,
-                'prayer_name': pr_name,
-                'time': pr_time,
-                'city_id': await city.city_id(),
-                'day': datetime.date(2024, 6, 5),
-            }
-            for pr_id, pr_name, pr_time, city in zip(
-                range(1, 13),
-                chain.from_iterable(repeat(
-                    [field.value[0] for field in PrayerNames],
-                    2,
-                )),
-                chain.from_iterable(repeat(prayer_times, 2)),
-                chain(repeat(cities[0], 6), repeat(cities[1], 6)),
-                strict=True,
-            )
-        ],
-    )
+    async with pgsql.connect() as conn:
+        await conn.execute(
+            text('\n'.join([
+                'INSERT INTO prayers (prayer_id, name, time, city_id, day)',
+                'VALUES (:prayer_id, :prayer_name, :time, :city_id, :day)',
+            ])),
+            [
+                {
+                    'prayer_id': pr_id,
+                    'prayer_name': pr_name,
+                    'time': pr_time,
+                    'city_id': await city.city_id(),
+                    'day': datetime.date(2024, 6, 5),
+                }
+                for pr_id, pr_name, pr_time, city in zip(
+                    range(1, 13),
+                    chain.from_iterable(repeat(
+                        [field.value[0] for field in PrayerNames],
+                        2,
+                    )),
+                    chain.from_iterable(repeat(prayer_times, 2)),
+                    chain(repeat(cities[0], 6), repeat(cities[1], 6)),
+                    strict=True,
+                )
+            ],
+        )
+        await conn.commit()
 
 
 @pytest.fixture
@@ -109,4 +112,5 @@ async def test_change_city(pgsql, user_with_changed_city):
         await user_with_changed_city.chat_id(),
     ).generate(FkUpdate.empty_ctor())
 
-    assert await pgsql.fetch_val('SELECT COUNT(*) FROM prayers_at_user') == 5
+    async with pgsql.connect() as conn:
+        assert (await conn.execute(text('SELECT COUNT(*) FROM prayers_at_user'))).scalar() == 5
