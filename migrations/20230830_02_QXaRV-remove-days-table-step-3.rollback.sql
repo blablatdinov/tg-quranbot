@@ -21,4 +21,6 @@ FROM generate_series(
     '1 day'::interval
 ) AS t (i);
 
-ALTER TABLE ONLY prayers ADD CONSTRAINT prayers_day_id_fkey FOREIGN KEY (day_id) REFERENCES prayer_days (date);
+ALTER TABLE ONLY prayers
+ADD CONSTRAINT prayers_day_id_fkey
+FOREIGN KEY (day_id) REFERENCES prayer_days (date) NOT VALID;

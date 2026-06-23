@@ -26,7 +26,9 @@ ALTER TABLE ONLY public.podcast_reactions
 ADD CONSTRAINT podcast_reactions_pkey PRIMARY KEY (podcast_id, user_id);
 
 ALTER TABLE ONLY public.podcast_reactions
-ADD CONSTRAINT podcast_reactions_ayat_id_fkey FOREIGN KEY (podcast_id) REFERENCES public.podcasts (podcast_id);
+ADD CONSTRAINT podcast_reactions_ayat_id_fkey
+FOREIGN KEY (podcast_id)
+REFERENCES public.podcasts (podcast_id) NOT VALID;
 
 ALTER TABLE ONLY public.podcast_reactions
-ADD CONSTRAINT podcast_reactions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (chat_id);
+ADD CONSTRAINT podcast_reactions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (chat_id) NOT VALID;

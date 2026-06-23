@@ -15,4 +15,4 @@ ALTER TABLE ONLY public.namaz_today_cities
 ADD CONSTRAINT namaz_today_cities_pkey PRIMARY KEY (city_id);
 
 ALTER TABLE ONLY public.namaz_today_cities
-ADD CONSTRAINT namaz_today_cities_city_id_fkey FOREIGN KEY (city_id) REFERENCES public.cities (city_id);
+ADD CONSTRAINT namaz_today_cities_city_id_fkey FOREIGN KEY (city_id) REFERENCES public.cities (city_id) NOT VALID;
