@@ -51,9 +51,9 @@ class MailingCreatedEvent(ReceivedEvent):
                     'FROM users',
                     "WHERE is_active = 't'",
                 ])))
-                rows = query_result.fetchall()
+                rows = query_result.mappings().fetchall()
             chat_ids = [
-                dict(row)['chat_id']
+                row['chat_id']
                 for row in rows
             ]
         elif json_doc.path('$.data.group')[0] == 'admins':

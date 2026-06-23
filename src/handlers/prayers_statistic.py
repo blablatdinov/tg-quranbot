@@ -83,7 +83,7 @@ class PrayersStatistic(AsyncSupportsStr):
                 text(query),
                 {'chat_id': int(self._chat_id)},
             )
-            rows = [dict(row) for row in query_result.fetchall()]
+            rows = query_result.mappings().fetchall()
         return list(
             batched(
                 rows,
@@ -105,7 +105,7 @@ class PrayersStatistic(AsyncSupportsStr):
                 text(query),
                 {'chat_id': int(self._chat_id)},
             )
-            rows = [dict(row) for row in query_result.fetchall()]
+            rows = query_result.mappings().fetchall()
         if not rows:
             return []
         return [
