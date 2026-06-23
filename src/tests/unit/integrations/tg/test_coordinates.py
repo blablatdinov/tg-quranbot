@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+import math
+
 import pytest
 
 from app_types.fk_string import FkString
@@ -19,5 +21,5 @@ def coordinates_json():
 def test(coordinates_json):
     coordinates = TgMessageCoordinates(TgUpdate.str_ctor(coordinates_json))
 
-    assert coordinates.latitude() == 40.329649
-    assert coordinates.longitude() == -93.599524
+    assert math.isclose(coordinates.latitude(), 40.329649)
+    assert math.isclose(coordinates.longitude(), -93.599524)
