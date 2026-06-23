@@ -56,8 +56,10 @@ class TextSearchNeighborAyats(NeighborAyats):
         """
         search_query = '%{0}%'.format(await self._query.read())
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(self._search_sql_query), {'search_query': search_query})
-            rows = query_result.mappings().fetchall()
+            rows = (await conn.execute(
+                text(self._search_sql_query),
+                {'search_query': search_query},
+            )).mappings().fetchall()
         for idx, row in enumerate(rows[1:], start=1):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 return TextLenSafeAyat(
@@ -74,8 +76,10 @@ class TextSearchNeighborAyats(NeighborAyats):
         """
         search_query = '%{0}%'.format(await self._query.read())
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(self._search_sql_query), {'search_query': search_query})
-            rows = query_result.mappings().fetchall()
+            rows = (await conn.execute(
+                text(self._search_sql_query),
+                {'search_query': search_query},
+            )).mappings().fetchall()
         for idx, row in enumerate(rows[:-1]):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 return TextLenSafeAyat(

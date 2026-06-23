@@ -40,7 +40,10 @@ class PodcastId(AsyncInt):
             'ORDER BY RANDOM()',
         ])
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(query), {'chat_id': int(self._chat_id)})
+            query_result = await conn.execute(
+                text(query),
+                {'chat_id': int(self._chat_id)},
+            )
             row = query_result.fetchone()
         podcast_id = row[0] if row else None
         if not podcast_id:

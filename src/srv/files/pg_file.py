@@ -33,7 +33,10 @@ class PgFile(TgFile):
             'WHERE file_id = :file_id',
         ])
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(query), {'file_id': str(self._file_id)})
+            query_result = await conn.execute(
+                text(query),
+                {'file_id': str(self._file_id)},
+            )
             row = query_result.mappings().fetchone()
         if row is None:
             raise BotFileNotFoundError
@@ -52,7 +55,10 @@ class PgFile(TgFile):
             'WHERE file_id = :file_id',
         ])
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(query), {'file_id': str(self._file_id)})
+            query_result = await conn.execute(
+                text(query),
+                {'file_id': str(self._file_id)},
+            )
             row = query_result.mappings().fetchone()
         if row is None:
             raise BotFileNotFoundError

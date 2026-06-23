@@ -103,7 +103,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         """
         ayat_id = await self._ayat_id.to_int()
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(
+            row = (await conn.execute(
                 text('\n'.join([
                     'SELECT',
                     '    a.ayat_id AS id,',
@@ -118,8 +118,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
                     'WHERE a.ayat_id = :ayat_id',
                 ])),
                 {'ayat_id': ayat_id},
-            )
-            row = query_result.mappings().one_or_none()
+            )).mappings().one_or_none()
         if row is None:
             msg = 'Аят с id={0} не найден'.format(ayat_id)
             raise AyatNotFoundError(msg)

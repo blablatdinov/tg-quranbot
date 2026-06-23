@@ -65,18 +65,19 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
         :param json_doc: Json
         """
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text('\n'.join([
-                'SELECT u.chat_id',
-                'FROM users AS u',
-                "WHERE u.is_active = 't' {0}".format(
-                    'AND u.chat_id IN ({0})'.format(
-                        ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
-                    )
-                    if self._settings.DAILY_PRAYERS == 'off' else '',
-                ),
-                'ORDER BY u.chat_id',
-            ])))
-            rows = query_result.mappings().fetchall()
+            rows = (await conn.execute(
+                text('\n'.join([
+                    'SELECT u.chat_id',
+                    'FROM users AS u',
+                    "WHERE u.is_active = 't' {0}".format(
+                        'AND u.chat_id IN ({0})'.format(
+                            ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
+                        )
+                        if self._settings.DAILY_PRAYERS == 'off' else '',
+                    ),
+                    'ORDER BY u.chat_id',
+                ])),
+            )).mappings().fetchall()
         unsubscribed_users: list[User] = []
         date = FkPrayerDate(
             add(

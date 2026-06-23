@@ -63,7 +63,10 @@ async def _podcast_reactions(pgsql, user_factory):
     await user_factory(87945)
     async with pgsql.connect() as conn:
         await conn.execute(
-            text('INSERT INTO podcast_reactions (podcast_id, reaction, user_id) VALUES (:podcast_id, :reaction, :user_id)'),
+            text('\n'.join([
+                'INSERT INTO podcast_reactions (podcast_id, reaction, user_id)',
+                'VALUES (:podcast_id, :reaction, :user_id)',
+            ])),
             [
                 {'podcast_id': 1, 'reaction': 'showed', 'user_id': 937584},
                 {'podcast_id': 2, 'reaction': 'like', 'user_id': 937584},

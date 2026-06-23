@@ -48,30 +48,31 @@ class MorningContentPublishedEvent(ReceivedEvent):
         :param json_doc: Json
         """
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text('\n'.join([
-                'SELECT',
-                '    u.chat_id,',
-                "    STRING_AGG(a.sura_id::character varying, ',') as sura_ids,",
-                "    STRING_AGG(a.ayat_number, '|' ORDER BY a.ayat_id) as ayat_nums,",
-                '    STRING_AGG(',
-                '        a.content,',
-                "        '|sep|'",
-                '        ORDER BY a.ayat_id',
-                '    ) AS content,',
-                "    STRING_AGG(s.link, '|sep|' ORDER BY a.ayat_id) AS sura_link",
-                'FROM public.ayats AS a',
-                'JOIN public.users AS u ON a.day = u.day',
-                'JOIN suras AS s ON a.sura_id = s.sura_id',
-                "WHERE u.is_active = 't' {0}".format(
-                    'AND u.chat_id IN ({0})'.format(
-                        ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
-                    )
-                    if self._settings.DAILY_AYATS == 'off' else '',
-                ),
-                'GROUP BY u.chat_id',
-                'ORDER BY u.chat_id',
-            ])))
-            rows = query_result.fetchall()
+            rows = (await conn.execute(
+                text('\n'.join([
+                    'SELECT',
+                    '    u.chat_id,',
+                    "    STRING_AGG(a.sura_id::character varying, ',') as sura_ids,",
+                    "    STRING_AGG(a.ayat_number, '|' ORDER BY a.ayat_id) as ayat_nums,",
+                    '    STRING_AGG(',
+                    '        a.content,',
+                    "        '|sep|'",
+                    '        ORDER BY a.ayat_id',
+                    '    ) AS content,',
+                    "    STRING_AGG(s.link, '|sep|' ORDER BY a.ayat_id) AS sura_link",
+                    'FROM public.ayats AS a',
+                    'JOIN public.users AS u ON a.day = u.day',
+                    'JOIN suras AS s ON a.sura_id = s.sura_id',
+                    "WHERE u.is_active = 't' {0}".format(
+                        'AND u.chat_id IN ({0})'.format(
+                            ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
+                        )
+                        if self._settings.DAILY_AYATS == 'off' else '',
+                    ),
+                    'GROUP BY u.chat_id',
+                    'ORDER BY u.chat_id',
+                ])),
+            )).mappings().fetchall()
         unsubscribed_users: list[User] = []
         for answer, chat_id in self._zipped_ans_chat_ids(list(rows)):
             await self._iteration(answer, chat_id, unsubscribed_users)
@@ -85,7 +86,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
                 'UPDATE users',
                 'SET day = day + 1',
                 "WHERE is_active = 't' AND chat_id IN ({0})".format(
-                    ','.join([str(dict(row)['chat_id']) for row in rows]),
+                    ','.join([str(row['chat_id']) for row in rows]),
                 ),
             ])))
             await conn.commit()
@@ -99,7 +100,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
                             TgTextAnswer.str_ctor(
                                 TgChatIdAnswer(
                                     TgMessageAnswer(self._empty_answer),
-                                    dict(row)['chat_id'],
+                                    row['chat_id'],
                                 ),
                                 Template(''.join([
                                     '{% for ayat in ayats %}',
@@ -114,13 +115,13 @@ class MorningContentPublishedEvent(ReceivedEvent):
                                             'content': ayat_content,
                                         }
                                         for sura_id, ayat_num, ayat_content in zip(
-                                            dict(row)['sura_ids'].split(','),
-                                            dict(row)['ayat_nums'].split('|'),
-                                            dict(row)['content'].split('|sep|'),
+                                            row['sura_ids'].split(','),
+                                            row['ayat_nums'].split('|'),
+                                            row['content'].split('|sep|'),
                                             strict=True,
                                         )
                                     ],
-                                    'sura_link': dict(row)['sura_link'].split('|sep|')[0],
+                                    'sura_link': row['sura_link'].split('|sep|')[0],
                                 }),
                             ),
                             FkKeyboard(
@@ -132,7 +133,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
                 )
                 for row in rows
             ],
-            [dict(row)['chat_id'] for row in rows],
+            [row['chat_id'] for row in rows],
             strict=True,
         )
 

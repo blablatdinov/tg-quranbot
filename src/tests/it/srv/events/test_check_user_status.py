@@ -68,5 +68,7 @@ async def test_unsubscribed(pgsql):
     async with pgsql.connect() as conn:
         assert [
             (row['chat_id'], row['is_active'])
-            for row in (await conn.execute(text('SELECT chat_id, is_active FROM users ORDER BY chat_id'))).mappings().fetchall()
+            for row in (await conn.execute(
+                text('SELECT chat_id, is_active FROM users ORDER BY chat_id'),
+            )).mappings().fetchall()
         ] == [(1, False), (2, False), (3, True)]
