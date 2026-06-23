@@ -57,12 +57,11 @@ class TextSearchNeighborAyats(NeighborAyats):
         search_query = '%{0}%'.format(await self._query.read())
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(text(self._search_sql_query), {'search_query': search_query})
-            rows = query_result.fetchall()
-        rows_dict = [dict(row) for row in rows]
-        for idx, row in enumerate(rows_dict[1:], start=1):
+            rows = query_result.mappings().fetchall()
+        for idx, row in enumerate(rows[1:], start=1):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 return TextLenSafeAyat(
-                    PgAyat.from_int(rows_dict[idx - 1][_AYAT_ID_LITERAL], self._pgsql),
+                    PgAyat.from_int(rows[idx - 1][_AYAT_ID_LITERAL], self._pgsql),
                 )
         raise AyatNotFoundError
 
@@ -76,12 +75,11 @@ class TextSearchNeighborAyats(NeighborAyats):
         search_query = '%{0}%'.format(await self._query.read())
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(text(self._search_sql_query), {'search_query': search_query})
-            rows = query_result.fetchall()
-        rows_dict = [dict(row) for row in rows]
-        for idx, row in enumerate(rows_dict[:-1]):
+            rows = query_result.mappings().fetchall()
+        for idx, row in enumerate(rows[:-1]):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 return TextLenSafeAyat(
-                    PgAyat.from_int(rows_dict[idx + 1][_AYAT_ID_LITERAL], self._pgsql),
+                    PgAyat.from_int(rows[idx + 1][_AYAT_ID_LITERAL], self._pgsql),
                 )
         raise AyatNotFoundError
 
@@ -96,9 +94,8 @@ class TextSearchNeighborAyats(NeighborAyats):
             rows = (await conn.execute(
                 text(self._search_sql_query),
                 {'search_query': '%{0}%'.format(await self._query.read())},
-            )).fetchall()
-        rows_dict = [dict(row) for row in rows]
-        for idx, row in enumerate(rows_dict, start=1):
+            )).mappings().fetchall()
+        for idx, row in enumerate(rows, start=1):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 actual_page_num = idx
-        return 'стр. {0}/{1}'.format(actual_page_num, len(rows_dict))
+        return 'стр. {0}/{1}'.format(actual_page_num, len(rows))
