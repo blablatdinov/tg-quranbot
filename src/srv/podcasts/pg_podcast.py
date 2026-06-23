@@ -49,14 +49,13 @@ class PgPodcast(Podcast):
                 text(query),
                 {'podcast_id': await self._podcast_id.to_int()},
             )
-            row = query_result.fetchone()
+            row = query_result.mappings().fetchone()
         if row is None:
             msg = 'Подкасты не найдены'
             raise InternalBotError(msg)
-        row_dict = dict(row)
-        if not row_dict['telegram_file_id']:
+        if not row['telegram_file_id']:
             raise TelegramFileIdNotFilledError
-        return row_dict['telegram_file_id']
+        return row['telegram_file_id']
 
     @override
     async def file_link(self) -> FileLink:
@@ -76,8 +75,8 @@ class PgPodcast(Podcast):
                 text(query),
                 {'podcast_id': await self._podcast_id.to_int()},
             )
-            row = query_result.fetchone()
+            row = query_result.mappings().fetchone()
         if row is None:
             msg = 'Подкасты не найдены'
             raise InternalBotError(msg)
-        return dict(row)['link']
+        return row['link']

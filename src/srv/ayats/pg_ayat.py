@@ -119,19 +119,18 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
                 ])),
                 {'ayat_id': ayat_id},
             )
-            row = query_result.fetchone()
+            row = query_result.mappings().one_or_none()
         if row is None:
             msg = 'Аят с id={0} не найден'.format(ayat_id)
             raise AyatNotFoundError(msg)
-        row_dict = dict(row)
         template = '<a href="{link}">{sura}:{ayat})</a>\n{arab_text}\n\n{content}\n\n<i>{transliteration}</i>'
         return template.format(
-            link=str(AyatLink(row_dict['sura_link'], row_dict['sura_num'], row_dict['ayat_num'])),
-            sura=row_dict['sura_num'],
-            ayat=row_dict['ayat_num'],
-            arab_text=row_dict['arab_text'],
-            content=row_dict['content'],
-            transliteration=row_dict['transliteration'],
+            link=str(AyatLink(row['sura_link'], row['sura_num'], row['ayat_num'])),
+            sura=row['sura_num'],
+            ayat=row['ayat_num'],
+            arab_text=row['arab_text'],
+            content=row['content'],
+            transliteration=row['transliteration'],
         )
 
     @override

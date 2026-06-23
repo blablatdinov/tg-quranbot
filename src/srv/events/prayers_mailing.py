@@ -76,7 +76,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                 ),
                 'ORDER BY u.chat_id',
             ])))
-            rows = query_result.fetchall()
+            rows = query_result.mappings().fetchall()
         unsubscribed_users: list[User] = []
         date = FkPrayerDate(
             add(
@@ -85,7 +85,6 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
             ).date(),
         )
         for active_user in rows:
-            active_user_dict = dict(active_user)
             await self._iteration(
                 TgHtmlParseAnswer(
                     TgAnswerMarkup(
@@ -97,23 +96,23 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                                         PgPrayersInfo(
                                             self._pgsql,
                                             date,
-                                            UserCityId(self._pgsql, active_user_dict[CHAT_ID]),
+                                            UserCityId(self._pgsql, active_user[CHAT_ID]),
                                             FkUpdate.empty_ctor(),
                                         ),
                                         self._settings.RAMADAN_MODE,
                                     ),
                                 ),
                             ),
-                            active_user_dict[CHAT_ID],
+                            active_user[CHAT_ID],
                         ),
                         UserPrayersKeyboard(
                             self._pgsql,
                             date,
-                            TgChatId(FkUpdate(ujson.dumps({'chat': {'id': active_user_dict[CHAT_ID]}}))),
+                            TgChatId(FkUpdate(ujson.dumps({'chat': {'id': active_user[CHAT_ID]}}))),
                         ),
                     ),
                 ),
-                active_user_dict[CHAT_ID],
+                active_user[CHAT_ID],
                 unsubscribed_users,
             )
         await UpdatedUsersStatusEvent(

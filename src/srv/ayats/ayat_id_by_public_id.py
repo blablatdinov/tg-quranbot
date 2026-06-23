@@ -36,7 +36,7 @@ class AyatIdByPublicId(AsyncInt):
             query_result = await conn.execute(text(query), {
                 'public_id': str(self._public_id),
             })
-            row = query_result.fetchone()
+            row = query_result.mappings().one_or_none()
         if row is None:
             raise AyatNotFoundError
-        return dict(row)['ayat_id']
+        return row['ayat_id']

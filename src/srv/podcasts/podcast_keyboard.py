@@ -46,12 +46,11 @@ class PodcastKeyboard(Keyboard):
         podcast_id = await self._podcast.podcast_id()
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(text(query), {'podcast_id': podcast_id})
-            row = query_result.fetchone()
+            row = query_result.mappings().fetchone()
         if row:
-            row_dict = dict(row)
             likes_count_map = _Row(
-                like_count=row_dict['like_count'],
-                dislike_count=row_dict['dislike_count'],
+                like_count=row['like_count'],
+                dislike_count=row['dislike_count'],
             )
         else:
             likes_count_map = _Row(
@@ -69,4 +68,4 @@ class PodcastKeyboard(Keyboard):
                     'callback_data': 'dislike({0})'.format(podcast_id),
                 },
             ]],
-        })
+        })it/handlers/test_next_day_ayats.py

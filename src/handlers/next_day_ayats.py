@@ -45,7 +45,7 @@ class NextDayAyats(TgAnswer):
                 'WHERE u.chat_id = :chat_id',
                 'ORDER BY a.ayat_id',
             ])), {'chat_id': int(TgChatId(update))})
-            ayats = [dict(row) for row in query_result.fetchall()]
+            ayats = query_result.mappings().fetchall()
             await conn.execute(text('\n'.join([
                 'UPDATE users',
                 'SET day = day + 1',

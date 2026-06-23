@@ -41,12 +41,12 @@ class FavoriteAyatsAfterRemove(AsyncListable):
                     'ORDER BY fa.ayat_id',
                 ])),
                 {'chat_id': int(self._chat_id), 'ayat_id': self._ayat_id},
-            )).fetchall()
+            )).mappings().fetchall()
         ayats = []
         flag = True
         for row in rows:
-            if dict(row)['ayat_id'] > self._ayat_id and flag:
+            if row['ayat_id'] > self._ayat_id and flag:
                 ayats.append(TextLenSafeAyat(PgAyat.from_int(self._ayat_id, self._pgsql)))
                 flag = False
-            ayats.append(TextLenSafeAyat(PgAyat.from_int(dict(row)['ayat_id'], self._pgsql)))
+            ayats.append(TextLenSafeAyat(PgAyat.from_int(row['ayat_id'], self._pgsql)))
         return ayats

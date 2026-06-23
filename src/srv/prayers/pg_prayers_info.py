@@ -47,7 +47,7 @@ class PgPrayersInfo(PrayersInfo):
                 'date': await self._date.parse(self._update),
                 'city_id': await self._city_id.to_str(),
             })
-            rows = query_result.fetchall()
+            rows = query_result.mappings().fetchall()
         if not rows:
             raise PrayersNotFoundError(
                 await CityNameById(self._pgsql, self._city_id).to_str(),

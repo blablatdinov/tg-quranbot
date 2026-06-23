@@ -42,7 +42,7 @@ class PgExistUserPrayers(ExistUserPrayers):
                 'date': self._date,
                 'chat_id': int(self._chat_id),
             })
-            rows = query_result.fetchall()
+            rows = query_result.mappings().fetchall()
         return [
             {
                 'prayer_at_user_id': dict(row)['prayer_at_user_id'],
