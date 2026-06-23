@@ -15,7 +15,6 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 @pytest.fixture
 async def _db_ayats(pgsql):
-    created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
     file_ids = [str(uuid.uuid4()) for _ in range(10)]
     async with pgsql.connect() as conn:
         await conn.execute(
@@ -24,7 +23,7 @@ async def _db_ayats(pgsql):
                 "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
             ])),
             [
-                {'file_id': file_id, 'created_at': created_at}
+                {'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))}
                 for file_id in file_ids
             ],
         )

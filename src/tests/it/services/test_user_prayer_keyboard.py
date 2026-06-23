@@ -31,10 +31,6 @@ async def user(cities, user_factory):
 
 @pytest.fixture
 async def _prayers(pgsql, cities):
-    prayer_times = [
-        datetime.time(hour, 30)
-        for hour in range(4, 10)
-    ]
     async with pgsql.connect() as conn:
         await conn.execute(
             text('\n'.join([
@@ -55,7 +51,13 @@ async def _prayers(pgsql, cities):
                         [field.value[0] for field in PrayerNames],
                         2,
                     )),
-                    chain.from_iterable(repeat(prayer_times, 2)),
+                    chain.from_iterable(repeat(
+                        [
+                            datetime.time(hour, 30)
+                            for hour in range(4, 10)
+                        ],
+                        2,
+                    )),
                     chain(repeat(cities[0], 6), repeat(cities[1], 6)),
                     strict=True,
                 )

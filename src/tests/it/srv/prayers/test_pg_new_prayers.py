@@ -34,8 +34,8 @@ async def test(pgsql, city):
     # TODO #1525:30min проверить правильно ли сохраняется время в БД
     async with pgsql.connect() as conn:
         assert (await conn.execute(
-                text('SELECT city_id, day, name, time FROM prayers'),
-            )).mappings().fetchall() == [
+            text('SELECT city_id, day, name, time FROM prayers'),
+        )).mappings().fetchall() == [
             {
                 'city_id': city_id,
                 'day': datetime.date(2025, 1, 6),

@@ -40,7 +40,8 @@ class _FkDb:
     def __init__(self, link: str | None) -> None:
         self._link = link
 
-    def connect(self) -> _FkDbConn:
+    # Class used for test only
+    def connect(self) -> _FkDbConn:  # noqa: OVR100
         return _FkDbConn(self._link)
 
 
