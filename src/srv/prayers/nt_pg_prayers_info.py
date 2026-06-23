@@ -7,8 +7,8 @@ from typing import final, override
 import attrs
 import pytz
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from exceptions.prayer_exceptions import PrayersAlreadyExistsError
 from srv.prayers.pg_city import PgCity

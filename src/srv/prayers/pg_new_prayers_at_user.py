@@ -6,7 +6,6 @@ import uuid
 from typing import final, override
 
 import attrs
-from asyncpg.exceptions import UniqueViolationError
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncEngine

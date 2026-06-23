@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import pytest
-from hypothesis import example, given, strategies, HealthCheck, settings
+from hypothesis import HealthCheck, example, given, settings, strategies
 
 from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
 from srv.ayats.fk_search_query import FkSearchQuery

@@ -6,8 +6,8 @@ from typing import final, override
 import attrs
 from asyncpg import ForeignKeyViolationError
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.async_int_or_none import AsyncIntOrNone
 from app_types.fk_async_int_or_none import FkAsyncIntOrNone
