@@ -15,7 +15,7 @@ quranbot-schema-registry = "0.0.28"
 sentry-sdk = "2.58.0"
 httpx = "0.28.1"
 pytz = "2025.2"
-sqlalchemy = {extras = ["asyncio"], version = "2.0.38"}
+sqlalchemy = {extras = ["asyncio"], version = "2.0.51"}
 asyncpg = "0.31.0"
 attrs = "25.4.0"
 jsonpath-ng = "1.8.0"
