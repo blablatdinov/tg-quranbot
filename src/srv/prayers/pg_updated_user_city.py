@@ -40,5 +40,6 @@ class PgUpdatedUserCity(UpdatedUserCity):
                 'chat_id': int(self._chat_id),
             })
             rows = query_result.fetchall()
+            await conn.commit()
         if not rows:
             raise UserNotFoundError

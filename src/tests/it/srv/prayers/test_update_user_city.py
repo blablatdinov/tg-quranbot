@@ -25,7 +25,7 @@ async def test(pgsql, city):
     async with pgsql.connect() as conn:
         assert (await conn.execute(
             text('SELECT city_id FROM users WHERE chat_id = 849357'),
-        )).fetchone() == await city.city_id()
+        )).scalar() == await city.city_id()
 
 
 @pytest.mark.usefixtures('_user')
