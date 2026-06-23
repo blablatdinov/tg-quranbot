@@ -86,4 +86,5 @@ async def test_double(pgsql):
     await nt_user_prayers_info.to_dict()
     await nt_user_prayers_info.to_dict()
 
-    assert await pgsql.fetch_val('select count(*) from prayers_at_user') == 5
+    async with pgsql.connect() as conn:
+        assert (await conn.execute(text('select count(*) from prayers_at_user'))).scalar() == 5
