@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import datetime
-from typing import Any
+from typing import Any, final
 
 import pytest
 
@@ -11,19 +11,20 @@ from srv.prayers.fk_city import FkCity
 from srv.prayers.hg_prayers_url import HgPrayersUrl
 
 
-class FkDbConn:
+@final
+class _FkDbConn:
     _link: str | None
 
     def __init__(self, link: str | None) -> None:
         self._link = link
 
-    async def __aenter__(self) -> FkDbConn:
+    async def __aenter__(self) -> _FkDbConn:
         return self
 
     async def __aexit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
         pass
 
-    async def execute(self, query: str, query_params: dict[str, Any] | None = None) -> FkDbConn:  # noqa: ARG001
+    async def execute(self, query: str, query_params: dict[str, Any] | None = None) -> _FkDbConn:  # noqa: ARG001
         return self
 
     def fetchone(self) -> tuple | None:
@@ -32,14 +33,15 @@ class FkDbConn:
         return (self._link,)
 
 
-class FkDb:
+@final
+class _FkDb:
     _link: str | None
 
     def __init__(self, link: str | None) -> None:
         self._link = link
 
-    def connect(self) -> FkDbConn:
-        return FkDbConn(self._link)
+    def connect(self) -> _FkDbConn:
+        return _FkDbConn(self._link)
 
 
 @pytest.mark.parametrize(('month_num', 'month_name'), [
@@ -59,7 +61,7 @@ class FkDb:
 async def test_month_names(month_num, month_name):
     got = await HgPrayersUrl(
         FkCity.name_ctor('Innopolis'),
-        FkDb('https://halalguide.me/innopolis/namaz-time/'),  # type: ignore[arg-type]
+        _FkDb('https://halalguide.me/innopolis/namaz-time/'),  # type: ignore[arg-type]
         datetime.datetime(2025, month_num, 1, tzinfo=datetime.UTC).date(),
     ).to_str()
 
@@ -70,6 +72,6 @@ async def test_without_link():
     with pytest.raises(CityNotFoundError):
         await HgPrayersUrl(
             FkCity.name_ctor('Innopolis'),
-            FkDb(None),  # type: ignore[arg-type]
+            _FkDb(None),  # type: ignore[arg-type]
             datetime.datetime(2025, 1, 1, tzinfo=datetime.UTC).date(),
         ).to_str()
