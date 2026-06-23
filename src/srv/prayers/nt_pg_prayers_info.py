@@ -6,9 +6,9 @@ from typing import final, override
 
 import attrs
 import pytz
-from asyncpg.exceptions import UniqueViolationError
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy.exc import IntegrityError
 
 from exceptions.prayer_exceptions import PrayersAlreadyExistsError
 from srv.prayers.pg_city import PgCity
@@ -74,6 +74,8 @@ class NtPgPrayersInfo(PrayersInfo):
                         params,
                     )
                 await conn.commit()
-        except UniqueViolationError as err:
-            raise PrayersAlreadyExistsError from err
+        except IntegrityError as err:
+            if 'duplicate key value violates unique constraint' in str(err):
+                raise PrayersAlreadyExistsError from err
+            raise err
         return origin
