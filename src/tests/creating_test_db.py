@@ -11,7 +11,7 @@ settings = Settings(_env_file=BASE_DIR.parent / '.env')
 
 
 def create_db() -> None:
-    db_url = str(settings.DATABASE_URL).replace('postgresql+asyncpg://', 'postgres://')
+    db_url = str(settings.DATABASE_URL).replace('postgresql+asyncpg://', 'postgresql://')
     connection = psycopg2.connect(
         db_url.replace('quranbot_test', 'postgres'),
     )
@@ -39,7 +39,7 @@ def apply_migrations(cursor) -> None:
 
 
 def fill_test_db() -> None:
-    db_url = str(settings.DATABASE_URL).replace('postgresql+asyncpg://', 'postgres://')
+    db_url = str(settings.DATABASE_URL).replace('postgresql+asyncpg://', 'postgresql://')
     qbot_connection = psycopg2.connect(db_url)
     qbot_connection.autocommit = True
     qbot_cursor = qbot_connection.cursor()
@@ -59,7 +59,7 @@ def fill_test_db() -> None:
 
 
 def drop_db() -> None:
-    db_url = str(settings.DATABASE_URL).replace('postgresql+asyncpg://', 'postgres://')
+    db_url = str(settings.DATABASE_URL).replace('postgresql+asyncpg://', 'postgresql://')
     connection = psycopg2.connect(
         db_url.replace('quranbot_test', 'postgres'),
     )
