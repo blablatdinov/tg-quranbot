@@ -12,7 +12,8 @@ from srv.prayers.hg_prayers_url import HgPrayersUrl
 
 
 @final
-class _FkDbConn:
+# Class for testing only
+class _FkDbConn:  # noqa: PEO200
     _link: str | None
 
     def __init__(self, link: str | None) -> None:
@@ -34,7 +35,8 @@ class _FkDbConn:
 
 
 @final
-class _FkDb:
+# Class for testing only
+class _FkDb:  # noqa: PEO200
     _link: str | None
 
     def __init__(self, link: str | None) -> None:

@@ -11,7 +11,8 @@ from srv.ayats.favorite_ayats_after_remove import FavoriteAyatsAfterRemove
 
 
 @pytest.fixture
-async def _db_ayat(pgsql, user_factory):
+# Fix it
+async def _db_ayat(pgsql, user_factory):  # noqa: WPS217
     created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
     async with pgsql.connect() as conn:
         await conn.execute(

@@ -28,12 +28,6 @@ class NtPgPrayersInfo(PrayersInfo):
         """Словарь с данными для отправки пользователю."""
         origin = await self._origin.to_dict()
         city_id = await PgCity.name_ctor(origin['city_name'], self._pgsql).city_id()
-        day = (
-            datetime.datetime
-            .strptime(origin['date'], '%d.%m.%Y')
-            .replace(tzinfo=pytz.timezone('Europe/Moscow'))
-            .date()
-        )
         try:
             async with self._pgsql.connect() as conn:
                 await conn.execute(
@@ -49,7 +43,12 @@ class NtPgPrayersInfo(PrayersInfo):
                                 origin[key], '%H:%M',  # type: ignore[literal-required]
                             ).replace(tzinfo=pytz.timezone('Europe/Moscow')).time(),
                             'city_id': str(city_id),
-                            'day': day,
+                            'day': (
+                                datetime.datetime
+                                .strptime(origin['date'], '%d.%m.%Y')
+                                .replace(tzinfo=pytz.timezone('Europe/Moscow'))
+                                .date()
+                            ),
                         }
                         for prayer_name, key in zip(
                             [

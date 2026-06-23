@@ -58,7 +58,7 @@ class MailingCreatedEvent(ReceivedEvent):
         else:
             raise UnreacheableError
         unsubscribed_users: list[User] = []
-        zipped_ans_chat_ids = zip(
+        for answer, chat_id in zip(
             [
                 TgHtmlParseAnswer(
                     TgTextAnswer.str_ctor(
@@ -73,8 +73,7 @@ class MailingCreatedEvent(ReceivedEvent):
             ],
             chat_ids,
             strict=True,
-        )
-        for answer, chat_id in zipped_ans_chat_ids:
+        ):
             await self._iteration(answer, chat_id, unsubscribed_users, json_doc.path('$.data.mailing_id')[0])
         await UpdatedUsersStatusEvent(
             PgUpdatedUsersStatus(self._pgsql, FkAsyncListable(unsubscribed_users)),
