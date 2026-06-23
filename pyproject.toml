@@ -14,7 +14,7 @@ loguru = "0.7.3"
 quranbot-schema-registry = "0.0.28"
 sentry-sdk = "2.58.0"
 httpx = "0.28.1"
-pytz = "2025.2"
+pytz = "2026.2"
 sqlalchemy = {extras = ["asyncio"], version = "2.0.51"}
 asyncpg = "0.31.0"
 attrs = "25.4.0"
