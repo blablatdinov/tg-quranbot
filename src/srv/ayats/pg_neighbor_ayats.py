@@ -40,10 +40,10 @@ class PgNeighborAyats(NeighborAyats):
             query_result = await conn.execute(
                 text(query), {_AYAT_ID_LITERAL: self._ayat_id - 1},
             )
-            row = query_result.fetchone()
+            row = query_result.mappings().fetchone()
         if row is None:
             raise AyatNotFoundError
-        return TextLenSafeAyat(PgAyat.from_int(dict(row)[_AYAT_ID_LITERAL], self._pgsql))
+        return TextLenSafeAyat(PgAyat.from_int(row[_AYAT_ID_LITERAL], self._pgsql))
 
     @override
     async def right_neighbor(self) -> Ayat:
@@ -61,10 +61,10 @@ class PgNeighborAyats(NeighborAyats):
             query_result = await conn.execute(
                 text(query), {_AYAT_ID_LITERAL: self._ayat_id + 1},
             )
-            row = query_result.fetchone()
+            row = query_result.mappings().fetchone()
         if row is None:
             raise AyatNotFoundError
-        return TextLenSafeAyat(PgAyat.from_int(dict(row)[_AYAT_ID_LITERAL], self._pgsql))
+        return TextLenSafeAyat(PgAyat.from_int(row[_AYAT_ID_LITERAL], self._pgsql))
 
     @override
     async def page(self) -> str:
