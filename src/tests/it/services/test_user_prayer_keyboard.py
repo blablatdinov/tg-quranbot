@@ -93,7 +93,7 @@ async def test(pgsql, user, execution_number):
     await asyncio.gather(*tasks)
 
     async with pgsql.connect() as conn:
-        assert len((await conn.execute('SELECT * FROM prayers_at_user')).fetchall()) == 5
+        assert (await conn.execute(text('SELECT count(*) FROM prayers_at_user'))).scalar() == 5
 
 
 async def test_empty(pgsql, user):

@@ -8,6 +8,7 @@ from typing import final, override
 import attrs
 from asyncpg.exceptions import UniqueViolationError
 from sqlalchemy import text
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from exceptions.internal_exceptions import PrayerAtUserAlreadyExistsError, PrayerAtUserNotCreatedError
@@ -90,7 +91,8 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
                 })
                 rows = query_result.fetchall()
                 await conn.commit()
-        except UniqueViolationError as err:
-            raise PrayerAtUserAlreadyExistsError from err
+        except IntegrityError as err:
+            if 'duplicate key value violates unique constraint' in str(err):
+                raise PrayerAtUserAlreadyExistsError from err
         if not rows:
             raise PrayerAtUserNotCreatedError
