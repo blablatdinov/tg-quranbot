@@ -17,7 +17,7 @@ httpx = "0.28.1"
 pytz = "2025.2"
 sqlalchemy = {extras = ["asyncio"], version = "2.0.51"}
 asyncpg = "0.31.0"
-attrs = "25.4.0"
+attrs = "26.1.0"
 jsonpath-ng = "1.8.0"
 eo-styleguide = "0.1.1"
 redis = "7.4.0"
