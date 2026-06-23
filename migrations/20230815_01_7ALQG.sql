@@ -173,39 +173,39 @@ ALTER TABLE ONLY public.users
 ADD CONSTRAINT users_pkey PRIMARY KEY (chat_id);
 
 ALTER TABLE ONLY public.ayats
-ADD CONSTRAINT ayats_audio_id_fkey FOREIGN KEY (audio_id) REFERENCES public.files (file_id);
+ADD CONSTRAINT ayats_audio_id_fkey FOREIGN KEY (audio_id) REFERENCES public.files (file_id) NOT VALID;
 
 ALTER TABLE ONLY public.ayats
-ADD CONSTRAINT ayats_sura_id_fkey FOREIGN KEY (sura_id) REFERENCES public.suras (sura_id);
+ADD CONSTRAINT ayats_sura_id_fkey FOREIGN KEY (sura_id) REFERENCES public.suras (sura_id) NOT VALID;
 
 ALTER TABLE ONLY public.favorite_ayats
-ADD CONSTRAINT favorite_ayats_ayat_id_fkey FOREIGN KEY (ayat_id) REFERENCES public.ayats (ayat_id);
+ADD CONSTRAINT favorite_ayats_ayat_id_fkey FOREIGN KEY (ayat_id) REFERENCES public.ayats (ayat_id) NOT VALID;
 
 ALTER TABLE ONLY public.favorite_ayats
-ADD CONSTRAINT favorite_ayats_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (chat_id);
+ADD CONSTRAINT favorite_ayats_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (chat_id) NOT VALID;
 
 ALTER TABLE ONLY public.podcasts
-ADD CONSTRAINT podcasts_file_id_fkey FOREIGN KEY (file_id) REFERENCES public.files (file_id);
+ADD CONSTRAINT podcasts_file_id_fkey FOREIGN KEY (file_id) REFERENCES public.files (file_id) NOT VALID;
 
 ALTER TABLE ONLY public.prayers_at_user
 ADD CONSTRAINT prayers_at_user_prayer_group_id_fkey FOREIGN KEY (
     prayer_group_id
-) REFERENCES public.prayers_at_user_groups (prayers_at_user_group_id);
+) REFERENCES public.prayers_at_user_groups (prayers_at_user_group_id) NOT VALID;
 
 ALTER TABLE ONLY public.prayers_at_user
-ADD CONSTRAINT prayers_at_user_prayer_id_fkey FOREIGN KEY (prayer_id) REFERENCES public.prayers (prayer_id);
+ADD CONSTRAINT prayers_at_user_prayer_id_fkey FOREIGN KEY (prayer_id) REFERENCES public.prayers (prayer_id) NOT VALID;
 
 ALTER TABLE ONLY public.prayers_at_user
-ADD CONSTRAINT prayers_at_user_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (chat_id);
+ADD CONSTRAINT prayers_at_user_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (chat_id) NOT VALID;
 
 ALTER TABLE ONLY public.prayers
-ADD CONSTRAINT prayers_city_id_fkey FOREIGN KEY (city_id) REFERENCES public.cities (city_id);
+ADD CONSTRAINT prayers_city_id_fkey FOREIGN KEY (city_id) REFERENCES public.cities (city_id) NOT VALID;
 
 ALTER TABLE ONLY public.prayers
-ADD CONSTRAINT prayers_day_id_fkey FOREIGN KEY (day_id) REFERENCES public.prayer_days (date);
+ADD CONSTRAINT prayers_day_id_fkey FOREIGN KEY (day_id) REFERENCES public.prayer_days (date) NOT VALID;
 
 ALTER TABLE ONLY public.users
-ADD CONSTRAINT users_city_id_fkey FOREIGN KEY (city_id) REFERENCES public.cities (city_id);
+ADD CONSTRAINT users_city_id_fkey FOREIGN KEY (city_id) REFERENCES public.cities (city_id) NOT VALID;
 
 ALTER TABLE ONLY public.users
-ADD CONSTRAINT users_referrer_id_fkey FOREIGN KEY (referrer_id) REFERENCES public.users (chat_id);
+ADD CONSTRAINT users_referrer_id_fkey FOREIGN KEY (referrer_id) REFERENCES public.users (chat_id) NOT VALID;

@@ -13,4 +13,4 @@ ALTER TABLE ONLY public.halal_guide_cities
 ADD CONSTRAINT halal_guide_cities_pkey PRIMARY KEY (city_id);
 
 ALTER TABLE ONLY public.halal_guide_cities
-ADD CONSTRAINT halal_guide_cities_city_id_fkey FOREIGN KEY (city_id) REFERENCES public.cities (city_id);
+ADD CONSTRAINT halal_guide_cities_city_id_fkey FOREIGN KEY (city_id) REFERENCES public.cities (city_id) NOT VALID;
