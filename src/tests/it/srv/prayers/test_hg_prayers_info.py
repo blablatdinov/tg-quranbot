@@ -7,6 +7,7 @@ from pathlib import Path
 
 import httpx
 import pytest
+from sqlalchemy import text
 
 from app_types.fk_log_sink import FkLogSink
 from srv.prayers.fk_city import FkCity
@@ -30,10 +31,12 @@ def hg_mock(respx_mock):
 async def city(city_factory, pgsql):
     city_id = uuid.uuid4()
     await city_factory(str(city_id), 'Казань')
-    await pgsql.execute(
-        'INSERT INTO halal_guide_cities (city_id, link) VALUES (:city_id, :link)',
-        {'city_id': str(city_id), 'link': 'https://halalguide.me/kazan/namaz-time'},
-    )
+    async with pgsql.connect() as conn:
+        await conn.execute(
+            text('INSERT INTO halal_guide_cities (city_id, link) VALUES (:city_id, :link)'),
+            {'city_id': str(city_id), 'link': 'https://halalguide.me/kazan/namaz-time'},
+        )
+        await conn.commit()
     return FkCity(city_id, 'Казань')
 
 

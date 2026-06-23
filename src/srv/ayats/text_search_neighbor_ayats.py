@@ -4,7 +4,8 @@
 from typing import Final, final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat import Ayat
@@ -21,16 +22,16 @@ _AYAT_ID_LITERAL: Final = 'ayat_id'
 class TextSearchNeighborAyats(NeighborAyats):
     """Класс для работы с соседними аятами, при текстовом поиске."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _ayat_id: int
     _query: TextSearchQuery
     _search_sql_query: str
 
     @classmethod
-    def ctor(cls, pgsql: Database, ayat_id: int, query: TextSearchQuery) -> NeighborAyats:
+    def ctor(cls, pgsql: AsyncEngine, ayat_id: int, query: TextSearchQuery) -> NeighborAyats:
         """Конструктор объекта.
 
-        :param pgsql: Database
+        :param pgsql: AsyncEngine
         :param ayat_id: int
         :param query: TextSearchQuery
         """
@@ -54,7 +55,11 @@ class TextSearchNeighborAyats(NeighborAyats):
         :raises AyatNotFoundError: if ayat not found
         """
         search_query = '%{0}%'.format(await self._query.read())
-        rows = await self._pgsql.fetch_all(self._search_sql_query, {'search_query': search_query})
+        async with self._pgsql.connect() as conn:
+            rows = (await conn.execute(
+                text(self._search_sql_query),
+                {'search_query': search_query},
+            )).mappings().fetchall()
         for idx, row in enumerate(rows[1:], start=1):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 return TextLenSafeAyat(
@@ -70,7 +75,11 @@ class TextSearchNeighborAyats(NeighborAyats):
         :raises AyatNotFoundError: if ayat not found
         """
         search_query = '%{0}%'.format(await self._query.read())
-        rows = await self._pgsql.fetch_all(self._search_sql_query, {'search_query': search_query})
+        async with self._pgsql.connect() as conn:
+            rows = (await conn.execute(
+                text(self._search_sql_query),
+                {'search_query': search_query},
+            )).mappings().fetchall()
         for idx, row in enumerate(rows[:-1]):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 return TextLenSafeAyat(
@@ -85,10 +94,11 @@ class TextSearchNeighborAyats(NeighborAyats):
         :return: str
         """
         actual_page_num = 0
-        rows = await self._pgsql.fetch_all(
-            self._search_sql_query,
-            {'search_query': '%{0}%'.format(await self._query.read())},
-        )
+        async with self._pgsql.connect() as conn:
+            rows = (await conn.execute(
+                text(self._search_sql_query),
+                {'search_query': '%{0}%'.format(await self._query.read())},
+            )).mappings().fetchall()
         for idx, row in enumerate(rows, start=1):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 actual_page_num = idx

@@ -15,7 +15,8 @@ quranbot-schema-registry = "0.0.28"
 sentry-sdk = "2.58.0"
 httpx = "0.28.1"
 pytz = "2025.2"
-databases = {extras = ["asyncpg"], version = "0.9.0"}
+sqlalchemy = {extras = ["asyncio"], version = "2.0.51"}
+asyncpg = "0.31.0"
 attrs = "25.4.0"
 jsonpath-ng = "1.8.0"
 eo-styleguide = "0.1.1"
@@ -175,6 +176,7 @@ max-args = 6
   "ANN",     # Annotations
   "PLR2004", # Magic value
   "PLR0913", # Too many arguments to function call
+  "PYI034",  # __aenter__ usually returns self
 ]
 
 [tool.deltaver]

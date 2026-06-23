@@ -6,8 +6,8 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
 from redis.asyncio import Redis
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.logger import LogSink
 from app_types.update import Update
@@ -46,12 +46,12 @@ from srv.prayers.user_without_city_safe_answer import UserWithoutCitySafeAnswer
 class PgPrayerTimeAnswer(TgAnswer):
     """Ответ с временами намаза.
 
-    _pgsql: Database - соединение с БД postgres
+    _pgsql: AsyncEngine - соединение с БД postgres
     _origin: TgAnswer - возможно редактирование сообщения при смене статуса или отправка нового сообщения
     _admin_chat_ids: Sequence[int] - список идентификаторов админов
     """
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _origin: TgAnswer
     _admin_chat_ids: Sequence[int]
     _empty_answer: TgAnswer
@@ -63,7 +63,7 @@ class PgPrayerTimeAnswer(TgAnswer):
     @classmethod
     def new_prayers_ctor(  # noqa: PLR0913
         cls,
-        pgsql: Database,
+        pgsql: AsyncEngine,
         empty_answer: TgAnswer,
         admin_chat_ids: Sequence[int],
         redis: Redis,
@@ -72,7 +72,7 @@ class PgPrayerTimeAnswer(TgAnswer):
     ) -> TgAnswer:
         """Конструктор для генерации времени намаза.
 
-        :param pgsql: Database
+        :param pgsql: AsyncEngine
         :param empty_answer: TgAnswer
         :param admin_chat_ids: Sequence[int]
         :param redis: Redis
@@ -94,7 +94,7 @@ class PgPrayerTimeAnswer(TgAnswer):
     @classmethod
     def edited_markup_ctor(  # noqa: PLR0913
         cls,
-        pgsql: Database,
+        pgsql: AsyncEngine,
         empty_answer: TgAnswer,
         admin_chat_ids: Sequence[int],
         redis: Redis,
@@ -103,7 +103,7 @@ class PgPrayerTimeAnswer(TgAnswer):
     ) -> TgAnswer:
         """Конструктор для времен намаза при смене статуса прочитанности.
 
-        :param pgsql: Database
+        :param pgsql: AsyncEngine
         :param empty_answer: TgAnswer
         :param admin_chat_ids: Sequence[int]
         :param redis: Redis
@@ -137,7 +137,7 @@ class PgPrayerTimeAnswer(TgAnswer):
     @classmethod
     def pagination_per_day_ctor(  # noqa: PLR0913
         cls,
-        pgsql: Database,
+        pgsql: AsyncEngine,
         empty_answer: TgAnswer,
         admin_chat_ids: Sequence[int],
         redis: Redis,
@@ -146,7 +146,7 @@ class PgPrayerTimeAnswer(TgAnswer):
     ) -> TgAnswer:
         """Конструктор для пагинации по дням.
 
-        :param pgsql: Database
+        :param pgsql: AsyncEngine
         :param empty_answer: TgAnswer
         :param admin_chat_ids: Sequence[int]
         :param redis: Redis

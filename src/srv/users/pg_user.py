@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.intable import AsyncInt
 from exceptions.internal_exceptions import UserNotFoundError
@@ -20,24 +21,24 @@ class PgUser(User):
     """Пользователь в БД postgres."""
 
     _chat_id: ValidChatId
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @classmethod
-    def legacy_id_ctor(cls, legacy_id: AsyncInt, pgsql: Database) -> User:
+    def legacy_id_ctor(cls, legacy_id: AsyncInt, pgsql: AsyncEngine) -> User:
         """Конструктор по старому идентификатору в БД.
 
         :param legacy_id: int
-        :param pgsql: Database
+        :param pgsql: AsyncEngine
         :return: User
         """
         return cls(PgValidChatId(pgsql, ChatIdByLegacyId(pgsql, legacy_id)), pgsql)
 
     @classmethod
-    def int_ctor(cls, chat_id: int, pgsql: Database) -> User:
+    def int_ctor(cls, chat_id: int, pgsql: AsyncEngine) -> User:
         """Конструктор по идентификатору чата.
 
         :param chat_id: int
-        :param pgsql: Database
+        :param pgsql: AsyncEngine
         :return: User
         """
         return cls(PgValidChatId.int_ctor(pgsql, chat_id), pgsql)
@@ -61,13 +62,15 @@ class PgUser(User):
             'FROM users',
             'WHERE chat_id = :chat_id',
         ])
-        query_result = await self._pgsql.fetch_val(
-            query,
-            {'chat_id': await self._chat_id.to_int()},
-        )
-        if not query_result:
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(
+                text(query),
+                {'chat_id': await self._chat_id.to_int()},
+            )
+            row = query_result.fetchone()
+        if row is None:
             raise UserNotFoundError
-        return query_result
+        return row[0]
 
     @override
     async def is_active(self) -> bool:
@@ -80,10 +83,12 @@ class PgUser(User):
             'FROM users',
             'WHERE chat_id = :chat_id',
         ])
-        query_result = await self._pgsql.fetch_val(
-            query,
-            {'chat_id': await self._chat_id.to_int()},
-        )
-        if query_result is None:
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(
+                text(query),
+                {'chat_id': await self._chat_id.to_int()},
+            )
+            row = query_result.fetchone()
+        if row is None:
             raise UserNotFoundError
-        return query_result
+        return row[0]

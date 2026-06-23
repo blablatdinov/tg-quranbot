@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.listable import AsyncListable
 from integrations.tg.fk_chat_id import ChatId
@@ -18,7 +19,7 @@ from srv.ayats.text_len_shorten_ayat import TextLenSafeAyat
 class UserFavoriteAyats(AsyncListable[Ayat]):
     """Избранные аяты пользователя."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _chat_id: ChatId
 
     @override
@@ -35,7 +36,11 @@ class UserFavoriteAyats(AsyncListable[Ayat]):
             'WHERE u.chat_id = :chat_id',
             'ORDER BY a.ayat_id',
         ])
-        rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(
+                text(query), {'chat_id': int(self._chat_id)},
+            )
+            rows = query_result.mappings().fetchall()
         return [
             TextLenSafeAyat(PgAyat.from_int(row['id'], self._pgsql)) for row in rows
         ]

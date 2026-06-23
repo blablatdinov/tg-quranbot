@@ -6,7 +6,7 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.update import Update
 from exceptions.user import UserAlreadyActiveError, UserAlreadyExistsError
@@ -27,7 +27,7 @@ class UserAlreadyExistsAnswer(TgAnswer):
 
     _origin: TgAnswer
     _sender_answer: TgAnswer
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _event_sink: Sink
 
     @override

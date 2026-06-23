@@ -5,7 +5,8 @@ from typing import TypedDict, final, override
 
 import attrs
 import ujson
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.update import Update
 from integrations.tg.keyboard import Keyboard
@@ -24,7 +25,7 @@ class _Row(TypedDict):
 class PodcastKeyboard(Keyboard):
     """Клавиатура подкаста."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _podcast: Podcast
 
     @override
@@ -43,7 +44,10 @@ class PodcastKeyboard(Keyboard):
             'GROUP BY podcast_id',
         ])
         podcast_id = await self._podcast.podcast_id()
-        row = await self._pgsql.fetch_one(query, {'podcast_id': podcast_id})
+        async with self._pgsql.connect() as conn:
+            row = (await conn.execute(
+                text(query), {'podcast_id': podcast_id},
+            )).mappings().fetchone()
         if row:
             likes_count_map = _Row(
                 like_count=row['like_count'],

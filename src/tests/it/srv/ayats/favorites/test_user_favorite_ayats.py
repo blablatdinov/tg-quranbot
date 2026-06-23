@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import pytest
+from sqlalchemy import text
 
 from srv.ayats.favorites.user_favorite_ayats import UserFavoriteAyats
 
@@ -9,13 +10,15 @@ from srv.ayats.favorites.user_favorite_ayats import UserFavoriteAyats
 @pytest.fixture
 async def _favorite_ayats(db_ayat, pgsql, user_factory):
     await user_factory(49573)
-    await pgsql.execute(
-        '\n'.join([
-            'INSERT INTO favorite_ayats (user_id, ayat_id) VALUES',
-            '(49573, :ayat_id)',
-        ]),
-        {'ayat_id': await db_ayat.identifier().ayat_id()},
-    )
+    async with pgsql.connect() as conn:
+        await conn.execute(
+            text('\n'.join([
+                'INSERT INTO favorite_ayats (user_id, ayat_id) VALUES',
+                '(49573, :ayat_id)',
+            ])),
+            {'ayat_id': await db_ayat.identifier().ayat_id()},
+        )
+        await conn.commit()
 
 
 @pytest.mark.usefixtures('_favorite_ayats')

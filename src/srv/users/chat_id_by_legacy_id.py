@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.fk_async_int import FkAsyncInt
 from app_types.intable import AsyncInt
@@ -19,11 +20,11 @@ class ChatIdByLegacyId(AsyncInt):
     Остались реферальные ссылки, сгенерированные на предыдущей версии бота
     """
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _legacy_id: AsyncInt
 
     @classmethod
-    def int_ctor(cls, database: Database, legacy_id: int) -> AsyncInt:
+    def int_ctor(cls, database: AsyncEngine, legacy_id: int) -> AsyncInt:
         """Конструктор для legacy_id в формате числа."""
         return cls(database, FkAsyncInt(legacy_id))
 
@@ -38,10 +39,12 @@ class ChatIdByLegacyId(AsyncInt):
             'FROM users',
             'WHERE legacy_id = :legacy_id',
         ])
-        query_result = await self._pgsql.fetch_val(
-            query,
-            {'legacy_id': await self._legacy_id.to_int()},
-        )
-        if not query_result:
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(
+                text(query),
+                {'legacy_id': await self._legacy_id.to_int()},
+            )
+            row = query_result.fetchone()
+        if row is None:
             raise UserNotFoundError
-        return query_result
+        return row[0]

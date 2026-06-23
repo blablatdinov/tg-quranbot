@@ -6,8 +6,9 @@ from itertools import batched
 from typing import final, override
 
 import attrs
-from databases import Database
 from dateutil import rrule
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.async_supports_str import AsyncSupportsStr
 from integrations.tg.fk_chat_id import ChatId
@@ -22,7 +23,7 @@ class PrayersStatistic(AsyncSupportsStr):
 
     _prayers_at_user: NewPrayersAtUser
     _chat_id: ChatId
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def to_str(self) -> str:
@@ -77,11 +78,15 @@ class PrayersStatistic(AsyncSupportsStr):
             'WHERE pau.user_id = :chat_id',
             "ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
         ])
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(
+                text(query),
+                {'chat_id': int(self._chat_id)},
+            )
+            rows = query_result.mappings().fetchall()
         return list(
             batched(
-                await self._pgsql.fetch_all(query, {
-                    'chat_id': int(self._chat_id),
-                }),
+                rows,
                 5,
                 strict=False,
             ),
@@ -95,7 +100,12 @@ class PrayersStatistic(AsyncSupportsStr):
             'WHERE pau.user_id = :chat_id',
             "ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
         ])
-        rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(
+                text(query),
+                {'chat_id': int(self._chat_id)},
+            )
+            rows = query_result.mappings().fetchall()
         if not rows:
             return []
         return [

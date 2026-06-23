@@ -5,8 +5,8 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
 from redis.asyncio import Redis
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
@@ -30,7 +30,7 @@ class SearchAyatByNumbersAnswer(TgAnswer):
     _debug_mode: SupportsBool
     _empty_answer: TgAnswer
     _redis: Redis
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _logger: LogSink
 
     @override

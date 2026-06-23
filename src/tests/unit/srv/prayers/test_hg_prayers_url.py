@@ -2,9 +2,8 @@
 # SPDX-License-Identifier: MIT
 
 import datetime
-from typing import final
+from typing import Any, final
 
-import attrs
 import pytest
 
 from exceptions.internal_exceptions import CityNotFoundError
@@ -12,15 +11,40 @@ from srv.prayers.fk_city import FkCity
 from srv.prayers.hg_prayers_url import HgPrayersUrl
 
 
-# Disabled checks for stub
 @final
-@attrs.define(frozen=True)
-class FkDb:
+# Class for testing only
+class _FkDbConn:  # noqa: PEO200
+    _link: str | None
 
-    _origin_val: str | None
+    def __init__(self, link: str | None) -> None:
+        self._link = link
 
-    async def fetch_val(self, *args, **kwargs) -> str | None:  # noqa: OVR100
-        return self._origin_val
+    async def __aenter__(self) -> _FkDbConn:
+        return self
+
+    async def __aexit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+        pass
+
+    async def execute(self, query: str, query_params: dict[str, Any] | None = None) -> _FkDbConn:  # noqa: ARG001
+        return self
+
+    def fetchone(self) -> tuple | None:
+        if self._link is None:
+            return None
+        return (self._link,)
+
+
+@final
+# Class for testing only
+class _FkDb:  # noqa: PEO200
+    _link: str | None
+
+    def __init__(self, link: str | None) -> None:
+        self._link = link
+
+    # Class used for test only
+    def connect(self) -> _FkDbConn:  # noqa: OVR100
+        return _FkDbConn(self._link)
 
 
 @pytest.mark.parametrize(('month_num', 'month_name'), [
@@ -40,7 +64,7 @@ class FkDb:
 async def test_month_names(month_num, month_name):
     got = await HgPrayersUrl(
         FkCity.name_ctor('Innopolis'),
-        FkDb('https://halalguide.me/innopolis/namaz-time/'),  # type: ignore [arg-type]
+        _FkDb('https://halalguide.me/innopolis/namaz-time/'),  # type: ignore[arg-type]
         datetime.datetime(2025, month_num, 1, tzinfo=datetime.UTC).date(),
     ).to_str()
 
@@ -51,6 +75,6 @@ async def test_without_link():
     with pytest.raises(CityNotFoundError):
         await HgPrayersUrl(
             FkCity.name_ctor('Innopolis'),
-            FkDb(None),  # type: ignore [arg-type]
+            _FkDb(None),  # type: ignore[arg-type]
             datetime.datetime(2025, 1, 1, tzinfo=datetime.UTC).date(),
         ).to_str()

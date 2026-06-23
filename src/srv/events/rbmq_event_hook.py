@@ -9,9 +9,9 @@ import aio_pika
 import attrs
 import ujson
 from aiormq.abc import DeliveredMessage
-from databases import Database
 from eljson.json_doc import JsonDoc
 from quranbot_schema_registry import validate_schema
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.logger import LogSink
 from settings import Settings
@@ -25,7 +25,7 @@ class RbmqEventHook(EventHook):
     """Обработчик событий из RabbitMQ."""
 
     _settings: Settings
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _logger: LogSink
     _events: Iterable[ReceivedEvent]
 
@@ -33,14 +33,14 @@ class RbmqEventHook(EventHook):
     def ctor(
         cls,
         settings: Settings,
-        pgsql: Database,
+        pgsql: AsyncEngine,
         logger: LogSink,
         *events: ReceivedEvent,
     ) -> EventHook:
         """Ctor.
 
         :param settings: Settings,
-        :param pgsql: Database,
+        :param pgsql: AsyncEngine,
         :param logger: LogSink,
         :param events: ReceivedEvent,
         :return: EventHook

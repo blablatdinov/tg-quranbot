@@ -4,8 +4,8 @@
 from typing import TypeAlias, final, override
 
 import attrs
-from databases import Database
 from eljson.json import Json
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from srv.ayats.pg_ayat import PgAyat
 from srv.events.recieved_event import ReceivedEvent
@@ -19,10 +19,10 @@ AyatChangedEvent: TypeAlias = ReceivedEvent
 class RbmqAyatChangedEvent(AyatChangedEvent):
     """Событие изменения аята из rabbitmq."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
-    async def process(self, json_doc: Json) -> None:
+    async def process(self, json_doc: Json) -> None:  # type: ignore[override]
         """Обработка события.
 
         :param json_doc: Json

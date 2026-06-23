@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.fk_async_int import FkAsyncInt
 from app_types.listable import AsyncListable
@@ -20,7 +21,7 @@ class FavoriteAyats(AsyncListable):
     """Избранные аяты."""
 
     _chat_id: ChatId
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def to_list(self) -> list[Ayat]:
@@ -35,8 +36,13 @@ class FavoriteAyats(AsyncListable):
             'WHERE u.chat_id = :chat_id',
             'ORDER BY fa.ayat_id',
         ])
-        rows = await self._pgsql.fetch_all(query, {'chat_id': int(self._chat_id)})
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(
+                text(query),
+                {'chat_id': int(self._chat_id)},
+            )
+            rows = query_result.fetchall()
         return [
-            TextLenSafeAyat(PgAyat(FkAsyncInt(row['ayat_id']), self._pgsql))
+            TextLenSafeAyat(PgAyat(FkAsyncInt(dict(row)['ayat_id']), self._pgsql))
             for row in rows
         ]

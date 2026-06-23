@@ -5,7 +5,7 @@ from typing import Final, final, override
 
 import attrs
 import httpx
-from databases import Database
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.update import Update
 from handlers.prayers_statistic import PrayersStatistic
@@ -23,7 +23,7 @@ class SkippedPrayersAnswer(TgAnswer):
     """Пропущенные намазы."""
 
     _empty_answer: TgAnswer
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

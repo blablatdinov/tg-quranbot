@@ -5,8 +5,9 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
 from jinja2 import Template
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.update import Update
 from integrations.tg.fk_keyboard import FkKeyboard
@@ -22,7 +23,7 @@ class NextDayAyats(TgAnswer):
     """Аяты для следующего дня."""
 
     _empty_answer: TgAnswer
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:
@@ -31,8 +32,8 @@ class NextDayAyats(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        ayats = await self._pgsql.fetch_all(
-            '\n'.join([
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(text('\n'.join([
                 'SELECT',
                 '  a.sura_id,',
                 '  a.ayat_number,',
@@ -43,17 +44,14 @@ class NextDayAyats(TgAnswer):
                 'JOIN suras AS s ON a.sura_id = s.sura_id',
                 'WHERE u.chat_id = :chat_id',
                 'ORDER BY a.ayat_id',
-            ]),
-            {'chat_id': int(TgChatId(update))},
-        )
-        await self._pgsql.execute(
-            '\n'.join([
+            ])), {'chat_id': int(TgChatId(update))})
+            ayats = query_result.mappings().fetchall()
+            await conn.execute(text('\n'.join([
                 'UPDATE users',
                 'SET day = day + 1',
                 'WHERE chat_id = :chat_id',
-            ]),
-            {'chat_id': int(TgChatId(update))},
-        )
+            ])), {'chat_id': int(TgChatId(update))})
+            await conn.commit()
         return await TgLinkPreviewOptions(
             TgHtmlParseAnswer(
                 TgAnswerMarkup(

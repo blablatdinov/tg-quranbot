@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import pytest
+from sqlalchemy import text
 
 from app_types.fk_async_str import FkAsyncStr
 from exceptions.content_exceptions import CityNotSupportedError
@@ -10,13 +11,15 @@ from integrations.city_name_by_id import CityNameById
 
 @pytest.fixture
 async def _db_city(pgsql):
-    await pgsql.execute(
-        '\n'.join([
-            'INSERT INTO cities (city_id, name)',
-            'VALUES',
-            "('7ceb19b6-93ff-4819-bed7-86f14077af9a', 'Kazan')",
-        ]),
-    )
+    async with pgsql.connect() as conn:
+        await conn.execute(
+            text('\n'.join([
+                'INSERT INTO cities (city_id, name)',
+                'VALUES',
+                "('7ceb19b6-93ff-4819-bed7-86f14077af9a', 'Kazan')",
+            ])),
+        )
+        await conn.commit()
 
 
 @pytest.mark.usefixtures('_db_city')

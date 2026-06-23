@@ -6,8 +6,9 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
 from redis.asyncio import Redis
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.millis import Millis
 from app_types.rounded_float import RoundedFloat
@@ -21,7 +22,7 @@ class StatusAnswer(TgAnswer):
     """Ответ со статусом системы."""
 
     _empty_answer: TgAnswer
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _redis: Redis
 
     @override
@@ -43,7 +44,8 @@ class StatusAnswer(TgAnswer):
 
     async def _measure_pgsql(self) -> str:  # noqa: NPM100. Fix it
         db_start = time.time()
-        await self._pgsql.execute('SELECT 1')
+        async with self._pgsql.connect() as conn:
+            await conn.execute(text('SELECT 1'))
         return 'DB: {0} ms'.format(float(
             RoundedFloat(
                 Millis.seconds_ctor(time.time() - db_start),

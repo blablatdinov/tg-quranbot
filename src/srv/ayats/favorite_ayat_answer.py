@@ -5,7 +5,7 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
@@ -26,7 +26,7 @@ class FavoriteAyatAnswer(TgAnswer):
 
     _debug_mode: SupportsBool
     _empty_answer: TgAnswer
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def build(self, update: Update) -> list[httpx.Request]:

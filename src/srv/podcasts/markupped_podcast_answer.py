@@ -5,8 +5,8 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
 from redis.asyncio import Redis
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.supports_bool import SupportsBool
 from app_types.update import Update
@@ -31,7 +31,7 @@ class MarkuppedPodcastAnswer(TgAnswer):
     _debug_mode: SupportsBool
     _origin: TgAnswer
     _redis: Redis
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _podcast: Podcast
 
     @override

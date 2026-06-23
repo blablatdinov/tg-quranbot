@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.intable import AsyncInt
 from exceptions.content_exceptions import AyatNotFoundError
@@ -18,7 +19,7 @@ class PgAyatIdentifier(AyatIdentifier):
     """Информация для идентификации аята."""
 
     _ayat_id: AsyncInt
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def ayat_id(self) -> AyatId:
@@ -41,8 +42,10 @@ class PgAyatIdentifier(AyatIdentifier):
             'WHERE a.ayat_id = :ayat_id',
         ])
         ayat_id = await self.ayat_id()
-        row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
-        if not row:
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(text(query), {'ayat_id': ayat_id})
+            row = query_result.mappings().fetchone()
+        if row is None:
             raise AyatNotFoundError
         return row['sura_id']
 
@@ -59,7 +62,9 @@ class PgAyatIdentifier(AyatIdentifier):
             'WHERE ayat_id = :ayat_id',
         ])
         ayat_id = await self.ayat_id()
-        row = await self._pgsql.fetch_one(query, {'ayat_id': ayat_id})
-        if not row:
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(text(query), {'ayat_id': ayat_id})
+            row = query_result.mappings().fetchone()
+        if row is None:
             raise AyatNotFoundError
         return row['ayat_number']

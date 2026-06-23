@@ -5,8 +5,8 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
 from redis.asyncio import Redis
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.logger import LogSink
 from app_types.supports_bool import SupportsBool
@@ -24,7 +24,7 @@ class FavoriteAyatsAnswer(TgAnswer):
     """Ответ с временами намаза."""
 
     _debug_mode: SupportsBool
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _redis: Redis
     _empty_answer: TgAnswer
     _logger: LogSink

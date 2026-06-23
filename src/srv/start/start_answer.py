@@ -6,7 +6,7 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.async_int_or_none import AsyncIntOrNone
 from app_types.update import Update
@@ -27,7 +27,7 @@ class StartAnswer(TgAnswer):
     _origin: TgAnswer
     _admin_message: AdminMessage
     _new_tg_user: NewUser
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _admin_chat_ids: Sequence[int]
 
     @override

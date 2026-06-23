@@ -4,7 +4,8 @@
 from typing import Final, final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.async_supports_str import AsyncSupportsStr
 from app_types.update import Update
@@ -21,7 +22,7 @@ TIME_LITERAL: Final = 'time'
 class PgPrayersInfo(PrayersInfo):
     """Информация о времени намаза из БД."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _date: PrayerDate
     _city_id: AsyncSupportsStr
     _update: Update
@@ -29,22 +30,27 @@ class PgPrayersInfo(PrayersInfo):
     @override
     async def to_dict(self) -> PrayerMessageTextDict:
         """Словарь с данными для отправки пользователю."""
-        query = '\n'.join([
-            'SELECT',
-            '    c.name AS city_name,',
-            '    p.day,',
-            '    p.time,',
-            '    p.name',
-            'FROM prayers AS p',
-            'INNER JOIN cities AS c ON p.city_id = c.city_id',
-            'WHERE p.day = :date AND c.city_id = :city_id',
-            'ORDER BY',
-            "    ARRAY_POSITION(ARRAY['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
-        ])
-        rows = await self._pgsql.fetch_all(query, {
-            'date': await self._date.parse(self._update),
-            'city_id': await self._city_id.to_str(),
-        })
+        async with self._pgsql.connect() as conn:
+            rows = (await conn.execute(
+                text('\n'.join([
+                    'SELECT',
+                    '    c.name AS city_name,',
+                    '    p.day,',
+                    '    p.time,',
+                    '    p.name',
+                    'FROM prayers AS p',
+                    'INNER JOIN cities AS c ON p.city_id = c.city_id',
+                    'WHERE p.day = :date AND c.city_id = :city_id',
+                    'ORDER BY',
+                    '    ARRAY_POSITION(',
+                    "       ARRAY['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[],",
+                    '       p.name::text)',
+                ])),
+                {
+                    'date': await self._date.parse(self._update),
+                    'city_id': await self._city_id.to_str(),
+                },
+            )).mappings().fetchall()
         if not rows:
             raise PrayersNotFoundError(
                 await CityNameById(self._pgsql, self._city_id).to_str(),

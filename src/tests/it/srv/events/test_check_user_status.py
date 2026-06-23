@@ -5,6 +5,7 @@ import httpx
 import pytest
 import ujson
 from eljson.json_doc import JsonDoc
+from sqlalchemy import text
 
 from app_types.fk_log_sink import FkLogSink
 from integrations.tg.tg_answers.fk_answer import FkAnswer
@@ -51,10 +52,11 @@ async def test_user_status(pgsql):
         FkAnswer(), pgsql, FkSink(), FkLogSink(),
     ).process(JsonDoc({}))
 
-    assert [
-        row['is_active']
-        for row in await pgsql.fetch_all('SELECT is_active FROM users')
-    ] == [True, True, True]
+    async with pgsql.connect() as conn:
+        assert [
+            row['is_active']
+            for row in (await conn.execute(text('SELECT is_active FROM users'))).mappings().fetchall()
+        ] == [True, True, True]
 
 
 @pytest.mark.usefixtures('_users', '_mock_unsubscribed')
@@ -63,7 +65,10 @@ async def test_unsubscribed(pgsql):
         FkAnswer(), pgsql, FkSink(), FkLogSink(),
     ).process(JsonDoc({}))
 
-    assert [
-        (row['chat_id'], row['is_active'])
-        for row in await pgsql.fetch_all('SELECT chat_id, is_active FROM users ORDER BY chat_id')
-    ] == [(1, False), (2, False), (3, True)]
+    async with pgsql.connect() as conn:
+        assert [
+            (row['chat_id'], row['is_active'])
+            for row in (await conn.execute(
+                text('SELECT chat_id, is_active FROM users ORDER BY chat_id'),
+            )).mappings().fetchall()
+        ] == [(1, False), (2, False), (3, True)]

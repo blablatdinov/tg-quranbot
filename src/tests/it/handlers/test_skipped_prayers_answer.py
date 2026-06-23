@@ -3,6 +3,7 @@
 
 import pytest
 import ujson
+from sqlalchemy import text
 
 from app_types.fk_update import FkUpdate
 from handlers.skipped_prayers_answer import SkippedPrayersAnswer
@@ -25,13 +26,14 @@ async def test(message_update_factory, pgsql):
         'Ахшам: 19',
         'Ястү: 20',
     ])
-    assert await pgsql.fetch_val(
-        '\n'.join([
-            'SELECT COUNT(*)',
-            'FROM prayers_at_user AS pau',
-            'WHERE pau.user_id = 358610865',
-        ]),
-    ) == 160
+    async with pgsql.connect() as conn:
+        assert (await conn.execute(
+            text('\n'.join([
+                'SELECT COUNT(*)',
+                'FROM prayers_at_user AS pau',
+                'WHERE pau.user_id = 358610865',
+            ])),
+        )).scalar() == 160
     assert ujson.loads(got[0].url.params['reply_markup']) == {
         'inline_keyboard': [
             [{'callback_data': 'decr(fajr)', 'text': 'Иртәнге: (-1)'}],

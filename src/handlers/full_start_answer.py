@@ -5,8 +5,8 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
 from redis.asyncio import Redis
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.logger import LogSink
 from app_types.update import Update
@@ -31,7 +31,7 @@ from srv.users.redis_user_state import RedisUserState
 class FullStartAnswer(TgAnswer):
     """Ответ на команду /start."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _empty_answer: TgAnswer
     _event_sink: Sink
     _redis: Redis

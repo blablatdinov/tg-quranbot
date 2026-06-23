@@ -9,9 +9,10 @@ from typing import Final, final, override
 import attrs
 import pytz
 import ujson
-from databases import Database
 from eljson.json import Json
 from redis.asyncio import Redis
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.fk_async_listable import FkAsyncListable
 from app_types.fk_update import FkUpdate
@@ -51,29 +52,32 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
     """Обработка события о рассылке времени намаза на следующий день."""
 
     _empty_answer: TgAnswer
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _settings: Settings
     _events_sink: Sink
     _log_sink: LogSink
     _redis: Redis
 
     @override
-    async def process(self, json_doc: Json) -> None:
+    async def process(self, json_doc: Json) -> None:  # type: ignore[override]
         """Обработка события.
 
         :param json_doc: Json
         """
-        active_users = await self._pgsql.fetch_all('\n'.join([
-            'SELECT u.chat_id',
-            'FROM users AS u',
-            "WHERE u.is_active = 't' {0}".format(
-                'AND u.chat_id IN ({0})'.format(
-                    ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
-                )
-                if self._settings.DAILY_PRAYERS == 'off' else '',
-            ),
-            'ORDER BY u.chat_id',
-        ]))
+        async with self._pgsql.connect() as conn:
+            rows = (await conn.execute(
+                text('\n'.join([
+                    'SELECT u.chat_id',
+                    'FROM users AS u',
+                    "WHERE u.is_active = 't' {0}".format(
+                        'AND u.chat_id IN ({0})'.format(
+                            ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
+                        )
+                        if self._settings.DAILY_PRAYERS == 'off' else '',
+                    ),
+                    'ORDER BY u.chat_id',
+                ])),
+            )).mappings().fetchall()
         unsubscribed_users: list[User] = []
         date = FkPrayerDate(
             add(
@@ -81,7 +85,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                 datetime.timedelta(days=1),
             ).date(),
         )
-        for active_user in active_users:
+        for active_user in rows:
             await self._iteration(
                 TgHtmlParseAnswer(
                     TgAnswerMarkup(

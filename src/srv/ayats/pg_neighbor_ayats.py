@@ -4,7 +4,8 @@
 from typing import Final, final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat import Ayat
@@ -20,7 +21,7 @@ _AYAT_ID_LITERAL: Final = 'ayat_id'
 class PgNeighborAyats(NeighborAyats):
     """Класс для работы с соседними аятами в хранилище."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _ayat_id: int
 
     @override
@@ -35,8 +36,12 @@ class PgNeighborAyats(NeighborAyats):
             'FROM ayats',
             'WHERE ayat_id = :ayat_id',
         ])
-        row = await self._pgsql.fetch_one(query, {_AYAT_ID_LITERAL: self._ayat_id - 1})
-        if not row:
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(
+                text(query), {_AYAT_ID_LITERAL: self._ayat_id - 1},
+            )
+            row = query_result.mappings().fetchone()
+        if row is None:
             raise AyatNotFoundError
         return TextLenSafeAyat(PgAyat.from_int(row[_AYAT_ID_LITERAL], self._pgsql))
 
@@ -52,8 +57,12 @@ class PgNeighborAyats(NeighborAyats):
             'FROM ayats',
             'WHERE ayats.ayat_id = :ayat_id',
         ])
-        row = await self._pgsql.fetch_one(query, {_AYAT_ID_LITERAL: self._ayat_id + 1})
-        if not row:
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(
+                text(query), {_AYAT_ID_LITERAL: self._ayat_id + 1},
+            )
+            row = query_result.mappings().fetchone()
+        if row is None:
             raise AyatNotFoundError
         return TextLenSafeAyat(PgAyat.from_int(row[_AYAT_ID_LITERAL], self._pgsql))
 
@@ -63,9 +72,15 @@ class PgNeighborAyats(NeighborAyats):
 
         :return: str
         """
-        ayats_count = await self._pgsql.fetch_val('SELECT COUNT(*) FROM ayats')
-        actual_page_num = await self._pgsql.fetch_val(
-            'SELECT COUNT(*) FROM ayats WHERE ayat_id <= :ayat_id',
-            {_AYAT_ID_LITERAL: self._ayat_id},
-        )
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(text('SELECT COUNT(*) FROM ayats'))
+            row = query_result.fetchone()
+        ayats_count = row[0] if row else 0
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(
+                text('SELECT COUNT(*) FROM ayats WHERE ayat_id <= :ayat_id'),
+                {_AYAT_ID_LITERAL: self._ayat_id},
+            )
+            row = query_result.fetchone()
+        actual_page_num = row[0] if row else 0
         return 'стр. {0}/{1}'.format(actual_page_num, ayats_count)

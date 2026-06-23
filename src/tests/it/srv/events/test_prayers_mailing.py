@@ -9,6 +9,7 @@ import ujson
 from eljson.json_doc import JsonDoc
 from furl import furl
 from loguru import logger
+from sqlalchemy import text
 
 from integrations.tg.tg_answers import TgEmptyAnswer
 from srv.events.prayers_mailing import PrayersMailingPublishedEvent
@@ -89,56 +90,58 @@ def mock_http_ramadan_mode(respx_mock, keyboard):
 @pytest.fixture
 async def users(pgsql, city_factory, user_factory):
     city = await city_factory('e22d9142-a39b-4e99-92f7-2082766f0987', 'Kazan')
-    await pgsql.execute_many(
-        '\n'.join([
-            'INSERT INTO prayers (prayer_id, name, time, city_id, day)',
-            'VALUES (:prayer_id, :prayer_name, :time, :city_id, :day)',
-        ]),
-        [
-            {
-                'prayer_id': 1,
-                'prayer_name': 'fajr',
-                'time': datetime.time(4, 30),
-                'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
-                'day': datetime.date(2024, 3, 7),
-            },
-            {
-                'prayer_id': 2,
-                'prayer_name': 'sunrise',
-                'time': datetime.time(5, 30),
-                'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
-                'day': datetime.date(2024, 3, 7),
-            },
-            {
-                'prayer_id': 3,
-                'prayer_name': 'dhuhr',
-                'time': datetime.time(6, 30),
-                'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
-                'day': datetime.date(2024, 3, 7),
-            },
-            {
-                'prayer_id': 4,
-                'prayer_name': 'asr',
-                'time': datetime.time(7, 30),
-                'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
-                'day': datetime.date(2024, 3, 7),
-            },
-            {
-                'prayer_id': 5,
-                'prayer_name': 'maghrib',
-                'time': datetime.time(8, 30),
-                'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
-                'day': datetime.date(2024, 3, 7),
-            },
-            {
-                'prayer_id': 6,
-                'prayer_name': "isha'a",
-                'time': datetime.time(9, 30),
-                'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
-                'day': datetime.date(2024, 3, 7),
-            },
-        ],
-    )
+    async with pgsql.connect() as conn:
+        await conn.execute(
+            text('\n'.join([
+                'INSERT INTO prayers (prayer_id, name, time, city_id, day)',
+                'VALUES (:prayer_id, :prayer_name, :time, :city_id, :day)',
+            ])),
+            [
+                {
+                    'prayer_id': 1,
+                    'prayer_name': 'fajr',
+                    'time': datetime.time(4, 30),
+                    'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
+                    'day': datetime.date(2024, 3, 7),
+                },
+                {
+                    'prayer_id': 2,
+                    'prayer_name': 'sunrise',
+                    'time': datetime.time(5, 30),
+                    'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
+                    'day': datetime.date(2024, 3, 7),
+                },
+                {
+                    'prayer_id': 3,
+                    'prayer_name': 'dhuhr',
+                    'time': datetime.time(6, 30),
+                    'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
+                    'day': datetime.date(2024, 3, 7),
+                },
+                {
+                    'prayer_id': 4,
+                    'prayer_name': 'asr',
+                    'time': datetime.time(7, 30),
+                    'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
+                    'day': datetime.date(2024, 3, 7),
+                },
+                {
+                    'prayer_id': 5,
+                    'prayer_name': 'maghrib',
+                    'time': datetime.time(8, 30),
+                    'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
+                    'day': datetime.date(2024, 3, 7),
+                },
+                {
+                    'prayer_id': 6,
+                    'prayer_name': "isha'a",
+                    'time': datetime.time(9, 30),
+                    'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
+                    'day': datetime.date(2024, 3, 7),
+                },
+            ],
+        )
+        await conn.commit()
     return [await user_factory(358610865, 2, city)]
 
 

@@ -10,6 +10,7 @@ import ujson
 from eljson.json_doc import JsonDoc
 from furl import furl
 from loguru import logger
+from sqlalchemy import text
 
 from integrations.tg.tg_answers import TgEmptyAnswer
 from srv.events.morning_content_published import MorningContentPublishedEvent
@@ -40,9 +41,9 @@ def _mock_http(respx_mock):
         '24391797': '<b>1:1)</b> First ayat content\n<b>1:2)</b> Second ayat content\n\nhttps://umma.ru/sura-1',
         '206497847': '<b>2:1-4)</b> Third ayat content\n\nhttps://umma.ru/sura-2',
     }
-    for chat_id, text in chat_content.items():
+    for chat_id, chat_text in chat_content.items():
         respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add({
-            'text': text,
+            'text': chat_text,
             'chat_id': chat_id,
             'reply_markup': '{"inline_keyboard":[[{"text":"Следующий день","callback_data":"nextDayAyats"}]]}',
             'parse_mode': 'html',
@@ -52,68 +53,70 @@ def _mock_http(respx_mock):
 
 @pytest.fixture
 async def _ayats(pgsql):
-    await pgsql.execute(
-        'INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)',
-        {
-            'file_id': '7fc47c04-2271-4ef0-9e47-ba08f499932b',
-            'created_at': datetime.datetime(2020, 1, 1, tzinfo=pytz.timezone('Europe/Moscow')),
-        },
-    )
-    await pgsql.execute_many(
-        'INSERT INTO suras (sura_id, link) VALUES (:sura_id, :link)',
-        [
-            {'sura_id': 1, 'link': '/sura-1'},
-            {'sura_id': 2, 'link': '/sura-2'},
-            {'sura_id': 3, 'link': '/sura-3'},
-        ],
-    )
-    common = {
-        'public_id': '',
-        'ar_audio_id': '7fc47c04-2271-4ef0-9e47-ba08f499932b',
-        'arab_text': '',
-        'transliteration': '',
-    }
-    await pgsql.execute_many(
-        '\n'.join([
-            'INSERT INTO ayats',
-            '(ayat_id, public_id, sura_id, ar_audio_id, ayat_number, content, arab_text, transliteration, day)',
-            'VALUES',
-            '(',
-            '  :ayat_id,',
-            '  :public_id,',
-            '  :sura_id,',
-            '  :ar_audio_id,',
-            '  :ayat_number,',
-            '  :content,',
-            '  :arab_text,',
-            '  :transliteration,',
-            '  :day',
-            ')',
-        ]),
-        [
+    async with pgsql.connect() as conn:
+        await conn.execute(
+            text('INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)'),
             {
-                'ayat_id': 1,
-                'sura_id': 1,
-                'ayat_number': '1',
-                'content': 'First ayat content',
-                'day': 2,
-            } | common,
-            {
-                'ayat_id': 2,
-                'sura_id': 1,
-                'ayat_number': '2',
-                'content': 'Second ayat content',
-                'day': 2,
-            } | common,
-            {
-                'ayat_id': 3,
-                'sura_id': 2,
-                'ayat_number': '1-4',
-                'content': 'Third ayat content',
-                'day': 3,
-            } | common,
-        ],
-    )
+                'file_id': '7fc47c04-2271-4ef0-9e47-ba08f499932b',
+                'created_at': datetime.datetime(2020, 1, 1, tzinfo=pytz.timezone('Europe/Moscow')),
+            },
+        )
+        await conn.execute(
+            text('INSERT INTO suras (sura_id, link) VALUES (:sura_id, :link)'),
+            [
+                {'sura_id': 1, 'link': '/sura-1'},
+                {'sura_id': 2, 'link': '/sura-2'},
+                {'sura_id': 3, 'link': '/sura-3'},
+            ],
+        )
+        common = {
+            'public_id': '',
+            'ar_audio_id': '7fc47c04-2271-4ef0-9e47-ba08f499932b',
+            'arab_text': '',
+            'transliteration': '',
+        }
+        await conn.execute(
+            text('\n'.join([
+                'INSERT INTO ayats',
+                '(ayat_id, public_id, sura_id, ar_audio_id, ayat_number, content, arab_text, transliteration, day)',
+                'VALUES',
+                '(',
+                '  :ayat_id,',
+                '  :public_id,',
+                '  :sura_id,',
+                '  :ar_audio_id,',
+                '  :ayat_number,',
+                '  :content,',
+                '  :arab_text,',
+                '  :transliteration,',
+                '  :day',
+                ')',
+            ])),
+            [
+                {
+                    'ayat_id': 1,
+                    'sura_id': 1,
+                    'ayat_number': '1',
+                    'content': 'First ayat content',
+                    'day': 2,
+                } | common,
+                {
+                    'ayat_id': 2,
+                    'sura_id': 1,
+                    'ayat_number': '2',
+                    'content': 'Second ayat content',
+                    'day': 2,
+                } | common,
+                {
+                    'ayat_id': 3,
+                    'sura_id': 2,
+                    'ayat_number': '1-4',
+                    'content': 'Third ayat content',
+                    'day': 3,
+                } | common,
+            ],
+        )
+        await conn.commit()
 
 
 @pytest.fixture

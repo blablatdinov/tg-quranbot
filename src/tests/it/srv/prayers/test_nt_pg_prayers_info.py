@@ -5,6 +5,7 @@ import datetime
 import uuid
 
 import pytest
+from sqlalchemy import text
 
 from exceptions.prayer_exceptions import PrayersAlreadyExistsError
 from srv.prayers.fk_city import FkCity
@@ -38,44 +39,45 @@ async def test(pgsql):
         pgsql,
     ).to_dict()
 
-    assert [dict(row) for row in await pgsql.fetch_all('select city_id, day, name, time from prayers')] == [
-        {
-            'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
-            'day': datetime.date(2023, 10, 21),
-            'name': 'fajr',
-            'time': datetime.time(4, 22),
-        },
-        {
-            'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
-            'day': datetime.date(2023, 10, 21),
-            'name': 'sunrise',
-            'time': datetime.time(6, 26),
-        },
-        {
-            'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
-            'day': datetime.date(2023, 10, 21),
-            'name': 'dhuhr',
-            'time': datetime.time(12, 0),
-        },
-        {
-            'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
-            'day': datetime.date(2023, 10, 21),
-            'name': 'asr',
-            'time': datetime.time(14, 35),
-        },
-        {
-            'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
-            'day': datetime.date(2023, 10, 21),
-            'name': 'maghrib',
-            'time': datetime.time(16, 30),
-        },
-        {
-            'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
-            'day': datetime.date(2023, 10, 21),
-            'name': "isha'a",
-            'time': datetime.time(18, 12),
-        },
-    ]
+    async with pgsql.connect() as conn:
+        assert (await conn.execute(text('select city_id, day, name, time from prayers'))).mappings().fetchall() == [
+            {
+                'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
+                'day': datetime.date(2023, 10, 21),
+                'name': 'fajr',
+                'time': datetime.time(4, 22),
+            },
+            {
+                'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
+                'day': datetime.date(2023, 10, 21),
+                'name': 'sunrise',
+                'time': datetime.time(6, 26),
+            },
+            {
+                'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
+                'day': datetime.date(2023, 10, 21),
+                'name': 'dhuhr',
+                'time': datetime.time(12, 0),
+            },
+            {
+                'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
+                'day': datetime.date(2023, 10, 21),
+                'name': 'asr',
+                'time': datetime.time(14, 35),
+            },
+            {
+                'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
+                'day': datetime.date(2023, 10, 21),
+                'name': 'maghrib',
+                'time': datetime.time(16, 30),
+            },
+            {
+                'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
+                'day': datetime.date(2023, 10, 21),
+                'name': "isha'a",
+                'time': datetime.time(18, 12),
+            },
+        ]
 
 
 @pytest.mark.usefixtures('_db_city', '_user')
@@ -97,4 +99,5 @@ async def test_double(pgsql):
     with pytest.raises(PrayersAlreadyExistsError):
         await nt_user_prayers_info.to_dict()
 
-    assert await pgsql.fetch_val('select count(*) from prayers') == 6
+    async with pgsql.connect() as conn:
+        assert (await conn.execute(text('select count(*) from prayers'))).scalar() == 6

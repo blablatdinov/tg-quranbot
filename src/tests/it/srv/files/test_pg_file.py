@@ -6,6 +6,7 @@ import uuid
 
 import pytest
 import pytz
+from sqlalchemy import text
 
 from exceptions.content_exceptions import BotFileNotFoundError
 from srv.files.pg_file import PgFile
@@ -18,12 +19,14 @@ async def db_file_id(pgsql):
         'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
         'VALUES (:file_id, :tg_file_id, :link, :created_at)',
     ])
-    await pgsql.execute(query, {
-        'file_id': str(file_id),
-        'tg_file_id': 'adsf',
-        'link': 'https://link.domain',
-        'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
-    })
+    async with pgsql.connect() as conn:
+        await conn.execute(text(query), {
+            'file_id': str(file_id),
+            'tg_file_id': 'adsf',
+            'link': 'https://link.domain',
+            'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
+        })
+        await conn.commit()
     return file_id
 
 

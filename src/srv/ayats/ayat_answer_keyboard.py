@@ -4,7 +4,7 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.update import Update
 from integrations.tg.keyboard import Keyboard
@@ -25,7 +25,7 @@ class AyatAnswerKeyboard(Keyboard):
     _ayat: Ayat
     _neighbor_ayats: NeighborAyats
     _ayat_callback_template: AyatCallbackTemplateEnum
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def generate(self, update: Update) -> str:

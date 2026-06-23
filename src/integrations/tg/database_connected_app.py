@@ -4,7 +4,7 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.runable import Runable
 
@@ -14,7 +14,7 @@ from app_types.runable import Runable
 class DatabaseConnectedApp(Runable):
     """Декоратор для подключения к БД."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _app: Runable
 
     @override

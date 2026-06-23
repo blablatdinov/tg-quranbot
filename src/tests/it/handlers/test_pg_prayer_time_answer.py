@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import pytest
+from sqlalchemy import text
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
@@ -22,7 +23,9 @@ async def _prayers(pgsql, city_factory, user_factory):
         "(5, 'maghrib', '15:07:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '2023-12-19'),",
         "(6, 'isha''a', '17:04:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '2023-12-19')",
     ])
-    await pgsql.execute(query)
+    async with pgsql.connect() as conn:
+        await conn.execute(text(query))
+        await conn.commit()
 
 
 @pytest.mark.usefixtures('_prayers')

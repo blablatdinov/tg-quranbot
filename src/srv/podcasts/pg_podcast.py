@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.intable import AsyncInt
 from exceptions.base_exception import InternalBotError
@@ -19,7 +20,7 @@ class PgPodcast(Podcast):
     """Объект подкаста."""
 
     _podcast_id: AsyncInt
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def podcast_id(self) -> int:
@@ -43,11 +44,13 @@ class PgPodcast(Podcast):
             'INNER JOIN files AS f ON p.file_id = f.file_id',
             'WHERE p.podcast_id = :podcast_id',
         ])
-        row = await self._pgsql.fetch_one(
-            query,
-            {'podcast_id': await self._podcast_id.to_int()},
-        )
-        if not row:
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(
+                text(query),
+                {'podcast_id': await self._podcast_id.to_int()},
+            )
+            row = query_result.mappings().fetchone()
+        if row is None:
             msg = 'Подкасты не найдены'
             raise InternalBotError(msg)
         if not row['telegram_file_id']:
@@ -67,11 +70,13 @@ class PgPodcast(Podcast):
             'INNER JOIN files AS f ON p.file_id = f.file_id',
             'WHERE p.podcast_id = :podcast_id',
         ])
-        row = await self._pgsql.fetch_one(
-            query,
-            {'podcast_id': await self._podcast_id.to_int()},
-        )
-        if not row:
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(
+                text(query),
+                {'podcast_id': await self._podcast_id.to_int()},
+            )
+            row = query_result.mappings().fetchone()
+        if row is None:
             msg = 'Подкасты не найдены'
             raise InternalBotError(msg)
         return row['link']

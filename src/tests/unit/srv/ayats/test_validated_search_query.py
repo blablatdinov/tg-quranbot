@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import pytest
-from hypothesis import example, given, strategies
+from hypothesis import HealthCheck, example, given, settings, strategies
 
 from exceptions.content_exceptions import AyatNotFoundError, SuraNotFoundError
 from srv.ayats.fk_search_query import FkSearchQuery
@@ -26,6 +26,7 @@ def _ayat_num_invalid(ayat_num):
     return ayat_num.isdigit() and int(ayat_num) < 1
 
 
+@settings(suppress_health_check=[HealthCheck.filter_too_much])
 @given(
     strategies.integers().filter(_sura_num_valid),
     strategies.integers().filter(lambda ayat_num: ayat_num > 0),

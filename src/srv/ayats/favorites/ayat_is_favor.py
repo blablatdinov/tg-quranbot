@@ -4,7 +4,8 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.async_supports_bool import AsyncSupportsBool
 from integrations.tg.fk_chat_id import ChatId
@@ -18,7 +19,7 @@ class AyatIsFavor(AsyncSupportsBool):
 
     _ayat: Ayat
     _chat_id: ChatId
-    _pgsql: Database
+    _pgsql: AsyncEngine
 
     @override
     async def to_bool(self) -> bool:
@@ -32,7 +33,11 @@ class AyatIsFavor(AsyncSupportsBool):
             'INNER JOIN users AS u ON fa.user_id = u.chat_id',
             'WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id',
         ])
-        count = await self._pgsql.fetch_val(
-            query, {'ayat_id': await self._ayat.identifier().ayat_id(), 'chat_id': self._chat_id},
-        )
+        async with self._pgsql.connect() as conn:
+            query_result = await conn.execute(
+                text(query),
+                {'ayat_id': await self._ayat.identifier().ayat_id(), 'chat_id': self._chat_id},
+            )
+            row = query_result.fetchone()
+        count = row[0] if row else 0
         return bool(count)

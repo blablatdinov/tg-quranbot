@@ -5,8 +5,9 @@ from typing import final, override
 
 import attrs
 import httpx
-from databases import Database
 from redis.asyncio import Redis
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.fk_async_int import FkAsyncInt
 from app_types.logger import LogSink
@@ -43,7 +44,7 @@ from srv.users.user_step import UserStep
 class ChangeFavoriteAyatAnswer(TgAnswer):
     """Ответ на запрос о смене аята в избранном."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _origin: TgAnswer
     _redis: Redis
     _logger: LogSink
@@ -78,9 +79,12 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                 'DELETE FROM favorite_ayats',
                 'WHERE ayat_id = :ayat_id AND user_id = :user_id',
             ])
-        await self._pgsql.execute(
-            query, {'ayat_id': status.ayat_id(), 'user_id': int(TgChatId(update))},
-        )
+        async with self._pgsql.connect() as conn:
+            await conn.execute(
+                text(query),
+                {'ayat_id': status.ayat_id(), 'user_id': int(TgChatId(update))},
+            )
+            await conn.commit()
         chat_id = TgChatId(update)
         return await TgAnswerFork.ctor(
             self._logger,

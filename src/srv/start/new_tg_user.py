@@ -4,7 +4,7 @@
 from typing import final, override
 
 import attrs
-from databases import Database
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.async_int_or_none import AsyncIntOrNone
 from app_types.fk_async_int_or_none import FkAsyncIntOrNone
@@ -24,7 +24,7 @@ from srv.users.pg_new_user_with_event import PgNewUserWithEvent
 class NewTgUser(NewUser):
     """Registration of user by tg."""
 
-    _pgsql: Database
+    _pgsql: AsyncEngine
     _logger: LogSink
     _event_sink: Sink
     _update: Update

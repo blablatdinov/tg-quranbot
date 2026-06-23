@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 import pytz
+from sqlalchemy import text
 
 
 @pytest.fixture
@@ -21,42 +22,44 @@ async def _prayers_from_csv(pgsql, city_factory, user_factory) -> None:
         'VALUES',
         '(:prayer_id, :name, :time, :city_id, :day)',
     ])
-    await pgsql.execute_many(
-        query,
-        [
-            {
-                'prayer_id': int(line[0]),
-                'name': line[1],
-                'time': datetime.datetime.strptime(line[2], '%H:%M:%S').astimezone(
-                    pytz.timezone('Europe/Moscow'),
-                ),
-                'city_id': line[3],
-                'day': datetime.datetime.strptime(line[4], '%Y-%m-%d').astimezone(
-                    pytz.timezone('Europe/Moscow'),
-                ),
-            }
-            for line in lines
-        ],
-    )
-    lines = [
-        line.split(';')
-        for line in Path(  # noqa: ASYNC240
-            'src/tests/fixtures/prayers_at_user.csv',
-        ).read_text(encoding='utf-8').splitlines()
-    ]
-    query = '\n'.join([
-        'INSERT INTO prayers_at_user (prayer_at_user_id, user_id, prayer_id, is_read)',
-        'VALUES',
-        '(:prayer_at_user_id, 358610865, :prayer_id, :is_read)',
-    ])
-    await pgsql.execute_many(
-        query,
-        [
-            {
-                'prayer_at_user_id': int(line[0]),
-                'prayer_id': int(line[3]),
-                'is_read': line[4] == 'true',
-            }
-            for line in lines
-        ],
-    )
+    async with pgsql.connect() as conn:
+        await conn.execute(
+            text(query),
+            [
+                {
+                    'prayer_id': int(line[0]),
+                    'name': line[1],
+                    'time': datetime.datetime.strptime(line[2], '%H:%M:%S').astimezone(
+                        pytz.timezone('Europe/Moscow'),
+                    ),
+                    'city_id': line[3],
+                    'day': datetime.datetime.strptime(line[4], '%Y-%m-%d').astimezone(
+                        pytz.timezone('Europe/Moscow'),
+                    ),
+                }
+                for line in lines
+            ],
+        )
+        lines = [
+            line.split(';')
+            for line in Path(  # noqa: ASYNC240
+                'src/tests/fixtures/prayers_at_user.csv',
+            ).read_text(encoding='utf-8').splitlines()
+        ]
+        query = '\n'.join([
+            'INSERT INTO prayers_at_user (prayer_at_user_id, user_id, prayer_id, is_read)',
+            'VALUES',
+            '(:prayer_at_user_id, 358610865, :prayer_id, :is_read)',
+        ])
+        await conn.execute(
+            text(query),
+            [
+                {
+                    'prayer_at_user_id': int(line[0]),
+                    'prayer_id': int(line[3]),
+                    'is_read': line[4] == 'true',
+                }
+                for line in lines
+            ],
+        )
+        await conn.commit()
