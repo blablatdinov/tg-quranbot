@@ -40,25 +40,14 @@ class PodcastId(AsyncInt):
             'ORDER BY RANDOM()',
         ])
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(
-                text(query),
-                {'chat_id': int(self._chat_id)},
+            podcast_id = (await conn.execute(text(query), {'chat_id': int(self._chat_id)})).scalar()
+            if not podcast_id:
+                return (await conn.execute(text('SELECT podcast_id FROM podcasts ORDER BY RANDOM()'))).scalar()
+            await conn.execute(
+                text('\n'.join([
+                    'INSERT INTO podcast_reactions (podcast_id, user_id, reaction)',
+                    'VALUES (:podcast_id, :user_id, :reaction)',
+                ])),
+                {'podcast_id': podcast_id, 'user_id': int(self._chat_id), 'reaction': 'showed'},
             )
-            row = query_result.fetchone()
-        podcast_id = row[0] if row else None
-        if not podcast_id:
-            async with self._pgsql.connect() as conn:
-                query_result = await conn.execute(text('SELECT podcast_id FROM podcasts ORDER BY RANDOM()'))
-                row = query_result.fetchone()
-            podcast_id = row[0] if row else None
-        if podcast_id:
-            async with self._pgsql.connect() as conn:
-                await conn.execute(
-                    text(
-                        'INSERT INTO podcast_reactions (podcast_id, user_id, reaction) '
-                        'VALUES (:podcast_id, :user_id, :reaction)',
-                    ),
-                    {'podcast_id': podcast_id, 'user_id': int(self._chat_id), 'reaction': 'showed'},
-                )
-                await conn.commit()
-        return podcast_id or 0
+            return podcast_id
