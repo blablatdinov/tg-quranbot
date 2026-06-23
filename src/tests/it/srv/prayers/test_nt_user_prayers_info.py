@@ -58,7 +58,7 @@ async def test(pgsql):
     ).to_dict()
 
     async with pgsql.connect() as conn:
-        assert (await conn.execute(text('select user_id, is_read from prayers_at_user'))).mappings() == [
+        assert (await conn.execute(text('select user_id, is_read from prayers_at_user'))).mappings().fetchall() == [
             {
                 'is_read': False,
                 'user_id': 1,

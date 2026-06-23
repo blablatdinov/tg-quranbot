@@ -42,7 +42,7 @@ class NtPgPrayersInfo(PrayersInfo):
                         'time': datetime.datetime.strptime(
                             origin[key], '%H:%M',  # type: ignore[literal-required]
                         ).replace(tzinfo=pytz.timezone('Europe/Moscow')).time(),
-                        'city_id': city_id,
+                        'city_id': str(city_id),
                         'day': day,
                     }
                     for prayer_name, key in zip(
