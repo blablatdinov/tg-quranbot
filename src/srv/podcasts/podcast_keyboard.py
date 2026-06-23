@@ -45,7 +45,9 @@ class PodcastKeyboard(Keyboard):
         ])
         podcast_id = await self._podcast.podcast_id()
         async with self._pgsql.connect() as conn:
-            row = (await conn.execute(text(query), {'podcast_id': podcast_id})).mappings().fetchone()
+            row = (await conn.execute(
+                text(query), {'podcast_id': podcast_id},
+            )).mappings().fetchone()
         if row:
             likes_count_map = _Row(
                 like_count=row['like_count'],

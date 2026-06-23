@@ -46,16 +46,13 @@ class MailingCreatedEvent(ReceivedEvent):
         """
         if json_doc.path('$.data.group')[0] == 'all':
             async with self._pgsql.connect() as conn:
-                query_result = await conn.execute(text('\n'.join([
-                    'SELECT chat_id',
-                    'FROM users',
-                    "WHERE is_active = 't'",
-                ])))
-                rows = query_result.mappings().fetchall()
-            chat_ids = [
-                row['chat_id']
-                for row in rows
-            ]
+                chat_ids = (await conn.execute(
+                    text('\n'.join([
+                        'SELECT chat_id',
+                        'FROM users',
+                        "WHERE is_active = 't'",
+                    ])),
+                )).scalars().all()
         elif json_doc.path('$.data.group')[0] == 'admins':
             chat_ids = self._settings.admin_chat_ids()
         else:
