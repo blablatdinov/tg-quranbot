@@ -37,7 +37,9 @@ class PgNeighborAyats(NeighborAyats):
             'WHERE ayat_id = :ayat_id',
         ])
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(query), {_AYAT_ID_LITERAL: self._ayat_id - 1})
+            query_result = await conn.execute(
+                text(query), {_AYAT_ID_LITERAL: self._ayat_id - 1},
+            )
             row = query_result.fetchone()
         if row is None:
             raise AyatNotFoundError
@@ -56,7 +58,9 @@ class PgNeighborAyats(NeighborAyats):
             'WHERE ayats.ayat_id = :ayat_id',
         ])
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(query), {_AYAT_ID_LITERAL: self._ayat_id + 1})
+            query_result = await conn.execute(
+                text(query), {_AYAT_ID_LITERAL: self._ayat_id + 1},
+            )
             row = query_result.fetchone()
         if row is None:
             raise AyatNotFoundError

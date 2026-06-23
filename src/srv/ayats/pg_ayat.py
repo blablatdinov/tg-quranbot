@@ -101,22 +101,24 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         :return: str
         :raises AyatNotFoundError: если аят не найден
         """
-        query = '\n'.join([
-            'SELECT',
-            '    a.ayat_id AS id,',
-            '    a.sura_id AS sura_num,',
-            '    s.link AS sura_link,',
-            '    a.ayat_number AS ayat_num,',
-            '    a.arab_text,',
-            '    a.content,',
-            '    a.transliteration',
-            'FROM ayats AS a',
-            'INNER JOIN suras AS s ON a.sura_id = s.sura_id',
-            'WHERE a.ayat_id = :ayat_id',
-        ])
         ayat_id = await self._ayat_id.to_int()
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(query), {'ayat_id': ayat_id})
+            query_result = await conn.execute(
+                text('\n'.join([
+                    'SELECT',
+                    '    a.ayat_id AS id,',
+                    '    a.sura_id AS sura_num,',
+                    '    s.link AS sura_link,',
+                    '    a.ayat_number AS ayat_num,',
+                    '    a.arab_text,',
+                    '    a.content,',
+                    '    a.transliteration',
+                    'FROM ayats AS a',
+                    'INNER JOIN suras AS s ON a.sura_id = s.sura_id',
+                    'WHERE a.ayat_id = :ayat_id',
+                ])),
+                {'ayat_id': ayat_id},
+            )
             row = query_result.fetchone()
         if row is None:
             msg = 'Аят с id={0} не найден'.format(ayat_id)
@@ -139,15 +141,17 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
         :return: File
         :raises AyatNotFoundError: если аят не найден
         """
-        query = '\n'.join([
-            'SELECT cf.file_id',
-            'FROM ayats AS a',
-            'INNER JOIN files AS cf ON a.ar_audio_id = cf.file_id',
-            'WHERE a.ayat_id = :ayat_id',
-        ])
         ayat_id = await self._ayat_id.to_int()
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(query), {'ayat_id': ayat_id})
+            query_result = await conn.execute(
+                text('\n'.join([
+                    'SELECT cf.file_id',
+                    'FROM ayats AS a',
+                    'INNER JOIN files AS cf ON a.ar_audio_id = cf.file_id',
+                    'WHERE a.ayat_id = :ayat_id',
+                ])),
+                {'ayat_id': ayat_id},
+            )
             row = query_result.fetchone()
         if row is None:
             msg = 'Аят с id={0} не найден'.format(ayat_id)

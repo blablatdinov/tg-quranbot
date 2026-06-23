@@ -93,11 +93,10 @@ class TextSearchNeighborAyats(NeighborAyats):
         """
         actual_page_num = 0
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(
+            rows = (await conn.execute(
                 text(self._search_sql_query),
                 {'search_query': '%{0}%'.format(await self._query.read())},
-            )
-            rows = query_result.fetchall()
+            )).fetchall()
         rows_dict = [dict(row) for row in rows]
         for idx, row in enumerate(rows_dict, start=1):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:

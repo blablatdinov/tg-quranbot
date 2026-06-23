@@ -37,7 +37,9 @@ class UserFavoriteAyats(AsyncListable[Ayat]):
             'ORDER BY a.ayat_id',
         ])
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(query), {'chat_id': int(self._chat_id)})
+            query_result = await conn.execute(
+                text(query), {'chat_id': int(self._chat_id)},
+            )
             rows = query_result.fetchall()
         return [
             TextLenSafeAyat(PgAyat.from_int(dict(row)['id'], self._pgsql)) for row in rows

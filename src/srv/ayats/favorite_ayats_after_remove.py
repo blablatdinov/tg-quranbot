@@ -31,25 +31,22 @@ class FavoriteAyatsAfterRemove(AsyncListable):
 
         :returns: list[QAyat]
         """
-        query = '\n'.join([
-            'SELECT fa.ayat_id',
-            'FROM favorite_ayats AS fa',
-            'INNER JOIN users AS u ON fa.user_id = u.chat_id',
-            'WHERE u.chat_id = :chat_id OR fa.ayat_id = :ayat_id',
-            'ORDER BY fa.ayat_id',
-        ])
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(
-                text(query),
+            rows = (await conn.execute(
+                text('\n'.join([
+                    'SELECT fa.ayat_id',
+                    'FROM favorite_ayats AS fa',
+                    'INNER JOIN users AS u ON fa.user_id = u.chat_id',
+                    'WHERE u.chat_id = :chat_id OR fa.ayat_id = :ayat_id',
+                    'ORDER BY fa.ayat_id',
+                ])),
                 {'chat_id': int(self._chat_id), 'ayat_id': self._ayat_id},
-            )
-            rows = query_result.fetchall()
+            )).fetchall()
         ayats = []
         flag = True
         for row in rows:
-            row_dict = dict(row)
-            if row_dict['ayat_id'] > self._ayat_id and flag:
+            if dict(row)['ayat_id'] > self._ayat_id and flag:
                 ayats.append(TextLenSafeAyat(PgAyat.from_int(self._ayat_id, self._pgsql)))
                 flag = False
-            ayats.append(TextLenSafeAyat(PgAyat.from_int(row_dict['ayat_id'], self._pgsql)))
+            ayats.append(TextLenSafeAyat(PgAyat.from_int(dict(row)['ayat_id'], self._pgsql)))
         return ayats
