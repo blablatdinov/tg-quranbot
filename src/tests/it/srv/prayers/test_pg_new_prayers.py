@@ -5,6 +5,7 @@ import datetime
 import uuid
 
 import pytest
+from sqlalchemy import text
 
 from srv.prayers.pg_new_prayers import PgNewPrayers
 
@@ -31,46 +32,44 @@ async def test(pgsql, city):
     ).create()
 
     # TODO #1525:30min проверить правильно ли сохраняется время в БД
-    assert [
-        dict(row)
-        for row in await pgsql.fetch_all(
-            'SELECT city_id, day, name, time FROM prayers',
-        )
-    ] == [
-        {
-            'city_id': city_id,
-            'day': datetime.date(2025, 1, 6),
-            'name': 'fajr',
-            'time': datetime.time(5, 53),
-        },
-        {
-            'city_id': city_id,
-            'day': datetime.date(2025, 1, 6),
-            'name': 'sunrise',
-            'time': datetime.time(8, 11),
-        },
-        {
-            'city_id': city_id,
-            'day': datetime.date(2025, 1, 6),
-            'name': 'dhuhr',
-            'time': datetime.time(11, 50),
-        },
-        {
-            'city_id': city_id,
-            'day': datetime.date(2025, 1, 6),
-            'name': 'asr',
-            'time': datetime.time(13, 39),
-        },
-        {
-            'city_id': city_id,
-            'day': datetime.date(2025, 1, 6),
-            'name': 'maghrib',
-            'time': datetime.time(15, 28),
-        },
-        {
-            'city_id': city_id,
-            'day': datetime.date(2025, 1, 6),
-            'name': "isha'a",
-            'time': datetime.time(17, 25),
-        },
-    ]
+    async with pgsql.connect() as conn:
+        assert (await conn.execute(
+                text('SELECT city_id, day, name, time FROM prayers'),
+            )).mappings().fetchall() == [
+            {
+                'city_id': city_id,
+                'day': datetime.date(2025, 1, 6),
+                'name': 'fajr',
+                'time': datetime.time(5, 53),
+            },
+            {
+                'city_id': city_id,
+                'day': datetime.date(2025, 1, 6),
+                'name': 'sunrise',
+                'time': datetime.time(8, 11),
+            },
+            {
+                'city_id': city_id,
+                'day': datetime.date(2025, 1, 6),
+                'name': 'dhuhr',
+                'time': datetime.time(11, 50),
+            },
+            {
+                'city_id': city_id,
+                'day': datetime.date(2025, 1, 6),
+                'name': 'asr',
+                'time': datetime.time(13, 39),
+            },
+            {
+                'city_id': city_id,
+                'day': datetime.date(2025, 1, 6),
+                'name': 'maghrib',
+                'time': datetime.time(15, 28),
+            },
+            {
+                'city_id': city_id,
+                'day': datetime.date(2025, 1, 6),
+                'name': "isha'a",
+                'time': datetime.time(17, 25),
+            },
+        ]

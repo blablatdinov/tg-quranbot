@@ -33,8 +33,8 @@ class PgCityNames(AsyncListable):
         ])
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(text(db_query), {'search_query': search_query})
-            rows = query_result.fetchall()
+            rows = query_result.mappings().fetchall()
         return [
-            dict(row)['name']
+            row['name']
             for row in rows
         ]

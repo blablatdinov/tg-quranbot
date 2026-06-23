@@ -40,7 +40,7 @@ class UserFavoriteAyats(AsyncListable[Ayat]):
             query_result = await conn.execute(
                 text(query), {'chat_id': int(self._chat_id)},
             )
-            rows = query_result.fetchall()
+            rows = query_result.mappings().fetchall()
         return [
-            TextLenSafeAyat(PgAyat.from_int(dict(row)['id'], self._pgsql)) for row in rows
+            TextLenSafeAyat(PgAyat.from_int(row['id'], self._pgsql)) for row in rows
         ]

@@ -4,6 +4,7 @@
 import pytest
 import ujson
 from furl import furl
+from sqlalchemy import text
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
@@ -19,9 +20,11 @@ async def _existed_user(user_factory):
 
 @pytest.fixture
 async def _admin_message(pgsql):
-    await pgsql.execute(
-        "INSERT INTO admin_messages (key, text) VALUES ('start', 'start admin message')",
-    )
+    async with pgsql.connect() as conn:
+        await conn.execute(
+            text("INSERT INTO admin_messages (key, text) VALUES ('start', 'start admin message')"),
+        )
+        await conn.commit()
 
 
 @pytest.mark.usefixtures('db_ayat', '_admin_message')

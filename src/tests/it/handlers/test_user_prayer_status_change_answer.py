@@ -6,6 +6,7 @@ import datetime
 import pytest
 import pytz
 import ujson
+from sqlalchemy import text
 
 from app_types.fk_async_str import FkAsyncStr
 from app_types.fk_log_sink import FkLogSink
@@ -30,7 +31,9 @@ async def _generated_prayers(pgsql, prayers_factory):
         '(905, 5, false),',
         '(905, 6, false)',
     ])
-    await pgsql.execute(query)
+    async with pgsql.connect() as conn:
+        await conn.execute(text(query))
+        await conn.commit()
 
 
 @pytest.fixture

@@ -4,6 +4,7 @@
 import uuid
 
 import pytest
+from sqlalchemy import text
 
 from integrations.tg.fk_chat_id import FkChatId
 from srv.prayers.fk_city import FkCity
@@ -56,16 +57,14 @@ async def test(pgsql):
         FkChatId(1),
     ).to_dict()
 
-    assert [
-        dict(row)
-        for row in await pgsql.fetch_all('select user_id, is_read from prayers_at_user')
-    ] == [
-        {
-            'is_read': False,
-            'user_id': 1,
-        }
-        for _ in range(5)
-    ]
+    async with pgsql.connect() as conn:
+        assert (await conn.execute(text('select user_id, is_read from prayers_at_user'))).mappings() == [
+            {
+                'is_read': False,
+                'user_id': 1,
+            }
+            for _ in range(5)
+        ]
 
 
 @pytest.mark.usefixtures('_db_city', '_user', '_prayers')

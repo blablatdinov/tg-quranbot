@@ -5,6 +5,7 @@ import datetime
 
 import pytest
 from eljson.json_doc import JsonDoc
+from sqlalchemy import text
 
 from srv.events.prayer_created_event import PrayerCreatedEvent
 
@@ -25,7 +26,8 @@ async def test(pgsql):
         },
     }))
 
-    row = await pgsql.fetch_one('SELECT name, time, city_id, day FROM prayers')
+    async with pgsql.connect() as conn:
+        row = (await conn.execute(text('SELECT name, time, city_id, day FROM prayers'))).mappings().fetchone()
     assert {
         key: row[key]
         for key in ('name', 'time', 'city_id', 'day')

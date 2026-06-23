@@ -151,11 +151,11 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
                 ])),
                 {'ayat_id': ayat_id},
             )
-            row = query_result.fetchone()
+            row = query_result.mappings().fetchone()
         if row is None:
             msg = 'Аят с id={0} не найден'.format(ayat_id)
             raise AyatNotFoundError(msg)
-        return PgFile(dict(row)['file_id'], self._pgsql)
+        return PgFile(row['file_id'], self._pgsql)
 
     @override
     async def change(self, event_body: Json) -> None:  # type: ignore[override]

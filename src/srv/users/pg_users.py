@@ -38,8 +38,8 @@ class PgUsers(AsyncListable):
         )
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(text(query))
-            rows = query_result.fetchall()
+            rows = query_result.mappings().fetchall()
         return [
-            PgUser.int_ctor(dict(row)['chat_id'], self._pgsql)
+            PgUser.int_ctor(row['chat_id'], self._pgsql)
             for row in rows
         ]

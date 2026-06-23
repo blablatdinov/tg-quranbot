@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import pytest
+from sqlalchemy import text
 
 from exceptions.internal_exceptions import UserNotFoundError
 from srv.prayers.pg_updated_user_city import PgUpdatedUserCity
@@ -21,9 +22,10 @@ async def _user(user_factory):
 async def test(pgsql, city):
     await PgUpdatedUserCity(city, 849357, pgsql).update()
 
-    assert await pgsql.fetch_val(
-        'SELECT city_id FROM users WHERE chat_id = 849357',
-    ) == await city.city_id()
+    async with pgsql.connect() as conn:
+        assert (await conn.execute(
+            text('SELECT city_id FROM users WHERE chat_id = 849357'),
+        )).fetchone() == await city.city_id()
 
 
 @pytest.mark.usefixtures('_user')

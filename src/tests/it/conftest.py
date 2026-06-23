@@ -145,7 +145,7 @@ def user_factory(pgsql):
                 {
                     'chat_id': chat_id,
                     'day': day or 2,
-                    'city_id': await city.city_id() if city else None,
+                    'city_id': str(await city.city_id()) if city else None,
                     'legacy_id': legacy_id or None,
                     'is_active': is_active,
                 },

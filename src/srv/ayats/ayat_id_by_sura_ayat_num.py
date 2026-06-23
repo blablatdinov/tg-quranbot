@@ -50,7 +50,7 @@ class AyatIdBySuraAyatNum(AsyncInt):
                 'ayat_num': int(self._query.ayat()),
                 'ayat_num_str': self._query.ayat(),
             })
-            row = query_result.fetchone()
+            row = query_result.mappings().fetchone()
         if row is None:
             raise AyatNotFoundError
-        return dict(row)['ayat_id']
+        return row['ayat_id']

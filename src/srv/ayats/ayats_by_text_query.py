@@ -40,11 +40,11 @@ class AyatsByTextQuery(AsyncListable):
             query_result = await conn.execute(text(query), {
                 'search_query': '%{0}%'.format(self._query),
             })
-            rows = query_result.fetchall()
+            rows = query_result.mappings().fetchall()
         return [
             TextLenSafeAyat(
                 PgAyat(
-                    FkAsyncInt(dict(row)['id']),
+                    FkAsyncInt(row['id']),
                     self._pgsql,
                 ),
             )
