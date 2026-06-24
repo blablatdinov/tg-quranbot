@@ -47,7 +47,7 @@ jobs:
         options: --health-cmd "rabbitmqctl status" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Python 3.14
         uses: actions/setup-python@v6
         with:
@@ -75,7 +75,7 @@ jobs:
     name: Src and tests structure check
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Run gotemir
         run: |
           VERSION="0.0.3"
@@ -93,7 +93,7 @@ jobs:
     name: Check duplicated code
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - uses: actions/setup-node@v6
       - name: Install jscpd
         run: npm i jscpd -g
@@ -105,7 +105,7 @@ jobs:
     name: Check spelling
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - uses: actions/setup-node@v6
       - name: Install cspell
         run: npm i cspell@8.17.2 @cspell/dict-ru_ru@2.2.4 -g
