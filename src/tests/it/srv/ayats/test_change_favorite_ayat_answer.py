@@ -28,12 +28,14 @@ async def test_add(pgsql, fake_redis):
         })),
     ))
 
-    assert ujson.loads(got[0].url.params['reply_markup']) == frozendict({
-        'inline_keyboard': [
-            [frozendict({'callback_data': 'fake', 'text': 'стр. 1/1'})],
-            [frozendict({'callback_data': 'removeFromFavor(1)', 'text': 'Удалить из избранного'})],
-        ],
-    })
+    assert ujson.loads(got[0].url.params['reply_markup']) == frozendict(
+        {
+            'inline_keyboard': [
+                [frozendict({'callback_data': 'fake', 'text': 'стр. 1/1'})],
+                [frozendict({'callback_data': 'removeFromFavor(1)', 'text': 'Удалить из избранного'})],
+            ],
+        },
+    )
 
 
 @pytest.mark.usefixtures('db_ayat', '_user')
@@ -48,9 +50,11 @@ async def test_remove(pgsql, fake_redis):
         })),
     ))
 
-    assert ujson.loads(got[0].url.params['reply_markup']) == frozendict({
-        'inline_keyboard': [
-            [frozendict({'callback_data': 'fake', 'text': 'стр. 1/1'})],
-            [frozendict({'callback_data': 'addToFavor(1)', 'text': 'Добавить в избранное'})],
-        ],
-    })
+    assert ujson.loads(got[0].url.params['reply_markup']) == frozendict(
+        {
+            'inline_keyboard': [
+                [frozendict({'callback_data': 'fake', 'text': 'стр. 1/1'})],
+                [frozendict({'callback_data': 'addToFavor(1)', 'text': 'Добавить в избранное'})],
+            ],
+        },
+    )

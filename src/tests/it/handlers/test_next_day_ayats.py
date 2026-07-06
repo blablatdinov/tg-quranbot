@@ -24,7 +24,10 @@ async def _db_ayats(pgsql):
                 "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
             ])),
             [
-                frozendict({'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))})
+                frozendict({
+                    'file_id': file_id,
+                    'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
+                })
                 for file_id in file_ids
             ],
         )

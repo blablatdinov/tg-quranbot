@@ -111,7 +111,9 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                             self._pgsql,
                             date,
                             TgChatId(
-                                FkUpdate(ujson.dumps(frozendict({'chat': frozendict({'id': active_user[CHAT_ID]})}))),
+                                FkUpdate(
+                                    ujson.dumps(frozendict({'chat': frozendict({'id': active_user[CHAT_ID]})})),
+                                ),
                             ),
                         ),
                     ),

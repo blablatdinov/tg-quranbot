@@ -61,7 +61,9 @@ async def test_new_prayer_times(pgsql, fake_redis, time_machine, settings_ctor, 
         }))),
     )
 
-    assert ujson.loads(got[0].url.params.get('reply_markup')) == frozendict({
+    assert ujson.loads(
+        got[0].url.params.get('reply_markup'),
+    ) == frozendict({
         'inline_keyboard': [
             [
                 frozendict({'callback_data': 'mark_readed(1)', 'text': '❌'}),
@@ -158,7 +160,9 @@ async def test_today(pgsql, fake_redis, time_machine, settings_ctor):
         }))),
     )
 
-    assert ujson.loads(got[0].url.params.get('reply_markup')) == frozendict({
+    assert ujson.loads(
+        got[0].url.params.get('reply_markup'),
+    ) == frozendict({
         'inline_keyboard': [
             [
                 frozendict({'callback_data': 'mark_readed(1)', 'text': '❌'}),
@@ -237,7 +241,9 @@ async def test_without_message_text(pgsql, fake_redis, settings_ctor):
         'Ахшам: 15:07',
         'Ястү: 17:04',
     ])
-    assert ujson.loads(got[0].url.params['reply_markup']) == frozendict({
+    assert ujson.loads(
+        got[0].url.params['reply_markup'],
+    ) == frozendict({
         'inline_keyboard': [
             [
                 frozendict({'callback_data': 'mark_readed(1)', 'text': '❌'}),

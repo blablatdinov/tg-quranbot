@@ -55,12 +55,14 @@ def mock_http_routes(respx_mock, keyboard):
         ]),
     })
     return [
-        respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add(frozendict({
-            'text': text,
-            'chat_id': chat_id,
-            'reply_markup': keyboard,
-            'parse_mode': 'html',
-        })))).mock(**rv)
+        respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add(
+            frozendict({
+                'text': text,
+                'chat_id': chat_id,
+                'reply_markup': keyboard,
+                'parse_mode': 'html',
+            }),
+        ))).mock(**rv)
         for chat_id, text in chat_content.items()
     ]
 
@@ -72,20 +74,22 @@ def mock_http_ramadan_mode(respx_mock, keyboard):
             200, text=ujson.dumps(frozendict({'ok': True, 'result': True})),
         ),
     })
-    return respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add(frozendict({
-        'text': '\n'.join([
-            'Время намаза для г. Kazan (07.03.2024)\n',
-            'Иртәнге: 04:30 <i>- Конец сухура</i>',
-            'Восход: 05:30',
-            'Өйлә: 06:30',
-            'Икенде: 07:30',
-            'Ахшам: 08:30 <i>- Ифтар</i>',
-            'Ястү: 09:30',
-        ]),
-        'chat_id': '358610865',
-        'reply_markup': keyboard,
-        'parse_mode': 'html',
-    })))).mock(**rv)
+    return respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add(
+        frozendict({
+            'text': '\n'.join([
+                'Время намаза для г. Kazan (07.03.2024)\n',
+                'Иртәнге: 04:30 <i>- Конец сухура</i>',
+                'Восход: 05:30',
+                'Өйлә: 06:30',
+                'Икенде: 07:30',
+                'Ахшам: 08:30 <i>- Ифтар</i>',
+                'Ястү: 09:30',
+            ]),
+            'chat_id': '358610865',
+            'reply_markup': keyboard,
+            'parse_mode': 'html',
+        }),
+    ))).mock(**rv)
 
 
 @pytest.fixture

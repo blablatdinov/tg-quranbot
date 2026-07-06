@@ -34,7 +34,9 @@ async def test(callback_update_factory, pgsql):
                 "WHERE pau.user_id = 358610865 AND pau.is_read = 't'",
             ])),
         )).scalar() == 63
-    assert ujson.loads(got[0].url.params['reply_markup']) == frozendict({
+    assert ujson.loads(
+        got[0].url.params['reply_markup'],
+    ) == frozendict({
         'inline_keyboard': [
             [frozendict({'callback_data': 'decr(fajr)', 'text': 'Иртәнге: (-1)'})],
             [frozendict({'callback_data': 'decr(dhuhr)', 'text': 'Өйлә: (-1)'})],

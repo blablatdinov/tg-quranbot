@@ -43,13 +43,15 @@ def _mock_http(respx_mock):
         '206497847': '<b>2:1-4)</b> Third ayat content\n\nhttps://umma.ru/sura-2',
     })
     for chat_id, chat_text in chat_content.items():
-        respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add(frozendict({
-            'text': chat_text,
-            'chat_id': chat_id,
-            'reply_markup': '{"inline_keyboard":[[{"text":"Следующий день","callback_data":"nextDayAyats"}]]}',
-            'parse_mode': 'html',
-            'link_preview_options': '{"is_disabled":true}',
-        })))).mock(**rv)
+        respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add(
+            frozendict({
+                'text': chat_text,
+                'chat_id': chat_id,
+                'reply_markup': '{"inline_keyboard":[[{"text":"Следующий день","callback_data":"nextDayAyats"}]]}',
+                'parse_mode': 'html',
+                'link_preview_options': '{"is_disabled":true}',
+            }),
+        ))).mock(**rv)
 
 
 @pytest.fixture

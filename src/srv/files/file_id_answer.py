@@ -31,7 +31,11 @@ class TelegramFileIdAnswer(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                furl(request.url).add(frozendict({'audio': await self._tg_file.tg_file_id()})).url,
+                (
+                    furl(request.url)
+                    .add(frozendict({'audio': await self._tg_file.tg_file_id()}))
+                    .url
+                ),
             )
             for request in await self._origin.build(update)
         ]

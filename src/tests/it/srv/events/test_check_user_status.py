@@ -36,7 +36,10 @@ def _mock_unsubscribed(respx_mock):
     respx_mock.get('https://some.domain/sendChatAction?chat_id=1&action=typing').mock(**rv)
     respx_mock.get('https://some.domain/sendChatAction?chat_id=2&action=typing').mock(**rv)
     respx_mock.get('https://some.domain/sendChatAction?chat_id=3&action=typing').mock(
-        return_value=httpx.Response(200, text=ujson.dumps(frozendict({'ok': True, 'result': True}))),
+        return_value=httpx.Response(
+            200,
+            text=ujson.dumps(frozendict({'ok': True, 'result': True})),
+        ),
     )
 
 

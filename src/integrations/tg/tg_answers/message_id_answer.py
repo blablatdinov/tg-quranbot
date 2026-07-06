@@ -31,7 +31,11 @@ class TgMessageIdAnswer(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                furl(request.url).add(frozendict({'message_id': int(self._message_id)})).url,
+                (
+                    furl(request.url)
+                    .add(frozendict({'message_id': int(self._message_id)}))
+                    .url
+                ),
                 stream=request.stream,
                 headers=request.headers,
             )

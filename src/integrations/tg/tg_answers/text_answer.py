@@ -44,7 +44,11 @@ class TgTextAnswer(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                furl(request.url).add(frozendict({'text': await self._text.to_str()})).url,
+                (
+                    furl(request.url)
+                    .add(frozendict({'text': await self._text.to_str()}))
+                    .url
+                ),
             )
             for request in await self._origin.build(update)
         ]

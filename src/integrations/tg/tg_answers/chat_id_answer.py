@@ -31,7 +31,11 @@ class TgChatIdAnswer(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                furl(request.url).add(frozendict({'chat_id': int(self._chat_id)})).url,
+                (
+                    furl(request.url)
+                    .add(frozendict({'chat_id': int(self._chat_id)}))
+                    .url
+                ),
                 stream=request.stream,
                 headers=request.headers,
             )
