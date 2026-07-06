@@ -30,7 +30,7 @@ class PgUpdatedUsersStatus(UpdatedUsersStatus):
         query_template = '\n'.join([
             'UPDATE users',
             'SET is_active = :to',
-            'WHERE chat_id in (frozendict({0})',
+            'WHERE chat_id in ({0})',
         ])
         users = await self._users.to_list()
         if not users:

@@ -84,4 +84,4 @@ class PgNeighborAyats(NeighborAyats):
             )
             row = query_result.fetchone()
         actual_page_num = row[0] if row else 0
-        return 'стр. frozendict({0}/frozendict({1}'.format(actual_page_num, ayats_count)
+        return 'стр. {0}/{1}'.format(actual_page_num, ayats_count)

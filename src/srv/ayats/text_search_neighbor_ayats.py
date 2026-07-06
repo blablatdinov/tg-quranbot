@@ -55,7 +55,7 @@ class TextSearchNeighborAyats(NeighborAyats):
         :return: AyatShort
         :raises AyatNotFoundError: if ayat not found
         """
-        search_query = '%frozendict({0}%'.format(await self._query.read())
+        search_query = '%{0}%'.format(await self._query.read())
         async with self._pgsql.connect() as conn:
             rows = (await conn.execute(
                 text(self._search_sql_query),
@@ -75,7 +75,7 @@ class TextSearchNeighborAyats(NeighborAyats):
         :return: AyatShort
         :raises AyatNotFoundError: if ayat not found
         """
-        search_query = '%frozendict({0}%'.format(await self._query.read())
+        search_query = '%{0}%'.format(await self._query.read())
         async with self._pgsql.connect() as conn:
             rows = (await conn.execute(
                 text(self._search_sql_query),
@@ -98,9 +98,9 @@ class TextSearchNeighborAyats(NeighborAyats):
         async with self._pgsql.connect() as conn:
             rows = (await conn.execute(
                 text(self._search_sql_query),
-                frozendict({'search_query': '%frozendict({0}%'.format(await self._query.read())}),
+                frozendict({'search_query': '%{0}%'.format(await self._query.read())}),
             )).mappings().fetchall()
         for idx, row in enumerate(rows, start=1):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 actual_page_num = idx
-        return 'стр. frozendict({0}/frozendict({1}'.format(actual_page_num, len(rows))
+        return 'стр. {0}/{1}'.format(actual_page_num, len(rows))

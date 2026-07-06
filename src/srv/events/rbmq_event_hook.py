@@ -58,7 +58,7 @@ class RbmqEventHook(EventHook):
         """Запуск обработки."""
         await self._pgsql.connect()
         connection = await aio_pika.connect_robust(
-            'amqp://frozendict({0}:frozendict({1}@frozendict({2}:5672/frozendict({3}'.format(
+            'amqp://{0}:{1}@{2}:5672/{3}'.format(
                 self._settings.RABBITMQ_USER,
                 self._settings.RABBITMQ_PASS,
                 self._settings.RABBITMQ_HOST,
@@ -96,7 +96,7 @@ class RbmqEventHook(EventHook):
 
     async def _inner_handler(self, message: DeliveredMessage) -> None:  # noqa: NPM100. Fix it
         decoded_body = message.body.decode('utf-8')
-        self._logger.info('Taked event frozendict({0}'.format(decoded_body))
+        self._logger.info('Taked event {0}'.format(decoded_body))
         body_json = JsonDoc.from_string(decoded_body)  # type: ignore [no-untyped-call]
         try:
             validate_schema(
@@ -105,10 +105,10 @@ class RbmqEventHook(EventHook):
                 body_json.path('$.event_version')[0],
             )
         except TypeError as err:
-            self._logger.error('Schema of event: frozendict({0} invalid. frozendict({1}'.format(
+            self._logger.error('Schema of event: {0} invalid. {1}'.format(
                 body_json.path('$.event_id')[0], str(err),
             ))
             return
         for event in self._events:
             await event.process(body_json)
-        self._logger.info('Event frozendict({0} processed'.format(body_json.path('$.event_id')[0]))
+        self._logger.info('Event {0} processed'.format(body_json.path('$.event_id')[0]))

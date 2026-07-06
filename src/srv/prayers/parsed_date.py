@@ -30,6 +30,6 @@ class ParsedDate(AsyncDate):
                 return datetime.datetime.strptime(date, fmt).astimezone(
                     pytz.timezone('Europe/Moscow'),
                 ).date()
-        msg = "time data '{0}' does not match formats frozendict({1}".format(date, formats)
+        msg = "time data '{0}' does not match formats {1}".format(date, formats)
         # TODO #1428:30min Написать кастомное исключение
         raise ValueError(msg)

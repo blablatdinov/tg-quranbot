@@ -48,7 +48,7 @@ def _clear_db(settings):
         'users',
     )
     for table in tables:
-        cursor.execute('DELETE FROM frozendict({0}'.format(table))  # noqa: S608
+        cursor.execute('DELETE FROM {0}'.format(table))  # noqa: S608
     cursor.execute("SELECT setval('prayers_at_user_prayer_at_user_id_seq', 1, false)")
 
 
@@ -97,7 +97,7 @@ def wait_until(bot_name):
                 break
             if len(last_messages) == messages_count + UGGLY_OFFSET:
                 return last_messages
-        logger.debug('Taked messages: frozendict({0}, count: frozendict({1}'.format(
+        logger.debug('Taked messages: {0}, count: {1}'.format(
             pformat([mess.message for mess in last_messages], width=99999),
             len(last_messages),
         ))
@@ -148,7 +148,7 @@ def wait_event(rbmq_channel, queues):
                     events,
                     key=lambda event: datetime.datetime.fromtimestamp(int(event['event_time']), datetime.UTC),
                 )
-        logger.debug('Taked event: frozendict({0}'.format(body))
+        logger.debug('Taked event: {0}'.format(body))
         raise TimeoutError
     return _wait_event
 

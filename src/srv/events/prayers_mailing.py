@@ -70,8 +70,8 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                 text('\n'.join([
                     'SELECT u.chat_id',
                     'FROM users AS u',
-                    "WHERE u.is_active = 't' frozendict({0}".format(
-                        'AND u.chat_id IN (frozendict({0})'.format(
+                    "WHERE u.is_active = 't' {0}".format(
+                        'AND u.chat_id IN ({0})'.format(
                             ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
                         )
                         if self._settings.DAILY_PRAYERS == 'off' else '',

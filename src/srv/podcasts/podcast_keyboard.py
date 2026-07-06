@@ -62,12 +62,12 @@ class PodcastKeyboard(Keyboard):
         return ujson.dumps(frozendict({
             'inline_keyboard': [[
                 frozendict({
-                    'text': '👍 frozendict({0}'.format(likes_count_map['like_count']),
-                    'callback_data': 'like(frozendict({0})'.format(podcast_id),
+                    'text': '👍 {0}'.format(likes_count_map['like_count']),
+                    'callback_data': 'like({0})'.format(podcast_id),
                 }),
                 frozendict({
-                    'text': '👎 frozendict({0}'.format(likes_count_map['dislike_count']),
-                    'callback_data': 'dislike(frozendict({0})'.format(podcast_id),
+                    'text': '👎 {0}'.format(likes_count_map['dislike_count']),
+                    'callback_data': 'dislike({0})'.format(podcast_id),
                 }),
             ]],
         }))

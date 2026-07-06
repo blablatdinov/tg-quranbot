@@ -25,7 +25,7 @@ class PgCityNames(AsyncListable):
 
         :returns: list[str]
         """
-        search_query = '%frozendict({0}%'.format(self._query)
+        search_query = '%{0}%'.format(self._query)
         db_query = '\n'.join([
             'SELECT name',
             'FROM cities',

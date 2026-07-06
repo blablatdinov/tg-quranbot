@@ -32,5 +32,5 @@ class PgSavedPrayersInfo(PrayersInfo):
                 self._pgsql,
             ).create()
         except PrayerAlreadyExistsError:
-            self._logger.info('Prayer info "frozendict({0}" already exists'.format(origin))
+            self._logger.info('Prayer info "{0}" already exists'.format(origin))
         return origin

@@ -15,7 +15,7 @@ async def _db_cities(city_factory, faker):
     for _ in range(25):
         await city_factory(
             str(uuid.uuid4()),
-            'Каfrozendict({0}'.format(faker.address()),
+            'Ка{0}'.format(faker.address()),
         )
 
 

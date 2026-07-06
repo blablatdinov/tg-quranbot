@@ -64,8 +64,8 @@ class MorningContentPublishedEvent(ReceivedEvent):
                     'FROM public.ayats AS a',
                     'JOIN public.users AS u ON a.day = u.day',
                     'JOIN suras AS s ON a.sura_id = s.sura_id',
-                    "WHERE u.is_active = 't' frozendict({0}".format(
-                        'AND u.chat_id IN (frozendict({0})'.format(
+                    "WHERE u.is_active = 't' {0}".format(
+                        'AND u.chat_id IN ({0})'.format(
                             ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
                         )
                         if self._settings.DAILY_AYATS == 'off' else '',
@@ -86,7 +86,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
             await conn.execute(text('\n'.join([
                 'UPDATE users',
                 'SET day = day + 1',
-                "WHERE is_active = 't' AND chat_id IN (frozendict({0})".format(
+                "WHERE is_active = 't' AND chat_id IN ({0})".format(
                     ','.join([str(row['chat_id']) for row in rows]),
                 ),
             ])))

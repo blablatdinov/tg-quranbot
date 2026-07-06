@@ -53,7 +53,7 @@ class PgNewUser(NewUser):
         :raises UserNotFoundError: не найден реферер
         """
         chat_id = int(self._new_user_chat_id)
-        self._logger.debug('Insert in DB User <frozendict({0}>...'.format(chat_id))
+        self._logger.debug('Insert in DB User <{0}>...'.format(chat_id))
         query = '\n'.join([
             'INSERT INTO',
             'users (chat_id, referrer_id, day, is_active)',
@@ -72,4 +72,4 @@ class PgNewUser(NewUser):
                 raise UserAlreadyExistsError from err
         except ForeignKeyViolationError as err:
             raise UserNotFoundError from err
-        self._logger.debug('User <frozendict({0}> inserted in DB'.format(chat_id))
+        self._logger.debug('User <{0}> inserted in DB'.format(chat_id))

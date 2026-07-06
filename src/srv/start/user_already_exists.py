@@ -47,7 +47,7 @@ class UserAlreadyExistsAnswer(TgAnswer):
             raise UserAlreadyActiveError
         return await TgTextAnswer.str_ctor(
             self._sender_answer,
-            'Рады видеть вас снова, вы продолжите с дня frozendict({0}'.format(await user.day()),
+            'Рады видеть вас снова, вы продолжите с дня {0}'.format(await user.day()),
         ).build(update)
 
     async def _update_and_push_event(self, update: Update) -> None:  # noqa: NPM100. Fix it

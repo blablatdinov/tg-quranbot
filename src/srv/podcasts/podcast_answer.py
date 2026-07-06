@@ -54,7 +54,7 @@ class PodcastAnswer(TgAnswer):
                             ),
                             chat_id,
                         ),
-                        '/podcastfrozendict({0}'.format(await self._podcast.podcast_id()),
+                        '/podcast{0}'.format(await self._podcast.podcast_id()),
                     ),
                 ),
                 self._markupped_answer,

@@ -56,7 +56,7 @@ async def pgsql(_migrate):
     )
     async with engine.connect() as conn:
         for table in tables:
-            await conn.execute(text('DELETE FROM frozendict({0}'.format(table)))  # noqa: S608
+            await conn.execute(text('DELETE FROM {0}'.format(table)))  # noqa: S608
         await conn.execute(text("SELECT setval('podcasts_podcast_id_seq', 1, false)"))
         await conn.execute(text("SELECT setval('prayers_at_user_prayer_at_user_id_seq', 1, false)"))
         await conn.commit()

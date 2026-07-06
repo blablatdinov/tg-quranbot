@@ -32,7 +32,7 @@ class PgUsers(AsyncListable):
         query_template = '\n'.join([
             'SELECT chat_id',
             'FROM users',
-            'WHERE chat_id IN (frozendict({0})',
+            'WHERE chat_id IN ({0})',
         ])
         query = query_template.format(
             ','.join([str(elem) for elem in self._chat_ids]),
