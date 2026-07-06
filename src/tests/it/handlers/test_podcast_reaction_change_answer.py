@@ -98,7 +98,8 @@ async def test_without_message_text(pgsql, fake_redis):
     assert got[0].url.params['text'] == '/podcast5'
     assert got[1].url.params['reply_markup'] == ujson.dumps(frozendict({
         'inline_keyboard': [[
-            frozendict({'text': '👍 1', 'callback_data': 'like(5)'}), frozendict({'text': '👎 0', 'callback_data': 'dislike(5)'}),
+            frozendict({'text': '👍 1', 'callback_data': 'like(5)'}),
+            frozendict({'text': '👎 0', 'callback_data': 'dislike(5)'}),
         ]],
     }))
 
@@ -125,7 +126,8 @@ async def test_without_message_with_audio(pgsql, fake_redis):
     assert got[0].url.path == '/editMessageReplyMarkup'
     assert got[0].url.params['reply_markup'] == ujson.dumps(frozendict({
         'inline_keyboard': [[
-            frozendict({'text': '👍 1', 'callback_data': 'like(5)'}), frozendict({'text': '👎 0', 'callback_data': 'dislike(5)'}),
+            frozendict({'text': '👍 1', 'callback_data': 'like(5)'}),
+            frozendict({'text': '👎 0', 'callback_data': 'dislike(5)'}),
         ]],
     }))
 
