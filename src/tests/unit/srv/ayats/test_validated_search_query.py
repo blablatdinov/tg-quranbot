@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-
 import pytest
 from hypothesis import HealthCheck, example, given, settings, strategies
 

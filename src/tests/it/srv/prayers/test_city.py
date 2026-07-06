@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-
 import pytest
 
 from app_types.fk_async_str import FkAsyncStr

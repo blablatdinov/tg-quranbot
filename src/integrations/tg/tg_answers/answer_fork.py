@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-
 import traceback
 from collections.abc import Iterable
 from typing import final, override

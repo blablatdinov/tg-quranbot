@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-
 from app_types.fk_update import FkUpdate
 from integrations.tg.fk_keyboard import FkKeyboard
 from integrations.tg.tg_answers import TgAnswerMarkup

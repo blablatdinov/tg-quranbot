@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2025 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-
 from typing import SupportsInt, final, override
 
 import attrs
