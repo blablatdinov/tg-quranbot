@@ -3,13 +3,15 @@
 
 from typing import Protocol
 
+from frozendict import frozendict
+
 from app_types.update import Update
 
 
 class Sendable(Protocol):
     """Интерфейс объекта, отправляющего ответы в API."""
 
-    async def send(self, update: Update) -> list[dict]:
+    async def send(self, update: Update) -> list[frozendict]:
         """Отправка.
 
         :param update: Update

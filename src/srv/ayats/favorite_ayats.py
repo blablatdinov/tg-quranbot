@@ -42,8 +42,8 @@ class FavoriteAyats(AsyncListable):
                 text(query),
                 frozendict({'chat_id': int(self._chat_id)}),
             )
-            rows = query_result.fetchall()
+            rows = query_result.mappings().fetchall()
         return [
-            TextLenSafeAyat(PgAyat(FkAsyncInt(dict(row)['ayat_id']), self._pgsql))
+            TextLenSafeAyat(PgAyat(FkAsyncInt(row['ayat_id']), self._pgsql))
             for row in rows
         ]

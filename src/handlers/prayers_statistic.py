@@ -53,7 +53,7 @@ class PrayersStatistic(AsyncSupportsStr):
     def _exist_prayer_case(  # noqa: NPM100. Fix it
         self,
         prayers_per_day: list[tuple],
-        prayer_unread_dict: dict,
+        prayer_unread_dict: frozendict,
         idx: int,
     ) -> None:
         for prayer_idx, prayer_name in enumerate(PrayerNames.names()):
@@ -61,7 +61,7 @@ class PrayersStatistic(AsyncSupportsStr):
 
     async def _new_prayer_at_user_case(  # noqa: NPM100. Fix it
         self,
-        prayer_unread_dict: dict,
+        prayer_unread_dict: frozendict,
         date: datetime.date,
     ) -> None:
         await self._prayers_at_user.create(date)

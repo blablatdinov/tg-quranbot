@@ -26,7 +26,7 @@ class RabbitmqSink(Sink):
     _logger: LogSink
 
     @override
-    async def send(self, queue_name: str, event_data: dict, event_name: str, version: int) -> None:
+    async def send(self, queue_name: str, event_data: frozendict, event_name: str, version: int) -> None:
         """Отправить событие.
 
         :param queue_name: str

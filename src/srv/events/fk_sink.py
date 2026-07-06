@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 
 from srv.events.sink import Sink
 
@@ -14,7 +15,7 @@ class FkSink(Sink):
     """Фейковый слив для событий."""
 
     @override
-    async def send(self, queue_name: str, event_data: dict, event_name: str, version: int) -> None:
+    async def send(self, queue_name: str, event_data: frozendict, event_name: str, version: int) -> None:
         """Отправить событие.
 
         :param queue_name: str

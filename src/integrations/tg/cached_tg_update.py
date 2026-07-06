@@ -3,6 +3,8 @@
 
 from typing import Final, TypedDict, final, override
 
+from frozendict import frozendict
+
 from app_types.update import Update
 
 STR_LITERAL: Final = 'str'
@@ -13,7 +15,7 @@ ASDICT_LITERAL: Final = 'asdict'
 class _CacheDict(TypedDict):
 
     str: str
-    asdict: dict
+    asdict: frozendict
 
 
 @final
@@ -43,7 +45,7 @@ class CachedTgUpdate(Update):  # noqa: PEO200
         return self._cache[STR_LITERAL]
 
     @override
-    def asdict(self) -> dict:
+    def asdict(self) -> frozendict:
         """Словарь.
 
         :return: dict

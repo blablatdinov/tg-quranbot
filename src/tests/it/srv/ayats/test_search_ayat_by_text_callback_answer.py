@@ -26,7 +26,7 @@ async def test(fake_redis, unquote, search_answer):
     got = await search_answer.build(FkUpdate('{"callback_query": {"data": "1"}, "chat": {"id": 1758}}'))
 
     assert got[0].url.path == '/sendMessage'
-    assert dict(got[0].url.params) == frozendict({
+    assert frozendict(got[0].url.params) == frozendict({
         'parse_mode': 'html',
         'chat_id': '1758',
         'text': '\n'.join([

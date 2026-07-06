@@ -46,8 +46,8 @@ class PgExistUserPrayers(ExistUserPrayers):
             rows = query_result.mappings().fetchall()
         return [
             frozendict({
-                'prayer_at_user_id': dict(row)['prayer_at_user_id'],
-                'is_read': dict(row)['is_read'],
+                'prayer_at_user_id': row['prayer_at_user_id'],
+                'is_read': row['is_read'],
             })
             for row in rows
         ]

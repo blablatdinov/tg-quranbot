@@ -24,7 +24,7 @@ class SeUpdate(Update):  # noqa: PEO200. Class for testing
         raise Exception  # noqa: TRY002, WPS454
 
     @override
-    def asdict(self) -> dict:
+    def asdict(self) -> frozendict:
         if self._asdict_call_count == 0:
             self._asdict_call_count += 1
             return frozendict({'key': 'value'})
