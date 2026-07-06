@@ -7,6 +7,7 @@ from typing import final, override
 import attrs
 import pytz
 from asyncpg.exceptions import UniqueViolationError
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -31,7 +32,7 @@ class PgNewPrayers(NewPrayers):
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
                 text('SELECT city_id FROM cities WHERE name = :name'),
-                {'name': self._prayer_dict['city_name']},
+                frozendict({'name': self._prayer_dict['city_name']}),
             )
             row = query_result.fetchone()
         if row is None:
@@ -69,7 +70,7 @@ class PgNewPrayers(NewPrayers):
                         'RETURNING *',
                     ])),
                     [
-                        {
+                        frozendict({
                             'name': name,
                             'time': (
                                 datetime.datetime
@@ -78,7 +79,7 @@ class PgNewPrayers(NewPrayers):
                             ),
                             'city_id': city_id,
                             'day': day,
-                        }
+                        })
                         for key, name in zip(keys, names, strict=True)
                     ],
                 )
@@ -88,7 +89,7 @@ class PgNewPrayers(NewPrayers):
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
                 text('SELECT COUNT(*) FROM prayers WHERE city_id = :city_id AND day = :day'),
-                {'city_id': city_id, 'day': day},
+                frozendict({'city_id': city_id, 'day': day}),
             )
             row = query_result.fetchone()
         created_prayers = row[0] if row else 0

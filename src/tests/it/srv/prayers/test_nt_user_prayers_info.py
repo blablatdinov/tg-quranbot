@@ -4,6 +4,7 @@
 import uuid
 
 import pytest
+from frozendict import frozendict
 from sqlalchemy import text
 
 from integrations.tg.fk_chat_id import FkChatId
@@ -26,7 +27,7 @@ async def _user(user_factory):
 @pytest.fixture
 async def _prayers(pgsql):
     await NtPgPrayersInfo(
-        FkPrayersInfo({
+        FkPrayersInfo(frozendict({
             'city_name': 'Казань',
             'date': '21.10.2023',
             'fajr_prayer_time': '04:22',
@@ -35,7 +36,7 @@ async def _prayers(pgsql):
             'asr_prayer_time': '14:35',
             'magrib_prayer_time': '16:30',
             'ishaa_prayer_time': '18:12',
-        }),
+        })),
         pgsql,
     ).to_dict()
 
@@ -43,7 +44,7 @@ async def _prayers(pgsql):
 @pytest.mark.usefixtures('_db_city', '_user', '_prayers')
 async def test(pgsql):
     await NtUserPrayersInfo(
-        FkPrayersInfo({
+        FkPrayersInfo(frozendict({
             'city_name': 'Казань',
             'date': '21.10.2023',
             'fajr_prayer_time': '04:22',
@@ -52,17 +53,17 @@ async def test(pgsql):
             'asr_prayer_time': '14:35',
             'magrib_prayer_time': '16:30',
             'ishaa_prayer_time': '18:12',
-        }),
+        })),
         pgsql,
         FkChatId(1),
     ).to_dict()
 
     async with pgsql.connect() as conn:
         assert (await conn.execute(text('select user_id, is_read from prayers_at_user'))).mappings().fetchall() == [
-            {
+            frozendict({
                 'is_read': False,
                 'user_id': 1,
-            }
+            })
             for _ in range(5)
         ]
 
@@ -70,7 +71,7 @@ async def test(pgsql):
 @pytest.mark.usefixtures('_db_city', '_user', '_prayers')
 async def test_double(pgsql):
     nt_user_prayers_info = NtUserPrayersInfo(
-        FkPrayersInfo({
+        FkPrayersInfo(frozendict({
             'city_name': 'Казань',
             'date': '21.10.2023',
             'fajr_prayer_time': '04:22',
@@ -79,7 +80,7 @@ async def test_double(pgsql):
             'asr_prayer_time': '14:35',
             'magrib_prayer_time': '16:30',
             'ishaa_prayer_time': '18:12',
-        }),
+        })),
         pgsql,
         FkChatId(1),
     )

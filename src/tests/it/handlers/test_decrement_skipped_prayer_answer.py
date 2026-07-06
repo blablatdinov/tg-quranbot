@@ -3,6 +3,7 @@
 
 import pytest
 import ujson
+from frozendict import frozendict
 from sqlalchemy import text
 
 from app_types.fk_update import FkUpdate
@@ -33,12 +34,12 @@ async def test(callback_update_factory, pgsql):
                 "WHERE pau.user_id = 358610865 AND pau.is_read = 't'",
             ])),
         )).scalar() == 63
-    assert ujson.loads(got[0].url.params['reply_markup']) == {
+    assert ujson.loads(got[0].url.params['reply_markup']) == frozendict({
         'inline_keyboard': [
-            [{'callback_data': 'decr(fajr)', 'text': 'Иртәнге: (-1)'}],
-            [{'callback_data': 'decr(dhuhr)', 'text': 'Өйлә: (-1)'}],
-            [{'callback_data': 'decr(asr)', 'text': 'Икенде: (-1)'}],
-            [{'callback_data': 'decr(maghrib)', 'text': 'Ахшам: (-1)'}],
-            [{'callback_data': 'decr(isha)', 'text': 'Ястү: (-1)'}],
+            [frozendict({'callback_data': 'decr(fajr)', 'text': 'Иртәнге: (-1)'})],
+            [frozendict({'callback_data': 'decr(dhuhr)', 'text': 'Өйлә: (-1)'})],
+            [frozendict({'callback_data': 'decr(asr)', 'text': 'Икенде: (-1)'})],
+            [frozendict({'callback_data': 'decr(maghrib)', 'text': 'Ахшам: (-1)'})],
+            [frozendict({'callback_data': 'decr(isha)', 'text': 'Ястү: (-1)'})],
         ],
-    }
+    })

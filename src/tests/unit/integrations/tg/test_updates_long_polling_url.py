@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+
 from integrations.tg.fk_udpates_url import FkUpdatesURL
 from integrations.tg.updates_long_polling_url import UpdatesLongPollingURL
 

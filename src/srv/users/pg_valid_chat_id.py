@@ -4,6 +4,7 @@
 from typing import SupportsInt, final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -45,7 +46,7 @@ class PgValidChatId(ValidChatId):
                     'FROM users',
                     'WHERE chat_id = :chat_id',
                 ])),
-                {'chat_id': await self._unreliable.to_int()},
+                frozendict({'chat_id': await self._unreliable.to_int()}),
             )
             row = query_result.fetchone()
         if row is None:

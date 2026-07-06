@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+
 from collections.abc import Sequence
 from typing import final, override
 
@@ -41,7 +42,7 @@ class PrayersExpiredAnswer(TgAnswer):
             return await TgAnswerList.ctor(
                 TgTextAnswer.str_ctor(
                     TgAnswerToSender(TgMessageAnswer(self._empty_answer)),
-                    'Время намаза на {0} для города {1} не найдено'.format(
+                    'Время намаза на frozendict({0} для города frozendict({1} не найдено'.format(
                         err.date.strftime('%d.%m.%Y'), err.city_name or '',
                     ),
                 ),
@@ -50,7 +51,7 @@ class PrayersExpiredAnswer(TgAnswer):
                         TgMessageAnswer(self._empty_answer),
                         self._admin_chat_ids[0],
                     ),
-                    'Время намаза на {0} для города {1} не найдено'.format(
+                    'Время намаза на frozendict({0} для города frozendict({1} не найдено'.format(
                         err.date.strftime('%d.%m.%Y'), err.city_name or '',
                     ),
                 ),

@@ -6,6 +6,7 @@ import datetime
 from itertools import chain, repeat
 
 import pytest
+from frozendict import frozendict
 from sqlalchemy import text
 
 from app_types.fk_update import FkUpdate
@@ -38,13 +39,13 @@ async def _prayers(pgsql, cities):
                 'VALUES (:prayer_id, :prayer_name, :time, :city_id, :day)',
             ])),
             [
-                {
+                frozendict({
                     'prayer_id': pr_id,
                     'prayer_name': pr_name,
                     'time': pr_time,
                     'city_id': await city.city_id(),
                     'day': datetime.date(2024, 6, 5),
-                }
+                })
                 for pr_id, pr_name, pr_time, city in zip(
                     range(1, 13),
                     chain.from_iterable(repeat(

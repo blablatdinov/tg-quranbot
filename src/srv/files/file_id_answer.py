@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import httpx
+from frozendict import frozendict
 from furl import furl
 
 from app_types.update import Update
@@ -30,7 +31,7 @@ class TelegramFileIdAnswer(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                furl(request.url).add({'audio': await self._tg_file.tg_file_id()}).url,
+                furl(request.url).add(frozendict({'audio': await self._tg_file.tg_file_id()})).url,
             )
             for request in await self._origin.build(update)
         ]

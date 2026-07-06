@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+
 import uuid
 
 import pytest
@@ -14,7 +15,7 @@ async def _db_cities(city_factory, faker):
     for _ in range(25):
         await city_factory(
             str(uuid.uuid4()),
-            'Ка{0}'.format(faker.address()),
+            'Каfrozendict({0}'.format(faker.address()),
         )
 
 

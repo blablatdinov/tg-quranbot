@@ -7,6 +7,7 @@ from typing import final, override
 import attrs
 import pytz
 from eljson.json import Json
+from frozendict import frozendict
 from loguru import logger
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -34,7 +35,7 @@ class PrayerCreatedEvent(ReceivedEvent):
         async with self._pgsql.connect() as conn:
             await conn.execute(
                 text(query),
-                {
+                frozendict({
                     'name': json.path('$.data.name')[0],
                     'time': datetime.datetime.strptime(json.path('$.data.time')[0], '%H:%M').replace(
                         tzinfo=pytz.timezone('Europe/Moscow'),
@@ -43,7 +44,7 @@ class PrayerCreatedEvent(ReceivedEvent):
                     'day': datetime.datetime.strptime(json.path('$.data.day')[0], '%Y-%m-%d').astimezone(
                         pytz.timezone('Europe/Moscow'),
                     ),
-                },
+                }),
             )
             await conn.commit()
         logger.info('Prayer created')

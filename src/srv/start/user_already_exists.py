@@ -6,6 +6,7 @@ from typing import final, override
 
 import attrs
 import httpx
+from frozendict import frozendict
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.update import Update
@@ -46,7 +47,7 @@ class UserAlreadyExistsAnswer(TgAnswer):
             raise UserAlreadyActiveError
         return await TgTextAnswer.str_ctor(
             self._sender_answer,
-            'Рады видеть вас снова, вы продолжите с дня {0}'.format(await user.day()),
+            'Рады видеть вас снова, вы продолжите с дня frozendict({0}'.format(await user.day()),
         ).build(update)
 
     async def _update_and_push_event(self, update: Update) -> None:  # noqa: NPM100. Fix it
@@ -56,10 +57,10 @@ class UserAlreadyExistsAnswer(TgAnswer):
         ).update(to=True)
         await self._event_sink.send(
             'qbot_admin.users',
-            {
+            frozendict({
                 'user_id': int(TgChatId(update)),
                 'date_time': str(TgDateTime(update).datetime()),
-            },
+            }),
             'User.Reactivated',
             1,
         )

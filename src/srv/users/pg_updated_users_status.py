@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -29,7 +30,7 @@ class PgUpdatedUsersStatus(UpdatedUsersStatus):
         query_template = '\n'.join([
             'UPDATE users',
             'SET is_active = :to',
-            'WHERE chat_id in ({0})',
+            'WHERE chat_id in (frozendict({0})',
         ])
         users = await self._users.to_list()
         if not users:
@@ -39,5 +40,5 @@ class PgUpdatedUsersStatus(UpdatedUsersStatus):
             for user in users
         ]))
         async with self._pgsql.connect() as conn:
-            await conn.execute(text(query), {'to': to})
+            await conn.execute(text(query), frozendict({'to': to}))
             await conn.commit()

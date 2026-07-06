@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -43,7 +44,7 @@ class PgAyatIdentifier(AyatIdentifier):
         ])
         ayat_id = await self.ayat_id()
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(query), {'ayat_id': ayat_id})
+            query_result = await conn.execute(text(query), frozendict({'ayat_id': ayat_id}))
             row = query_result.mappings().fetchone()
         if row is None:
             raise AyatNotFoundError
@@ -63,7 +64,7 @@ class PgAyatIdentifier(AyatIdentifier):
         ])
         ayat_id = await self.ayat_id()
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(query), {'ayat_id': ayat_id})
+            query_result = await conn.execute(text(query), frozendict({'ayat_id': ayat_id}))
             row = query_result.mappings().fetchone()
         if row is None:
             raise AyatNotFoundError

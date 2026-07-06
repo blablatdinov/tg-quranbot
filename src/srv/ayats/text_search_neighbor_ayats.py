@@ -4,6 +4,7 @@
 from typing import Final, final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -54,11 +55,11 @@ class TextSearchNeighborAyats(NeighborAyats):
         :return: AyatShort
         :raises AyatNotFoundError: if ayat not found
         """
-        search_query = '%{0}%'.format(await self._query.read())
+        search_query = '%frozendict({0}%'.format(await self._query.read())
         async with self._pgsql.connect() as conn:
             rows = (await conn.execute(
                 text(self._search_sql_query),
-                {'search_query': search_query},
+                frozendict({'search_query': search_query}),
             )).mappings().fetchall()
         for idx, row in enumerate(rows[1:], start=1):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
@@ -74,11 +75,11 @@ class TextSearchNeighborAyats(NeighborAyats):
         :return: AyatShort
         :raises AyatNotFoundError: if ayat not found
         """
-        search_query = '%{0}%'.format(await self._query.read())
+        search_query = '%frozendict({0}%'.format(await self._query.read())
         async with self._pgsql.connect() as conn:
             rows = (await conn.execute(
                 text(self._search_sql_query),
-                {'search_query': search_query},
+                frozendict({'search_query': search_query}),
             )).mappings().fetchall()
         for idx, row in enumerate(rows[:-1]):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
@@ -97,9 +98,9 @@ class TextSearchNeighborAyats(NeighborAyats):
         async with self._pgsql.connect() as conn:
             rows = (await conn.execute(
                 text(self._search_sql_query),
-                {'search_query': '%{0}%'.format(await self._query.read())},
+                frozendict({'search_query': '%frozendict({0}%'.format(await self._query.read())}),
             )).mappings().fetchall()
         for idx, row in enumerate(rows, start=1):
             if row[_AYAT_ID_LITERAL] == self._ayat_id:
                 actual_page_num = idx
-        return 'стр. {0}/{1}'.format(actual_page_num, len(rows))
+        return 'стр. frozendict({0}/frozendict({1}'.format(actual_page_num, len(rows))

@@ -4,6 +4,7 @@
 import httpx
 import pytest
 from eljson.json_doc import JsonDoc
+from frozendict import frozendict
 
 from app_types.fk_log_sink import FkLogSink
 from integrations.tg.tg_answers import TgEmptyAnswer
@@ -28,4 +29,4 @@ async def test(pgsql):
         pgsql,
         FkSink(),
         FkLogSink(),
-    ).process(JsonDoc({'data': {'chat_id': 37945, 'message_id': 893457}}))
+    ).process(JsonDoc(frozendict({'data': frozendict({'chat_id': 37945, 'message_id': 893457})})))

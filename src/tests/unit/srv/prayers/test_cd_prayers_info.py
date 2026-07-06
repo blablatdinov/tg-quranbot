@@ -4,6 +4,8 @@
 import datetime
 from typing import final, override
 
+from frozendict import frozendict
+
 from app_types.fk_log_sink import FkLogSink
 from srv.prayers.cd_prayers_info import CdPrayersInfo
 from srv.prayers.fk_city import FkCity
@@ -22,7 +24,7 @@ class _FkPrayersInfo(PrayersInfo):  # noqa: PEO200. Object for test only
         if self._flag:
             raise ValueError
         self._flag = True
-        return {
+        return frozendict({
             'asr_prayer_time': '14:02',
             'city_name': 'Казань',
             'date': '20.01.2025',
@@ -31,7 +33,7 @@ class _FkPrayersInfo(PrayersInfo):  # noqa: PEO200. Object for test only
             'ishaa_prayer_time': '17:44',
             'magrib_prayer_time': '15:53',
             'sunrise_prayer_time': '07:57',
-        }
+        })
 
 
 async def test(fake_redis):
@@ -45,7 +47,7 @@ async def test(fake_redis):
     await cd_prayer_info.to_dict()
     got = await cd_prayer_info.to_dict()
 
-    assert got == {
+    assert got == frozendict({
         'asr_prayer_time': '14:02',
         'city_name': 'Казань',
         'date': '20.01.2025',
@@ -54,5 +56,5 @@ async def test(fake_redis):
         'ishaa_prayer_time': '17:44',
         'magrib_prayer_time': '15:53',
         'sunrise_prayer_time': '07:57',
-    }
+    })
     assert await fake_redis.keys() == [b'prayers:kazan:2025-01-06']

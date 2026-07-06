@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+
 import pytest
 
 from srv.podcasts.parsed_podcast_reaction import ParsedPodcastReaction

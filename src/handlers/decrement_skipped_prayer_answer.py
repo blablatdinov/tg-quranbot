@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import httpx
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -46,12 +47,12 @@ class DecrementSkippedPrayerAnswer(TgAnswer):
                 '   LIMIT 1',
                 ')',
                 'RETURNING *',
-            ])), {
+            ])), frozendict({
                 'chat_id': int(TgChatId(update)),
                 'prayer_name': str(
                     CallbackQueryData(update),
                 ).split('(')[1][:-1],
-            })
+            }))
             await conn.commit()
         return await TgAnswerMarkup(
             TgMessageIdAnswer(

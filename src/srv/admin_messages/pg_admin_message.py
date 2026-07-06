@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -29,7 +30,7 @@ class PgAdminMessage(AdminMessage):
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
                 text('SELECT text FROM admin_messages m WHERE m.key = :key'),
-                {'key': self._key},
+                frozendict({'key': self._key}),
             )
             row = query_result.mappings().fetchone()
         if row is None:

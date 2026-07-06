@@ -5,6 +5,7 @@ import datetime
 
 import pytest
 import pytz
+from frozendict import frozendict
 from sqlalchemy import text
 
 from exceptions.content_exceptions import AyatNotFoundError
@@ -21,8 +22,8 @@ async def _db_ayat(pgsql):
                 "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
             ])),
             [
-                {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at},
-                {'file_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba', 'created_at': created_at},
+                frozendict({'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at}),
+                frozendict({'file_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba', 'created_at': created_at}),
             ],
         )
         await conn.execute(text('\n'.join([
@@ -48,7 +49,7 @@ async def _db_ayat(pgsql):
                 ')',
             ])),
             [
-                {
+                frozendict({
                     'ayat_id': 1,
                     'sura_id': 1,
                     'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
@@ -58,8 +59,8 @@ async def _db_ayat(pgsql):
                     'content': 'Content',
                     'arab_text': 'Arab text',
                     'transliteration': 'Transliteration',
-                },
-                {
+                }),
+                frozendict({
                     'ayat_id': 2,
                     'sura_id': 2,
                     'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
@@ -69,8 +70,8 @@ async def _db_ayat(pgsql):
                     'content': 'Content',
                     'arab_text': 'Arab text',
                     'transliteration': 'Transliteration',
-                },
-                {
+                }),
+                frozendict({
                     'ayat_id': 3,
                     'sura_id': 2,
                     'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
@@ -80,7 +81,7 @@ async def _db_ayat(pgsql):
                     'content': 'Content',
                     'arab_text': 'Arab text',
                     'transliteration': 'Transliteration',
-                },
+                }),
             ],
         )
         await conn.commit()

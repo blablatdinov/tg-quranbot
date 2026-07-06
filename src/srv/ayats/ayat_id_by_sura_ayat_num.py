@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -43,13 +44,13 @@ class AyatIdBySuraAyatNum(AsyncInt):
             '    )',
         ])
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(query), {
+            query_result = await conn.execute(text(query), frozendict({
                 'sura_id': self._query.sura(),
                 'ayat_comma_prefix': '%,{0}'.format(self._query.ayat()),
                 'ayat_comma_postfix': '%{0},'.format(self._query.ayat()),
                 'ayat_num': int(self._query.ayat()),
                 'ayat_num_str': self._query.ayat(),
-            })
+            }))
             row = query_result.mappings().fetchone()
         if row is None:
             raise AyatNotFoundError

@@ -5,6 +5,7 @@ import datetime
 import uuid
 
 import pytest
+from frozendict import frozendict
 from sqlalchemy import text
 
 from exceptions.prayer_exceptions import PrayersAlreadyExistsError
@@ -26,7 +27,7 @@ async def _user(user_factory):
 @pytest.mark.usefixtures('_db_city', '_user')
 async def test(pgsql):
     await NtPgPrayersInfo(
-        FkPrayersInfo({
+        FkPrayersInfo(frozendict({
             'city_name': 'Казань',
             'date': '21.10.2023',
             'fajr_prayer_time': '04:22',
@@ -35,55 +36,55 @@ async def test(pgsql):
             'asr_prayer_time': '14:35',
             'magrib_prayer_time': '16:30',
             'ishaa_prayer_time': '18:12',
-        }),
+        })),
         pgsql,
     ).to_dict()
 
     async with pgsql.connect() as conn:
         assert (await conn.execute(text('select city_id, day, name, time from prayers'))).mappings().fetchall() == [
-            {
+            frozendict({
                 'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
                 'day': datetime.date(2023, 10, 21),
                 'name': 'fajr',
                 'time': datetime.time(4, 22),
-            },
-            {
+            }),
+            frozendict({
                 'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
                 'day': datetime.date(2023, 10, 21),
                 'name': 'sunrise',
                 'time': datetime.time(6, 26),
-            },
-            {
+            }),
+            frozendict({
                 'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
                 'day': datetime.date(2023, 10, 21),
                 'name': 'dhuhr',
                 'time': datetime.time(12, 0),
-            },
-            {
+            }),
+            frozendict({
                 'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
                 'day': datetime.date(2023, 10, 21),
                 'name': 'asr',
                 'time': datetime.time(14, 35),
-            },
-            {
+            }),
+            frozendict({
                 'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
                 'day': datetime.date(2023, 10, 21),
                 'name': 'maghrib',
                 'time': datetime.time(16, 30),
-            },
-            {
+            }),
+            frozendict({
                 'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
                 'day': datetime.date(2023, 10, 21),
                 'name': "isha'a",
                 'time': datetime.time(18, 12),
-            },
+            }),
         ]
 
 
 @pytest.mark.usefixtures('_db_city', '_user')
 async def test_double(pgsql):
     nt_user_prayers_info = NtPgPrayersInfo(
-        FkPrayersInfo({
+        FkPrayersInfo(frozendict({
             'city_name': 'Казань',
             'date': '21.10.2023',
             'fajr_prayer_time': '04:22',
@@ -92,7 +93,7 @@ async def test_double(pgsql):
             'asr_prayer_time': '14:35',
             'magrib_prayer_time': '16:30',
             'ishaa_prayer_time': '18:12',
-        }),
+        })),
         pgsql,
     )
     await nt_user_prayers_info.to_dict()

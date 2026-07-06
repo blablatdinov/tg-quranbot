@@ -4,6 +4,7 @@
 from typing import Final, final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -46,10 +47,10 @@ class PgPrayersInfo(PrayersInfo):
                     "       ARRAY['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[],",
                     '       p.name::text)',
                 ])),
-                {
+                frozendict({
                     'date': await self._date.parse(self._update),
                     'city_id': await self._city_id.to_str(),
-                },
+                }),
             )).mappings().fetchall()
         if not rows:
             raise PrayersNotFoundError(
@@ -57,7 +58,7 @@ class PgPrayersInfo(PrayersInfo):
                 await self._date.parse(self._update),
             )
         time_format = '%H:%M'
-        return PrayerMessageTextDict({
+        return PrayerMessageTextDict(frozendict({
             'city_name': rows[0]['city_name'],
             'date': rows[0]['day'].strftime('%d.%m.%Y'),
             'fajr_prayer_time': rows[0][TIME_LITERAL].strftime(time_format),
@@ -66,4 +67,4 @@ class PgPrayersInfo(PrayersInfo):
             'asr_prayer_time': rows[3][TIME_LITERAL].strftime(time_format),
             'magrib_prayer_time': rows[4][TIME_LITERAL].strftime(time_format),
             'ishaa_prayer_time': rows[5][TIME_LITERAL].strftime(time_format),
-        })
+        }))

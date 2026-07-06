@@ -7,6 +7,7 @@ from typing import final, override
 import attrs
 import httpx
 import pytz
+from frozendict import frozendict
 from lxml import etree
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -32,7 +33,7 @@ class NtPrayersInfo(PrayersInfo):
     async def to_dict(self) -> PrayerMessageTextDict:  # noqa: WPS210
         """Словарь с данными для отправки пользователю."""
         city_name = await self._city.name()
-        async with httpx.AsyncClient(cookies={'asr_method': '1'}) as http_client:
+        async with httpx.AsyncClient(cookies=frozendict({'asr_method': '1'})) as http_client:
             response = await http_client.get(
                 await NtPrayersUrl(self._city, self._pgsql).to_str(),
             )
@@ -46,7 +47,7 @@ class NtPrayersInfo(PrayersInfo):
             for row in tree.xpath("//section[@id='content-tab1']//tbody/tr")
             if row.xpath('./td')[0].text == str(date.day)
         ))
-        return PrayerMessageTextDict({
+        return PrayerMessageTextDict(frozendict({
             'city_name': tree.xpath('//h1/text()')[0].split('.')[0],
             'date': date.strftime('%d.%m.%Y'),
             'fajr_prayer_time': rows[1].text,
@@ -55,4 +56,4 @@ class NtPrayersInfo(PrayersInfo):
             'asr_prayer_time': rows[4].text,
             'magrib_prayer_time': rows[5].text,
             'ishaa_prayer_time': rows[6].text,
-        })
+        }))

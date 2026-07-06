@@ -5,6 +5,7 @@ import datetime
 import uuid
 
 import pytest
+from frozendict import frozendict
 from sqlalchemy import text
 
 from srv.prayers.pg_new_prayers import PgNewPrayers
@@ -18,7 +19,7 @@ async def city(city_factory):
 async def test(pgsql, city):
     city_id = await city.city_id()
     await PgNewPrayers(
-        {
+        frozendict({
             'asr_prayer_time': '13:39',
             'city_name': 'Казань',
             'date': '06.01.2025',
@@ -27,7 +28,7 @@ async def test(pgsql, city):
             'ishaa_prayer_time': '17:25',
             'magrib_prayer_time': '15:28',
             'sunrise_prayer_time': '08:11',
-        },
+        }),
         pgsql,
     ).create()
 
@@ -36,40 +37,40 @@ async def test(pgsql, city):
         assert (await conn.execute(
             text('SELECT city_id, day, name, time FROM prayers'),
         )).mappings().fetchall() == [
-            {
+            frozendict({
                 'city_id': city_id,
                 'day': datetime.date(2025, 1, 6),
                 'name': 'fajr',
                 'time': datetime.time(5, 53),
-            },
-            {
+            }),
+            frozendict({
                 'city_id': city_id,
                 'day': datetime.date(2025, 1, 6),
                 'name': 'sunrise',
                 'time': datetime.time(8, 11),
-            },
-            {
+            }),
+            frozendict({
                 'city_id': city_id,
                 'day': datetime.date(2025, 1, 6),
                 'name': 'dhuhr',
                 'time': datetime.time(11, 50),
-            },
-            {
+            }),
+            frozendict({
                 'city_id': city_id,
                 'day': datetime.date(2025, 1, 6),
                 'name': 'asr',
                 'time': datetime.time(13, 39),
-            },
-            {
+            }),
+            frozendict({
                 'city_id': city_id,
                 'day': datetime.date(2025, 1, 6),
                 'name': 'maghrib',
                 'time': datetime.time(15, 28),
-            },
-            {
+            }),
+            frozendict({
                 'city_id': city_id,
                 'day': datetime.date(2025, 1, 6),
                 'name': "isha'a",
                 'time': datetime.time(17, 25),
-            },
+            }),
         ]

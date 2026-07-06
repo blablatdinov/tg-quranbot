@@ -6,6 +6,7 @@ from typing import final, override
 
 import attrs
 import pytz
+from frozendict import frozendict
 
 from app_types.listable import AsyncListable
 from srv.events.sink import Sink
@@ -31,10 +32,10 @@ class UpdatedUsersStatusEvent(UpdatedUsersStatus):
         for user in await self._users.to_list():
             await self._events_sink.send(
                 'qbot_admin.users',
-                {
+                frozendict({
                     'user_id': await user.chat_id(),
                     'date_time': str(datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))),
-                },
+                }),
                 'User.Unsubscribed',
                 1,
             )

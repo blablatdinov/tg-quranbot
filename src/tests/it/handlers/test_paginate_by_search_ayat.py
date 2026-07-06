@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import ujson
+from frozendict import frozendict
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
@@ -16,11 +17,11 @@ async def test(fake_redis, pgsql, settings_ctor):
         pgsql,
         settings_ctor(),
         FkLogSink(),
-    ).build(FkUpdate(ujson.dumps({
-        'chat': {'id': 843759},
-        'callback_query': {
+    ).build(FkUpdate(ujson.dumps(frozendict({
+        'chat': frozendict({'id': 843759}),
+        'callback_query': frozendict({
             'data': '1',
-        },
-    })))
+        }),
+    }))))
 
     assert got[0].url.params['text'] == 'Пожалуйста, введите запрос для поиска:'

@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -31,10 +32,10 @@ class PgChangedPoodcastReaction(ChangedPodcastReaction):
                     'FROM podcast_reactions',
                     'WHERE user_id = :user_id AND podcast_id = :podcast_id',
                 ])),
-                {
+                frozendict({
                     USER_ID_LITERAL: int(self._chat_id),
                     PODCAST_ID_LITERAL: self._reaction.podcast_id(),
-                },
+                }),
             )).fetchone()
             prayer_existed_reaction = row[0] if row else None
             if prayer_existed_reaction:
@@ -45,10 +46,10 @@ class PgChangedPoodcastReaction(ChangedPodcastReaction):
                             "SET reaction = 'showed'",
                             'WHERE user_id = :user_id AND podcast_id = :podcast_id',
                         ])),
-                        {
+                        frozendict({
                             USER_ID_LITERAL: int(self._chat_id),
                             PODCAST_ID_LITERAL: self._reaction.podcast_id(),
-                        },
+                        }),
                     )
                 else:
                     await conn.execute(
@@ -57,11 +58,11 @@ class PgChangedPoodcastReaction(ChangedPodcastReaction):
                             'SET reaction = :reaction',
                             'WHERE user_id = :user_id AND podcast_id = :podcast_id',
                         ])),
-                        {
+                        frozendict({
                             'reaction': self._reaction.status(),
                             USER_ID_LITERAL: int(self._chat_id),
                             PODCAST_ID_LITERAL: self._reaction.podcast_id(),
-                        },
+                        }),
                     )
             else:
                 await conn.execute(
@@ -69,10 +70,10 @@ class PgChangedPoodcastReaction(ChangedPodcastReaction):
                         'INSERT INTO podcast_reactions (podcast_id, user_id, reaction)',
                         'VALUES (:podcast_id, :user_id, :reaction)',
                     ])),
-                    {
+                    frozendict({
                         PODCAST_ID_LITERAL: self._reaction.podcast_id(),
                         USER_ID_LITERAL: int(self._chat_id),
                         'reaction': self._reaction.status(),
-                    },
+                    }),
                 )
             await conn.commit()

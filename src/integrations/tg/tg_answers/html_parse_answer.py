@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import httpx
+from frozendict import frozendict
 from furl import furl
 
 from app_types.update import Update
@@ -28,7 +29,7 @@ class TgHtmlParseAnswer(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                furl(request.url).add({'parse_mode': 'html'}).url,
+                furl(request.url).add(frozendict({'parse_mode': 'html'})).url,
                 stream=request.stream,
                 headers=request.headers,
             )

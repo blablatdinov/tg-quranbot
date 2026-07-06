@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+
 from typing import final, override
 
 import attrs
@@ -31,5 +32,5 @@ class PgSavedPrayersInfo(PrayersInfo):
                 self._pgsql,
             ).create()
         except PrayerAlreadyExistsError:
-            self._logger.info('Prayer info "{0}" already exists'.format(origin))
+            self._logger.info('Prayer info "frozendict({0}" already exists'.format(origin))
         return origin

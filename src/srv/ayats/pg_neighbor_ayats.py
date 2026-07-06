@@ -4,6 +4,7 @@
 from typing import Final, final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -38,7 +39,7 @@ class PgNeighborAyats(NeighborAyats):
         ])
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
-                text(query), {_AYAT_ID_LITERAL: self._ayat_id - 1},
+                text(query), frozendict({_AYAT_ID_LITERAL: self._ayat_id - 1}),
             )
             row = query_result.mappings().fetchone()
         if row is None:
@@ -59,7 +60,7 @@ class PgNeighborAyats(NeighborAyats):
         ])
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
-                text(query), {_AYAT_ID_LITERAL: self._ayat_id + 1},
+                text(query), frozendict({_AYAT_ID_LITERAL: self._ayat_id + 1}),
             )
             row = query_result.mappings().fetchone()
         if row is None:
@@ -79,8 +80,8 @@ class PgNeighborAyats(NeighborAyats):
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
                 text('SELECT COUNT(*) FROM ayats WHERE ayat_id <= :ayat_id'),
-                {_AYAT_ID_LITERAL: self._ayat_id},
+                frozendict({_AYAT_ID_LITERAL: self._ayat_id}),
             )
             row = query_result.fetchone()
         actual_page_num = row[0] if row else 0
-        return 'стр. {0}/{1}'.format(actual_page_num, ayats_count)
+        return 'стр. frozendict({0}/frozendict({1}'.format(actual_page_num, ayats_count)

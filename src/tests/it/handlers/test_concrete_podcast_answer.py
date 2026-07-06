@@ -6,6 +6,7 @@ import uuid
 
 import pytest
 import pytz
+from frozendict import frozendict
 from sqlalchemy import text
 
 from app_types.fk_log_sink import FkLogSink
@@ -23,11 +24,11 @@ async def _db_podcast_without_telegram_file_id(pgsql):
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
                 "VALUES (:file_id, NULL, 'https://link-to-file.domain', :created_at)",
             ])),
-            {'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))},
+            frozendict({'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))}),
         )
         await conn.execute(
             text('INSERT INTO podcasts (public_id, file_id)\nVALUES (:public_id, :file_id)'),
-            {'public_id': str(uuid.uuid4()), 'file_id': file_id},
+            frozendict({'public_id': str(uuid.uuid4()), 'file_id': file_id}),
         )
         await conn.commit()
 
@@ -42,11 +43,11 @@ async def _db_podcast(pgsql, user_factory):
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
                 "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
             ])),
-            {'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))},
+            frozendict({'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))}),
         )
         await conn.execute(
             text('INSERT INTO podcasts (public_id, file_id)\nVALUES (:public_id, :file_id)'),
-            {'public_id': str(uuid.uuid4()), 'file_id': file_id},
+            frozendict({'public_id': str(uuid.uuid4()), 'file_id': file_id}),
         )
         await conn.commit()
 

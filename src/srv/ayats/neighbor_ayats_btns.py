@@ -5,6 +5,7 @@ from contextlib import suppress
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum
@@ -28,13 +29,13 @@ class NeighborAyatsBtns(NeighborAyatsButtons):
         """
         with suppress(AyatNotFoundError):
             left = await self._ayats_neighbors.left_neighbor()
-            return {
+            return frozendict({
                 'text': '<- {0}:{1}'.format(
                     await left.identifier().sura_num(),
                     await left.identifier().ayat_num(),
                 ),
                 'callback_data': self._callback_template.format(await left.identifier().ayat_id()),
-            }
+            })
         return None
 
     @override
@@ -45,11 +46,11 @@ class NeighborAyatsBtns(NeighborAyatsButtons):
         """
         with suppress(AyatNotFoundError):
             right = await self._ayats_neighbors.right_neighbor()
-            return {
+            return frozendict({
                 'text': '{0}:{1} ->'.format(
                     await right.identifier().sura_num(),
                     await right.identifier().ayat_num(),
                 ),
                 'callback_data': self._callback_template.format(await right.identifier().ayat_id()),
-            }
+            })
         return None

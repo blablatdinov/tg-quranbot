@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -30,8 +31,8 @@ class UserPrayerStatus(UserPrayerStts):
             'WHERE prayer_at_user_id = :prayer_id',
         ])
         async with self._pgsql.connect() as conn:
-            await conn.execute(text(query), {
+            await conn.execute(text(query), frozendict({
                 'is_read': prayer_status.change_to(),
                 'prayer_id': prayer_status.user_prayer_id(),
-            })
+            }))
             await conn.commit()

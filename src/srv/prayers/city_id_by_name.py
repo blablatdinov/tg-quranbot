@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -30,7 +31,7 @@ class CityIdByName(AsyncSupportsStr):
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
                 text(query),
-                {'name': await self._name.to_str()},
+                frozendict({'name': await self._name.to_str()}),
             )
             row = query_result.fetchone()
         if row is None:

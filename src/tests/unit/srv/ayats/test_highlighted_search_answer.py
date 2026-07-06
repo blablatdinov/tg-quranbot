@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 
+
 from app_types.fk_update import FkUpdate
 from integrations.tg.tg_answers.fk_answer import FkAnswer
 from srv.ayats.fk_text_search_query import FkTextSearchQuery

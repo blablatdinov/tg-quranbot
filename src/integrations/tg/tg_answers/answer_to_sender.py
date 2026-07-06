@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import httpx
+from frozendict import frozendict
 from furl import furl
 
 from app_types.update import Update
@@ -29,7 +30,7 @@ class TgAnswerToSender(TgAnswer):  # noqa: PEO300
         return [
             httpx.Request(
                 request.method,
-                furl(request.url).add({'chat_id': int(TgChatId(update))}).url,
+                furl(request.url).add(frozendict({'chat_id': int(TgChatId(update))})).url,
             )
             for request in await self._origin.build(update)
         ]

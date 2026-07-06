@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+
 from typing import final, override
 
 import attrs
@@ -31,7 +32,7 @@ class PgUsers(AsyncListable):
         query_template = '\n'.join([
             'SELECT chat_id',
             'FROM users',
-            'WHERE chat_id IN ({0})',
+            'WHERE chat_id IN (frozendict({0})',
         ])
         query = query_template.format(
             ','.join([str(elem) for elem in self._chat_ids]),

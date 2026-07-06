@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 from eljson.json import Json
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -117,7 +118,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
                     'INNER JOIN suras AS s ON a.sura_id = s.sura_id',
                     'WHERE a.ayat_id = :ayat_id',
                 ])),
-                {'ayat_id': ayat_id},
+                frozendict({'ayat_id': ayat_id}),
             )).mappings().one_or_none()
         if row is None:
             msg = 'Аят с id={0} не найден'.format(ayat_id)
@@ -148,7 +149,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
                     'INNER JOIN files AS cf ON a.ar_audio_id = cf.file_id',
                     'WHERE a.ayat_id = :ayat_id',
                 ])),
-                {'ayat_id': ayat_id},
+                frozendict({'ayat_id': ayat_id}),
             )
             row = query_result.mappings().fetchone()
         if row is None:
@@ -174,7 +175,7 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
             'WHERE ayat_id = :ayat_id',
         ])
         async with self._pgsql.connect() as conn:
-            await conn.execute(text(query), {
+            await conn.execute(text(query), frozendict({
                 'ayat_id': await self._ayat_id.to_int(),
                 'day': event_body.path('$.data.day')[0],
                 'ar_audio_id': event_body.path('$.data.audio_id')[0],
@@ -182,5 +183,5 @@ class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 m
                 'content': event_body.path('$.data.content')[0],
                 'arab_text': event_body.path('$.data.arab_text')[0],
                 'transliteration': event_body.path('$.data.transliteration')[0],
-            })
+            }))
             await conn.commit()

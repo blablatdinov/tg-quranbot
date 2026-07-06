@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import ujson
+from frozendict import frozendict
 
 from app_types.update import Update
 from services.answers.resized_keyboard import Keyboard
@@ -22,8 +23,8 @@ class SwitchInlineQueryKeyboard(Keyboard):
         :param update: Update
         :return: str
         """
-        return ujson.dumps({
+        return ujson.dumps(frozendict({
             'inline_keyboard': [
-                [{'text': 'Поиск города', 'switch_inline_query_current_chat': ''}],
+                [frozendict({'text': 'Поиск города', 'switch_inline_query_current_chat': ''})],
             ],
-        })
+        }))

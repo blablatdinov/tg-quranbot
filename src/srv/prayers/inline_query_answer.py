@@ -6,6 +6,7 @@ from typing import final, override
 import attrs
 import httpx
 import ujson
+from frozendict import frozendict
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.update import Update
@@ -51,12 +52,12 @@ class InlineQueryAnswer(TgAnswer):
                     .copy_add_param(
                         'results',
                         ujson.dumps([
-                            {
+                            frozendict({
                                 'id': str(idx),
                                 'type': 'article',
                                 'title': city_name,
-                                'input_message_content': {'message_text': city_name},
-                            }
+                                'input_message_content': frozendict({'message_text': city_name}),
+                            })
                             for idx, city_name in enumerate(city_names)
                         ]),
                     )

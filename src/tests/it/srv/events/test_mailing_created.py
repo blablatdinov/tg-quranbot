@@ -6,6 +6,7 @@ import uuid
 import httpx
 import pytest
 from eljson.json_doc import JsonDoc
+from frozendict import frozendict
 
 from app_types.fk_log_sink import FkLogSink
 from integrations.tg.tg_answers import TgEmptyAnswer
@@ -17,27 +18,27 @@ from srv.events.mailing_created import MailingCreatedEvent
 def _mock_http(respx_mock):
     respx_mock.get('https://api.telegram.org/bottoken/sendMessage?chat_id=483457&text=Hello&parse_mode=html').mock(
         return_value=httpx.Response(
-            json={
+            json=frozendict({
                 'ok': True,
-                'result': {
+                'result': frozendict({
                     'message_id': 52551,
-                    'from': {
+                    'from': frozendict({
                         'id': 452230948,
                         'is_bot': True,
                         'first_name': 'WokeUpSmiled',
                         'username': 'WokeUpSmiled_bot',
-                    },
-                    'chat': {
+                    }),
+                    'chat': frozendict({
                         'id': 358610865,
                         'first_name': 'Алмаз',
                         'last_name': 'Илалетдинов',
                         'username': 'ilaletdinov',
                         'type': 'private',
-                    },
+                    }),
                     'date': 1710448509,
                     'text': 'Hello',
-                },
-            },
+                }),
+            }),
             status_code=200,
         ),
     )
@@ -57,9 +58,9 @@ async def test(pgsql, settings_ctor):
         FkLogSink(),
         settings_ctor(admin_chat_ids='93754').ADMIN_CHAT_IDS,
     ).process(
-        JsonDoc({'data': {
+        JsonDoc(frozendict({'data': frozendict({
             'mailing_id': str(uuid.uuid4()),
             'text': 'Hello',
             'group': 'all',
-        }}),
+        })})),
     )

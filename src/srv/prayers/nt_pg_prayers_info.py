@@ -6,6 +6,7 @@ from typing import final, override
 
 import attrs
 import pytz
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -37,7 +38,7 @@ class NtPgPrayersInfo(PrayersInfo):
                         '(:name, :time, :city_id, :day)',
                     ])),
                     [
-                        {
+                        frozendict({
                             'name': prayer_name,
                             'time': datetime.datetime.strptime(
                                 origin[key], '%H:%M',  # type: ignore[literal-required]
@@ -49,7 +50,7 @@ class NtPgPrayersInfo(PrayersInfo):
                                 .replace(tzinfo=pytz.timezone('Europe/Moscow'))
                                 .date()
                             ),
-                        }
+                        })
                         for prayer_name, key in zip(
                             [
                                 'fajr',

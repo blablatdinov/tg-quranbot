@@ -7,6 +7,7 @@ import httpx
 import pytest
 import ujson
 from eljson.json_doc import JsonDoc
+from frozendict import frozendict
 from furl import furl
 from loguru import logger
 from sqlalchemy import text
@@ -18,31 +19,31 @@ from srv.events.rabbitmq_sink import RabbitmqSink
 
 @pytest.fixture
 def keyboard():
-    return ujson.dumps({
+    return ujson.dumps(frozendict({
         'inline_keyboard': [
             [
-                {'text': '\u274c', 'callback_data': 'mark_readed(1)'},
-                {'text': '\u274c', 'callback_data': 'mark_readed(2)'},
-                {'text': '\u274c', 'callback_data': 'mark_readed(3)'},
-                {'text': '\u274c', 'callback_data': 'mark_readed(4)'},
-                {'text': '\u274c', 'callback_data': 'mark_readed(5)'},
+                frozendict({'text': '\u274c', 'callback_data': 'mark_readed(1)'}),
+                frozendict({'text': '\u274c', 'callback_data': 'mark_readed(2)'}),
+                frozendict({'text': '\u274c', 'callback_data': 'mark_readed(3)'}),
+                frozendict({'text': '\u274c', 'callback_data': 'mark_readed(4)'}),
+                frozendict({'text': '\u274c', 'callback_data': 'mark_readed(5)'}),
             ],
             [
-                {'text': '<- 06.03', 'callback_data': 'pagPrDay(2024-03-06)'},
-                {'text': '08.03 ->', 'callback_data': 'pagPrDay(2024-03-08)'},
+                frozendict({'text': '<- 06.03', 'callback_data': 'pagPrDay(2024-03-06)'}),
+                frozendict({'text': '08.03 ->', 'callback_data': 'pagPrDay(2024-03-08)'}),
             ],
         ],
-    })
+    }))
 
 
 @pytest.fixture
 def mock_http_routes(respx_mock, keyboard):
-    rv = {
+    rv = frozendict({
         'return_value': httpx.Response(
-            200, text=ujson.dumps({'ok': True, 'result': True}),
+            200, text=ujson.dumps(frozendict({'ok': True, 'result': True})),
         ),
-    }
-    chat_content = {
+    })
+    chat_content = frozendict({
         '358610865': '\n'.join([
             'Время намаза для г. Kazan (07.03.2024)\n',
             'Иртәнге: 04:30',
@@ -52,26 +53,26 @@ def mock_http_routes(respx_mock, keyboard):
             'Ахшам: 08:30',
             'Ястү: 09:30',
         ]),
-    }
+    })
     return [
-        respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add({
+        respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add(frozendict({
             'text': text,
             'chat_id': chat_id,
             'reply_markup': keyboard,
             'parse_mode': 'html',
-        }))).mock(**rv)
+        })))).mock(**rv)
         for chat_id, text in chat_content.items()
     ]
 
 
 @pytest.fixture
 def mock_http_ramadan_mode(respx_mock, keyboard):
-    rv = {
+    rv = frozendict({
         'return_value': httpx.Response(
-            200, text=ujson.dumps({'ok': True, 'result': True}),
+            200, text=ujson.dumps(frozendict({'ok': True, 'result': True})),
         ),
-    }
-    return respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add({
+    })
+    return respx_mock.get(str(furl('https://api.telegram.org/botfakeToken/sendMessage').add(frozendict({
         'text': '\n'.join([
             'Время намаза для г. Kazan (07.03.2024)\n',
             'Иртәнге: 04:30 <i>- Конец сухура</i>',
@@ -84,7 +85,7 @@ def mock_http_ramadan_mode(respx_mock, keyboard):
         'chat_id': '358610865',
         'reply_markup': keyboard,
         'parse_mode': 'html',
-    }))).mock(**rv)
+    })))).mock(**rv)
 
 
 @pytest.fixture
@@ -97,48 +98,48 @@ async def users(pgsql, city_factory, user_factory):
                 'VALUES (:prayer_id, :prayer_name, :time, :city_id, :day)',
             ])),
             [
-                {
+                frozendict({
                     'prayer_id': 1,
                     'prayer_name': 'fajr',
                     'time': datetime.time(4, 30),
                     'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
                     'day': datetime.date(2024, 3, 7),
-                },
-                {
+                }),
+                frozendict({
                     'prayer_id': 2,
                     'prayer_name': 'sunrise',
                     'time': datetime.time(5, 30),
                     'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
                     'day': datetime.date(2024, 3, 7),
-                },
-                {
+                }),
+                frozendict({
                     'prayer_id': 3,
                     'prayer_name': 'dhuhr',
                     'time': datetime.time(6, 30),
                     'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
                     'day': datetime.date(2024, 3, 7),
-                },
-                {
+                }),
+                frozendict({
                     'prayer_id': 4,
                     'prayer_name': 'asr',
                     'time': datetime.time(7, 30),
                     'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
                     'day': datetime.date(2024, 3, 7),
-                },
-                {
+                }),
+                frozendict({
                     'prayer_id': 5,
                     'prayer_name': 'maghrib',
                     'time': datetime.time(8, 30),
                     'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
                     'day': datetime.date(2024, 3, 7),
-                },
-                {
+                }),
+                frozendict({
                     'prayer_id': 6,
                     'prayer_name': "isha'a",
                     'time': datetime.time(9, 30),
                     'city_id': 'e22d9142-a39b-4e99-92f7-2082766f0987',
                     'day': datetime.date(2024, 3, 7),
-                },
+                }),
             ],
         )
         await conn.commit()
@@ -164,7 +165,7 @@ async def test(pgsql, fake_redis, time_machine, settings_ctor, mock_http_routes,
         RabbitmqSink(settings, logger),
         logger,
         fake_redis,
-    ).process(JsonDoc({}))
+    ).process(JsonDoc(frozendict({})))
 
     assert all(route.called for route in mock_http_routes)
 
@@ -188,6 +189,6 @@ async def test_ramadan_mode(pgsql, fake_redis, time_machine, settings_ctor, mock
         RabbitmqSink(settings, logger),
         logger,
         fake_redis,
-    ).process(JsonDoc({}))
+    ).process(JsonDoc(frozendict({})))
 
     assert mock_http_ramadan_mode.called

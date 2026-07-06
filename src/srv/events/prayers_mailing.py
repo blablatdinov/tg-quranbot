@@ -10,6 +10,7 @@ import attrs
 import pytz
 import ujson
 from eljson.json import Json
+from frozendict import frozendict
 from redis.asyncio import Redis
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -69,8 +70,8 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                 text('\n'.join([
                     'SELECT u.chat_id',
                     'FROM users AS u',
-                    "WHERE u.is_active = 't' {0}".format(
-                        'AND u.chat_id IN ({0})'.format(
+                    "WHERE u.is_active = 't' frozendict({0}".format(
+                        'AND u.chat_id IN (frozendict({0})'.format(
                             ','.join([str(chat_id) for chat_id in self._settings.ADMIN_CHAT_IDS]),
                         )
                         if self._settings.DAILY_PRAYERS == 'off' else '',
@@ -109,7 +110,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                         UserPrayersKeyboard(
                             self._pgsql,
                             date,
-                            TgChatId(FkUpdate(ujson.dumps({'chat': {'id': active_user[CHAT_ID]}}))),
+                            TgChatId(FkUpdate(ujson.dumps(frozendict({'chat': frozendict({'id': active_user[CHAT_ID]})})))),
                         ),
                     ),
                 ),

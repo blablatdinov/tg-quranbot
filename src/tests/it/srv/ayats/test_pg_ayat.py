@@ -6,6 +6,7 @@ import datetime
 import pytest
 import pytz
 from eljson.json_doc import JsonDoc
+from frozendict import frozendict
 from sqlalchemy import text
 
 from srv.ayats.pg_ayat import PgAyat
@@ -21,8 +22,8 @@ async def _db_ayat(pgsql):
                 "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
             ])),
             [
-                {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at},
-                {'file_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba', 'created_at': created_at},
+                frozendict({'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at}),
+                frozendict({'file_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba', 'created_at': created_at}),
             ],
         )
         await conn.execute(
@@ -45,7 +46,7 @@ async def _db_ayat(pgsql):
                 '  :transliteration',
                 ')',
             ])),
-            {
+            frozendict({
                 'ayat_id': 1,
                 'sura_id': 1,
                 'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
@@ -55,7 +56,7 @@ async def _db_ayat(pgsql):
                 'content': 'Ayat content',
                 'arab_text': 'Arab text',
                 'transliteration': 'Transliteration',
-            },
+            }),
         )
         await conn.commit()
 
@@ -74,13 +75,13 @@ async def test_str(pgsql):
 
 @pytest.mark.usefixtures('_db_ayat')
 async def test_change(pgsql):
-    event = {
+    event = frozendict({
         'event_id': 'some_id',
         'event_version': 1,
         'event_name': 'event_name',
         'event_time': '392409283',
         'producer': 'some producer',
-        'data': {
+        'data': frozendict({
             'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
             'day': 2,
             'audio_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba',
@@ -88,14 +89,14 @@ async def test_change(pgsql):
             'content': 'Updated content',
             'arab_text': 'Updated arab text',
             'transliteration': 'Updated arab transliteration',
-        },
-    }
+        }),
+    })
     await PgAyat.ayat_changed_event_ctor(JsonDoc(event), pgsql).change(JsonDoc(event))
 
     async with pgsql.connect() as conn:
         changed_record = (await conn.execute(text('SELECT * FROM ayats WHERE ayat_id = 1'))).mappings().one_or_none()
 
-    assert {
+    assert frozendict({
         key: changed_record[key]
         for key in (
             'arab_text',
@@ -108,7 +109,7 @@ async def test_change(pgsql):
             'sura_id',
             'transliteration',
         )
-    } == {
+    }) == frozendict({
         'arab_text': 'Updated arab text',
         'ar_audio_id': '99cce289-cfa0-4f92-8c3b-84aac82814ba',
         'ayat_id': 1,
@@ -118,4 +119,4 @@ async def test_change(pgsql):
         'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
         'sura_id': 1,
         'transliteration': 'Updated arab transliteration',
-    }
+    })

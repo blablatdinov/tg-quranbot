@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+
 from typing import final, override
 
 import attrs
@@ -53,7 +54,7 @@ class PodcastAnswer(TgAnswer):
                             ),
                             chat_id,
                         ),
-                        '/podcast{0}'.format(await self._podcast.podcast_id()),
+                        '/podcastfrozendict({0}'.format(await self._podcast.podcast_id()),
                     ),
                 ),
                 self._markupped_answer,

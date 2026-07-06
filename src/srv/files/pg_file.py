@@ -5,6 +5,7 @@ import uuid
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -35,7 +36,7 @@ class PgFile(TgFile):
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
                 text(query),
-                {'file_id': str(self._file_id)},
+                frozendict({'file_id': str(self._file_id)}),
             )
             row = query_result.mappings().fetchone()
         if row is None:
@@ -57,7 +58,7 @@ class PgFile(TgFile):
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
                 text(query),
-                {'file_id': str(self._file_id)},
+                frozendict({'file_id': str(self._file_id)}),
             )
             row = query_result.mappings().fetchone()
         if row is None:

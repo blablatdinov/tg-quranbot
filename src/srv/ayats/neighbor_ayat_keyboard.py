@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import ujson
+from frozendict import frozendict
 
 from app_types.update import Update
 from integrations.tg.keyboard import Keyboard
@@ -33,13 +34,13 @@ class NeighborAyatKeyboard(Keyboard):
         left_button = await btns.left()
         if left_button:
             buttons.append(left_button)
-        buttons.append({
+        buttons.append(frozendict({
             'text': await self._ayats_neighbors.page(),
             'callback_data': 'fake',
-        })
+        }))
         right_button = await btns.right()
         if right_button:
             buttons.append(right_button)
-        return ujson.dumps({
+        return ujson.dumps(frozendict({
             'inline_keyboard': [buttons],
-        })
+        }))

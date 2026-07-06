@@ -7,6 +7,7 @@ from typing import final, override
 
 import attrs
 import ujson
+from frozendict import frozendict
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.update import Update
@@ -54,32 +55,32 @@ class UserPrayersKeyboard(Keyboard):
             parsed_date,
         ).fetch()
         readed_buttons_line = [
-            {
+            frozendict({
                 'text': '✅' if user_prayer['is_read'] else '❌',
                 'callback_data': (
                     'mark_not_readed({0})' if user_prayer['is_read'] else 'mark_readed({0})'
                 ).format(
                     user_prayer['prayer_at_user_id'],
                 ),
-            }
+            })
             for user_prayer in prayers
         ]
-        return ujson.dumps({
+        return ujson.dumps(frozendict({
             'inline_keyboard': [
                 readed_buttons_line,
                 [
-                    {
+                    frozendict({
                         'text': '<- {0}'.format((parsed_date - datetime.timedelta(days=1)).strftime('%d.%m')),
                         'callback_data': 'pagPrDay({0})'.format(
                             (parsed_date - datetime.timedelta(days=1)).strftime('%Y-%m-%d'),
                         ),
-                    },
-                    {
+                    }),
+                    frozendict({
                         'text': '{0} ->'.format((parsed_date + datetime.timedelta(days=1)).strftime('%d.%m')),
                         'callback_data': 'pagPrDay({0})'.format(
                             (parsed_date + datetime.timedelta(days=1)).strftime('%Y-%m-%d'),
                         ),
-                    },
+                    }),
                 ],
             ],
-        })
+        }))

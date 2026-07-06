@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import httpx
+from frozendict import frozendict
 from furl import furl
 
 from app_types.update import Update
@@ -28,7 +29,7 @@ class TgReplySourceAnswer(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                (furl(request.url).add({'reply_to_message_id': 4})).url,
+                furl(request.url).add(frozendict({'reply_to_message_id': 4})).url,
             )
             for request in await self._origin.build(update)
         ]

@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 import pytz
+from frozendict import frozendict
 from sqlalchemy import text
 
 
@@ -26,7 +27,7 @@ async def _prayers_from_csv(pgsql, city_factory, user_factory) -> None:
         await conn.execute(
             text(query),
             [
-                {
+                frozendict({
                     'prayer_id': int(line[0]),
                     'name': line[1],
                     'time': datetime.datetime.strptime(line[2], '%H:%M:%S').astimezone(
@@ -36,7 +37,7 @@ async def _prayers_from_csv(pgsql, city_factory, user_factory) -> None:
                     'day': datetime.datetime.strptime(line[4], '%Y-%m-%d').astimezone(
                         pytz.timezone('Europe/Moscow'),
                     ),
-                }
+                })
                 for line in lines
             ],
         )
@@ -54,11 +55,11 @@ async def _prayers_from_csv(pgsql, city_factory, user_factory) -> None:
         await conn.execute(
             text(query),
             [
-                {
+                frozendict({
                     'prayer_at_user_id': int(line[0]),
                     'prayer_id': int(line[3]),
                     'is_read': line[4] == 'true',
-                }
+                })
                 for line in lines
             ],
         )

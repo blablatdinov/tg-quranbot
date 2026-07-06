@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+
 import datetime
 from typing import Any, final
 
@@ -68,7 +69,7 @@ async def test_month_names(month_num, month_name):
         datetime.datetime(2025, month_num, 1, tzinfo=datetime.UTC).date(),
     ).to_str()
 
-    assert got == 'https://halalguide.me/innopolis/namaz-time/{0}-2025'.format(month_name)
+    assert got == 'https://halalguide.me/innopolis/namaz-time/frozendict({0}-2025'.format(month_name)
 
 
 async def test_without_link():

@@ -7,6 +7,7 @@ from typing import final, override
 
 import attrs
 from dateutil import rrule
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -81,7 +82,7 @@ class PrayersStatistic(AsyncSupportsStr):
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
                 text(query),
-                {'chat_id': int(self._chat_id)},
+                frozendict({'chat_id': int(self._chat_id)}),
             )
             rows = query_result.mappings().fetchall()
         return list(
@@ -103,7 +104,7 @@ class PrayersStatistic(AsyncSupportsStr):
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
                 text(query),
-                {'chat_id': int(self._chat_id)},
+                frozendict({'chat_id': int(self._chat_id)}),
             )
             rows = query_result.mappings().fetchall()
         if not rows:

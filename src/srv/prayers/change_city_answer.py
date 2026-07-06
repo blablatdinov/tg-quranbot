@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+
 from typing import final, override
 
 import attrs
@@ -31,5 +32,5 @@ class ChangeCityAnswer(TgAnswer):
         await self._user_city.update()
         return await TgTextAnswer.str_ctor(
             self._origin,
-            'Вам будет приходить время намаза для города {0}'.format(await self._city.name()),
+            'Вам будет приходить время намаза для города frozendict({0}'.format(await self._city.name()),
         ).build(update)

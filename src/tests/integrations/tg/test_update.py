@@ -3,6 +3,8 @@
 
 from typing import final, override
 
+from frozendict import frozendict
+
 from app_types.update import Update
 from integrations.tg.cached_tg_update import CachedTgUpdate
 
@@ -25,7 +27,7 @@ class SeUpdate(Update):  # noqa: PEO200. Class for testing
     def asdict(self) -> dict:
         if self._asdict_call_count == 0:
             self._asdict_call_count += 1
-            return {'key': 'value'}
+            return frozendict({'key': 'value'})
         raise Exception  # noqa: TRY002, WPS454
 
 
@@ -34,5 +36,5 @@ def test():
 
     assert str(update) == 'value'
     assert str(update) == 'value'
-    assert update.asdict() == {'key': 'value'}
-    assert update.asdict() == {'key': 'value'}
+    assert update.asdict() == frozendict({'key': 'value'})
+    assert update.asdict() == frozendict({'key': 'value'})

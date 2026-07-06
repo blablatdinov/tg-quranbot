@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -65,7 +66,7 @@ class PgUser(User):
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
                 text(query),
-                {'chat_id': await self._chat_id.to_int()},
+                frozendict({'chat_id': await self._chat_id.to_int()}),
             )
             row = query_result.fetchone()
         if row is None:
@@ -86,7 +87,7 @@ class PgUser(User):
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
                 text(query),
-                {'chat_id': await self._chat_id.to_int()},
+                frozendict({'chat_id': await self._chat_id.to_int()}),
             )
             row = query_result.fetchone()
         if row is None:

@@ -8,6 +8,7 @@ from typing import final, override
 import aio_pika
 import attrs
 import ujson
+from frozendict import frozendict
 from loguru import logger
 from quranbot_schema_registry import validate_schema
 
@@ -33,14 +34,14 @@ class RabbitmqSink(Sink):
         :param event_name: str
         :param version: int
         """
-        event = {
+        event = frozendict({
             'event_id': str(uuid.uuid4()),
             'event_version': 1,
             'event_name': event_name,
             'event_time': str(int(time.time())),
             'producer': 'quranbot',
             'data': event_data,
-        }
+        })
         body_json = ujson.dumps(event)
         try:
             validate_schema(
@@ -49,23 +50,23 @@ class RabbitmqSink(Sink):
                 version,
             )
         except TypeError as err:
-            logger.error('Schema of event: {0} invalid. {1}'.format(
+            logger.error('Schema of event: frozendict({0} invalid. frozendict({1}'.format(
                 body_json, str(err),
             ))
             return
         connection = await aio_pika.connect_robust(
-            'amqp://{0}:{1}@{2}:5672/{3}'.format(
+            'amqp://frozendict({0}:frozendict({1}@frozendict({2}:5672/frozendict({3}'.format(
                 self._settings.RABBITMQ_USER,
                 self._settings.RABBITMQ_PASS,
                 self._settings.RABBITMQ_HOST,
                 self._settings.RABBITMQ_VHOST,
             ),
         )
-        self._logger.info('Try to publish event: {0}'.format(body_json))
+        self._logger.info('Try to publish event: frozendict({0}'.format(body_json))
         async with connection:
             channel = await connection.channel()
             await channel.default_exchange.publish(
                 aio_pika.Message(body=body_json.encode('utf-8')),
                 routing_key=queue_name,
             )
-        self._logger.info('Event: {0} published'.format(body_json))
+        self._logger.info('Event: frozendict({0} published'.format(body_json))

@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+
 import datetime
 from contextlib import suppress
 from typing import final, override
@@ -29,6 +30,6 @@ class ParsedDate(AsyncDate):
                 return datetime.datetime.strptime(date, fmt).astimezone(
                     pytz.timezone('Europe/Moscow'),
                 ).date()
-        msg = "time data '{0}' does not match formats {1}".format(date, formats)
+        msg = "time data '{0}' does not match formats frozendict({1}".format(date, formats)
         # TODO #1428:30min Написать кастомное исключение
         raise ValueError(msg)

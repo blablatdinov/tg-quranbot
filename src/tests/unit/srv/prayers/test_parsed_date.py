@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+
 import re
 
 import pytest
@@ -20,6 +21,6 @@ async def test_fail_format():
     with pytest.raises(ValueError, match=error_text):
         await ParsedDate(
             MessageText(
-                FkUpdate('{"message":{"text":"Время намаза invalid-date"}}'),
+                FkUpdate('{"message":frozendict({"text":"Время намаза invalid-date"}}'),
             ),
         ).date()

@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 from asyncpg import ForeignKeyViolationError
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -52,7 +53,7 @@ class PgNewUser(NewUser):
         :raises UserNotFoundError: не найден реферер
         """
         chat_id = int(self._new_user_chat_id)
-        self._logger.debug('Insert in DB User <{0}>...'.format(chat_id))
+        self._logger.debug('Insert in DB User <frozendict({0}>...'.format(chat_id))
         query = '\n'.join([
             'INSERT INTO',
             'users (chat_id, referrer_id, day, is_active)',
@@ -63,7 +64,7 @@ class PgNewUser(NewUser):
             async with self._pgsql.connect() as conn:
                 await conn.execute(
                     text(query),
-                    {'chat_id': chat_id, 'referrer_id': await self._referrer_chat_id.to_int()},
+                    frozendict({'chat_id': chat_id, 'referrer_id': await self._referrer_chat_id.to_int()}),
                 )
                 await conn.commit()
         except IntegrityError as err:
@@ -71,4 +72,4 @@ class PgNewUser(NewUser):
                 raise UserAlreadyExistsError from err
         except ForeignKeyViolationError as err:
             raise UserNotFoundError from err
-        self._logger.debug('User <{0}> inserted in DB'.format(chat_id))
+        self._logger.debug('User <frozendict({0}> inserted in DB'.format(chat_id))

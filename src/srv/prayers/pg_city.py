@@ -5,6 +5,7 @@ import uuid
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -70,7 +71,7 @@ class PgCity(City):
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
                 text(query),
-                {'city_id': await self._city_id.to_str()},
+                frozendict({'city_id': await self._city_id.to_str()}),
             )
             row = query_result.fetchone()
         if row is None:
