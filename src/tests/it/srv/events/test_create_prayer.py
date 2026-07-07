@@ -18,14 +18,15 @@ async def _city(city_factory):
 
 @pytest.mark.usefixtures('_city')
 async def test(pgsql):
-    await PrayerCreatedEvent(pgsql).process(JsonDoc(frozendict({
+    # JsonDoc incompatible with frozendict
+    await PrayerCreatedEvent(pgsql).process(JsonDoc({  # noqa: FCS100
         'data': frozendict({
             'name': 'fajr',
             'time': '5:36',
             'city_id': '6a4e14a7-b05d-4769-b801-e0c0dbf3c923',
             'day': '2023-01-02',
         }),
-    })))
+    }))
 
     async with pgsql.connect() as conn:
         row = (await conn.execute(text('SELECT name, time, city_id, day FROM prayers'))).mappings().fetchone()

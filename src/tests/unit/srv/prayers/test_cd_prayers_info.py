@@ -24,7 +24,8 @@ class _FkPrayersInfo(PrayersInfo):  # noqa: PEO200. Object for test only
         if self._flag:
             raise ValueError
         self._flag = True
-        return frozendict({
+        # frozendict incompatible with TypeDicts
+        return {  # noqa: FCS100
             'asr_prayer_time': '14:02',
             'city_name': 'Казань',
             'date': '20.01.2025',
@@ -33,7 +34,7 @@ class _FkPrayersInfo(PrayersInfo):  # noqa: PEO200. Object for test only
             'ishaa_prayer_time': '17:44',
             'magrib_prayer_time': '15:53',
             'sunrise_prayer_time': '07:57',
-        })
+        }
 
 
 async def test(fake_redis):

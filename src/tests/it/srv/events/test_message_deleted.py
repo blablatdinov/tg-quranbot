@@ -29,4 +29,5 @@ async def test(pgsql):
         pgsql,
         FkSink(),
         FkLogSink(),
-    ).process(JsonDoc(frozendict({'data': frozendict({'chat_id': 37945, 'message_id': 893457})})))
+        # JsonDoc incompatible with frozendict
+    ).process(JsonDoc({'data': frozendict({'chat_id': 37945, 'message_id': 893457})}))  # noqa: FCS100

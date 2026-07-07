@@ -147,7 +147,8 @@ async def test(pgsql, users, settings_ctor, settings):
         settings,
         RabbitmqSink(settings, logger),
         logger,
-    ).process(JsonDoc(frozendict({})))
+        # JsonDoc incompatible with frozendict
+    ).process(JsonDoc({}))  # noqa: FCS100
 
     assert [
         (await user.chat_id(), await user.is_active(), await user.day())

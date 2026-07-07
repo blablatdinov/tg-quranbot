@@ -58,9 +58,10 @@ async def test(pgsql, settings_ctor):
         FkLogSink(),
         settings_ctor(admin_chat_ids='93754').ADMIN_CHAT_IDS,
     ).process(
-        JsonDoc(frozendict({'data': frozendict({
+        # JsonDoc incompatible with frozendict
+        JsonDoc({'data': frozendict({  # noqa: FCS100
             'mailing_id': str(uuid.uuid4()),
             'text': 'Hello',
             'group': 'all',
-        })})),
+        })}),
     )

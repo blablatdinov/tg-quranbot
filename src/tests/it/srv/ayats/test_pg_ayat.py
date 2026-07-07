@@ -75,7 +75,8 @@ async def test_str(pgsql):
 
 @pytest.mark.usefixtures('_db_ayat')
 async def test_change(pgsql):
-    event = frozendict({
+    # JsonDoc incompatible with frozendict
+    event = {  # noqa: FCS100
         'event_id': 'some_id',
         'event_version': 1,
         'event_name': 'event_name',
@@ -90,7 +91,7 @@ async def test_change(pgsql):
             'arab_text': 'Updated arab text',
             'transliteration': 'Updated arab transliteration',
         }),
-    })
+    }
     await PgAyat.ayat_changed_event_ctor(JsonDoc(event), pgsql).change(JsonDoc(event))
 
     async with pgsql.connect() as conn:

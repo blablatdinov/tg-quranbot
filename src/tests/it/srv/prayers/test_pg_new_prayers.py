@@ -19,7 +19,8 @@ async def city(city_factory):
 async def test(pgsql, city):
     city_id = await city.city_id()
     await PgNewPrayers(
-        frozendict({
+        # frozendict incompatible with TypeDicts
+        {  # noqa: FCS100
             'asr_prayer_time': '13:39',
             'city_name': 'Казань',
             'date': '06.01.2025',
@@ -28,7 +29,7 @@ async def test(pgsql, city):
             'ishaa_prayer_time': '17:25',
             'magrib_prayer_time': '15:28',
             'sunrise_prayer_time': '08:11',
-        }),
+        },
         pgsql,
     ).create()
 

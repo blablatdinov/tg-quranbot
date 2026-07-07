@@ -169,7 +169,8 @@ async def test(pgsql, fake_redis, time_machine, settings_ctor, mock_http_routes,
         RabbitmqSink(settings, logger),
         logger,
         fake_redis,
-    ).process(JsonDoc(frozendict({})))
+        # JsonDoc incompatible with frozendict
+    ).process(JsonDoc({}))  # noqa: FCS100
 
     assert all(route.called for route in mock_http_routes)
 
@@ -193,6 +194,7 @@ async def test_ramadan_mode(pgsql, fake_redis, time_machine, settings_ctor, mock
         RabbitmqSink(settings, logger),
         logger,
         fake_redis,
-    ).process(JsonDoc(frozendict({})))
+        # JsonDoc incompatible with frozendict
+    ).process(JsonDoc({}))  # noqa: FCS100
 
     assert mock_http_ramadan_mode.called

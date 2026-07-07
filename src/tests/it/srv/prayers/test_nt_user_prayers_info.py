@@ -27,7 +27,8 @@ async def _user(user_factory):
 @pytest.fixture
 async def _prayers(pgsql):
     await NtPgPrayersInfo(
-        FkPrayersInfo(frozendict({
+        # frozendict incompatible with TypeDicts
+        FkPrayersInfo({  # noqa: FCS100
             'city_name': 'Казань',
             'date': '21.10.2023',
             'fajr_prayer_time': '04:22',
@@ -36,7 +37,7 @@ async def _prayers(pgsql):
             'asr_prayer_time': '14:35',
             'magrib_prayer_time': '16:30',
             'ishaa_prayer_time': '18:12',
-        })),
+        }),
         pgsql,
     ).to_dict()
 
@@ -44,7 +45,8 @@ async def _prayers(pgsql):
 @pytest.mark.usefixtures('_db_city', '_user', '_prayers')
 async def test(pgsql):
     await NtUserPrayersInfo(
-        FkPrayersInfo(frozendict({
+        # frozendict incompatible with TypeDicts
+        FkPrayersInfo({  # noqa: FCS100
             'city_name': 'Казань',
             'date': '21.10.2023',
             'fajr_prayer_time': '04:22',
@@ -53,7 +55,7 @@ async def test(pgsql):
             'asr_prayer_time': '14:35',
             'magrib_prayer_time': '16:30',
             'ishaa_prayer_time': '18:12',
-        })),
+        }),
         pgsql,
         FkChatId(1),
     ).to_dict()
@@ -71,7 +73,8 @@ async def test(pgsql):
 @pytest.mark.usefixtures('_db_city', '_user', '_prayers')
 async def test_double(pgsql):
     nt_user_prayers_info = NtUserPrayersInfo(
-        FkPrayersInfo(frozendict({
+        # frozendict incompatible with TypeDicts
+        FkPrayersInfo({  # noqa: FCS100
             'city_name': 'Казань',
             'date': '21.10.2023',
             'fajr_prayer_time': '04:22',
@@ -80,7 +83,7 @@ async def test_double(pgsql):
             'asr_prayer_time': '14:35',
             'magrib_prayer_time': '16:30',
             'ishaa_prayer_time': '18:12',
-        })),
+        }),
         pgsql,
         FkChatId(1),
     )

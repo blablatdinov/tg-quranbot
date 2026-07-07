@@ -58,7 +58,8 @@ class PgPrayersInfo(PrayersInfo):
                 await self._date.parse(self._update),
             )
         time_format = '%H:%M'
-        return PrayerMessageTextDict(frozendict({
+        # frozendict incompatible with TypeDicts
+        return PrayerMessageTextDict({  # noqa: FCS100
             'city_name': rows[0]['city_name'],
             'date': rows[0]['day'].strftime('%d.%m.%Y'),
             'fajr_prayer_time': rows[0][TIME_LITERAL].strftime(time_format),
@@ -67,4 +68,4 @@ class PgPrayersInfo(PrayersInfo):
             'asr_prayer_time': rows[3][TIME_LITERAL].strftime(time_format),
             'magrib_prayer_time': rows[4][TIME_LITERAL].strftime(time_format),
             'ishaa_prayer_time': rows[5][TIME_LITERAL].strftime(time_format),
-        }))
+        })

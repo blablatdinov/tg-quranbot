@@ -54,7 +54,8 @@ async def _users(user_factory):
 async def test_user_status(pgsql):
     await CheckUsersStatus(
         FkAnswer(), pgsql, FkSink(), FkLogSink(),
-    ).process(JsonDoc(frozendict({})))
+        # JsonDoc incompatible with frozendict
+    ).process(JsonDoc({}))  # noqa: FCS100
 
     async with pgsql.connect() as conn:
         assert [
@@ -67,7 +68,8 @@ async def test_user_status(pgsql):
 async def test_unsubscribed(pgsql):
     await CheckUsersStatus(
         FkAnswer(), pgsql, FkSink(), FkLogSink(),
-    ).process(JsonDoc(frozendict({})))
+        # JsonDoc incompatible with frozendict
+    ).process(JsonDoc({}))  # noqa: FCS100
 
     async with pgsql.connect() as conn:
         assert [

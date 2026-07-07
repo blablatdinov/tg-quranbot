@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+import copy
 import datetime
 from itertools import batched
 from typing import final, override
@@ -33,14 +34,14 @@ class PrayersStatistic(AsyncSupportsStr):
         :return: str
         """
         idx = 0
-        prayer_unread_dict = dict.fromkeys(PrayerNames.names(), 0)
+        prayer_unread_dict = frozendict(dict.fromkeys(PrayerNames.names(), 0))
         prayers_per_day = await self._prayers_per_day()
         for date in await self._dates_range():
             if date == prayers_per_day[idx][0]['day']:
-                self._exist_prayer_case(prayers_per_day, prayer_unread_dict, idx)
+                prayer_unread_dict = self._exist_prayer_case(prayers_per_day, prayer_unread_dict, idx)
                 idx += 1
             else:
-                await self._new_prayer_at_user_case(prayer_unread_dict, date)
+                prayer_unread_dict = await self._new_prayer_at_user_case(prayer_unread_dict, date)
         return '\n'.join([
             'Кол-во непрочитанных намазов:\n',
             'Иртәнге: {0}'.format(prayer_unread_dict[PrayerNames.fajr.name]),
@@ -55,18 +56,22 @@ class PrayersStatistic(AsyncSupportsStr):
         prayers_per_day: list[tuple],
         prayer_unread_dict: frozendict,
         idx: int,
-    ) -> None:
+    ) -> frozendict:
+        tmp_dict = dict(copy.deepcopy(prayer_unread_dict))
         for prayer_idx, prayer_name in enumerate(PrayerNames.names()):
-            prayer_unread_dict[prayer_name] += int(not prayers_per_day[idx][prayer_idx]['is_read'])
+            tmp_dict[prayer_name] += int(not prayers_per_day[idx][prayer_idx]['is_read'])
+        return frozendict(tmp_dict)
 
     async def _new_prayer_at_user_case(  # noqa: NPM100. Fix it
         self,
         prayer_unread_dict: frozendict,
         date: datetime.date,
-    ) -> None:
+    ) -> frozendict:
+        tmp_dict = dict(copy.deepcopy(prayer_unread_dict))
         await self._prayers_at_user.create(date)
         for prayer_name in PrayerNames.names():
-            prayer_unread_dict[prayer_name] += 1
+            tmp_dict[prayer_name] += 1
+        return frozendict(tmp_dict)
 
     async def _prayers_per_day(self) -> list[tuple]:  # noqa: NPM100. Fix it
         query = '\n'.join([
