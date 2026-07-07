@@ -24,7 +24,7 @@ class SkippedPrayersKeyboard(Keyboard):
         :param update: Update
         :return: str
         """
-        return ujson.dumps({
+        return ujson.dumps(frozendict({
             'inline_keyboard': [
                 [frozendict({
                     'text': '{0}: (-1)'.format(field.value[1]),
@@ -32,4 +32,4 @@ class SkippedPrayersKeyboard(Keyboard):
                 })]
                 for field in PrayerNames.fields_without_sunrise()
             ],
-        })
+        }))

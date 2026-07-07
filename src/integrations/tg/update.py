@@ -36,7 +36,7 @@ class TgUpdate(Update):
         return ujson.dumps(self._update_dict)
 
     @override
-    def asdict(self) -> dict:
+    def asdict(self) -> frozendict:
         """Словарь.
 
         # TODO #360:30min возможно стоит возвращать валидированный dict: return self.parsed().dict().

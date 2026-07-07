@@ -22,7 +22,7 @@ class NeighborAyatsBtns(NeighborAyatsButtons):
     _callback_template: AyatCallbackTemplateEnum
 
     @override
-    async def left(self) -> dict[str, str] | None:
+    async def left(self) -> frozendict[str, str] | None:
         """Левая кнопка.
 
         :return: dict[str, str] | None
@@ -39,7 +39,7 @@ class NeighborAyatsBtns(NeighborAyatsButtons):
         return None
 
     @override
-    async def right(self) -> dict[str, str] | None:
+    async def right(self) -> frozendict[str, str] | None:
         """Правая кнопка.
 
         :return: dict[str, str] | None

@@ -29,9 +29,9 @@ class CachedTgUpdate(Update):  # noqa: PEO200
         :param origin: Update - оригинальный объект обновления
         """
         self._origin = origin
-        self._cache: _CacheDict = {  # noqa: PEO101
+        self._cache: _CacheDict = {  # noqa: PEO101, FCS100
             STR_LITERAL: '',
-            ASDICT_LITERAL: {},
+            ASDICT_LITERAL: frozendict({}),
         }
 
     @override

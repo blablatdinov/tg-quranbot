@@ -36,7 +36,7 @@ class LoggedAnswer(Sendable):
     _mailing_id: uuid.UUID | None = None
 
     @override
-    async def send(self, update: Update) -> list[dict]:  # noqa: WPS217, WPS231
+    async def send(self, update: Update) -> list[frozendict]:  # noqa: WPS217, WPS231
         """Отправка.
 
         :param update: str

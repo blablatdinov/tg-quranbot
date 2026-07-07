@@ -158,6 +158,7 @@ external = [
   "FIN",
   "PEO",
   "OVR",
+  "FCS",
 ]
 
 [tool.ruff.lint.flake8-quotes]
