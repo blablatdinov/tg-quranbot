@@ -750,20 +750,18 @@ flake8 = ">=7.1,<8.0"
 
 [[package]]
 name = "flake8-frozen-collections"
-version = "0.1.0"
+version = "0.0.1"
 description = "Flake8 plugin that requires frozendict and frozenset instead of dict and set"
 optional = false
-python-versions = "^3.10"
-groups = ["main"]
-files = []
-develop = false
+python-versions = "<4.0,>=3.10"
+groups = ["dev"]
+files = [
+    {file = "flake8_frozen_collections-0.0.1-py3-none-any.whl", hash = "sha256:ac152d85b3dac6699e3db12e83f0484f20b9ed5d87ea7720bc5159d1e60f00f4"},
+    {file = "flake8_frozen_collections-0.0.1.tar.gz", hash = "sha256:2689b7fbcaba1ec0f6c4bbd637f508aec1748eb8a24c8597271315575063c80b"},
+]
 
 [package.dependencies]
 flake8 = ">=7.0.0"
-
-[package.source]
-type = "directory"
-url = "flake8-frozen-collections"
 
 [[package]]
 name = "flake8-no-json"
@@ -4320,4 +4318,4 @@ type = ["pytest-mypy (>=1.0.1) ; platform_python_implementation != \"PyPy\""]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "198cec6c9ff9dd060b2627bd59c5e29c788e238a9d213fb101d1ed55519e8530"
+content-hash = "914b8e725fb5014e28262394e983565001246ddd3718194742258f4ece3758af"

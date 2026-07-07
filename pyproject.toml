@@ -33,8 +33,7 @@ more-itertools = "11.1.0"
 lxml = "6.1.1"
 prometheus-client = "0.25.0"
 watchdog = {version = "6.0.0", extras = ["watchmedo"]}
-frozendict = "^2.4.7"
-flake8-frozen-collections = {path = "flake8-frozen-collections"}
+frozendict = "2.4.7"
 
 [tool.poetry.group.dev.dependencies]
 # tests
@@ -71,6 +70,7 @@ flake8-no-json = "0.0.2"
 vulture = "2.16"
 sqlfluff = "4.2.2"
 flake8-no-private-methods = "0.0.2"
+flake8-frozen-collections = "0.0.1"
 # other
 deltaver = "1.0.1"
 yoyo-migrations = "9.0.0"
