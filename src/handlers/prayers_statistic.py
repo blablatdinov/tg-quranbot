@@ -34,7 +34,7 @@ class PrayersStatistic(AsyncSupportsStr):
         :return: str
         """
         idx = 0
-        prayer_unread_dict = frozendict(dict.fromkeys(PrayerNames.names(), 0))
+        prayer_unread_dict = frozendict.fromkeys(PrayerNames.names(), 0)
         prayers_per_day = await self._prayers_per_day()
         for date in await self._dates_range():
             if date == prayers_per_day[idx][0]['day']:
@@ -57,7 +57,8 @@ class PrayersStatistic(AsyncSupportsStr):
         prayer_unread_dict: frozendict,
         idx: int,
     ) -> frozendict:
-        tmp_dict = dict(copy.deepcopy(prayer_unread_dict))
+        # In method modification
+        tmp_dict = dict(copy.deepcopy(prayer_unread_dict))  # noqa: FCS100
         for prayer_idx, prayer_name in enumerate(PrayerNames.names()):
             tmp_dict[prayer_name] += int(not prayers_per_day[idx][prayer_idx]['is_read'])
         return frozendict(tmp_dict)
@@ -67,7 +68,8 @@ class PrayersStatistic(AsyncSupportsStr):
         prayer_unread_dict: frozendict,
         date: datetime.date,
     ) -> frozendict:
-        tmp_dict = dict(copy.deepcopy(prayer_unread_dict))
+        # In method modification
+        tmp_dict = dict(copy.deepcopy(prayer_unread_dict))  # noqa: FCS100
         await self._prayers_at_user.create(date)
         for prayer_name in PrayerNames.names():
             tmp_dict[prayer_name] += 1

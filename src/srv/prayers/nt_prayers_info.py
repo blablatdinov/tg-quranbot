@@ -7,7 +7,6 @@ from typing import final, override
 import attrs
 import httpx
 import pytz
-from frozendict import frozendict
 from lxml import etree
 from sqlalchemy.ext.asyncio import AsyncEngine
 
