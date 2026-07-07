@@ -8,7 +8,7 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 
 async def test(pgsql, fake_redis):
     got = await StatusAnswer(FkAnswer(), pgsql, fake_redis).build(
-        FkUpdate('{"chat":frozendict({"id":1}}'),
+        FkUpdate('{"chat":{"id":1}}'),
     )
     answer_text = got[0].url.params['text']
 
