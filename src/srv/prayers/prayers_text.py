@@ -21,13 +21,13 @@ class PrayersText(AsyncSupportsStr):
         """Строковое представление."""
         origin = await self._prayer_info.to_dict()
         template = '\n'.join([
-            'Время намаза для г. frozendict({city_name} (frozendict({date})\n',
-            'Иртәнге: frozendict({fajr_prayer_time}',
-            'Восход: frozendict({sunrise_prayer_time}',
-            'Өйлә: frozendict({dhuhr_prayer_time}',
-            'Икенде: frozendict({asr_prayer_time}',
-            'Ахшам: frozendict({magrib_prayer_time}',
-            'Ястү: frozendict({ishaa_prayer_time}',
+            'Время намаза для г. {city_name} ({date})\n',
+            'Иртәнге: {fajr_prayer_time}',
+            'Восход: {sunrise_prayer_time}',
+            'Өйлә: {dhuhr_prayer_time}',
+            'Икенде: {asr_prayer_time}',
+            'Ахшам: {magrib_prayer_time}',
+            'Ястү: {ishaa_prayer_time}',
         ])
         return template.format(
             city_name=origin['city_name'],
