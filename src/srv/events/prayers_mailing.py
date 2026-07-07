@@ -10,6 +10,7 @@ import attrs
 import pytz
 import ujson
 from eljson.json import Json
+from frozendict import frozendict
 from redis.asyncio import Redis
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -109,7 +110,11 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
                         UserPrayersKeyboard(
                             self._pgsql,
                             date,
-                            TgChatId(FkUpdate(ujson.dumps({'chat': {'id': active_user[CHAT_ID]}}))),
+                            TgChatId(
+                                FkUpdate(
+                                    ujson.dumps(frozendict({'chat': frozendict({'id': active_user[CHAT_ID]})})),
+                                ),
+                            ),
                         ),
                     ),
                 ),

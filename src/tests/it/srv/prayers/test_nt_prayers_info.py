@@ -7,6 +7,7 @@ from pathlib import Path
 
 import httpx
 import pytest
+from frozendict import frozendict
 from sqlalchemy import text
 
 from exceptions.prayer_exceptions import PrayersNotFoundError
@@ -30,7 +31,7 @@ async def city(city_factory, pgsql):
     async with pgsql.connect() as conn:
         await conn.execute(
             text('INSERT INTO namaz_today_cities (city_id, link) VALUES (:city_id, :link)'),
-            {'city_id': str(city_id), 'link': 'https://namaz.today/city/kazan'},
+            frozendict({'city_id': str(city_id), 'link': 'https://namaz.today/city/kazan'}),
         )
         await conn.commit()
     return FkCity(city_id, 'Казань')
@@ -45,7 +46,7 @@ async def test_today(time_machine, pgsql, city):
         pgsql,
     ).to_dict()
 
-    assert got == {
+    assert got == frozendict({
         'asr_prayer_time': '13:39',
         'city_name': 'Казань',
         'date': '06.01.2025',
@@ -54,7 +55,7 @@ async def test_today(time_machine, pgsql, city):
         'ishaa_prayer_time': '17:25',
         'magrib_prayer_time': '15:28',
         'sunrise_prayer_time': '08:11',
-    }
+    })
 
 
 @pytest.mark.usefixtures('nt_mock')
@@ -66,7 +67,7 @@ async def test_by_date(pgsql, time_machine, city):
         pgsql,
     ).to_dict()
 
-    assert got == {
+    assert got == frozendict({
         'asr_prayer_time': '14:02',
         'city_name': 'Казань',
         'date': '20.01.2025',
@@ -75,7 +76,7 @@ async def test_by_date(pgsql, time_machine, city):
         'ishaa_prayer_time': '17:44',
         'magrib_prayer_time': '15:53',
         'sunrise_prayer_time': '07:57',
-    }
+    })
 
 
 # TODO #1450:30min Пока возможно получать время намаза только в рамках текущего месяца.

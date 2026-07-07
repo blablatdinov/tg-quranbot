@@ -1,10 +1,12 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
+
 import datetime
 from typing import Any, final
 
 import pytest
+from frozendict import frozendict
 
 from exceptions.internal_exceptions import CityNotFoundError
 from srv.prayers.fk_city import FkCity
@@ -25,7 +27,7 @@ class _FkDbConn:  # noqa: PEO200
     async def __aexit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
         pass
 
-    async def execute(self, query: str, query_params: dict[str, Any] | None = None) -> _FkDbConn:  # noqa: ARG001
+    async def execute(self, query: str, query_params: frozendict[str, Any] | None = None) -> _FkDbConn:  # noqa: ARG001
         return self
 
     def fetchone(self) -> tuple | None:

@@ -4,6 +4,7 @@
 from typing import cast, final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -42,7 +43,7 @@ class PodcastId(AsyncInt):
         async with self._pgsql.connect() as conn:
             podcast_id = (await conn.execute(
                 text(query),
-                {'chat_id': int(self._chat_id)},
+                frozendict({'chat_id': int(self._chat_id)}),
             )).scalar()
             if not podcast_id:
                 podcast_id = (await conn.execute(
@@ -54,6 +55,6 @@ class PodcastId(AsyncInt):
                     'INSERT INTO podcast_reactions (podcast_id, user_id, reaction)',
                     'VALUES (:podcast_id, :user_id, :reaction)',
                 ])),
-                {'podcast_id': podcast_id, 'user_id': int(self._chat_id), 'reaction': 'showed'},
+                frozendict({'podcast_id': podcast_id, 'user_id': int(self._chat_id), 'reaction': 'showed'}),
             )
             return podcast_id

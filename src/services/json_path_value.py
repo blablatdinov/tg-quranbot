@@ -5,6 +5,7 @@ from typing import Generic, final, override
 
 import attrs
 import jsonpath_ng
+from frozendict import frozendict
 
 from app_types.stringable import SupportsStr
 from services.json_path import ET_co, JsonPath
@@ -30,7 +31,7 @@ class JsonPathValue(JsonPath, Generic[ET_co]):
         )
     """
 
-    _json: dict
+    _json: frozendict
     _json_path: SupportsStr
 
     @override

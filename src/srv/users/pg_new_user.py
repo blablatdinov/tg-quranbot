@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 from asyncpg import ForeignKeyViolationError
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -63,7 +64,7 @@ class PgNewUser(NewUser):
             async with self._pgsql.connect() as conn:
                 await conn.execute(
                     text(query),
-                    {'chat_id': chat_id, 'referrer_id': await self._referrer_chat_id.to_int()},
+                    frozendict({'chat_id': chat_id, 'referrer_id': await self._referrer_chat_id.to_int()}),
                 )
                 await conn.commit()
         except IntegrityError as err:

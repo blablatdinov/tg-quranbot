@@ -4,6 +4,7 @@
 import uuid
 
 import pytest
+from frozendict import frozendict
 from sqlalchemy import text
 
 from integrations.tg.fk_chat_id import FkChatId
@@ -26,7 +27,8 @@ async def _user(user_factory):
 @pytest.fixture
 async def _prayers(pgsql):
     await NtPgPrayersInfo(
-        FkPrayersInfo({
+        # frozendict incompatible with TypeDicts
+        FkPrayersInfo({  # noqa: FCS100
             'city_name': 'Казань',
             'date': '21.10.2023',
             'fajr_prayer_time': '04:22',
@@ -43,7 +45,8 @@ async def _prayers(pgsql):
 @pytest.mark.usefixtures('_db_city', '_user', '_prayers')
 async def test(pgsql):
     await NtUserPrayersInfo(
-        FkPrayersInfo({
+        # frozendict incompatible with TypeDicts
+        FkPrayersInfo({  # noqa: FCS100
             'city_name': 'Казань',
             'date': '21.10.2023',
             'fajr_prayer_time': '04:22',
@@ -59,10 +62,10 @@ async def test(pgsql):
 
     async with pgsql.connect() as conn:
         assert (await conn.execute(text('select user_id, is_read from prayers_at_user'))).mappings().fetchall() == [
-            {
+            frozendict({
                 'is_read': False,
                 'user_id': 1,
-            }
+            })
             for _ in range(5)
         ]
 
@@ -70,7 +73,8 @@ async def test(pgsql):
 @pytest.mark.usefixtures('_db_city', '_user', '_prayers')
 async def test_double(pgsql):
     nt_user_prayers_info = NtUserPrayersInfo(
-        FkPrayersInfo({
+        # frozendict incompatible with TypeDicts
+        FkPrayersInfo({  # noqa: FCS100
             'city_name': 'Казань',
             'date': '21.10.2023',
             'fajr_prayer_time': '04:22',

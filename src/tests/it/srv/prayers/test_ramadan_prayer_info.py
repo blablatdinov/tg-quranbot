@@ -4,6 +4,7 @@
 import datetime
 
 import pytz
+from frozendict import frozendict
 
 from app_types.fk_async_str import FkAsyncStr
 from app_types.fk_update import FkUpdate
@@ -24,7 +25,7 @@ async def test(pgsql, prayers_factory):
         ramadan_mode=True,
     ).to_dict()
 
-    assert got == {
+    assert got == frozendict({
         'asr_prayer_time': '13:21',
         'city_name': 'Kazan',
         'date': '19.12.2023',
@@ -33,4 +34,4 @@ async def test(pgsql, prayers_factory):
         'ishaa_prayer_time': '17:04',
         'magrib_prayer_time': '15:07 <i>- Ифтар</i>',
         'sunrise_prayer_time': '08:02',
-    }
+    })

@@ -3,6 +3,7 @@
 
 import pytest
 import ujson
+from frozendict import frozendict
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
@@ -25,7 +26,7 @@ async def test(fake_redis, unquote, search_answer):
     got = await search_answer.build(FkUpdate('{"callback_query": {"data": "1"}, "chat": {"id": 1758}}'))
 
     assert got[0].url.path == '/sendMessage'
-    assert dict(got[0].url.params) == {
+    assert frozendict(got[0].url.params) == frozendict({
         'parse_mode': 'html',
         'chat_id': '1758',
         'text': '\n'.join([
@@ -34,14 +35,14 @@ async def test(fake_redis, unquote, search_answer):
             'Content\n',
             '<i>Transliteration</i>',
         ]),
-        'reply_markup': ujson.dumps({
+        'reply_markup': ujson.dumps(frozendict({
             'inline_keyboard': [
-                [{'text': 'стр. 1/1', 'callback_data': 'fake'}],
-                [{'text': 'Добавить в избранное', 'callback_data': 'addToFavor(1)'}],
+                [frozendict({'text': 'стр. 1/1', 'callback_data': 'fake'})],
+                [frozendict({'text': 'Добавить в избранное', 'callback_data': 'addToFavor(1)'})],
             ],
-        }),
+        })),
         'link_preview_options': '{"is_disabled":true}',
-    }
+    })
 
 
 @pytest.mark.usefixtures('db_ayat')

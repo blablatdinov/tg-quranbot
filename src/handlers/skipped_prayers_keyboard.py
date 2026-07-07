@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import ujson
+from frozendict import frozendict
 
 from app_types.update import Update
 from integrations.tg.keyboard import Keyboard
@@ -23,12 +24,12 @@ class SkippedPrayersKeyboard(Keyboard):
         :param update: Update
         :return: str
         """
-        return ujson.dumps({
+        return ujson.dumps(frozendict({
             'inline_keyboard': [
-                [{
+                [frozendict({
                     'text': '{0}: (-1)'.format(field.value[1]),
                     'callback_data': 'decr({0})'.format(field.name),
-                }]
+                })]
                 for field in PrayerNames.fields_without_sunrise()
             ],
-        })
+        }))

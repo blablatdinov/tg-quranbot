@@ -5,6 +5,7 @@ import asyncio
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from more_itertools import flatten
 
 from app_types.logger import LogSink
@@ -24,7 +25,7 @@ class BulkSendableAnswer(Sendable):
     _logger: LogSink
 
     @override
-    async def send(self, update: Update) -> list[dict]:
+    async def send(self, update: Update) -> list[frozendict]:
         """Отправка.
 
         :param update: Update

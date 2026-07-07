@@ -6,6 +6,7 @@ from typing import final, override
 import attrs
 import httpx
 import ujson
+from frozendict import frozendict
 from furl import furl
 
 from app_types.update import Update
@@ -30,9 +31,9 @@ class TgLinkPreviewOptions(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                furl(request.url).add({
-                    'link_preview_options': ujson.dumps({'is_disabled': self._disabled}),
-                }).url,
+                furl(request.url).add(frozendict({
+                    'link_preview_options': ujson.dumps(frozendict({'is_disabled': self._disabled})),
+                })).url,
             )
             for request in await self._origin.build(update)
         ]

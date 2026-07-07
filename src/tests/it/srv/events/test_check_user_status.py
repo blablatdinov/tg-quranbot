@@ -5,6 +5,7 @@ import httpx
 import pytest
 import ujson
 from eljson.json_doc import JsonDoc
+from frozendict import frozendict
 from sqlalchemy import text
 
 from app_types.fk_log_sink import FkLogSink
@@ -15,11 +16,11 @@ from srv.events.fk_sink import FkSink
 
 @pytest.fixture
 def _mock_actives(respx_mock):
-    rv = {
+    rv = frozendict({
         'return_value': httpx.Response(
-            200, text=ujson.dumps({'ok': True, 'result': True}),
+            200, text=ujson.dumps(frozendict({'ok': True, 'result': True})),
         ),
-    }
+    })
     respx_mock.get('https://some.domain/sendChatAction?chat_id=1&action=typing').mock(**rv)
     respx_mock.get('https://some.domain/sendChatAction?chat_id=2&action=typing').mock(**rv)
     respx_mock.get('https://some.domain/sendChatAction?chat_id=3&action=typing').mock(**rv)
@@ -27,15 +28,18 @@ def _mock_actives(respx_mock):
 
 @pytest.fixture
 def _mock_unsubscribed(respx_mock):
-    rv = {
+    rv = frozendict({
         'return_value': httpx.Response(
             400, text='{"ok":false,"error_code":400,"description":"Bad Request: chat not found"}',
         ),
-    }
+    })
     respx_mock.get('https://some.domain/sendChatAction?chat_id=1&action=typing').mock(**rv)
     respx_mock.get('https://some.domain/sendChatAction?chat_id=2&action=typing').mock(**rv)
     respx_mock.get('https://some.domain/sendChatAction?chat_id=3&action=typing').mock(
-        return_value=httpx.Response(200, text=ujson.dumps({'ok': True, 'result': True})),
+        return_value=httpx.Response(
+            200,
+            text=ujson.dumps(frozendict({'ok': True, 'result': True})),
+        ),
     )
 
 
@@ -50,7 +54,8 @@ async def _users(user_factory):
 async def test_user_status(pgsql):
     await CheckUsersStatus(
         FkAnswer(), pgsql, FkSink(), FkLogSink(),
-    ).process(JsonDoc({}))
+        # JsonDoc incompatible with frozendict
+    ).process(JsonDoc({}))  # noqa: FCS100
 
     async with pgsql.connect() as conn:
         assert [
@@ -63,7 +68,8 @@ async def test_user_status(pgsql):
 async def test_unsubscribed(pgsql):
     await CheckUsersStatus(
         FkAnswer(), pgsql, FkSink(), FkLogSink(),
-    ).process(JsonDoc({}))
+        # JsonDoc incompatible with frozendict
+    ).process(JsonDoc({}))  # noqa: FCS100
 
     async with pgsql.connect() as conn:
         assert [

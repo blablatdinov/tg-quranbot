@@ -6,6 +6,7 @@ from typing import final, override
 import attrs
 import httpx
 import ujson
+from frozendict import frozendict
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
@@ -37,8 +38,10 @@ async def test_invite_set_city_answer(fake_redis):
         FkAnswer(), fake_redis, FkLogSink(),
     ).build(FkUpdate('{"chat":{"id":1}}'))
 
-    assert got[0].url.params['reply_markup'] == ujson.dumps({
-        'inline_keyboard': [[
-            {'text': 'Поиск города', 'switch_inline_query_current_chat': ''},
-        ]],
-    })
+    assert got[0].url.params['reply_markup'] == ujson.dumps(
+        frozendict({
+            'inline_keyboard': [[
+                frozendict({'text': 'Поиск города', 'switch_inline_query_current_chat': ''}),
+            ]],
+        }),
+    )

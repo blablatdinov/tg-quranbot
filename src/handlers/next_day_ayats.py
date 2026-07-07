@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import httpx
+from frozendict import frozendict
 from jinja2 import Template
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -44,13 +45,13 @@ class NextDayAyats(TgAnswer):
                 'JOIN suras AS s ON a.sura_id = s.sura_id',
                 'WHERE u.chat_id = :chat_id',
                 'ORDER BY a.ayat_id',
-            ])), {'chat_id': int(TgChatId(update))})
+            ])), frozendict({'chat_id': int(TgChatId(update))}))
             ayats = query_result.mappings().fetchall()
             await conn.execute(text('\n'.join([
                 'UPDATE users',
                 'SET day = day + 1',
                 'WHERE chat_id = :chat_id',
-            ])), {'chat_id': int(TgChatId(update))})
+            ])), frozendict({'chat_id': int(TgChatId(update))}))
             await conn.commit()
         return await TgLinkPreviewOptions(
             TgHtmlParseAnswer(
@@ -64,17 +65,17 @@ class NextDayAyats(TgAnswer):
                             '<b>{{ ayat.sura_id }}:{{ ayat.ayat_number }})</b> {{ ayat.content }}\n',
                             '{% endfor %}',
                             '\nhttps://umma.ru{{ sura_link }}',
-                        ])).render({
+                        ])).render(frozendict({
                             'ayats': [
-                                {
+                                frozendict({
                                     'sura_id': ayat['sura_id'],
                                     'ayat_number': ayat['ayat_number'],
                                     'content': ayat['content'],
-                                }
+                                })
                                 for ayat in ayats
                             ],
                             'sura_link': ayats[0]['sura_link'],
-                        }),
+                        })),
                     ),
                     FkKeyboard(
                         '{"inline_keyboard":[[{"text":"Следующий день","callback_data":"nextDayAyats"}]]}',

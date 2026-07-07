@@ -6,6 +6,7 @@ import uuid
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -36,7 +37,7 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
         async with self._pgsql.connect() as conn:
             await conn.execute(
                 text('INSERT INTO prayers_at_user_groups VALUES (:prayer_group_id)'),
-                {'prayer_group_id': prayer_group_id},
+                frozendict({'prayer_group_id': prayer_group_id}),
             )
             exists_prayers = (await conn.execute(
                 text('\n'.join([
@@ -46,7 +47,7 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
                     'WHERE u.chat_id = :chat_id',
                     '  AND p.day = :date',
                 ])),
-                {'chat_id': int(self._chat_id), 'date': date},
+                frozendict({'chat_id': int(self._chat_id), 'date': date}),
             )).scalar()
             if not exists_prayers:
                 city_name = (await conn.execute(
@@ -55,7 +56,7 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
                         'INNER JOIN cities AS c ON u.city_id = c.city_id',
                         'WHERE u.chat_id = :chat_id',
                     ])),
-                    {'chat_id': int(self._chat_id)},
+                    frozendict({'chat_id': int(self._chat_id)}),
                 )).scalar()
                 raise PrayersNotFoundError(str(city_name) if city_name else '', date)
             # One line for commit changes
@@ -77,11 +78,11 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
                         "    ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
                         '  RETURNING *',
                     ])),
-                    {
+                    frozendict({
                         'chat_id': int(self._chat_id),
                         'prayer_group_id': prayer_group_id,
                         'date': date,
-                    },
+                    }),
                 )).mappings().fetchall()
                 await conn.commit()
             except IntegrityError as err:

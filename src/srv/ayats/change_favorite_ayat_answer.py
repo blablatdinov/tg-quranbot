@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import httpx
+from frozendict import frozendict
 from redis.asyncio import Redis
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -82,7 +83,7 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
         async with self._pgsql.connect() as conn:
             await conn.execute(
                 text(query),
-                {'ayat_id': status.ayat_id(), 'user_id': int(TgChatId(update))},
+                frozendict({'ayat_id': status.ayat_id(), 'user_id': int(TgChatId(update))}),
             )
             await conn.commit()
         chat_id = TgChatId(update)

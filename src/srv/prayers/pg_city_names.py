@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -32,7 +33,7 @@ class PgCityNames(AsyncListable):
             'LIMIT 20',
         ])
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(db_query), {'search_query': search_query})
+            query_result = await conn.execute(text(db_query), frozendict({'search_query': search_query}))
             rows = query_result.mappings().fetchall()
         return [
             row['name']

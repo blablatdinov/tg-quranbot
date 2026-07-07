@@ -7,6 +7,7 @@ from pathlib import Path
 
 import httpx
 import pytest
+from frozendict import frozendict
 from sqlalchemy import text
 
 from app_types.fk_log_sink import FkLogSink
@@ -34,7 +35,7 @@ async def city(city_factory, pgsql):
     async with pgsql.connect() as conn:
         await conn.execute(
             text('INSERT INTO halal_guide_cities (city_id, link) VALUES (:city_id, :link)'),
-            {'city_id': str(city_id), 'link': 'https://halalguide.me/kazan/namaz-time'},
+            frozendict({'city_id': str(city_id), 'link': 'https://halalguide.me/kazan/namaz-time'}),
         )
         await conn.commit()
     return FkCity(city_id, 'Казань')
@@ -50,7 +51,7 @@ async def test_today(time_machine, pgsql, city):
         FkLogSink(),
     ).to_dict()
 
-    assert got == {
+    assert got == frozendict({
         'asr_prayer_time': '16:57',
         'city_name': 'Казань',
         'date': '05.05.2025',
@@ -59,7 +60,7 @@ async def test_today(time_machine, pgsql, city):
         'ishaa_prayer_time': '21:00',
         'magrib_prayer_time': '19:30',
         'sunrise_prayer_time': '03:48',
-    }
+    })
 
 
 @pytest.mark.usefixtures('hg_mock')
@@ -72,7 +73,7 @@ async def test_by_date(pgsql, time_machine, city):
         FkLogSink(),
     ).to_dict()
 
-    assert got == {
+    assert got == frozendict({
         'asr_prayer_time': '14:02',
         'city_name': 'Казань',
         'date': '20.01.2025',
@@ -81,4 +82,4 @@ async def test_by_date(pgsql, time_machine, city):
         'ishaa_prayer_time': '17:44',
         'magrib_prayer_time': '15:53',
         'sunrise_prayer_time': '07:53',
-    }
+    })

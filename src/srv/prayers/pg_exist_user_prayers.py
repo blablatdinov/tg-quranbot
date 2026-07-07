@@ -5,6 +5,7 @@ import datetime
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -38,15 +39,16 @@ class PgExistUserPrayers(ExistUserPrayers):
             'ORDER BY pau.prayer_at_user_id',
         ])
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(select_query), {
+            query_result = await conn.execute(text(select_query), frozendict({
                 'date': self._date,
                 'chat_id': int(self._chat_id),
-            })
+            }))
             rows = query_result.mappings().fetchall()
         return [
-            {
-                'prayer_at_user_id': dict(row)['prayer_at_user_id'],
-                'is_read': dict(row)['is_read'],
+            # frozendict incompatible with TypeDicts
+            {  # noqa: FCS100
+                'prayer_at_user_id': row['prayer_at_user_id'],
+                'is_read': row['is_read'],
             }
             for row in rows
         ]

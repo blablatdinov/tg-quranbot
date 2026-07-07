@@ -6,6 +6,7 @@ import datetime
 import psycopg2
 import pytest
 import pytz
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
@@ -71,7 +72,7 @@ async def db_ayat(pgsql):
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
                 "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
             ])),
-            {'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at},
+            frozendict({'file_id': '82db206b-34ed-4ae0-ac83-1f0c56dfde90', 'created_at': created_at}),
         )
         await conn.execute(text('\n'.join([
             'INSERT INTO suras (sura_id, link) VALUES',
@@ -94,7 +95,7 @@ async def db_ayat(pgsql):
                 '  :transliteration',
                 ')',
             ])),
-            {
+            frozendict({
                 'ayat_id': 1,
                 'sura_id': 1,
                 'public_id': '3067bdc4-8dc0-456b-aa68-e38122b5f2f8',
@@ -104,7 +105,7 @@ async def db_ayat(pgsql):
                 'content': 'Content',
                 'arab_text': 'Arab text',
                 'transliteration': 'Transliteration',
-            },
+            }),
         )
         await conn.commit()
     return FkAyat(
@@ -120,7 +121,7 @@ def city_factory(pgsql):
         async with pgsql.connect() as conn:
             await conn.execute(
                 text('INSERT INTO cities (city_id, name) VALUES (:city_id, :city_name)'),
-                {'city_id': city_id, 'city_name': name},
+                frozendict({'city_id': city_id, 'city_name': name}),
             )
             await conn.commit()
         return FkCity(city_id, name)
@@ -142,13 +143,13 @@ def user_factory(pgsql):
                     'INSERT INTO users (chat_id, day, city_id, is_active, legacy_id) VALUES',
                     '(:chat_id, :day, :city_id, :is_active, :legacy_id)',
                 ])),
-                {
+                frozendict({
                     'chat_id': chat_id,
                     'day': day or 2,
                     'city_id': str(await city.city_id()) if city else None,
                     'legacy_id': legacy_id or None,
                     'is_active': is_active,
-                },
+                }),
             )
             await conn.commit()
         return PgUser.int_ctor(chat_id, pgsql)

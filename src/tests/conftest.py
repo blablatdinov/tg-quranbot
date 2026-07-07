@@ -8,6 +8,7 @@ from pathlib import Path
 import httpx
 import pytest
 from fakeredis import aioredis
+from frozendict import frozendict
 from jinja2 import Template
 
 from app_types.fk_log_sink import FkLogSink
@@ -39,7 +40,7 @@ def message_update_factory():
     def _message_update_factory(text='', chat_id=1):  # noqa: WPS430
         return Template(
             (BASE_DIR / 'tests' / 'fixtures' / 'message_update.json').read_text(),
-        ).render({'message_text': '"{0}"'.format(text), 'chat_id': chat_id})
+        ).render(frozendict({'message_text': '"{0}"'.format(text), 'chat_id': chat_id}))
     return _message_update_factory
 
 
@@ -48,7 +49,7 @@ def callback_update_factory():
     def _message_update_factory(chat_id=1, callback_data=''):  # noqa: WPS430
         return Template(
             (BASE_DIR / 'tests/fixtures/button_callback.json').read_text(),
-        ).render({'chat_id': chat_id, 'callback_data': callback_data})
+        ).render(frozendict({'chat_id': chat_id, 'callback_data': callback_data}))
     return _message_update_factory
 
 
@@ -57,7 +58,7 @@ def inline_query_update_factory():
     def _inline_query_update_factory(query=''):  # noqa: WPS430
         return Template(
             (BASE_DIR / 'tests/fixtures/inline_query.json').read_text(),
-        ).render({'query': query})
+        ).render(frozendict({'query': query}))
     return _inline_query_update_factory
 
 

@@ -7,6 +7,7 @@ import logging
 import httpx
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from frozendict import frozendict
 from loguru import logger
 
 from settings import settings
@@ -19,7 +20,7 @@ logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 async def _morning_ayats_task() -> None:  # noqa: NPM100. Fix it
     await RabbitmqSink(settings, logger).send(
         'quranbot.mailings',
-        {},
+        frozendict({}),
         'Mailing.DailyAyats',
         1,
     )
@@ -28,7 +29,7 @@ async def _morning_ayats_task() -> None:  # noqa: NPM100. Fix it
 async def _daily_prayers_task() -> None:  # noqa: NPM100. Fix it
     await RabbitmqSink(settings, logger).send(
         'quranbot.mailings',
-        {},
+        frozendict({}),
         'Mailing.DailyPrayers',
         1,
     )
@@ -37,7 +38,7 @@ async def _daily_prayers_task() -> None:  # noqa: NPM100. Fix it
 async def _daily_check_user_status() -> None:  # noqa: NPM100. Fix it
     await RabbitmqSink(settings, logger).send(
         'quranbot.users',
-        {},
+        frozendict({}),
         'User.CheckStatus',
         1,
     )
@@ -46,7 +47,7 @@ async def _daily_check_user_status() -> None:  # noqa: NPM100. Fix it
 async def main() -> None:
     """Entrypoint."""
     redis_settings = httpx.URL(str(settings.REDIS_DSN))
-    jobstores = {
+    jobstores = frozendict({
         'default': RedisJobStore(
             host=redis_settings.host,
             port=redis_settings.port,
@@ -54,7 +55,7 @@ async def main() -> None:
             username=redis_settings.username,
             password=redis_settings.password,
         ),
-    }
+    })
     scheduler = AsyncIOScheduler(jobstores=jobstores, timezone='Europe/Moscow')
     scheduler.start()
     logger.info('Starting the scheduler...')

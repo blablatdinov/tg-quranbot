@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -36,7 +37,7 @@ class AyatIsFavor(AsyncSupportsBool):
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
                 text(query),
-                {'ayat_id': await self._ayat.identifier().ayat_id(), 'chat_id': self._chat_id},
+                frozendict({'ayat_id': await self._ayat.identifier().ayat_id(), 'chat_id': self._chat_id}),
             )
             row = query_result.fetchone()
         count = row[0] if row else 0

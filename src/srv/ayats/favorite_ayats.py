@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -39,10 +40,10 @@ class FavoriteAyats(AsyncListable):
         async with self._pgsql.connect() as conn:
             query_result = await conn.execute(
                 text(query),
-                {'chat_id': int(self._chat_id)},
+                frozendict({'chat_id': int(self._chat_id)}),
             )
-            rows = query_result.fetchall()
+            rows = query_result.mappings().fetchall()
         return [
-            TextLenSafeAyat(PgAyat(FkAsyncInt(dict(row)['ayat_id']), self._pgsql))
+            TextLenSafeAyat(PgAyat(FkAsyncInt(row['ayat_id']), self._pgsql))
             for row in rows
         ]

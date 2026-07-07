@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import ujson
+from frozendict import frozendict
 
 from app_types.update import Update
 from exceptions.internal_exceptions import TelegramIntegrationsError
@@ -19,7 +20,7 @@ class UserNotSubscribedSafeSendable(Sendable):
     _origin: Sendable
 
     @override
-    async def send(self, update: Update) -> list[dict]:
+    async def send(self, update: Update) -> list[frozendict]:
         """Отправка.
 
         :param update: Update
@@ -29,11 +30,11 @@ class UserNotSubscribedSafeSendable(Sendable):
         try:
             responses = await self._origin.send(update)
         except TelegramIntegrationsError as err:
-            error_messages = {
+            error_messages = frozenset((
                 'chat not found',
                 'bot was blocked by the user',
                 'user is deactivated',
-            }
+            ))
             for error_message in error_messages:
                 if error_message not in str(err):
                     continue

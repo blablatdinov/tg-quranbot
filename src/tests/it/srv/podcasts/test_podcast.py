@@ -9,6 +9,7 @@ from operator import truediv
 import pytest
 import pytz
 import ujson
+from frozendict import frozendict
 from furl import furl
 from sqlalchemy import text
 
@@ -31,11 +32,11 @@ async def _db_podcast(pgsql, user_factory):
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
                 "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
             ])),
-            {'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))},
+            frozendict({'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))}),
         )
         await conn.execute(
             text('INSERT INTO podcasts (public_id, file_id)\nVALUES (:public_id, :file_id)'),
-            {'public_id': str(uuid.uuid4()), 'file_id': file_id},
+            frozendict({'public_id': str(uuid.uuid4()), 'file_id': file_id}),
         )
         await conn.commit()
 
@@ -50,13 +51,13 @@ async def _podcast_reactions(pgsql, user_factory):
                 "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
             ])),
             [
-                {'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))}
+                frozendict({'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))})
                 for file_id in file_ids
             ],
         )
         await conn.execute(
             text('INSERT INTO podcasts (file_id) VALUES (:file_id)'),
-            [{'file_id': file_id} for file_id in file_ids],
+            [frozendict({'file_id': file_id}) for file_id in file_ids],
         )
         await conn.commit()
     await user_factory(937584)
@@ -68,11 +69,11 @@ async def _podcast_reactions(pgsql, user_factory):
                 'VALUES (:podcast_id, :reaction, :user_id)',
             ])),
             [
-                {'podcast_id': 1, 'reaction': 'showed', 'user_id': 937584},
-                {'podcast_id': 2, 'reaction': 'like', 'user_id': 937584},
-                {'podcast_id': 1, 'reaction': 'showed', 'user_id': 87945},
-                {'podcast_id': 2, 'reaction': 'dislike', 'user_id': 87945},
-                {'podcast_id': 3, 'reaction': 'like', 'user_id': 87945},
+                frozendict({'podcast_id': 1, 'reaction': 'showed', 'user_id': 937584}),
+                frozendict({'podcast_id': 2, 'reaction': 'like', 'user_id': 937584}),
+                frozendict({'podcast_id': 1, 'reaction': 'showed', 'user_id': 87945}),
+                frozendict({'podcast_id': 2, 'reaction': 'dislike', 'user_id': 87945}),
+                frozendict({'podcast_id': 3, 'reaction': 'like', 'user_id': 87945}),
             ],
         )
         await conn.commit()
@@ -87,11 +88,11 @@ async def _db_podcast_without_telegram_file_id(pgsql):
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
                 "VALUES (:file_id, NULL, 'https://link-to-file.domain', :created_at)",
             ])),
-            {'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))},
+            frozendict({'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))}),
         )
         await conn.execute(
             text('INSERT INTO podcasts (public_id, file_id)\nVALUES (:public_id, :file_id)'),
-            {'public_id': str(uuid.uuid4()), 'file_id': file_id},
+            frozendict({'public_id': str(uuid.uuid4()), 'file_id': file_id}),
         )
         await conn.commit()
 
@@ -101,32 +102,32 @@ async def _db_podcast_without_telegram_file_id(pgsql):
         False,
         (
             truediv(furl('https://some.domain'), 'sendAudio')
-            .add({
+            .add(frozendict({
                 'chat_id': '123',
                 'audio': 'aoiejf298jr9p23u8qr3',
-                'reply_markup': ujson.dumps({
+                'reply_markup': ujson.dumps(frozendict({
                     'inline_keyboard': [[
-                        {'text': '👍 0', 'callback_data': 'like(1)'},
-                        {'text': '👎 0', 'callback_data': 'dislike(1)'},
+                        frozendict({'text': '👍 0', 'callback_data': 'like(1)'}),
+                        frozendict({'text': '👎 0', 'callback_data': 'dislike(1)'}),
                     ]],
-                }),
-            })
+                })),
+            }))
         ),
     ),
     (
         True,
         (
             truediv(furl('https://some.domain'), 'sendMessage')
-            .add({
+            .add(frozendict({
                 'chat_id': '123',
                 'text': 'https://link-to-file.domain',
-                'reply_markup': ujson.dumps({
+                'reply_markup': ujson.dumps(frozendict({
                     'inline_keyboard': [[
-                        {'text': '👍 0', 'callback_data': 'like(1)'},
-                        {'text': '👎 0', 'callback_data': 'dislike(1)'},
+                        frozendict({'text': '👍 0', 'callback_data': 'like(1)'}),
+                        frozendict({'text': '👎 0', 'callback_data': 'dislike(1)'}),
                     ]],
-                }),
-            })
+                })),
+            }))
         ),
     ),
 ])

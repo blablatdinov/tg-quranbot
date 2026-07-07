@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import pytest
+from frozendict import frozendict
 
 from srv.prayers.fk_prayers_info import FkPrayersInfo
 from srv.prayers.ramadan_prayer_info import RamadanPrayerInfo
@@ -9,7 +10,7 @@ from srv.prayers.ramadan_prayer_info import RamadanPrayerInfo
 
 @pytest.fixture
 def prayer_time_info():
-    return {
+    return frozendict({
         'city_name': 'Казань',
         'date': '21.10.2023',
         'fajr_prayer_time': '04:22',
@@ -18,7 +19,7 @@ def prayer_time_info():
         'asr_prayer_time': '14:35',
         'magrib_prayer_time': '16:30',
         'ishaa_prayer_time': '18:12',
-    }
+    })
 
 
 async def test_not_ramadan_mode(prayer_time_info):

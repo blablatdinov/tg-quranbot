@@ -5,6 +5,7 @@ from collections.abc import Sequence
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -40,7 +41,7 @@ class FavoriteAyatsAfterRemove(AsyncListable):
                     'WHERE u.chat_id = :chat_id OR fa.ayat_id = :ayat_id',
                     'ORDER BY fa.ayat_id',
                 ])),
-                {'chat_id': int(self._chat_id), 'ayat_id': self._ayat_id},
+                frozendict({'chat_id': int(self._chat_id), 'ayat_id': self._ayat_id}),
             )).mappings().fetchall()
         ayats = []
         flag = True

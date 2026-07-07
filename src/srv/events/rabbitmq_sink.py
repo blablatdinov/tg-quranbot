@@ -8,6 +8,7 @@ from typing import final, override
 import aio_pika
 import attrs
 import ujson
+from frozendict import frozendict
 from loguru import logger
 from quranbot_schema_registry import validate_schema
 
@@ -25,7 +26,7 @@ class RabbitmqSink(Sink):
     _logger: LogSink
 
     @override
-    async def send(self, queue_name: str, event_data: dict, event_name: str, version: int) -> None:
+    async def send(self, queue_name: str, event_data: frozendict, event_name: str, version: int) -> None:
         """Отправить событие.
 
         :param queue_name: str
@@ -33,14 +34,14 @@ class RabbitmqSink(Sink):
         :param event_name: str
         :param version: int
         """
-        event = {
+        event = frozendict({
             'event_id': str(uuid.uuid4()),
             'event_version': 1,
             'event_name': event_name,
             'event_time': str(int(time.time())),
             'producer': 'quranbot',
             'data': event_data,
-        }
+        })
         body_json = ujson.dumps(event)
         try:
             validate_schema(

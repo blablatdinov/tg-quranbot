@@ -6,6 +6,7 @@ import uuid
 
 import pytest
 import pytz
+from frozendict import frozendict
 from sqlalchemy import text
 
 from app_types.fk_update import FkUpdate
@@ -23,7 +24,10 @@ async def _db_ayats(pgsql):
                 "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
             ])),
             [
-                {'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))}
+                frozendict({
+                    'file_id': file_id,
+                    'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
+                })
                 for file_id in file_ids
             ],
         )
@@ -49,7 +53,7 @@ async def _db_ayats(pgsql):
                 ')',
             ])),
             [
-                {
+                frozendict({
                     'ayat_id': ayat_id,
                     'sura_id': 2,
                     'public_id': str(uuid.uuid4()),
@@ -59,7 +63,7 @@ async def _db_ayats(pgsql):
                     'content': '{0} day ayat content'.format(day),
                     'arab_text': '',
                     'transliteration': '',
-                }
+                })
                 for ayat_id, file_id, day in zip(
                     range(1, 11),
                     file_ids,

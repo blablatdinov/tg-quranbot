@@ -3,6 +3,7 @@
 
 import pytest
 import ujson
+from frozendict import frozendict
 from furl import furl
 from sqlalchemy import text
 
@@ -36,23 +37,23 @@ async def test(pgsql, fake_redis, unquote, settings_ctor):
     assert len(got) == 3
     assert unquote(got[0].url) == unquote(
         furl('https://some.domain/sendMessage')
-        .add({
+        .add(frozendict({
             'parse_mode': 'html',
             'text': 'start admin message',
             'chat_id': 321,
-            'reply_markup': ujson.dumps({
+            'reply_markup': ujson.dumps(frozendict({
                 'keyboard': [
                     ['🎧 Подкасты'],
                     ['🕋 Время намаза', '🏘️ Поменять город'],
                     ['🌟 Избранное', '🔍 Найти аят'],
                 ],
                 'resize_keyboard': True,
-            }),
-        }),
+            })),
+        })),
     )
     assert unquote(got[1].url) == unquote(
         furl('https://some.domain/sendMessage')
-        .add({
+        .add(frozendict({
             'parse_mode': 'html',
             'text': '\n'.join([
                 '<a href="https://umma.ru/link-to-sura#1-1">1:1-7)</a>',
@@ -61,15 +62,15 @@ async def test(pgsql, fake_redis, unquote, settings_ctor):
                 '<i>Transliteration</i>',
             ]),
             'chat_id': 321,
-            'reply_markup': ujson.dumps({
+            'reply_markup': ujson.dumps(frozendict({
                 'keyboard': [
                     ['🎧 Подкасты'],
                     ['🕋 Время намаза', '🏘️ Поменять город'],
                     ['🌟 Избранное', '🔍 Найти аят'],
                 ],
                 'resize_keyboard': True,
-            }),
-        }),
+            })),
+        })),
     )
 
 
@@ -82,18 +83,18 @@ async def test_exists_user(pgsql, fake_redis, unquote, settings_ctor):
     assert len(got) == 1
     assert unquote(got[0].url) == unquote(
         furl('https://some.domain/sendMessage')
-        .add({
+        .add(frozendict({
             'chat_id': 321,
             'text': 'Вы уже зарегистрированы!',
-            'reply_markup': ujson.dumps({
+            'reply_markup': ujson.dumps(frozendict({
                 'keyboard': [
                     ['🎧 Подкасты'],
                     ['🕋 Время намаза', '🏘️ Поменять город'],
                     ['🌟 Избранное', '🔍 Найти аят'],
                 ],
                 'resize_keyboard': True,
-            }),
-        }),
+            })),
+        })),
     )
 
 
@@ -106,35 +107,35 @@ async def test_with_referrer(pgsql, fake_redis, unquote, settings_ctor):
     assert len(got) == 4
     assert unquote(got[0].url) == unquote(
         furl('https://some.domain/sendMessage')
-        .add({
+        .add(frozendict({
             'parse_mode': 'html',
             'text': 'start admin message',
             'chat_id': 1,
-            'reply_markup': ujson.dumps({
+            'reply_markup': ujson.dumps(frozendict({
                 'keyboard': [
                     ['🎧 Подкасты'],
                     ['🕋 Время намаза', '🏘️ Поменять город'],
                     ['🌟 Избранное', '🔍 Найти аят'],
                 ],
                 'resize_keyboard': True,
-            }),
-        }),
+            })),
+        })),
     )
     assert unquote(got[2].url) == unquote(
         furl('https://some.domain/sendMessage')
-        .add({
+        .add(frozendict({
             'parse_mode': 'html',
             'text': 'По вашей реферальной ссылке произошла регистрация',
             'chat_id': 321,
-            'reply_markup': ujson.dumps({
+            'reply_markup': ujson.dumps(frozendict({
                 'keyboard': [
                     ['🎧 Подкасты'],
                     ['🕋 Время намаза', '🏘️ Поменять город'],
                     ['🌟 Избранное', '🔍 Найти аят'],
                 ],
                 'resize_keyboard': True,
-            }),
-        }),
+            })),
+        })),
     )
 
 
@@ -143,10 +144,10 @@ async def test_with_referrer(pgsql, fake_redis, unquote, settings_ctor):
 async def test_fake_referrer(pgsql, fake_redis, referrer_id, settings_ctor):
     got = await FullStartAnswer(
         pgsql, FkAnswer(), FkSink(), fake_redis, settings_ctor(), FkLogSink(),
-    ).build(FkUpdate(ujson.dumps({
-        'message': {'text': '/start {0}'.format(referrer_id)},
-        'chat': {'id': 1},
+    ).build(FkUpdate(ujson.dumps(frozendict({
+        'message': frozendict({'text': '/start {0}'.format(referrer_id)}),
+        'chat': frozendict({'id': 1}),
         'date': 0,
-    })))
+    }))))
 
     assert len(got) == 3

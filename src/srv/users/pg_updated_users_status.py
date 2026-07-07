@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -39,5 +40,5 @@ class PgUpdatedUsersStatus(UpdatedUsersStatus):
             for user in users
         ]))
         async with self._pgsql.connect() as conn:
-            await conn.execute(text(query), {'to': to})
+            await conn.execute(text(query), frozendict({'to': to}))
             await conn.commit()

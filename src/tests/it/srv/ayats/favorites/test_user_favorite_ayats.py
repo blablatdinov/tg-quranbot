@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import pytest
+from frozendict import frozendict
 from sqlalchemy import text
 
 from srv.ayats.favorites.user_favorite_ayats import UserFavoriteAyats
@@ -16,7 +17,7 @@ async def _favorite_ayats(db_ayat, pgsql, user_factory):
                 'INSERT INTO favorite_ayats (user_id, ayat_id) VALUES',
                 '(49573, :ayat_id)',
             ])),
-            {'ayat_id': await db_ayat.identifier().ayat_id()},
+            frozendict({'ayat_id': await db_ayat.identifier().ayat_id()}),
         )
         await conn.commit()
 

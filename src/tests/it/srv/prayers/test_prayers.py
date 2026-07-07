@@ -4,6 +4,7 @@
 import uuid
 
 import pytest
+from frozendict import frozendict
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
@@ -27,11 +28,11 @@ async def test_not_found_prayer(pgsql, fake_redis, time_machine, settings_ctor):
 
     assert len(got) == 2
     assert got[0].url.path == got[1].url.path == '/sendMessage'
-    assert dict(got[0].url.params) == {
+    assert frozendict(got[0].url.params) == frozendict({
         'chat_id': '123',
         'text': 'Время намаза на 30.08.2023 для города Казань не найдено',
-    }
-    assert dict(got[1].url.params) == {
+    })
+    assert frozendict(got[1].url.params) == frozendict({
         'chat_id': '321',
         'text': 'Время намаза на 30.08.2023 для города Казань не найдено',
-    }
+    })

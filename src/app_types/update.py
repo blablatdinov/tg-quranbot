@@ -3,6 +3,8 @@
 
 from typing import Protocol
 
+from frozendict import frozendict
+
 from app_types.stringable import SupportsStr
 
 
@@ -12,5 +14,5 @@ class Update(SupportsStr, Protocol):
     def __str__(self) -> str:
         """Приведение к строке."""
 
-    def asdict(self) -> dict:
+    def asdict(self) -> frozendict:
         """Словарь."""

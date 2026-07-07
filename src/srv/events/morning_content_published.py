@@ -7,6 +7,7 @@ from typing import Any, final, override
 
 import attrs
 from eljson.json import Json
+from frozendict import frozendict
 from jinja2 import Template
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -107,13 +108,13 @@ class MorningContentPublishedEvent(ReceivedEvent):
                                     '<b>{{ ayat.sura_id }}:{{ ayat.ayat_number }})</b> {{ ayat.content }}\n',
                                     '{% endfor %}',
                                     '\nhttps://umma.ru{{ sura_link }}',
-                                ])).render({
+                                ])).render(frozendict({
                                     'ayats': [
-                                        {
+                                        frozendict({
                                             'sura_id': sura_id,
                                             'ayat_number': ayat_num,
                                             'content': ayat_content,
-                                        }
+                                        })
                                         for sura_id, ayat_num, ayat_content in zip(
                                             row['sura_ids'].split(','),
                                             row['ayat_nums'].split('|'),
@@ -122,7 +123,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
                                         )
                                     ],
                                     'sura_link': row['sura_link'].split('|sep|')[0],
-                                }),
+                                })),
                             ),
                             FkKeyboard(
                                 '{"inline_keyboard":[[{"text":"Следующий день","callback_data":"nextDayAyats"}]]}',

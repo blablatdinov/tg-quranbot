@@ -3,6 +3,7 @@
 
 import pytest
 import ujson
+from frozendict import frozendict
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate
@@ -13,10 +14,10 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 async def test_message(pgsql, fake_redis):
     debug = False
     got = await PgSetUserCityAnswer(pgsql, FkAnswer(), debug, fake_redis, FkLogSink()).build(
-        FkUpdate(ujson.dumps({
-            'message': {'text': 'Kazan'},
-            'chat': {'id': 384957},
-        })),
+        FkUpdate(ujson.dumps(frozendict({
+            'message': frozendict({'text': 'Kazan'}),
+            'chat': frozendict({'id': 384957}),
+        }))),
     )
 
     assert got[0].url.params['text'] == 'Этот город не поддерживается'
@@ -26,11 +27,11 @@ async def test_message(pgsql, fake_redis):
 async def test_location(pgsql, fake_redis):
     debug = False
     got = await PgSetUserCityAnswer(pgsql, FkAnswer(), debug, fake_redis, FkLogSink()).build(
-        FkUpdate(ujson.dumps({
-            'chat': {'id': 34847935},
+        FkUpdate(ujson.dumps(frozendict({
+            'chat': frozendict({'id': 34847935}),
             'latitude': 55.7887,
             'longitude': 49.1221,
-        })),
+        }))),
     )
 
     assert got[0].url.params['text'] == 'Этот город не поддерживается'

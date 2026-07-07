@@ -61,7 +61,8 @@ class HgPrayersInfo(PrayersInfo):
             for row in prayers
             if row[0] == str(date.day)
         ))
-        prs_info = PrayerMessageTextDict({
+        # frozendict incompatible with TypeDicts
+        prs_info = PrayerMessageTextDict({  # noqa: FCS100
             'city_name': tree.xpath('//h1/text()')[0].split('.')[1].strip(),
             'date': date.strftime('%d.%m.%Y'),
             'fajr_prayer_time': rows[2],

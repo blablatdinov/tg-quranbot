@@ -5,6 +5,7 @@ import datetime
 
 import pytest
 import ujson
+from frozendict import frozendict
 
 from app_types.fk_update import FkUpdate
 from srv.prayers.prayers_request_date import PrayersRequestDate
@@ -23,7 +24,7 @@ async def test(time_machine):
 ])
 async def test_with_date(query, expected):
     got = await PrayersRequestDate().parse(FkUpdate(
-        ujson.dumps({'message': {'text': query}}),
+        ujson.dumps(frozendict({'message': frozendict({'text': query})})),
     ))
 
     assert got == expected

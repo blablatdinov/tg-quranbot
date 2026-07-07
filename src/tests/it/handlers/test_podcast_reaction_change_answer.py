@@ -7,6 +7,7 @@ import uuid
 import pytest
 import pytz
 import ujson
+from frozendict import frozendict
 from sqlalchemy import text
 
 from app_types.fk_log_sink import FkLogSink
@@ -25,11 +26,14 @@ async def _once_podcast(pgsql, user_factory):
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
                 "VALUES (:file_id, 'aoiejf298jr9p23u8qr3', 'https://link-to-file.domain', :created_at)",
             ])),
-            {'file_id': file_id, 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))},
+            frozendict({
+                'file_id': file_id,
+                'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
+            }),
         )
         await conn.execute(
             text('INSERT INTO podcasts (podcast_id, public_id, file_id) VALUES (:podcast_id, :public_id, :file_id)'),
-            {'podcast_id': 5, 'public_id': str(uuid.uuid4()), 'file_id': file_id},
+            frozendict({'podcast_id': 5, 'public_id': str(uuid.uuid4()), 'file_id': file_id}),
         )
         await conn.commit()
 
@@ -39,17 +43,17 @@ async def _podcasts(pgsql, user_factory):
     file_ids = [uuid.uuid4() for _ in range(3)]
     async with pgsql.connect() as conn:
         await conn.execute(text('INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)'), [
-            {
+            frozendict({
                 'file_id': str(file_id),
                 'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
-            }
+            })
             for file_id in file_ids
         ])
         await conn.execute(text('INSERT INTO podcasts (podcast_id, file_id) VALUES (:podcast_id, :file_id)'), [
-            {
+            frozendict({
                 'podcast_id': podcast_id,
                 'file_id': str(file_id),
-            } for podcast_id, file_id in enumerate(file_ids, start=1)
+            }) for podcast_id, file_id in enumerate(file_ids, start=1)
         ])
         await user_factory(1)
         await conn.commit()
@@ -79,54 +83,60 @@ async def test_without_message_text(pgsql, fake_redis):
     """
     debug = False
     got = await PodcastReactionChangeAnswer(debug, FkAnswer(), fake_redis, pgsql, FkLogSink()).build(
-        FkUpdate(ujson.dumps({
-            'callback_query': {
-                'from': {'id': 905},
-                'message': {
+        FkUpdate(ujson.dumps(frozendict({
+            'callback_query': frozendict({
+                'from': frozendict({'id': 905}),
+                'message': frozendict({
                     'message_id': 496344,
-                    'chat': {'id': 905},
+                    'chat': frozendict({'id': 905}),
                     'date': 0,
-                },
+                }),
                 'chat_instance': '-8563585384798880073',
                 'data': 'mark_readed(5)',
-            },
-        })),
+            }),
+        }))),
     )
 
     assert got[0].url.path == '/sendMessage'
     assert got[0].url.params['text'] == '/podcast5'
-    assert got[1].url.params['reply_markup'] == ujson.dumps({
-        'inline_keyboard': [[
-            {'text': '👍 1', 'callback_data': 'like(5)'}, {'text': '👎 0', 'callback_data': 'dislike(5)'},
-        ]],
-    })
+    assert got[1].url.params['reply_markup'] == ujson.dumps(
+        frozendict({
+            'inline_keyboard': [[
+                frozendict({'text': '👍 1', 'callback_data': 'like(5)'}),
+                frozendict({'text': '👎 0', 'callback_data': 'dislike(5)'}),
+            ]],
+        }),
+    )
 
 
 @pytest.mark.usefixtures('_once_podcast')
 async def test_without_message_with_audio(pgsql, fake_redis):
     debug = False
     got = await PodcastReactionChangeAnswer(debug, FkAnswer(), fake_redis, pgsql, FkLogSink()).build(
-        FkUpdate(ujson.dumps({
-            'callback_query': {
-                'from': {'id': 905},
-                'message': {
+        FkUpdate(ujson.dumps(frozendict({
+            'callback_query': frozendict({
+                'from': frozendict({'id': 905}),
+                'message': frozendict({
                     'message_id': 743895,
-                    'audio': {},
-                    'chat': {'id': 905},
+                    'audio': frozendict({}),
+                    'chat': frozendict({'id': 905}),
                     'date': 0,
-                },
+                }),
                 'chat_instance': '-8563585384798880073',
                 'data': 'mark_readed(5)',
-            },
-        })),
+            }),
+        }))),
     )
 
     assert got[0].url.path == '/editMessageReplyMarkup'
-    assert got[0].url.params['reply_markup'] == ujson.dumps({
-        'inline_keyboard': [[
-            {'text': '👍 1', 'callback_data': 'like(5)'}, {'text': '👎 0', 'callback_data': 'dislike(5)'},
-        ]],
-    })
+    assert got[0].url.params['reply_markup'] == ujson.dumps(
+        frozendict({
+            'inline_keyboard': [[
+                frozendict({'text': '👍 1', 'callback_data': 'like(5)'}),
+                frozendict({'text': '👎 0', 'callback_data': 'dislike(5)'}),
+            ]],
+        }),
+    )
 
 
 @pytest.mark.usefixtures('_existed_reaction')
@@ -143,17 +153,19 @@ async def test(pgsql, fake_redis, reaction, podcast_id, button1, button2):
     got = await PodcastReactionChangeAnswer(
         debug, FkAnswer(), fake_redis, pgsql, FkLogSink(),
     ).build(FkUpdate(
-        ujson.dumps({
-            'chat': {'id': 1},
-            'callback_query': {'data': '{0}({1})'.format(reaction, podcast_id)},
-            'message': {'message_id': 1, 'text': '/podcast{0}'.format(podcast_id)},
-        }),
-    ))
+        ujson.dumps(frozendict({
+            'chat': frozendict({'id': 1}),
+            'callback_query': frozendict({'data': '{0}({1})'.format(reaction, podcast_id)}),
+            'message': frozendict({'message_id': 1, 'text': '/podcast{0}'.format(podcast_id)}),
+        }))),
+    )
 
     assert len(got) == 1
-    assert ujson.loads(got[0].url.params['reply_markup']) == {
+    assert ujson.loads(
+        got[0].url.params['reply_markup'],
+    ) == frozendict({
         'inline_keyboard': [[
-            {'callback_data': 'like({0})'.format(podcast_id), 'text': button1},
-            {'callback_data': 'dislike({0})'.format(podcast_id), 'text': button2},
+            frozendict({'callback_data': 'like({0})'.format(podcast_id), 'text': button1}),
+            frozendict({'callback_data': 'dislike({0})'.format(podcast_id), 'text': button2}),
         ]],
-    }
+    })

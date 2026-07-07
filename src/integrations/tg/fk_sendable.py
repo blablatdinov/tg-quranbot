@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 
 from app_types.update import Update
 from integrations.tg.sendable import Sendable
@@ -14,10 +15,10 @@ from integrations.tg.sendable import Sendable
 class FkSendable(Sendable):
     """Фейковый объект для отправки ответов."""
 
-    _origin: list[dict]
+    _origin: list[frozendict]
 
     @override
-    async def send(self, update: Update) -> list[dict]:
+    async def send(self, update: Update) -> list[frozendict]:
         """Отправка.
 
         :param update: Update

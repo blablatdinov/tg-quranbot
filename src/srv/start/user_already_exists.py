@@ -6,6 +6,7 @@ from typing import final, override
 
 import attrs
 import httpx
+from frozendict import frozendict
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.update import Update
@@ -56,10 +57,10 @@ class UserAlreadyExistsAnswer(TgAnswer):
         ).update(to=True)
         await self._event_sink.send(
             'qbot_admin.users',
-            {
+            frozendict({
                 'user_id': int(TgChatId(update)),
                 'date_time': str(TgDateTime(update).datetime()),
-            },
+            }),
             'User.Reactivated',
             1,
         )

@@ -6,6 +6,7 @@ import datetime
 import pytest
 import pytz
 import ujson
+from frozendict import frozendict
 from sqlalchemy import text
 
 from app_types.fk_async_str import FkAsyncStr
@@ -53,59 +54,61 @@ async def test_new_prayer_times(pgsql, fake_redis, time_machine, settings_ctor, 
     got = await PgPrayerTimeAnswer.new_prayers_ctor(
         pgsql, FkAnswer(), [123], fake_redis, FkLogSink(), settings_ctor(),
     ).build(
-        FkUpdate(ujson.dumps({
-            'callback_query': {'data': 'mark_readed(3)'},
-            'message': {'message_id': 17, 'text': 'Время намаза'},
-            'chat': {'id': 905},
-        })),
+        FkUpdate(ujson.dumps(frozendict({
+            'callback_query': frozendict({'data': 'mark_readed(3)'}),
+            'message': frozendict({'message_id': 17, 'text': 'Время намаза'}),
+            'chat': frozendict({'id': 905}),
+        }))),
     )
 
-    assert ujson.loads(got[0].url.params.get('reply_markup')) == {
+    assert ujson.loads(
+        got[0].url.params.get('reply_markup'),
+    ) == frozendict({
         'inline_keyboard': [
             [
-                {'callback_data': 'mark_readed(1)', 'text': '❌'},
-                {'callback_data': 'mark_readed(2)', 'text': '❌'},
-                {'callback_data': 'mark_readed(3)', 'text': '❌'},
-                {'callback_data': 'mark_readed(4)', 'text': '❌'},
-                {'callback_data': 'mark_readed(5)', 'text': '❌'},
+                frozendict({'callback_data': 'mark_readed(1)', 'text': '❌'}),
+                frozendict({'callback_data': 'mark_readed(2)', 'text': '❌'}),
+                frozendict({'callback_data': 'mark_readed(3)', 'text': '❌'}),
+                frozendict({'callback_data': 'mark_readed(4)', 'text': '❌'}),
+                frozendict({'callback_data': 'mark_readed(5)', 'text': '❌'}),
             ],
             [
-                {
+                frozendict({
                     'callback_data': 'pagPrDay(2023-12-18)',
                     'text': '<- 18.12',
-                },
-                {
+                }),
+                frozendict({
                     'callback_data': 'pagPrDay(2023-12-20)',
                     'text': '20.12 ->',
-                },
+                }),
             ],
         ],
-    }
+    })
     assert got[0].url.path == '/sendMessage'
 
 
 @pytest.mark.parametrize(('date', 'prev_button', 'next_button'), [
     (
         '2024-09-01',
-        {
+        frozendict({
             'callback_data': 'pagPrDay(2024-08-31)',
             'text': '<- 31.08',
-        },
-        {
+        }),
+        frozendict({
             'callback_data': 'pagPrDay(2024-09-02)',
             'text': '02.09 ->',
-        },
+        }),
     ),
     (
         '2160-12-31',
-        {
+        frozendict({
             'callback_data': 'pagPrDay(2160-12-30)',
             'text': '<- 30.12',
-        },
-        {
+        }),
+        frozendict({
             'callback_data': 'pagPrDay(2161-01-01)',
             'text': '01.01 ->',
-        },
+        }),
     ),
 ])
 async def test_button_dates(
@@ -119,11 +122,11 @@ async def test_button_dates(
     await prayers_factory(date)
     time_machine.move_to(date)
     got = await prayer_time_answer.build(
-        FkUpdate(ujson.dumps({
-            'callback_query': {'data': 'mark_readed(3)'},
-            'message': {'message_id': 17, 'text': 'Время намаза'},
-            'chat': {'id': 905},
-        })),
+        FkUpdate(ujson.dumps(frozendict({
+            'callback_query': frozendict({'data': 'mark_readed(3)'}),
+            'message': frozendict({'message_id': 17, 'text': 'Время намаза'}),
+            'chat': frozendict({'id': 905}),
+        }))),
     )
 
     assert ujson.loads(
@@ -139,9 +142,9 @@ async def test_today(pgsql, fake_redis, time_machine, settings_ctor):
     got = await UserPrayerStatusChangeAnswer(
         FkAnswer(), pgsql, fake_redis, FkLogSink(), settings_ctor(),
     ).build(
-        FkUpdate(ujson.dumps({
-            'callback_query': {'data': 'mark_readed(3)'},
-            'message': {
+        FkUpdate(ujson.dumps(frozendict({
+            'callback_query': frozendict({'data': 'mark_readed(3)'}),
+            'message': frozendict({
                 'message_id': 17,
                 'text': '\n'.join([
                     'Время намаза для г. Казань (19.12.2023)\n',
@@ -152,32 +155,34 @@ async def test_today(pgsql, fake_redis, time_machine, settings_ctor):
                     'Ахшам: 16:55',
                     'Ястү: 18:36',
                 ]),
-            },
-            'chat': {'id': 905},
-        })),
+            }),
+            'chat': frozendict({'id': 905}),
+        }))),
     )
 
-    assert ujson.loads(got[0].url.params.get('reply_markup')) == {
+    assert ujson.loads(
+        got[0].url.params.get('reply_markup'),
+    ) == frozendict({
         'inline_keyboard': [
             [
-                {'callback_data': 'mark_readed(1)', 'text': '❌'},
-                {'callback_data': 'mark_not_readed(3)', 'text': '✅'},
-                {'callback_data': 'mark_readed(4)', 'text': '❌'},
-                {'callback_data': 'mark_readed(5)', 'text': '❌'},
-                {'callback_data': 'mark_readed(6)', 'text': '❌'},
+                frozendict({'callback_data': 'mark_readed(1)', 'text': '❌'}),
+                frozendict({'callback_data': 'mark_not_readed(3)', 'text': '✅'}),
+                frozendict({'callback_data': 'mark_readed(4)', 'text': '❌'}),
+                frozendict({'callback_data': 'mark_readed(5)', 'text': '❌'}),
+                frozendict({'callback_data': 'mark_readed(6)', 'text': '❌'}),
             ],
             [
-                {
+                frozendict({
                     'callback_data': 'pagPrDay(2023-12-18)',
                     'text': '<- 18.12',
-                },
-                {
+                }),
+                frozendict({
                     'callback_data': 'pagPrDay(2023-12-20)',
                     'text': '20.12 ->',
-                },
+                }),
             ],
         ],
-    }
+    })
     assert got[0].url.path == '/editMessageReplyMarkup'
 
 
@@ -212,18 +217,18 @@ async def test_without_message_text(pgsql, fake_redis, settings_ctor):
     got = await UserPrayerStatusChangeAnswer(
         FkAnswer(), pgsql, fake_redis, FkLogSink(), settings_ctor(),
     ).build(
-        FkUpdate(ujson.dumps({
-            'callback_query': {
-                'from': {'id': 905},
-                'message': {
+        FkUpdate(ujson.dumps(frozendict({
+            'callback_query': frozendict({
+                'from': frozendict({'id': 905}),
+                'message': frozendict({
                     'message_id': 496344,
-                    'chat': {'id': 905},
+                    'chat': frozendict({'id': 905}),
                     'date': 0,
-                },
+                }),
                 'chat_instance': '-8563585384798880073',
                 'data': 'mark_readed(5)',
-            },
-        })),
+            }),
+        }))),
     )
 
     assert got[0].url.path == '/sendMessage'
@@ -236,24 +241,26 @@ async def test_without_message_text(pgsql, fake_redis, settings_ctor):
         'Ахшам: 15:07',
         'Ястү: 17:04',
     ])
-    assert ujson.loads(got[0].url.params['reply_markup']) == {
+    assert ujson.loads(
+        got[0].url.params['reply_markup'],
+    ) == frozendict({
         'inline_keyboard': [
             [
-                {'callback_data': 'mark_readed(1)', 'text': '❌'},
-                {'callback_data': 'mark_readed(3)', 'text': '❌'},
-                {'callback_data': 'mark_readed(4)', 'text': '❌'},
-                {'callback_data': 'mark_not_readed(5)', 'text': '✅'},
-                {'callback_data': 'mark_readed(6)', 'text': '❌'},
+                frozendict({'callback_data': 'mark_readed(1)', 'text': '❌'}),
+                frozendict({'callback_data': 'mark_readed(3)', 'text': '❌'}),
+                frozendict({'callback_data': 'mark_readed(4)', 'text': '❌'}),
+                frozendict({'callback_data': 'mark_not_readed(5)', 'text': '✅'}),
+                frozendict({'callback_data': 'mark_readed(6)', 'text': '❌'}),
             ],
             [
-                {
+                frozendict({
                     'callback_data': 'pagPrDay(2023-12-18)',
                     'text': '<- 18.12',
-                },
-                {
+                }),
+                frozendict({
                     'callback_data': 'pagPrDay(2023-12-20)',
                     'text': '20.12 ->',
-                },
+                }),
             ],
         ],
-    }
+    })

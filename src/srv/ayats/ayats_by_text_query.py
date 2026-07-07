@@ -5,6 +5,7 @@ from collections.abc import Sequence
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -37,9 +38,9 @@ class AyatsByTextQuery(AsyncListable):
             'ORDER BY a.ayat_id',
         ])
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(query), {
+            query_result = await conn.execute(text(query), frozendict({
                 'search_query': '%{0}%'.format(self._query),
-            })
+            }))
             rows = query_result.mappings().fetchall()
         return [
             TextLenSafeAyat(

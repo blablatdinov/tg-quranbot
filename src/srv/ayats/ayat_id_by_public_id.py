@@ -5,6 +5,7 @@ import uuid
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -33,9 +34,9 @@ class AyatIdByPublicId(AsyncInt):
             'WHERE public_id = :public_id',
         ])
         async with self._pgsql.connect() as conn:
-            query_result = await conn.execute(text(query), {
+            query_result = await conn.execute(text(query), frozendict({
                 'public_id': str(self._public_id),
-            })
+            }))
             row = query_result.mappings().one_or_none()
         if row is None:
             raise AyatNotFoundError

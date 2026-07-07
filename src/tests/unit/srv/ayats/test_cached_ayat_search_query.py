@@ -7,6 +7,7 @@ from typing import final, override
 import attrs
 import pytest
 import ujson
+from frozendict import frozendict
 
 from app_types.fk_log_sink import FkLogSink
 from integrations.tg.tg_answers import TgAnswer
@@ -32,20 +33,20 @@ class _TgAnswerFake(TgAnswer):
 @pytest.fixture
 def update():
     return ujson.dumps(
-        {
+        frozendict({
             'callback_query': None,
             'inline_query': None,
-            'message': {
-                'chat': {
+            'message': frozendict({
+                'chat': frozendict({
                     'id': 358610865,
-                },
+                }),
                 'location_': None,
                 'message_id': 22199,
                 'text': 'камни',
                 'date': 1666185977,
-            },
+            }),
             'update_id': 637462858,
-        },
+        }),
         ensure_ascii=False,
     )
 

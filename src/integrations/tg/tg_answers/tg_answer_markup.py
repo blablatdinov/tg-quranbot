@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import httpx
+from frozendict import frozendict
 from furl import furl
 
 from app_types.update import Update
@@ -31,7 +32,7 @@ class TgAnswerMarkup(TgAnswer):
             httpx.Request(
                 request.method,
                 furl(request.url).add(
-                    {'reply_markup': await self._keyboard.generate(update)},
+                    frozendict({'reply_markup': await self._keyboard.generate(update)}),
                 ).url,
                 stream=request.stream,
                 headers=request.headers,

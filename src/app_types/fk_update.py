@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import ujson
+from frozendict import frozendict
 
 from app_types.stringable import SupportsStr
 from app_types.update import Update
@@ -34,7 +35,7 @@ class FkUpdate(Update):
         return str(self._raw)
 
     @override
-    def asdict(self) -> dict:
+    def asdict(self) -> frozendict:
         """Словарь.
 
         :return: dict

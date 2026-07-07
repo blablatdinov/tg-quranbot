@@ -32,7 +32,8 @@ class NtPrayersInfo(PrayersInfo):
     async def to_dict(self) -> PrayerMessageTextDict:  # noqa: WPS210
         """Словарь с данными для отправки пользователю."""
         city_name = await self._city.name()
-        async with httpx.AsyncClient(cookies={'asr_method': '1'}) as http_client:
+        # frozendict incompatible with httpx.AsyncClient
+        async with httpx.AsyncClient(cookies={'asr_method': '1'}) as http_client:  # noqa: FCS100
             response = await http_client.get(
                 await NtPrayersUrl(self._city, self._pgsql).to_str(),
             )
@@ -46,7 +47,8 @@ class NtPrayersInfo(PrayersInfo):
             for row in tree.xpath("//section[@id='content-tab1']//tbody/tr")
             if row.xpath('./td')[0].text == str(date.day)
         ))
-        return PrayerMessageTextDict({
+        # frozendict incompatible with TypeDicts
+        return PrayerMessageTextDict({  # noqa: FCS100
             'city_name': tree.xpath('//h1/text()')[0].split('.')[0],
             'date': date.strftime('%d.%m.%Y'),
             'fajr_prayer_time': rows[1].text,

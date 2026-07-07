@@ -5,6 +5,7 @@ from typing import TypedDict, final, override
 
 import attrs
 import ujson
+from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -46,7 +47,7 @@ class PodcastKeyboard(Keyboard):
         podcast_id = await self._podcast.podcast_id()
         async with self._pgsql.connect() as conn:
             row = (await conn.execute(
-                text(query), {'podcast_id': podcast_id},
+                text(query), frozendict({'podcast_id': podcast_id}),
             )).mappings().fetchone()
         if row:
             likes_count_map = _Row(
@@ -58,15 +59,15 @@ class PodcastKeyboard(Keyboard):
                 like_count=0,
                 dislike_count=0,
             )
-        return ujson.dumps({
+        return ujson.dumps(frozendict({
             'inline_keyboard': [[
-                {
+                frozendict({
                     'text': '👍 {0}'.format(likes_count_map['like_count']),
                     'callback_data': 'like({0})'.format(podcast_id),
-                },
-                {
+                }),
+                frozendict({
                     'text': '👎 {0}'.format(likes_count_map['dislike_count']),
                     'callback_data': 'dislike({0})'.format(podcast_id),
-                },
+                }),
             ]],
-        })
+        }))

@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import httpx
+from frozendict import frozendict
 from furl import furl
 
 from app_types.async_supports_str import AsyncSupportsStr
@@ -43,7 +44,11 @@ class TgTextAnswer(TgAnswer):
         return [
             httpx.Request(
                 request.method,
-                furl(request.url).add({'text': await self._text.to_str()}).url,
+                (
+                    furl(request.url)
+                    .add(frozendict({'text': await self._text.to_str()}))
+                    .url
+                ),
             )
             for request in await self._origin.build(update)
         ]

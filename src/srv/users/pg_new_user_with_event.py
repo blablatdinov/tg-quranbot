@@ -4,6 +4,7 @@
 from typing import final, override
 
 import attrs
+from frozendict import frozendict
 
 from app_types.date_time import DateTime
 from integrations.tg.fk_chat_id import ChatId
@@ -27,11 +28,11 @@ class PgNewUserWithEvent(NewUser):
         await self._origin.create()
         await self._event_sink.send(
             'qbot_admin.users',
-            {
+            frozendict({
                 'user_id': int(self._new_user_chat_id),
                 'date_time': str(self._datetime.datetime()),
                 'referrer_id': None,
-            },
+            }),
             'User.Subscribed',
             1,
         )

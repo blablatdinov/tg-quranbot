@@ -5,6 +5,7 @@ from typing import final, override
 
 import attrs
 import ujson
+from frozendict import frozendict
 
 from app_types.stringable import SupportsStr
 from app_types.update import Update
@@ -15,7 +16,7 @@ from app_types.update import Update
 class TgUpdate(Update):
     """Объект обновления от телеграмма."""
 
-    _update_dict: dict
+    _update_dict: frozendict
 
     @classmethod
     def str_ctor(cls, raw_update: SupportsStr) -> Update:
@@ -35,7 +36,7 @@ class TgUpdate(Update):
         return ujson.dumps(self._update_dict)
 
     @override
-    def asdict(self) -> dict:
+    def asdict(self) -> frozendict:
         """Словарь.
 
         # TODO #360:30min возможно стоит возвращать валидированный dict: return self.parsed().dict().
