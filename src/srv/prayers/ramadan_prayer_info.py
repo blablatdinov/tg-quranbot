@@ -1,11 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
 # SPDX-License-Identifier: MIT
 
-from copy import deepcopy
 from typing import final, override
 
 import attrs
-from frozendict import frozendict
 
 from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
 
