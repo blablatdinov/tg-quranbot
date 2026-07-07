@@ -13,4 +13,4 @@ async def test(unquote):
         FkKeyboard.empty_ctor(),
     ).build(FkUpdate.empty_ctor())
 
-    assert unquote(str(got[0].url)) == 'https://some.domain?reply_markup=frozendict({}'
+    assert unquote(str(got[0].url)) == 'https://some.domain?reply_markup={}'

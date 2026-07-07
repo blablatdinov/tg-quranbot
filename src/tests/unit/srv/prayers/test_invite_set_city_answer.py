@@ -36,7 +36,7 @@ async def test_exception():
 async def test_invite_set_city_answer(fake_redis):
     got = await InviteSetCityAnswer(
         FkAnswer(), fake_redis, FkLogSink(),
-    ).build(FkUpdate('{"chat":frozendict({"id":1}}'))
+    ).build(FkUpdate('{"chat":{"id":1}}'))
 
     assert got[0].url.params['reply_markup'] == ujson.dumps(
         frozendict({

@@ -20,6 +20,6 @@ async def test_fail_format():
     with pytest.raises(ValueError, match=error_text):
         await ParsedDate(
             MessageText(
-                FkUpdate('{"message":frozendict({"text":"Время намаза invalid-date"}}'),
+                FkUpdate('{"message":{"text":"Время намаза invalid-date"}}'),
             ),
         ).date()
