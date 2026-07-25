@@ -74,7 +74,7 @@ flake8-frozen-collections = "0.0.1"
 # other
 deltaver = "1.0.1"
 yoyo-migrations = "9.0.0"
-faker = "40.35.0"
+faker = "40.36.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
