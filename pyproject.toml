@@ -31,7 +31,7 @@ ujson = "5.13.0"
 pydantic-settings = "2.14.2"
 more-itertools = "11.1.0"
 lxml = "6.1.1"
-prometheus-client = "0.25.0"
+prometheus-client = "0.26.0"
 watchdog = {version = "6.0.0", extras = ["watchmedo"]}
 frozendict = "2.4.7"
 
