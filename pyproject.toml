@@ -72,7 +72,7 @@ sqlfluff = "4.2.2"
 flake8-no-private-methods = "0.0.2"
 flake8-frozen-collections = "0.0.1"
 # other
-deltaver = "1.0.1"
+deltaver = "1.0.2"
 yoyo-migrations = "9.0.0"
 faker = "40.36.0"
 
