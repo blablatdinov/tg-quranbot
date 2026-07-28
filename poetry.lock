@@ -596,14 +596,14 @@ ssh = ["bcrypt (>=3.1.5)"]
 
 [[package]]
 name = "deltaver"
-version = "1.0.1"
+version = "1.0.2"
 description = ""
 optional = false
 python-versions = "<4.0,>=3.10"
 groups = ["dev"]
 files = [
-    {file = "deltaver-1.0.1-py3-none-any.whl", hash = "sha256:d0d1809dff041a53cc8c3b2a01b6f6dc2bd1fcf21a3e128aeee26ee873171c4d"},
-    {file = "deltaver-1.0.1.tar.gz", hash = "sha256:f9fa0d74e32d87e5b015f463455c2e6775a32cc4e11570ed75cd2e85cdd19459"},
+    {file = "deltaver-1.0.2-py3-none-any.whl", hash = "sha256:67d3d807ea7e35d0f93d8cf77f3e796c3e7bd3149f3a3efdd8c975d853ccf6d2"},
+    {file = "deltaver-1.0.2.tar.gz", hash = "sha256:e0235401213bf939cd307b1f94039dd51725d9c5ac545bde9e839caf18ac3ad8"},
 ]
 
 [package.dependencies]
@@ -4329,4 +4329,4 @@ type = ["pytest-mypy (>=1.0.1) ; platform_python_implementation != \"PyPy\""]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "39bdb2950e7c5f6cfad2d4f1b0c7718fb8e5ea080d189ff62ec3a0f6e71f50c1"
+content-hash = "c8cc7e8b8908f91c1612a120d6aa9e138e728169aad5d2c3f6f296317d0c4736"
