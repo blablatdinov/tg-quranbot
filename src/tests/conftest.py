@@ -4,15 +4,14 @@
 import asyncio
 import urllib
 from pathlib import Path
+from urllib.parse import urlparse
 
 import httpx
-import respx
 import pytest
 from fakeredis import aioredis
 from frozendict import frozendict
 from jinja2 import Template
 
-from urllib.parse import urlparse
 from app_types.fk_log_sink import FkLogSink
 from settings import BASE_DIR, Settings
 
@@ -30,7 +29,7 @@ def setup_respx_for_radar(respx_mock, pytestconfig):
         parsed = urlparse(radar_endpoint)
         base_url = f'{parsed.scheme}://{parsed.netloc}'
         respx_mock.post(url__regex=f'^{base_url}/.*').pass_through()
-    yield
+
 
 # flake8: noqa: WPS202
 @pytest.fixture
