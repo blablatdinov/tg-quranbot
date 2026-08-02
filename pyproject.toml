@@ -44,6 +44,7 @@ pytest-mock = "3.15.1"
 pytest-lazy-fixtures = "1.4.0"
 pytest-randomly = "4.1.0"
 pytest-retry = "1.7.0"
+pytest-test-radar = "0.0.1-a6"
 mutmut = "2.5.1"
 respx = "0.23.1"
 time-machine = "3.3.0"
@@ -93,6 +94,7 @@ asyncio_mode = "auto"
 addopts = [
   "--doctest-modules",
 ]
+radar_endpoint = "https://test-radar.ilaletdinov.ru"
 markers = [
   "tg_button: tests that check the behavior of buttons",
 ]
