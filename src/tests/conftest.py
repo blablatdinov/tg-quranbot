@@ -4,6 +4,7 @@
 import asyncio
 import urllib
 from pathlib import Path
+from urllib.parse import urlparse
 
 import httpx
 import pytest
@@ -13,6 +14,21 @@ from jinja2 import Template
 
 from app_types.fk_log_sink import FkLogSink
 from settings import BASE_DIR, Settings
+
+
+@pytest.fixture(autouse=True)
+def setup_respx_for_radar(respx_mock, pytestconfig):
+    """
+    Настраивает respx для пропуска запросов к test-radar.
+    Использует значение из --radar-endpoint.
+    """
+    radar_endpoint = pytestconfig.getoption('--radar-endpoint') or pytestconfig.getini('radar_endpoint')
+    if radar_endpoint:
+        radar_endpoint = radar_endpoint.rstrip('/')
+        respx_mock.post(f'{radar_endpoint}/api/v1/test_record/create/').pass_through()
+        parsed = urlparse(radar_endpoint)
+        base_url = f'{parsed.scheme}://{parsed.netloc}'
+        respx_mock.post(url__regex=f'^{base_url}/.*').pass_through()
 
 
 # flake8: noqa: WPS202
