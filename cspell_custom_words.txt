@@ -6,6 +6,7 @@ aiormq
 Almaz
 almazilaletdinov
 aoiejf
+autouse
 awef
 ayat
 ayats
@@ -23,10 +24,11 @@ eljson
 fajr
 FGAQ
 finded
+getini
 hatsh
 Ilaletdinov
-Innopolis
 ILIKE
+Innopolis
 intable
 isha
 isha'a
@@ -41,6 +43,7 @@ Millis
 modificated
 mutmut
 mypy
+namaz
 Nominatim
 nفَإِنْ
 pgsql
@@ -49,6 +52,7 @@ Poodcast
 pydantic
 pytest
 pytest's
+pytestconfig
 pytestmark
 qbot
 Quranbot
@@ -83,6 +87,7 @@ wemake
 амта
 Асма
 диин
+Каза
 лати
 насу
 Стаб
@@ -170,6 +175,7 @@ wemake
 подкаста
 Подкасты
 реферера
+Спарсить
 таблилца
 фаттакун
 Фейковое
@@ -178,6 +184,7 @@ wemake
 فَكُلُوا
 نَعْبُدُ
 Джаварихи
+кастомное
 подкастам
 подкастом
 прходится
@@ -237,9 +244,5 @@ wemake
 الْمُسْتَقِيمَ
 لِلْكَافِرِينَ
 وَالْحِجَارَةُ
-تُعَلِّمُونَهُنَّ
-Каза
 раскоментировать
-кастомное
-Спарсить
-namaz
+تُعَلِّمُونَهُنَّ
