@@ -2826,28 +2826,14 @@ dev = ["black", "flake8", "isort", "mypy"]
 
 [[package]]
 name = "pytest-test-radar"
-<<<<<<< HEAD
 version = "0.0.1a8"
-||||||| parent of 942246c3 (Update pytest-test-radar)
-version = "0.0.1a6"
-=======
-version = "0.0.1a7"
->>>>>>> 942246c3 (Update pytest-test-radar)
 description = "A pytest plugin to send test statistics to Test Radar."
 optional = false
 python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-<<<<<<< HEAD
     {file = "pytest_test_radar-0.0.1a8-py3-none-any.whl", hash = "sha256:409d5ecd975ff1f01a2d91c425e86ff029216c95331e9e20a12d8acc1eab7de1"},
     {file = "pytest_test_radar-0.0.1a8.tar.gz", hash = "sha256:9fef399389734e62b5cba9616c1c544c4648967cc725a0990a812e13ebc1f91c"},
-||||||| parent of 942246c3 (Update pytest-test-radar)
-    {file = "pytest_test_radar-0.0.1a6-py3-none-any.whl", hash = "sha256:acc2a085f0d7e91f8051f0a4f54f12936781b29d91a9308bddbe37ffbfbe8268"},
-    {file = "pytest_test_radar-0.0.1a6.tar.gz", hash = "sha256:e3ddeb96ac3df59736a7df238f37f28653a2095320839e476af64e4cf9ce669a"},
-=======
-    {file = "pytest_test_radar-0.0.1a7-py3-none-any.whl", hash = "sha256:b2b03b4472ffa4d6e82fc2e77d83b140028e0ced01a49f1d379cb4a3e3821a65"},
-    {file = "pytest_test_radar-0.0.1a7.tar.gz", hash = "sha256:b8fa65bf7052405094dd45505a4b16b7ca8657fc24c40454b351faa16ded9291"},
->>>>>>> 942246c3 (Update pytest-test-radar)
 ]
 
 [package.dependencies]
@@ -4443,4 +4429,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "4940073dea296c31045baa31ae1993170ddffdd6ce3d78fa2e093db617e03aec"
+content-hash = "1fed84a0320faa81ec789b9cf30257b726d7ec34a9cf181960385cdf5119d9e1"
