@@ -2826,18 +2826,19 @@ dev = ["black", "flake8", "isort", "mypy"]
 
 [[package]]
 name = "pytest-test-radar"
-version = "0.0.1a6"
+version = "0.0.1a8"
 description = "A pytest plugin to send test statistics to Test Radar."
 optional = false
 python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "pytest_test_radar-0.0.1a6-py3-none-any.whl", hash = "sha256:acc2a085f0d7e91f8051f0a4f54f12936781b29d91a9308bddbe37ffbfbe8268"},
-    {file = "pytest_test_radar-0.0.1a6.tar.gz", hash = "sha256:e3ddeb96ac3df59736a7df238f37f28653a2095320839e476af64e4cf9ce669a"},
+    {file = "pytest_test_radar-0.0.1a8-py3-none-any.whl", hash = "sha256:409d5ecd975ff1f01a2d91c425e86ff029216c95331e9e20a12d8acc1eab7de1"},
+    {file = "pytest_test_radar-0.0.1a8.tar.gz", hash = "sha256:9fef399389734e62b5cba9616c1c544c4648967cc725a0990a812e13ebc1f91c"},
 ]
 
 [package.dependencies]
 httpx = ">=0.28.1"
+python-dotenv = ">=1.0.0"
 zstandard = ">=0.23.0"
 
 [[package]]
@@ -2861,7 +2862,7 @@ version = "1.2.2"
 description = "Read key-value pairs from a .env file and set them as environment variables"
 optional = false
 python-versions = ">=3.10"
-groups = ["main"]
+groups = ["main", "dev"]
 files = [
     {file = "python_dotenv-1.2.2-py3-none-any.whl", hash = "sha256:1d8214789a24de455a8b8bd8ae6fe3c6b69a5e3d64aa8a8e5d68e694bbcb285a"},
     {file = "python_dotenv-1.2.2.tar.gz", hash = "sha256:2c371a91fbd7ba082c2c1dc1f8bf89ca22564a087c2c287cd9b662adde799cf3"},
@@ -4428,4 +4429,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "95e42dd6e88b66fbfa61a6c80498f120fb07c6d02a17a687b56b58f4a4d8a792"
+content-hash = "1fed84a0320faa81ec789b9cf30257b726d7ec34a9cf181960385cdf5119d9e1"
