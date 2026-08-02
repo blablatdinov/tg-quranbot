@@ -4,8 +4,8 @@
 from pathlib import Path
 from typing import final
 
-from pydantic import ConfigDict, PostgresDsn, RedisDsn
-from pydantic_settings import BaseSettings
+from pydantic import PostgresDsn, RedisDsn
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).parent  # Path to src dir
 
@@ -14,7 +14,7 @@ BASE_DIR = Path(__file__).parent  # Path to src dir
 class Settings(BaseSettings):  # noqa: PEO200
     """Настройки приложения."""
 
-    model_config = ConfigDict(extra='allow')
+    model_config = SettingsConfigDict(extra='allow')
 
     REDIS_DSN: RedisDsn
     DEBUG: bool
