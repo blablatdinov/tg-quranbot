@@ -51,7 +51,7 @@ jobs:
       - name: Set up Python 3.14
         uses: actions/setup-python@v7
         with:
-          python-version: "3.14.6"
+          python-version: "3.14.7"
       - name: Load cached venv
         id: cached-poetry-dependencies
         uses: actions/cache@v6
