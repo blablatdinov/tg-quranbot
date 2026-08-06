@@ -51,7 +51,7 @@ time-machine = "3.3.1"
 fakeredis = "2.37.0"
 telethon = "1.44.0"
 psycopg2-binary = "2.9.12"
-pika = "1.4.2"
+pika = "1.4.4"
 hypothesis = "6.165.2"
 # type checking
 mypy = "2.3.0"

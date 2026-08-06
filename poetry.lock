@@ -2163,14 +2163,14 @@ re2 = ["google-re2 (>=1.1)"]
 
 [[package]]
 name = "pika"
-version = "1.4.2"
+version = "1.4.4"
 description = "Pika Python AMQP Client Library"
 optional = false
 python-versions = ">=3.7"
 groups = ["dev"]
 files = [
-    {file = "pika-1.4.2-py3-none-any.whl", hash = "sha256:b1df7389cdffaa45856bd01ade4e81bd488e0e199c443faf0c7bea89015f373f"},
-    {file = "pika-1.4.2.tar.gz", hash = "sha256:48d1f50297e76be4fc798fd5232d4d532d7a4758e51f7c0ae6c4004b9808a26b"},
+    {file = "pika-1.4.4-py3-none-any.whl", hash = "sha256:48de960c97a93b55db06b8be4c53eb977c9c8a2754c57cdae9097abcbd70ce04"},
+    {file = "pika-1.4.4.tar.gz", hash = "sha256:8cfc8b33a5cb16e733bd60cffca9732c0d1d761ecd80a89f34ed7df2cd38d6d6"},
 ]
 
 [package.extras]
@@ -4429,4 +4429,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "95176602fed69f9cba7c8b43a8c3cdbef99f1477698a8e83239503f846cd7e6b"
+content-hash = "c50709846e0bd16bd93e4999045e10768c4d7a46cf81f409c40736628579c57b"
