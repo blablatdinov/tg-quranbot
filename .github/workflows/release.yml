@@ -108,16 +108,14 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install yoyo-migrations==9.0.0 psycopg2-binary==2.9.9 setuptools==75.1.0
-      - name: Apply migrations
+      - name: Apply Migrations
         env:
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
         run: |
-          echo "[DEFAULT]
-          sources = migrations
-          database = \${POSTGRES_URL}
-          batch_mode = on
-          verbosity = 3" > yoyo.ini
-          yoyo apply
+          yoyo apply \
+            --database "$POSTGRES_URL" \
+            --migration-table _yoyo_migrations \
+            migrations
 
   update-remote-container:
     needs: build-and-push
