@@ -107,7 +107,7 @@ jobs:
           python-version: "3.14.7"
       - name: Install Dependencies
         run: |
-          pip install yoyo-migrations==9.0.0 psycopg2-binary==2.9.9 setuptools==75.1.0
+          pip install yoyo-migrations==9.0.0 psycopg2-binary==2.9.12 setuptools==75.1.0
       - name: Apply Migrations
         env:
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
