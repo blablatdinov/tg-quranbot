@@ -130,7 +130,8 @@ jobs:
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
       - name: Get tag name
         id: tag_name
-        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        # run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        run: echo "TAG_NAME=v3.8.8-a1" >> $GITHUB_OUTPUT
       - name: Deploy with docker-compose on remote server
         run: |
           ssh www@${SERVER_IP} "${TAG_NAME}"
