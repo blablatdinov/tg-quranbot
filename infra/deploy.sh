@@ -11,8 +11,7 @@ echo "Starting deployment of version: ${TAG_NAME}"
 docker compose -f docker-compose.prod.yml down --remove-orphans || true
 
 docker compose -f docker-compose.prod.yml pull
-
-docker compose -f docker-compose.prod.yml up -d --wait --wait-timeout 300
+docker compose --env-file .env -f docker-compose.prod.yml up -d --wait
 
 echo "Deployment completed successfully!"
 
