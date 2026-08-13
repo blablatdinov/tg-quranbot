@@ -83,7 +83,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Get tag name
         id: tag_name
-        run: echo "::set-output name=TAG_NAME::$(echo ${GITHUB_REF#refs/tags/})"
+        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
       - name: Build Docker image
         uses: docker/build-push-action@v7
         with:
@@ -104,17 +104,12 @@ jobs:
           python-version: "3.14.7"
       - name: Install Dependencies
         run: |
-          pip install yoyo-migrations==9.0.0 psycopg2-binary==2.9.9 setuptools==75.1.0
-      - name: Fill yoyo.ini
-        run: |
-          echo '[DEFAULT]
-          sources = migrations
-          database = ${{ secrets.POSTGRES_URL }}
-          batch_mode = on
-          verbosity = 3' > yoyo.ini
+          pip install yoyo-migrations==9.0.0 psycopg2-binary==2.9.12 setuptools==75.1.0
       - name: Apply Migrations
+        env:
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
         run: |
-          yoyo apply
+          yoyo apply --database "$POSTGRES_URL" -vvv migrations
 
   update-remote-container:
     needs: build-and-push
@@ -123,15 +118,17 @@ jobs:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
-          key: ${{ secrets.SSH_KEY}}
-          known_hosts: '87.249.49.217 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDyRsXjQSzzB0b/g9mm1/ET01bx3BTUpm1DRLeG03UY7X+NfAQLskQWl7NP5rp8AVIwFmcRtiZo+Stle2Xo3wNCHRDFu0zU2RixTeelJ046Kcu6xSeIgwvi+OK1MaFPJwd1Em+U/aq624FNI7aJe05UCOy77W9Xa5TzKW3htG9ZLN0ykQ3AUEJ0ZnDLoOY1/4g4x1KqeRRnh61mwxGqzQ/kub/GVooKzfqrfY07/5E7hw3VLMZrQwuUhe9XJOZZjO/rObZdChmHxHwBsmprbYmWEjiRJRms4OZ70kVV7O2HjEVCkQQdtWrxhXzoDB4+oJq1STSEv9hEM2lpZERm1muTIYsLn3z4Ejget0iA/H5PJRLxRZs9y/q/vxptI/cX+VDKWstOQKu/Ic7v8LIhTe0mPUAHqp0eu60ZHp2JLpJ6pko9RptflM2cjPawINulmINOE43wrTzFhhhgrdxtYEt7dnCVAfooanbB9vYoH5LGBVOPxiqUnJzMvlJ0z9rpk/0='
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
       - name: Get tag name
         id: tag_name
-        run: echo "::set-output name=TAG_NAME::$(echo ${GITHUB_REF#refs/tags/})"
+        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
       - name: Deploy with docker-compose on remote server
         run: |
-          ssh www@87.249.49.217 'echo "Connected!"'
-          ssh www@87.249.49.217 'cd /home/www/code/tg-quranbot/ && TAG_NAME=${{ steps.tag_name.outputs.TAG_NAME }} docker compose -f infra/docker-compose.prod.yml --env-file=.env up -d'
+          ssh www@${SERVER_IP} "${TAG_NAME}"
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          TAG_NAME: ${{ steps.tag_name.outputs.TAG_NAME }}
 
   change-pyproject-version:
     # needs: checks
