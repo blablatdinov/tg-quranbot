@@ -134,6 +134,9 @@ jobs:
       - name: Deploy with docker-compose on remote server
         run: |
           ssh www@${SERVER_IP} "${TAG_NAME}"
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          TAG_NAME: ${{ steps.tag_name.outputs.TAG_NAME }}
 
   change-pyproject-version:
     # needs: checks
