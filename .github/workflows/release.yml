@@ -112,10 +112,7 @@ jobs:
         env:
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
         run: |
-          yoyo apply \
-            --database "$POSTGRES_URL" \
-            --migration-table _yoyo_migrations \
-            migrations
+          yoyo apply --database "$POSTGRES_URL" -vvv migrations
 
   update-remote-container:
     needs: build-and-push
