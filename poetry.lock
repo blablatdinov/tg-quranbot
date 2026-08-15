@@ -766,18 +766,18 @@ flake8 = ">=7.0.0"
 
 [[package]]
 name = "flake8-no-json"
-version = "0.0.2"
+version = "0.0.3"
 description = "flake8 plugin for using json from stdlib"
 optional = false
-python-versions = "<4.0,>=3.9"
+python-versions = "<4.0,>=3.10"
 groups = ["dev"]
 files = [
-    {file = "flake8_no_json-0.0.2-py3-none-any.whl", hash = "sha256:32571354726c2bac3055e0230e79412431b679eb11572289172bbc00be0b6e97"},
-    {file = "flake8_no_json-0.0.2.tar.gz", hash = "sha256:4df3afce4c82a7d48e370383b855118cf2d423256882616dc8acb86911cf9f24"},
+    {file = "flake8_no_json-0.0.3-py3-none-any.whl", hash = "sha256:470936ea1d313a7bed7bf6a7e8e9b49279dc031e1e909ea69041a48f4040bbf1"},
+    {file = "flake8_no_json-0.0.3.tar.gz", hash = "sha256:404429e75d65c7fed7a7f226181355aaf77a3e384a7c00960fc28e3ac9b13679"},
 ]
 
 [package.dependencies]
-flake8 = ">=5"
+flake8 = ">=7.1,<8.0"
 
 [[package]]
 name = "flake8-no-private-methods"
@@ -4482,4 +4482,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "c06d7642c35bf489605ebb8746dce1136dcd064d2835a81b2e916a954928a7de"
+content-hash = "a787201545d3d4e9e6b84a866decf324e498d557ed9b8189e00f131b9602061b"
