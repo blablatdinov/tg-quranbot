@@ -736,14 +736,14 @@ pyflakes = ">=3.4.0,<3.5.0"
 
 [[package]]
 name = "flake8-final"
-version = "0.0.3"
+version = "0.0.4"
 description = "flake8 plugin for check and inheritance of implementations"
 optional = false
-python-versions = "<4.0,>=3.9"
+python-versions = "<4.0,>=3.10"
 groups = ["main", "dev"]
 files = [
-    {file = "flake8_final-0.0.3-py3-none-any.whl", hash = "sha256:48d375a071c5d0193b5d698100d5751896337e9596ec541886c2895be7f19027"},
-    {file = "flake8_final-0.0.3.tar.gz", hash = "sha256:652c95616199aa4f1bf4ccb60c2cd944797e12dc21b0343f12534e24465b3c43"},
+    {file = "flake8_final-0.0.4-py3-none-any.whl", hash = "sha256:370d50e944ad7b546774b982c2a5073dae810ba6741e7514f4eb526cc2df4fa9"},
+    {file = "flake8_final-0.0.4.tar.gz", hash = "sha256:c1b3df37e7e7ab017ee0fbcb7e2500fc36c7eb80c02d89652e3ed712ee0778a7"},
 ]
 
 [package.dependencies]
@@ -1653,6 +1653,8 @@ files = [
     {file = "lxml-6.1.2-cp38-cp38-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:af6585a466cee2c5a524f7fffc591844bd604a29fdd9cade964f548512b5ef7e"},
     {file = "lxml-6.1.2-cp38-cp38-manylinux_2_28_i686.whl", hash = "sha256:841630176c15fa5d3c5cd6f755435d3c5540a82e1dd2a7de1799401f92ee6d24"},
     {file = "lxml-6.1.2-cp38-cp38-musllinux_1_2_x86_64.whl", hash = "sha256:215bb3cc4be015ccac3c7d4f25eb7b941f857fe5b02c0e3504cca61f7fb12455"},
+    {file = "lxml-6.1.2-cp38-cp38-win32.whl", hash = "sha256:7c687fd8e558c7d169f6f1987b696f37824d3a097f291bffd0ab4a2ea2307dfb"},
+    {file = "lxml-6.1.2-cp38-cp38-win_amd64.whl", hash = "sha256:69df1856cb6c065e5bfd23adcc7408bfa6dcf32b0018373a99b0769bd86e2256"},
     {file = "lxml-6.1.2-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:2dcc69e307e0916c7a0b552212010938d02a664d29b6bda75ab2bc5fa487c861"},
     {file = "lxml-6.1.2-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:243ecef7cb7415766dd742336cd5b8361a84c6f297e2773c865b783724cbbe74"},
     {file = "lxml-6.1.2-cp39-cp39-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:08f0c9ed7cded07c5e798b17c9c25bbba5d0650c8ff0a7f65f84c634966f0f10"},
@@ -4522,4 +4524,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "d000347a1bd10372dd7457068c2e222e370285247e6969ce892f6004fac4a4bc"
+content-hash = "34ced9ae787aa1a96667bb8a2f4581503692fc50c9096aa4de83ef191c0db8fb"
