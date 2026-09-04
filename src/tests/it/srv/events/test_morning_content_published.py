@@ -134,10 +134,12 @@ async def users(user_factory):
 
 @pytest.mark.usefixtures('_ayats', '_mock_http')
 async def test(pgsql, users, settings_ctor, settings):
-    settings = settings_ctor(  # noqa: S106. Not secure issue
+    # Not secure issue
+    settings = settings_ctor(  # noqa: S106
         rabbitmq_host=settings.RABBITMQ_HOST,
         rabbitmq_user='guest',
-        rabbitmq_pass='guest',  # noqa: S106 . Not secure issue
+        # Not secure issue
+        rabbitmq_pass='guest',  # noqa: S106
         rabbitmq_vhost='',
         daily_ayats='on',
     )

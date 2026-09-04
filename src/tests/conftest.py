@@ -16,7 +16,7 @@ from app_types.fk_log_sink import FkLogSink
 from settings import BASE_DIR, Settings
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(autouse=True)  # ruff: ignore[pytest-fixture-autouse]
 def setup_respx_for_radar(respx_mock, pytestconfig):
     """
     Настраивает respx для пропуска запросов к test-radar.

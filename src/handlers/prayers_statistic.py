@@ -51,7 +51,8 @@ class PrayersStatistic(AsyncSupportsStr):
             'Ястү: {0}'.format(prayer_unread_dict[PrayerNames.isha.name]),
         ])
 
-    def _exist_prayer_case(  # noqa: NPM100. Fix it
+    # Fix it
+    def _exist_prayer_case(  # noqa: NPM100
         self,
         prayers_per_day: list[tuple],
         prayer_unread_dict: frozendict,
@@ -63,7 +64,8 @@ class PrayersStatistic(AsyncSupportsStr):
             tmp_dict[prayer_name] += int(not prayers_per_day[idx][prayer_idx]['is_read'])
         return frozendict(tmp_dict)
 
-    async def _new_prayer_at_user_case(  # noqa: NPM100. Fix it
+    # Fix it
+    async def _new_prayer_at_user_case(  # noqa: NPM100
         self,
         prayer_unread_dict: frozendict,
         date: datetime.date,
@@ -75,7 +77,8 @@ class PrayersStatistic(AsyncSupportsStr):
             tmp_dict[prayer_name] += 1
         return frozendict(tmp_dict)
 
-    async def _prayers_per_day(self) -> list[tuple]:  # noqa: NPM100. Fix it
+    # Fix it
+    async def _prayers_per_day(self) -> list[tuple]:  # noqa: NPM100
         query = '\n'.join([
             'SELECT',
             '    pau.is_read,',
@@ -100,7 +103,8 @@ class PrayersStatistic(AsyncSupportsStr):
             ),
         )
 
-    async def _dates_range(self) -> list[datetime.date]:  # noqa: NPM100. Fix it
+    # Fix it
+    async def _dates_range(self) -> list[datetime.date]:  # noqa: NPM100
         query = '\n'.join([
             'SELECT p.day',
             'FROM prayers_at_user AS pau',

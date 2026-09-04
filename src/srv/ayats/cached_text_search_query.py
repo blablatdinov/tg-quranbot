@@ -7,7 +7,8 @@ from srv.ayats.text_search_query import TextSearchQuery
 
 
 @final
-class CachedTextSearchQuery(TextSearchQuery):  # noqa: PEO200. Cached decorator
+# Cached decorator
+class CachedTextSearchQuery(TextSearchQuery):  # noqa: PEO200
     """Закэшированный запрос."""
 
     def __init__(self, origin: TextSearchQuery) -> None:

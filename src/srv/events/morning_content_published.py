@@ -92,7 +92,8 @@ class MorningContentPublishedEvent(ReceivedEvent):
             ])))
             await conn.commit()
 
-    def _zipped_ans_chat_ids(self, rows: list[Any]) -> Iterator[tuple[TgAnswer, int]]:  # noqa: NPM100. Fix it
+    # Fix it
+    def _zipped_ans_chat_ids(self, rows: list[Any]) -> Iterator[tuple[TgAnswer, int]]:  # noqa: NPM100
         return zip(
             [
                 TgLinkPreviewOptions(
@@ -138,7 +139,8 @@ class MorningContentPublishedEvent(ReceivedEvent):
             strict=True,
         )
 
-    async def _iteration(  # noqa: NPM100. Fix it
+    # Fix it
+    async def _iteration(  # noqa: NPM100
         self,
         answer: TgAnswer,
         chat_id: int,

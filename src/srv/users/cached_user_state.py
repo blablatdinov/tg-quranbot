@@ -8,7 +8,8 @@ from srv.users.user_step import UserStep
 
 
 @final
-class CachedUserState(UserState):  # noqa: PEO200. Cached decorator
+# Cached decorator
+class CachedUserState(UserState):  # noqa: PEO200
     """Кэширующий декоратор."""
 
     def __init__(self, origin: UserState) -> None:

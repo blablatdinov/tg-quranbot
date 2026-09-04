@@ -17,7 +17,8 @@ logging.basicConfig()
 logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
 
-async def _morning_ayats_task() -> None:  # noqa: NPM100. Fix it
+# Fix it
+async def _morning_ayats_task() -> None:  # noqa: NPM100
     await RabbitmqSink(settings, logger).send(
         'quranbot.mailings',
         frozendict({}),
@@ -26,7 +27,8 @@ async def _morning_ayats_task() -> None:  # noqa: NPM100. Fix it
     )
 
 
-async def _daily_prayers_task() -> None:  # noqa: NPM100. Fix it
+# Fix it
+async def _daily_prayers_task() -> None:  # noqa: NPM100
     await RabbitmqSink(settings, logger).send(
         'quranbot.mailings',
         frozendict({}),
@@ -35,7 +37,8 @@ async def _daily_prayers_task() -> None:  # noqa: NPM100. Fix it
     )
 
 
-async def _daily_check_user_status() -> None:  # noqa: NPM100. Fix it
+# Fix it
+async def _daily_check_user_status() -> None:  # noqa: NPM100
     await RabbitmqSink(settings, logger).send(
         'quranbot.users',
         frozendict({}),

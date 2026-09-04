@@ -41,7 +41,8 @@ class HgPrayersInfo(PrayersInfo):
                 await HgPrayersUrl(self._city, self._pgsql, date).to_str(),
             )
             response.raise_for_status()
-        tree = etree.fromstring(response.text, etree.HTMLParser())  # noqa: S320. Trust https://halalguide.me
+        # Trust https://halalguide.me
+        tree = etree.fromstring(response.text, etree.HTMLParser())  # noqa: S320
         if date.month != datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).month:
             raise PrayersNotFoundError(city_name, date)
         table = [
