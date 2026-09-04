@@ -24,7 +24,8 @@ class FkUpdate(Update):
 
         :return: Update
         """
-        return cls('{}')  # noqa: P103. Empty json
+        # Empty json
+        return cls('{}')  # noqa: P103
 
     @override
     def __str__(self) -> str:

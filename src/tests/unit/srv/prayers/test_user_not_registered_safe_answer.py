@@ -15,7 +15,8 @@ from srv.users.fk_new_user import FkNewUser
 
 
 @final
-class UserNotFoundAnswer(TgAnswer):  # noqa: PEO200. Test class
+# Test class
+class UserNotFoundAnswer(TgAnswer):  # noqa: PEO200
 
     def __init__(self, origin: TgAnswer):
         self._origin = origin

@@ -81,7 +81,8 @@ class MailingCreatedEvent(ReceivedEvent):
             self._events_sink,
         ).update(to=False)
 
-    async def _iteration(  # noqa: NPM100. Fix it
+    # Fix it
+    async def _iteration(  # noqa: NPM100
         self,
         answer: TgAnswer,
         chat_id: int,

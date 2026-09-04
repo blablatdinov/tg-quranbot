@@ -38,7 +38,8 @@ class NtPrayersInfo(PrayersInfo):
                 await NtPrayersUrl(self._city, self._pgsql).to_str(),
             )
             response.raise_for_status()
-        tree = etree.fromstring(response.text, etree.HTMLParser())  # noqa: S320. Trust https://namaz.today
+        # Trust https://namaz.today
+        tree = etree.fromstring(response.text, etree.HTMLParser())  # noqa: S320
         date = await self._date.parse(FkUpdate.empty_ctor())
         if date.month != datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')).month:
             raise PrayersNotFoundError(city_name, date)

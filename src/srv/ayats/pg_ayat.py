@@ -27,7 +27,8 @@ from srv.files.tg_file import TgFile
 
 @final
 @attrs.define(frozen=True)
-class PgAyat(Ayat):  # noqa: WPS214. This class contain 4 secondary ctor and 4 method
+# This class contain 4 secondary ctor and 4 method
+class PgAyat(Ayat):  # noqa: WPS214
     """Аят."""
 
     _ayat_id: AsyncInt

@@ -14,7 +14,8 @@ from srv.prayers.prayers_info import PrayerMessageTextDict, PrayersInfo
 
 
 @final
-class _FkPrayersInfo(PrayersInfo):  # noqa: PEO200. Object for test only
+# Object for test only
+class _FkPrayersInfo(PrayersInfo):  # noqa: PEO200
 
     def __init__(self) -> None:
         self._flag = False

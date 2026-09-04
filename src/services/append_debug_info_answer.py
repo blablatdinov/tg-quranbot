@@ -54,7 +54,8 @@ class AppendDebugInfoAnswer(TgAnswer):
             ],
         )
 
-    def _build_new_requests(  # noqa: NPM100. Fix it
+    # Fix it
+    def _build_new_requests(  # noqa: NPM100
         self,
         origin_requests: list[httpx.Request],
         debug_params: list[str],

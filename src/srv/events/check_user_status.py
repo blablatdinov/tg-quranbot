@@ -62,7 +62,8 @@ class CheckUsersStatus(ReceivedEvent):
             self._events_sink,
         ).update(to=False)
 
-    async def _answers(self, users: AsyncListable[User]) -> list[TgAnswer]:  # noqa: NPM100. Fix it
+    # Fix it
+    async def _answers(self, users: AsyncListable[User]) -> list[TgAnswer]:  # noqa: NPM100
         return [
             TypingAction(
                 TgChatIdAnswer(
