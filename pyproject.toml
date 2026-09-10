@@ -50,7 +50,7 @@ respx = "0.23.1"
 time-machine = "3.5.1"
 fakeredis = "2.38.0"
 telethon = "1.44.0"
-psycopg2-binary = "2.9.12"
+psycopg2-binary = "2.9.13"
 pika = "1.4.4"
 hypothesis = "6.168.0"
 # type checking
