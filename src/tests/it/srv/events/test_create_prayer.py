@@ -28,7 +28,7 @@ async def test(pgsql):
         }),
     }))
 
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         row = (await conn.execute(text('SELECT name, time, city_id, day FROM prayers'))).mappings().fetchone()
     assert frozendict({
         key: row[key]

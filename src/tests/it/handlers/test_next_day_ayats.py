@@ -17,7 +17,7 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 @pytest.fixture
 async def _db_ayats(pgsql):
     file_ids = [str(uuid.uuid4()) for _ in range(10)]
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
@@ -99,5 +99,5 @@ async def test(callback_update_factory, pgsql):
         'https://umma.ru/link-to-sura',
     ])
     assert got[0].url.params['chat_id'] == '849375'
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         assert (await conn.execute(text('SELECT day FROM users WHERE chat_id = 849375'))).scalar() == 4

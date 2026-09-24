@@ -65,7 +65,7 @@ async def pgsql(_migrate):
 @pytest.fixture
 async def db_ayat(pgsql):
     created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
@@ -116,7 +116,7 @@ async def db_ayat(pgsql):
 @pytest.fixture
 def city_factory(pgsql):
     async def _city_factory(city_id, name):  # noqa: WPS430
-        async with pgsql.connect() as conn:
+        async with pgsql.begin() as conn:
             await conn.execute(
                 text('INSERT INTO cities (city_id, name) VALUES (:city_id, :city_name)'),
                 frozendict({'city_id': city_id, 'city_name': name}),
@@ -134,7 +134,7 @@ def user_factory(pgsql):
         legacy_id: int | None = None,
         is_active: bool = True,
     ):  # noqa: WPS430
-        async with pgsql.connect() as conn:
+        async with pgsql.begin() as conn:
             await conn.execute(
                 text('\n'.join([
                     'INSERT INTO users (chat_id, day, city_id, is_active, legacy_id) VALUES',
@@ -167,6 +167,6 @@ async def prayers_factory(pgsql, city_factory, user_factory):
             "(5, 'maghrib', '15:07:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '{0}'),",
             "(6, 'isha''a', '17:04:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '{0}')",
         ]).format(date_as_str)
-        async with pgsql.connect() as conn:
+        async with pgsql.begin() as conn:
             await conn.execute(text(query))
     return _prayers_factory

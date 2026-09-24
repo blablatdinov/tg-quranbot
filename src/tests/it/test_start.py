@@ -21,7 +21,7 @@ async def _existed_user(user_factory):
 
 @pytest.fixture
 async def _admin_message(pgsql):
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text("INSERT INTO admin_messages (key, text) VALUES ('start', 'start admin message')"),
         )

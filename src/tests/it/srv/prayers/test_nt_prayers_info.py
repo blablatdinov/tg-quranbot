@@ -28,7 +28,7 @@ def nt_mock(respx_mock):
 async def city(city_factory, pgsql):
     city_id = uuid.uuid4()
     await city_factory(str(city_id), 'Казань')
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text('INSERT INTO namaz_today_cities (city_id, link) VALUES (:city_id, :link)'),
             frozendict({'city_id': str(city_id), 'link': 'https://namaz.today/city/kazan'}),

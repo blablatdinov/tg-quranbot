@@ -27,7 +27,7 @@ async def test(message_update_factory, pgsql):
         'Ахшам: 19',
         'Ястү: 20',
     ])
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         assert (await conn.execute(
             text('\n'.join([
                 'SELECT COUNT(*)',

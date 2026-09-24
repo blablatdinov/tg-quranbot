@@ -20,7 +20,7 @@ async def db_file_id(pgsql):
         'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
         'VALUES (:file_id, :tg_file_id, :link, :created_at)',
     ])
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(text(query), frozendict({
             'file_id': str(file_id),
             'tg_file_id': 'adsf',

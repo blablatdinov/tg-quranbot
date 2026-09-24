@@ -18,7 +18,7 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 @pytest.fixture
 async def _db_podcast_without_telegram_file_id(pgsql):
     file_id = str(uuid.uuid4())
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
@@ -39,7 +39,7 @@ async def _db_podcast_without_telegram_file_id(pgsql):
 async def _db_podcast(pgsql, user_factory):
     file_id = str(uuid.uuid4())
     await user_factory(123)
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',

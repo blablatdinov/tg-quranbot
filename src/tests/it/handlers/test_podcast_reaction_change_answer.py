@@ -20,7 +20,7 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 async def _once_podcast(pgsql, user_factory):
     file_id = str(uuid.uuid4())
     await user_factory(905)
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
@@ -40,7 +40,7 @@ async def _once_podcast(pgsql, user_factory):
 @pytest.fixture
 async def _podcasts(pgsql, user_factory):
     file_ids = [uuid.uuid4() for _ in range(3)]
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(text('INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)'), [
             frozendict({
                 'file_id': str(file_id),
@@ -59,7 +59,7 @@ async def _podcasts(pgsql, user_factory):
 
 @pytest.fixture
 async def _existed_reaction(pgsql, _podcasts):
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         query = '\n'.join([
             'INSERT INTO podcast_reactions (user_id, podcast_id, reaction)',
             "VALUES (1, 1, 'like')",

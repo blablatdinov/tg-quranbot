@@ -26,7 +26,7 @@ from srv.podcasts.random_podcast_answer import RandomPodcastAnswer
 async def _db_podcast(pgsql, user_factory):
     file_id = str(uuid.uuid4())
     await user_factory(123)
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
@@ -43,7 +43,7 @@ async def _db_podcast(pgsql, user_factory):
 @pytest.fixture
 async def _podcast_reactions(pgsql, user_factory):
     file_ids = [str(uuid.uuid4()) for _ in range(3)]
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
@@ -60,7 +60,7 @@ async def _podcast_reactions(pgsql, user_factory):
         )
     await user_factory(937584)
     await user_factory(87945)
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO podcast_reactions (podcast_id, reaction, user_id)',
@@ -79,7 +79,7 @@ async def _podcast_reactions(pgsql, user_factory):
 @pytest.fixture
 async def _db_podcast_without_telegram_file_id(pgsql):
     file_id = str(uuid.uuid4())
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',

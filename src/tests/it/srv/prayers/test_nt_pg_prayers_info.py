@@ -41,7 +41,7 @@ async def test(pgsql):
         pgsql,
     ).to_dict()
 
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         assert (await conn.execute(text('select city_id, day, name, time from prayers'))).mappings().fetchall() == [
             frozendict({
                 'city_id': 'e9fa0fff-4e6a-47c8-8654-09adf913734a',
@@ -102,5 +102,5 @@ async def test_double(pgsql):
     with pytest.raises(PrayersAlreadyExistsError):
         await nt_user_prayers_info.to_dict()
 
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         assert (await conn.execute(text('select count(*) from prayers'))).scalar() == 6

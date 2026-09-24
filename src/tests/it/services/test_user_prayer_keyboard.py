@@ -32,7 +32,7 @@ async def user(cities, user_factory):
 
 @pytest.fixture
 async def _prayers(pgsql, cities):
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO prayers (prayer_id, name, time, city_id, day)',
@@ -94,7 +94,7 @@ async def test(pgsql, user, execution_number):
     ]
     await asyncio.gather(*tasks)
 
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         assert (await conn.execute(text('SELECT count(*) FROM prayers_at_user'))).scalar() == 5
 
 
@@ -115,5 +115,5 @@ async def test_change_city(pgsql, user_with_changed_city):
         await user_with_changed_city.chat_id(),
     ).generate(FkUpdate.empty_ctor())
 
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         assert (await conn.execute(text('SELECT COUNT(*) FROM prayers_at_user'))).scalar() == 5

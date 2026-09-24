@@ -95,7 +95,7 @@ def mock_http_ramadan_mode(respx_mock, keyboard):
 @pytest.fixture
 async def users(pgsql, city_factory, user_factory):
     city = await city_factory('e22d9142-a39b-4e99-92f7-2082766f0987', 'Kazan')
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO prayers (prayer_id, name, time, city_id, day)',

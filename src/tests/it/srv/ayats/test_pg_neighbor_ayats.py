@@ -15,7 +15,7 @@ from srv.ayats.pg_neighbor_ayats import PgNeighborAyats
 @pytest.fixture
 async def _db_ayat(pgsql):
     created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',

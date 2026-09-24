@@ -23,7 +23,7 @@ async def _prayers_from_csv(pgsql, city_factory, user_factory) -> None:
         'VALUES',
         '(:prayer_id, :name, :time, :city_id, :day)',
     ])
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text(query),
             [

@@ -11,7 +11,7 @@ from srv.ayats.favorites.user_favorite_ayats import UserFavoriteAyats
 @pytest.fixture
 async def _favorite_ayats(db_ayat, pgsql, user_factory):
     await user_factory(49573)
-    async with pgsql.connect() as conn:
+    async with pgsql.begin() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO favorite_ayats (user_id, ayat_id) VALUES',
