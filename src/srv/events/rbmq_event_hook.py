@@ -26,7 +26,6 @@ class RbmqEventHook(EventHook):
     """Обработчик событий из RabbitMQ."""
 
     _settings: Settings
-    _pgsql: AsyncEngine
     _logger: LogSink
     _events: Iterable[ReceivedEvent]
 
@@ -56,7 +55,6 @@ class RbmqEventHook(EventHook):
     @override
     async def catch(self) -> None:  # noqa: WPS217
         """Запуск обработки."""
-        await self._pgsql.begin()
         connection = await aio_pika.connect_robust(
             'amqp://{0}:{1}@{2}:5672/{3}'.format(
                 self._settings.RABBITMQ_USER,

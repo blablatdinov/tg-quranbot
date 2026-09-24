@@ -10,7 +10,6 @@ from redis import asyncio as aioredis
 
 from db.connection import pgsql
 from integrations.tg.app_with_get_me import AppWithGetMe
-from integrations.tg.database_connected_app import DatabaseConnectedApp
 from integrations.tg.polling_app import PollingApp
 from integrations.tg.polling_updates import PollingUpdatesIterator
 from integrations.tg.sendable_answer import SendableAnswer
@@ -55,43 +54,41 @@ def main(sys_args: list[str]) -> None:
         )
     start_http_server(settings.PROMETHEUS_PORT)
     quranbot_polling_app = CliApp(
-        DatabaseConnectedApp(
-            pgsql,
-            AppWithGetMe(
-                PollingApp(
-                    PollingUpdatesIterator(
-                        UpdatesLongPollingURL(
-                            UpdatesWithOffsetURL(
-                                UpdatesURL(settings.API_TOKEN),
-                            ),
-                            UpdatesTimeout(),
+        pgsql,
+        AppWithGetMe(
+            PollingApp(
+                PollingUpdatesIterator(
+                    UpdatesLongPollingURL(
+                        UpdatesWithOffsetURL(
+                            UpdatesURL(settings.API_TOKEN),
                         ),
                         UpdatesTimeout(),
                     ),
-                    LoggedAnswer(
-                        SendableAnswer(
-                            TgMeasureAnswer(
-                                MeasuredAnswer(
-                                    QuranbotAnswer.ctor(
-                                        pgsql,
-                                        redis,
-                                        sink,
-                                        settings,
-                                        logger,
-                                    ),
-                                    BOT_REQUESTS,
+                    UpdatesTimeout(),
+                ),
+                LoggedAnswer(
+                    SendableAnswer(
+                        TgMeasureAnswer(
+                            MeasuredAnswer(
+                                QuranbotAnswer.ctor(
+                                    pgsql,
+                                    redis,
+                                    sink,
+                                    settings,
+                                    logger,
                                 ),
-                                logger,
+                                BOT_REQUESTS,
                             ),
                             logger,
                         ),
-                        sink,
+                        logger,
                     ),
-                    logger,
+                    sink,
                 ),
-                settings.API_TOKEN,
                 logger,
             ),
+            settings.API_TOKEN,
+            logger,
         ),
     )
     ForkCliApp.ctor(
