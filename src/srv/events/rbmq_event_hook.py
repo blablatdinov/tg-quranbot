@@ -12,7 +12,6 @@ import ujson
 from aiormq.abc import DeliveredMessage
 from eljson.json_doc import JsonDoc
 from quranbot_schema_registry import validate_schema
-from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.logger import LogSink
 from settings import Settings
@@ -33,21 +32,18 @@ class RbmqEventHook(EventHook):
     def ctor(
         cls,
         settings: Settings,
-        pgsql: AsyncEngine,
         logger: LogSink,
         *events: ReceivedEvent,
     ) -> EventHook:
         """Ctor.
 
         :param settings: Settings,
-        :param pgsql: AsyncEngine,
         :param logger: LogSink,
         :param events: ReceivedEvent,
         :return: EventHook
         """
         return cls(
             settings,
-            pgsql,
             logger,
             events,
         )
