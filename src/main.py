@@ -54,7 +54,6 @@ def main(sys_args: list[str]) -> None:
         )
     start_http_server(settings.PROMETHEUS_PORT)
     quranbot_polling_app = CliApp(
-        pgsql,
         AppWithGetMe(
             PollingApp(
                 PollingUpdatesIterator(
@@ -101,7 +100,6 @@ def main(sys_args: list[str]) -> None:
             EventHookApp(
                 RbmqEventHook.ctor(
                     settings,
-                    pgsql,
                     logger,
                     EventFork('Ayat.Changed', 1, RbmqAyatChangedEvent(pgsql)),
                     EventFork('Mailing.DailyAyats', 1, MorningContentPublishedEvent(
