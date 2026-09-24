@@ -59,13 +59,14 @@ async def pgsql(_migrate):
             await conn.execute(text('DELETE FROM {0}'.format(table)))  # noqa: S608
         await conn.execute(text("SELECT setval('podcasts_podcast_id_seq', 1, false)"))
         await conn.execute(text("SELECT setval('prayers_at_user_prayer_at_user_id_seq', 1, false)"))
+        await conn.commit()
     await engine.dispose()
 
 
 @pytest.fixture
 async def db_ayat(pgsql):
     created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
@@ -106,6 +107,7 @@ async def db_ayat(pgsql):
                 'transliteration': 'Transliteration',
             }),
         )
+        await conn.commit()
     return FkAyat(
         FkIdentifier(1, 1, '1-7'),
         '',
@@ -116,11 +118,12 @@ async def db_ayat(pgsql):
 @pytest.fixture
 def city_factory(pgsql):
     async def _city_factory(city_id, name):  # noqa: WPS430
-        async with pgsql.begin() as conn:
+        async with pgsql.connect() as conn:
             await conn.execute(
                 text('INSERT INTO cities (city_id, name) VALUES (:city_id, :city_name)'),
                 frozendict({'city_id': city_id, 'city_name': name}),
             )
+            await conn.commit()
         return FkCity(city_id, name)
     return _city_factory
 
@@ -134,7 +137,7 @@ def user_factory(pgsql):
         legacy_id: int | None = None,
         is_active: bool = True,
     ):  # noqa: WPS430
-        async with pgsql.begin() as conn:
+        async with pgsql.connect() as conn:
             await conn.execute(
                 text('\n'.join([
                     'INSERT INTO users (chat_id, day, city_id, is_active, legacy_id) VALUES',
@@ -148,6 +151,7 @@ def user_factory(pgsql):
                     'is_active': is_active,
                 }),
             )
+            await conn.commit()
         return PgUser.int_ctor(chat_id, pgsql)
     return _user_factory
 
@@ -167,6 +171,7 @@ async def prayers_factory(pgsql, city_factory, user_factory):
             "(5, 'maghrib', '15:07:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '{0}'),",
             "(6, 'isha''a', '17:04:00', '080fd3f4-678e-4a1c-97d2-4460700fe7ac', '{0}')",
         ]).format(date_as_str)
-        async with pgsql.begin() as conn:
+        async with pgsql.connect() as conn:
             await conn.execute(text(query))
+            await conn.commit()
     return _prayers_factory

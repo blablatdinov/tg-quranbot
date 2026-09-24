@@ -56,7 +56,7 @@ def _mock_http(respx_mock):
 
 @pytest.fixture
 async def _ayats(pgsql):
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         await conn.execute(
             text('INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)'),
             frozendict({
@@ -119,6 +119,7 @@ async def _ayats(pgsql):
                 }) | common,
             ],
         )
+        await conn.commit()
 
 
 @pytest.fixture

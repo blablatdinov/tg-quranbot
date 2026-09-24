@@ -20,7 +20,7 @@ from integrations.tg.tg_answers.fk_answer import FkAnswer
 async def _once_podcast(pgsql, user_factory):
     file_id = str(uuid.uuid4())
     await user_factory(905)
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
@@ -35,12 +35,13 @@ async def _once_podcast(pgsql, user_factory):
             text('INSERT INTO podcasts (podcast_id, public_id, file_id) VALUES (:podcast_id, :public_id, :file_id)'),
             frozendict({'podcast_id': 5, 'public_id': str(uuid.uuid4()), 'file_id': file_id}),
         )
+        await conn.commit()
 
 
 @pytest.fixture
 async def _podcasts(pgsql, user_factory):
     file_ids = [uuid.uuid4() for _ in range(3)]
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         await conn.execute(text('INSERT INTO files (file_id, created_at) VALUES (:file_id, :created_at)'), [
             frozendict({
                 'file_id': str(file_id),
@@ -55,11 +56,12 @@ async def _podcasts(pgsql, user_factory):
             }) for podcast_id, file_id in enumerate(file_ids, start=1)
         ])
         await user_factory(1)
+        await conn.commit()
 
 
 @pytest.fixture
 async def _existed_reaction(pgsql, _podcasts):
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         query = '\n'.join([
             'INSERT INTO podcast_reactions (user_id, podcast_id, reaction)',
             "VALUES (1, 1, 'like')",
@@ -70,6 +72,7 @@ async def _existed_reaction(pgsql, _podcasts):
             "VALUES (1, 2, 'dislike')",
         ])
         await conn.execute(text(query))
+        await conn.commit()
 
 
 @pytest.mark.usefixtures('_once_podcast')

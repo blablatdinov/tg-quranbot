@@ -32,8 +32,9 @@ async def _generated_prayers(pgsql, prayers_factory):
         '(905, 5, false),',
         '(905, 6, false)',
     ])
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         await conn.execute(text(query))
+        await conn.commit()
 
 
 @pytest.fixture

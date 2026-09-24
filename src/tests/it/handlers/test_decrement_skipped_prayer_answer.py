@@ -26,7 +26,7 @@ async def test(callback_update_factory, pgsql):
         'Ахшам: 19',
         'Ястү: 20',
     ])
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         assert (await conn.execute(
             text('\n'.join([
                 'SELECT COUNT(*)',

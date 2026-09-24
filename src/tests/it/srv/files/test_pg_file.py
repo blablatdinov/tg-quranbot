@@ -20,13 +20,14 @@ async def db_file_id(pgsql):
         'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
         'VALUES (:file_id, :tg_file_id, :link, :created_at)',
     ])
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         await conn.execute(text(query), frozendict({
             'file_id': str(file_id),
             'tg_file_id': 'adsf',
             'link': 'https://link.domain',
             'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
         }))
+        await conn.commit()
     return file_id
 
 

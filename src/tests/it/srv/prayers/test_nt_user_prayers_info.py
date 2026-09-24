@@ -60,7 +60,7 @@ async def test(pgsql):
         FkChatId(1),
     ).to_dict()
 
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         assert (await conn.execute(text('select user_id, is_read from prayers_at_user'))).mappings().fetchall() == [
             frozendict({
                 'is_read': False,
@@ -90,5 +90,5 @@ async def test_double(pgsql):
     await nt_user_prayers_info.to_dict()
     await nt_user_prayers_info.to_dict()
 
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         assert (await conn.execute(text('select count(*) from prayers_at_user'))).scalar() == 5

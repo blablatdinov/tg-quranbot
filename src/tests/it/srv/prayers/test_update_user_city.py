@@ -22,7 +22,7 @@ async def _user(user_factory):
 async def test(pgsql, city):
     await PgUpdatedUserCity(city, 849357, pgsql).update()
 
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         assert (await conn.execute(
             text('SELECT city_id FROM users WHERE chat_id = 849357'),
         )).scalar() == await city.city_id()

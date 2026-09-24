@@ -14,6 +14,7 @@ def _user_city(tg_client, db_conn, bot_name, wait_until):
         'UPDATE users SET city_id = %s WHERE chat_id = %s',
         ('bc932b25-707e-4af1-8b6e-facb5e6dfa9b', 5354079702),
     )
+    db_conn.commit()
 
 
 @pytest.mark.usefixtures('_bot_process', '_clear_db', '_user_city')

@@ -11,7 +11,7 @@ from integrations.city_name_by_id import CityNameById
 
 @pytest.fixture
 async def _db_city(pgsql):
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO cities (city_id, name)',
@@ -19,6 +19,7 @@ async def _db_city(pgsql):
                 "('7ceb19b6-93ff-4819-bed7-86f14077af9a', 'Kazan')",
             ])),
         )
+        await conn.commit()
 
 
 @pytest.mark.usefixtures('_db_city')

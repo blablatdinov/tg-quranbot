@@ -15,7 +15,7 @@ from srv.ayats.pg_ayat import PgAyat
 @pytest.fixture
 async def _db_ayat(pgsql):
     created_at = datetime.datetime.now(tz=pytz.timezone('Europe/Moscow'))
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         await conn.execute(
             text('\n'.join([
                 'INSERT INTO files (file_id, telegram_file_id, link, created_at)',
@@ -58,6 +58,7 @@ async def _db_ayat(pgsql):
                 'transliteration': 'Transliteration',
             }),
         )
+        await conn.commit()
 
 
 @pytest.mark.usefixtures('_db_ayat')
@@ -93,7 +94,7 @@ async def test_change(pgsql):
     }
     await PgAyat.ayat_changed_event_ctor(JsonDoc(event), pgsql).change(JsonDoc(event))
 
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         changed_record = (await conn.execute(text('SELECT * FROM ayats WHERE ayat_id = 1'))).mappings().one_or_none()
 
     assert frozendict({

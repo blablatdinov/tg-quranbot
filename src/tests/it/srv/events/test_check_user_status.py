@@ -57,7 +57,7 @@ async def test_user_status(pgsql):
         # JsonDoc incompatible with frozendict
     ).process(JsonDoc({}))  # noqa: FCS100
 
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         assert [
             row['is_active']
             for row in (await conn.execute(text('SELECT is_active FROM users'))).mappings().fetchall()
@@ -71,7 +71,7 @@ async def test_unsubscribed(pgsql):
         # JsonDoc incompatible with frozendict
     ).process(JsonDoc({}))  # noqa: FCS100
 
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         assert [
             (row['chat_id'], row['is_active'])
             for row in (await conn.execute(

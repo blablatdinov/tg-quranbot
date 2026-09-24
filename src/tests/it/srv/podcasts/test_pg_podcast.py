@@ -10,7 +10,7 @@ from srv.podcasts.pg_podcast import PgPodcast
 
 @pytest.fixture
 async def _db_podcast(pgsql):
-    async with pgsql.begin() as conn:
+    async with pgsql.connect() as conn:
         await conn.execute(text('\n'.join([
             'INSERT INTO files (file_id, created_at)',
             "VALUES ('818dfe43-3a21-49d7-ada4-826443d20991', '2024-10-29')",
@@ -19,6 +19,7 @@ async def _db_podcast(pgsql):
             'INSERT INTO podcasts (podcast_id, file_id)',
             "VALUES (759, '818dfe43-3a21-49d7-ada4-826443d20991')",
         ])))
+        await conn.commit()
 
 
 @pytest.mark.usefixtures('_db_podcast')
