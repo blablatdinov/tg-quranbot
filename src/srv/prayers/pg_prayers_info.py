@@ -31,7 +31,7 @@ class PgPrayersInfo(PrayersInfo):
     @override
     async def to_dict(self) -> PrayerMessageTextDict:
         """Словарь с данными для отправки пользователю."""
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             rows = (await conn.execute(
                 text('\n'.join([
                     'SELECT',

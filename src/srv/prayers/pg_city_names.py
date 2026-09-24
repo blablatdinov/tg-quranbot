@@ -32,7 +32,7 @@ class PgCityNames(AsyncListable):
             'WHERE name ILIKE :search_query',
             'LIMIT 20',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(text(db_query), frozendict({'search_query': search_query}))
             rows = query_result.mappings().fetchall()
         return [

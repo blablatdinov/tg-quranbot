@@ -43,7 +43,7 @@ class AyatIdBySuraAyatNum(AsyncInt):
             '        )',
             '    )',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(text(query), frozendict({
                 'sura_id': self._query.sura(),
                 'ayat_comma_prefix': '%,{0}'.format(self._query.ayat()),

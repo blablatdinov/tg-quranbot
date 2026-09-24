@@ -29,7 +29,7 @@ class CityNameById(CityName):
         :return: str
         :raises CityNotSupportedError: City not found
         """
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text('SELECT name FROM cities WHERE city_id = :city_id'),
                 frozendict({'city_id': await self._city_id.to_str()}),

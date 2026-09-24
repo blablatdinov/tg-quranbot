@@ -32,7 +32,7 @@ class FavoriteAyatsAfterRemove(AsyncListable):
 
         :returns: list[QAyat]
         """
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             rows = (await conn.execute(
                 text('\n'.join([
                     'SELECT fa.ayat_id',

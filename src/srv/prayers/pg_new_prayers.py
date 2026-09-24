@@ -29,7 +29,7 @@ class PgNewPrayers(NewPrayers):
     @override
     async def create(self) -> None:  # noqa: WPS210
         """Создать."""
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text('SELECT city_id FROM cities WHERE name = :name'),
                 frozendict({'name': self._prayer_dict['city_name']}),
@@ -60,7 +60,7 @@ class PgNewPrayers(NewPrayers):
             .astimezone(pytz.timezone('Europe/Moscow'))
         )
         try:
-            async with self._pgsql.connect() as conn:
+            async with self._pgsql.begin() as conn:
                 await conn.execute(
                     text('\n'.join([
                         'INSERT INTO prayers',
@@ -83,10 +83,9 @@ class PgNewPrayers(NewPrayers):
                         for key, name in zip(keys, names, strict=True)
                     ],
                 )
-                await conn.commit()
         except UniqueViolationError as err:
             raise PrayerAlreadyExistsError from err
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text('SELECT COUNT(*) FROM prayers WHERE city_id = :city_id AND day = :day'),
                 frozendict({'city_id': city_id, 'day': day}),

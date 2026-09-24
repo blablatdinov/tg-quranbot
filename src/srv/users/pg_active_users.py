@@ -30,7 +30,7 @@ class PgActiveUsers(AsyncListable):
             'FROM users',
             "WHERE is_active = 't'",
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(text(query))
             rows = query_result.mappings().fetchall()
         return [

@@ -30,7 +30,7 @@ class NtPgPrayersInfo(PrayersInfo):
         origin = await self._origin.to_dict()
         city_id = await PgCity.name_ctor(origin['city_name'], self._pgsql).city_id()
         try:
-            async with self._pgsql.connect() as conn:
+            async with self._pgsql.begin() as conn:
                 await conn.execute(
                     text('\n'.join([
                         'INSERT INTO prayers (name, time, city_id, day)',
@@ -72,7 +72,6 @@ class NtPgPrayersInfo(PrayersInfo):
                         )
                     ],
                 )
-                await conn.commit()
         except IntegrityError as err:
             if 'duplicate key value violates unique constraint' in str(err):
                 raise PrayersAlreadyExistsError from err

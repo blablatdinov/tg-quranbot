@@ -39,7 +39,7 @@ class PgValidChatId(ValidChatId):
         :return: int
         :raises UserNotFoundError: если пользователь не найден
         """
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text('\n'.join([
                     'SELECT chat_id',

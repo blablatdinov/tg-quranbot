@@ -32,7 +32,7 @@ class PrayerCreatedEvent(ReceivedEvent):
             'INSERT INTO prayers (name, time, city_id, day) VALUES',
             '(:name, :time, :city_id, :day)',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             await conn.execute(
                 text(query),
                 frozendict({
@@ -46,5 +46,4 @@ class PrayerCreatedEvent(ReceivedEvent):
                     ),
                 }),
             )
-            await conn.commit()
         logger.info('Prayer created')

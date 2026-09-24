@@ -30,7 +30,7 @@ class HgPrayersUrl(AsyncSupportsStr):
     @override
     async def to_str(self) -> str:
         """Строковое представление."""
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text('SELECT link FROM halal_guide_cities WHERE city_id = :city_id'),
                 frozendict({'city_id': str(await self._city.city_id())}),

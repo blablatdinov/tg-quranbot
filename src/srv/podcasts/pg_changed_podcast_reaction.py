@@ -25,7 +25,7 @@ class PgChangedPoodcastReaction(ChangedPodcastReaction):
     @override
     async def apply(self) -> None:
         """Применить."""
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             row = (await conn.execute(
                 text('\n'.join([
                     'SELECT reaction',
@@ -76,4 +76,3 @@ class PgChangedPoodcastReaction(ChangedPodcastReaction):
                         'reaction': self._reaction.status(),
                     }),
                 )
-            await conn.commit()

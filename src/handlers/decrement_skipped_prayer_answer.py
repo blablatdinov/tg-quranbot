@@ -35,7 +35,7 @@ class DecrementSkippedPrayerAnswer(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             await conn.execute(text('\n'.join([
                 'UPDATE prayers_at_user AS pau',
                 "SET is_read = 't'",
@@ -53,7 +53,6 @@ class DecrementSkippedPrayerAnswer(TgAnswer):
                     CallbackQueryData(update),
                 ).split('(')[1][:-1],
             }))
-            await conn.commit()
         return await TgAnswerMarkup(
             TgMessageIdAnswer(
                 TgTextAnswer(

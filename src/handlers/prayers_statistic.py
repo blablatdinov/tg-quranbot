@@ -89,7 +89,7 @@ class PrayersStatistic(AsyncSupportsStr):
             'WHERE pau.user_id = :chat_id',
             "ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query),
                 frozendict({'chat_id': int(self._chat_id)}),
@@ -112,7 +112,7 @@ class PrayersStatistic(AsyncSupportsStr):
             'WHERE pau.user_id = :chat_id',
             "ORDER BY p.day, ARRAY_POSITION(ARRAY['fajr', 'dhuhr', 'asr', 'maghrib', 'isha''a']::text[], p.name::text)",
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query),
                 frozendict({'chat_id': int(self._chat_id)}),

@@ -34,7 +34,7 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
         :raises PrayerAtUserNotCreatedError: не удалось создать времена намазов
         """
         prayer_group_id = str(uuid.uuid4())
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             await conn.execute(
                 text('INSERT INTO prayers_at_user_groups VALUES (:prayer_group_id)'),
                 frozendict({'prayer_group_id': prayer_group_id}),
@@ -84,7 +84,6 @@ class PgNewPrayersAtUser(NewPrayersAtUser):
                         'date': date,
                     }),
                 )).mappings().fetchall()
-                await conn.commit()
             except IntegrityError as err:
                 if 'duplicate key value violates unique constraint' in str(err):
                     raise PrayerAtUserAlreadyExistsError from err

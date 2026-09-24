@@ -37,7 +37,7 @@ class PgUsers(AsyncListable):
         query = query_template.format(
             ','.join([str(elem) for elem in self._chat_ids]),
         )
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(text(query))
             rows = query_result.mappings().fetchall()
         return [

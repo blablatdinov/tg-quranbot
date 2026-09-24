@@ -68,7 +68,7 @@ class PgCity(City):
         :return: str
         """
         query = 'SELECT name FROM cities WHERE city_id = :city_id'
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query),
                 frozendict({'city_id': await self._city_id.to_str()}),

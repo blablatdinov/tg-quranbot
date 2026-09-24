@@ -45,7 +45,7 @@ class PodcastKeyboard(Keyboard):
             'GROUP BY podcast_id',
         ])
         podcast_id = await self._podcast.podcast_id()
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             row = (await conn.execute(
                 text(query), frozendict({'podcast_id': podcast_id}),
             )).mappings().fetchone()

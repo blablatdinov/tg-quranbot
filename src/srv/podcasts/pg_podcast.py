@@ -45,7 +45,7 @@ class PgPodcast(Podcast):
             'INNER JOIN files AS f ON p.file_id = f.file_id',
             'WHERE p.podcast_id = :podcast_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query),
                 frozendict({'podcast_id': await self._podcast_id.to_int()}),
@@ -71,7 +71,7 @@ class PgPodcast(Podcast):
             'INNER JOIN files AS f ON p.file_id = f.file_id',
             'WHERE p.podcast_id = :podcast_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query),
                 frozendict({'podcast_id': await self._podcast_id.to_int()}),

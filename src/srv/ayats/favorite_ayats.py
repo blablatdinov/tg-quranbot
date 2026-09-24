@@ -37,7 +37,7 @@ class FavoriteAyats(AsyncListable):
             'WHERE u.chat_id = :chat_id',
             'ORDER BY fa.ayat_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query),
                 frozendict({'chat_id': int(self._chat_id)}),

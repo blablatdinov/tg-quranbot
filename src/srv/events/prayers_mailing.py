@@ -65,7 +65,7 @@ class PrayersMailingPublishedEvent(ReceivedEvent):
 
         :param json_doc: Json
         """
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             rows = (await conn.execute(
                 text('\n'.join([
                     'SELECT u.chat_id',

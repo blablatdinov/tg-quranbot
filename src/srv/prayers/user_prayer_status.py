@@ -30,9 +30,8 @@ class UserPrayerStatus(UserPrayerStts):
             'SET is_read = :is_read',
             'WHERE prayer_at_user_id = :prayer_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             await conn.execute(text(query), frozendict({
                 'is_read': prayer_status.change_to(),
                 'prayer_id': prayer_status.user_prayer_id(),
             }))
-            await conn.commit()

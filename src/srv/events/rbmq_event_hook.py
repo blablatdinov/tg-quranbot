@@ -12,7 +12,6 @@ import ujson
 from aiormq.abc import DeliveredMessage
 from eljson.json_doc import JsonDoc
 from quranbot_schema_registry import validate_schema
-from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.logger import LogSink
 from settings import Settings
@@ -26,7 +25,6 @@ class RbmqEventHook(EventHook):
     """Обработчик событий из RabbitMQ."""
 
     _settings: Settings
-    _pgsql: AsyncEngine
     _logger: LogSink
     _events: Iterable[ReceivedEvent]
 
@@ -34,21 +32,18 @@ class RbmqEventHook(EventHook):
     def ctor(
         cls,
         settings: Settings,
-        pgsql: AsyncEngine,
         logger: LogSink,
         *events: ReceivedEvent,
     ) -> EventHook:
         """Ctor.
 
         :param settings: Settings,
-        :param pgsql: AsyncEngine,
         :param logger: LogSink,
         :param events: ReceivedEvent,
         :return: EventHook
         """
         return cls(
             settings,
-            pgsql,
             logger,
             events,
         )
@@ -56,7 +51,6 @@ class RbmqEventHook(EventHook):
     @override
     async def catch(self) -> None:  # noqa: WPS217
         """Запуск обработки."""
-        await self._pgsql.connect()
         connection = await aio_pika.connect_robust(
             'amqp://{0}:{1}@{2}:5672/{3}'.format(
                 self._settings.RABBITMQ_USER,

@@ -33,7 +33,7 @@ class PgFile(TgFile):
             'FROM files',
             'WHERE file_id = :file_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query),
                 frozendict({'file_id': str(self._file_id)}),
@@ -55,7 +55,7 @@ class PgFile(TgFile):
             'FROM files',
             'WHERE file_id = :file_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query),
                 frozendict({'file_id': str(self._file_id)}),

@@ -40,7 +40,7 @@ class ChatIdByLegacyId(AsyncInt):
             'FROM users',
             'WHERE legacy_id = :legacy_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query),
                 frozendict({'legacy_id': await self._legacy_id.to_int()}),
