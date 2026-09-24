@@ -27,7 +27,7 @@ class PgAdminMessage(AdminMessage):
         :raises InternalBotError: возбуждается если административное сообщение с переданным ключом не найдено
         :return: str
         """
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text('SELECT text FROM admin_messages m WHERE m.key = :key'),
                 frozendict({'key': self._key}),

@@ -72,7 +72,6 @@ async def _db_ayats(pgsql):
                 )
             ],
         )
-        await conn.commit()
 
 
 @pytest.fixture

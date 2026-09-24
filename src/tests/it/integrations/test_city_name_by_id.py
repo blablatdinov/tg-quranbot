@@ -19,7 +19,6 @@ async def _db_city(pgsql):
                 "('7ceb19b6-93ff-4819-bed7-86f14077af9a', 'Kazan')",
             ])),
         )
-        await conn.commit()
 
 
 @pytest.mark.usefixtures('_db_city')

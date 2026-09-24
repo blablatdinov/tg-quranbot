@@ -33,7 +33,7 @@ class AyatIdByPublicId(AsyncInt):
             'SELECT ayat_id FROM ayats',
             'WHERE public_id = :public_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(text(query), frozendict({
                 'public_id': str(self._public_id),
             }))

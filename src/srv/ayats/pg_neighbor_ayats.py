@@ -37,7 +37,7 @@ class PgNeighborAyats(NeighborAyats):
             'FROM ayats',
             'WHERE ayat_id = :ayat_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query), frozendict({_AYAT_ID_LITERAL: self._ayat_id - 1}),
             )
@@ -58,7 +58,7 @@ class PgNeighborAyats(NeighborAyats):
             'FROM ayats',
             'WHERE ayats.ayat_id = :ayat_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query), frozendict({_AYAT_ID_LITERAL: self._ayat_id + 1}),
             )
@@ -73,11 +73,11 @@ class PgNeighborAyats(NeighborAyats):
 
         :return: str
         """
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(text('SELECT COUNT(*) FROM ayats'))
             row = query_result.fetchone()
         ayats_count = row[0] if row else 0
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text('SELECT COUNT(*) FROM ayats WHERE ayat_id <= :ayat_id'),
                 frozendict({_AYAT_ID_LITERAL: self._ayat_id}),

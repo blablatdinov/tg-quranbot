@@ -104,7 +104,7 @@ class PgAyat(Ayat):  # noqa: WPS214
         :raises AyatNotFoundError: если аят не найден
         """
         ayat_id = await self._ayat_id.to_int()
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             row = (await conn.execute(
                 text('\n'.join([
                     'SELECT',
@@ -142,7 +142,7 @@ class PgAyat(Ayat):  # noqa: WPS214
         :raises AyatNotFoundError: если аят не найден
         """
         ayat_id = await self._ayat_id.to_int()
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text('\n'.join([
                     'SELECT cf.file_id',
@@ -175,7 +175,7 @@ class PgAyat(Ayat):  # noqa: WPS214
             '    transliteration = :transliteration',
             'WHERE ayat_id = :ayat_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             await conn.execute(text(query), frozendict({
                 'ayat_id': await self._ayat_id.to_int(),
                 'day': event_body.path('$.data.day')[0],
@@ -185,4 +185,3 @@ class PgAyat(Ayat):  # noqa: WPS214
                 'arab_text': event_body.path('$.data.arab_text')[0],
                 'transliteration': event_body.path('$.data.transliteration')[0],
             }))
-            await conn.commit()

@@ -25,7 +25,6 @@ async def _prayers(pgsql, city_factory, user_factory):
     ])
     async with pgsql.connect() as conn:
         await conn.execute(text(query))
-        await conn.commit()
 
 
 @pytest.mark.usefixtures('_prayers')

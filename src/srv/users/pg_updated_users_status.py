@@ -39,6 +39,5 @@ class PgUpdatedUsersStatus(UpdatedUsersStatus):
             str(await user.chat_id())
             for user in users
         ]))
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             await conn.execute(text(query), frozendict({'to': to}))
-            await conn.commit()

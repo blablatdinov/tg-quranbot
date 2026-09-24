@@ -33,7 +33,6 @@ async def city(city_factory, pgsql):
             text('INSERT INTO namaz_today_cities (city_id, link) VALUES (:city_id, :link)'),
             frozendict({'city_id': str(city_id), 'link': 'https://namaz.today/city/kazan'}),
         )
-        await conn.commit()
     return FkCity(city_id, 'Казань')
 
 

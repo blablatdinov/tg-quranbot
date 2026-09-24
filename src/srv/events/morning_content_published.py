@@ -48,7 +48,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
 
         :param json_doc: Json
         """
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             rows = (await conn.execute(
                 text('\n'.join([
                     'SELECT',
@@ -82,7 +82,7 @@ class MorningContentPublishedEvent(ReceivedEvent):
             FkAsyncListable(unsubscribed_users),
             self._events_sink,
         ).update(to=False)
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             await conn.execute(text('\n'.join([
                 'UPDATE users',
                 'SET day = day + 1',
@@ -90,7 +90,6 @@ class MorningContentPublishedEvent(ReceivedEvent):
                     ','.join([str(row['chat_id']) for row in rows]),
                 ),
             ])))
-            await conn.commit()
 
     # Fix it
     def _zipped_ans_chat_ids(self, rows: list[Any]) -> Iterator[tuple[TgAnswer, int]]:  # noqa: NPM100

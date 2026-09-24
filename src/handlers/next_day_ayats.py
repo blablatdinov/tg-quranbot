@@ -33,7 +33,7 @@ class NextDayAyats(TgAnswer):
         :param update: Update
         :return: list[httpx.Request]
         """
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(text('\n'.join([
                 'SELECT',
                 '  a.sura_id,',
@@ -52,7 +52,6 @@ class NextDayAyats(TgAnswer):
                 'SET day = day + 1',
                 'WHERE chat_id = :chat_id',
             ])), frozendict({'chat_id': int(TgChatId(update))}))
-            await conn.commit()
         return await TgLinkPreviewOptions(
             TgHtmlParseAnswer(
                 TgAnswerMarkup(

@@ -63,7 +63,7 @@ class PgUser(User):
             'FROM users',
             'WHERE chat_id = :chat_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query),
                 frozendict({'chat_id': await self._chat_id.to_int()}),
@@ -84,7 +84,7 @@ class PgUser(User):
             'FROM users',
             'WHERE chat_id = :chat_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query),
                 frozendict({'chat_id': await self._chat_id.to_int()}),

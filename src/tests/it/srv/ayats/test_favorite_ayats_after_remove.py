@@ -90,7 +90,6 @@ async def _db_ayat(pgsql, user_factory):  # noqa: WPS217
                 frozendict({'user_id': 1, 'ayat_id': 3}),
             ],
         )
-        await conn.commit()
 
 
 @pytest.mark.usefixtures('_db_ayat')

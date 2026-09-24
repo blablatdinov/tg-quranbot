@@ -56,7 +56,7 @@ class RbmqEventHook(EventHook):
     @override
     async def catch(self) -> None:  # noqa: WPS217
         """Запуск обработки."""
-        await self._pgsql.connect()
+        await self._pgsql.begin()
         connection = await aio_pika.connect_robust(
             'amqp://{0}:{1}@{2}:5672/{3}'.format(
                 self._settings.RABBITMQ_USER,

@@ -56,7 +56,7 @@ class TextSearchNeighborAyats(NeighborAyats):
         :raises AyatNotFoundError: if ayat not found
         """
         search_query = '%{0}%'.format(await self._query.read())
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             rows = (await conn.execute(
                 text(self._search_sql_query),
                 frozendict({'search_query': search_query}),
@@ -76,7 +76,7 @@ class TextSearchNeighborAyats(NeighborAyats):
         :raises AyatNotFoundError: if ayat not found
         """
         search_query = '%{0}%'.format(await self._query.read())
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             rows = (await conn.execute(
                 text(self._search_sql_query),
                 frozendict({'search_query': search_query}),
@@ -95,7 +95,7 @@ class TextSearchNeighborAyats(NeighborAyats):
         :return: str
         """
         actual_page_num = 0
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             rows = (await conn.execute(
                 text(self._search_sql_query),
                 frozendict({'search_query': '%{0}%'.format(await self._query.read())}),

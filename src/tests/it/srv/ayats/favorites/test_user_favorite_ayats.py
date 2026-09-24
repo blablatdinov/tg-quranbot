@@ -19,7 +19,6 @@ async def _favorite_ayats(db_ayat, pgsql, user_factory):
             ])),
             frozendict({'ayat_id': await db_ayat.identifier().ayat_id()}),
         )
-        await conn.commit()
 
 
 @pytest.mark.usefixtures('_favorite_ayats')

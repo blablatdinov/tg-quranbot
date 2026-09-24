@@ -37,7 +37,6 @@ async def city(city_factory, pgsql):
             text('INSERT INTO halal_guide_cities (city_id, link) VALUES (:city_id, :link)'),
             frozendict({'city_id': str(city_id), 'link': 'https://halalguide.me/kazan/namaz-time'}),
         )
-        await conn.commit()
     return FkCity(city_id, 'Казань')
 
 

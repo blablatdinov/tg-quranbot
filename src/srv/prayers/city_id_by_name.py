@@ -28,7 +28,7 @@ class CityIdByName(AsyncSupportsStr):
         :raises CityNotSupportedError: city not found
         """
         query = 'SELECT city_id FROM cities WHERE name = :name'
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query),
                 frozendict({'name': await self._name.to_str()}),

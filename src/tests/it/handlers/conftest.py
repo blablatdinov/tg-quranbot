@@ -63,4 +63,3 @@ async def _prayers_from_csv(pgsql, city_factory, user_factory) -> None:
                 for line in lines
             ],
         )
-        await conn.commit()

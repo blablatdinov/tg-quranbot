@@ -146,7 +146,6 @@ async def users(pgsql, city_factory, user_factory):
                 }),
             ],
         )
-        await conn.commit()
     return [await user_factory(358610865, 2, city)]
 
 

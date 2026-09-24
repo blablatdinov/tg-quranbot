@@ -34,7 +34,7 @@ class DateFromUserPrayerId(PrayerDate):
             'INNER JOIN prayers ON prayers_at_user.prayer_id = prayers.prayer_id',
             'WHERE prayer_at_user_id = :prayer_at_user_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(text(query), frozendict({
                 'prayer_at_user_id': PrayerStatus.update_ctor(update).user_prayer_id(),
             }))

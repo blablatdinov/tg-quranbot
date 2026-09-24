@@ -45,7 +45,7 @@ class MailingCreatedEvent(ReceivedEvent):
         :raises UnreacheableError: unreacheable state
         """
         if json_doc.path('$.data.group')[0] == 'all':
-            async with self._pgsql.connect() as conn:
+            async with self._pgsql.begin() as conn:
                 chat_ids = (await conn.execute(
                     text('\n'.join([
                         'SELECT chat_id',

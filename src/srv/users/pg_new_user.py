@@ -61,12 +61,11 @@ class PgNewUser(NewUser):
             'RETURNING (chat_id, referrer_id)',
         ])
         try:
-            async with self._pgsql.connect() as conn:
+            async with self._pgsql.begin() as conn:
                 await conn.execute(
                     text(query),
                     frozendict({'chat_id': chat_id, 'referrer_id': await self._referrer_chat_id.to_int()}),
                 )
-                await conn.commit()
         except IntegrityError as err:
             if 'duplicate key value violates unique constraint' in str(err):
                 raise UserAlreadyExistsError from err

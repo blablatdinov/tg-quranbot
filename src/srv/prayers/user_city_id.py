@@ -34,7 +34,7 @@ class UserCityId(AsyncSupportsStr):
             'INNER JOIN users AS u ON u.city_id = c.city_id',
             'WHERE u.chat_id = :chat_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query), frozendict({'chat_id': int(self._chat_id)}),
             )

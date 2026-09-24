@@ -35,12 +35,11 @@ class PgUpdatedUserCity(UpdatedUserCity):
             'WHERE chat_id = :chat_id',
             'RETURNING *',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(text(query), frozendict({
                 'city_id': str(await self._city.city_id()),
                 'chat_id': int(self._chat_id),
             }))
             rows = query_result.fetchall()
-            await conn.commit()
         if not rows:
             raise UserNotFoundError

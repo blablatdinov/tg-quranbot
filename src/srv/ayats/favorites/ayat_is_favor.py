@@ -34,7 +34,7 @@ class AyatIsFavor(AsyncSupportsBool):
             'INNER JOIN users AS u ON fa.user_id = u.chat_id',
             'WHERE fa.ayat_id = :ayat_id AND u.chat_id = :chat_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(
                 text(query),
                 frozendict({'ayat_id': await self._ayat.identifier().ayat_id(), 'chat_id': self._chat_id}),

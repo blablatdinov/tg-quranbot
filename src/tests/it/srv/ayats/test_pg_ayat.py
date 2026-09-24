@@ -58,7 +58,6 @@ async def _db_ayat(pgsql):
                 'transliteration': 'Transliteration',
             }),
         )
-        await conn.commit()
 
 
 @pytest.mark.usefixtures('_db_ayat')

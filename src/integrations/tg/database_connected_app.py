@@ -20,5 +20,5 @@ class DatabaseConnectedApp(Runable):
     @override
     async def run(self) -> None:
         """Запуск."""
-        await self._pgsql.connect()
+        await self._pgsql.begin()
         await self._app.run()

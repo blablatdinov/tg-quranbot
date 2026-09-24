@@ -38,7 +38,6 @@ async def _db_podcast(pgsql, user_factory):
             text('INSERT INTO podcasts (public_id, file_id)\nVALUES (:public_id, :file_id)'),
             frozendict({'public_id': str(uuid.uuid4()), 'file_id': file_id}),
         )
-        await conn.commit()
 
 
 @pytest.fixture
@@ -59,7 +58,6 @@ async def _podcast_reactions(pgsql, user_factory):
             text('INSERT INTO podcasts (file_id) VALUES (:file_id)'),
             [frozendict({'file_id': file_id}) for file_id in file_ids],
         )
-        await conn.commit()
     await user_factory(937584)
     await user_factory(87945)
     async with pgsql.connect() as conn:
@@ -76,7 +74,6 @@ async def _podcast_reactions(pgsql, user_factory):
                 frozendict({'podcast_id': 3, 'reaction': 'like', 'user_id': 87945}),
             ],
         )
-        await conn.commit()
 
 
 @pytest.fixture
@@ -94,7 +91,6 @@ async def _db_podcast_without_telegram_file_id(pgsql):
             text('INSERT INTO podcasts (public_id, file_id)\nVALUES (:public_id, :file_id)'),
             frozendict({'public_id': str(uuid.uuid4()), 'file_id': file_id}),
         )
-        await conn.commit()
 
 
 @pytest.mark.parametrize(('debug_mode', 'expected'), [

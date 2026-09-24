@@ -27,7 +27,6 @@ async def db_file_id(pgsql):
             'link': 'https://link.domain',
             'created_at': datetime.datetime.now(tz=pytz.timezone('Europe/Moscow')),
         }))
-        await conn.commit()
     return file_id
 
 

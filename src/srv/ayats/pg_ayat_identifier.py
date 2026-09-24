@@ -43,7 +43,7 @@ class PgAyatIdentifier(AyatIdentifier):
             'WHERE a.ayat_id = :ayat_id',
         ])
         ayat_id = await self.ayat_id()
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(text(query), frozendict({'ayat_id': ayat_id}))
             row = query_result.mappings().fetchone()
         if row is None:
@@ -63,7 +63,7 @@ class PgAyatIdentifier(AyatIdentifier):
             'WHERE ayat_id = :ayat_id',
         ])
         ayat_id = await self.ayat_id()
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(text(query), frozendict({'ayat_id': ayat_id}))
             row = query_result.mappings().fetchone()
         if row is None:

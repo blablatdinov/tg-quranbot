@@ -25,7 +25,6 @@ async def _admin_message(pgsql):
         await conn.execute(
             text("INSERT INTO admin_messages (key, text) VALUES ('start', 'start admin message')"),
         )
-        await conn.commit()
 
 
 @pytest.mark.usefixtures('db_ayat', '_admin_message')

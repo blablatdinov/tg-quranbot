@@ -80,12 +80,11 @@ class ChangeFavoriteAyatAnswer(TgAnswer):
                 'DELETE FROM favorite_ayats',
                 'WHERE ayat_id = :ayat_id AND user_id = :user_id',
             ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             await conn.execute(
                 text(query),
                 frozendict({'ayat_id': status.ayat_id(), 'user_id': int(TgChatId(update))}),
             )
-            await conn.commit()
         chat_id = TgChatId(update)
         return await TgAnswerFork.ctor(
             self._logger,

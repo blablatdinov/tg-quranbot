@@ -59,7 +59,6 @@ async def pgsql(_migrate):
             await conn.execute(text('DELETE FROM {0}'.format(table)))  # noqa: S608
         await conn.execute(text("SELECT setval('podcasts_podcast_id_seq', 1, false)"))
         await conn.execute(text("SELECT setval('prayers_at_user_prayer_at_user_id_seq', 1, false)"))
-        await conn.commit()
     await engine.dispose()
 
 
@@ -107,7 +106,6 @@ async def db_ayat(pgsql):
                 'transliteration': 'Transliteration',
             }),
         )
-        await conn.commit()
     return FkAyat(
         FkIdentifier(1, 1, '1-7'),
         '',
@@ -123,7 +121,6 @@ def city_factory(pgsql):
                 text('INSERT INTO cities (city_id, name) VALUES (:city_id, :city_name)'),
                 frozendict({'city_id': city_id, 'city_name': name}),
             )
-            await conn.commit()
         return FkCity(city_id, name)
     return _city_factory
 
@@ -151,7 +148,6 @@ def user_factory(pgsql):
                     'is_active': is_active,
                 }),
             )
-            await conn.commit()
         return PgUser.int_ctor(chat_id, pgsql)
     return _user_factory
 
@@ -173,5 +169,4 @@ async def prayers_factory(pgsql, city_factory, user_factory):
         ]).format(date_as_str)
         async with pgsql.connect() as conn:
             await conn.execute(text(query))
-            await conn.commit()
     return _prayers_factory

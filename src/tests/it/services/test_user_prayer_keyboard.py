@@ -64,7 +64,6 @@ async def _prayers(pgsql, cities):
                 )
             ],
         )
-        await conn.commit()
 
 
 @pytest.fixture

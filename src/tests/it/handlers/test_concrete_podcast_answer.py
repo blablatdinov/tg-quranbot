@@ -33,7 +33,6 @@ async def _db_podcast_without_telegram_file_id(pgsql):
             text('INSERT INTO podcasts (public_id, file_id)\nVALUES (:public_id, :file_id)'),
             frozendict({'public_id': str(uuid.uuid4()), 'file_id': file_id}),
         )
-        await conn.commit()
 
 
 @pytest.fixture
@@ -55,7 +54,6 @@ async def _db_podcast(pgsql, user_factory):
             text('INSERT INTO podcasts (public_id, file_id)\nVALUES (:public_id, :file_id)'),
             frozendict({'public_id': str(uuid.uuid4()), 'file_id': file_id}),
         )
-        await conn.commit()
 
 
 @pytest.mark.usefixtures('_db_podcast')

@@ -40,7 +40,7 @@ class PodcastId(AsyncInt):
             ')',
             'ORDER BY RANDOM()',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             podcast_id = (await conn.execute(
                 text(query),
                 frozendict({'chat_id': int(self._chat_id)}),

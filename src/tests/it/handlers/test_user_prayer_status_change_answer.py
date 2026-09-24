@@ -34,7 +34,6 @@ async def _generated_prayers(pgsql, prayers_factory):
     ])
     async with pgsql.connect() as conn:
         await conn.execute(text(query))
-        await conn.commit()
 
 
 @pytest.fixture

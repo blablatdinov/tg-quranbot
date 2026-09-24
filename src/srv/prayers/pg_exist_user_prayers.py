@@ -38,7 +38,7 @@ class PgExistUserPrayers(ExistUserPrayers):
             "WHERE p.day = :date AND pau.user_id = :chat_id AND p.name <> 'sunrise'",
             'ORDER BY pau.prayer_at_user_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(text(select_query), frozendict({
                 'date': self._date,
                 'chat_id': int(self._chat_id),

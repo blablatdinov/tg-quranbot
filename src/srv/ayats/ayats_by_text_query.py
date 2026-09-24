@@ -37,7 +37,7 @@ class AyatsByTextQuery(AsyncListable):
             'WHERE a.content ILIKE :search_query',
             'ORDER BY a.ayat_id',
         ])
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             query_result = await conn.execute(text(query), frozendict({
                 'search_query': '%{0}%'.format(self._query),
             }))

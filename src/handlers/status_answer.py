@@ -45,7 +45,7 @@ class StatusAnswer(TgAnswer):
     # Fix it
     async def _measure_pgsql(self) -> str:  # noqa: NPM100
         db_start = time.time()
-        async with self._pgsql.connect() as conn:
+        async with self._pgsql.begin() as conn:
             await conn.execute(text('SELECT 1'))
         return 'DB: {0} ms'.format(float(
             RoundedFloat(
