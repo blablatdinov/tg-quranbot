@@ -45,7 +45,7 @@ class _FkDb:  # noqa: PEO200
         self._link = link
 
     # Class used for test only
-    def connect(self) -> _FkDbConn:  # noqa: OVR100
+    def begin(self) -> _FkDbConn:  # noqa: OVR100
         return _FkDbConn(self._link)
 
 
