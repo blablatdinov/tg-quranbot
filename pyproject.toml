@@ -94,7 +94,7 @@ asyncio_mode = "auto"
 addopts = [
   "--doctest-modules",
 ]
-# radar_endpoint = "https://test-radar.ilaletdinov.ru"
+radar_endpoint = "https://test-radar.ilaletdinov.ru"
 markers = [
   "tg_button: tests that check the behavior of buttons",
 ]
