@@ -62,7 +62,7 @@ services:
       - ./rabbitmq-data/log/:/var/log/rabbitmq
 
   prometheus:
-    image: prom/prometheus:v3.14.0
+    image: prom/prometheus:v3.15.0
     ports:
       - "9090:9090"
     volumes:
