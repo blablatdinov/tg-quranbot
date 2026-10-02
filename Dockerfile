@@ -7,6 +7,7 @@ ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 WORKDIR /app
 
 FROM base as poetry
+# renovate: datasource=pypi depName=poetry
 RUN pip install poetry==2.0.1
 COPY poetry.lock pyproject.toml /app/
 RUN poetry install --without dev
