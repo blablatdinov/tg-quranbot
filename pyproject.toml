@@ -54,7 +54,7 @@ psycopg2-binary = "2.9.13"
 pika = "1.4.4"
 hypothesis = "6.168.3"
 # type checking
-mypy = "2.3.1"
+mypy = "2.4.0"
 types-pytz = "2026.4.0.20260926"
 types-redis = "4.6.0.20241004"
 types-pytest-lazy-fixture = "0.6.3.20260518"
