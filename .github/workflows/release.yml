@@ -104,6 +104,9 @@ jobs:
           python-version: "3.14.7"
       - name: Install Dependencies
         run: |
+          # renovate: datasource=pypi depName=yoyo-migrations
+          # renovate: datasource=pypi depName=psycopg2-binary
+          # renovate: datasource=pypi depName=setuptools
           pip install yoyo-migrations==9.0.0 psycopg2-binary==2.9.12 setuptools==75.1.0
       - name: Apply Migrations
         env:
