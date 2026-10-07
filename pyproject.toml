@@ -52,7 +52,7 @@ fakeredis = "2.39.0"
 telethon = "1.45.0"
 psycopg2-binary = "2.9.13"
 pika = "1.4.4"
-hypothesis = "6.168.4"
+hypothesis = "6.168.5"
 # type checking
 mypy = "2.4.0"
 types-pytz = "2026.5.0.20261006"
