@@ -7,7 +7,6 @@ from typing import Any, final, override
 
 import attrs
 from eljson.json import Json
-from frozendict import frozendict
 from jinja2 import Template
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine

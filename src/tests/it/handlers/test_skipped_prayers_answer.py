@@ -3,7 +3,6 @@
 
 import pytest
 import ujson
-from frozendict import frozendict
 from sqlalchemy import text
 
 from app_types.fk_update import FkUpdate

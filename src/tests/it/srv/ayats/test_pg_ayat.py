@@ -6,7 +6,6 @@ import datetime
 import pytest
 import pytz
 from eljson.json_doc import JsonDoc
-from frozendict import frozendict
 from sqlalchemy import text
 
 from srv.ayats.pg_ayat import PgAyat

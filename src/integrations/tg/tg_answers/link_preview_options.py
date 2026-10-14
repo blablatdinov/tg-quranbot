@@ -6,7 +6,6 @@ from typing import final, override
 import attrs
 import httpx
 import ujson
-from frozendict import frozendict
 from furl import furl
 
 from app_types.update import Update

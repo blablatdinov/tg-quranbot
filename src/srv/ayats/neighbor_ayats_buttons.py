@@ -3,7 +3,6 @@
 
 from typing import Protocol
 
-from frozendict import frozendict
 
 
 class NeighborAyatsButtons(Protocol):

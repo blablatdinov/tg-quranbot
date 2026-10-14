@@ -3,7 +3,6 @@
 
 from typing import Final, TypedDict, final, override
 
-from frozendict import frozendict
 
 from app_types.update import Update
 

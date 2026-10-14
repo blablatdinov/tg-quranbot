@@ -4,7 +4,6 @@
 from typing import final, override
 
 import attrs
-from frozendict import frozendict
 
 from srv.events.sink import Sink
 

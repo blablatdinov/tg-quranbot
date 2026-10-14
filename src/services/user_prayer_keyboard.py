@@ -7,7 +7,6 @@ from typing import final, override
 
 import attrs
 import ujson
-from frozendict import frozendict
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app_types.update import Update

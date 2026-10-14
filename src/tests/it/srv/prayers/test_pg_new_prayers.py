@@ -5,7 +5,6 @@ import datetime
 import uuid
 
 import pytest
-from frozendict import frozendict
 from sqlalchemy import text
 
 from srv.prayers.pg_new_prayers import PgNewPrayers

@@ -8,7 +8,6 @@ from typing import final, override
 
 import attrs
 from dateutil import rrule
-from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 

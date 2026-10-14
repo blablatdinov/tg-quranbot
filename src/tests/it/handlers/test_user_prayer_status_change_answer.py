@@ -6,7 +6,6 @@ import datetime
 import pytest
 import pytz
 import ujson
-from frozendict import frozendict
 from sqlalchemy import text
 
 from app_types.fk_async_str import FkAsyncStr

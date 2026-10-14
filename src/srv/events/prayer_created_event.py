@@ -7,7 +7,6 @@ from typing import final, override
 import attrs
 import pytz
 from eljson.json import Json
-from frozendict import frozendict
 from loguru import logger
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine

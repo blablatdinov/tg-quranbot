@@ -6,7 +6,6 @@ import uuid
 
 import pytest
 import pytz
-from frozendict import frozendict
 from sqlalchemy import text
 
 from exceptions.content_exceptions import BotFileNotFoundError

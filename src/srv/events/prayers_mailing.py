@@ -10,7 +10,6 @@ import attrs
 import pytz
 import ujson
 from eljson.json import Json
-from frozendict import frozendict
 from redis.asyncio import Redis
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine

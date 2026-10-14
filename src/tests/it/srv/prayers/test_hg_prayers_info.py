@@ -7,7 +7,6 @@ from pathlib import Path
 
 import httpx
 import pytest
-from frozendict import frozendict
 from sqlalchemy import text
 
 from app_types.fk_log_sink import FkLogSink

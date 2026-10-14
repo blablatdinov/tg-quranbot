@@ -6,7 +6,6 @@ import uuid
 import httpx
 import pytest
 from eljson.json_doc import JsonDoc
-from frozendict import frozendict
 
 from app_types.fk_log_sink import FkLogSink
 from integrations.tg.tg_answers import TgEmptyAnswer

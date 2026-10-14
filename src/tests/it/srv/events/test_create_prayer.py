@@ -5,7 +5,6 @@ import datetime
 
 import pytest
 from eljson.json_doc import JsonDoc
-from frozendict import frozendict
 from sqlalchemy import text
 
 from srv.events.prayer_created_event import PrayerCreatedEvent

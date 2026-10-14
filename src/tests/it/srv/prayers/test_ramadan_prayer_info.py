@@ -4,7 +4,6 @@
 import datetime
 
 import pytz
-from frozendict import frozendict
 
 from app_types.fk_async_str import FkAsyncStr
 from app_types.fk_update import FkUpdate

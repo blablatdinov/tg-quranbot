@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: MIT
 
 import pytest
-from frozendict import frozendict
 
 from srv.prayers.fk_prayers_info import FkPrayersInfo
 from srv.prayers.ramadan_prayer_info import RamadanPrayerInfo

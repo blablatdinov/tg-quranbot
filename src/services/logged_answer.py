@@ -8,7 +8,6 @@ from typing import Final, final, override
 import attrs
 import pytz
 import ujson
-from frozendict import frozendict
 
 from app_types.update import Update
 from integrations.tg.sendable import Sendable

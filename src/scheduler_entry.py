@@ -7,7 +7,6 @@ import logging
 import httpx
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from frozendict import frozendict
 from loguru import logger
 
 from settings import settings

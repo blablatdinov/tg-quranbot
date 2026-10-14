@@ -5,7 +5,6 @@ import datetime
 
 import pytest
 import pytz
-from frozendict import frozendict
 from sqlalchemy import text
 
 from srv.ayats.favorite_ayats_after_remove import FavoriteAyatsAfterRemove

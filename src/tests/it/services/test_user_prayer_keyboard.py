@@ -6,7 +6,6 @@ import datetime
 from itertools import chain, repeat
 
 import pytest
-from frozendict import frozendict
 from sqlalchemy import text
 
 from app_types.fk_update import FkUpdate

@@ -8,7 +8,6 @@ from typing import final, override
 import aio_pika
 import attrs
 import ujson
-from frozendict import frozendict
 from loguru import logger
 from quranbot_schema_registry import validate_schema
 

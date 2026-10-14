@@ -5,7 +5,6 @@ from typing import final, override
 
 import attrs
 import ujson
-from frozendict import frozendict
 
 from app_types.update import Update
 from integrations.tg.keyboard import Keyboard

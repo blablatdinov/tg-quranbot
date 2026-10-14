@@ -6,7 +6,6 @@ from pathlib import Path
 
 import pytest
 import pytz
-from frozendict import frozendict
 from sqlalchemy import text
 
 

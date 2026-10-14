@@ -4,7 +4,6 @@
 import uuid
 
 import pytest
-from frozendict import frozendict
 
 from app_types.fk_log_sink import FkLogSink
 from app_types.fk_update import FkUpdate

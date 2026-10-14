@@ -5,7 +5,6 @@ import datetime
 
 import pytest
 import ujson
-from frozendict import frozendict
 
 from app_types.fk_update import FkUpdate
 from srv.prayers.prayers_request_date import PrayersRequestDate

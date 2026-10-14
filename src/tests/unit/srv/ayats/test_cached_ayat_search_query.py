@@ -7,7 +7,6 @@ from typing import final, override
 import attrs
 import pytest
 import ujson
-from frozendict import frozendict
 
 from app_types.fk_log_sink import FkLogSink
 from integrations.tg.tg_answers import TgAnswer

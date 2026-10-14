@@ -3,7 +3,6 @@
 
 from typing import Protocol
 
-from frozendict import frozendict
 
 from app_types.stringable import SupportsStr
 
