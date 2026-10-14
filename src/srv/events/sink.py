@@ -4,7 +4,6 @@
 from typing import Protocol
 
 
-
 class Sink(Protocol):
     """Интерфейс отправщика событий."""
 

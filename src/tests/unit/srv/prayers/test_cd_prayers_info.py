@@ -4,7 +4,6 @@
 import datetime
 from typing import final, override
 
-
 from app_types.fk_log_sink import FkLogSink
 from srv.prayers.cd_prayers_info import CdPrayersInfo
 from srv.prayers.fk_city import FkCity

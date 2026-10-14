@@ -3,7 +3,6 @@
 
 from typing import Protocol
 
-
 from app_types.update import Update
 
 
