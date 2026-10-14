@@ -6,7 +6,6 @@ from typing import final, override
 
 import attrs
 import pytz
-from frozendict import frozendict
 
 from app_types.listable import AsyncListable
 from srv.events.sink import Sink

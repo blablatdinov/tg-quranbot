@@ -5,7 +5,6 @@ import httpx
 import pytest
 import ujson
 from eljson.json_doc import JsonDoc
-from frozendict import frozendict
 from sqlalchemy import text
 
 from app_types.fk_log_sink import FkLogSink

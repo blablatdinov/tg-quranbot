@@ -5,7 +5,6 @@ from typing import TypedDict, final, override
 
 import attrs
 import ujson
-from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 

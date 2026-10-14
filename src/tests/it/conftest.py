@@ -6,7 +6,6 @@ import datetime
 import psycopg2
 import pytest
 import pytz
-from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 

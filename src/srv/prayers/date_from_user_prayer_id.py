@@ -5,7 +5,6 @@ import datetime
 from typing import final, override
 
 import attrs
-from frozendict import frozendict
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 

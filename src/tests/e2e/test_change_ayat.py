@@ -8,7 +8,6 @@ import pika
 import psycopg2
 import pytest
 import ujson
-from frozendict import frozendict
 
 
 @pytest.fixture

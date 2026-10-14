@@ -4,7 +4,6 @@
 from typing import final, override
 
 import attrs
-from frozendict import frozendict
 
 from app_types.date_time import DateTime
 from integrations.tg.fk_chat_id import ChatId

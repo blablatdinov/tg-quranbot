@@ -3,7 +3,6 @@
 
 from typing import final, override
 
-from frozendict import frozendict
 
 from app_types.update import Update
 from integrations.tg.cached_tg_update import CachedTgUpdate

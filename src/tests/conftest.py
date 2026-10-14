@@ -9,7 +9,6 @@ from urllib.parse import urlparse
 import httpx
 import pytest
 from fakeredis import aioredis
-from frozendict import frozendict
 from jinja2 import Template
 
 from app_types.fk_log_sink import FkLogSink

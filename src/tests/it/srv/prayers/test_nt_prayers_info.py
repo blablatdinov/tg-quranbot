@@ -7,7 +7,6 @@ from pathlib import Path
 
 import httpx
 import pytest
-from frozendict import frozendict
 from sqlalchemy import text
 
 from exceptions.prayer_exceptions import PrayersNotFoundError

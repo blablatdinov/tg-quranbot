@@ -9,7 +9,6 @@ from operator import truediv
 import pytest
 import pytz
 import ujson
-from frozendict import frozendict
 from furl import furl
 from sqlalchemy import text
 

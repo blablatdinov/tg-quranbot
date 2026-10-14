@@ -4,7 +4,6 @@
 from typing import final, override
 
 import attrs
-from frozendict import frozendict
 
 from app_types.update import Update
 from integrations.tg.sendable import Sendable

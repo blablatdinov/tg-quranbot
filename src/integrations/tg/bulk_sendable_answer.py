@@ -5,7 +5,6 @@ import asyncio
 from typing import final, override
 
 import attrs
-from frozendict import frozendict
 from more_itertools import flatten
 
 from app_types.logger import LogSink

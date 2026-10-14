@@ -3,7 +3,6 @@
 
 import pytest
 import ujson
-from frozendict import frozendict
 from furl import furl
 from sqlalchemy import text
 

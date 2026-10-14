@@ -8,7 +8,6 @@ import pytest
 import pytz
 import ujson
 from eljson.json_doc import JsonDoc
-from frozendict import frozendict
 from furl import furl
 from loguru import logger
 from sqlalchemy import text

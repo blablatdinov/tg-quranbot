@@ -5,7 +5,6 @@ from typing import final, override
 
 import attrs
 import httpx
-from frozendict import frozendict
 from jinja2 import Template
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine

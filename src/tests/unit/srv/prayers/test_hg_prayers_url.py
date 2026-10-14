@@ -6,7 +6,6 @@ import datetime
 from typing import Any, final
 
 import pytest
-from frozendict import frozendict
 
 from exceptions.internal_exceptions import CityNotFoundError
 from srv.prayers.fk_city import FkCity

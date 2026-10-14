@@ -6,7 +6,6 @@ from contextlib import suppress
 from typing import Generic, final, override
 
 import attrs
-from frozendict import frozendict
 
 from app_types.stringable import SupportsStr
 from services.json_path import ET_co, JsonPath

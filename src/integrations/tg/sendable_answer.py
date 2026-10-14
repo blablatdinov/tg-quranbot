@@ -7,7 +7,6 @@ from urllib import parse as url_parse
 import attrs
 import httpx
 import ujson
-from frozendict import frozendict
 
 from app_types.logger import LogSink
 from app_types.update import Update

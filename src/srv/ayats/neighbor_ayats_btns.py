@@ -5,7 +5,6 @@ from contextlib import suppress
 from typing import final, override
 
 import attrs
-from frozendict import frozendict
 
 from exceptions.content_exceptions import AyatNotFoundError
 from srv.ayats.ayat_callback_template_enum import AyatCallbackTemplateEnum

@@ -4,7 +4,6 @@
 import uuid
 
 import pytest
-from frozendict import frozendict
 from sqlalchemy import text
 
 from srv.prayers.fk_city import FkCity

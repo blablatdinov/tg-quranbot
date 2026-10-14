@@ -5,7 +5,6 @@ import datetime
 import uuid
 
 import pytest
-from frozendict import frozendict
 from sqlalchemy import text
 
 from exceptions.prayer_exceptions import PrayersAlreadyExistsError

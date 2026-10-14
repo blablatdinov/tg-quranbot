@@ -3,7 +3,6 @@
 
 from typing import override
 
-from frozendict import frozendict
 
 from integrations.tg.tg_answers.answer_fork import TgAnswerFork
 from integrations.tg.tg_answers.answer_list import TgAnswerList
