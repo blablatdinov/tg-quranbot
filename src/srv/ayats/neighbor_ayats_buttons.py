@@ -4,7 +4,6 @@
 from typing import Protocol
 
 
-
 class NeighborAyatsButtons(Protocol):
     """Кнопки для клавиатуры с соседними аятами."""
 
