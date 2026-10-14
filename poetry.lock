@@ -718,14 +718,14 @@ tzdata = ["tzdata"]
 
 [[package]]
 name = "fakeredis"
-version = "2.39.0"
+version = "2.40.0"
 description = "Python implementation of redis API, can be used for testing purposes."
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "fakeredis-2.39.0-py3-none-any.whl", hash = "sha256:acd1450575259634db2942d5bae93e383aac32bb9968aab29fe7b0c2ab880bb8"},
-    {file = "fakeredis-2.39.0.tar.gz", hash = "sha256:e89c3410f290330042638ff5cca3e22788fa267dcaf28a64b4f483e14577208d"},
+    {file = "fakeredis-2.40.0-py3-none-any.whl", hash = "sha256:b155ef2442134372eb1cc5664cf5638ccbe0a6dde9d1942153708e2782f315c9"},
+    {file = "fakeredis-2.40.0.tar.gz", hash = "sha256:16eb05a3e97c37a033c73d1da7e885eb2aa47ba7604cc377144339efa2780a02"},
 ]
 
 [package.dependencies]
@@ -735,6 +735,7 @@ sortedcontainers = ">=2"
 [package.extras]
 bf = ["pyprobables (>=0.6)"]
 cf = ["pyprobables (>=0.6)"]
+digest = ["xxhash (>=3)"]
 json = ["jsonpath-ng (>=1.6)"]
 lua = ["lupa (>=2.1)"]
 probabilistic = ["pyprobables (>=0.6)"]
@@ -4638,4 +4639,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "70ce80bb003599677e76a23170924bfa495033661cd89417cde6019863aef260"
+content-hash = "cab411b4f5c097b39c9c64124f53c94393fddb9aef5d1c262c91615fc6cb5e50"
