@@ -22,7 +22,7 @@ class TgDateTime(DateTime):
     _update: Update
 
     @override
-    def datetime(self) -> datetime.datetime:
+    def date_time(self) -> datetime.datetime:
         """Дата/время.
 
         :return: datetime.datetime

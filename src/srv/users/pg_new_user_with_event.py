@@ -30,7 +30,7 @@ class PgNewUserWithEvent(NewUser):
             'qbot_admin.users',
             frozendict({
                 'user_id': int(self._new_user_chat_id),
-                'date_time': str(self._datetime.datetime()),
+                'date_time': str(self._datetime.date_time()),
                 'referrer_id': None,
             }),
             'User.Subscribed',

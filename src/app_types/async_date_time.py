@@ -8,5 +8,5 @@ from typing import Protocol
 class AsyncDateTime(Protocol):
     """Интерфейс даты/времени для вычисления с возможностью переключения контекста."""
 
-    async def datetime(self) -> datetime.datetime:
+    async def date_time(self) -> datetime.datetime:
         """Дата/время."""

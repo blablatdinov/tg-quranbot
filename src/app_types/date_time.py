@@ -8,5 +8,5 @@ from typing import Protocol
 class DateTime(Protocol):
     """Интерфейс даты/времени."""
 
-    def datetime(self) -> datetime.datetime:
+    def date_time(self) -> datetime.datetime:
         """Дата/время."""

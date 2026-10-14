@@ -60,7 +60,7 @@ class UserAlreadyExistsAnswer(TgAnswer):
             'qbot_admin.users',
             frozendict({
                 'user_id': int(TgChatId(update)),
-                'date_time': str(TgDateTime(update).datetime()),
+                'date_time': str(TgDateTime(update).date_time()),
             }),
             'User.Reactivated',
             1,
