@@ -3,12 +3,12 @@
 
 # flake8: noqa: WPS202
 import datetime
+import json
 import uuid
 from operator import truediv
 
 import pytest
 import pytz
-import ujson
 from furl import furl
 from sqlalchemy import text
 
@@ -104,7 +104,7 @@ async def _db_podcast_without_telegram_file_id(pgsql):
             .add(frozendict({
                 'chat_id': '123',
                 'audio': 'aoiejf298jr9p23u8qr3',
-                'reply_markup': ujson.dumps(frozendict({
+                'reply_markup': json.dumps(frozendict({
                     'inline_keyboard': [[
                         frozendict({'text': '👍 0', 'callback_data': 'like(1)'}),
                         frozendict({'text': '👎 0', 'callback_data': 'dislike(1)'}),
@@ -120,7 +120,7 @@ async def _db_podcast_without_telegram_file_id(pgsql):
             .add(frozendict({
                 'chat_id': '123',
                 'text': 'https://link-to-file.domain',
-                'reply_markup': ujson.dumps(frozendict({
+                'reply_markup': json.dumps(frozendict({
                     'inline_keyboard': [[
                         frozendict({'text': '👍 0', 'callback_data': 'like(1)'}),
                         frozendict({'text': '👎 0', 'callback_data': 'dislike(1)'}),
