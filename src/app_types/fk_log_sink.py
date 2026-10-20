@@ -11,7 +11,7 @@ from app_types.logger import LogSink
 class FkLogSink(LogSink):  # noqa: PEO200
     """Фейковый логгер."""
 
-    stack: list[str]  # noqa: PEO300
+    stack: list[str]  # noqa: PEO301
 
     def __init__(self) -> None:
         """Ctor."""
