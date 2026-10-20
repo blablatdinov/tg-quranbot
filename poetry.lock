@@ -836,18 +836,18 @@ flake8 = ">=7.1,<8.0"
 
 [[package]]
 name = "flake8-override"
-version = "0.1.0"
+version = "0.1.1"
 description = "This is how python package should look like!"
 optional = false
-python-versions = "<4.0,>=3.9"
+python-versions = "<4.0,>=3.10"
 groups = ["main", "dev"]
 files = [
-    {file = "flake8_override-0.1.0-py3-none-any.whl", hash = "sha256:3e3d7b9e90b71923ae539fd7fb2b8c4f7254a0835ccc932ac34af361691cd15f"},
-    {file = "flake8_override-0.1.0.tar.gz", hash = "sha256:ed95f36b1aa96c7cfc6c8f1b76f32287403491f003a443d9f2ccc03d19cd7313"},
+    {file = "flake8_override-0.1.1-py3-none-any.whl", hash = "sha256:2717a84f481bfdb500f89563a6cbd0481a6450e4be8191039ace3bd4ad7d1815"},
+    {file = "flake8_override-0.1.1.tar.gz", hash = "sha256:ec01f25959b2997ad9a0addb5b52f3e0f89b04bd3acb94569fdaad57355bfc1e"},
 ]
 
 [package.dependencies]
-flake8 = ">=5.0.0"
+flake8 = ">=7.0.0"
 
 [[package]]
 name = "furl"
@@ -4539,4 +4539,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.15,<3.16"
-content-hash = "d93aed4597f7d6a12fe74101b30391b72e90542412fccefcd0aaa3e25c454988"
+content-hash = "9fca83d6c870684350137850f196d79da786fa4eca2d4c80270c813322b1af8e"
