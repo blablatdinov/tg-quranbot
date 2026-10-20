@@ -39,7 +39,7 @@ watchdog = {version = "6.0.0", extras = ["watchmedo"]}
 pytest-cov = "7.1.0"
 pytest = "9.1.1"
 pytest-asyncio = "1.4.0"
-pytest-mock = "3.16.0"
+pytest-mock = "3.17.0"
 pytest-lazy-fixtures = "1.4.1"
 pytest-randomly = "5.0.0"
 pytest-retry = "1.7.0"
