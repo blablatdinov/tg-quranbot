@@ -1242,14 +1242,14 @@ i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "jsonpath-ng"
-version = "1.8.0"
+version = "1.13.0"
 description = "A final implementation of JSONPath for Python that aims to be standard compliant, including arithmetic and binary comparison operators and providing clear AST for metaprogramming."
 optional = false
-python-versions = "*"
+python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "jsonpath_ng-1.8.0-py3-none-any.whl", hash = "sha256:b8dde192f8af58d646fc031fac9c99fe4d00326afc4148f1f043c601a8cfe138"},
-    {file = "jsonpath_ng-1.8.0.tar.gz", hash = "sha256:54252968134b5e549ea5b872f1df1168bd7defe1a52fed5a358c194e1943ddc3"},
+    {file = "jsonpath_ng-1.13.0-py3-none-any.whl", hash = "sha256:f58e7f88cdd2eb04a402c0d542e7d6db71909e521f4c23c62f4d2ee73266361e"},
+    {file = "jsonpath_ng-1.13.0.tar.gz", hash = "sha256:da54eff64eef303b90a8491f50c607e6beb2eb4a6e66828edab948766d40c531"},
 ]
 
 [[package]]
@@ -4539,4 +4539,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.15,<3.16"
-content-hash = "d93aed4597f7d6a12fe74101b30391b72e90542412fccefcd0aaa3e25c454988"
+content-hash = "f52c7ea4eb911a6d83d1b06baba190aae8f092ea1e6870dc22769f0bf0d56cc9"
