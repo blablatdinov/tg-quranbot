@@ -4,41 +4,40 @@
 on:
   workflow_call
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-26.04
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Checkout master
         run: git fetch origin master:master -u
-      - name: Set up Python 3.14
-        uses: actions/setup-python@v7
+      - name: Set up Python 3.15
+        id: setup-python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.15.0"
+      - name: Install Poetry
+        uses: snok/install-poetry@a783c322200f0519c7926aa6faa857c4e23e9263 # v1.4.2
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
       - name: Load cached venv
         id: cached-poetry-dependencies
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-      - name: Lint via ruff
-        run: .venv/bin/ruff check src
-      - name: Lint via flake8
-        run: .venv/bin/flake8 src
-      - name: Check types with mypy
-        run: .venv/bin/mypy src
-      - name: sqlfluff
-        run: .venv/bin/sqlfluff lint migrations --dialect postgres
-      - name: Checking files for compliance with editorconfig
-        run: |
-          VERSION="v3.1.2"
-          curl -O -L -C - https://github.com/editorconfig-checker/editorconfig-checker/releases/download/$VERSION/ec-linux-amd64.tar.gz
-          mkdir ec
-          tar -xzf ec-linux-amd64.tar.gz -C ec
-          git ls-files | xargs ec/bin/ec-linux-amd64 -v
-      # TODO #1428:30min Включить vulture
-      #  стоит придумать способ как игнорировать пока неиспользуемый код
-      #  При pdd некоторые классы не используются
-
-      # - name: Check dead code via vulture
-      #   run: .venv/bin/vulture src --exclude '*test*' | .venv/bin/ondivi
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+      - name: Install quality-gate tools (mise)
+        uses: jdx/mise-action@f5be966e4a917d54244728e6a5fdcd1d93a35e6c # v5.2.6
+        with:
+          cache: true
+      - name: Run all quality gates
+        run: mise exec -- task check

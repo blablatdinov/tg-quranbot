@@ -67,10 +67,45 @@ tasks:
   lint:
     cmds:
       - poetry run ruff check src --output-format=concise
-      - git ls-files | xargs ec
+      - git ls-files | xargs mise exec -- editorconfig-checker
       - poetry run flake8 src
       - poetry run mypy src
       - poetry run sqlfluff lint migrations --dialect postgres
+
+  check:
+    desc: "Run every quality gate (CI runs this exact command)"
+    deps: [lint]
+    cmds:
+      # Python dependencies
+      - mise exec -- deptry src
+      # Dockerfiles
+      - mise exec -- hadolint Dockerfile Dockerfile.dev
+      # Shell scripts
+      - git ls-files '*.sh' | xargs -r mise exec -- shellcheck
+      # Postgres migration safety
+      - mise exec -- squawk 'migrations/*.sql'
+      # GitHub Actions workflows
+      - mise exec -- jactionlint .github/workflows/*.yml
+      # Config files against JSON Schema
+      - mise exec -- check-jsonschema --builtin-schema vendor.renovate renovate.json
+      - mise exec -- check-jsonschema --builtin-schema github-workflows .github/workflows/changes-tested.yml .github/workflows/installing-dependencies.yml .github/workflows/lint.yml .github/workflows/pr-check.yml .github/workflows/release.yml .github/workflows/weekly-check.yml
+      # Markdown
+      - mise exec -- rumdl check README.md docs
+      # Broken links (network-dependent)
+      - mise exec -- lychee --no-progress README.md docs
+      # Secrets scanning (working tree)
+      - mise exec -- betterleaks detect --no-git
+      # Vulnerability scanning in lockfile
+      - mise exec -- osv-scanner scan --lockfile poetry.lock
+      # Agent instructions
+      - mise exec -- agnix validate AGENTS.md
+
+  fix:
+    desc: "Safe autofixes only (never deletes code unattended)"
+    cmds:
+      - poetry run ruff check src --fix --fix-only
+      - mise exec -- rumdl fmt README.md docs
+
 
   clean:
     cmds:
