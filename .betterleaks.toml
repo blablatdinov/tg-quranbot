@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2018-2026 Almaz Ilaletdinov <a.ilaletdinov@yandex.ru>
+# SPDX-License-Identifier: MIT
+#
+# betterleaks configuration (gitleaks-compatible).
+# Suppressions are narrow: one path or one CI file, with the reason.
+# Review date: 2027-11-04 (re-check that these paths still hold no real secrets).
+
+[extend]
+useDefault = true
+
+# Local development credentials committed on purpose for docker-compose and
+# the yoyo migration tool. They are not usable outside a developer machine.
+[[allowlists]]
+description = "Local development database credentials (review 2027-11-04)"
+paths = [
+  '''^docker-compose\.yml$''',
+  '''^yoyo\.ini$''',
+]
+
+# Service passwords for throwaway Postgres/Redis/RabbitMQ containers that run
+# only inside CI jobs. They are not secrets outside the job.
+[[allowlists]]
+description = "CI service container passwords (review 2027-11-04)"
+paths = [
+  '''^\.github/workflows/.*\.ya?ml$''',
+]
+
+# Recorded HTTP fixtures used by tests. The key inside is a dead value captured
+# from a public page, not a live credential.
+[[allowlists]]
+description = "Test fixtures with captured third-party page content (review 2027-11-04)"
+paths = [
+  '''^src/tests/fixtures/.*''',
+]

@@ -189,6 +189,10 @@ max-args = 6
 [tool.ruff.lint.flake8-import-conventions.aliases]
 datetime = "datetime"
 
+[tool.deptry]
+extend_exclude = ["src/tests"]
+package_module_name_map = {"python-dateutil" = "dateutil"}
+
 [tool.deltaver]
 fail_on_avg = 50
 fail_on_max = 180

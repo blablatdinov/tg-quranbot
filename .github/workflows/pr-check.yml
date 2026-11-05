@@ -47,14 +47,14 @@ jobs:
         options: --health-cmd "rabbitmqctl status" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up Python 3.14
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.15.0"
       - name: Load cached venv
         id: cached-poetry-dependencies
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
@@ -62,7 +62,7 @@ jobs:
         run: echo '${{ secrets.E2E_ENV_SETUP }}' > .env
       - name: Run tests with pytest
         run: .venv/bin/pytest src --ignore=src/tests/e2e --doctest-modules --cov --cov-report xml --cov-fail-under=95 --radar-token=${{ secrets.TEST_RADAR_TOKEN }}
-      - uses: codecov/codecov-action@v7
+      - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
@@ -75,7 +75,7 @@ jobs:
     name: Src and tests structure check
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Run gotemir
         run: |
           VERSION="0.0.3"
@@ -93,8 +93,8 @@ jobs:
     name: Check duplicated code
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       - name: Install jscpd
         run: npm i jscpd -g
       - name: Run jscpd
@@ -105,8 +105,8 @@ jobs:
     name: Check spelling
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       - name: Install cspell
         # renovate: datasource=npm depName=cspell
         # renovate: datasource=npm depName=cspell/dict-ru_ru
